@@ -1,0 +1,10 @@
+/php/vendor/
+/php/composer.lock
+/dart/.dart_tool/
+/dart/.packages
+/dart/pubspec.lock
+/conformance/vendor/
+/conformance/composer.lock
+/out/
+*.log
+.DS_Store
