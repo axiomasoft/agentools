@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/schema/2026-07-draft/idempotency.json",
+  "title": "AgenTools Idempotency Dedupe Record",
+  "description": "Запись dedupe-хранилища на границе инструмента (06_idempotency-errors.md, правила IE-5..IE-9). Инстанс схемы = одна строка таблицы дедупликации: ключ идемпотентности (UNIQUE), статус исполнения commit-фазы и, для завершённого вызова, дайджест/сохранённый результат для возврата на повтор. Формула ключа и её вход описаны отдельным $def KeyMaterial (не путь исполнения, а нормативный состав материала ключа, IE-1). Персистентная реализация хранилища (SQL-таблица тенанта Flex, Drift Axioma) — вне репозитория (D13 плана); схема нормирует лишь форму записи, общую для обоих рантаймов.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["key", "status", "ts"],
+  "properties": {
+    "key": {
+      "type": "string",
+      "pattern": "^at1:[0-9a-f]{64}$",
+      "description": "Ключ идемпотентности: префикс версии формулы at1: + sha256hex(JCS(KeyMaterial)) — 64 знака нижнего hex (IE-1, IE-2, D5 плана). UNIQUE в хранилище. Смена формулы вводит новый префикс (at2: и т.д.), не ломая существующие записи."
+    },
+    "status": {
+      "$ref": "#/$defs/IdempotencyStatus",
+      "description": "Состояние commit-фазы под этим ключом — определяет исход повторного вызова (IE-6)."
+    },
+    "result_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "Дайджест результата успешного commit: sha256(JCS(result)) с префиксом sha256: (IE-7). Тот же дайджест, что аудит-событие tool_committed несёт как result_digest (05_audit-events.md, AU-11). Присутствует только у записей status=done."
+    },
+    "stored_result": {
+      "description": "Необязательный сохранённый результат успешного commit — возвращается дословно на повтор с тем же ключом (IE-6, done → вернуть сохранённый результат без переисполнения). Форма = выход инструмента, оставлена открытой. MAY отсутствовать, если хранится только result_digest (тогда повтор возвращает лишь факт применения)."
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Момент последнего изменения записи (RFC3339, UTC). Основа TTL записи: TTL dedupe MUST быть не меньше TTL сессии (IE-8), чтобы resume в пределах жизни сессии всегда попадал в дедупликацию."
+    }
+  },
+  "$defs": {
+    "IdempotencyStatus": {
+      "type": "string",
+      "enum": ["in_flight", "done", "failed"],
+      "description": "in_flight — commit начат, но не завершён (одновременный повтор → conflict/retryable, IE-6); done — commit применён, повтор возвращает сохранённый результат (IE-6); failed — commit упал, повтор с тем же ключом разрешён (IE-6)."
+    },
+    "KeyMaterial": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tenant_id", "session_id", "step_id", "tool", "args"],
+      "description": "Нормативный вход формулы ключа (IE-1): JCS(KeyMaterial) канонизируется по RFC 8785 (05_audit-events.md §4), от результата берётся sha256hex, ключ = at1: + hex. Все пять полей обязательны. args — доменные аргументы commit-вызова ДО исполнения, без зарезервированных confirmation_token и служебных _meta-полей (IE-3).",
+      "properties": {
+        "tenant_id": {
+          "type": "string",
+          "description": "Тенант (арендатор) — изолирует ключи между потребителями одного развёртывания."
+        },
+        "session_id": {
+          "type": "string",
+          "description": "Сессия действия (02_action-lifecycle.md). Часть материала ключа."
+        },
+        "step_id": {
+          "type": "string",
+          "description": "Идентификатор шага сценария или логического действия (04_scenario-schema.md, SC-2)."
+        },
+        "tool": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$",
+          "description": "Имя инструмента, чья commit-фаза дедуплицируется (шаблон имени — 01_tool-contract-profile.md, TCP-5)."
+        },
+        "args": {
+          "type": "object",
+          "description": "Доменные аргументы commit-вызова ДО исполнения (без зарезервированных confirmation_token/idempotency_key). Тот же набор, что формирует preview_digest фазы prepare (01/TCP-17), — поэтому один и тот же commit после resume даёт тот же ключ (IE-3, IE-4)."
+        }
+      }
+    }
+  }
+}

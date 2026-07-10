@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/schema/2026-07-draft/error.json",
+  "title": "AgenTools Error Object",
+  "description": "Единый формат ошибки инструмента/шага AgenTools (06_idempotency-errors.md, правила IE-10..IE-16). Один и тот же объект: (а) отдаётся моделью-исполнителю для self-correction (поле example_of_valid_call — обучающая ошибка, канон Anthropic tool-design, R-06), (б) маршрутизирует рантайм по классу отказа semantic/technical сценария (04_scenario-schema.md, SC-18) через таблицу маппинга §4, (в) выносится наружу как MCP tool-execution error (isError:true + structuredContent, профиль 01_tool-contract-profile.md поверх MCP 2025-11-25). Категория ошибки — закрытый enum из восьми значений; расширение множества — только новой ревизией спеки (IE-11).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["code", "category", "retryable", "message"],
+  "properties": {
+    "code": {
+      "type": "string",
+      "pattern": "^agentools\\.(validation|permission|not_found|conflict|precondition|unavailable|budget|internal)\\.[a-z][a-z0-9_]*$",
+      "description": "Стабильный машинный код вида agentools.<category>.<slug> (IE-10). Средний сегмент MUST совпадать с полем category (IE-12; JSON Schema проверяет лишь принадлежность сегмента закрытому множеству, точную согласованность с category enforce'ит рантайм). slug — snake_case, устойчив между ревизиями, служит ключом маршрутизации и локализации сообщений."
+    },
+    "category": {
+      "$ref": "#/$defs/ErrorCategory",
+      "description": "Класс ошибки — источник маппинга на semantic/technical fail сценария и на retryable-дефолт (§4 дока, IE-14)."
+    },
+    "retryable": {
+      "type": "boolean",
+      "description": "Обратимость на уровне конкретного экземпляра (IE-13). Авторитетна: перекрывает retryable-дефолт категории (IE-15). Рантайм повторяет шаг только если retryable=true И класс отказа technical И шаг идемпотентен (04_scenario-schema.md, SC-16)."
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Человекочитаемое сообщение на русском — для показа пользователю и/или подсказки модели (IE-13). Не несёт ПДн (05_audit-events.md, AU-15)."
+    },
+    "details": {
+      "type": "object",
+      "description": "Необязательный структурированный контекст ошибки (например, {field, expected}) для диагностики и self-correction. MUST быть уже замаскирован от ПДн вышестоящим шлюзом (05_audit-events.md, AU-15). Форма зависит от кода — оставлена открытой (валидирует рантайм инструмента)."
+    },
+    "example_of_valid_call": {
+      "type": "object",
+      "description": "Необязательный образец корректного вызова инструмента (обучающая ошибка, канон Anthropic tool-design, R-06): показывает модели форму валидных аргументов, чтобы она исправила вызов, а не повторяла его вслепую. Форма — под конкретный инструмент, оставлена открытой."
+    }
+  },
+  "$defs": {
+    "ErrorCategory": {
+      "type": "string",
+      "enum": ["validation", "permission", "not_found", "conflict", "precondition", "unavailable", "budget", "internal"],
+      "description": "Закрытый enum классов ошибок (IE-11). validation — аргументы не прошли схему/бизнес-правило; permission — нет прав; not_found — ссылка на отсутствующую сущность; conflict — гонка/дубль/версионный конфликт; precondition — состояние записи не допускает действие; unavailable — сбой транспорта/тайм-аут/квота upstream; budget — исчерпан бюджет прогона (05/AU-14); internal — непредвиденный сбой рантайма. Расширение множества — только новой ревизией спеки."
+    }
+  }
+}
