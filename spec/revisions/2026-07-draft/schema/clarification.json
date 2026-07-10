@@ -2,14 +2,14 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://agentools.dev/schema/2026-07-draft/clarification.json",
   "title": "AgenTools Clarification Request",
-  "description": "Транспорт-агностичный объект уточняющего вопроса (03_confirmation-protocol.md, CP-22..CP-27). Инстанс схемы = ClarificationRequest; ответ ClarificationAnswer и перечисления — в $defs (единый источник). Биндинг к MCP elicitation form-mode и к Reverb-событиям — информативная деталь рантайма (CP-28, D12 плана): семантика вопроса не зависит от транспорта.",
+  "description": "Транспорт-агностичный объект уточняющего вопроса (03_confirmation-protocol.md, CP-24..CP-31). Инстанс схемы = ClarificationRequest; ответ ClarificationAnswer и перечисления — в $defs (единый источник). Биндинг к MCP elicitation form-mode и к Reverb-событиям — информативная деталь рантайма (CP-30, CP-31, D12 плана): семантика вопроса не зависит от транспорта.",
   "type": "object",
   "additionalProperties": false,
   "required": ["id", "question", "kind"],
   "properties": {
     "id": {
       "type": "string",
-      "description": "Идентификатор запроса. Ответ ClarificationAnswer ссылается на него полем id (CP-24)."
+      "description": "Идентификатор запроса. Ответ ClarificationAnswer ссылается на него полем id (CP-26)."
     },
     "question": {
       "type": "string",
@@ -17,15 +17,15 @@
     },
     "kind": {
       "$ref": "#/$defs/ClarificationKind",
-      "description": "Форма вопроса (CP-23)."
+      "description": "Форма вопроса (CP-25)."
     },
     "options": {
       "type": "array",
       "items": { "$ref": "#/$defs/ClarificationOption" },
-      "description": "Варианты выбора. REQUIRED для kind ∈ {select, multi_select}; для confirm/text SHOULD отсутствовать (CP-23)."
+      "description": "Варианты выбора. REQUIRED для kind ∈ {select, multi_select}; для confirm/text SHOULD отсутствовать (CP-25)."
     },
     "default": {
-      "description": "Опциональное значение по умолчанию (предзаполнение/подсказка). Тип согласован с kind: bool для confirm, value одной опции для select, массив value для multi_select, строка для text (CP-26)."
+      "description": "Опциональное значение по умолчанию (предзаполнение/подсказка). Тип согласован с kind: bool для confirm, value одной опции для select, массив value для multi_select, строка для text (CP-29)."
     },
     "schema": {
       "type": "object",
@@ -47,7 +47,7 @@
     "ClarificationKind": {
       "type": "string",
       "enum": ["confirm", "select", "multi_select", "text"],
-      "description": "confirm — булево 'правильно ли я понял?'; select — ровно один вариант из options; multi_select — подмножество options; text — свободный ввод (опц. ограничен полем schema). Ровно четыре значения (CP-23)."
+      "description": "confirm — булево 'правильно ли я понял?'; select — ровно один вариант из options; multi_select — подмножество options; text — свободный ввод (опц. ограничен полем schema). Ровно четыре значения (CP-25)."
     },
     "ClarificationOption": {
       "type": "object",
@@ -70,13 +70,13 @@
     "AnswerStatus": {
       "type": "string",
       "enum": ["answered", "declined", "cancelled"],
-      "description": "Исход уточнения (CP-24, CP-25). answered — пользователь ответил (value присутствует); declined — отказался отвечать (рантайм решает по политике сценария: default/skip/fail); cancelled — прервал диалог (сессия → CANCELLED, LC-T11)."
+      "description": "Исход уточнения (CP-26, CP-27). answered — пользователь ответил (value присутствует); declined — отказался отвечать (рантайм решает по политике сценария: default/skip/fail); cancelled — прервал диалог (сессия → CANCELLED, LC-T11)."
     },
     "ClarificationAnswer": {
       "type": "object",
       "additionalProperties": false,
       "required": ["id", "status"],
-      "description": "Ответ на ClarificationRequest (CP-24). id MUST совпадать с id запроса. value присутствует при status=answered и согласован с kind запроса; при declined/cancelled value отсутствует.",
+      "description": "Ответ на ClarificationRequest (CP-26). id MUST совпадать с id запроса. value присутствует при status=answered и согласован с kind запроса; при declined/cancelled value отсутствует.",
       "properties": {
         "id": {
           "type": "string",
