@@ -390,7 +390,7 @@ items.enum`; `text → string` (с `schema` как ограничениями); 
   },
   "_meta": {
     "agentools/v1": {
-      "idempotency_key": "at1:9c1f4b7e"
+      "idempotency_key": "at1:9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b"
     }
   }
 }
