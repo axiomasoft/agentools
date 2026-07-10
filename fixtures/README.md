@@ -1,14 +1,102 @@
 # fixtures/
 
-Языконезависимые тест-векторы — исполняемая часть договора между PHP и Dart SDK.
-Формат вектора и golden-файлов описывается здесь по мере готовности спеки
-(фаза P0, item P0.9 плана `plans/AGENTOOLS` в vault `academici/brain`).
+Языконезависимые тест-векторы — исполняемая часть договора между PHP и Dart SDK
+(D9 плана `AGENTOOLS`, R-06 «Contract testing между разноязычными реализациями»):
+именно они держат оба порта честными, а не полагаются на совпадение реализаций
+«по смыслу». Прогон векторов через runner — вне скоупа этого документа (P1); здесь
+нормируется только **формат** вектора, golden-файлов и алгоритм частичного матча.
 
-Ожидаемая структура (заполняется в P0.9):
+Схема формата: `schema/fixture.json` (JSON Schema 2020-12). Векторы: `vectors/l1/*.json`,
+`vectors/l2/*.json`. Golden-файлы канонизации: `golden/jcs/*`, `golden/idempotency/*`.
+Целостность (`fixture.json` валиден, каждый вектор структурно корректен, `spec_refs`
+существуют в доках 01-06, golden-пары на месте) проверяет `tools/spec_lint.py`.
 
-- `schema/fixture.json` — JSON Schema формата вектора.
-- `vectors/**/*.json` — сами векторы (L1/L2/L3 conformance-уровней).
-- `golden/jcs/*.{input.json,golden.txt}` — контрольные пары канонизации RFC 8785.
-- `golden/idempotency/*.{input.json,golden.txt}` — контрольные пары idempotency-ключа.
+---
 
-До заполнения этот README — placeholder.
+## 1. Формат вектора
+
+Вектор — самодостаточный JSON-файл (никаких include между векторами; Implementation
+Rules P0.9). Верхнеуровневые поля:
+
+| Поле | Смысл |
+|:--|:--|
+| `id` | `<область>-<NNN>` (напр. `confirmation-001`); MUST совпадать с именем файла без расширения. |
+| `title` | Человекочитаемое (ru) название проверяемого сценария. |
+| `spec_refs` | Непустой список нормативных маркеров (`CP-3`, `LC-T4`, `TCP-9`, `SC-12`, `AU-11`, `IE-6`, …), которые вектор проверяет. Каждый маркер MUST существовать в текстах `01`–`06` (spec_lint сверяет по точному вхождению, не по подстроке). |
+| `conformance_level` | `L1` \| `L2` \| `L3` (D7 плана) — уровень, на котором вектор обязателен. |
+| `given` | Стартовые условия: `tools` (полные дескрипторы MCP-tool, `01`), опциональный `scenario` (инлайн-сценарий `04`), опциональный `policy.allowed_tools` (closed-world allowlist сессии, `03`/CP-22), опциональный `now` (RFC3339, фиксирует «сейчас» для детерминированных TTL-проверок), опциональный `preseed.idempotency` — заранее существующие записи хранилища дедупликации (`06`/IE-5, IE-6: `{tool, status, stored_result?}`), единственный способ детерминированно проверить протокол dedupe без моделирования реальной сетевой гонки. |
+| `script` | Упорядоченный детерминированный драйвер: список шагов, ровно один ключ на шаг: `user_input` (реплика пользователя), `llm_stub` (заскриптованный ответ модели: `toolCall` \| `text` \| `structured`, ровно один из трёх — D8 плана, реальных LLM в fixtures нет), `clarification_answer` (ответ на открытый `ClarificationRequest`, `03`/CP-26), `approval` (`accept`\|`decline`\|`revoke`, либо объектная форма `{decision, args_override}` — единственное отступление от чистого enum, моделирует адверсариальный кейс подмены аргументов между prepare и commit, `03`/CP-7, `01`/TCP-19; `edit` не отдельное решение — CP-15: моделируется `decline` + новый `llm_stub`/`user_input`, порождающий новый prepare), `tick_seconds` (продвинуть виртуальные часы харнесса — единственный способ детерминированно достичь TTL/`expires_at` без реального ожидания). |
+| `expect` | Ожидаемое поведение: `events` (упорядоченный список частичных матчей, алгоритм — §2), `final_state` (одно из десяти состояний FSM, `02`/LC-1), опционально `tool_calls` (`{tool, args_subset?, phase: prepare|commit}`) и `error` (`{code}`). |
+
+`llm_stub` MUST присутствовать для каждого исполняемого шага `kind=llm` сценария
+(Implementation Rules P0.9) — сценарные `tool`-шаги вызываются рантаймом
+автоматически по `input_map` (`04`/SC-7) и **не** нуждаются в `llm_stub`; шаг
+`user_input`/`llm_stub` предшествует им только там, где решение принимает модель
+(`kind=llm`, `02`/LC-20) либо драйвер эмулирует пользовательский ввод, инициирующий
+цикл `RUNNING`.
+
+## 2. Алгоритм частичного матча `expect.events`
+
+Каждое событие фактического append-only лога сессии несёт полный конверт
+(`event_id`, `session_id`, `seq`, `ts`, `actor`, `kind`, `payload`, `spec_rev`, `02`/§3).
+Матч в `expect.events` описывает **подмножество** этого конверта, а не весь конверт.
+
+1. Идём по `expect.events` **по порядку**. Указатель `pos` в фактическом логе стартует
+   с `0`.
+2. Для каждого ожидаемого события ищем **первое** фактическое событие с индексом
+   `≥ pos`, чей `kind` совпадает и чьи остальные заданные в матче поля совпадают
+   рекурсивно (см. п.4). Если найдено на индексе `i` — `pos := i + 1`, переходим к
+   следующему ожидаемому событию. Если не найдено ни на одном индексе `≥ pos` —
+   вектор **провален**.
+3. Фактические события, не упомянутые ни одним матчем (включая события между
+   найденными), **не** являются нарушением: вектор проверяет **наличие и порядок**
+   перечисленных событий, а не исчерпывающее покрытие лога.
+4. **Рекурсивное сравнение подмножества**: для объекта — каждый ключ матча (кроме
+   ключей с префиксом `!`, см. п.5) MUST существовать в фактическом объекте и его
+   значение MUST совпасть тем же правилом рекурсивно (скаляры — равенство, массивы —
+   поэлементно той же длины, если сам массив присутствует в матче). Ключи фактического
+   объекта, отсутствующие в матче, не проверяются (это и есть «подмножество»).
+5. **`!field`** (ключ матча с ведущим `!`) — требует, чтобы поле `field` **отсутствовало**
+   в фактическом объекте на этом уровне вложенности (напр. `"!trace"` в матче
+   верхнего уровня конверта проверяет, что событие не несёт трассировку).
+
+`tool_calls` и `error` матчатся аналогично: `args_subset`/`details` — тем же
+рекурсивным правилом подмножества, `error.code` — точным равенством строки.
+
+## 3. Golden-файлы
+
+`golden/jcs/*.input.json` + `golden/jcs/*.golden.txt` — контрольные пары канонизации
+RFC 8785 (JCS), нормативный источник — `05_audit-events.md` §4 (AU-17..AU-19): вектор
+№1 — полный пример из самого RFC 8785 §3.2.3/§3.2.4 (verbatim), №2/№3 — производные
+(сортировка ключей и целые; экранирование строк и не-ASCII).
+
+`golden/idempotency/key-001.input.json` + `key-001.golden.txt` — воспроизводимый
+пример ключа идемпотентности из `06_idempotency-errors.md` §1 (`IE-1`): `input.json` —
+`KeyMaterial` (`{tenant_id, session_id, step_id, tool, args}`), `golden.txt` — итоговый
+`idempotency_key` (`at1:` + sha256hex канонической JCS-формы материала).
+
+**Правило golden-файла** (`05`/AU-18): содержимое — UTF-8 без BOM, **ровно один**
+завершающий перевод строки (LF, `\n`). Сравнение — байт-в-байт.
+
+## 4. Распределение 15 векторов (минимум)
+
+| Область | Уровень | Файл | Что проверяет |
+|:--|:--|:--|:--|
+| lifecycle | L1 | `vectors/l1/lifecycle-001.json` | happy-path read-инструмента (однофазный вызов, `TCP-20`) |
+| confirmation | L1 | `vectors/l1/confirmation-001.json` | write: prepare → accept → commit |
+| confirmation | L1 | `vectors/l1/confirmation-002.json` | decline: изменения не применяются, сессия продолжается |
+| confirmation | L1 | `vectors/l1/confirmation-003.json` | истечение TTL confirmation_token → `EXPIRED` |
+| confirmation | L1 | `vectors/l1/confirmation-004.json` | edit = decline + новый prepare (`CP-15`) |
+| confirmation | L1 | `vectors/l1/confirmation-005.json` | подмена аргументов между prepare/commit → токен инвалиден |
+| idempotency | L1 | `vectors/l1/idempotency-001.json` | повтор commit при записи дедупликации `done` → сохранённый результат |
+| idempotency | L1 | `vectors/l1/idempotency-002.json` | commit при записи дедупликации `in_flight` → conflict |
+| clarification | L1 | `vectors/l1/clarification-001.json` | select → answered |
+| clarification | L1 | `vectors/l1/clarification-002.json` | declined без фолбэка → `CANCELLED` |
+| permission | L1 | `vectors/l1/permission-001.json` | недоступный tool отсутствует в списке → permission-ошибка |
+| scenario | L2 | `vectors/l2/scenario-001.json` | `crm.daily_report@1` happy-path |
+| scenario | L2 | `vectors/l2/scenario-002.json` | `when=false` → `step_skipped` |
+| scenario | L2 | `vectors/l2/scenario-003.json` | technical_fail → retry(2) → успех |
+| scenario | L2 | `vectors/l2/scenario-004.json` | semantic_fail → abort, компенсация не нужна |
+
+L3-векторы (url-elicitation, double_confirm, compensation-исполнение) — вне скоупа
+P0.9, фиксируются как Pending Work фазы (пишутся в P1 при готовом runner'е).

@@ -1,0 +1,138 @@
+{
+  "id": "scenario-004",
+  "title": "semantic_fail на шаге extract (невалидный вывод дважды) → abort, компенсация не требуется (шаг save не начат)",
+  "spec_refs": [
+    "SC-15",
+    "SC-18",
+    "SC-19",
+    "SC-21",
+    "LC-T8"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "crm_report_create",
+        "title": "Отправить отчёт о работе",
+        "description": "Создаёт отчёт о проделанной работе. Write: two-phase (prepare→commit).",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "body": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string",
+              "format": "date"
+            },
+            "confirmation_token": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "body",
+            "date"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "report_id": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "agentools/v1": {
+            "side_effect": "write",
+            "confirmation": "confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "crm.report.create"
+            ]
+          }
+        }
+      }
+    ],
+    "scenario": {
+      "scenario": "crm.daily_report@1",
+      "metadata": {
+        "title": "Отчёт о проделанной работе за день",
+        "description": "Наговоренный/написанный текст → черновик → добор недостающих полей → запись с подтверждением.",
+        "owner": "flex.crm"
+      },
+      "steps": [
+        {
+          "id": "extract",
+          "kind": "llm",
+          "prompt_ref": "crm/daily_report/extract@1",
+          "output_schema": "DailyReportDraft",
+          "on_semantic_fail": "abort",
+          "on_technical_fail": {
+            "strategy": "retry",
+            "attempts": 2
+          }
+        },
+        {
+          "id": "clarify",
+          "kind": "elicitation",
+          "when": "missing($steps.extract.date)",
+          "clarification": {
+            "id": "clr_report_date",
+            "question": "На какую дату оформить отчёт? Формат ГГГГ-ММ-ДД.",
+            "kind": "text"
+          },
+          "on_semantic_fail": "abort",
+          "on_technical_fail": "abort"
+        },
+        {
+          "id": "save",
+          "kind": "tool",
+          "tool": "crm_report_create",
+          "input_map": {
+            "body": "$steps.extract.text",
+            "date": "$ctx.today"
+          },
+          "approval": "inherit",
+          "on_semantic_fail": "abort",
+          "on_technical_fail": {
+            "strategy": "retry",
+            "attempts": 2
+          }
+        }
+      ]
+    },
+    "now": "2026-07-10T09:00:00Z"
+  },
+  "script": [
+    {
+      "user_input": "мнрпваыв"
+    },
+    {
+      "llm_stub": {
+        "text": "не удалось разобрать намерение"
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "step_started",
+        "payload": {
+          "step_id": "extract",
+          "kind": "llm"
+        }
+      },
+      {
+        "kind": "session_failed"
+      }
+    ],
+    "final_state": "FAILED_TERMINAL"
+  }
+}

@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/schema/2026-07-draft/fixture.json",
+  "title": "AgenTools Fixture Vector",
+  "description": "Формат языконезависимого тест-вектора AgenTools (P0.9 плана AGENTOOLS). Вектор — самодостаточный файл (никаких include между векторами, Implementation Rules P0.9): given описывает стартовые условия (инструменты, опциональный сценарий, policy, виртуальное 'now'), script — детерминированный драйвер входа (пошаговые события со стороны пользователя/LLM-заглушки/хоста), expect — ожидаемое поведение SUT (System Under Test — конкретный PHP/Dart SDK) в терминах частичных матчей событий, финального состояния FSM (02_action-lifecycle.md) и вызовов инструментов. Алгоритм частичного матча expect.events и семантика '!field' — README.md этой папки (нормативная часть контракта, не JSON Schema: рекурсивное сравнение подмножества полей не выражается в JSON Schema 2020-12 без чрезмерного разрастания схемы). Прогон векторов через runner — вне скоупа P0.9 (P1).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "spec_refs", "conformance_level", "given", "script", "expect"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*-[0-9]{3}$",
+      "description": "Идентификатор вектора '<область>-<NNN>' (напр. 'lifecycle-001'). MUST быть уникален по всей директории fixtures/vectors/ и MUST совпадать с именем файла без расширения (Implementation Rules P0.9: имена файлов = id вектора)."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Человекочитаемое (ru) название сценария вектора — что именно проверяется."
+    },
+    "spec_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^(TCP|LC|CP|SC|AU|IE)-T?[0-9]+$"
+      },
+      "description": "Непустой список нормативных маркеров правил, которые вектор проверяет (напр. 'CP-3', 'LC-T4', 'TCP-9', 'SC-12', 'AU-11', 'IE-6'). Каждый маркер MUST существовать в одном из нормативных доков 01-06 (spec_lint сверяет по тексту доков, а не по JSON Schema)."
+    },
+    "conformance_level": {
+      "$ref": "#/$defs/ConformanceLevel",
+      "description": "Уровень conformance, на котором вектор обязателен (D7 плана: L1 Core, L2 Scenario, L3 Full — асимметрия зрелости SDK допустима, но заявленный уровень MUST проходить целиком)."
+    },
+    "given": {
+      "$ref": "#/$defs/Given",
+      "description": "Стартовые условия исполнения вектора: доступные инструменты, опциональный сценарий (04), policy-ограничения, виртуальное время."
+    },
+    "script": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/ScriptStep" },
+      "description": "Упорядоченный детерминированный драйвер: события, которые тестовый харнесс подаёт SUT (не сам SUT решает их порядок). Реальный LLM в script запрещён (D8 плана) — только llm_stub."
+    },
+    "expect": {
+      "$ref": "#/$defs/Expect",
+      "description": "Ожидаемое поведение SUT: подмножество событий в порядке, финальное состояние FSM (02, LC-1), фактические вызовы инструментов, опциональная ожидаемая ошибка."
+    }
+  },
+  "$defs": {
+    "ConformanceLevel": {
+      "type": "string",
+      "enum": ["L1", "L2", "L3"],
+      "description": "L1 Core (профиль инструмента, lifecycle, confirmation, idempotency/errors); L2 Scenario (+сценарии, 04); L3 Full (+elicitation url-mode, compensation-исполнение, double_confirm) — D7 плана."
+    },
+    "Given": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tools"],
+      "properties": {
+        "tools": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "../../spec/revisions/2026-07-draft/schema/tool-descriptor.json" },
+          "description": "Полные дескрипторы MCP-tool, доступные в этом векторе (01_tool-contract-profile.md). Инлайнятся целиком — без внешних include (Implementation Rules)."
+        },
+        "scenario": {
+          "type": "object",
+          "description": "Опциональный инлайн-сценарий (04_scenario-schema.md, schema/scenario.json) для L2/L3-векторов. Отсутствует у чистых L1-векторов уровня tool/lifecycle/confirmation/idempotency."
+        },
+        "policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "allowed_tools": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Closed-world allowlist инструментов, разрешённых сессии (03/CP-22) — used для векторов permission/policy-отказа."
+            }
+          },
+          "description": "Опциональные policy-ограничения сессии, проверяемые ДО показа превью (03/CP-22)."
+        },
+        "now": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Опциональный фиксированный момент 'сейчас' (RFC3339, UTC) для детерминированных проверок TTL/expires_at. Отсутствие = харнесс использует произвольную точку отсчёта, продвигаемую только tick_seconds."
+        },
+        "preseed": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "idempotency": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["tool", "status"],
+                "properties": {
+                  "tool": { "type": "string", "description": "Инструмент, чья запись дедупликации преcидируется." },
+                  "status": {
+                    "type": "string",
+                    "enum": ["in_flight", "done", "failed"],
+                    "description": "Статус записи дедупликации ДО начала script (06/IE-5, IE-6) — три ненулевые строки таблицы IE-6 ('записи нет' — дефолт при отсутствии preseed)."
+                  },
+                  "stored_result": {
+                    "type": "object",
+                    "description": "Сохранённый результат для status=done — то, что MUST вернуться без переисполнения commit (IE-6)."
+                  }
+                }
+              },
+              "description": "Заранее существующие записи хранилища идемпотентности (schema/idempotency.json) для commit-вызова, который вектор произведёт по script. Единственный способ детерминированно проверить протокол dedupe (IE-6) без моделирования реальной сетевой гонки — closed-world расширение given, необходимое для векторов idempotency-001/002 (Implementation Rules P0.9: вектор самодостаточен, без внешнего состояния)."
+            }
+          },
+          "description": "Опциональное предзаданное состояние хранилищ рантайма перед началом script. Сейчас — только идемпотентность (06); расширяется по мере появления других предзаполняемых хранилищ."
+        }
+      }
+    },
+    "ScriptStep": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "additionalProperties": false,
+      "description": "Один шаг драйвера — ровно одно из пяти событий, подаваемых SUT. Ровно одно свойство объекта (maxProperties:1) — форма 'oneOf по ключу', проще variant-объекта в JSON Schema.",
+      "properties": {
+        "user_input": {
+          "type": "string",
+          "description": "Реплика пользователя, подаваемая на вход шага llm (04, §2.1). Используется вместо реального голоса/текста — детерминированный вход харнесса."
+        },
+        "llm_stub": {
+          "$ref": "#/$defs/LlmStub",
+          "description": "Заскриптованный (не реальный) ответ модели на текущий llm-шаг (D8 плана: реальных LLM в conformance нет). MUST присутствовать для каждого исполняемого шага kind=llm сценария (Implementation Rules)."
+        },
+        "clarification_answer": {
+          "$ref": "../../spec/revisions/2026-07-draft/schema/clarification.json#/$defs/ClarificationAnswer",
+          "description": "Ответ на открытый ClarificationRequest (03/CP-26)."
+        },
+        "approval": {
+          "anyOf": [
+            { "$ref": "#/$defs/ApprovalDecision" },
+            { "$ref": "#/$defs/ApprovalWithArgsOverride" }
+          ],
+          "description": "Решение пользователя по открытому превью write-действия (03, §4): accept | decline | revoke. 'edit' — не отдельное решение (CP-15): моделируется как approval:decline с последующим новым llm_stub/user_input шагом, порождающим новый prepare. Объектная форма {decision, args_override} — единственное отступление от чистого enum: моделирует адверсариальный кейс CP-7/TCP-19 (подмена доменных аргументов на wire-уровне между prepare и commit тем же токеном), которого без него было бы не выразить в закрытом наборе из пяти видов шага."
+        },
+        "tick_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Продвинуть виртуальные часы харнесса на N секунд без иного ввода — единственный способ детерминированно достичь TTL/expires_at (02/LC-18, 03/CP-6) без реального ожидания."
+        }
+      }
+    },
+    "LlmStub": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "toolCall": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tool", "args"],
+          "properties": {
+            "tool": { "type": "string", "description": "Имя вызываемого инструмента (01/TCP-5)." },
+            "args": { "type": "object", "description": "Аргументы вызова (доменные, без confirmation_token — его подставляет рантайм на commit, 01/TCP-18)." }
+          },
+          "description": "Заглушка решения модели вызвать инструмент."
+        },
+        "text": {
+          "type": "string",
+          "description": "Заглушка текстового ответа модели (без структурированного вывода)."
+        },
+        "structured": {
+          "type": "object",
+          "description": "Заглушка структурированного вывода llm-шага (04/SC-6, output_schema асимметрично не проверяется вектором — форма фиксируется структурой этого поля)."
+        }
+      },
+      "description": "Ровно один вариант заскриптованного ответа модели (D8 плана: llm полностью детерминирован в fixtures)."
+    },
+    "ApprovalDecision": {
+      "type": "string",
+      "enum": ["accept", "decline", "revoke"],
+      "description": "Решение пользователя по открытому гейту подтверждения (03, CP-13/CP-14/CP-16). 'edit' не входит — моделируется decline + новый prepare (CP-15)."
+    },
+    "ApprovalWithArgsOverride": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision"],
+      "properties": {
+        "decision": {
+          "$ref": "#/$defs/ApprovalDecision",
+          "description": "То же решение, что и в краткой строковой форме."
+        },
+        "args_override": {
+          "type": "object",
+          "description": "Доменные аргументы, которые драйвер посылает на commit-вызове ВМЕСТО тех, что сформировали превью на prepare — адверсариальная подмена (03/CP-7). Присутствие этого поля MUST привести к отказу commit по TCP-19/CP-7 (несовпадение args_digest), т.к. превью было детерминировано по исходным args (CP-10)."
+        }
+      },
+      "description": "Расширенная форма approval для векторов, проверяющих устойчивость к подмене аргументов между prepare и commit."
+    },
+    "Expect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["events", "final_state"],
+      "properties": {
+        "events": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/EventMatch" },
+          "description": "Упорядоченный список частичных матчей событий (lifecycle- либо audit-события, тот же конверт 02/05). Порядок значим: алгоритм матчинга — README.md этой папки."
+        },
+        "final_state": {
+          "$ref": "#/$defs/SessionState",
+          "description": "Ожидаемое состояние FSM сессии по завершении script (02, LC-1)."
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ToolCallMatch" },
+          "description": "Опциональный список ожидаемых вызовов инструмента (частичное совпадение аргументов) — независимая от events проверка на уровне границы инструмента."
+        },
+        "error": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["code"],
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Ожидаемый код ошибки (06_idempotency-errors.md, IE-10: 'agentools.<category>.<slug>'), если вектор проверяет отказ."
+            }
+          },
+          "description": "Опциональная ожидаемая ошибка (06/schema/error.json), если сценарий вектора заканчивается отказом инструмента/policy."
+        }
+      }
+    },
+    "SessionState": {
+      "type": "string",
+      "enum": [
+        "CREATED", "RUNNING", "WAITING_INPUT", "WAITING_APPROVAL", "EXECUTING_TOOL",
+        "COMPLETED", "FAILED_RETRYABLE", "FAILED_TERMINAL", "CANCELLED", "EXPIRED"
+      ],
+      "description": "Одно из десяти состояний FSM (02_action-lifecycle.md, LC-1)."
+    },
+    "EventMatch": {
+      "type": "object",
+      "required": ["kind"],
+      "additionalProperties": true,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "Тип события — lifecycle-kind (02/LC-10) либо audit-kind (05/AU-4). Дизъюнктность обеспечена самими доками (AU-2)."
+        }
+      },
+      "description": "Частичный матч одного события лога. Помимо kind MAY нести любые ключи payload-конверта для сверки ПОДМНОЖЕСТВОМ (значения сравниваются рекурсивно; отсутствующий в матче ключ фактического события не проверяется). Ключ с префиксом '!' (напр. '!trace') требует ОТСУТСТВИЯ соответствующего поля в фактическом событии — алгоритм и примеры нормируются README.md, не этой схемой (JSON Schema 2020-12 не выражает 'рекурсивное подмножество' компактно)."
+    },
+    "ToolCallMatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool", "phase"],
+      "properties": {
+        "tool": { "type": "string", "description": "Имя инструмента (01/TCP-5)." },
+        "args_subset": {
+          "type": "object",
+          "description": "Подмножество доменных аргументов вызова, проверяемых рекурсивно (алгоритм — README.md); опционально."
+        },
+        "phase": {
+          "type": "string",
+          "enum": ["prepare", "commit"],
+          "description": "Фаза two-phase-конвенции (01/TCP-16): prepare — вызов без confirmation_token; commit — вызов с ним."
+        }
+      },
+      "description": "Ожидаемый вызов инструмента харнессом со стороны SUT."
+    }
+  }
+}

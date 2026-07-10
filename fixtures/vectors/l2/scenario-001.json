@@ -1,0 +1,200 @@
+{
+  "id": "scenario-001",
+  "title": "crm.daily_report@1 happy-path: extract → save (дата уже есть, clarify пропускается)",
+  "spec_refs": [
+    "SC-1",
+    "SC-10",
+    "SC-12",
+    "LC-T5",
+    "LC-T13",
+    "LC-T18",
+    "AU-7",
+    "AU-8"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "crm_report_create",
+        "title": "Отправить отчёт о работе",
+        "description": "Создаёт отчёт о проделанной работе. Write: two-phase (prepare→commit).",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "body": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string",
+              "format": "date"
+            },
+            "confirmation_token": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "body",
+            "date"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "report_id": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "agentools/v1": {
+            "side_effect": "write",
+            "confirmation": "confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "crm.report.create"
+            ]
+          }
+        }
+      }
+    ],
+    "scenario": {
+      "scenario": "crm.daily_report@1",
+      "metadata": {
+        "title": "Отчёт о проделанной работе за день",
+        "description": "Наговоренный/написанный текст → черновик → добор недостающих полей → запись с подтверждением.",
+        "owner": "flex.crm"
+      },
+      "steps": [
+        {
+          "id": "extract",
+          "kind": "llm",
+          "prompt_ref": "crm/daily_report/extract@1",
+          "output_schema": "DailyReportDraft",
+          "on_semantic_fail": "abort",
+          "on_technical_fail": {
+            "strategy": "retry",
+            "attempts": 2
+          }
+        },
+        {
+          "id": "clarify",
+          "kind": "elicitation",
+          "when": "missing($steps.extract.date)",
+          "clarification": {
+            "id": "clr_report_date",
+            "question": "На какую дату оформить отчёт? Формат ГГГГ-ММ-ДД.",
+            "kind": "text"
+          },
+          "on_semantic_fail": "abort",
+          "on_technical_fail": "abort"
+        },
+        {
+          "id": "save",
+          "kind": "tool",
+          "tool": "crm_report_create",
+          "input_map": {
+            "body": "$steps.extract.text",
+            "date": "$ctx.today"
+          },
+          "approval": "inherit",
+          "on_semantic_fail": "abort",
+          "on_technical_fail": {
+            "strategy": "retry",
+            "attempts": 2
+          }
+        }
+      ]
+    },
+    "now": "2026-07-10T09:00:00Z"
+  },
+  "script": [
+    {
+      "user_input": "Сегодня закрыл 3 сделки и согласовал бюджет на квартал"
+    },
+    {
+      "llm_stub": {
+        "structured": {
+          "text": "Закрыл 3 сделки и согласовал бюджет на квартал.",
+          "date": "2026-07-10"
+        }
+      }
+    },
+    {
+      "approval": "accept"
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "plan_created",
+        "payload": {
+          "scenario": "crm.daily_report@1"
+        }
+      },
+      {
+        "kind": "step_started",
+        "payload": {
+          "step_id": "extract",
+          "kind": "llm"
+        }
+      },
+      {
+        "kind": "step_skipped",
+        "payload": {
+          "step_id": "clarify",
+          "reason": "when_false"
+        }
+      },
+      {
+        "kind": "step_started",
+        "payload": {
+          "step_id": "save",
+          "kind": "tool"
+        }
+      },
+      {
+        "kind": "tool_prepared",
+        "payload": {
+          "step_id": "save",
+          "tool": "crm_report_create"
+        }
+      },
+      {
+        "kind": "approval_resolved",
+        "payload": {
+          "decision": "accept"
+        }
+      },
+      {
+        "kind": "tool_committed",
+        "payload": {
+          "step_id": "save",
+          "tool": "crm_report_create"
+        }
+      }
+    ],
+    "final_state": "RUNNING",
+    "tool_calls": [
+      {
+        "tool": "crm_report_create",
+        "args_subset": {
+          "date": "2026-07-10"
+        },
+        "phase": "prepare"
+      },
+      {
+        "tool": "crm_report_create",
+        "args_subset": {
+          "date": "2026-07-10"
+        },
+        "phase": "commit"
+      }
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "tenant_id": "tnt_acme",
+  "session_id": "sess_crm_report_42",
+  "step_id": "create_report",
+  "tool": "crm_report_create",
+  "args": { "body": "Закрыл 3 сделки", "date": "2026-07-10" }
+}
