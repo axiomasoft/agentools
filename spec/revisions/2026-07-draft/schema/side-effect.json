@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/schema/2026-07-draft/side-effect.json",
+  "title": "AgenTools Side-Effect и Confirmation",
+  "description": "Единый источник перечислений side_effect и confirmation профиля AgenTools, плюс информативная таблица дефолтов и алиасов D7 мастер-плана. Файл — держатель $defs и справочных ключей x-*, не описывает объект-инстанс. Нормативная (полная) таблица соответствия side_effect↔stake(Flex)↔Tier(Axioma) фиксируется в 00_overview.md (P0.10); здесь алиасы приведены информативно, чтобы держать перечисления в одном месте (см. TCP-11, TCP-12).",
+  "$defs": {
+    "SideEffect": {
+      "type": "string",
+      "enum": ["read", "draft", "write", "irreversible"],
+      "description": "Класс побочного эффекта инструмента. read — только чтение; draft — запись черновика без постинга; write — операционная запись (обратимая штатными средствами); irreversible — необратимое действие (внешний платёж, отправка, необратимая проводка)."
+    },
+    "Confirmation": {
+      "type": "string",
+      "enum": ["none", "confirm", "double_confirm"],
+      "description": "Политика гейта подтверждения. none — без гейта; confirm — одно подтверждение preview; double_confirm — два последовательных гейта (второй с явным вводом подтверждающей фразы/чекбокса). Семантика гейтов раскрыта в 03_confirmation-protocol.md."
+    }
+  },
+  "x-default-confirmation": {
+    "read": "none",
+    "draft": "none",
+    "write": "confirm",
+    "irreversible": "double_confirm"
+  },
+  "x-d7-mapping": [
+    {
+      "side_effect": "read",
+      "default_confirmation": "none",
+      "flex_stake": "low",
+      "axioma_tier": 0
+    },
+    {
+      "side_effect": "draft",
+      "default_confirmation": "none",
+      "flex_stake": null,
+      "axioma_tier": 1
+    },
+    {
+      "side_effect": "write",
+      "default_confirmation": "confirm",
+      "flex_stake": "med|high",
+      "axioma_tier": 2
+    },
+    {
+      "side_effect": "irreversible",
+      "default_confirmation": "double_confirm",
+      "flex_stake": null,
+      "axioma_tier": null
+    }
+  ]
+}

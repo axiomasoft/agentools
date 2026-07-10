@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/schema/2026-07-draft/tool-descriptor.json",
+  "title": "AgenTools Tool Descriptor",
+  "description": "Профиль-надстройка над MCP tool (ревизия 2025-11-25). Схема описывает поля MCP-инструмента, которые профиль AgenTools обязывает задавать (name, все четыре annotations), и собственное расширение в _meta['agentools/v1']. Профиль НЕ переопределяет семантику полей MCP — только сужает их использование и добавляет метаданные (TCP-1, TCP-27).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "annotations", "_meta"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "maxLength": 64,
+      "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$",
+      "description": "Идентификатор инструмента: snake_case, ≤64, с префиксом модуля {module}_ и рекомендованной структурой {module}_{resource}_{verb} (TCP-5, TCP-6). Без ведущих/хвостовых/сдвоенных подчёркиваний."
+    },
+    "title": {
+      "type": "string",
+      "description": "Человекочитаемое имя для UI (MCP title). SHOULD задаваться (TCP-4)."
+    },
+    "description": {
+      "type": "string",
+      "description": "Описание инструмента для модели/человека (MCP description)."
+    },
+    "inputSchema": {
+      "type": "object",
+      "description": "JSON Schema 2020-12 входных аргументов. Корень MUST быть type:object (требование MCP). Моделируется как непрозрачный объект: содержимое валидируется рантаймом, профиль его не разбирает (TCP-2)."
+    },
+    "outputSchema": {
+      "type": "object",
+      "description": "JSON Schema 2020-12 результата. SHOULD объявляться для инструментов, чей результат рендерится в UI; тогда сервер MUST вернуть structuredContent по схеме (MCP, TCP-3). Непрозрачный объект — как inputSchema."
+    },
+    "annotations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["readOnlyHint", "destructiveHint", "idempotentHint", "openWorldHint"],
+      "description": "MCP ToolAnnotations. Профиль требует задавать все четыре явно (TCP-8); для доверенного внутреннего сервера они трактуются как enforcement-сигнал гейтов (TCP-10).",
+      "properties": {
+        "readOnlyHint": {
+          "type": "boolean",
+          "description": "Инструмент не меняет состояние. Для side_effect=read MUST быть true; для write/irreversible MUST быть false (TCP-9)."
+        },
+        "destructiveHint": {
+          "type": "boolean",
+          "description": "Обновление деструктивно (осмысленно только при readOnlyHint=false). Для side_effect=irreversible MUST быть true (TCP-9)."
+        },
+        "idempotentHint": {
+          "type": "boolean",
+          "description": "Повторный вызов с теми же аргументами не даёт дополнительного эффекта (безопасный retry). Если true — idempotent_commit MUST быть true (TCP-9)."
+        },
+        "openWorldHint": {
+          "type": "boolean",
+          "description": "Взаимодействие с открытым внешним миром (true) против закрытого домена (false)."
+        }
+      }
+    },
+    "_meta": {
+      "type": "object",
+      "required": ["agentools/v1"],
+      "description": "Точка расширения MCP _meta. additionalProperties здесь НЕ запрещены умышленно: _meta по определению MCP несёт метаданные разных пространств имён (иконки, трейс и т.п.); профиль владеет только ключом 'agentools/v1' и не вправе отвергать чужие (TCP-27).",
+      "properties": {
+        "agentools/v1": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["side_effect"],
+          "description": "Расширение профиля AgenTools. Единственный обязательный ключ — side_effect; остальное выводится по дефолтам или объявляется явно.",
+          "properties": {
+            "side_effect": {
+              "$ref": "side-effect.json#/$defs/SideEffect",
+              "description": "Класс побочного эффекта (TCP-11)."
+            },
+            "confirmation": {
+              "$ref": "side-effect.json#/$defs/Confirmation",
+              "description": "Явное переопределение политики гейта. При отсутствии дефолт выводится из side_effect по таблице x-default-confirmation (side-effect.json): read/draft→none, write→confirm, irreversible→double_confirm. Ослаблять double_confirm для irreversible запрещено (TCP-12, TCP-13)."
+            },
+            "idempotent_commit": {
+              "type": "boolean",
+              "description": "Commit-фаза инструмента идемпотентна по ключу идемпотентности (см. 06_idempotency-errors.md). SHOULD объявляться для write/irreversible (TCP-14)."
+            },
+            "permissions_hint": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Справочный список требуемых прав для каталогизации. Enforcement прав — дело рантайма, не спеки (TCP-15, TCP-24)."
+            }
+          }
+        }
+      }
+    }
+  }
+}
