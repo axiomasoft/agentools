@@ -1,0 +1,221 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/schema/2026-07-draft/scenario.json",
+  "title": "AgenTools Scenario",
+  "description": "Декларативный сценарий AgenTools (04_scenario-schema.md): цепочка шагов (llm|tool|elicitation), интерпретируемая обоими рантаймами. Инстанс схемы = один версионированный сценарий. Порядок элементов steps значим — шаги исполняются строго последовательно (SC-10). Уникальность id шагов и допустимость retry/compensate по side_effect схема не выражает — это SC-правила, проверяемые рантаймом (SC-4, SC-16, SC-22). Грамматика выражений when/input_map — schema/expression.md (D10 плана). Нормативная форма сценария — JSON; YAML допустим как авторский формат и приводится к JSON один-в-один.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["scenario", "metadata", "steps"],
+  "properties": {
+    "scenario": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+@[1-9][0-9]*$",
+      "description": "Идентификатор сценария '<ns>.<name>@<int-версия>' (SC-1), напр. 'crm.daily_report@1'. ns — одна или несколько snake-секций через точку, name — последняя секция; версия — положительное целое без ведущего нуля. Опубликованная версия неизменяема; breaking-изменение = новая версия (SC-24)."
+    },
+    "metadata": {
+      "$ref": "#/$defs/Metadata",
+      "description": "Человекочитаемые метаданные сценария (SC-2)."
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/Step" },
+      "description": "Упорядоченная цепочка шагов. Порядок значим (SC-10); циклы и goto запрещены (SC-11, D11 плана)."
+    }
+  },
+  "$defs": {
+    "Metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title"],
+      "description": "Метаданные сценария (SC-2). Информативны для исполнения; на семантику не влияют.",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Человекочитаемое имя сценария (ru)."
+        },
+        "description": {
+          "type": "string",
+          "description": "Краткое описание назначения сценария (ru)."
+        },
+        "owner": {
+          "type": "string",
+          "description": "Владелец сценария (команда/модуль), напр. 'flex.crm'."
+        }
+      }
+    },
+    "StepKind": {
+      "type": "string",
+      "enum": ["llm", "tool", "elicitation"],
+      "description": "Тип шага (SC-3). llm — решение/структурирование моделью (decision function, 02/LC-20); tool — вызов инструмента по профилю 01; elicitation — уточняющий вопрос пользователю (03, ClarificationRequest)."
+    },
+    "Approval": {
+      "type": "string",
+      "enum": ["inherit", "force"],
+      "description": "Политика гейта подтверждения для tool-шага (SC-13). inherit (дефолт) — гейт выводится из side_effect инструмента (01/TCP-12); force — сценарий принудительно требует confirm даже у инструмента без гейта. force не ослабляет политику инструмента (для irreversible остаётся double_confirm — SC-14)."
+    },
+    "RetryRoute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strategy", "attempts"],
+      "description": "Маршрут отказа 'повторить' (SC-15). Backoff детерминированный, фиксированный: перед i-й повторной попыткой пауза 2^i секунд (SC-17). Допустим нормативно только для on_technical_fail идемпотентного шага (SC-16); на on_semantic_fail retry не имеет смысла (у semantic-отказа уже есть встроенный повтор валидации — SC-19).",
+      "properties": {
+        "strategy": {
+          "const": "retry",
+          "description": "Дискриминатор маршрута."
+        },
+        "attempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3,
+          "description": "Число повторных попыток n ∈ [1..3] (SC-15)."
+        }
+      }
+    },
+    "FailureRoute": {
+      "description": "Реакция шага на отказ (SC-15): 'abort' — прервать сценарий и запустить компенсации (SC-22); 'continue' — пропустить отказ и продолжить со следующего шага; объект retry — повторить (только on_technical_fail, SC-16).",
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": ["abort", "continue"]
+        },
+        { "$ref": "#/$defs/RetryRoute" }
+      ]
+    },
+    "Compensation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool"],
+      "description": "Компенсирующее действие шага для saga-отката (SC-20..SC-23). Объявляется только у tool-шага с side_effect ∈ {write, irreversible} (SC-21, проверяет рантайм). Компенсация MUST быть идемпотентной (SC-23).",
+      "properties": {
+        "tool": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$",
+          "description": "Имя инструмента-компенсатора (шаблон имени — 01/TCP-5)."
+        },
+        "input_map": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Отображение аргументов компенсатора: ключ — имя параметра, значение — выражение грамматики (schema/expression.md). Доступны $ctx и $steps результатов уже исполненных шагов."
+        }
+      }
+    },
+    "Step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "on_semantic_fail", "on_technical_fail"],
+      "description": "Шаг сценария (SC-3). Общие поля + поля, специфичные для kind (см. allOf). Набор полей закрыт (additionalProperties:false): произвольные ключи запрещены.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)*$",
+          "description": "Идентификатор шага: snake, уникален в пределах сценария (уникальность — SC-4, проверяет рантайм). Под этим именем (или под output_bind) результат шага доступен последующим шагам как $steps.<id> (SC-8)."
+        },
+        "kind": {
+          "$ref": "#/$defs/StepKind",
+          "description": "Тип шага."
+        },
+        "when": {
+          "type": "string",
+          "description": "Опциональное условие исполнения — выражение грамматики (schema/expression.md), MUST вычисляться в boolean (SC-9). when=false → шаг пропускается (событие step_skipped, 05), состояние FSM не меняется (SC-12). Ошибка вычисления условия = technical_fail шага (SC-30)."
+        },
+        "input_map": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Отображение входных аргументов: ключ — имя параметра, значение — выражение грамматики (schema/expression.md), дающее ссылку ($ctx/$steps) или литерал (SC-5). Осмысленно для llm/tool; запрещено для elicitation."
+        },
+        "output_bind": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)*$",
+          "description": "Имя, под которым результат шага доступен как $steps.<имя> (SC-8). По умолчанию = id шага."
+        },
+        "on_semantic_fail": {
+          "$ref": "#/$defs/FailureRoute",
+          "description": "Маршрут при semantic-отказе (модель не смогла / невалидный вывод после встроенного повтора валидации — SC-18). retry здесь не применяется (SC-19)."
+        },
+        "on_technical_fail": {
+          "$ref": "#/$defs/FailureRoute",
+          "description": "Маршрут при technical-отказе (транспорт/тайм-аут/квота/ошибка выражения — SC-18). Единственное место, где нормативно допустим retry (SC-16)."
+        },
+        "approval": {
+          "$ref": "#/$defs/Approval",
+          "description": "Политика гейта подтверждения tool-шага (SC-13). Только для kind=tool."
+        },
+        "timeout_s": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Опциональный тайм-аут шага в секундах. Истечение = technical_fail шага (SC-25)."
+        },
+        "compensate": {
+          "$ref": "#/$defs/Compensation",
+          "description": "Компенсирующее действие для saga-отката. Только для kind=tool с side_effect ∈ {write, irreversible} (SC-21)."
+        },
+        "prompt_ref": {
+          "type": "string",
+          "description": "Ссылка на версионируемый промпт-ассет рантайма (НЕ inline-текст промпта — SC-6). Только для kind=llm."
+        },
+        "output_schema": {
+          "type": "string",
+          "description": "Ссылка на версионируемую схему структурированного вывода модели в реестре рантайма (SC-6). Только для kind=llm."
+        },
+        "tool": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$",
+          "description": "Имя инструмента по профилю 01 (шаблон — TCP-5, SC-7). Только для kind=tool."
+        },
+        "clarification": {
+          "$ref": "clarification.json",
+          "description": "Уточняющий вопрос (ClarificationRequest, 03/schema/clarification.json — SC-7). Только для kind=elicitation."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["kind"],
+            "properties": { "kind": { "const": "llm" } }
+          },
+          "then": {
+            "required": ["prompt_ref", "output_schema"],
+            "properties": {
+              "tool": false,
+              "clarification": false,
+              "approval": false,
+              "compensate": false
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["kind"],
+            "properties": { "kind": { "const": "tool" } }
+          },
+          "then": {
+            "required": ["tool"],
+            "properties": {
+              "prompt_ref": false,
+              "output_schema": false,
+              "clarification": false
+            }
+          }
+        },
+        {
+          "if": {
+            "required": ["kind"],
+            "properties": { "kind": { "const": "elicitation" } }
+          },
+          "then": {
+            "required": ["clarification"],
+            "properties": {
+              "prompt_ref": false,
+              "output_schema": false,
+              "tool": false,
+              "input_map": false,
+              "approval": false,
+              "compensate": false
+            }
+          }
+        }
+      ]
+    }
+  }
+}
