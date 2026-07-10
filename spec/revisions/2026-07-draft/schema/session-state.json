@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/schema/2026-07-draft/session-state.json",
+  "title": "AgenTools Session State Snapshot",
+  "description": "Снимок состояния сессии, который SessionStore отдаёт по session_id (LC-19). Это НЕ источник истины — авторитетно только состояние-как-свёртка событийного лога (LC-4); снимок — материализованная проекция последней применённой записи для быстрых операций (список сессий, поиск истёкших). state и seq снимка MUST соответствовать свёртке лога до seq.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["session_id", "state", "seq", "spec_rev", "created_at", "updated_at"],
+  "properties": {
+    "session_id": {
+      "type": "string",
+      "description": "Идентификатор сессии."
+    },
+    "tenant_id": {
+      "type": "string",
+      "description": "Тенант-владелец сессии (мультиарендность потребителя). Входит в ключ идемпотентности commit-вызовов (06_idempotency-errors.md), опционален на уровне снимка."
+    },
+    "state": {
+      "$ref": "lifecycle-event.json#/$defs/SessionState",
+      "description": "Текущее состояние FSM = свёртка лога до seq (LC-4)."
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "seq последнего применённого события (граница свёртки). Он же — чекпоинт восстановления (LC-15)."
+    },
+    "spec_rev": {
+      "type": "string",
+      "description": "Ревизия спеки сессии."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Момент создания сессии (RFC3339 UTC), из события session_created."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Момент последнего применённого события (RFC3339 UTC)."
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Дедлайн ожидания. Присутствует, только когда state ∈ {CREATED, WAITING_INPUT, WAITING_APPROVAL}; по его наступлении рантайм переводит сессию в EXPIRED (LC-18)."
+    },
+    "resume_token": {
+      "type": "string",
+      "description": "Непрозрачная строка, кодирующая чекпоинт (session_id, seq) для возобновления (LC-16). Присутствует, когда сессия приостановлена в durable-состоянии ожидания."
+    }
+  }
+}

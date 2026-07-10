@@ -1,0 +1,254 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/schema/2026-07-draft/lifecycle-event.json",
+  "title": "AgenTools Lifecycle Event",
+  "description": "Конверт события жизненного цикла сессии AgenTools. Событийный лог append-only; состояние сессии = детерминированная свёртка событий (02_action-lifecycle.md, LC-4). Поле kind — ЗАКРЫТЫЙ enum только lifecycle-событий; полная аудит-таксономия (05_audit-events.md, P0.7) расширяет модель ОТДЕЛЬНОЙ схемой audit-event.json, которая ссылается на этот файл, но НЕ копирует его. Дискриминатор payload — kind (oneOf).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id", "session_id", "seq", "ts", "actor", "kind", "payload", "spec_rev"],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$",
+      "description": "Идентификатор события — ULID (26 символов Crockford base32, верхний регистр). Append идемпотентен по event_id: повтор с тем же event_id MUST NOT задвоить запись (LC-7)."
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Идентификатор сессии, к которой относится событие. Все события одной сессии образуют её лог."
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Порядковый номер события в логе сессии: монотонный, стартует с 1, без дыр (LC-6). Пара (session_id, seq) уникальна и служит чекпоинтом (LC-15)."
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Момент записи события, RFC3339 в UTC (LC-9)."
+    },
+    "actor": {
+      "$ref": "#/$defs/Actor",
+      "description": "Субъект, породивший событие."
+    },
+    "kind": {
+      "$ref": "#/$defs/LifecycleEventKind",
+      "description": "Тип lifecycle-события (закрытый enum, LC-10)."
+    },
+    "payload": {
+      "type": "object",
+      "description": "Данные события; конкретная схема выбирается по kind (oneOf ниже)."
+    },
+    "spec_rev": {
+      "type": "string",
+      "description": "Ревизия спеки, по правилам которой записано событие (напр. '2026-07-draft'). Фиксируется в каждом событии, чтобы свёртка старых логов оставалась воспроизводимой при смене ревизии."
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "kind": { "const": "session_created" },
+        "payload": { "$ref": "#/$defs/SessionCreatedPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "state_changed" },
+        "payload": { "$ref": "#/$defs/StateChangedPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "checkpoint" },
+        "payload": { "$ref": "#/$defs/CheckpointPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "session_completed" },
+        "payload": { "$ref": "#/$defs/SessionCompletedPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "session_failed" },
+        "payload": { "$ref": "#/$defs/SessionFailedPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "session_cancelled" },
+        "payload": { "$ref": "#/$defs/SessionCancelledPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "session_expired" },
+        "payload": { "$ref": "#/$defs/SessionExpiredPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "resumed" },
+        "payload": { "$ref": "#/$defs/ResumedPayload" }
+      },
+      "required": ["kind", "payload"]
+    }
+  ],
+  "$defs": {
+    "SessionState": {
+      "type": "string",
+      "enum": [
+        "CREATED",
+        "RUNNING",
+        "WAITING_INPUT",
+        "WAITING_APPROVAL",
+        "EXECUTING_TOOL",
+        "COMPLETED",
+        "FAILED_RETRYABLE",
+        "FAILED_TERMINAL",
+        "CANCELLED",
+        "EXPIRED"
+      ],
+      "description": "Полный набор состояний FSM сессии (LC-1). Терминальные: COMPLETED, FAILED_TERMINAL, CANCELLED, EXPIRED — без исходящих переходов (LC-2)."
+    },
+    "LifecycleEventKind": {
+      "type": "string",
+      "enum": [
+        "session_created",
+        "state_changed",
+        "checkpoint",
+        "session_completed",
+        "session_failed",
+        "session_cancelled",
+        "session_expired",
+        "resumed"
+      ],
+      "description": "Закрытый enum lifecycle-событий. Терминальные исходы имеют выделенный kind (session_completed/failed/cancelled/expired); все нетерминальные переходы несёт state_changed; checkpoint и resumed — операционные маркеры, состояние не меняют (LC-14)."
+    },
+    "Trigger": {
+      "type": "string",
+      "enum": [
+        "run_started",
+        "clarification_requested",
+        "tool_invoked",
+        "failed_retryable",
+        "input_received",
+        "approval_required",
+        "tool_succeeded",
+        "approval_granted",
+        "approval_declined",
+        "retry"
+      ],
+      "description": "Триггер нетерминального перехода (колонка «событие» таблицы переходов для строк с kind=state_changed). Пара (from, trigger) однозначно задаёт to по таблице LC-T* (LC-12)."
+    },
+    "Actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "description": "Инициатор события. type=user — сотрудник; agent — LLM-агент (decision function); system — рантайм/таймер (напр. истечение TTL порождает событие от system).",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["user", "agent", "system"],
+          "description": "Класс субъекта."
+        },
+        "id": {
+          "type": "string",
+          "description": "Идентификатор субъекта в терминах потребителя (user id, agent id, 'runtime' для system)."
+        }
+      }
+    },
+    "SessionCreatedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Рождение сессии. Первое событие лога (seq=1), состояние становится CREATED (LC-11). Дополнительных полей нет — идентичность и ревизия несёт конверт."
+    },
+    "StateChangedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to", "trigger"],
+      "description": "Нетерминальный переход FSM. from MUST совпадать с текущим свёрнутым состоянием; пара (from, trigger) MUST разрешаться в to по таблице переходов (LC-3, LC-12).",
+      "properties": {
+        "from": { "$ref": "#/$defs/SessionState" },
+        "to": { "$ref": "#/$defs/SessionState" },
+        "trigger": { "$ref": "#/$defs/Trigger" }
+      }
+    },
+    "CheckpointPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state"],
+      "description": "Маркер точки восстановления. Чекпоинт = (session_id, seq события). Записывается при входе в durable-состояние ожидания (LC-15); состояние не меняет (LC-14).",
+      "properties": {
+        "state": {
+          "$ref": "#/$defs/SessionState",
+          "description": "Состояние, зафиксированное чекпоинтом (обычно WAITING_INPUT или WAITING_APPROVAL)."
+        }
+      }
+    },
+    "SessionCompletedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Успешное завершение сессии → COMPLETED (терминальное). Диагностики результата нет — она в аудит-таксономии (05_audit-events.md)."
+    },
+    "SessionFailedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code"],
+      "description": "Терминальный отказ сессии → FAILED_TERMINAL. Нетерминальный (обратимый) отказ идёт через state_changed(trigger=failed_retryable) и здесь НЕ фигурирует. Полная модель ошибок — 06_idempotency-errors.md.",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Код причины терминального отказа (формат кодов — 06_idempotency-errors.md)."
+        },
+        "message": {
+          "type": "string",
+          "description": "Человекочитаемое пояснение (ru), опционально."
+        }
+      }
+    },
+    "SessionCancelledPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Отмена сессии субъектом → CANCELLED (терминальное). Кто отменил — в actor конверта.",
+      "properties": {
+        "reason": {
+          "type": "string",
+          "description": "Причина отмены (напр. revoke до commit), опционально."
+        }
+      }
+    },
+    "SessionExpiredPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state"],
+      "description": "Истечение TTL → EXPIRED (терминальное). Порождается actor.type=system.",
+      "properties": {
+        "state": {
+          "$ref": "#/$defs/SessionState",
+          "description": "Состояние ожидания, у которого истёк expires_at (CREATED, WAITING_INPUT или WAITING_APPROVAL — LC-18)."
+        }
+      }
+    },
+    "ResumedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checkpoint_seq"],
+      "description": "Операционный маркер: рантайм рехидрировал приостановленную сессию из чекпоинта и продолжает исполнение. Состояние не меняет (LC-14) — оно уже восстановлено свёрткой лога.",
+      "properties": {
+        "checkpoint_seq": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "seq чекпоинта, до которого проиграна свёртка при возобновлении (LC-16)."
+        }
+      }
+    }
+  }
+}
