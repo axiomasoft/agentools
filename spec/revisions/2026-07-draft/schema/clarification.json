@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/schema/2026-07-draft/clarification.json",
+  "title": "AgenTools Clarification Request",
+  "description": "Транспорт-агностичный объект уточняющего вопроса (03_confirmation-protocol.md, CP-22..CP-27). Инстанс схемы = ClarificationRequest; ответ ClarificationAnswer и перечисления — в $defs (единый источник). Биндинг к MCP elicitation form-mode и к Reverb-событиям — информативная деталь рантайма (CP-28, D12 плана): семантика вопроса не зависит от транспорта.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "question", "kind"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Идентификатор запроса. Ответ ClarificationAnswer ссылается на него полем id (CP-24)."
+    },
+    "question": {
+      "type": "string",
+      "description": "Текст вопроса пользователю (ru), напр. 'Какой из контактов Иванов имеется в виду?'."
+    },
+    "kind": {
+      "$ref": "#/$defs/ClarificationKind",
+      "description": "Форма вопроса (CP-23)."
+    },
+    "options": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ClarificationOption" },
+      "description": "Варианты выбора. REQUIRED для kind ∈ {select, multi_select}; для confirm/text SHOULD отсутствовать (CP-23)."
+    },
+    "default": {
+      "description": "Опциональное значение по умолчанию (предзаполнение/подсказка). Тип согласован с kind: bool для confirm, value одной опции для select, массив value для multi_select, строка для text (CP-26)."
+    },
+    "schema": {
+      "type": "object",
+      "description": "Опциональная JSON Schema, ограничивающая свободный ввод (осмысленна для kind=text): формат/длина/паттерн. Валидацию ответа выполняет рантайм."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["kind"],
+        "properties": { "kind": { "enum": ["select", "multi_select"] } }
+      },
+      "then": {
+        "required": ["options"]
+      }
+    }
+  ],
+  "$defs": {
+    "ClarificationKind": {
+      "type": "string",
+      "enum": ["confirm", "select", "multi_select", "text"],
+      "description": "confirm — булево 'правильно ли я понял?'; select — ровно один вариант из options; multi_select — подмножество options; text — свободный ввод (опц. ограничен полем schema). Ровно четыре значения (CP-23)."
+    },
+    "ClarificationOption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "title"],
+      "description": "Вариант выбора для select/multi_select. value — машинное значение (кладётся в ответ), title — человекочитаемая подпись для UI.",
+      "properties": {
+        "value": {
+          "type": "string",
+          "maxLength": 128,
+          "description": "Значение варианта (напр. 'contact_102'). ≤128 символов."
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 256,
+          "description": "Отображаемая подпись варианта. ≤256 символов."
+        }
+      }
+    },
+    "AnswerStatus": {
+      "type": "string",
+      "enum": ["answered", "declined", "cancelled"],
+      "description": "Исход уточнения (CP-24, CP-25). answered — пользователь ответил (value присутствует); declined — отказался отвечать (рантайм решает по политике сценария: default/skip/fail); cancelled — прервал диалог (сессия → CANCELLED, LC-T11)."
+    },
+    "ClarificationAnswer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status"],
+      "description": "Ответ на ClarificationRequest (CP-24). id MUST совпадать с id запроса. value присутствует при status=answered и согласован с kind запроса; при declined/cancelled value отсутствует.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Идентификатор запроса, на который дан ответ (равен ClarificationRequest.id)."
+        },
+        "status": {
+          "$ref": "#/$defs/AnswerStatus",
+          "description": "Исход уточнения."
+        },
+        "value": {
+          "description": "Значение ответа при status=answered: bool (confirm), value опции (select), массив value (multi_select), строка (text). Отсутствует при declined/cancelled."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/schema/2026-07-draft/confirmation.json",
+  "title": "AgenTools Pending Action (Confirmation)",
+  "description": "Персистируемая запись отложенного write-действия two-phase-протокола (prepare→preview→commit, 03_confirmation-protocol.md). Инстанс схемы = снимок PendingAction в хранилище рантайма: токен, дайджест аргументов, превью, статус жизненного цикла подтверждения. $defs держит перечисления и вложенные объекты (Preview, PreviewDiffEntry, ConfirmationStatus, Decision, GovernanceMetadata) — единый источник, на который ссылаются прозаические правила CP-* и (позже) audit-event.json из 05_audit-events.md (P0.7). Токен и дайджест нормируются в 03; JCS-канонизация и формат ключа — в 06_idempotency-errors.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["token", "session_id", "step_id", "tool", "args_digest", "preview", "created_at", "expires_at", "status"],
+  "properties": {
+    "token": {
+      "type": "string",
+      "minLength": 16,
+      "description": "confirmation_token — непрозрачная строка, привязывающая фазу commit к prepare. MUST нести ≥128 бит энтропии и быть одноразовой (CP-4, CP-7). На проводе передаётся зарезервированным аргументом confirmation_token (01_tool-contract-profile.md, TCP-18) и в блоке _meta['agentools/v1'] фазы prepare (TCP-17)."
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Сессия, в которой открыт гейт подтверждения. Часть тройки привязки токена (session_id, step_id, preview_digest) — CP-6."
+    },
+    "step_id": {
+      "type": "string",
+      "description": "Идентификатор шага сценария (или логического действия), к которому относится подтверждение. Часть тройки привязки токена (CP-6)."
+    },
+    "tool": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$",
+      "description": "Имя write/irreversible-инструмента, чья фаза commit подтверждается (шаблон имени — TCP-5). Одно имя обслуживает обе фазы (TCP-16)."
+    },
+    "args_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "Дайджест доменных аргументов, сформировавших превью: sha256(JCS(args)) с префиксом 'sha256:' (алгоритм JCS — 06_idempotency-errors.md, D5 плана). Это тот же дайджест, что фаза prepare отдаёт на проводе как preview_digest (TCP-17); имя поля здесь — args_digest (Code Guidance P0.5). Подмена доменных аргументов на commit меняет дайджест и MUST инвалидировать токен (CP-6, TCP-19)."
+    },
+    "preview": {
+      "$ref": "#/$defs/Preview",
+      "description": "Детерминированное превью действия, показанное пользователю до подтверждения (CP-8)."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Момент создания записи (конец фазы prepare), RFC3339 в UTC."
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Дедлайн гейта подтверждения (created_at + TTL, дефолт 15 минут — CP-5). По достижении токен авто-declined, а сессия уходит в EXPIRED (CP-15, LC-T21)."
+    },
+    "status": {
+      "$ref": "#/$defs/ConfirmationStatus",
+      "description": "Текущий статус жизненного цикла отложенного действия."
+    }
+  },
+  "$defs": {
+    "ConfirmationStatus": {
+      "type": "string",
+      "enum": ["pending", "committed", "declined", "revoked", "expired"],
+      "description": "Жизненный цикл PendingAction. pending — превью показано, ждём решения; committed — commit применён (CP-11); declined — отклонено пользователем, в т.ч. при edit-замене (CP-12, CP-13); revoked — отозвано до commit, сессия отменена (CP-14); expired — истёк TTL, авто-decline (CP-15). Терминальны все, кроме pending."
+    },
+    "Decision": {
+      "type": "string",
+      "enum": ["accept", "decline", "edit", "revoke"],
+      "description": "Решение пользователя по показанному превью (CP-11..CP-14). accept → commit; decline → отклонить, сессия продолжается (RUNNING); edit → новые аргументы → новый prepare; revoke → отозвать до commit, сессия отменяется (CANCELLED). Истечение TTL эквивалентно авто-decline на уровне действия (CP-15), но на уровне FSM ведёт в EXPIRED."
+    },
+    "PreviewDiffEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["field", "old", "new"],
+      "description": "Одна строка diff'а превью: какое поле как изменится (CP-9). old=null — поле создаётся (новое значение появляется впервые). Типы old/new не ограничены — это доменные значения (строка/число/bool/null/объект).",
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "Человекочитаемое имя изменяемого поля."
+        },
+        "old": {
+          "description": "Значение до действия (null, если поле создаётся)."
+        },
+        "new": {
+          "description": "Значение после применения действия."
+        }
+      }
+    },
+    "Preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "summary"],
+      "description": "Превью write-действия (CP-8). Появляется дважды: в structuredContent результата prepare (для рендера в UI/LLM) и в _meta['agentools/v1'].preview (TCP-17). Детерминировано: одинаковые аргументы MUST давать одинаковое превью (NFR §7 мастер-плана).",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Краткий заголовок действия для UI (напр. 'Отчёт за 10.07.2026')."
+        },
+        "summary": {
+          "type": "string",
+          "description": "Человекочитаемая сводка того, что будет записано (ru)."
+        },
+        "diff": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/PreviewDiffEntry" },
+          "description": "Опциональный список пооперационных изменений (field/old/new). Отсутствие diff'а допустимо для действий без поля-центричного представления (CP-9)."
+        },
+        "warnings": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Опциональные предупреждения о рисках (ru), показываются до подтверждения (CP-10)."
+        }
+      }
+    },
+    "GovernanceMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decided_by", "decided_at", "scope", "expires_at"],
+      "description": "Governance-контекст разрешения гейта: несётся audit-событиями approval_requested/approval_resolved (CP-19). Envelope этих событий нормируется в 05_audit-events.md (P0.7) и MUST ссылаться на этот $def, не копируя его.",
+      "properties": {
+        "decided_by": {
+          "type": "string",
+          "description": "Идентификатор субъекта, принявшего решение по гейту (обычно user id инициатора; для двойного подтверждения — субъект соответствующего гейта)."
+        },
+        "decided_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Момент принятия решения, RFC3339 в UTC."
+        },
+        "scope": {
+          "type": "string",
+          "description": "Авторизационный scope, в границах которого действительно решение (напр. право/роль, под которой субъект подтвердил действие)."
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Дедлайн гейта, к которому относится решение (совпадает с expires_at соответствующего PendingAction)."
+        }
+      }
+    }
+  }
+}
