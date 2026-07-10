@@ -1,0 +1,458 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/schema/2026-07-draft/audit-event.json",
+  "title": "AgenTools Audit Event",
+  "description": "Аудит-событие AgenTools (05_audit-events.md). Расширяет модель событий жизненного цикла (02_action-lifecycle.md, LC-10) полной таксономией аудита: тот же конверт (event_id/session_id/seq/ts/actor/kind/payload/spec_rev), append-only, монотонный seq. Общие части конверта берутся ССЫЛКОЙ, не копией: actor — $ref на lifecycle-event.json#/$defs/Actor; governance-контекст гейтов — $ref на confirmation.json#/$defs/GovernanceMetadata (CP-21). Поле kind — ОТДЕЛЬНЫЙ закрытый enum (AuditEventKind), ДИЗЪЮНКТНЫЙ с LifecycleEventKind из 02 (AU-2). Дискриминатор payload — kind (oneOf). Аудит-события НЕ являются переходами FSM и НЕ меняют свёрнутое состояние (AU-3). Канонизация JCS (RFC 8785) для golden-сравнений и ключей идемпотентности — 05_audit-events.md §4, D5 плана. Замечание по конверту: скалярные поля конверта (event_id/seq/ts/spec_rev) здесь повторно объявлены, а не взяты $ref, потому что в lifecycle-event.json они заданы инлайн (не как отдельный $def), а этот файл — вне Scope P0.7; извлечение общего $def EventEnvelope и переход обоих файлов на $ref — задача ревизии, затрагивающей 02 (см. Pending Work P0.7).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id", "session_id", "seq", "ts", "actor", "kind", "payload", "spec_rev"],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$",
+      "description": "Идентификатор события — ULID (26 символов Crockford base32, верхний регистр). Append идемпотентен по event_id (тот же конверт, что 02: LC-7)."
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Сессия, к которой относится событие. Аудит-события пишутся в тот же лог сессии, что и lifecycle-события (AU-1)."
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Порядковый номер в логе сессии: монотонный, с 1, без дыр — общий счётчик с lifecycle-событиями (02: LC-6, AU-1)."
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Момент записи, RFC3339 в UTC (02: LC-9)."
+    },
+    "actor": {
+      "$ref": "lifecycle-event.json#/$defs/Actor",
+      "description": "Субъект-породитель события. Тип (user|agent|system) — колонка «продюсер» таблицы таксономии §2. Определение берётся ССЫЛКОЙ из конверта 02, не копируется (AU-1)."
+    },
+    "kind": {
+      "$ref": "#/$defs/AuditEventKind",
+      "description": "Тип аудит-события (закрытый enum, дизъюнктный с lifecycle-kinds — AU-2)."
+    },
+    "payload": {
+      "type": "object",
+      "description": "Данные события; конкретная схема выбирается по kind (oneOf ниже). MUST быть уже замаскирован от ПДн вышестоящим шлюзом (AU-15): несёт идентификаторы, дайджесты и суммы, но не сырой пользовательский текст."
+    },
+    "spec_rev": {
+      "type": "string",
+      "description": "Ревизия спеки, по правилам которой записано событие (напр. '2026-07-draft'). Часть конверта 02."
+    },
+    "trace": {
+      "$ref": "#/$defs/TraceContext",
+      "description": "Опциональный контекст распределённой трассировки (W3C Trace Context). Зарезервировано; семантика traceparent/tracestate не переопределяется (AU-20)."
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "kind": { "const": "intent_extracted" },
+        "payload": { "$ref": "#/$defs/IntentExtractedPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "clarification_asked" },
+        "payload": { "$ref": "#/$defs/ClarificationAskedPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "clarification_answered" },
+        "payload": { "$ref": "#/$defs/ClarificationAnsweredPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "plan_created" },
+        "payload": { "$ref": "#/$defs/PlanCreatedPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "step_started" },
+        "payload": { "$ref": "#/$defs/StepStartedPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "step_skipped" },
+        "payload": { "$ref": "#/$defs/StepSkippedPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "tool_prepared" },
+        "payload": { "$ref": "#/$defs/ToolPreparedPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "approval_requested" },
+        "payload": { "$ref": "#/$defs/ApprovalRequestedPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "approval_resolved" },
+        "payload": { "$ref": "#/$defs/ApprovalResolvedPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "tool_committed" },
+        "payload": { "$ref": "#/$defs/ToolCommittedPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "tool_failed" },
+        "payload": { "$ref": "#/$defs/ToolFailedPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "compensation_executed" },
+        "payload": { "$ref": "#/$defs/CompensationExecutedPayload" }
+      },
+      "required": ["kind", "payload"]
+    },
+    {
+      "properties": {
+        "kind": { "const": "budget_exceeded" },
+        "payload": { "$ref": "#/$defs/BudgetExceededPayload" }
+      },
+      "required": ["kind", "payload"]
+    }
+  ],
+  "$defs": {
+    "AuditEventKind": {
+      "type": "string",
+      "enum": [
+        "intent_extracted",
+        "clarification_asked",
+        "clarification_answered",
+        "plan_created",
+        "step_started",
+        "step_skipped",
+        "tool_prepared",
+        "approval_requested",
+        "approval_resolved",
+        "tool_committed",
+        "tool_failed",
+        "compensation_executed",
+        "budget_exceeded"
+      ],
+      "description": "Закрытый enum аудит-событий (AU-4). Дизъюнктен с LifecycleEventKind (02): ни одно имя не пересекается — аудит расширяет модель, а не переопределяет её (AU-2, LC-10). Расширение — только новой ревизией спеки."
+    },
+    "TraceContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Контекст распределённой трассировки W3C Trace Context (зарезервировано, AU-20). Оба поля опциональны; AgenTools их не интерпретирует, лишь переносит для сшивки с observability-стеком потребителя.",
+      "properties": {
+        "traceparent": {
+          "type": "string",
+          "description": "Заголовок traceparent W3C (version-trace_id-parent_id-flags). Формат нормирует W3C, не эта спека."
+        },
+        "tracestate": {
+          "type": "string",
+          "description": "Заголовок tracestate W3C (вендорные пары key=value). Формат нормирует W3C."
+        }
+      }
+    },
+    "ArgsDigest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "Дайджест канонической формы значения: sha256(JCS(value)) с префиксом 'sha256:' (JCS — §4, D5). Используется как args_digest/result_digest — привязка к превью (03) и фиксация исполненного результата без хранения самих данных."
+    },
+    "IdempotencyKey": {
+      "type": "string",
+      "pattern": "^at1:[0-9a-f]{64}$",
+      "description": "Ключ идемпотентности commit-вызова: 'at1:' + sha256hex(JCS({tenant_id, session_id, step_id, tool, args})) — формула нормируется в 06_idempotency-errors.md (D5 плана). Здесь фиксируется как факт (какой ключ применён)."
+    },
+    "ToolName": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$",
+      "description": "Имя инструмента по профилю {module}_{resource}_{verb} (01_tool-contract-profile.md, TCP-5)."
+    },
+    "StepId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)*$",
+      "description": "Идентификатор шага сценария (snake_case) или логического действия (04_scenario-schema.md, SC-4)."
+    },
+    "IntentExtractedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["intent"],
+      "description": "Продюсер: agent/runtime. Извлечено намерение из ввода пользователя. Сырой текст ввода (source_text) НЕ логируется — только тип намерения и уверенность (AU-5, AU-15).",
+      "properties": {
+        "intent": {
+          "type": "string",
+          "description": "Машинный тип распознанного намерения (напр. 'crm.report.create')."
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Уверенность распознавания [0..1]. Порог уточнения (напр. <0.6) нормирует потребитель/сценарий."
+        }
+      }
+    },
+    "ClarificationAskedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["clarification_id", "kind"],
+      "description": "Продюсер: runtime. Пользователю задан уточняющий вопрос (03, CP-24). Текст вопроса и опции — в объекте ClarificationRequest транспорта; в аудите фиксируется факт и тип (AU-6, AU-15).",
+      "properties": {
+        "clarification_id": {
+          "type": "string",
+          "description": "Идентификатор уточнения (id из ClarificationRequest, clarification.json)."
+        },
+        "kind": {
+          "$ref": "clarification.json#/$defs/ClarificationKind",
+          "description": "Тип вопроса (confirm|select|multi_select|text). Определение берётся ССЫЛКОЙ из 03, не копируется."
+        }
+      }
+    },
+    "ClarificationAnsweredPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["clarification_id", "status"],
+      "description": "Продюсер: user. Получен ответ на уточнение (03, CP-26). Значение ответа (value) может быть ПДн и в аудит НЕ кладётся — фиксируется только исход (AU-6, AU-15).",
+      "properties": {
+        "clarification_id": {
+          "type": "string",
+          "description": "Идентификатор уточнения, совпадает с clarification_asked."
+        },
+        "status": {
+          "$ref": "clarification.json#/$defs/AnswerStatus",
+          "description": "Исход (answered|declined|cancelled). Определение берётся ССЫЛКОЙ из 03."
+        }
+      }
+    },
+    "PlanCreatedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scenario"],
+      "description": "Продюсер: runtime. Выбран/инстанцирован сценарий исполнения (04, SC-1). Начало исполнения по декларативной цепочке шагов (AU-7).",
+      "properties": {
+        "scenario": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+@[1-9][0-9]*$",
+          "description": "Дескриптор сценария <ns>.<name>@<int-версия> (04, SC-1). Версия иммутабельна; in-flight сессии пинятся к своей версии."
+        },
+        "step_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Число шагов выбранного сценария (для навигации по аудиту), опционально."
+        }
+      }
+    },
+    "StepStartedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["step_id", "kind"],
+      "description": "Продюсер: runtime. Начато исполнение шага сценария (04). Для kind=tool за ним обычно следуют tool_prepared/approval_*/tool_committed либо tool_failed (AU-8).",
+      "properties": {
+        "step_id": {
+          "$ref": "#/$defs/StepId",
+          "description": "Идентификатор шага (уникален в сценарии, SC-4)."
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["llm", "tool", "elicitation"],
+          "description": "Тип шага (04, SC-2): llm — решение модели; tool — вызов инструмента; elicitation — уточняющий вопрос."
+        }
+      }
+    },
+    "StepSkippedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["step_id"],
+      "description": "Продюсер: runtime. Шаг пропущен: его when-условие ложно (04, SC-12). Событие фиксирует ветвление сценария в аудите (AU-8).",
+      "properties": {
+        "step_id": {
+          "$ref": "#/$defs/StepId",
+          "description": "Идентификатор пропущенного шага."
+        },
+        "reason": {
+          "type": "string",
+          "description": "Причина пропуска (напр. 'when_false'), опционально. Значения самого выражения не логируются."
+        }
+      }
+    },
+    "ToolPreparedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool", "args_digest"],
+      "description": "Продюсер: tool. Фаза prepare write/irreversible-инструмента завершена: сформированы превью и confirmation_token (01/TCP-16, 03/CP-1). Аудит фиксирует дайджест аргументов превью (AU-9).",
+      "properties": {
+        "step_id": {
+          "$ref": "#/$defs/StepId",
+          "description": "Шаг, в рамках которого выполнена prepare (если действие внутри сценария), опционально."
+        },
+        "tool": {
+          "$ref": "#/$defs/ToolName",
+          "description": "Имя подготовленного инструмента."
+        },
+        "args_digest": {
+          "$ref": "#/$defs/ArgsDigest",
+          "description": "Дайджест доменных аргументов превью: sha256(JCS(args)). Тот же дайджест, что несёт confirmation-токен как preview_digest (01/TCP-17, 03/CP-7)."
+        }
+      }
+    },
+    "ApprovalRequestedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool", "governance"],
+      "description": "Продюсер: runtime. Открыт гейт подтверждения (вход в WAITING_APPROVAL, 03/CP-21). governance-контекст — ССЫЛКОЙ на confirmation.json, не копия (AU-10).",
+      "properties": {
+        "tool": {
+          "$ref": "#/$defs/ToolName",
+          "description": "Инструмент, чей commit ожидает подтверждения."
+        },
+        "args_digest": {
+          "$ref": "#/$defs/ArgsDigest",
+          "description": "Дайджест аргументов подтверждаемого действия (привязка к превью), опционально."
+        },
+        "governance": {
+          "$ref": "confirmation.json#/$defs/GovernanceMetadata",
+          "description": "Governance-метаданные гейта {decided_by, decided_at, scope, expires_at} (CP-21). Берётся $ref из 03, НЕ копируется."
+        }
+      }
+    },
+    "ApprovalResolvedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "governance"],
+      "description": "Продюсер: user. Гейт подтверждения разрешён (03/CP-13..CP-16, CP-21). Несёт решение и governance-контекст ССЫЛКОЙ на 03 (AU-10).",
+      "properties": {
+        "decision": {
+          "$ref": "confirmation.json#/$defs/Decision",
+          "description": "Решение по превью (accept|decline|edit|revoke). Определение берётся ССЫЛКОЙ из 03."
+        },
+        "governance": {
+          "$ref": "confirmation.json#/$defs/GovernanceMetadata",
+          "description": "Governance-метаданные принятого решения (CP-21). $ref из 03, не копия."
+        }
+      }
+    },
+    "ToolCommittedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool", "idempotency_key"],
+      "description": "Продюсер: tool. Фаза commit write/irreversible-инструмента применена (01/TCP-16). Юридически значимая запись «что именно исполнено» (AU-11); хранится ≥ срока хранения доменной записи (AU-21).",
+      "properties": {
+        "step_id": {
+          "$ref": "#/$defs/StepId",
+          "description": "Шаг сценария, если действие внутри сценария, опционально."
+        },
+        "tool": {
+          "$ref": "#/$defs/ToolName",
+          "description": "Имя исполненного инструмента."
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/IdempotencyKey",
+          "description": "Применённый ключ идемпотентности commit-вызова (06, D5). Позволяет связать повтор с исходным исполнением."
+        },
+        "args_digest": {
+          "$ref": "#/$defs/ArgsDigest",
+          "description": "Дайджест аргументов commit (совпадает с подтверждённым превью), опционально."
+        },
+        "result_digest": {
+          "$ref": "#/$defs/ArgsDigest",
+          "description": "Дайджест канонической формы результата: sha256(JCS(result)). Фиксирует исход без хранения самих данных, опционально."
+        }
+      }
+    },
+    "ToolFailedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool", "error_code"],
+      "description": "Продюсер: tool. Вызов инструмента (prepare или commit) завершился ошибкой. Полная модель ошибок (категории, retryable, маппинг semantic/technical) — 06_idempotency-errors.md (P0.8); здесь фиксируется код и обратимость (AU-12).",
+      "properties": {
+        "tool": {
+          "$ref": "#/$defs/ToolName",
+          "description": "Имя инструмента, чей вызов упал."
+        },
+        "error_code": {
+          "type": "string",
+          "description": "Код ошибки формата agentools.<category>.<slug> (нормируется в 06). Здесь — строка-ссылка на причину."
+        },
+        "retryable": {
+          "type": "boolean",
+          "description": "Обратима ли ошибка (влияет на маршрутизацию on_technical_fail сценария, 04/06), опционально."
+        }
+      }
+    },
+    "CompensationExecutedPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["step_id", "tool"],
+      "description": "Продюсер: tool. Выполнена компенсация (saga-откат) шага при отказе после его write-эффекта (04, SC-22..SC-23). Компенсация идемпотентна; исполняется в обратном порядке от точки отказа (AU-13).",
+      "properties": {
+        "step_id": {
+          "$ref": "#/$defs/StepId",
+          "description": "Шаг, чей эффект компенсируется."
+        },
+        "tool": {
+          "$ref": "#/$defs/ToolName",
+          "description": "Компенсирующий инструмент (compensate.tool шага, 04)."
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/IdempotencyKey",
+          "description": "Ключ идемпотентности компенсирующего вызова, опционально."
+        }
+      }
+    },
+    "BudgetExceededPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric", "limit"],
+      "description": "Продюсер: runtime. Исчерпан бюджет прогона (шаги/токены/стоимость), сессия обычно уходит в FAILED_* (02). Суммы — целые в минорных единицах + currency ISO 4217, никаких float (AU-14, AU-16).",
+      "properties": {
+        "metric": {
+          "type": "string",
+          "enum": ["tokens", "steps", "cost"],
+          "description": "Метрика исчерпанного бюджета: tokens — токены LLM; steps — шаги прогона; cost — денежная стоимость (тогда обязателен currency)."
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Лимит метрики. Для metric=cost — целое в минорных единицах валюты (напр. копейки), без дробной части (AU-16)."
+        },
+        "consumed": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Фактически потреблено к моменту исчерпания (в тех же единицах, что limit), опционально."
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$",
+          "description": "Код валюты ISO 4217 (напр. 'RUB'). REQUIRED при metric=cost, иначе SHOULD отсутствовать."
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "metric": { "const": "cost" } }, "required": ["metric"] },
+          "then": { "required": ["currency"] }
+        }
+      ]
+    }
+  }
+}
