@@ -38,6 +38,18 @@ MD_LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 JSON_BLOCK_RE = re.compile(r"```json\n(.*?)\n```", re.DOTALL)
 EXAMPLE_COMMENT_RE = re.compile(r"^//\s*example:\s*(\S+)\s*$")
 
+# P0.9: fixtures/ проверяются вместе с ревизией спеки (см. Validation item'а). Формат
+# spec_ref-маркера — общий для всех нормативных доков 01-06 (TCP-1, LC-T13, CP-7, SC-15,
+# AU-11, IE-6).
+SPEC_REF_RE = re.compile(r"^(TCP|LC|CP|SC|AU|IE)-T?[0-9]+$")
+SESSION_STATES = {
+    "CREATED", "RUNNING", "WAITING_INPUT", "WAITING_APPROVAL", "EXECUTING_TOOL",
+    "COMPLETED", "FAILED_RETRYABLE", "FAILED_TERMINAL", "CANCELLED", "EXPIRED",
+}
+FIXTURE_REQUIRED_KEYS = ["id", "title", "spec_refs", "conformance_level", "given", "script", "expect"]
+SCRIPT_STEP_KEYS = {"user_input", "llm_stub", "clarification_answer", "approval", "tick_seconds"}
+MIN_VECTORS = 15
+
 
 def check_required_docs(revision_dir: Path, allow_missing: bool, errors: list) -> None:
     if allow_missing:
@@ -121,6 +133,135 @@ def check_json_blocks(revision_dir: Path, errors: list) -> None:
                 errors.append(f"{md_file}: json-блок #{i} невалиден ({e})")
 
 
+def _spec_ref_exists(ref: str, docs_corpus: str) -> bool:
+    """Маркер (напр. 'LC-T13') MUST существовать в текстах доков 01-06 как точное
+    вхождение (границы — не буква/цифра/дефис), а не как подстрока внутри другого
+    маркера (иначе 'LC-1' ложно совпал бы внутри 'LC-15')."""
+    pattern = re.compile(r"(?<![A-Za-z0-9-])" + re.escape(ref) + r"(?![A-Za-z0-9-])")
+    return pattern.search(docs_corpus) is not None
+
+
+def check_fixtures(revision_dir: Path, errors: list) -> None:
+    """P0.9: fixtures/ — языконезависимые тест-векторы (не часть revision_dir, лежат
+    на уровне репозитория). Проверки структурные (без полной JSON-Schema-валидации —
+    D14: та приходит в P1); цель — держать 15 векторов и golden-файлы честными
+    относительно нормативных доков и формата fixture.json."""
+    repo_root = revision_dir.resolve().parents[2]
+    fixtures_dir = repo_root / "fixtures"
+    if not fixtures_dir.is_dir():
+        errors.append("отсутствует директория fixtures/ (P0.9)")
+        return
+
+    fixture_schema_path = fixtures_dir / "schema" / "fixture.json"
+    if not fixture_schema_path.is_file():
+        errors.append("отсутствует fixtures/schema/fixture.json (P0.9)")
+    else:
+        try:
+            json.loads(fixture_schema_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as e:
+            errors.append(f"{fixture_schema_path}: невалидный JSON ({e})")
+
+    docs_corpus = "\n".join(
+        (revision_dir / name).read_text(encoding="utf-8")
+        for name in REQUIRED_DOCS
+        if (revision_dir / name).is_file()
+    )
+
+    vectors_dir = fixtures_dir / "vectors"
+    vector_files = sorted(vectors_dir.glob("**/*.json")) if vectors_dir.is_dir() else []
+    if len(vector_files) < MIN_VECTORS:
+        errors.append(
+            f"fixtures/vectors: найдено {len(vector_files)} векторов, требуется минимум {MIN_VECTORS} (P0.9)"
+        )
+
+    seen_ids: dict = {}
+    for vf in vector_files:
+        try:
+            data = json.loads(vf.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as e:
+            errors.append(f"{vf}: невалидный JSON ({e})")
+            continue
+        if not isinstance(data, dict):
+            errors.append(f"{vf}: корень вектора должен быть объектом")
+            continue
+
+        for key in FIXTURE_REQUIRED_KEYS:
+            if key not in data:
+                errors.append(f"{vf}: отсутствует обязательное поле '{key}'")
+        if any(key not in data for key in FIXTURE_REQUIRED_KEYS):
+            continue
+
+        vector_id = data["id"]
+        if vf.stem != vector_id:
+            errors.append(f"{vf}: id вектора '{vector_id}' не совпадает с именем файла (Implementation Rules P0.9)")
+        if vector_id in seen_ids:
+            errors.append(f"{vf}: дублирующийся id '{vector_id}' (уже в {seen_ids[vector_id]})")
+        else:
+            seen_ids[vector_id] = vf
+
+        spec_refs = data.get("spec_refs")
+        if not isinstance(spec_refs, list) or not spec_refs:
+            errors.append(f"{vf}: spec_refs должен быть непустым списком (P0.9)")
+        else:
+            for ref in spec_refs:
+                if not isinstance(ref, str) or not SPEC_REF_RE.match(ref):
+                    errors.append(f"{vf}: spec_ref '{ref}' не соответствует формату маркера")
+                elif not _spec_ref_exists(ref, docs_corpus):
+                    errors.append(f"{vf}: spec_ref '{ref}' не найден ни в одном из доков 01-06")
+
+        if data.get("conformance_level") not in ("L1", "L2", "L3"):
+            errors.append(f"{vf}: conformance_level должен быть L1|L2|L3")
+
+        given = data.get("given")
+        if not isinstance(given, dict) or not given.get("tools"):
+            errors.append(f"{vf}: given.tools должен быть непустым списком дескрипторов")
+
+        script = data.get("script")
+        if not isinstance(script, list) or not script:
+            errors.append(f"{vf}: script должен быть непустым списком шагов")
+        else:
+            for i, step in enumerate(script):
+                if not isinstance(step, dict) or len(step) != 1:
+                    errors.append(f"{vf}: script[{i}] должен быть объектом ровно с одним ключом")
+                    continue
+                (step_key,) = step.keys()
+                if step_key not in SCRIPT_STEP_KEYS:
+                    errors.append(f"{vf}: script[{i}] несёт неизвестный ключ '{step_key}'")
+
+        expect = data.get("expect")
+        if not isinstance(expect, dict):
+            errors.append(f"{vf}: expect должен быть объектом")
+        else:
+            if not isinstance(expect.get("events"), list):
+                errors.append(f"{vf}: expect.events должен быть списком")
+            if expect.get("final_state") not in SESSION_STATES:
+                errors.append(f"{vf}: expect.final_state отсутствует или не входит в состояния FSM (02/LC-1)")
+
+    check_golden_pairs(fixtures_dir / "golden" / "jcs", "vector-*.input.json", errors, min_pairs=3)
+    check_golden_pairs(fixtures_dir / "golden" / "idempotency", "key-*.input.json", errors, min_pairs=1)
+
+
+def check_golden_pairs(golden_dir: Path, input_glob: str, errors: list, min_pairs: int) -> None:
+    if not golden_dir.is_dir():
+        errors.append(f"отсутствует директория {golden_dir} (P0.9)")
+        return
+    input_files = sorted(golden_dir.glob(input_glob))
+    if len(input_files) < min_pairs:
+        errors.append(f"{golden_dir}: найдено {len(input_files)} input-файлов, требуется минимум {min_pairs}")
+    for input_file in input_files:
+        golden_file = input_file.with_name(input_file.name.replace(".input.json", ".golden.txt"))
+        if not golden_file.is_file():
+            errors.append(f"{input_file}: нет парного golden-файла {golden_file.name}")
+            continue
+        content = golden_file.read_bytes()
+        if not content.endswith(b"\n") or content.endswith(b"\n\n"):
+            errors.append(f"{golden_file}: MUST заканчиваться РОВНО одним переводом строки (AU-18)")
+        try:
+            json.loads(input_file.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as e:
+            errors.append(f"{input_file}: невалидный JSON ({e})")
+
+
 def main() -> int:
     args = sys.argv[1:]
     allow_missing = "--allow-missing" in args
@@ -141,6 +282,7 @@ def main() -> int:
     check_schemas(revision_dir, errors)
     check_markdown_links(revision_dir, errors)
     check_json_blocks(revision_dir, errors)
+    check_fixtures(revision_dir, errors)
 
     if errors:
         print(f"spec_lint: {len(errors)} ошибок(a):", file=sys.stderr)
