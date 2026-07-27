@@ -22,7 +22,7 @@ GREEN) плюс git-тегом ревизии; каталог при этом Н
 | `01_extension-identity.md` | `EXT-` | идентичность расширения, грамматика вендорных ключей, negotiation | написан (`EXT-1`…`EXT-17`) |
 | `02_tool-contract-profile.md` | `TLP-` | профиль инструмента, `descriptor_digest`, `content_origin` | написан (`TLP-1`…`TLP-32`) |
 | `03_action-lifecycle.md` | `ALC-` | журнал как источник истины, эпоха, снапшот, хеш-цепочка | написан (`ALC-1`…`ALC-37`, переходы `ALC-T1`…`ALC-T22`) |
-| `04_confirmation.md` | `CNF-` | подтверждение: токен, решения, TTL, dual control | не написан |
+| `04_confirmation.md` | `CNF-` | подтверждение: токен, решения, TTL, dual control | написан (`CNF-1`…`CNF-41`) |
 | `05_clarification-mrtr.md` | `CLR-` | уточнения и единственный биндинг MRTR | не написан |
 | `06_scenarios.md` | `SCN-` | сценарии, грамматика выражений (только AST), лимиты, saga | не написан |
 | `07_long-operations.md` | `LOP-` | длинные операции: оба пути обязательны | не написан |

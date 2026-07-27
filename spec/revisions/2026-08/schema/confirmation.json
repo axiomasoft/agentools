@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/schema/2026-08/confirmation.json",
+  "title": "Предложение гейта подтверждения",
+  "description": "Предложение, записанное фазой подготовки действия: превью, вердикт политики, отпечатки аргументов и дескриптора, срок ожидания решения. Файл — единственный носитель перечислений состояния предложения и вердикта политики в схемах ревизии.",
+  "type": "object",
+  "properties": {
+    "proposal_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Идентификатор предложения. Отличен от идентификатора действия: у одного действия за его жизнь бывает несколько предложений."
+    },
+    "proposal_version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Версия предложения. Принадлежит предложению, а не действию; входит в покрытие токена."
+    },
+    "action_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Идентификатор действия, к которому относится предложение."
+    },
+    "tool_name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$",
+      "description": "Имя инструмента, исполняющего обе фазы действия, по грамматике документа 02."
+    },
+    "state": {
+      "$ref": "#/$defs/ProposalState"
+    },
+    "expires_at": {
+      "type": "string",
+      "minLength": 20,
+      "description": "Дедлайн ожидания решения в форме RFC 3339 с зоной UTC."
+    },
+    "args_fingerprint": {
+      "type": "string",
+      "pattern": "^sha-256:[0-9a-f]{64}$",
+      "description": "Отпечаток канонизированных аргументов подготовки; механика вычисления — документ 09."
+    },
+    "descriptor_digest": {
+      "type": "string",
+      "pattern": "^sha-256:[0-9a-f]{64}$",
+      "description": "Дайджест дескриптора инструмента на момент подготовки; порядок вычисления — документ 02."
+    },
+    "policy": {
+      "$ref": "#/$defs/PolicyDecision"
+    },
+    "preview": {
+      "$ref": "#/$defs/Preview"
+    },
+    "superseded_by": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Идентификатор предложения, заместившего это. Присутствует у предложения в состоянии замещения."
+    }
+  },
+  "required": [
+    "proposal_id",
+    "proposal_version",
+    "action_id",
+    "tool_name",
+    "state",
+    "expires_at",
+    "args_fingerprint",
+    "descriptor_digest",
+    "preview"
+  ],
+  "$defs": {
+    "ProposalState": {
+      "description": "Состояние предложения. Перечисление закрытое: добавление состояния — намеренно ломающее изменение (правило CNF-27). Состояния действия живут в схеме снапшота документа 03.",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "revoked",
+        "expired",
+        "superseded"
+      ]
+    },
+    "PolicyEffect": {
+      "description": "Вердикт политики о необходимости гейта. Перечисление закрытое: добавление вердикта — намеренно ломающее изменение (правило CNF-3).",
+      "enum": [
+        "allow",
+        "ask",
+        "deny"
+      ]
+    },
+    "PolicyDecision": {
+      "type": "object",
+      "description": "Сведённый вердикт политики с указанием уровня области видимости, давшего решающее правило.",
+      "properties": {
+        "effect": {
+          "$ref": "#/$defs/PolicyEffect"
+        },
+        "source_scope": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Уровень области видимости, чей вердикт победил по precedence: контур, тенант, пользователь, инструмент."
+        },
+        "hardened": {
+          "type": "boolean",
+          "description": "Признак того, что вердикт строже выведенного из класса побочного эффекта."
+        }
+      },
+      "required": [
+        "effect"
+      ]
+    },
+    "Preview": {
+      "type": "object",
+      "description": "Предъявляемое человеку описание того, что будет исполнено фазой применения.",
+      "properties": {
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Краткое описание предстоящего изменения для человека."
+        },
+        "changes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Change"
+          },
+          "description": "Перечень изменений. Пустой перечень означает отсутствие изменений, а не их неизвестность."
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Предупреждения, относящиеся к предстоящему изменению."
+        }
+      },
+      "required": [
+        "summary",
+        "changes"
+      ]
+    },
+    "Change": {
+      "type": "object",
+      "description": "Одно изменение из превью: над какой сущностью и что именно меняется.",
+      "properties": {
+        "entity": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Вид доменной сущности в терминах контура."
+        },
+        "entity_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Идентификатор сущности. Отсутствует, когда сущность создаётся применением."
+        },
+        "field": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Имя изменяемого свойства сущности."
+        },
+        "before": {
+          "description": "Значение до изменения. Отсутствует при создании сущности."
+        },
+        "after": {
+          "description": "Значение после изменения. Точная величина записывается целым числом в минорных единицах."
+        }
+      },
+      "required": [
+        "entity"
+      ]
+    }
+  }
+}
