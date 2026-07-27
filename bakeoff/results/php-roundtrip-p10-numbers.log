@@ -1,0 +1,2 @@
+INPUT: {"amount_minor":12345,"big_integer":9223372036854775807,"scientific":1.0e+21,"x_unknown_probe_field":"unexpected-value"}
+CONSTRUCT-THREW: PHPModelGenerator\Exception\ErrorRegistryException: Provided JSON for Httpsagentoolsdevbakeoffp10numbersschemajson contains not allowed additional properties [x_unknown_probe_field]

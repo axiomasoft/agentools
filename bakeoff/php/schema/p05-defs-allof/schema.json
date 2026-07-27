@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/bakeoff/p05-defs-allof/schema.json",
+  "title": "Bakeoff p05 — $defs + allOf композиция базового типа",
+  "description": "Переиспользуемые подсхемы (E5): базовый тип Entity в $defs, расширяемый через allOf. Образец приёма — Step/FailureRoute в spec/revisions/2026-07-draft/schema/scenario.json.",
+  "$ref": "#/$defs/NamedEntity",
+  "$defs": {
+    "Entity": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" }
+      },
+      "required": ["id"]
+    },
+    "NamedEntity": {
+      "allOf": [
+        { "$ref": "#/$defs/Entity" },
+        {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" }
+          },
+          "required": ["title"]
+        }
+      ]
+    }
+  }
+}

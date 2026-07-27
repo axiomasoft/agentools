@@ -1,0 +1,11 @@
+IN: object(stdClass)#1 (2) {
+  ["kind"]=>
+  string(15) "crm.custom_step"
+  ["x_unknown_probe_field"]=>
+  string(16) "unexpected-value"
+}
+OUT: object(stdClass)#3 (1) {
+  ["kind"]=>
+  string(15) "crm.custom_step"
+}
+UNKNOWN-FIELD-SURVIVES: no

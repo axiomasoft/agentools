@@ -1,0 +1,14 @@
+{
+    "name": "agentools/bakeoff-php",
+    "description": "Изолированная песочница bakeoff — прогон PHP-кандидатов кодогенерации по корпусу проб (P2.2)",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.3",
+        "wol-soft/php-json-schema-model-generator": "^0.26.2",
+        "wol-soft/php-json-schema-model-generator-production": "^0.20.3"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

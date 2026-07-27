@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/bakeoff/p01-open-enum/schema.json",
+  "title": "Bakeoff p01 — открытое перечисление",
+  "description": "Приём открытых перечислений AgenTools (E2): oneOf из const-веток известных значений плюс fallback string с шаблоном расширения.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind"],
+  "properties": {
+    "kind": {
+      "oneOf": [
+        { "const": "llm" },
+        { "const": "tool" },
+        { "const": "elicitation" },
+        { "type": "string", "pattern": "^[a-z][a-z0-9]*\\.[a-z0-9_]+$" }
+      ],
+      "description": "Известные значения плюс fallback-ветка вида '<product>.<ext>'."
+    }
+  }
+}

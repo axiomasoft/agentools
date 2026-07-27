@@ -1,0 +1,15 @@
+Generated class Bakeoff\p05_defs_allof\Httpsagentoolsdevbakeoffp05defsallofschemajson_Httpsagentoolsdevbakeoffp05defsallofschemajson6a66d74e35283
+Generated class Bakeoff\p05_defs_allof\Httpsagentoolsdevbakeoffp05defsallofschemajson_Httpsagentoolsdevbakeoffp05defsallofschemajson6a66d74e355c8
+Generated class Bakeoff\p05_defs_allof\Httpsagentoolsdevbakeoffp05defsallofschemajson_Merged_Httpsagentoolsdevbakeoffp05defsallofschemajson6a66d74e35603
+
+Fatal error: Uncaught PHPModelGenerator\Exception\SchemaException: A referenced schema on base level must provide an object definition for property Httpsagentoolsdevbakeoffp05defsallofschemajson in file php/schema/p05-defs-allof/schema.json in /home/vostrikov/projects/packages/agentools/bakeoff/php/vendor/wol-soft/php-json-schema-model-generator/src/PropertyProcessor/Property/BasereferenceProcessor.php:33
+Stack trace:
+#0 /home/vostrikov/projects/packages/agentools/bakeoff/php/vendor/wol-soft/php-json-schema-model-generator/src/PropertyProcessor/PropertyFactory.php(54): PHPModelGenerator\PropertyProcessor\Property\BasereferenceProcessor->process('Httpsagentoolsd...', Object(PHPModelGenerator\Model\SchemaDefinition\JsonSchema))
+#1 /home/vostrikov/projects/packages/agentools/bakeoff/php/vendor/wol-soft/php-json-schema-model-generator/src/SchemaProcessor/SchemaProcessor.php(139): PHPModelGenerator\PropertyProcessor\PropertyFactory->create(Object(PHPModelGenerator\PropertyProcessor\PropertyMetaDataCollection), Object(PHPModelGenerator\SchemaProcessor\SchemaProcessor), Object(PHPModelGenerator\Model\Schema), 'Httpsagentoolsd...', Object(PHPModelGenerator\Model\SchemaDefinition\JsonSchema))
+#2 /home/vostrikov/projects/packages/agentools/bakeoff/php/vendor/wol-soft/php-json-schema-model-generator/src/SchemaProcessor/SchemaProcessor.php(100): PHPModelGenerator\SchemaProcessor\SchemaProcessor->generateModel('', 'Httpsagentoolsd...', Object(PHPModelGenerator\Model\SchemaDefinition\JsonSchema), Object(PHPModelGenerator\Model\SchemaDefinition\SchemaDefinitionDictionary), true)
+#3 /home/vostrikov/projects/packages/agentools/bakeoff/php/vendor/wol-soft/php-json-schema-model-generator/src/SchemaProcessor/SchemaProcessor.php(67): PHPModelGenerator\SchemaProcessor\SchemaProcessor->processSchema(Object(PHPModelGenerator\Model\SchemaDefinition\JsonSchema), '', 'Httpsagentoolsd...', Object(PHPModelGenerator\Model\SchemaDefinition\SchemaDefinitionDictionary), true)
+#4 /home/vostrikov/projects/packages/agentools/bakeoff/php/vendor/wol-soft/php-json-schema-model-generator/src/ModelGenerator.php(115): PHPModelGenerator\SchemaProcessor\SchemaProcessor->process(Object(PHPModelGenerator\Model\SchemaDefinition\JsonSchema))
+#5 /home/vostrikov/projects/packages/agentools/bakeoff/php/run-generator.php(20): PHPModelGenerator\ModelGenerator->generateModels(Object(PHPModelGenerator\SchemaProvider\RecursiveDirectoryProvider), 'php/generated/m...')
+#6 {main}
+  thrown in /home/vostrikov/projects/packages/agentools/bakeoff/php/vendor/wol-soft/php-json-schema-model-generator/src/PropertyProcessor/Property/BasereferenceProcessor.php on line 33
+exit=255

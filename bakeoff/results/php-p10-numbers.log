@@ -1,0 +1,19 @@
+array(3) {
+  ["amount_minor"]=>
+  int(12345)
+  ["big_integer"]=>
+  int(9223372036854775807)
+  ["scientific"]=>
+  float(1.0E+21)
+}
+amount_minor: int(12345)
+big_integer: int(9223372036854775807)
+scientific: float(1.0E+21)
+raw: array(3) {
+  ["amount_minor"]=>
+  int(12345)
+  ["big_integer"]=>
+  int(9223372036854775807)
+  ["scientific"]=>
+  float(1.0E+21)
+}

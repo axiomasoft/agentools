@@ -1,0 +1,22 @@
+known-const-llm: OK
+fallback-pattern-match: OK
+invalid-should-reject: THREW Invalid value for kind declined by composition constraint.
+  Requires to match one composition element but matched 0 elements.
+  - Composition element #1: Failed
+    * Invalid value for kind declined by const constraint
+  - Composition element #2: Failed
+    * Invalid value for kind declined by const constraint
+  - Composition element #3: Failed
+    * Invalid value for kind declined by const constraint
+  - Composition element #4: Failed
+    * Value for kind doesn't match pattern ^[a-z][a-z0-9]*\.[a-z0-9_]+$
+pattern-violates-leading-digit: THREW Invalid value for kind declined by composition constraint.
+  Requires to match one composition element but matched 0 elements.
+  - Composition element #1: Failed
+    * Invalid value for kind declined by const constraint
+  - Composition element #2: Failed
+    * Invalid value for kind declined by const constraint
+  - Composition element #3: Failed
+    * Invalid value for kind declined by const constraint
+  - Composition element #4: Failed
+    * Value for kind doesn't match pattern ^[a-z][a-z0-9]*\.[a-z0-9_]+$

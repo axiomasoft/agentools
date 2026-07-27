@@ -1,0 +1,2 @@
+INPUT: {"id":"step_01","x_unknown_probe_field":"unexpected-value"}
+CONSTRUCT-THREW: PHPModelGenerator\Exception\ErrorRegistryException: Provided JSON for Httpsagentoolsdevbakeoffp09reflocalschemajson contains not allowed additional properties [x_unknown_probe_field]

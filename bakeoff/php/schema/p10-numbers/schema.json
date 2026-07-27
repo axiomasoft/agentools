@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/bakeoff/p10-numbers/schema.json",
+  "title": "Bakeoff p10 — числа: minor units, большие числа, экспонента",
+  "description": "Сериализация чисел ES6 (JCS-смежное): integer в минимальных единицах (копейки/центы), число за пределами Number.MAX_SAFE_INTEGER и экспоненциальная запись 1e21 — проверяем, сохраняет ли генератор точность и форму числа при round-trip.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["amount_minor", "big_integer", "scientific"],
+  "properties": {
+    "amount_minor": {
+      "type": "integer",
+      "description": "Сумма в минорных единицах (копейки), integer без плавающей точки."
+    },
+    "big_integer": {
+      "type": "integer",
+      "description": "Число за пределами Number.MAX_SAFE_INTEGER (2^53-1)."
+    },
+    "scientific": {
+      "type": "number",
+      "description": "Число в экспоненциальной записи (1e21 — за пределами обычного диапазона integer в JS)."
+    }
+  }
+}

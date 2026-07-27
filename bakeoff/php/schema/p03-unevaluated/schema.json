@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/bakeoff/p03-unevaluated/schema.json",
+  "title": "Bakeoff p03 — unevaluatedProperties на внешнем уровне композиции",
+  "description": "Закрытая схема авторинга (J9): unevaluatedProperties:false на внешнем уровне allOf-композиции. Опубликованные схемы этот ключ не несут (J9); проба проверяет, переживает ли генератор его в схеме авторинга.",
+  "allOf": [
+    {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" }
+      },
+      "required": ["id"]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "note": { "type": "string" }
+      }
+    }
+  ],
+  "unevaluatedProperties": false
+}

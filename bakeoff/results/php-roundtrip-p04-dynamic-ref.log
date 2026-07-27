@@ -1,0 +1,2 @@
+INPUT: {"id":"root","children":[{"id":"child_01","children":[]}],"x_unknown_probe_field":"unexpected-value"}
+CONSTRUCT-THREW: PHPModelGenerator\Exception\ErrorRegistryException: Provided JSON for Httpsagentoolsdevbakeoffp04dynamicrefschemajson contains not allowed additional properties [x_unknown_probe_field]

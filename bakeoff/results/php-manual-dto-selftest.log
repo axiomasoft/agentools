@@ -1,0 +1,31 @@
+p01 OK: array (
+  'kind' => 'crm.custom_step',
+)
+p06 OK: array (
+  'kind' => 'tool',
+  'tool' => 'send_report',
+  'side_effect' => 'write',
+  'approval' => 'confirm',
+)
+p06 negative-OK: prompt_ref обязателен при kind=llm
+p08 OK: array (
+  'l1' => 
+  array (
+    'l2' => 
+    array (
+      'l3' => 
+      array (
+        'l4' => 
+        array (
+          'l5' => 
+          array (
+            'l6' => 
+            array (
+              'attr_a1' => 'value',
+            ),
+          ),
+        ),
+      ),
+    ),
+  ),
+)

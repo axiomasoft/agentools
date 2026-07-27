@@ -1,0 +1,6 @@
+llm-missing-prompt_ref: THREW PHPModelGenerator\Exception\ErrorRegistryException: Invalid value for Httpsagentoolsdevbakeoffp06ifthenelseschemajson declined by conditional composition constraint
+  - Condition: Valid
+  - Conditional branch failed:Missing required value for prompt_ref
+llm-with-prompt_ref: OK (no error)
+write-missing-approval: OK (no error)
+write-with-approval: OK (no error)
