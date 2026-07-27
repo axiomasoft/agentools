@@ -1,0 +1,133 @@
+{
+  "$defs": {
+    "Compensation": {
+      "description": "Объявление компенсации шага плоскими полями: чем откатывается успешно завершённый шаг.",
+      "properties": {
+        "input_map": {
+          "additionalProperties": true,
+          "description": "Отображение аргументов компенсации. Открыто по той же причине, что и отображение аргументов шага.",
+          "type": "object"
+        },
+        "tool": {
+          "description": "Имя инструмента компенсации.",
+          "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool"
+      ],
+      "type": "object"
+    },
+    "FailureAction": {
+      "description": "Исход маршрута отказа. Перечисление закрытое: переход к произвольному шагу в нём отсутствует намеренно (правила SCN-7 и SCN-9).",
+      "enum": [
+        "abort",
+        "retry",
+        "continue"
+      ]
+    },
+    "FailureRoute": {
+      "description": "Маршрут отказа шага одного класса. Отсутствие маршрута читается как прекращение прогона.",
+      "properties": {
+        "action": {
+          "$ref": "#/$defs/FailureAction"
+        },
+        "attempts": {
+          "description": "Число повторов шага. Поле имеет смысл только при повторе и опускается при остальных исходах.",
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "action"
+      ],
+      "type": "object"
+    },
+    "ScenarioOutcome": {
+      "description": "Исход прогона сценария. Перечисление закрытое и отличное от состояний действия документа 03: регистр записи различает их намеренно (правила SCN-27 и SCN-28).",
+      "enum": [
+        "COMPLETED",
+        "FAILED",
+        "COMPENSATED",
+        "COMPENSATION_FAILED"
+      ]
+    },
+    "Step": {
+      "description": "Один шаг цепочки: вызов инструмента с вычисляемыми аргументами, условием исполнения и маршрутами отказа.",
+      "properties": {
+        "compensate": {
+          "$ref": "#/$defs/Compensation"
+        },
+        "id": {
+          "description": "Идентификатор шага, уникальный в пределах сценария. Он же адрес результата шага в выражениях.",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "type": "string"
+        },
+        "input_map": {
+          "additionalProperties": true,
+          "description": "Отображение аргументов вызова: значение каждого ключа — выражение либо литерал. Открыто намеренно: состав аргументов задаёт inputSchema инструмента, а не эта схема.",
+          "type": "object"
+        },
+        "on_semantic_fail": {
+          "$ref": "#/$defs/FailureRoute"
+        },
+        "on_technical_fail": {
+          "$ref": "#/$defs/FailureRoute"
+        },
+        "tool": {
+          "description": "Имя инструмента по грамматике документа 02.",
+          "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$",
+          "type": "string"
+        },
+        "when": {
+          "description": "Условие исполнения шага — выражение, вычисляемое в логическое значение. Отсутствие поля читается как безусловное исполнение.",
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "tool"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://agentools.dev/schema/2026-08/authoring/scenario.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Декларативная цепочка шагов, интерпретируемая обоими рантаймами одинаково. Файл — единственный носитель перечислений маршрута отказа и исхода прогона в схемах ревизии.",
+  "properties": {
+    "scenario_id": {
+      "description": "Идентификатор сценария в пространстве имён контура.",
+      "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)*$",
+      "type": "string"
+    },
+    "spec_rev": {
+      "description": "Идентификатор ревизии, по правилам которой сценарий истолковывается.",
+      "minLength": 1,
+      "type": "string"
+    },
+    "steps": {
+      "description": "Шаги в порядке исполнения. Порядок задан позицией в массиве: другого носителя порядка у сценария нет.",
+      "items": {
+        "$ref": "#/$defs/Step",
+        "unevaluatedProperties": false
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "title": {
+      "description": "Название сценария для человека. Нормативной силы не несёт.",
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "scenario_id",
+    "spec_rev",
+    "steps"
+  ],
+  "title": "Сценарий",
+  "type": "object"
+}
