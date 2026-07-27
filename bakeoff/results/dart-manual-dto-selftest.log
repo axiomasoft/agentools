@@ -1,0 +1,6 @@
+p01 OK: {kind: crm.custom_step}
+p01 negative-OK: FormatException: #/properties/kind/oneOf: violated No element
+p06 OK: {kind: tool, tool: send_report, side_effect: write, approval: confirm}
+p06 negative-OK (if/then): FormatException: #/then: then violated ({kind: llm}, {required: [prompt_ref]})
+p06 negative-OK (dependentSchemas): FormatException: prop side_effect violated schema dependency
+p08 OK: {l1: {l2: {l3: {l4: {l5: {l6: {attr_a1: value}}}}}}}

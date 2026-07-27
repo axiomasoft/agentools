@@ -1,0 +1,11 @@
+p01 IN: {
+  "kind": "crm.custom_step",
+  "x_unknown_probe_field": "unexpected-value"
+}
+
+p01 OUT: {"kind":"crm.custom_step"}
+p10 amount_minor: 12345 (int)
+p10 big_integer: 9223372036854775807 (int)
+p10 scientific: 1e+21 (double)
+p10 OUT: {"amount_minor":12345,"big_integer":9223372036854775807,"scientific":1e+21}
+p08 OUT: {"l1":{"l2":{"l3":{"l4":{"l5":{"l6":{}}}}}}}

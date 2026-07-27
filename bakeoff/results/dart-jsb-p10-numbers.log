@@ -1,0 +1,5 @@
+p10-numbers valid.json errors: 0
+p10-numbers unknown-key.json errors: 2
+  - {error: additionalPropertyNotAllowed, path: [x_unknown_probe_field], details: Additional property "x_unknown_probe_field" is not allowed.}
+  - {error: notConditionViolated, path: [x_unknown_probe_field]}
+exit=0

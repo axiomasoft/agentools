@@ -1,0 +1,4 @@
+p03-unevaluated valid.json errors: 0
+p03-unevaluated unknown-key.json errors: 1
+  - {error: custom, path: [x_unknown_probe_field], details: Schema is false}
+exit=0

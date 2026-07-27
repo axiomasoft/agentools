@@ -1,0 +1,8 @@
+name: bakeoff_dart
+description: Изолированная песочница bakeoff — прогон Dart-кандидатов кодогенерации по корпусу проб (P2.3)
+publish_to: none
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+dependencies:
+  json_schema: 5.2.2
+  json_schema_builder: any
