@@ -40,17 +40,26 @@ GREEN) плюс git-тегом ревизии; каталог при этом Н
 языка выражений; он нормативен целиком в силу правила `SCN-13` документа
 `06_scenarios.md`.
 
-Индекс правил `rules.json` — производный артефакт (генератор фазы P3, item P3.14),
-руками не пишется. Корпус тест-векторов ревизии — `fixtures/2026-08/` (фаза P4).
+Индекс правил [`rules.json`](rules.json) — производный артефакт, генерируется
+`tools/rules_index.py` (item P3.14), руками не пишется: 397 записей
+(`{rule_id, doc, normative_word, level, not_testable, text_digest}`), сортировка
+детерминирована (документ, затем числовая часть маркера). Корпус тест-векторов
+ревизии — `fixtures/2026-08/` (фаза P4).
+
+Гейт выхода фазы P3 (`ГЕЙТ A2`) закрыт — вердикт и числа:
+`plans/AGENTOOLS/artifacts/P3-gate-a2.md` (vault-репозиторий `Brain`).
 
 ## Проверка
 
 ```
-python3 tools/spec_lint.py spec/revisions/2026-08 --allow-missing
+python3 tools/spec_lint.py spec/revisions/2026-08
 ```
 
-Флаг `--allow-missing` снимается по мере написания документов; гейт выхода фазы P3
-требует зелёного прогона **без** него. Точечные режимы:
-`--keywords-check <файл схемы> [--list A|B]` (ключевые слова против Списков
-`DR-02` §2–§3) и `--legacy-check spec/revisions/2026-08` (легаси-лексика).
-Свежесть закрытых схем: `python3 tools/close_schema.py spec/revisions/2026-08 --check`.
+Все 12 документов написаны — линтер прогоняется **без** `--allow-missing` (флаг
+существовал на время написания ревизии; ГЕЙТ A2 требует его отсутствия). Индекс
+правил: `python3 tools/rules_index.py --write spec/revisions/2026-08` (генерация) /
+`--check` (расхождение с закоммиченным → exit 1, ручная правка `rules.json`
+запрещена). Точечные режимы линтера: `--keywords-check <файл схемы> [--list A|B]`
+(ключевые слова против Списков `DR-02` §2–§3) и `--legacy-check
+spec/revisions/2026-08` (легаси-лексика). Свежесть закрытых схем:
+`python3 tools/close_schema.py spec/revisions/2026-08 --check`.

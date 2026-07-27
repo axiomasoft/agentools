@@ -84,6 +84,12 @@ RFC2119_WORDS_RE = re.compile(r"(?<![A-Za-z])(MUST NOT|MUST|SHOULD NOT|SHOULD|MA
 
 COVERAGE_HEADING = "## Покрытие решений"
 
+# Извлечение label решения из строки таблицы покрытия: первая ячейка вида
+# «§B7 (пиннинг дескриптора, …)» или «D19 (…)» — label обрывается на первом
+# пробеле/скобке/бэктике, описание в скобках не часть идентификатора решения.
+COVERAGE_ROW_RE = re.compile(r"^\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*$")
+COVERAGE_LABEL_RE = re.compile(r"^`?(?P<label>[^\s(`]+)")
+
 DOCS_2026_08 = [
     "00_overview.md",
     "01_extension-identity.md",
@@ -127,6 +133,29 @@ RULE_LINE_RE_2026_08 = re.compile(
 RULE_CANDIDATE_RE_2026_08 = re.compile(
     r"^\*\*(?:OVR|EXT|TLP|ALC|CNF|CLR|SCN|LOP|AOB|IDE|SEC|CFH)-T?\d+\b")
 
+# Матрица «документ → решения DR-01» (`research/02-p3-authoring-conventions-2026-08.md`
+# §7 — тот же вход, что читал каждый item P3.2–P3.13 при написании своей таблицы
+# покрытия). Данные — КОПИЯ решения research/02-…, не эвристика и не regex по
+# прозе: расхождение матрицы с планом обязано быть видно ДИФФОМ этого файла, а не
+# пересчётом какой-то формулы по markdown. Item P3.14 сверяет ЕЁ с фактическими
+# таблицами `## Покрытие решений DR-01` — сводный гейт покрытия (Scope Included в).
+COVERAGE_MATRIX_2026_08 = {
+    "00_overview.md": ("§0", "§A3", "§C8", "§E6", "§E7", "D7", "D19"),
+    "01_extension-identity.md": ("§A1", "§A2"),
+    "02_tool-contract-profile.md": ("§B7", "§I2", "§E5", "§J9"),
+    "03_action-lifecycle.md": ("§C1", "§C2", "§C3", "§C4", "§C5", "§C6", "§C7"),
+    "04_confirmation.md": ("§B1", "§B2", "§B3", "§B4", "§B5", "§B6", "§B8", "§I4"),
+    "05_clarification-mrtr.md": ("§B1",),
+    "06_scenarios.md": ("§F1", "§F2", "§F3", "§F4"),
+    "07_long-operations.md": ("§G1", "§G2", "§G3", "§G4", "§G5"),
+    "08_audit-observability.md": ("§H1", "§H2", "§H3", "§H4", "§H5", "§D4"),
+    "09_idempotency-errors.md": ("§D1", "§D2", "§D3", "§E1", "§E2", "§E3", "§E7"),
+    "10_security.md": ("§I1", "§I2", "§I3", "§I4"),
+    "11_conformance-harness.md": (
+        "§J1", "§J2", "§J3", "§J4", "§J5", "§J6", "§J7", "§J8", "§J9", "§E4",
+    ),
+}
+
 REVISION_PROFILES = {
     "2026-07-draft": {
         # Профиль повторяет поведение линтера до введения профилей: ревизия закрыта
@@ -154,6 +183,7 @@ REVISION_PROFILES = {
         "description_no_norm": False,
         "refs_offline": False,
         "examples_structural": False,
+        "coverage_matrix": False,
     },
     "2026-08": {
         "required_docs": DOCS_2026_08,
@@ -175,6 +205,7 @@ REVISION_PROFILES = {
         "description_no_norm": True,
         "refs_offline": True,
         "examples_structural": True,
+        "coverage_matrix": True,
     },
 }
 
@@ -623,6 +654,18 @@ def check_rule_lines(revision_dir, profile, errors):
                 errors.append(f"{doc}:{lineno}: дублирующийся маркер {rule_id} (уже в {seen[rule_id]})")
             else:
                 seen[rule_id] = f"{doc}:{lineno}"
+            word = match.group("word")
+            if word in ("MUST", "MUST NOT") and not match.group("text").strip():
+                errors.append(
+                    f"{doc}:{lineno}: правило {rule_id} ({word}) несёт пустой "
+                    f"нормативный текст (research/00-user-intent.md §3 п.1)"
+                )
+            reason = match.group("reason")
+            if reason is not None and not reason.strip():
+                errors.append(
+                    f"{doc}:{lineno}: правило {rule_id} несёт пустую причину "
+                    f"'Not testable:' — тихого SKIP не существует (DR-01 §J3)"
+                )
 
 
 def _schema_surface(schema, root):
@@ -735,6 +778,51 @@ def check_legacy_lexicon(revision_dir, profile, errors):
                     errors.append(
                         f"{md_file}: легаси-термин {term!r} вне огороженного блока (D20)"
                     )
+
+
+def _coverage_table_labels(doc_text):
+    """Множество labels решений из таблицы `## Покрытие решений DR-01` документа.
+    Заголовок и строка-разделитель markdown-таблицы (`|:--|:--|`) отфильтровываются
+    по первой ячейке — она либо буквально `Решение`, либо состоит только из `-`/`:`."""
+    idx = doc_text.find(COVERAGE_HEADING)
+    if idx == -1:
+        return set()
+    labels = set()
+    for line in doc_text[idx:].split("\n"):
+        if not line.startswith("|"):
+            continue
+        match = COVERAGE_ROW_RE.match(line)
+        if not match:
+            continue
+        first_cell = match.group(1).strip()
+        if first_cell == "Решение" or set(first_cell) <= set("-: "):
+            continue
+        label_match = COVERAGE_LABEL_RE.match(first_cell)
+        if label_match:
+            labels.add(label_match.group("label"))
+    return labels
+
+
+def check_coverage_matrix(revision_dir, profile, errors):
+    """Сводный гейт покрытия решений (item P3.14, Scope Included в): каждое
+    решение `DR-01`, приписанное документу матрицей `COVERAGE_MATRIX_2026_08`,
+    обязано иметь СТРОКУ в СОБСТВЕННОЙ таблице покрытия этого документа — не
+    «где-то в объединении» (объединение по всей ревизии проверяет, что таблица
+    матрицы покрыта целиком, но приписка решения именно СВОЕМУ документу тоже
+    часть контракта research/02-…-2026-08.md §7: решение без правила в своём
+    документе — дефект, даже если случайно упомянуто в чужой таблице)."""
+    for name, decisions in COVERAGE_MATRIX_2026_08.items():
+        doc = revision_dir / name
+        if not doc.is_file():
+            continue
+        labels = _coverage_table_labels(doc.read_text(encoding="utf-8"))
+        for decision in decisions:
+            if decision not in labels:
+                errors.append(
+                    f"{doc}: решение {decision!r} (research/02-p3-authoring-conventions-"
+                    f"2026-08.md §7) не покрыто ни одной строкой таблицы "
+                    f"'{COVERAGE_HEADING} DR-01' — сводный гейт покрытия (P3.14)"
+                )
 
 
 def check_coverage_tables(revision_dir, profile, errors):
@@ -866,6 +954,8 @@ def main():
         check_legacy_lexicon(revision_dir, profile, errors)
     if profile["coverage_required"]:
         check_coverage_tables(revision_dir, profile, errors)
+    if profile["coverage_matrix"]:
+        check_coverage_matrix(revision_dir, profile, errors)
 
     return report(errors)
 

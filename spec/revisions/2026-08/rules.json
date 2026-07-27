@@ -1,0 +1,3182 @@
+{
+  "spec_rev": "2026-08",
+  "generator": "tools/rules_index.py",
+  "rules": [
+    {
+      "rule_id": "OVR-1",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "54c58fc5b8d0b7a91d521dc98eb32a0b37a36b79f492da82012f7c52a2f0c3e1"
+    },
+    {
+      "rule_id": "OVR-2",
+      "doc": "00_overview.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "f9b605c79b1c2d603e506a4ac5b570c4891fa70f16e9cae8aa6b2ea0c9e53e9a"
+    },
+    {
+      "rule_id": "OVR-3",
+      "doc": "00_overview.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "52fde026a8abc0ab528bb978a54eb986b57c280a26a421061bc4198c3c73b300"
+    },
+    {
+      "rule_id": "OVR-4",
+      "doc": "00_overview.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "57ec8b961e3dde1d6e74f8be68553100100528637f5fbab6267c374806816058"
+    },
+    {
+      "rule_id": "OVR-5",
+      "doc": "00_overview.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "9f7814099523bb2d02dcb4b7fd64ab5096924563345f6c0f00aef9b6bf84207b"
+    },
+    {
+      "rule_id": "OVR-6",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "646606d3f18700fa7f601508404d05761fc2f5ded57514e0cb539bb4d801aecb"
+    },
+    {
+      "rule_id": "OVR-7",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "4065cf65d5e07a4b2a6042f93cd4ee647ae7f1ed5ccc96e53a025ea33d41795c"
+    },
+    {
+      "rule_id": "OVR-8",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "fa61ad232e9200b5e0097a42144e0e8922bf13c8337304e208d3366c2d66e4bf"
+    },
+    {
+      "rule_id": "OVR-9",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "1f9c116d44f8ca62fc1315e33fbc3bacac32b729c8b9a8d86a6deec444ce8db6"
+    },
+    {
+      "rule_id": "OVR-10",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "f57c1d4cc49b158188724b3458b7ad292022d448245e3ae0b183510635d9fe45"
+    },
+    {
+      "rule_id": "OVR-11",
+      "doc": "00_overview.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "fd44ae0ca9ae40ccfca1231d116ab5add3ee4ad2f810857a955fac3e56a452d4"
+    },
+    {
+      "rule_id": "OVR-12",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "3b238788a665f82caf447113ccb806d3c14066df60c900aee99f6190d7f45406"
+    },
+    {
+      "rule_id": "OVR-13",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "20589bb71848b7e13a429a62fc7fbab58ced837f9930e1da9a404394c3d7b495"
+    },
+    {
+      "rule_id": "OVR-14",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "49b56011d487af7b789b1923ba4a53d47621ef7c5ab4dd115f667944bd8d9968"
+    },
+    {
+      "rule_id": "OVR-15",
+      "doc": "00_overview.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "902724eee630c3fd1ed307d74e3279e06fb75ea3073b1ffcea557316c4705201"
+    },
+    {
+      "rule_id": "OVR-16",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "1c13b9ffa1e8099ae7297f80108e95be6b490decee21c3bd8f25a358469bc193"
+    },
+    {
+      "rule_id": "OVR-17",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "4991d4c48df24bcf223b2fb39021b6ebe8bb3d701a63f8c6a812b36798ead103"
+    },
+    {
+      "rule_id": "OVR-18",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "ca60c22840d46d78224d158756b588a715c3b9c40a8294f19f7697d21ab3e35f"
+    },
+    {
+      "rule_id": "OVR-19",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "ce260f611491ca09b6b5b447f4a851bb2fafdd058459c9968738cf294285d07c"
+    },
+    {
+      "rule_id": "OVR-20",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "b9241f7dd8c78e8b6308440a64bf530dd25ea974b762fc1c3599771acb9a8be6"
+    },
+    {
+      "rule_id": "OVR-21",
+      "doc": "00_overview.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "9eb30237dd20d0304ca4e6ea7a38fe9588251abffb10df575e788e4284c2df40"
+    },
+    {
+      "rule_id": "OVR-22",
+      "doc": "00_overview.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "9670a69965fc55d7eb4bff60ed6478a575e5019474b22e45d56f1b2807ebfab7"
+    },
+    {
+      "rule_id": "OVR-23",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "8209217c82e5d6ded9c2a7734922944ac9752e56a84ed166b0c867d84748dae9"
+    },
+    {
+      "rule_id": "OVR-24",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "95028edd5a0f9f29726fd527e0274d06a90278d914676f83507d2b180b054cf0"
+    },
+    {
+      "rule_id": "OVR-25",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "114973be5901e415aa4a21089c75baa7ba266494cd79043beb8cf0de85636e7d"
+    },
+    {
+      "rule_id": "OVR-26",
+      "doc": "00_overview.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "7069ad36e3dd2a2603b7e36eb49a4efeeaf24b3a523fc458374245092884822f"
+    },
+    {
+      "rule_id": "OVR-27",
+      "doc": "00_overview.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "c4a560fd7544003ef484f75cba707e3fea796a165b141a2664e8d48e7c3a3f7d"
+    },
+    {
+      "rule_id": "EXT-1",
+      "doc": "01_extension-identity.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "424bcc53f3d8ee3477efdec57cb340c34bb89b0c5178325ab7394d4cfb3a2ac3"
+    },
+    {
+      "rule_id": "EXT-2",
+      "doc": "01_extension-identity.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "4cb763a504644442339eb2983dad4942ecb0449b946056ec97cfd72637a9ca26"
+    },
+    {
+      "rule_id": "EXT-3",
+      "doc": "01_extension-identity.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "869060ce82fc7bdd5da5b89043c354036c338e97cebc5d8e258af001c39c7bbd"
+    },
+    {
+      "rule_id": "EXT-4",
+      "doc": "01_extension-identity.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "4c3a1229afad2b5fab8172cbd460549dc2912f5cfa4bf268e97250a0a3610d75"
+    },
+    {
+      "rule_id": "EXT-5",
+      "doc": "01_extension-identity.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "e150b4b32a5374b11b1b8a04384d9af4d9d933bc806b109a90f612109c172cc0"
+    },
+    {
+      "rule_id": "EXT-6",
+      "doc": "01_extension-identity.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "1dcd2e13af3d11898d4bead66b86226b405d747510463447720322b5531390d5"
+    },
+    {
+      "rule_id": "EXT-7",
+      "doc": "01_extension-identity.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "c2754038669acbbd4d08019377dfa93b4b3359ed02ddd6a171f28dc5a22b1a40"
+    },
+    {
+      "rule_id": "EXT-8",
+      "doc": "01_extension-identity.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "f2dd51cec93b72ca19b163d04c0c6838390f226001b2b13d64c93fff7c710264"
+    },
+    {
+      "rule_id": "EXT-9",
+      "doc": "01_extension-identity.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "5531cd73bb2997f7f7a28682d17deeaeef1abc88121b7cabb8d5190a0af71e8e"
+    },
+    {
+      "rule_id": "EXT-10",
+      "doc": "01_extension-identity.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "d6864dc06b75bb8fcc45d626ae5c51e2b2520f95cf149f1c5806581856b9b48d"
+    },
+    {
+      "rule_id": "EXT-11",
+      "doc": "01_extension-identity.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "37a7a7b65aa9c1d6610b302f2dbbf195da0c3b6013b6a1dfe06a7719196d69b7"
+    },
+    {
+      "rule_id": "EXT-12",
+      "doc": "01_extension-identity.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "d9896a0f2962b0f181614caef1e88d7540622d6b30727136013eaa0bbe3b6583"
+    },
+    {
+      "rule_id": "EXT-13",
+      "doc": "01_extension-identity.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "4163fb7581bf03d6d064aef0c865f9a0facf67a0e5e2a8a08a08566d65eb1467"
+    },
+    {
+      "rule_id": "EXT-14",
+      "doc": "01_extension-identity.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "2e77abbcd60b5073161a76ac7fec436d7744f1309f615940ea16c1fdfc99a402"
+    },
+    {
+      "rule_id": "EXT-15",
+      "doc": "01_extension-identity.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "3faeed5879a8e012b005a33b4c7212690d5c30b15db2f19e79bd8dd0fe4de8f2"
+    },
+    {
+      "rule_id": "EXT-16",
+      "doc": "01_extension-identity.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "23ebbc978849a9aaabb665cd198daf9190b7167944a35e15e69014225c3ddcc0"
+    },
+    {
+      "rule_id": "EXT-17",
+      "doc": "01_extension-identity.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "001f8f2e8050bf50786fadc3acafc5adb579fc5f922df63eb1e85f7720c80b3d"
+    },
+    {
+      "rule_id": "TLP-1",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "7e6e08a027b22b2a001bb412c5c49de0c79e94c01016ad495bb801d40770ef5e"
+    },
+    {
+      "rule_id": "TLP-2",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "d6cf824445bc1cc67d1f8c24720f70190f5b8e185c83bc659eb5adffe2ddb03f"
+    },
+    {
+      "rule_id": "TLP-3",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "SHOULD",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "66b95c177806f1c88bd2a1ff504594ca5068e03e28a0f5105f84a3c7af5a3f11"
+    },
+    {
+      "rule_id": "TLP-4",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "SHOULD",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "8763e9ed07ad6cd583d1c70b91eebd043d6117d70d557ccb059990a321eaa161"
+    },
+    {
+      "rule_id": "TLP-5",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "c147000a8dd7bbe79ca83366b2d1bb1ddad2cf57c5cb92117f4c0eabcdc53e7a"
+    },
+    {
+      "rule_id": "TLP-6",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "3a38561bce49b34cd361af6cc006384ba69dcdf2755ca470ac263eb27bafdf68"
+    },
+    {
+      "rule_id": "TLP-7",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "1652f07091e09352fcfffc1cd3ddb2fd22beaa369d9202dc72f8fe955cd5f5d7"
+    },
+    {
+      "rule_id": "TLP-8",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "SHOULD",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "3d957ff84f4f0f148f93d75e8a13f499b3bc93ab8bf15961a689c289a80afca1"
+    },
+    {
+      "rule_id": "TLP-9",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "50db3a339319985bca98023e45e85b6157d1cb586cda949cca66298db000dbd8"
+    },
+    {
+      "rule_id": "TLP-10",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "d92fb605e218bac4289f0c6f1e5fddc6ca4e7e4dfdb4bc5bde4c27cb1df988dc"
+    },
+    {
+      "rule_id": "TLP-11",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "c15e7c958b22177d57a13ae63191932aac81d8a1689573a7c8491a4bda2d03a6"
+    },
+    {
+      "rule_id": "TLP-12",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "3764769d62bd9ba377e1ee611d4fc9fd77db8680c514f8bed5deca4143955bec"
+    },
+    {
+      "rule_id": "TLP-13",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "d2502e13352287a3ed58b2076d33251b56cc643a51e1e10173292b911a43b3b9"
+    },
+    {
+      "rule_id": "TLP-14",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MAY",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "1a18e0fd862b6af4b0d7f9d07148bb531a69ba81dbcaf8118acfb106c8c1aa84"
+    },
+    {
+      "rule_id": "TLP-15",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "SHOULD",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "2cfdeea1aea2d59c7d1cb4188792bbc8f5c7ac759450452d34dc2bcf1e655a62"
+    },
+    {
+      "rule_id": "TLP-16",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "SHOULD",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "970da8642bf8061e90d34bd3068f0542fb878d73562ee67e272bbe9ffed4bba2"
+    },
+    {
+      "rule_id": "TLP-17",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "54cece748f0298b0e9a7b323c696d85843181b0de0471603cd6bd742a62cd52c"
+    },
+    {
+      "rule_id": "TLP-18",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "11dfc5f7099cd8e41d3832626c629045b885e8e736790c5518df515715180367"
+    },
+    {
+      "rule_id": "TLP-19",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "3f6a27cb0bc446448c22dca841634edafa34820625364d9303bbec6645ea7421"
+    },
+    {
+      "rule_id": "TLP-20",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "370a2a9cdd4f3f6a24e12039416d1fd252c550846f96f0d3b9e1ba66926b55fb"
+    },
+    {
+      "rule_id": "TLP-21",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "52b8976f57e5a3fe4b95772667c1c81fb770a7d7ef027162e756fb4dca2bf15c"
+    },
+    {
+      "rule_id": "TLP-22",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "1be2889669e6e45e561ee9579e581a4ba67c5d020af2f6c76d58af62c677de22"
+    },
+    {
+      "rule_id": "TLP-23",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "9f62a385f3dc9fcec51a1abdbcc550fcfc9c0eed93db28d0f263934e824a9ef2"
+    },
+    {
+      "rule_id": "TLP-24",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MAY",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "45230b7556d34d4c01dd63a2d1b344a9b6b404d00e281fe7fd612295598ec226"
+    },
+    {
+      "rule_id": "TLP-25",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "2215e9e9751ce21cc9472e57de688736430165f6700256db6719caca7a09650b"
+    },
+    {
+      "rule_id": "TLP-26",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "2665bdce9127369e7be1cdce48ab021bc89b375bdab3de459be490e2914af5e4"
+    },
+    {
+      "rule_id": "TLP-27",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "9ae8587c87c94bb6cf03c173d5b08c316d2d84954d0992ea2139f817dcc83739"
+    },
+    {
+      "rule_id": "TLP-28",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "1235694dac7b56f0bddd8b3b33fcbc12d43cb5643b7dfcdf4c5fb1f20e4d3a05"
+    },
+    {
+      "rule_id": "TLP-29",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "9b3423e1831e84fc53da3fb1f0069659587871e2d96bc306df48bed3df1fe3a1"
+    },
+    {
+      "rule_id": "TLP-30",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "d445819c150f02103c8cd68cf2983df1cfb302db108e84e49bfc69372fea9f5c"
+    },
+    {
+      "rule_id": "TLP-31",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "18586248c488309ba6d033679bbcdcf40b4a27d7449de43c2038c26bb5a45530"
+    },
+    {
+      "rule_id": "TLP-32",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "4e68e4310e38b2703db6007c5832ad29471a6195ba87d9a90be25f8745390c01"
+    },
+    {
+      "rule_id": "ALC-1",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "62b38fa635f83ebe151bb30a77ef172317d4d6355c5f2cc637b3c7acf7daad58"
+    },
+    {
+      "rule_id": "ALC-2",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "7d275e8eee98c068d83c83009049b803617a41b6a9aa23b91a5411e58d88b888"
+    },
+    {
+      "rule_id": "ALC-3",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "41e88846798ad6f1f505684dd2f9507af4d76d8f9f4fdc46ccf81a2ed8a9acbd"
+    },
+    {
+      "rule_id": "ALC-4",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "f498c91cdf8f72bc3cd0615db67c32b001417265de16998b6a93674d5928287a"
+    },
+    {
+      "rule_id": "ALC-5",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "8e6e8cf671394cec130c2ca27fabef07aaade73257aa5e643330fe0f0b8c0209"
+    },
+    {
+      "rule_id": "ALC-6",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "803b24e6158f6e8c7a654338070e221599d9be73584c4b782bd3a04bfeea3f8f"
+    },
+    {
+      "rule_id": "ALC-7",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "c43255809888579b4663b310a0569040d00d41e890d91fb43e27603bd7131d4c"
+    },
+    {
+      "rule_id": "ALC-8",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "ff36094143c792eaa8e73db028044c528f26352b045d1485f69555f17592569a"
+    },
+    {
+      "rule_id": "ALC-9",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "acc6598dd419f1b976903b1b841b70a41e78a3f96565d120b3061964ba135eac"
+    },
+    {
+      "rule_id": "ALC-10",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "9405a7e8b068a51a5fb3f59f6d3f42485c01b29f83589819beddf7ec93ef9cdd"
+    },
+    {
+      "rule_id": "ALC-11",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "3fb9654378f0eff9894c97edeb485b57665ee89c092d0c479b9258ae8274069b"
+    },
+    {
+      "rule_id": "ALC-12",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "038810f3445e8541df57f113ca7981e26036630f735a807f9c7c14d01e560a41"
+    },
+    {
+      "rule_id": "ALC-13",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "40e96184092133bd726f501c3a6d46af94022b6b6073f432ddf52172c67746d8"
+    },
+    {
+      "rule_id": "ALC-14",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "a4005998e78b43e1fb5e1f5ba1ae368826f6b85b22f8a6fb4f119eef054ffd9f"
+    },
+    {
+      "rule_id": "ALC-15",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "585f14beb6fc3b5bf82a47bc181efdc2d4d43149328bd73e277ba255ff2e907a"
+    },
+    {
+      "rule_id": "ALC-16",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "152f04aee951cef99d9e75105e286fe39ecd123b270bfc091ba0289a8a0312b7"
+    },
+    {
+      "rule_id": "ALC-17",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "4f8eaf30f464b03cdd0f2028e77d2fa0cf9793a33a4272225e6620f9e9705e49"
+    },
+    {
+      "rule_id": "ALC-18",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "b6c5427d500b7fd44b1a38f3b55a1f7c389cec6ec036744e593ad4af48933119"
+    },
+    {
+      "rule_id": "ALC-19",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "787d75fafe71533b146abc6bd75db110edafdf089e5bbb7545a1b256d2e78811"
+    },
+    {
+      "rule_id": "ALC-20",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "ae2967eec0e09878c96a9dc6dfe24e43e8934651fa6f0e03b2f024bed3cd3395"
+    },
+    {
+      "rule_id": "ALC-21",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "c64eb5db5791aede086a3f6028cbd283b99db5cd94deb26e23ce2e4a28bb2b0e"
+    },
+    {
+      "rule_id": "ALC-22",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "b1a2b11bdda6341874daafb9fc3dfb39d4a5f3694ebe0e1ce9710fb1cfe53d7a"
+    },
+    {
+      "rule_id": "ALC-23",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "a38d40b91bd759380ac53e028218f0e932e04307f08f6e0cd55195aebf67c8e0"
+    },
+    {
+      "rule_id": "ALC-24",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "e9fce00d284e57925eaa2676921e12b080c7866cbfcf7fc5effa30a0fd2e7c72"
+    },
+    {
+      "rule_id": "ALC-25",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "c2822997d040cfbb369f63a821af68d78c46abc431c05cb9536067751371a0eb"
+    },
+    {
+      "rule_id": "ALC-26",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "fd03b4a878342d4dc432eb028c3468748c1e607fcdae2b09e9f0c43954686bb8"
+    },
+    {
+      "rule_id": "ALC-27",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "e9e6bfcb12a445682595804d16f0a556362b42fe75eb4cd901f2f81e9b84f2d9"
+    },
+    {
+      "rule_id": "ALC-28",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "6d57f2af3c643951aff188f9ec16cb763c8eb7965cd4f0b65ca4849b037486b0"
+    },
+    {
+      "rule_id": "ALC-29",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "f17c12e0357a9770b7ee0296b53425065cabfeeb62a8e9da9424634063711fe2"
+    },
+    {
+      "rule_id": "ALC-30",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "b51899869418f7551659b4a56f61764f6ef758768af35da050bc73201576ec53"
+    },
+    {
+      "rule_id": "ALC-31",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "0ad1ee1b036589ae5418837cf08313e34766763457ea675430e998ea44844c05"
+    },
+    {
+      "rule_id": "ALC-32",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MAY",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "91f2c79079e4296aa700d0f6569c37daccd9b888e4d29f37ed7761ec9c380777"
+    },
+    {
+      "rule_id": "ALC-33",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "cdc927b8adb5be1193068f571822a81daf2866cd812614edf72729183f4952ee"
+    },
+    {
+      "rule_id": "ALC-34",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST NOT",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "902428f7066c98e8b09c195ffd915a5e0c34492604127563c54e780aed286a63"
+    },
+    {
+      "rule_id": "ALC-35",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "bb70a8da5b8c0b0a31aead4ed2e6fe6d05a3ebac35f05e8b4b727d4a98bc3efa"
+    },
+    {
+      "rule_id": "ALC-36",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "07199b4854f8b77f310b96bdb5ba621f2ef12c006750d7517c32c8d588e52a59"
+    },
+    {
+      "rule_id": "ALC-37",
+      "doc": "03_action-lifecycle.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "3ad510f2b8e46bedc26c8d096079684fa3871f97f573d1bba2a36934f350030b"
+    },
+    {
+      "rule_id": "CNF-1",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "b95a52b8c03493e920fa3460f859e32ffaf749cb4bbdf9b44e068e711791a21c"
+    },
+    {
+      "rule_id": "CNF-2",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "a3ef0f0ce109e31d61d7bdf8f107cb6f2fe1601bb8161f60d02aae12a4f42c01"
+    },
+    {
+      "rule_id": "CNF-3",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "d6052ec1d6ba08db8f749cee0419aeb3d9f2665b0dd7f7bd7bf9b2ce3b882f29"
+    },
+    {
+      "rule_id": "CNF-4",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "34784dfa94b7e74cd3ee015b81d3b9e1bd44c0cb02cc449ce75dfe7bedf0a0f6"
+    },
+    {
+      "rule_id": "CNF-5",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "6b50e9e63f2dac2ded16f11abaaddbfa2d6c0bad71fe07f25e2bb6548db5eb8f"
+    },
+    {
+      "rule_id": "CNF-6",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "f4a73d7e959683816dd81cdd08ff42e1a5564a8835d31fe79483be33cfa849e9"
+    },
+    {
+      "rule_id": "CNF-7",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "094d2b07c3e7545a496f9557be1df7f6818d41361f791f10d50a7bffd63f8316"
+    },
+    {
+      "rule_id": "CNF-8",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "b3050dbe20051ef64a3ad797102ee4326c53c09bd8c047dd5c6677380cea47bb"
+    },
+    {
+      "rule_id": "CNF-9",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "f31f565a04136833d566b9ecfc39480daa6ea88cf772401ea18f6d085517399b"
+    },
+    {
+      "rule_id": "CNF-10",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "d94ab2bf38bd8e8a38d3c4700cec939ce83c4bcb23912b065b2dd82c2f114365"
+    },
+    {
+      "rule_id": "CNF-11",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "ba17f80402cbdd0d6823ee9412e64cf89dd24af2f695a7ad36808a122f597c65"
+    },
+    {
+      "rule_id": "CNF-12",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "2f0279986463fc8550b62fc53e35f1e6a0a859a4c6b20db74e876cea179483d5"
+    },
+    {
+      "rule_id": "CNF-13",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "58677a9291b28cb8eccd73c8bf75f209ade96c414dd9b30466fb796e8a54a31f"
+    },
+    {
+      "rule_id": "CNF-14",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "d4f8cf4c3f40d6d8bed96d1a595c594d210d6aeb8a455d1d1ba0285f43a3f3ac"
+    },
+    {
+      "rule_id": "CNF-15",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "4cfb04f17a988f8cec3afae72c5854a74585b1cf9175f1baf0e02177b726ec97"
+    },
+    {
+      "rule_id": "CNF-16",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "f5fbe95cdd066ff592c11da6c1cb2eeea4b4b3af0dee6b62a1e1a8d32dade6d8"
+    },
+    {
+      "rule_id": "CNF-17",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "aa026a33ebb17fc10613f2328faf23f4c5c80c18f3727396bfd57e9d5eed5786"
+    },
+    {
+      "rule_id": "CNF-18",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "136c83b6b4385d2751448daaf1e1e2cd5a4555d8bbfe0a87e7d991aa15180297"
+    },
+    {
+      "rule_id": "CNF-19",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "5b2b566942dc03b131347df4ec9d6f0dea850ccfdc725a72d0567bb43024b187"
+    },
+    {
+      "rule_id": "CNF-20",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "2b6699aad8131bf75079fe45539f41582b3a9335d2766c1a2e4dd4962bd0aa98"
+    },
+    {
+      "rule_id": "CNF-21",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "f16bb76ebd2ac1ce4a16143610e19366d17866bc9dd93d1c14325c604e089352"
+    },
+    {
+      "rule_id": "CNF-22",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "4d2bd3b1b771ae9df83300e60f167523adac809e5437f8e5186dd34630e1f72c"
+    },
+    {
+      "rule_id": "CNF-23",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "5bd0023eef55a4209598e4cbdd31c7cd3646c1f60bbf15c84c29d5a17d4bf386"
+    },
+    {
+      "rule_id": "CNF-24",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "515413866b82a1331baa2f38e5486805eb935f31aadaf7bb0f310f2fde547534"
+    },
+    {
+      "rule_id": "CNF-25",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "0d3a8ba2dc8a72c4a64a73bb1386d1ceba71a5c3c227881f7212df63cf1ed521"
+    },
+    {
+      "rule_id": "CNF-26",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "119590bb56627bcb9c728864e344b32a3c4b37e530525d9e19c09917c7fac880"
+    },
+    {
+      "rule_id": "CNF-27",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "fee3f56a0a29012fcce0612b0f1e163a58d80bb225858957e4d99423b676f07b"
+    },
+    {
+      "rule_id": "CNF-28",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "f713e538c282e7ccb3c7f952c1afaccf3358a2f98616ca0f3b7f19f08e79e39d"
+    },
+    {
+      "rule_id": "CNF-29",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "acdff4ef6522bf1d02e8208ae7f304c715a7bad48583af66061a9e0ce68ada76"
+    },
+    {
+      "rule_id": "CNF-30",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "23d5cce0d4c381140e74cb6600ff1614b590311739d804b73bf76f9cdd87390a"
+    },
+    {
+      "rule_id": "CNF-31",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "0d35f3ce2379a4c2b37b611a2b264fcf34c43bc92c1163f08689ed5e57cacefa"
+    },
+    {
+      "rule_id": "CNF-32",
+      "doc": "04_confirmation.md",
+      "normative_word": "MAY",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "67c13090b4dfb758cd16823ee4f2c8394155e0ae41f798589723a6dfeff665c0"
+    },
+    {
+      "rule_id": "CNF-33",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "104f22c83eee6390f237925c7a4f032334b1fa858fa0b2d53b4b68eb6eb606b7"
+    },
+    {
+      "rule_id": "CNF-34",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST NOT",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "47271755874aa04a08f66e27b33b29bb936ab81b337080fbdca04306aebb6f69"
+    },
+    {
+      "rule_id": "CNF-35",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "8b58a0c41965fe7c7d676dad2f16e0b8467a7c9248e3d91e5ebdb12521d9f7e5"
+    },
+    {
+      "rule_id": "CNF-36",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "ceefa22a0f56b580863961b7e78fc1db07fe8e74d7fa7b788ed0c82f44e1679e"
+    },
+    {
+      "rule_id": "CNF-37",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "0ec0d53866bc2c63f62f592de6793bdc4ee96e969a54a760b2c76db788aab45c"
+    },
+    {
+      "rule_id": "CNF-38",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "c36886ad064568efd3835e80237a03f7710a578c74ef203612245d26d08f8bab"
+    },
+    {
+      "rule_id": "CNF-39",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "4359464576b5669cf71002d3c574328d4b93671577b3b788696da07cbb8eaa14"
+    },
+    {
+      "rule_id": "CNF-40",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "dc4d46cf9e24e70e67d81310696ee349a7df87b44284e0a9c153b0423937bd35"
+    },
+    {
+      "rule_id": "CNF-41",
+      "doc": "04_confirmation.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "a302e224a0d4cd5c13e4add866f6bc37ec674d39d004c436b2a0cd72a42b70a3"
+    },
+    {
+      "rule_id": "CLR-1",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "708a9939f572e04f2fcaed39b8de64b42c336f59e091f31b8763a6c73c09dd22"
+    },
+    {
+      "rule_id": "CLR-2",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "d760309776aa31d6cd03f40a505ba249f2d07cdf8dfced9e53003c4034bab1a6"
+    },
+    {
+      "rule_id": "CLR-3",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "1f77aadb91356876928f2048f73171bd84b67127d68325ed73d6710ece604f10"
+    },
+    {
+      "rule_id": "CLR-4",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "be94bba4dbffe219ef52e61cfdea2307612e3c3147022a1713602e5cc34aba7e"
+    },
+    {
+      "rule_id": "CLR-5",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "207fce8333ee42f160eec5ac779dd7674f988a9964b58b99055f64630711f615"
+    },
+    {
+      "rule_id": "CLR-6",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "e220d147323b6f1c711889d421bc8c4efd25340d280b0055b693281f982d0bf3"
+    },
+    {
+      "rule_id": "CLR-7",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "78ce7c888b9170a03c4b5cb141251761baf215cf84952bfd7d67c0959752505e"
+    },
+    {
+      "rule_id": "CLR-8",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "e40530a3ad67fd894ac1a5c736d0495c5eb18c3a7c60f2334ce59c68175c33fa"
+    },
+    {
+      "rule_id": "CLR-9",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "42316b95afcb7137a9ac6ecf162de80bbe398a4569337808f948d94936264e9e"
+    },
+    {
+      "rule_id": "CLR-10",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "2e5aac03a47ba29025bcd258eba02d691e923f6c00f347a59fd94eeb58588799"
+    },
+    {
+      "rule_id": "CLR-11",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "35d2ed6d116548594927225478e162cbd8f829ff24725b826a77fa09288b3e41"
+    },
+    {
+      "rule_id": "CLR-12",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "3a1443f2019f0d2e8eb5a9337eadcc1ae737f1e9ac9ef17c98a3f7bb71492efd"
+    },
+    {
+      "rule_id": "CLR-13",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MAY",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "ef971450d051bcaf606ce73772875c2d1af271db067b31c11e713785d1b3ee44"
+    },
+    {
+      "rule_id": "CLR-14",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "524c5fcb1bde4d35a0bc45a91557165788bcac39d1b8927de823d24d0e69b083"
+    },
+    {
+      "rule_id": "CLR-15",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "556765412929b573b91d75989cec2111f6e1550f1bde7084ea4ba88865675dcb"
+    },
+    {
+      "rule_id": "CLR-16",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "0ed5ed664e0ec5b3586d2dc76fd13bd1c6a43d7b50fae0a661da55d08fc6f971"
+    },
+    {
+      "rule_id": "CLR-17",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "b7bd4bb580d25b6417f39c4b00c286bddc7c1138cf2ea9bd9d110e62a2a1107e"
+    },
+    {
+      "rule_id": "CLR-18",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "f99a178c0cc2fe55507bc727ed4794f0b847a2f4dcd89dc07cee6a6b599bb561"
+    },
+    {
+      "rule_id": "CLR-19",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "899c6f249d94f0dbd29a27c7a2e3afbee0214279386d15a54037441577a082ec"
+    },
+    {
+      "rule_id": "CLR-20",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "b15b000f12c960de0eb13d99d810943d94f6c989c8e39495f9cf160368110898"
+    },
+    {
+      "rule_id": "CLR-21",
+      "doc": "05_clarification-mrtr.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "655d2492a9f66bb35951566d001b2f8fd09c3eeb42f41b078d26236ebf39f82f"
+    },
+    {
+      "rule_id": "SCN-1",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "14c1517ff2f85b03f90d0a20aa4b37f9bdd6f958b2368860dd6d44b8a4642a25"
+    },
+    {
+      "rule_id": "SCN-2",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "faa15f1bdc82ad26de50fd4fc6e6b25250d7e8ce575b953fb2781318f441ab69"
+    },
+    {
+      "rule_id": "SCN-3",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "2ffa7b5b8a7f9cd9fda507afdee5a904a8b750f3a32a42a13a3c3eb0ffdca129"
+    },
+    {
+      "rule_id": "SCN-4",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "5b8a2e31b388caa1ead34b646bfe87b0ed1650ea9c1ad3f80eb5afa6e7e092a5"
+    },
+    {
+      "rule_id": "SCN-5",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "920edaca74428f60aa0da930b2ea443c72a0b91e5ee885ff289f9e8d17ecae34"
+    },
+    {
+      "rule_id": "SCN-6",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "38450f0f7d446636fbdf2e3a2b0ea893cc99b39a10700c23e1c6016a3754230d"
+    },
+    {
+      "rule_id": "SCN-7",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "fc248f48fdf0039393d8c598fe1aa10e4ea065641e73d30d756636ba0726a7f2"
+    },
+    {
+      "rule_id": "SCN-8",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "f53ba9fc91959d97de9669de120fe7c8f4067992e2cda5c4306855ac0822b857"
+    },
+    {
+      "rule_id": "SCN-9",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "44666f482edf43cbd7c2038d4bf773e0210b2a171e5e3d46538ff534baa33e4a"
+    },
+    {
+      "rule_id": "SCN-10",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "99ef9c9f2e6d3ae52272a84cd8f5993f45ec653a14e7831bf28ef45e6d1e514b"
+    },
+    {
+      "rule_id": "SCN-11",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "fd2325dd625a0f5e25b46d487cf9e2494ee0462bd1c0f8d5cb4017003671a6d4"
+    },
+    {
+      "rule_id": "SCN-12",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "df1a70f623ae9cb12e1572da10f3e442cd2129fda65f9c838d113b3c7d07604d"
+    },
+    {
+      "rule_id": "SCN-13",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "d1a374f9e52b167714ec9f0b635b23e90a5df75a9a59f62d65c2fcafd5fa5403"
+    },
+    {
+      "rule_id": "SCN-14",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "c2f81ed1d90d5081fdda5c724fa3053d28113a1013a031e1dc21c813b809f85a"
+    },
+    {
+      "rule_id": "SCN-15",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "3d88df116f5215dc121bf2ca6e4a72cba4ad269d9c6a0c83b811f9c860ee563b"
+    },
+    {
+      "rule_id": "SCN-16",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "4e65230e9844ac90d2a1e67ba881434a1337e8393a74a8eb3093df7770dd28a8"
+    },
+    {
+      "rule_id": "SCN-17",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "471faa0a72a107c746b608bf4549da27cbcc5fe8934b6b4b0bdbdf359ffbddbd"
+    },
+    {
+      "rule_id": "SCN-18",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "24840d1babf77f99324c6c5dd4d75626f6ea869b0b38c4e31d26e7e918241426"
+    },
+    {
+      "rule_id": "SCN-19",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "64b4eb01e6e29a91d3005fce2ef209c6afd4000dc0c169546bbf7dc16ce67359"
+    },
+    {
+      "rule_id": "SCN-20",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "adf6ac2ccdb0d2170ede5683d87ad241ac1f8a851b1e82a8e81d66b14039db41"
+    },
+    {
+      "rule_id": "SCN-21",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "9fec927042ccb07e9e46eb14d2d236a2289ed65a891ac184395dba81e27b1234"
+    },
+    {
+      "rule_id": "SCN-22",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "c626e6112685ab7a938379f8af69078e45d260645150ae06b3ad565d26a3bf71"
+    },
+    {
+      "rule_id": "SCN-23",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "ac23b23e4da708e35d5aca07322455d3a864bb69126986c0393338a06e22657d"
+    },
+    {
+      "rule_id": "SCN-24",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "eb385a0124ee59131ce3a799742e15f80293ac2ce805177c4bc4536d82c0c74b"
+    },
+    {
+      "rule_id": "SCN-25",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "9a3a0a1b6e1be0cdd54c2c5e85a446b02c762cfd21dc346389d00f7cff6e121f"
+    },
+    {
+      "rule_id": "SCN-26",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "a3d9997bf68ec3adb445cefbd8dd1a4ac1b39308d030c83882dec113830a4b9a"
+    },
+    {
+      "rule_id": "SCN-27",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "55295c06b40c8a95346e889da1b68530994171af6722c1956d38e0f7b2cb5625"
+    },
+    {
+      "rule_id": "SCN-28",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "c573d324fd6f2d63c965ef640870cd4b9dc2d970a11d403ef928a7de009300b2"
+    },
+    {
+      "rule_id": "SCN-29",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "e319b4e201dab431a21a20a709bf023f65905ab2685eb7617df5adf28494d302"
+    },
+    {
+      "rule_id": "SCN-30",
+      "doc": "06_scenarios.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "c8807f034aaa59092554696d2f6175e372588aa23e5864af3f3c6962a7ba2198"
+    },
+    {
+      "rule_id": "LOP-1",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "11817e4cb53bdbbb3ad04efc1fdde0f277b606801baac020a9813edbda8793ca"
+    },
+    {
+      "rule_id": "LOP-2",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "c62e00d3d36cf6ddaa279c76873f7423fd56f589b5930633d826d63ce291234e"
+    },
+    {
+      "rule_id": "LOP-3",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "7878166f9c466042c94152668b5c4b63e4a4bd70c84afc6a5837db843c37aae1"
+    },
+    {
+      "rule_id": "LOP-4",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "43d496037bd18acef6916f3630ce5cb13256f2938326df21720537e48ae87a6e"
+    },
+    {
+      "rule_id": "LOP-5",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "21e8610ecb330108223df03627dfce5a0a4cc071f827621c381916a0a5da4b3f"
+    },
+    {
+      "rule_id": "LOP-6",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "25f57ebdaa6d3b9e4dbba97f0a419e4f117f6e61a52c93b5d8345443fca9af4a"
+    },
+    {
+      "rule_id": "LOP-7",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "770e9fa245f332137f12d3bcf5b54a3b590a51e9108d97a16b1b4751a28e4b96"
+    },
+    {
+      "rule_id": "LOP-8",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "fc83d4a6822335da70b26b087ca2f27fd519d69dcd6be8e17c2aa1d7d3d3af08"
+    },
+    {
+      "rule_id": "LOP-9",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": "канал уведомлений существует только у контрагента, объявившего его поддержку — у остального контрагента вектор подписки не исполняется",
+      "text_digest": "7cdcc8579014143bf3ec6ca404922baca215f6170aec165dbf034e8ea5f298c6"
+    },
+    {
+      "rule_id": "LOP-10",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "c912b6cc06a36b45dd41e764c0e3cf3aa9fe295a86c9b1b1c6a23fd07ec2383f"
+    },
+    {
+      "rule_id": "LOP-11",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "f1c3ee8233cc4a3df2eb1df3d4946779348ae283f25980c155b9fb8d0cacc9a5"
+    },
+    {
+      "rule_id": "LOP-12",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "68da43be634742666e12d6c1b0275e954b65c10970409b1f86a65ba0199c48d2"
+    },
+    {
+      "rule_id": "LOP-13",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "15ed6964b31494d6ea956bba10cafd1e11a1f025ce1e40492f758613db947d54"
+    },
+    {
+      "rule_id": "LOP-14",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "97abf1065016d9f63495820817e475d8a9d967e87f4ececbeb3065e79de0006a"
+    },
+    {
+      "rule_id": "LOP-15",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "fe5a18ff938746565c4afcbb6f0a3e29ba4b7e404b6e29012b53a8220cc14ebd"
+    },
+    {
+      "rule_id": "LOP-16",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "489fd77b69878ce7c83b6a1ebad3c579a5e632df7b73eec1753e5f4e284fec96"
+    },
+    {
+      "rule_id": "LOP-17",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "b0ab9d2349a315a1d99d99b5feb78012a55de55ff1429fcc5faf082ec0d2f9bb"
+    },
+    {
+      "rule_id": "LOP-18",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "8c2fe8d831f5b66b464ed21843119136acbdf513fb8ac984fee12fea9afba318"
+    },
+    {
+      "rule_id": "LOP-19",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "e1f32aa1cd191bf30da0c84dfa75597ff6f248d0d34a9ae97f413f1428dad34e"
+    },
+    {
+      "rule_id": "LOP-20",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "c2fb36efad43f2843e93801fc1c77ca8e74def660ca25b350d05c0633fe84437"
+    },
+    {
+      "rule_id": "LOP-21",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "c6c487b12479a2057c67341ba75be81c557d736e667e4990425a6c5b7eadd615"
+    },
+    {
+      "rule_id": "LOP-22",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "9d8c885e032f9730d1493acd2b2fee7edcd9addd7081edd389e7353a73ee8a6c"
+    },
+    {
+      "rule_id": "LOP-23",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "7de893a845cb8a7075d2f0e55d1168d041f5f25571d17a1023c97b7e5c8c75d7"
+    },
+    {
+      "rule_id": "LOP-24",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "1f5f1ae28757e119f386bbb6eb8eab8977ba328e4d7bb3234fda8aabd1331beb"
+    },
+    {
+      "rule_id": "LOP-25",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "8c9f61ae1fbe37008c2c4663a728af32b787317eb323b48ebae46db3fd9f5ef1"
+    },
+    {
+      "rule_id": "LOP-26",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "bc69ba517f4857363641816c72dda8ecb349e76c033b74e9f493b7468d4b68de"
+    },
+    {
+      "rule_id": "LOP-27",
+      "doc": "07_long-operations.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "1178405245492c531930f18bf2ad8b78fbba1266b409922d843c0576954e544d"
+    },
+    {
+      "rule_id": "AOB-1",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "de66751ed087339b6d3ddbf5bc21b2c378c60e966643e7b93a6eeda302abfc55"
+    },
+    {
+      "rule_id": "AOB-2",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "93f7d4c24ac4fe8aa8f941b9c0d45d04bda1d9b737e1abba763748dcf95bdc48"
+    },
+    {
+      "rule_id": "AOB-3",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST NOT",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "a72abac471bd40f0f863e8dafe67d4266de20aa9e6f4d7eba0b9c799f46799e3"
+    },
+    {
+      "rule_id": "AOB-4",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST NOT",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "c6baa340698f66eb51655b47e35315bf7e55652726a0c4b1072aecf582395fd3"
+    },
+    {
+      "rule_id": "AOB-5",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST NOT",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "bbfe14cdfa8a93c07ef180e33dc91ef5a28a66e3ae1284b5dd92f7a6541d30c9"
+    },
+    {
+      "rule_id": "AOB-6",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "0ad92efffe5bd02e3f2c2ef909716f15868c479c3ab6ff1d9d689a80f89590d6"
+    },
+    {
+      "rule_id": "AOB-7",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "d5aac58c0bdc078af7d57fd13137d2f1ee9477aa079f4035575471929e899fd4"
+    },
+    {
+      "rule_id": "AOB-8",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "83a61aa4e240cac59cd1e098f846651d3b6af79ed9c049260fc66667c03ae678"
+    },
+    {
+      "rule_id": "AOB-9",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "c42b3d0e96a7f06e6ae59101529cc72b4de6d74c4f7d528310fe4180e014ec9b"
+    },
+    {
+      "rule_id": "AOB-10",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "605d31b8739836f31408f91cae0a07ad0e3f5ee577a9aa210802a8c1567c9baa"
+    },
+    {
+      "rule_id": "AOB-11",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "604c5b2eacb956e6d70808a8f126470961de0513f660206b61b6e1803cc7ec2e"
+    },
+    {
+      "rule_id": "AOB-12",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "152189834f200cb35ac9be4947c540c19cbde85a34afc5eda990d9f47ae693aa"
+    },
+    {
+      "rule_id": "AOB-13",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "22906617c5b6bee2a1f624730a236607faa8099a29bd35aee1640ac91aaf624e"
+    },
+    {
+      "rule_id": "AOB-14",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "a2679568b560265ef8af148792dc347ce5e62cb124f7b66f71d7f3ec9ca0b31e"
+    },
+    {
+      "rule_id": "AOB-15",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "be880f20ea2e694de6abae07a182131666e605f0d5fb8771ef32e54314bd9512"
+    },
+    {
+      "rule_id": "AOB-16",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST NOT",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "b2064e87b36897a5ebff6ce2bbf6d1a15f4dbbf9dc73e3a689c173e0d5082cac"
+    },
+    {
+      "rule_id": "AOB-17",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MAY",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "56eaa1d1d3fe40ec7e52c6dae1891dabb67f639e483d33736a5ddf2ce88c92f4"
+    },
+    {
+      "rule_id": "AOB-18",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST NOT",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "0ee990e5bb5ae7477936e95075d96c60912c618bc77b5f0806d9d4c50dc1179a"
+    },
+    {
+      "rule_id": "AOB-19",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST NOT",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "f29519bd2db0635d6cc5aa9523c23002521b6c6525c280f7c95e2963330d3af1"
+    },
+    {
+      "rule_id": "AOB-20",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "89ffc8bed2eb0a05c9128cb804b38f86788fb5cd861a9e56b42019ce437d39a7"
+    },
+    {
+      "rule_id": "AOB-21",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "6e8557def5928cac829322d0842f6fb1501109a2f6a8404d5385dbe00a476d4f"
+    },
+    {
+      "rule_id": "AOB-22",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST NOT",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "76bf0a82b0778ce73e4548b840d850254bcfd7b2f171cdf48c6d054e454ea696"
+    },
+    {
+      "rule_id": "AOB-23",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "34b63a0f799161dab335a907cf91414a5265cc11ad683bb9476061e0d087b783"
+    },
+    {
+      "rule_id": "AOB-24",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST NOT",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "df9e6c44b052bb01344280b2370a3664530d4776abf205287be82a5b50565ecf"
+    },
+    {
+      "rule_id": "AOB-25",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "cdf39e7479a40bb63c95de1354668cf1a6a55bb07ad47723e43b6895c3a515ab"
+    },
+    {
+      "rule_id": "AOB-26",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST NOT",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "13e263e9376c8f25cc22294f1221b6e81367b56e93ea7e586d3b0cf910ed1c67"
+    },
+    {
+      "rule_id": "AOB-27",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "cdc1917419f7eb56dc063b426da2133f7eac8d92d76959717789841c24b50300"
+    },
+    {
+      "rule_id": "AOB-28",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST NOT",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "588cf6126a58ef019fbf9e758a1e547ae48d1cdded63268e519c7afcd0b86099"
+    },
+    {
+      "rule_id": "AOB-29",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "7c65b38e43f5a64d0100ca462b4251e0e293b916bfe386ab1d867c50d28fa5b9"
+    },
+    {
+      "rule_id": "AOB-30",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST NOT",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "9fec01496d1d26cc3a3246b96bf254f7214d0fb9083850e3d60785a2c736a9df"
+    },
+    {
+      "rule_id": "AOB-31",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L3",
+      "not_testable": null,
+      "text_digest": "2eb0b166673b26db2d73894dde4afb6b8fe76e48d36a005abaf2131593b75e82"
+    },
+    {
+      "rule_id": "AOB-32",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "d18a87a2f120af16d5465b49ef9febac0f03b1f6ff5eed3eea5e8d8b41d1d703"
+    },
+    {
+      "rule_id": "AOB-33",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "e198b1b2ca05abf72e0625ba5cb89fbd796a81af6868e7cbd9efd66165b60a18"
+    },
+    {
+      "rule_id": "AOB-34",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "930c82624a20d38eb398a5f01f634649c3e9485ef5fb9323698ceb6cc4597849"
+    },
+    {
+      "rule_id": "AOB-35",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "766e2ec18725290f41c8511056673f1c4f9ebd7a56c69885003553b425e47c72"
+    },
+    {
+      "rule_id": "AOB-36",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "bd11559b330f83c45b6c41a9022279a27c30ce29295f00ce175b21e21d1e7671"
+    },
+    {
+      "rule_id": "AOB-37",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "60c9c0d6241a952937843a09aa10391ae5eba28d30a48f169cc9e78984ab3d8b"
+    },
+    {
+      "rule_id": "AOB-38",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "971d414f4ff9e909db5666710953ba284a8f3723d60c6163f8f3d8174e82190f"
+    },
+    {
+      "rule_id": "AOB-39",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "db017743f35cc6eca822ed2daebd2d956cc31476b1c5f5a894e657937f609f35"
+    },
+    {
+      "rule_id": "AOB-40",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "88052ed8ec9da2a7294522dac143576441a2f403b84a2a3548f20e32418f6b35"
+    },
+    {
+      "rule_id": "AOB-41",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "5949cc8e21f8945dc3fd9c2427a480570282620bfdff619a01847f6726fd882a"
+    },
+    {
+      "rule_id": "AOB-42",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "f834d087400c9bff0328199aacd64b56b4efc5039a1aca7d9277add527618947"
+    },
+    {
+      "rule_id": "AOB-43",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "a40a5e6bca8949ca2e58d1d485bb74a8c8b669e78b2213fe86193d64e6b5ee42"
+    },
+    {
+      "rule_id": "AOB-44",
+      "doc": "08_audit-observability.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "c02d3e65b23729608232a9ea291c4d9d8919b376edd9c1db185d08faf961103c"
+    },
+    {
+      "rule_id": "IDE-1",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "b154f893a56a4c7860bc4a24d1e8fe6b2966f97ba5ea03bfbc58aeb3bc743d4a"
+    },
+    {
+      "rule_id": "IDE-2",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "31c846ab1f6c66a8bd58b97360125df2dc183f0462e5b45b9fbcae4245476441"
+    },
+    {
+      "rule_id": "IDE-3",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "19e095925307db3085ac8321d81bd8c3406c9d1af492b3c8d7c8e30118d0e8b9"
+    },
+    {
+      "rule_id": "IDE-4",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "4b8c8a4c474572a493cf9bdd62030bb0c6f2932fe55f8583d52fe523715e6956"
+    },
+    {
+      "rule_id": "IDE-5",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "132d7fce6dd04ca344670804c8af6b3d6733438f264223790cbe432ad1047100"
+    },
+    {
+      "rule_id": "IDE-6",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "52b7718d62c3fe929270d51ddc3b7ee7f6046d97b6a9a15fbc1703cf224b8723"
+    },
+    {
+      "rule_id": "IDE-7",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "3b73e63d462dbbdb74adada667d567e91a1d6b76ac6725d8e501b73ee88bfc34"
+    },
+    {
+      "rule_id": "IDE-8",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "6e2a02422a9976b9787bdf6760bb4d3b98bcbbfa0ac84275011b4ecad68cae30"
+    },
+    {
+      "rule_id": "IDE-9",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "b05b25297428054768f79a39b2f8dcff5eff3e970f9d184c80038f2bae274354"
+    },
+    {
+      "rule_id": "IDE-10",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "cce9a30cf50909a0339db489d9250e2d936a4cf1fdcabf3d3b07b2babaeb0277"
+    },
+    {
+      "rule_id": "IDE-11",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "d72a1371a9d1e40648fc3c564f88d420a1b635963867a2752765e93ce2541cb0"
+    },
+    {
+      "rule_id": "IDE-12",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "e8a93aa935763a7cd0045cbec7dfeb9c031b249e2bffa31ed27536da0fe158c8"
+    },
+    {
+      "rule_id": "IDE-13",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "1fdbf28edf0cf0d2bfe7bff63469c70cb2ff045a4d6287502ea8a1d49f07df51"
+    },
+    {
+      "rule_id": "IDE-14",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "e8378632be011db168fc4375476beda34506f7ca16575a07798970e1d070e4a2"
+    },
+    {
+      "rule_id": "IDE-15",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "e5449bfdc5fa68e0b4c178cba0f1b2834b398b77b7ffc77ca113d0eefa2a49ed"
+    },
+    {
+      "rule_id": "IDE-16",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "cbdc61d4f5193de566533f5547a9de47d30a89fcd6ff489b71ebfcd1ecc875ec"
+    },
+    {
+      "rule_id": "IDE-17",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "15f33bc944c2ecbbbbb42c8d9cd5cfd9f186d1a39f9b6a89b879b54b07c317d4"
+    },
+    {
+      "rule_id": "IDE-18",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "0ac7fe2591bf90ec3c1ac80f7ecf09c686e580e6d20090172be9fa63d5d4cf22"
+    },
+    {
+      "rule_id": "IDE-19",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "635e1af2decf3eb78e8c2fecbfb1d83940db6015f0f05fa36eb14e0420efbfee"
+    },
+    {
+      "rule_id": "IDE-20",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "3449064844155d68eb04ba1c875d0c320cc1eae6005965b58d67aaa6b1cdafab"
+    },
+    {
+      "rule_id": "IDE-21",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "efb480d9a93cb82e39b188750bf7e4ee9ed3e196b8a1d56401a991af4823d743"
+    },
+    {
+      "rule_id": "IDE-22",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "e5fae2085676e5d4350595c55a12cf52250b63d3c3e81013984e9c9eea79b118"
+    },
+    {
+      "rule_id": "IDE-23",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "6954b936b08da061e1669db2d255b8b351c6ec5b51e20beed6869c5c0227d974"
+    },
+    {
+      "rule_id": "IDE-24",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "bbcc36a0cba3b32b479a653260d225d62902a8f28015b55d4193fcc3196a6f37"
+    },
+    {
+      "rule_id": "IDE-25",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "79f7f650206b53ef355c7ff4c54bbfbedc50054eecd027e38a189ab9ad435870"
+    },
+    {
+      "rule_id": "IDE-26",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "9b4916905a21dcb315cd9ffbd9150d0d815253b2b101310b8954aa8ee7383259"
+    },
+    {
+      "rule_id": "IDE-27",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "86568239c16f96e81670bd2b369cb32c5625ddc0e585cdd9a8c01216b2cd4013"
+    },
+    {
+      "rule_id": "IDE-28",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "e4b8f70c4853745b81ee53fc68f10ea05fecbea34031ab3f387397e283ad3495"
+    },
+    {
+      "rule_id": "IDE-29",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "6c1a6dac9f3110d5f77520e7b27698dd81c582e798162a1a82c427aca8da3911"
+    },
+    {
+      "rule_id": "IDE-30",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "ababbe07ca33f3295052bf4a60fd66b87fffcd5b15c5d02645d322b2dfaaf732"
+    },
+    {
+      "rule_id": "IDE-31",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "bd94b397eba0af5ee49b4deac334bde49d37732a36a505400240009bd7361b1a"
+    },
+    {
+      "rule_id": "IDE-32",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "37218864467c2a81886980b0f147bee25df0c1eb85b054486bfb561b5b05e937"
+    },
+    {
+      "rule_id": "IDE-33",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "5cbdbdf3a0fa9cb16c1962940fb15c7fefa3b4e02e8f5e053d0e3ce0cda83ce9"
+    },
+    {
+      "rule_id": "IDE-34",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "520c810d6b629b11f9d9cef1a18a096a8884f7c7b86bbb9d2547d4667992b9c4"
+    },
+    {
+      "rule_id": "IDE-35",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "57dcd781eb31e221f5070c518aebaa15481af74605bca9db3c850507df911979"
+    },
+    {
+      "rule_id": "IDE-36",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "19035539e823fe7787db6f1d3e514fc09337d25dff70c9b301849cf813a320cf"
+    },
+    {
+      "rule_id": "IDE-37",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "ae9e8379f9b7cd887ca7bd4b4d8ce81c1a59f3316537c12ead1017587d8dd911"
+    },
+    {
+      "rule_id": "IDE-38",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "42b5f7a40c8929abb10fc40207d9d1c03a3ed0f6de1908198d3bdfba49a87830"
+    },
+    {
+      "rule_id": "IDE-39",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "c9d04e83f6fda1830f1727c1b1399ed2aa0b93c09b6e44e5f23e7dae75c9fb57"
+    },
+    {
+      "rule_id": "IDE-40",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "c40899e795e59809e726047c888820d52388efc9edef6c53dd5ca15480eea990"
+    },
+    {
+      "rule_id": "IDE-41",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "9bab07116244efd98d1a64352e97c3383a8ef259861b713824a6a75e1946f34a"
+    },
+    {
+      "rule_id": "IDE-42",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "4688495b75dffe0c3fbcf8553aebfba2ab1702a426263ef4d4bad4a1619d66b2"
+    },
+    {
+      "rule_id": "IDE-43",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "8f992d5d3789c67df00080c45913261dc4466cb265d46f8830d3e3fdbaeb6b6b"
+    },
+    {
+      "rule_id": "IDE-44",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "c871a6dbda053e35f4ce4eadf51600ac7d21f03b5597f5a3b2f999151a7b2ede"
+    },
+    {
+      "rule_id": "IDE-45",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "9c16c955cb8a2d966a508e3d8cb7ecb3870dcc8d292ae7acbf531e67544e1b7b"
+    },
+    {
+      "rule_id": "IDE-46",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "2df755b6b5898186b9f7af78fa687ff921c9e964fe66f1f139f731ca71212cd1"
+    },
+    {
+      "rule_id": "IDE-47",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "a908857c4e3261f3d55199c4be0378cdafb70295c8107f1ffda52533edf895e4"
+    },
+    {
+      "rule_id": "IDE-48",
+      "doc": "09_idempotency-errors.md",
+      "normative_word": "MUST NOT",
+      "level": "L2",
+      "not_testable": null,
+      "text_digest": "9684201bc62619146b4942a2255e7227744163bd17660e26c5b689e22f0fc70d"
+    },
+    {
+      "rule_id": "SEC-1",
+      "doc": "10_security.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "86a71dcfc128ed465ce25b83b838cb86927791397a1fb9c269bfb965613bda75"
+    },
+    {
+      "rule_id": "SEC-2",
+      "doc": "10_security.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "d5b3840f97e06ef97899a1c52fe45b84ab334aadd8e4c9ff66ffa6682f4885ad"
+    },
+    {
+      "rule_id": "SEC-3",
+      "doc": "10_security.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "3de1d3f5a6712f480ce7037e70b9aaa87a3f61e161e59eb70d5fe597b145d8e0"
+    },
+    {
+      "rule_id": "SEC-4",
+      "doc": "10_security.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "918176690ced818f66516567150f02e306e3ebc141b129872c3483b536fbefed"
+    },
+    {
+      "rule_id": "SEC-5",
+      "doc": "10_security.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "4b269e7984608779cd5b4ca129a843cee86ddec9a9cdd37ea69ee6e4eb4030e8"
+    },
+    {
+      "rule_id": "SEC-6",
+      "doc": "10_security.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "3583bfd14cbd51035df575014515de4a4147d41b8995e7cbcb0a8eb7769ef617"
+    },
+    {
+      "rule_id": "SEC-7",
+      "doc": "10_security.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "c8f93ad6b92001520bc48c3543a2c6456a7b896c15ec53e13160d89daacc3166"
+    },
+    {
+      "rule_id": "SEC-8",
+      "doc": "10_security.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "09e211daf9220ea62765a8185e385f1ceb85dac30a42074966f6d36888991634"
+    },
+    {
+      "rule_id": "SEC-9",
+      "doc": "10_security.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "5845fe0d8796e764022e696f7f93b0fa05581e7036854b1badfe85c4f9258bce"
+    },
+    {
+      "rule_id": "SEC-10",
+      "doc": "10_security.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "622fa4289bea37671097c6039dd7925f3415f04e0647f3a841c855fed926bf71"
+    },
+    {
+      "rule_id": "SEC-11",
+      "doc": "10_security.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "547309df8dc9bc145f74982a615c1e1bd5cdea207a878f159996b8142728216e"
+    },
+    {
+      "rule_id": "SEC-12",
+      "doc": "10_security.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "66865b8ee83be36290e72625bdfe0a7c37e5843433e163e378d29686281cc15d"
+    },
+    {
+      "rule_id": "SEC-13",
+      "doc": "10_security.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "fd6966d9edf30d9ee4b079092e2a9faea629ab650bef3205decc5ad3dad61a46"
+    },
+    {
+      "rule_id": "SEC-14",
+      "doc": "10_security.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "8b0168f52827b4070645427bfac8430cb7d6680dec452e92c656d759bbfe353b"
+    },
+    {
+      "rule_id": "SEC-15",
+      "doc": "10_security.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "b1af3b8630492bd3411f8540624603d9320bdd965d6f535565ef69cc2aee9a3c"
+    },
+    {
+      "rule_id": "SEC-16",
+      "doc": "10_security.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "b300eca230ff37a8121855b97829f15073a8848c54ead8ae7029666f542db4f2"
+    },
+    {
+      "rule_id": "SEC-17",
+      "doc": "10_security.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "4f37b9ce3593f54b9f92de6b979e2b4ea86ae53df1c246355cdf33859afcd752"
+    },
+    {
+      "rule_id": "SEC-18",
+      "doc": "10_security.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "255b28a4c380d8361a516bb0eda48f70839210c9f326b0956cb39b82dd930d6e"
+    },
+    {
+      "rule_id": "SEC-19",
+      "doc": "10_security.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "b4f205acacaa8bacd27d51b7ad3262dd691bbf55d893125f7431da1bad5c9d0b"
+    },
+    {
+      "rule_id": "CFH-1",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "1980afcd298f965c1ba200f96935f8758c2103d9dc803d14f0eba5df955a5b54"
+    },
+    {
+      "rule_id": "CFH-2",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "246775ffef457713e031e2090859a388c6c199f3e190b69a3fbb0b3210fef23d"
+    },
+    {
+      "rule_id": "CFH-3",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "feeb122258e8a9671919ec079671d5e2ff3a076d9fad54c3fa83fc883e4a3059"
+    },
+    {
+      "rule_id": "CFH-4",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "db2059b9b2407108dc3d051c8bd3c34ac7eb005d46a810ea19c5e51f0e39c3dc"
+    },
+    {
+      "rule_id": "CFH-5",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "7eb8e98e37e479e7157489fbab89a8946ca19d711808c24bf768adbcf8c7caa9"
+    },
+    {
+      "rule_id": "CFH-6",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "25ca9b621d546cc8e1f2cea15b39e7a16fc731120b38314dcdd56eb41517dc76"
+    },
+    {
+      "rule_id": "CFH-7",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "e53907d75f9f5cdf08625eeca62259d0ca44fa3ab582be004418fd509aa0088d"
+    },
+    {
+      "rule_id": "CFH-8",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "5ecbb3cf4eb9e5d506a9c6604483580736ee2baf73dbf44e489953672b35bed4"
+    },
+    {
+      "rule_id": "CFH-9",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "3889d3961b8447e07574ee811f84a107136e6edf79a5c038e19e2ed19c299c83"
+    },
+    {
+      "rule_id": "CFH-10",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "614497562e62d7b3a92b87823708279977b55f98fe8655506aa7eb105b048377"
+    },
+    {
+      "rule_id": "CFH-11",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "9dab72f2f678d073356056e8c4166d2bcd6d3acb8ef619849bcfe898d3c5d1e1"
+    },
+    {
+      "rule_id": "CFH-12",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "2d8cf5ed30cd57f5e025abca4728e3f8a06ebb225d7c2a2fb3ffc7d0c91e4320"
+    },
+    {
+      "rule_id": "CFH-13",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "6969cec161744887a699e8026ec5e1b5db9a5f4bba22261cb8bdffd98215b004"
+    },
+    {
+      "rule_id": "CFH-14",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "7c351d6fdac526ec615602793944802e800cc745324b2b7142fd6c937e3bfa62"
+    },
+    {
+      "rule_id": "CFH-15",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "dba747ddb94b078060f65759285211a9901fa0dcec37f286c262fa0a2608b6b2"
+    },
+    {
+      "rule_id": "CFH-16",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "ccca3344a82a75cf3538c407891717a78c404a728f0ba46db23f16892b6e7889"
+    },
+    {
+      "rule_id": "CFH-17",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "945599a4d0fb48f8c29894055440a34996b6c8c9f562a656dae157d2017ce589"
+    },
+    {
+      "rule_id": "CFH-18",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "ce9f35626879eee720ae949e44e541cb0c17a60daf403d212238370a3beecb63"
+    },
+    {
+      "rule_id": "CFH-19",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "6035bca313fc294b804cc2f093e3aea989e6c3e6647ebb96cee129146f22a529"
+    },
+    {
+      "rule_id": "CFH-20",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "e194bf9970cbb352ee61d37868e0d6c8b9c3f3fb701b02777d5b941e73636fb0"
+    },
+    {
+      "rule_id": "CFH-21",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "1f633746e98e523f93ce6c7c190a6d3f29e3d6caaf6be0007d4e4ddfbaf00c3b"
+    },
+    {
+      "rule_id": "CFH-22",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "61c100b867f04377bf4433a1315150e979ba91bbc76bd6d9b8510dd9090869c4"
+    },
+    {
+      "rule_id": "CFH-23",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "a64779db690fe84ec06b73a1a7156a5ae2b2ef467a625177e6890f29ca89d2de"
+    },
+    {
+      "rule_id": "CFH-24",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "72bbb4a85fe78bc4772125fc2325bccdbdc370fb79b33b77e2ac7b3b5e0ea89c"
+    },
+    {
+      "rule_id": "CFH-25",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "7737660db86624e485b653be3ad05a0f6d7ecfdcb870c949aafeb95ec9620e9b"
+    },
+    {
+      "rule_id": "CFH-26",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "de98f02a1adcaf846b9e7f5fc2229f350be519b9a41c0e8c459ee15f6c60c93b"
+    },
+    {
+      "rule_id": "CFH-27",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "181e23db6a1b46dda38b0e45d356ee173bb4f2e793523f2ef3c77fb310fec10a"
+    },
+    {
+      "rule_id": "CFH-28",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "09b4a70222984fe8d997ee8265a8f4e159fd26feacdef9c5c792f4fe5264acd6"
+    },
+    {
+      "rule_id": "CFH-29",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "9ebc0eea00e6f0531f0277a07a37d2b9fbbc4892e710c701dbf19b56203ae5ca"
+    },
+    {
+      "rule_id": "CFH-30",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "97484cb61df3e1c4c60dc0286c1e54c16a39511deebdb34eeb087d0a6234171c"
+    },
+    {
+      "rule_id": "CFH-31",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "c02d07ffb4c357834b9110b6f0459228ef280c0fbc87064166e38e3a1f378018"
+    },
+    {
+      "rule_id": "CFH-32",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "9cf00335a2de9c903d9cd7f1662478e9662c88737f1f41a9ac4a2322d5487abb"
+    },
+    {
+      "rule_id": "CFH-33",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "46d6ec2c33bebefd702801c5ca8e06ed3acc06559fa1e8f21011d81112252fc3"
+    },
+    {
+      "rule_id": "CFH-34",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "3d90fad5b5a6cebb244f4a9cc5509c1860310bc0a04587bc6d73a8138bceb6f4"
+    },
+    {
+      "rule_id": "CFH-35",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "fe69f2851e6e991cd92e4064dcdc659d76f3074103f041b07ea036356a1a3623"
+    },
+    {
+      "rule_id": "CFH-36",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "89fcc9d1b222e887be8a4801b7aac8de08545f5990b4d28a61ab242322ab932e"
+    },
+    {
+      "rule_id": "CFH-37",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "7f38341e4db07b828e6e1d031cc96eca679c5401cfe4c483a2ee1ceacb8b5922"
+    },
+    {
+      "rule_id": "CFH-38",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "4f5d1e07f453bb5f82f235ed9182ee240f2c6ddf9238af5aae14bce622c82178"
+    },
+    {
+      "rule_id": "CFH-39",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "c7e0ce406fed289db819b4c3328b03fbb26a3fce8303ef6490ac8673ddb4978f"
+    },
+    {
+      "rule_id": "CFH-40",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "d648f39facf6351b9a03e67fe83b3ebc930c101bce799cc81e68c9a8cd5547e0"
+    },
+    {
+      "rule_id": "CFH-41",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "5d4b641876a8fbe5f649c52c7c5f1450637c468a39f7a1a7407dc05e322a56c6"
+    },
+    {
+      "rule_id": "CFH-42",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "2a6577768dfeccf27eeae534e2f3e8faa3e32f81d064c70862f2f457171c5d0a"
+    },
+    {
+      "rule_id": "CFH-43",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "999883e8f71e50c6fcb6adc45b2a0856e5a2a5fb58dac624fc3f786d7b7eb101"
+    },
+    {
+      "rule_id": "CFH-44",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "7556be799a6a7086b3fed98a6f69272a6ee375a5d11b6a42dc3e7e1c9f2c91ad"
+    },
+    {
+      "rule_id": "CFH-45",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "d0ab57a2e287d81d8f1e2545c0db3bd520e7a2157267109c7e14842a8911703d"
+    },
+    {
+      "rule_id": "CFH-46",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "132d0e014f91e158b0595abefb95d8fa3d71316ce15b7f3807fe40a3668acd25"
+    },
+    {
+      "rule_id": "CFH-47",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "1122080a12da159cbafea804cff4fd834d4664057b91ddacfa915636e0261d45"
+    },
+    {
+      "rule_id": "CFH-48",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "d4028d1cc66d68cfbe8fb5d8e32a93fe98ca39417e1b098c578817e6519dae4d"
+    },
+    {
+      "rule_id": "CFH-49",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "f8aaebd1a513ba25e80de2e4e3737a4b3befa220c1f8da260ec2861a5a36ffa7"
+    },
+    {
+      "rule_id": "CFH-50",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "163a870aade653fad6969f1557969b7d8bedacc0176ebb9a93aebf3c89a7e729"
+    },
+    {
+      "rule_id": "CFH-51",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "74209860189c6384bc6468eebb567ef1f4b85d2e5f9398a1ac508d0e70b07295"
+    },
+    {
+      "rule_id": "CFH-52",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "f20703c42a117497198d2ea9b37a48111df70718805e263e4cbf3b014bdbbfac"
+    },
+    {
+      "rule_id": "CFH-53",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "1aab0a9625614ddeb43061d2f8510c66f3ac0c5ed0b21f8710629a9604656ed2"
+    },
+    {
+      "rule_id": "CFH-54",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST NOT",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "88329164e5c5755d4658ebf6e948028649de5161a03cffa4832f5356d4b3b2a1"
+    }
+  ]
+}
