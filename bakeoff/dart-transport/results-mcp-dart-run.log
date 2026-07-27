@@ -1,0 +1,4 @@
+[INFO][mcp_dart.client] Setting request handler for potentially custom method 'ping'. Ensure client capabilities match.
+[DEBUG][mcp_dart.client] MCP Server Discovered. Server: unknown, Protocol: 2026-07-28
+CONNECT OK (server/discover, no initialize)
+CALLTOOL OK: isError=false content=({type: text, text: bakeoff smoke: tools/call ok})

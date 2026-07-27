@@ -1,0 +1,7 @@
+{
+  "resultType": "complete",
+  "content": [
+    {"type": "text", "text": "bakeoff smoke: tools/call ok"}
+  ],
+  "isError": false
+}

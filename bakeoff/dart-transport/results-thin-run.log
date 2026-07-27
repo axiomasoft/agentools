@@ -1,0 +1,2 @@
+DISCOVER OK: supportedVersions=[2026-07-28] capabilities={tools: {}}
+CALLTOOL OK: isError=false content=[{type: text, text: bakeoff smoke: tools/call ok}]
