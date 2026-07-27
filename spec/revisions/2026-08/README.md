@@ -18,7 +18,7 @@ GREEN) плюс git-тегом ревизии; каталог при этом Н
 
 | Документ | Префикс правил | Назначение | Статус |
 |:--|:--|:--|:--|
-| `00_overview.md` | `OVR-` | конвенции, глоссарий, RFC 2119, уровни L1–L3, out of scope by design | не написан |
+| `00_overview.md` | `OVR-` | конвенции, глоссарий, RFC 2119, уровни L1–L3, out of scope by design | написан (`OVR-1`…`OVR-27`) |
 | `01_extension-identity.md` | `EXT-` | идентичность расширения, грамматика вендорных ключей, negotiation | не написан |
 | `02_tool-contract-profile.md` | `TLP-` | профиль инструмента, `descriptor_digest`, `content_origin` | не написан |
 | `03_action-lifecycle.md` | `ALC-` | журнал как источник истины, эпоха, снапшот, хеш-цепочка | не написан |
