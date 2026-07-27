@@ -3,14 +3,33 @@
 
 Использование:
     python3 tools/spec_lint.py <revision_dir> [--allow-missing]
+    python3 tools/spec_lint.py --keywords-check <schema.json> [--list A|B]
+    python3 tools/spec_lint.py --legacy-check <revision_dir>
 
-Проверки:
+Ревизий в репозитории больше одной, и они живут по РАЗНЫМ конвенциям (`2026-07-draft`
+— история, `2026-08` — modern-only против MCP 2026-07-28), поэтому линтер параметризован
+СЛОВАРЁМ ПРОФИЛЕЙ `REVISION_PROFILES`: профиль выбирается по имени каталога ревизии,
+неизвестное имя — внятная ошибка, а не молчаливый дефолт.
+
+Общие проверки (обе ревизии):
   1. Каждый schema/*.json парсится и содержит корректные $schema/$id.
   2. Каждый нормативный NN_*.md существует (пропускается с --allow-missing).
   3. Markdown-ссылки на файлы внутри ревизии разрешаются.
-  4. Блоки ```json в докax парсятся как валидный JSON.
+  4. Блоки ```json в доках парсятся как валидный JSON.
   5. Если json-блок начинается с комментарием "// example: <schema-file>" —
      соответствующий файл схемы должен существовать.
+  6. fixtures/ — структура тест-векторов и golden-пар.
+
+Дополнительные проверки профиля `2026-08` (все — следствия anti-regression списка
+`research/00-user-intent.md` §4, конвенции — `research/02-p3-authoring-conventions-2026-08.md` §5):
+  1. Одно перечисление — один $defs (№1).
+  2. `description` не вводит норму RFC 2119 (№5).
+  3. Каждый $ref резолвится офлайн (№6).
+  4. Ключевые слова схем по Спискам A/B (`DR-02` §2–§3).
+  5. Грамматика нормативной строки: уникальный маркер, ровно один уровень (№3).
+  6. Структурная сверка примера со своей схемой (№2).
+  7. Легаси-лексика вне огороженного блока (D20/D45).
+  8. Таблица покрытия решений `DR-01` в каждом документе.
 
 Без сетевых обращений, stdlib-only. Ошибки собираются списком и печатаются
 разом; exit 1 при наличии хотя бы одной ошибки, иначе exit 0.
@@ -20,55 +39,205 @@ import re
 import sys
 from pathlib import Path
 
-# Список обязательных нормативных документов ревизии. Пополняется по мере
-# развития спеки (например, 07_conformance-adapter.md добавляется в фазе P1).
-REQUIRED_DOCS = [
-    "00_overview.md",
-    "01_tool-contract-profile.md",
-    "02_action-lifecycle.md",
-    "03_confirmation-protocol.md",
-    "04_scenario-schema.md",
-    "05_audit-events.md",
-    "06_idempotency-errors.md",
-]
-
 EXPECTED_SCHEMA_DIALECT = "https://json-schema.org/draft/2020-12/schema"
 
 MD_LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 JSON_BLOCK_RE = re.compile(r"```json\n(.*?)\n```", re.DOTALL)
 EXAMPLE_COMMENT_RE = re.compile(r"^//\s*example:\s*(\S+)\s*$")
 
-# P0.9: fixtures/ проверяются вместе с ревизией спеки (см. Validation item'а). Формат
-# spec_ref-маркера — общий для всех нормативных доков 01-06 (TCP-1, LC-T13, CP-7, SC-15,
-# AU-11, IE-6).
-SPEC_REF_RE = re.compile(r"^(TCP|LC|CP|SC|AU|IE)-T?[0-9]+$")
 SESSION_STATES = {
     "CREATED", "RUNNING", "WAITING_INPUT", "WAITING_APPROVAL", "EXECUTING_TOOL",
     "COMPLETED", "FAILED_RETRYABLE", "FAILED_TERMINAL", "CANCELLED", "EXPIRED",
 }
 FIXTURE_REQUIRED_KEYS = ["id", "title", "spec_refs", "conformance_level", "given", "script", "expect"]
 SCRIPT_STEP_KEYS = {"user_input", "llm_stub", "clarification_answer", "approval", "tick_seconds"}
-MIN_VECTORS = 15
+
+# --- Списки A и B (`DR-02` §2–§3) --------------------------------------------
+# Копируются в код ЯВНЫМИ множествами, а не выводятся эвристикой: расхождение
+# профиля с решением обязано быть видно диффом этого файла.
+
+# Ключевые слова, запрещённые В ЛЮБОМ списке: они меняют ФОРМУ документа и не
+# переживают ни одного разобранного таргета (`DR-02` §2 — p04, p07 + норма §E5/§E6).
+KEYWORDS_FORBIDDEN_ALWAYS = ("$dynamicRef", "$dynamicAnchor", "prefixItems")
+
+# Список A — опубликованные схемы: провод ОТКРЫТ, закрытия нет вовсе (`DR-01` §J9).
+KEYWORDS_FORBIDDEN_LIST_A = ("unevaluatedProperties",)
+
+LEGACY_TERMS_2026_08 = (
+    "initialize",
+    "Mcp-Session-Id",
+    "Last-Event-ID",
+    "roots/",
+    "sampling/",
+    "logging/",
+    "Dynamic Client Registration",
+    "DCR",
+    "HTTP+SSE",
+    "SSE-resumability",
+    "server-initiated",
+)
+LEGACY_FENCE_START = "<!-- legacy-lexicon-allowed:start -->"
+LEGACY_FENCE_END = "<!-- legacy-lexicon-allowed:end -->"
+LEGACY_FENCE_DOC = "00_overview.md"
+
+RFC2119_WORDS_RE = re.compile(r"(?<![A-Za-z])(MUST NOT|MUST|SHOULD NOT|SHOULD|MAY)(?![A-Za-z])")
+
+COVERAGE_HEADING = "## Покрытие решений"
+
+DOCS_2026_08 = [
+    "00_overview.md",
+    "01_extension-identity.md",
+    "02_tool-contract-profile.md",
+    "03_action-lifecycle.md",
+    "04_confirmation.md",
+    "05_clarification-mrtr.md",
+    "06_scenarios.md",
+    "07_long-operations.md",
+    "08_audit-observability.md",
+    "09_idempotency-errors.md",
+    "10_security.md",
+    "11_conformance-harness.md",
+]
+
+# Маркер ↔ документ (`research/02-…` §2). Маркер чужого документа — ошибка: обе
+# ревизии живут в одном репозитории и греп-ищутся одними командами.
+RULE_PREFIXES_2026_08 = {
+    "00_overview.md": "OVR",
+    "01_extension-identity.md": "EXT",
+    "02_tool-contract-profile.md": "TLP",
+    "03_action-lifecycle.md": "ALC",
+    "04_confirmation.md": "CNF",
+    "05_clarification-mrtr.md": "CLR",
+    "06_scenarios.md": "SCN",
+    "07_long-operations.md": "LOP",
+    "08_audit-observability.md": "AOB",
+    "09_idempotency-errors.md": "IDE",
+    "10_security.md": "SEC",
+    "11_conformance-harness.md": "CFH",
+}
+
+RULE_LINE_RE_2026_08 = re.compile(
+    r"^\*\*(?P<id>(?:OVR|EXT|TLP|ALC|CNF|CLR|SCN|LOP|AOB|IDE|SEC|CFH)-T?\d+) "
+    r"\((?P<word>MUST NOT|MUST|SHOULD NOT|SHOULD|MAY), (?P<level>L1|L2|L3)"
+    r"(?:, Not testable: (?P<reason>[^)]+))?\)\.\*\* (?P<text>.+)$")
+
+# Кандидат в нормативную строку: начинается маркером ревизии. Если кандидат не
+# прошёл грамматику — это ошибка, а не «просто текст»: тихого правила без уровня
+# не существует (anti-regression №3).
+RULE_CANDIDATE_RE_2026_08 = re.compile(
+    r"^\*\*(?:OVR|EXT|TLP|ALC|CNF|CLR|SCN|LOP|AOB|IDE|SEC|CFH)-T?\d+\b")
+
+REVISION_PROFILES = {
+    "2026-07-draft": {
+        # Профиль повторяет поведение линтера до введения профилей: ревизия закрыта
+        # (D18) и её проверки не пересматриваются.
+        "required_docs": [
+            "00_overview.md",
+            "01_tool-contract-profile.md",
+            "02_action-lifecycle.md",
+            "03_confirmation-protocol.md",
+            "04_scenario-schema.md",
+            "05_audit-events.md",
+            "06_idempotency-errors.md",
+        ],
+        "schema_dirs": [("schema", None)],
+        "schema_id_base": "https://agentools.dev/schema/2026-07-draft/",
+        "spec_ref_re": re.compile(r"^(TCP|LC|CP|SC|AU|IE)-T?[0-9]+$"),
+        "fixtures_root": "fixtures",
+        "min_vectors": 15,
+        "rule_prefixes": None,
+        "rule_line_re": None,
+        "keyword_lists": False,
+        "legacy_terms": None,
+        "coverage_required": False,
+        "enum_single_defs": False,
+        "description_no_norm": False,
+        "refs_offline": False,
+        "examples_structural": False,
+    },
+    "2026-08": {
+        "required_docs": DOCS_2026_08,
+        # Список A — опубликованные схемы, Список B — схемы авторинга.
+        "schema_dirs": [("schema", "A"), ("schema/authoring", "B")],
+        "schema_id_base": "https://agentools.dev/schema/2026-08/",
+        "spec_ref_re": re.compile(
+            r"^(OVR|EXT|TLP|ALC|CNF|CLR|SCN|LOP|AOB|IDE|SEC|CFH)-T?[0-9]+$"),
+        "fixtures_root": "fixtures/2026-08",
+        # Порог поднимает фаза P4: на момент P3 корпуса ещё нет, и «зелёный на
+        # пустом» здесь не самообман, а честное отсутствие предмета.
+        "min_vectors": 0,
+        "rule_prefixes": RULE_PREFIXES_2026_08,
+        "rule_line_re": RULE_LINE_RE_2026_08,
+        "keyword_lists": True,
+        "legacy_terms": LEGACY_TERMS_2026_08,
+        "coverage_required": True,
+        "enum_single_defs": True,
+        "description_no_norm": True,
+        "refs_offline": True,
+        "examples_structural": True,
+    },
+}
 
 
-def check_required_docs(revision_dir: Path, allow_missing: bool, errors: list) -> None:
+def resolve_profile(revision_dir):
+    """Профиль выбирается по ИМЕНИ каталога ревизии. Неизвестное имя — отказ, а не
+    молчаливый дефолт: линтер, применивший чужие конвенции, зелен по ошибке."""
+    name = revision_dir.resolve().name
+    profile = REVISION_PROFILES.get(name)
+    if profile is None:
+        known = ", ".join(sorted(REVISION_PROFILES))
+        raise KeyError(f"неизвестная ревизия {name!r}: профиля нет (известны: {known})")
+    return profile
+
+
+# --- обход схем ---------------------------------------------------------------
+
+def iter_schema_nodes(node, path="<root>"):
+    """Обходит ВСЕ подсхемы документа, отдавая пару (путь, узел). Путь нужен в
+    сообщениях: «где-то в схеме» не чинится, а `properties/kind/oneOf/3` чинится."""
+    if isinstance(node, dict):
+        yield path, node
+        for key, value in node.items():
+            yield from iter_schema_nodes(value, f"{path}/{key}")
+    elif isinstance(node, list):
+        for index, value in enumerate(node):
+            yield from iter_schema_nodes(value, f"{path}/{index}")
+
+
+def load_json(path, errors):
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        errors.append(f"{path}: невалидный JSON ({exc})")
+        return None
+
+
+def revision_schema_files(revision_dir, profile):
+    """Пары (файл, список A|B). Файлы `schema/authoring/**` не попадают в выборку
+    `schema/*.json` — glob не рекурсивен, и это намеренно."""
+    for rel, list_name in profile["schema_dirs"]:
+        directory = revision_dir / rel
+        if not directory.is_dir():
+            continue
+        for schema_file in sorted(directory.glob("*.json")):
+            yield schema_file, list_name
+
+
+# --- общие проверки -----------------------------------------------------------
+
+def check_required_docs(revision_dir, profile, allow_missing, errors):
     if allow_missing:
         return
-    for name in REQUIRED_DOCS:
+    for name in profile["required_docs"]:
         if not (revision_dir / name).is_file():
             errors.append(f"отсутствует обязательный документ: {name}")
 
 
-def check_schemas(revision_dir: Path, errors: list) -> None:
-    schema_dir = revision_dir / "schema"
-    if not schema_dir.is_dir():
-        return
-    revision_name = revision_dir.name
-    for schema_file in sorted(schema_dir.glob("*.json")):
-        try:
-            data = json.loads(schema_file.read_text(encoding="utf-8"))
-        except json.JSONDecodeError as e:
-            errors.append(f"{schema_file}: невалидный JSON ({e})")
+def check_schemas(revision_dir, profile, errors):
+    base = profile["schema_id_base"]
+    for schema_file, list_name in revision_schema_files(revision_dir, profile):
+        data = load_json(schema_file, errors)
+        if data is None:
             continue
         if not isinstance(data, dict):
             errors.append(f"{schema_file}: корень схемы должен быть объектом")
@@ -79,7 +248,8 @@ def check_schemas(revision_dir: Path, errors: list) -> None:
                 f"{schema_file}: $schema должен быть '{EXPECTED_SCHEMA_DIALECT}', "
                 f"получено {schema_dialect!r}"
             )
-        expected_id = f"https://agentools.dev/schema/{revision_name}/{schema_file.name}"
+        prefix = base + ("authoring/" if list_name == "B" else "")
+        expected_id = f"{prefix}{schema_file.name}"
         actual_id = data.get("$id")
         if actual_id != expected_id:
             errors.append(
@@ -87,7 +257,7 @@ def check_schemas(revision_dir: Path, errors: list) -> None:
             )
 
 
-def check_markdown_links(revision_dir: Path, errors: list) -> None:
+def check_markdown_links(revision_dir, errors):
     revision_root = revision_dir.resolve()
     for md_file in sorted(revision_dir.glob("*.md")):
         text = md_file.read_text(encoding="utf-8")
@@ -108,78 +278,85 @@ def check_markdown_links(revision_dir: Path, errors: list) -> None:
                 errors.append(f"{md_file}: битая ссылка на {target!r}")
 
 
-def check_json_blocks(revision_dir: Path, errors: list) -> None:
-    schema_dir = revision_dir / "schema"
+def iter_example_blocks(revision_dir):
+    """Отдаёт (md-файл, номер блока, имя схемы|None, текст json). Один разбор
+    markdown на две проверки — синтаксис блока и его структурную сверку."""
     for md_file in sorted(revision_dir.glob("*.md")):
         text = md_file.read_text(encoding="utf-8")
         for i, match in enumerate(JSON_BLOCK_RE.finditer(text), start=1):
             block = match.group(1)
             lines = block.split("\n", 1)
-            first_line = lines[0]
-            json_text = block
-            example_match = EXAMPLE_COMMENT_RE.match(first_line.strip())
+            example_match = EXAMPLE_COMMENT_RE.match(lines[0].strip())
             if example_match:
-                schema_name = example_match.group(1)
-                schema_path = schema_dir / schema_name
-                if not schema_path.is_file():
-                    errors.append(
-                        f"{md_file}: json-блок #{i} ссылается на несуществующую "
-                        f"схему {schema_name!r}"
-                    )
-                json_text = lines[1] if len(lines) > 1 else ""
-            try:
-                json.loads(json_text)
-            except json.JSONDecodeError as e:
-                errors.append(f"{md_file}: json-блок #{i} невалиден ({e})")
+                yield md_file, i, example_match.group(1), (lines[1] if len(lines) > 1 else "")
+            else:
+                yield md_file, i, None, block
 
 
-def _spec_ref_exists(ref: str, docs_corpus: str) -> bool:
-    """Маркер (напр. 'LC-T13') MUST существовать в текстах доков 01-06 как точное
+def check_json_blocks(revision_dir, errors):
+    schema_dir = revision_dir / "schema"
+    for md_file, index, schema_name, json_text in iter_example_blocks(revision_dir):
+        if schema_name is not None and not (schema_dir / schema_name).is_file():
+            errors.append(
+                f"{md_file}: json-блок #{index} ссылается на несуществующую "
+                f"схему {schema_name!r}"
+            )
+        try:
+            json.loads(json_text)
+        except json.JSONDecodeError as exc:
+            errors.append(f"{md_file}: json-блок #{index} невалиден ({exc})")
+
+
+def _spec_ref_exists(ref, docs_corpus):
+    """Маркер (напр. 'LC-T13') MUST существовать в текстах нормативных доков как точное
     вхождение (границы — не буква/цифра/дефис), а не как подстрока внутри другого
     маркера (иначе 'LC-1' ложно совпал бы внутри 'LC-15')."""
     pattern = re.compile(r"(?<![A-Za-z0-9-])" + re.escape(ref) + r"(?![A-Za-z0-9-])")
     return pattern.search(docs_corpus) is not None
 
 
-def check_fixtures(revision_dir: Path, errors: list) -> None:
-    """P0.9: fixtures/ — языконезависимые тест-векторы (не часть revision_dir, лежат
-    на уровне репозитория). Проверки структурные (без полной JSON-Schema-валидации —
-    D14: та приходит в P1); цель — держать 15 векторов и golden-файлы честными
-    относительно нормативных доков и формата fixture.json."""
+def check_fixtures(revision_dir, profile, errors):
+    """fixtures — языконезависимые тест-векторы (не часть revision_dir, лежат на
+    уровне репозитория). Проверки структурные (без полной JSON-Schema-валидации —
+    D14: та приходит с раннером фазы P6); цель — держать векторы и golden-файлы
+    честными относительно нормативных доков и формата fixture.json.
+
+    Порог `min_vectors = 0` означает, что корпус ревизии ещё не заведён (его пишет
+    фаза P4): отсутствующего каталога в этом случае недостаточно для ошибки."""
     repo_root = revision_dir.resolve().parents[2]
-    fixtures_dir = repo_root / "fixtures"
+    fixtures_dir = repo_root / profile["fixtures_root"]
+    min_vectors = profile["min_vectors"]
     if not fixtures_dir.is_dir():
-        errors.append("отсутствует директория fixtures/ (P0.9)")
+        if min_vectors == 0:
+            return
+        errors.append(f"отсутствует директория {profile['fixtures_root']}/ (P0.9)")
         return
 
     fixture_schema_path = fixtures_dir / "schema" / "fixture.json"
     if not fixture_schema_path.is_file():
-        errors.append("отсутствует fixtures/schema/fixture.json (P0.9)")
+        errors.append(f"отсутствует {profile['fixtures_root']}/schema/fixture.json (P0.9)")
     else:
-        try:
-            json.loads(fixture_schema_path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError as e:
-            errors.append(f"{fixture_schema_path}: невалидный JSON ({e})")
+        load_json(fixture_schema_path, errors)
 
     docs_corpus = "\n".join(
         (revision_dir / name).read_text(encoding="utf-8")
-        for name in REQUIRED_DOCS
+        for name in profile["required_docs"]
         if (revision_dir / name).is_file()
     )
 
     vectors_dir = fixtures_dir / "vectors"
     vector_files = sorted(vectors_dir.glob("**/*.json")) if vectors_dir.is_dir() else []
-    if len(vector_files) < MIN_VECTORS:
+    if len(vector_files) < min_vectors:
         errors.append(
-            f"fixtures/vectors: найдено {len(vector_files)} векторов, требуется минимум {MIN_VECTORS} (P0.9)"
+            f"{profile['fixtures_root']}/vectors: найдено {len(vector_files)} векторов, "
+            f"требуется минимум {min_vectors} (P0.9)"
         )
 
-    seen_ids: dict = {}
+    spec_ref_re = profile["spec_ref_re"]
+    seen_ids = {}
     for vf in vector_files:
-        try:
-            data = json.loads(vf.read_text(encoding="utf-8"))
-        except json.JSONDecodeError as e:
-            errors.append(f"{vf}: невалидный JSON ({e})")
+        data = load_json(vf, errors)
+        if data is None:
             continue
         if not isinstance(data, dict):
             errors.append(f"{vf}: корень вектора должен быть объектом")
@@ -204,10 +381,10 @@ def check_fixtures(revision_dir: Path, errors: list) -> None:
             errors.append(f"{vf}: spec_refs должен быть непустым списком (P0.9)")
         else:
             for ref in spec_refs:
-                if not isinstance(ref, str) or not SPEC_REF_RE.match(ref):
+                if not isinstance(ref, str) or not spec_ref_re.match(ref):
                     errors.append(f"{vf}: spec_ref '{ref}' не соответствует формату маркера")
                 elif not _spec_ref_exists(ref, docs_corpus):
-                    errors.append(f"{vf}: spec_ref '{ref}' не найден ни в одном из доков 01-06")
+                    errors.append(f"{vf}: spec_ref '{ref}' не найден ни в одном нормативном доке")
 
         if data.get("conformance_level") not in ("L1", "L2", "L3"):
             errors.append(f"{vf}: conformance_level должен быть L1|L2|L3")
@@ -235,13 +412,13 @@ def check_fixtures(revision_dir: Path, errors: list) -> None:
             if not isinstance(expect.get("events"), list):
                 errors.append(f"{vf}: expect.events должен быть списком")
             if expect.get("final_state") not in SESSION_STATES:
-                errors.append(f"{vf}: expect.final_state отсутствует или не входит в состояния FSM (02/LC-1)")
+                errors.append(f"{vf}: expect.final_state отсутствует или не входит в состояния FSM")
 
     check_golden_pairs(fixtures_dir / "golden" / "jcs", "vector-*.input.json", errors, min_pairs=3)
     check_golden_pairs(fixtures_dir / "golden" / "idempotency", "key-*.input.json", errors, min_pairs=1)
 
 
-def check_golden_pairs(golden_dir: Path, input_glob: str, errors: list, min_pairs: int) -> None:
+def check_golden_pairs(golden_dir, input_glob, errors, min_pairs):
     if not golden_dir.is_dir():
         errors.append(f"отсутствует директория {golden_dir} (P0.9)")
         return
@@ -258,40 +435,439 @@ def check_golden_pairs(golden_dir: Path, input_glob: str, errors: list, min_pair
             errors.append(f"{golden_file}: MUST заканчиваться РОВНО одним переводом строки (AU-18)")
         try:
             json.loads(input_file.read_text(encoding="utf-8"))
-        except json.JSONDecodeError as e:
-            errors.append(f"{input_file}: невалидный JSON ({e})")
+        except json.JSONDecodeError as exc:
+            errors.append(f"{input_file}: невалидный JSON ({exc})")
 
 
-def main() -> int:
-    args = sys.argv[1:]
-    allow_missing = "--allow-missing" in args
-    positional = [a for a in args if a != "--allow-missing"]
-    if len(positional) != 1:
-        print(
-            "Использование: python3 spec_lint.py <revision_dir> [--allow-missing]",
-            file=sys.stderr,
-        )
+# --- проверки профиля `2026-08` ----------------------------------------------
+
+def _enumeration_values(node):
+    """Перечисление узла в нормализованном виде либо None. Две формы: голый `enum`
+    и обязательная для расширяемых словарей форма `oneOf` из `const`-веток
+    (`DR-01` §E2) — обе описывают ОДНО множество значений и потому сравнимы."""
+    if isinstance(node.get("enum"), list) and node["enum"]:
+        values = node["enum"]
+    elif isinstance(node.get("oneOf"), list) and node["oneOf"]:
+        # Ветвь-fallback (`{type: string, pattern: …}`) в подсчёт не входит: она не
+        # значение перечисления, а точка расширения (`DR-01` §E2).
+        consts = [b["const"] for b in node["oneOf"] if isinstance(b, dict) and "const" in b]
+        if len(consts) < 2:
+            return None
+        values = consts
+    else:
+        return None
+    try:
+        return tuple(sorted(json.dumps(v, sort_keys=True) for v in values))
+    except TypeError:
+        return None
+
+
+def check_enum_single_defs(revision_dir, profile, errors):
+    """anti-regression №1: одно перечисление — один узел `$defs`, подключаемый
+    `$ref`. Инлайн-дубль ловится сравнением НОРМАЛИЗОВАННЫХ множеств значений:
+    именно так `StepStartedPayload.kind` разъехался со `StepKind` в `2026-07-draft`."""
+    inline = {}
+    defined = {}
+    for schema_file, _ in revision_schema_files(revision_dir, profile):
+        data = load_json(schema_file, errors)
+        if not isinstance(data, dict):
+            continue
+        for path, node in iter_schema_nodes(data):
+            values = _enumeration_values(node)
+            if values is None:
+                continue
+            target = defined if "/$defs/" in path else inline
+            target.setdefault(values, []).append(f"{schema_file}:{path}")
+
+    for values, places in sorted(inline.items()):
+        if len(places) > 1:
+            errors.append(
+                f"перечисление {list(values)} материализовано инлайн {len(places)} раз "
+                f"({', '.join(places)}) — обязано жить одним $defs-узлом (anti-regression №1)"
+            )
+        elif values in defined:
+            errors.append(
+                f"перечисление {list(values)} объявлено и в $defs ({defined[values][0]}), "
+                f"и инлайн ({places[0]}) — инлайн-копия обязана быть $ref (anti-regression №1)"
+            )
+
+
+def check_description_no_norm(revision_dir, profile, errors):
+    """anti-regression №5: `description` схемы НЕ вводит норму. Норма живёт только в
+    markdown-правиле с маркером — иначе носителей два и они расходятся молча."""
+    for schema_file, _ in revision_schema_files(revision_dir, profile):
+        data = load_json(schema_file, errors)
+        if not isinstance(data, dict):
+            continue
+        for path, node in iter_schema_nodes(data):
+            description = node.get("description")
+            if not isinstance(description, str):
+                continue
+            found = RFC2119_WORDS_RE.findall(description)
+            if found:
+                errors.append(
+                    f"{schema_file}:{path}: description несёт нормативные слова "
+                    f"{sorted(set(found))} — норма живёт в markdown-правиле (anti-regression №5)"
+                )
+
+
+def check_refs_offline(revision_dir, profile, errors):
+    """anti-regression №6 + `DR-01` §E5: каждый `$ref` резолвится БЕЗ сети —
+    внутрифайловый либо относительный на существующий файл ревизии."""
+    for schema_file, _ in revision_schema_files(revision_dir, profile):
+        data = load_json(schema_file, errors)
+        if not isinstance(data, dict):
+            continue
+        for path, node in iter_schema_nodes(data):
+            ref = node.get("$ref")
+            if not isinstance(ref, str):
+                continue
+            if ref.startswith(("http://", "https://")):
+                errors.append(
+                    f"{schema_file}:{path}: сетевой $ref {ref!r} запрещён "
+                    f"(автодереференс — DR-01 §E5, SEP-2106)"
+                )
+                continue
+            if ref.startswith("#"):
+                continue
+            target = (schema_file.parent / ref.split("#", 1)[0]).resolve()
+            if not target.is_file():
+                errors.append(f"{schema_file}:{path}: $ref {ref!r} не резолвится офлайн")
+
+
+def check_keywords(data, list_name, source, errors):
+    """Ключевые слова схемы против Списка A (провод) или B (авторинг), `DR-02` §2–§3.
+
+    Разница ровно в закрытии: A запрещает его целиком, B разрешает
+    `unevaluatedProperties: false` на внешнем уровне композиции и
+    `additionalProperties: false` в листовых подсхемах без `allOf`/`$ref`."""
+    for path, node in iter_schema_nodes(data):
+        for keyword in KEYWORDS_FORBIDDEN_ALWAYS:
+            if keyword in node:
+                errors.append(
+                    f"{source}:{path}: ключевое слово {keyword!r} запрещено "
+                    f"(Список {list_name}, DR-02 §2–§3)"
+                )
+        ref = node.get("$ref")
+        if isinstance(ref, str) and ref.startswith(("http://", "https://")):
+            errors.append(f"{source}:{path}: сетевой $ref {ref!r} запрещён (Список {list_name})")
+
+        has_composition = any(k in node for k in ("allOf", "anyOf", "oneOf", "$ref"))
+        if list_name == "A":
+            for keyword in KEYWORDS_FORBIDDEN_LIST_A:
+                if keyword in node:
+                    errors.append(
+                        f"{source}:{path}: {keyword!r} запрещён в опубликованной схеме — "
+                        f"провод открыт (Список A, DR-01 §J9)"
+                    )
+            if node.get("additionalProperties") is False:
+                errors.append(
+                    f"{source}:{path}: 'additionalProperties: false' запрещён в опубликованной "
+                    f"схеме — ломает must-ignore (Список A, DR-01 §E3/§E5)"
+                )
+        else:
+            if "unevaluatedProperties" in node and not has_composition:
+                errors.append(
+                    f"{source}:{path}: 'unevaluatedProperties' разрешён только на внешнем "
+                    f"уровне композиции (Список B, DR-01 §E5)"
+                )
+            if node.get("additionalProperties") is False and has_composition:
+                errors.append(
+                    f"{source}:{path}: 'additionalProperties: false' разрешён только в листовых "
+                    f"подсхемах без allOf/$ref (Список B, DR-01 §E5)"
+                )
+
+
+def check_keyword_lists(revision_dir, profile, errors):
+    """Список выбирается КАТАЛОГОМ схемы, а не флагом: `schema/` — провод (A),
+    `schema/authoring/` — авторинг (B)."""
+    for schema_file, list_name in revision_schema_files(revision_dir, profile):
+        if list_name is None:
+            continue
+        data = load_json(schema_file, errors)
+        if isinstance(data, dict):
+            check_keywords(data, list_name, schema_file, errors)
+
+
+def check_rule_lines(revision_dir, profile, errors):
+    """Грамматика нормативной строки (`research/02-…` §3): маркер + нормативное слово +
+    РОВНО один уровень, всё в самой строке. anti-regression №3: уровень отдельной
+    таблицей — второй носитель одного факта, из которого и родились `TCP-13` в двух
+    уровнях сразу и `AU-20` без уровня."""
+    rule_line_re = profile["rule_line_re"]
+    prefixes = profile["rule_prefixes"]
+    seen = {}
+    for name in profile["required_docs"]:
+        doc = revision_dir / name
+        if not doc.is_file():
+            continue
+        own_prefix = prefixes[name]
+        for lineno, line in enumerate(doc.read_text(encoding="utf-8").split("\n"), start=1):
+            if not RULE_CANDIDATE_RE_2026_08.match(line):
+                continue
+            match = rule_line_re.match(line)
+            if not match:
+                errors.append(
+                    f"{doc}:{lineno}: строка правила не соответствует грамматике "
+                    f"'**<ID> (<СЛОВО>, <Ln>[, Not testable: <причина>]).** <текст>'"
+                )
+                continue
+            rule_id = match.group("id")
+            prefix = rule_id.split("-", 1)[0]
+            if prefix != own_prefix:
+                errors.append(
+                    f"{doc}:{lineno}: маркер {rule_id} принадлежит документу с префиксом "
+                    f"{own_prefix!r} — чужой префикс запрещён (research/02-… §2)"
+                )
+            if rule_id in seen:
+                errors.append(f"{doc}:{lineno}: дублирующийся маркер {rule_id} (уже в {seen[rule_id]})")
+            else:
+                seen[rule_id] = f"{doc}:{lineno}"
+
+
+def _schema_surface(schema, root):
+    """Свойства и `required` схемы, собранные ЧЕРЕЗ композицию первого уровня
+    (`allOf` + внутрифайловые `$ref`). Проверка объявлена структурной: полная
+    валидация JSON Schema приходит с раннером фазы P6 (D14 — stdlib-only)."""
+    properties = set()
+    patterns = []
+    required = set()
+    seen_refs = set()
+
+    def visit(node):
+        if not isinstance(node, dict):
+            return
+        ref = node.get("$ref")
+        if isinstance(ref, str) and ref.startswith("#/") and ref not in seen_refs:
+            seen_refs.add(ref)
+            target = root
+            for part in ref[2:].split("/"):
+                if isinstance(target, dict):
+                    target = target.get(part.replace("~1", "/").replace("~0", "~"))
+            visit(target)
+        for key in ("properties", "patternProperties"):
+            container = node.get(key)
+            if isinstance(container, dict):
+                if key == "properties":
+                    properties.update(container)
+                else:
+                    patterns.extend(container)
+        if isinstance(node.get("required"), list):
+            required.update(r for r in node["required"] if isinstance(r, str))
+        for branch in node.get("allOf", []) or []:
+            visit(branch)
+
+    visit(schema)
+    return properties, patterns, required
+
+
+def check_examples_structural(revision_dir, profile, errors):
+    """anti-regression №2 «схема строже прозы»: пример, помеченный
+    `// example: <файл схемы>`, сверяется со своей схемой структурно — каждый ключ
+    верхнего уровня объявлен, каждое `required`-поле присутствует."""
+    schema_dir = revision_dir / "schema"
+    for md_file, index, schema_name, json_text in iter_example_blocks(revision_dir):
+        if schema_name is None:
+            continue
+        schema_path = schema_dir / schema_name
+        if not schema_path.is_file():
+            continue  # отсутствие файла уже названо check_json_blocks
+        schema = load_json(schema_path, errors)
+        try:
+            example = json.loads(json_text)
+        except json.JSONDecodeError:
+            continue  # невалидный JSON уже назван check_json_blocks
+        if not isinstance(schema, dict) or not isinstance(example, dict):
+            continue
+        properties, patterns, required = _schema_surface(schema, schema)
+        for key in sorted(example):
+            if key in properties:
+                continue
+            if any(re.search(pattern, key) for pattern in patterns):
+                continue
+            errors.append(
+                f"{md_file}: json-блок #{index}: ключ {key!r} не объявлен в {schema_name} "
+                f"(структурная сверка, anti-regression №2)"
+            )
+        for key in sorted(required - set(example)):
+            errors.append(
+                f"{md_file}: json-блок #{index}: обязательное поле {key!r} схемы "
+                f"{schema_name} отсутствует в примере (структурная сверка)"
+            )
+
+
+def strip_legacy_fence(text):
+    """Вырезает огороженный блок «Out of scope by design». Возвращает (текст, число
+    блоков): без исключения гейт фазы («грепом не находится ни один legacy-термин»)
+    противоречил бы требованию D20 НАЗВАТЬ запрещённое (D45)."""
+    count = 0
+    while True:
+        start = text.find(LEGACY_FENCE_START)
+        if start == -1:
+            return text, count
+        end = text.find(LEGACY_FENCE_END, start)
+        if end == -1:
+            return text, -1
+        count += 1
+        text = text[:start] + text[end + len(LEGACY_FENCE_END):]
+
+
+def check_legacy_lexicon(revision_dir, profile, errors):
+    """D20/D45: закрытый список легаси-терминов MCP запрещён во ВСЕХ документах
+    ревизии, кроме одного огороженного блока в `00_overview.md`."""
+    terms = profile["legacy_terms"]
+    for md_file in sorted(revision_dir.glob("*.md")):
+        text = md_file.read_text(encoding="utf-8")
+        stripped, fences = strip_legacy_fence(text)
+        if fences == -1:
+            errors.append(f"{md_file}: блок {LEGACY_FENCE_START} не закрыт")
+            continue
+        if fences and md_file.name != LEGACY_FENCE_DOC:
+            errors.append(
+                f"{md_file}: огороженный блок легаси-лексики допускается только в "
+                f"{LEGACY_FENCE_DOC} (D45)"
+            )
+        if fences > 1:
+            errors.append(f"{md_file}: огороженных блоков {fences}, допускается ровно один (D45)")
+        for lineno, line in enumerate(stripped.split("\n"), start=1):
+            for term in terms:
+                if term in line:
+                    errors.append(
+                        f"{md_file}: легаси-термин {term!r} вне огороженного блока (D20)"
+                    )
+
+
+def check_coverage_tables(revision_dir, profile, errors):
+    """`research/02-…` §5/§7: каждый документ несёт последним разделом таблицу
+    покрытия «решение `DR-01` → маркеры правил». Объединение таблиц по 12 документам
+    — машинный гейт item'а P3.14; здесь проверяется НАЛИЧИЕ носителя."""
+    for name in profile["required_docs"]:
+        doc = revision_dir / name
+        if not doc.is_file():
+            continue
+        if COVERAGE_HEADING not in doc.read_text(encoding="utf-8"):
+            errors.append(
+                f"{doc}: нет раздела '{COVERAGE_HEADING} DR-01' — покрытие решений "
+                f"обязано быть носителем в самом документе (research/02-… §7)"
+            )
+
+
+# --- точечные режимы ----------------------------------------------------------
+
+def run_keywords_check(schema_path, list_name):
+    """Точечный прогон одного файла схемы. Список берётся ЯВНО: по умолчанию B —
+    `B = A ∪ {закрытие}`, то есть самый широкий список, применимый к файлу вне
+    ревизии, у которого нет каталога-адреса. Выбранный список печатается, чтобы
+    дефолт не был молчаливым; внутри ревизии список выбирает каталог, не этот флаг."""
+    errors = []
+    if not schema_path.is_file():
+        print(f"Ошибка: {schema_path} не является файлом", file=sys.stderr)
         return 2
+    data = load_json(schema_path, errors)
+    if isinstance(data, dict):
+        check_keywords(data, list_name, schema_path, errors)
+    return report(errors, f"--keywords-check, Список {list_name}")
+
+
+def run_legacy_check(revision_dir):
+    errors = []
+    try:
+        profile = resolve_profile(revision_dir)
+    except KeyError as exc:
+        print(f"Ошибка: {exc}", file=sys.stderr)
+        return 2
+    if not profile["legacy_terms"]:
+        print(f"Ошибка: профиль ревизии {revision_dir.name} не нормирует легаси-лексику", file=sys.stderr)
+        return 2
+    check_legacy_lexicon(revision_dir, profile, errors)
+    return report(errors, f"--legacy-check, {revision_dir.name}")
+
+
+def report(errors, suffix=None):
+    if errors:
+        print(f"spec_lint: {len(errors)} ошибок(a):", file=sys.stderr)
+        for error in errors:
+            print(f"  - {error}", file=sys.stderr)
+        return 1
+    print("spec_lint: OK" if suffix is None else f"spec_lint: OK ({suffix})")
+    return 0
+
+
+def usage():
+    print(
+        "Использование:\n"
+        "  python3 spec_lint.py <revision_dir> [--allow-missing]\n"
+        "  python3 spec_lint.py --keywords-check <schema.json> [--list A|B]\n"
+        "  python3 spec_lint.py --legacy-check <revision_dir>",
+        file=sys.stderr,
+    )
+    return 2
+
+
+def main():
+    args = sys.argv[1:]
+
+    if "--keywords-check" in args or "--legacy-check" in args:
+        mode = "--keywords-check" if "--keywords-check" in args else "--legacy-check"
+        try:
+            target = Path(args[args.index(mode) + 1])
+        except IndexError:
+            return usage()
+        if mode == "--keywords-check":
+            list_name = "B"
+            if "--list" in args:
+                try:
+                    list_name = args[args.index("--list") + 1].upper()
+                except IndexError:
+                    return usage()
+                if list_name not in ("A", "B"):
+                    print(f"Ошибка: --list принимает A или B, получено {list_name!r}", file=sys.stderr)
+                    return 2
+            return run_keywords_check(target, list_name)
+        if not target.is_dir():
+            print(f"Ошибка: {target} не является директорией", file=sys.stderr)
+            return 2
+        return run_legacy_check(target)
+
+    allow_missing = "--allow-missing" in args
+    positional = [a for a in args if not a.startswith("--")]
+    if len(positional) != 1:
+        return usage()
     revision_dir = Path(positional[0])
     if not revision_dir.is_dir():
         print(f"Ошибка: {revision_dir} не является директорией", file=sys.stderr)
         return 2
+    try:
+        profile = resolve_profile(revision_dir)
+    except KeyError as exc:
+        print(f"Ошибка: {exc}", file=sys.stderr)
+        return 2
 
-    errors: list = []
-    check_required_docs(revision_dir, allow_missing, errors)
-    check_schemas(revision_dir, errors)
+    errors = []
+    check_required_docs(revision_dir, profile, allow_missing, errors)
+    check_schemas(revision_dir, profile, errors)
     check_markdown_links(revision_dir, errors)
     check_json_blocks(revision_dir, errors)
-    check_fixtures(revision_dir, errors)
+    check_fixtures(revision_dir, profile, errors)
 
-    if errors:
-        print(f"spec_lint: {len(errors)} ошибок(a):", file=sys.stderr)
-        for e in errors:
-            print(f"  - {e}", file=sys.stderr)
-        return 1
+    if profile["enum_single_defs"]:
+        check_enum_single_defs(revision_dir, profile, errors)
+    if profile["description_no_norm"]:
+        check_description_no_norm(revision_dir, profile, errors)
+    if profile["refs_offline"]:
+        check_refs_offline(revision_dir, profile, errors)
+    if profile["keyword_lists"]:
+        check_keyword_lists(revision_dir, profile, errors)
+    if profile["rule_line_re"] is not None:
+        check_rule_lines(revision_dir, profile, errors)
+    if profile["examples_structural"]:
+        check_examples_structural(revision_dir, profile, errors)
+    if profile["legacy_terms"]:
+        check_legacy_lexicon(revision_dir, profile, errors)
+    if profile["coverage_required"]:
+        check_coverage_tables(revision_dir, profile, errors)
 
-    print("spec_lint: OK")
-    return 0
+    return report(errors)
 
 
 if __name__ == "__main__":
