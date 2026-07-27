@@ -1,0 +1,5 @@
+{
+  "id": "step_01",
+  "note": "оба ключа из разных allOf-веток",
+  "x_unknown_probe_field": "unexpected-value"
+}

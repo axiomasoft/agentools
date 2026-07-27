@@ -1,0 +1,4 @@
+{
+  "hash_pair": ["a1b2c3", "d4e5f6"],
+  "x_unknown_probe_field": "unexpected-value"
+}

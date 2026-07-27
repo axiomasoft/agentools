@@ -1,0 +1,4 @@
+{
+  "l1": { "l2": { "l3": { "l4": { "l5": { "l6": { "attr_a1": "value" } } } } } },
+  "x_unknown_probe_field": "unexpected-value"
+}
