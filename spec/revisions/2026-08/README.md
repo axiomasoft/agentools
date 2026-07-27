@@ -26,7 +26,7 @@ GREEN) плюс git-тегом ревизии; каталог при этом Н
 | `05_clarification-mrtr.md` | `CLR-` | уточнения и единственный биндинг MRTR | написан (`CLR-1`…`CLR-21`) |
 | `06_scenarios.md` | `SCN-` | сценарии, грамматика выражений (только AST), лимиты, saga | написан (`SCN-1`…`SCN-30`) |
 | `07_long-operations.md` | `LOP-` | длинные операции: оба пути обязательны | написан (`LOP-1`…`LOP-27`) |
-| `08_audit-observability.md` | `AOB-` | таксономия аудита, канонизация JCS, трассировка | не написан |
+| `08_audit-observability.md` | `AOB-` | таксономия аудита, канонизация JCS, трассировка | написан (`AOB-1`…`AOB-44`) |
 | `09_idempotency-errors.md` | `IDE-` | ключ и fingerprint, три состояния, коды, must-ignore | не написан |
 | `10_security.md` | `SEC-` | запрет проброса токенов, тройка принципалов, происхождение аргумента | не написан |
 | `11_conformance-harness.md` | `CFH-` | harness-протокол, severity, baseline, CI, golden, lockstep | не написан |
