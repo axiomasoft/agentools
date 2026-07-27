@@ -48,10 +48,12 @@
         "running",
         "awaiting_confirmation",
         "applying",
+        "reconciliation_required",
         "completed",
         "rejected",
         "expired",
-        "failed"
+        "failed",
+        "cancelled"
       ]
     }
   }

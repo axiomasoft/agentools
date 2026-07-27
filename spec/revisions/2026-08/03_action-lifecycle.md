@@ -75,7 +75,7 @@ Cloudflare Workflows дают вторую, переносимую; оптими
 
 ## 3. Состояния и полная таблица переходов
 
-Состояний восемь: четыре нетерминальных и четыре терминальных.
+Состояний десять: пять нетерминальных и пять терминальных.
 
 | Состояние | Терминальное | Смысл |
 |:--|:--|:--|
@@ -83,17 +83,19 @@ Cloudflare Workflows дают вторую, переносимую; оптими
 | `running` | нет | исполнитель работает: планирование, чтение, подготовка предложения |
 | `awaiting_confirmation` | нет | предложение предъявлено, решение по гейту не записано (документ `04`) |
 | `applying` | нет | внешний эффект запрошен, исход не записан |
+| `reconciliation_required` | нет | внешний эффект запрошен, носитель его исхода утрачен: исход неизвестен и выясняется сверкой реестра эффектов (документ `07`) |
 | `completed` | да | действие завершено успешно |
 | `rejected` | да | гейт отказал: решение `reject` либо `revoke` |
 | `expired` | да | срок ожидания решения истёк (документ `04`) |
 | `failed` | да | действие завершено неустранимым отказом |
+| `cancelled` | да | действие прекращено по запросу отмены до записи успешного исхода (документ `07`) |
 
 **ALC-11 (MUST, L1).** Перечень состояний действия MUST быть закрытым и состоять ровно из
-восьми значений таблицы выше. Перечень выражается в схемах ревизии закрытой формой
+десяти значений таблицы выше. Перечень выражается в схемах ревизии закрытой формой
 (`02_tool-contract-profile.md` `TLP-28`): добавление состояния есть намеренно ломающее
 изменение, выходящее новой датированной ревизией по окну депрекации `00_overview.md` `OVR-24`.
 
-**ALC-12 (MUST, L1).** Таблица переходов `ALC-T1`…`ALC-T22` ниже MUST быть единственным
+**ALC-12 (MUST, L1).** Таблица переходов `ALC-T1`…`ALC-T38` ниже MUST быть единственным
 источником допустимых переходов. Переход, отсутствующий в таблице, MUST быть отвергнут
 типизированной ошибкой; формулировок «и подобные переходы» ревизия не допускает.
 
@@ -113,7 +115,8 @@ MUST NOT менять состояние действия: оно занимае
 
 **Виды событий.** `action_created`, `action_started`, `input_recorded`, `epoch_started`,
 `confirmation_requested`, `confirmation_resolved`, `effect_requested`, `effect_confirmed`,
-`effect_failed`, `action_completed`, `action_failed`.
+`effect_failed`, `action_completed`, `action_failed`, `task_bound`, `task_binding_lost`,
+`cancellation_requested`, `action_cancelled`.
 
 | Переход | Из | Вид события | В | Гард |
 |:--|:--|:--|:--|:--|
@@ -139,6 +142,22 @@ MUST NOT менять состояние действия: оно занимае
 | ALC-T20 | `applying` | `effect_requested` | `applying` | эффект с другим `effect_id` того же действия |
 | ALC-T21 | `applying` | `epoch_started` | `applying` | эпоха события больше текущей |
 | ALC-T22 | `applying` | `action_failed` | `failed` | — |
+| ALC-T23 | `running` | `task_bound` | `running` | — |
+| ALC-T24 | `applying` | `task_bound` | `applying` | — |
+| ALC-T25 | `running` | `task_binding_lost` | `running` | нет эффекта с записанным `effect_requested` без исхода |
+| ALC-T26 | `applying` | `task_binding_lost` | `reconciliation_required` | есть эффект с записанным `effect_requested` без исхода |
+| ALC-T27 | `reconciliation_required` | `effect_confirmed` | `running` | эпоха события равна текущей |
+| ALC-T28 | `reconciliation_required` | `effect_failed` | `running` | эпоха события равна текущей |
+| ALC-T29 | `reconciliation_required` | `epoch_started` | `reconciliation_required` | эпоха события больше текущей |
+| ALC-T30 | `reconciliation_required` | `action_failed` | `failed` | — |
+| ALC-T31 | `created` | `cancellation_requested` | `created` | — |
+| ALC-T32 | `running` | `cancellation_requested` | `running` | — |
+| ALC-T33 | `awaiting_confirmation` | `cancellation_requested` | `awaiting_confirmation` | — |
+| ALC-T34 | `applying` | `cancellation_requested` | `applying` | — |
+| ALC-T35 | `reconciliation_required` | `cancellation_requested` | `reconciliation_required` | — |
+| ALC-T36 | `created` | `action_cancelled` | `cancelled` | отмена в силе |
+| ALC-T37 | `running` | `action_cancelled` | `cancelled` | отмена в силе; нет эффекта с записанным `effect_requested` без исхода |
+| ALC-T38 | `awaiting_confirmation` | `action_cancelled` | `cancelled` | отмена в силе |
 
 Каждое нетерминальное состояние имеет хотя бы один исходящий переход; ни одно терминальное
 состояние исходящих переходов не имеет. Обратимый отказ отдельным состоянием не выражается:
@@ -162,6 +181,12 @@ stateDiagram-v2
     awaiting_confirmation --> failed: action_failed
     applying --> running: effect_confirmed / effect_failed
     applying --> failed: action_failed
+    applying --> reconciliation_required: task_binding_lost
+    reconciliation_required --> running: effect_confirmed / effect_failed
+    reconciliation_required --> failed: action_failed
+    created --> cancelled: action_cancelled
+    running --> cancelled: action_cancelled
+    awaiting_confirmation --> cancelled: action_cancelled
 ```
 
 ## 4. Свёртка журнала
