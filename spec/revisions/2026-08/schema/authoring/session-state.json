@@ -1,0 +1,59 @@
+{
+  "$defs": {
+    "ActionStatus": {
+      "description": "Состояние действия. Перечисление закрытое: добавление состояния — намеренно ломающее изменение, выходящее новой датированной ревизией (правило ALC-11).",
+      "enum": [
+        "created",
+        "running",
+        "awaiting_confirmation",
+        "applying",
+        "completed",
+        "rejected",
+        "expired",
+        "failed"
+      ]
+    }
+  },
+  "$id": "https://agentools.dev/schema/2026-08/authoring/session-state.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Проекция состояния действия с жизненным циклом, отдельным от журнала. Файл — единственный носитель перечисления состояний действия в схемах ревизии. Источником истины проекция не является: расхождение со свёрткой журнала разрешается в пользу журнала — правило ALC-34.",
+  "properties": {
+    "action_id": {
+      "description": "Идентификатор действия, состояние которого спроецировано.",
+      "minLength": 1,
+      "type": "string"
+    },
+    "epoch": {
+      "description": "Текущая эпоха исполнителя действия на момент проекции.",
+      "minimum": 1,
+      "type": "integer"
+    },
+    "projected_at": {
+      "description": "Время построения проекции в форме RFC 3339 с зоной UTC. Свойством журнала не является.",
+      "minLength": 20,
+      "type": "string"
+    },
+    "seq": {
+      "description": "Номер события, на котором построена проекция: продолжение свёртки начинается со следующего номера.",
+      "minimum": 1,
+      "type": "integer"
+    },
+    "spec_rev": {
+      "description": "Идентификатор ревизии спеки, по правилам которой выполнена свёртка.",
+      "minLength": 1,
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/ActionStatus"
+    }
+  },
+  "required": [
+    "action_id",
+    "status",
+    "seq",
+    "spec_rev"
+  ],
+  "title": "Снапшот состояния действия",
+  "type": "object"
+}
