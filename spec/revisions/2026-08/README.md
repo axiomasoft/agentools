@@ -29,7 +29,7 @@ GREEN) плюс git-тегом ревизии; каталог при этом Н
 | `08_audit-observability.md` | `AOB-` | таксономия аудита, канонизация JCS, трассировка | написан (`AOB-1`…`AOB-44`) |
 | `09_idempotency-errors.md` | `IDE-` | ключ и fingerprint, три состояния, коды, must-ignore | написан (`IDE-1`…`IDE-48`) |
 | `10_security.md` | `SEC-` | запрет проброса токенов, тройка принципалов, происхождение аргумента | написан (`SEC-1`…`SEC-19`, своих схем не вводит) |
-| `11_conformance-harness.md` | `CFH-` | harness-протокол, severity, baseline, CI, golden, lockstep | не написан |
+| `11_conformance-harness.md` | `CFH-` | harness-протокол, severity, baseline, CI, golden, lockstep | написан (`CFH-1`…`CFH-54`, схема `harness-protocol.json`) |
 
 Схемы — `schema/*.json` (диалект 2020-12, `$id` вида
 `https://agentools.dev/schema/2026-08/<file>`). Опубликованные схемы **открытые**:
