@@ -20,7 +20,7 @@ GREEN) плюс git-тегом ревизии; каталог при этом Н
 |:--|:--|:--|:--|
 | `00_overview.md` | `OVR-` | конвенции, глоссарий, RFC 2119, уровни L1–L3, out of scope by design | написан (`OVR-1`…`OVR-27`) |
 | `01_extension-identity.md` | `EXT-` | идентичность расширения, грамматика вендорных ключей, negotiation | написан (`EXT-1`…`EXT-17`) |
-| `02_tool-contract-profile.md` | `TLP-` | профиль инструмента, `descriptor_digest`, `content_origin` | не написан |
+| `02_tool-contract-profile.md` | `TLP-` | профиль инструмента, `descriptor_digest`, `content_origin` | написан (`TLP-1`…`TLP-32`) |
 | `03_action-lifecycle.md` | `ALC-` | журнал как источник истины, эпоха, снапшот, хеш-цепочка | не написан |
 | `04_confirmation.md` | `CNF-` | подтверждение: токен, решения, TTL, dual control | не написан |
 | `05_clarification-mrtr.md` | `CLR-` | уточнения и единственный биндинг MRTR | не написан |

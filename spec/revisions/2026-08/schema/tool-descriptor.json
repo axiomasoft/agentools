@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/schema/2026-08/tool-descriptor.json",
+  "title": "Дескриптор инструмента AgenTools",
+  "description": "Профиль дескриптора MCP-инструмента: базис протокола плюс блок расширения dev.agentools/action. Строгость зависит от варианта схемы: опубликованный вариант открыт, производный вариант авторинга закрыт генератором.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$",
+      "maxLength": 64,
+      "description": "Программное имя инструмента с префиксом модуля, например crm_report_create."
+    },
+    "title": {
+      "type": "string",
+      "description": "Человекочитаемое имя инструмента для интерфейса."
+    },
+    "description": {
+      "type": "string",
+      "description": "Описание инструмента для модели и каталога."
+    },
+    "inputSchema": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Схема аргументов вызова в форме JSON Schema 2020-12; её содержимое ревизия не разбирает и оставляет валидатору рантайма."
+    },
+    "outputSchema": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Схема структурированного результата в форме JSON Schema 2020-12; её содержимое ревизия не разбирает."
+    },
+    "annotations": {
+      "type": "object",
+      "properties": {
+        "readOnlyHint": {
+          "type": "boolean",
+          "description": "Признак отсутствия изменений состояния."
+        },
+        "destructiveHint": {
+          "type": "boolean",
+          "description": "Признак разрушающего характера изменений."
+        },
+        "idempotentHint": {
+          "type": "boolean",
+          "description": "Признак идемпотентности повторного вызова с теми же аргументами."
+        },
+        "openWorldHint": {
+          "type": "boolean",
+          "description": "Признак взаимодействия с внешней открытой средой."
+        }
+      },
+      "description": "Аннотации инструмента, определённые протоколом."
+    },
+    "_meta": {
+      "type": "object",
+      "patternProperties": {
+        "^dev\\.agentools/action$": {
+          "$ref": "#/$defs/ActionProfile"
+        }
+      },
+      "description": "Метаданные дескриптора. Профиль AgenTools живёт под единственным ключом данных dev.agentools/action; ключи других вендоров сюда же попадают и ревизией не интерпретируются."
+    }
+  },
+  "required": [
+    "name",
+    "description",
+    "inputSchema",
+    "_meta"
+  ],
+  "$defs": {
+    "ActionProfile": {
+      "description": "Содержимое ключа данных dev.agentools/action в дескрипторе инструмента.",
+      "allOf": [
+        {
+          "$ref": "side-effect.json"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "idempotent_commit": {
+              "type": "boolean",
+              "description": "Признак идемпотентности фазы применения; механика ключа — документ 09."
+            },
+            "permissions_hint": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Справочный перечень прав, требуемых инструментом. Не механизм авторизации: энфорсмент — документ 10."
+            },
+            "content_origin": {
+              "$ref": "#/$defs/ContentOrigin"
+            }
+          }
+        }
+      ]
+    },
+    "ContentOrigin": {
+      "description": "Метка происхождения содержимого аргумента. Перечисление открытое: значение ядра плюс ветка продуктового расширения.",
+      "oneOf": [
+        {
+          "const": "untrusted_external",
+          "description": "Содержимое пришло из недоверенного внешнего источника; маршрут изоляции — документ 10."
+        },
+        {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*\\.[a-z0-9_]+$",
+          "description": "Продуктовое расширение метки: двухуровневый префикс контура."
+        }
+      ]
+    }
+  }
+}
