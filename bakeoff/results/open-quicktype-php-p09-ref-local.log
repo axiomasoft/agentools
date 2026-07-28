@@ -1,0 +1,3 @@
+INPUT: {"id":"step_01","x_unknown_probe_field":"unexpected-value"}
+OUT: {"id":"step_01"}
+UNKNOWN-FIELD-SURVIVES: no

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/bakeoff/p02-unknown-keyword/schema.json",
+  "title": "Bakeoff p02 — вендорный ключ схемы",
+  "description": "Схема с вендорным ключом (x-agentools-note) на уровне свойства — генератор обязан игнорировать незнакомый ключ схемы и не терять поле, к которому он привязан.",
+  "type": "object",
+  "required": ["note"],
+  "properties": {
+    "note": {
+      "type": "string",
+      "x-agentools-note": "информативный ключ вендора, не влияет на валидацию (см. side-effect.json x-default-confirmation)",
+      "description": "Свободный текст заметки."
+    }
+  }
+}

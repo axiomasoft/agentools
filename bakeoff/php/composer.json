@@ -5,6 +5,7 @@
     "license": "proprietary",
     "require": {
         "php": ">=8.3",
+        "opis/json-schema": "^2.6",
         "wol-soft/php-json-schema-model-generator": "^0.26.2",
         "wol-soft/php-json-schema-model-generator-production": "^0.20.3"
     },

@@ -1,0 +1,4 @@
+INPUT: {"l1":{"l2":{"l3":{"l4":{"l5":{"l6":{"attr_a1":"value"}}}}}},"x_unknown_probe_field":"unexpected-value"}
+CONSTRUCTED OK
+RAW-ROUNDTRIP: {"l1":{"l2":{"l3":{"l4":{"l5":{"l6":{"attr_a1":"value"}}}}}},"x_unknown_probe_field":"unexpected-value"}
+UNKNOWN-FIELD-SURVIVES-RAW: yes

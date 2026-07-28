@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/bakeoff/p08-nested-depth/schema.json",
+  "title": "Bakeoff p08 — вложенность >=6 уровней + patternProperties",
+  "description": "Лимиты SEP-2106 (DoS-пробы, E5): глубокая вложенность объектов (6 уровней) плюс patternProperties на листовом уровне — проверяем, что генератор не падает на глубине и не игнорирует шаблонные ключи.",
+  "type": "object",
+  "required": ["l1"],
+  "properties": {
+    "l1": {
+      "type": "object",
+      "required": ["l2"],
+      "properties": {
+        "l2": {
+          "type": "object",
+          "required": ["l3"],
+          "properties": {
+            "l3": {
+              "type": "object",
+              "required": ["l4"],
+              "properties": {
+                "l4": {
+                  "type": "object",
+                  "required": ["l5"],
+                  "properties": {
+                    "l5": {
+                      "type": "object",
+                      "required": ["l6"],
+                      "properties": {
+                        "l6": {
+                          "type": "object",
+                          "patternProperties": {
+                            "^attr_[a-z0-9]+$": { "type": "string" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

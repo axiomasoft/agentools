@@ -1,0 +1,7 @@
+{
+  "id": "root",
+  "children": [
+    { "id": "child_01", "children": [] }
+  ],
+  "x_unknown_probe_field": "unexpected-value"
+}

@@ -1,0 +1,63 @@
+p01-open-enum INPUT: {
+  "kind": "crm.custom_step",
+  "x_unknown_probe_field": "unexpected-value"
+}
+p01-open-enum OUT: {"kind":"crm.custom_step"}
+p01-open-enum UNKNOWN-FIELD-SURVIVES: no
+p02-unknown-keyword INPUT: {
+  "note": "план исполнен без отклонений",
+  "x_unknown_probe_field": "unexpected-value"
+}
+p02-unknown-keyword OUT: {"note":"план исполнен без отклонений"}
+p02-unknown-keyword UNKNOWN-FIELD-SURVIVES: no
+p03-unevaluated INPUT: {
+  "id": "step_01",
+  "note": "оба ключа из разных allOf-веток",
+  "x_unknown_probe_field": "unexpected-value"
+}
+p03-unevaluated OUT: {"id":"step_01","note":"оба ключа из разных allOf-веток"}
+p03-unevaluated UNKNOWN-FIELD-SURVIVES: no
+p04-dynamic-ref INPUT: {
+  "id": "root",
+  "children": [
+    { "id": "child_01", "children": [] }
+  ],
+  "x_unknown_probe_field": "unexpected-value"
+}
+p04-dynamic-ref OUT: {"children":[{"id":"child_01","children":[]}],"id":"root"}
+p04-dynamic-ref UNKNOWN-FIELD-SURVIVES: no
+p06-if-then-else INPUT: {
+  "kind": "tool",
+  "tool": "send_report",
+  "side_effect": "write",
+  "approval": "confirm",
+  "x_unknown_probe_field": "unexpected-value"
+}
+p06-if-then-else OUT: {"approval":"confirm","kind":"tool","prompt_ref":null,"side_effect":"write","tool":"send_report"}
+p06-if-then-else UNKNOWN-FIELD-SURVIVES: no
+p07-prefix-items INPUT: {
+  "hash_pair": ["a1b2c3", "d4e5f6"],
+  "x_unknown_probe_field": "unexpected-value"
+}
+p07-prefix-items OUT: {"hash_pair":["a1b2c3","d4e5f6"]}
+p07-prefix-items UNKNOWN-FIELD-SURVIVES: no
+p08-nested-depth INPUT: {
+  "l1": { "l2": { "l3": { "l4": { "l5": { "l6": { "attr_a1": "value" } } } } } },
+  "x_unknown_probe_field": "unexpected-value"
+}
+p08-nested-depth OUT: {"l1":{"l2":{"l3":{"l4":{"l5":{"l6":{"attr_a1":"value"}}}}}}}
+p08-nested-depth UNKNOWN-FIELD-SURVIVES: no
+p09-ref-local INPUT: {
+  "id": "step_01",
+  "x_unknown_probe_field": "unexpected-value"
+}
+p09-ref-local OUT: {"id":"step_01"}
+p09-ref-local UNKNOWN-FIELD-SURVIVES: no
+p10-numbers INPUT: {
+  "amount_minor": 12345,
+  "big_integer": 9223372036854775807,
+  "scientific": 1e21,
+  "x_unknown_probe_field": "unexpected-value"
+}
+p10-numbers OUT: {"amount_minor":12345,"big_integer":9223372036854775807,"scientific":1e+21}
+p10-numbers UNKNOWN-FIELD-SURVIVES: no

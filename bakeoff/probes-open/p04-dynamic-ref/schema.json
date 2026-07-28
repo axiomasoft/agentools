@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/bakeoff/p04-dynamic-ref/schema.json",
+  "title": "Bakeoff p04 — $dynamicRef/$dynamicAnchor",
+  "description": "Экзотика 2020-12 (J6): расширяемый базовый список шагов через $dynamicRef/$dynamicAnchor. Ожидаем провал (crash/not-supported), нужен наблюдаемый факт, а не догадка.",
+  "$dynamicAnchor": "node",
+  "type": "object",
+  "required": ["id", "children"],
+  "properties": {
+    "id": { "type": "string" },
+    "children": {
+      "type": "array",
+      "items": { "$dynamicRef": "#node" }
+    }
+  }
+}

@@ -1,0 +1,4 @@
+INPUT: {"amount_minor":12345,"big_integer":9223372036854775807,"scientific":1.0e+21,"x_unknown_probe_field":"unexpected-value"}
+CONSTRUCTED OK
+RAW-ROUNDTRIP: {"amount_minor":12345,"big_integer":9223372036854775807,"scientific":1.0e+21,"x_unknown_probe_field":"unexpected-value"}
+UNKNOWN-FIELD-SURVIVES-RAW: yes

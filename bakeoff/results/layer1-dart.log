@@ -1,0 +1,21 @@
+# Layer 1 CI validator — Dart (json_schema 5.2.2, пин D15) — P4.6, T-2
+
+## p03-unevaluated (unevaluatedProperties)
+$ dart run bakeoff/dart/validate_layer1.dart bakeoff/probes/p03-unevaluated/schema.json bakeoff/probes/p03-unevaluated/valid.json
+VALID
+exit=0
+
+$ dart run bakeoff/dart/validate_layer1.dart bakeoff/probes/p03-unevaluated/schema.json bakeoff/probes/p03-unevaluated/unknown-key.json
+INVALID
+  - /unevaluatedProperties: schema is a boolean == false, this schema will never validate. Instance: unexpected-value
+exit=1
+
+## p06-if-then-else (dependentSchemas)
+$ dart run bakeoff/dart/validate_layer1.dart bakeoff/probes/p06-if-then-else/schema.json bakeoff/probes/p06-if-then-else/valid.json
+VALID
+exit=0
+
+$ dart run bakeoff/dart/validate_layer1.dart bakeoff/probes/p06-if-then-else/schema.json <side_effect=write без approval>
+INVALID
+  - /dependentSchemas/side_effect: prop side_effect violated schema dependency
+exit=1

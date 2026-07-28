@@ -1,0 +1,3 @@
+
+Issue in line 15: quicktype cannot infer this type because there is no data about it in the input.
+15:     final List<dynamic> children;

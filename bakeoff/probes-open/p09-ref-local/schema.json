@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/bakeoff/p09-ref-local/schema.json",
+  "title": "Bakeoff p09 — относительный $ref между файлами",
+  "description": "Ловушка 2026-07-draft (offline-резолв, E5): $ref на соседний файл схемы относительным путём, без сетевого запроса. Генератор обязан резолвить $ref по локальному файлу, а не пытаться скачать $id.",
+  "type": "object",
+  "required": ["id"],
+  "properties": {
+    "id": { "$ref": "common.json#/$defs/Id" }
+  }
+}

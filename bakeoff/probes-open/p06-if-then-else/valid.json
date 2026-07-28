@@ -1,0 +1,6 @@
+{
+  "kind": "tool",
+  "tool": "send_report",
+  "side_effect": "write",
+  "approval": "confirm"
+}

@@ -1,0 +1,40 @@
+# Layer 1 CI validator — PHP (opis/json-schema 2.6.0, пин D15) — P4.6, T-2
+
+## p03-unevaluated (unevaluatedProperties) — bakeoff/probes/**
+$ php bakeoff/php/validate-layer1.php bakeoff/probes/p03-unevaluated/schema.json bakeoff/probes/p03-unevaluated/valid.json
+VALID
+exit=0
+
+$ php bakeoff/php/validate-layer1.php bakeoff/probes/p03-unevaluated/schema.json bakeoff/probes/p03-unevaluated/unknown-key.json
+INVALID
+keyword: unevaluatedProperties
+  - Unevaluated object properties not allowed: x_unknown_probe_field
+exit=1
+
+## p06-if-then-else (dependentSchemas) — bakeoff/probes/**
+$ php bakeoff/php/validate-layer1.php bakeoff/probes/p06-if-then-else/schema.json bakeoff/probes/p06-if-then-else/valid.json
+VALID
+exit=0
+
+$ php bakeoff/php/validate-layer1.php bakeoff/probes/p06-if-then-else/schema.json <side_effect=write без approval>
+INVALID
+keyword: dependentSchemas
+  - The object must match dependency schema defined on property 'side_effect'
+  - The data is not valid on 'then' branch
+  - The required properties (approval) are missing
+exit=1
+
+## audit-event.json (закрытая схема авторинга ревизии 2026-08, unevaluatedProperties на своём уровне поверх allOf-композиции с lifecycle-event.json)
+$ php bakeoff/php/validate-layer1.php spec/revisions/2026-08/schema/authoring/audit-event.json <валидный документ>
+VALID
+exit=0
+
+$ php bakeoff/php/validate-layer1.php spec/revisions/2026-08/schema/authoring/audit-event.json <тот же документ + x_unknown_probe_field>
+INVALID
+keyword: allOf
+  - The data should match all schemas
+  - The data must match $ref
+  - Additional object properties are not allowed: x_unknown_probe_field
+exit=1
+
+## Замечание: dependentSchemas НЕ встречается ни в одной закрытой схеме авторинга ревизии 2026-08 (grep -rl dependentSchemas spec/ fixtures/ — пусто); энфорсмент подтверждён только корпусом bakeoff/probes/p06.

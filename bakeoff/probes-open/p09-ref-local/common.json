@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/bakeoff/p09-ref-local/common.json",
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    }
+  }
+}

@@ -1,0 +1,5 @@
+INPUT: {"kind":"tool","tool":"send_report","side_effect":"write","approval":"confirm","x_unknown_probe_field":"unexpected-value"}
+
+Warning: Undefined property: stdClass::$prompt_ref in /home/vostrikov/projects/packages/agentools/bakeoff/php/generated-open-qt/p06-if-then-else.php on line 346
+OUT: {"approval":"confirm","kind":"tool","prompt_ref":null,"side_effect":"write","tool":"send_report"}
+UNKNOWN-FIELD-SURVIVES: no

@@ -1,0 +1,4 @@
+INPUT: {"kind":"tool","tool":"send_report","side_effect":"write","approval":"confirm","x_unknown_probe_field":"unexpected-value"}
+CONSTRUCTED OK
+RAW-ROUNDTRIP: {"kind":"tool","tool":"send_report","side_effect":"write","approval":"confirm","x_unknown_probe_field":"unexpected-value"}
+UNKNOWN-FIELD-SURVIVES-RAW: yes

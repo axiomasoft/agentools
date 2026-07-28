@@ -1,0 +1,3 @@
+INPUT: {"kind":"crm.custom_step","x_unknown_probe_field":"unexpected-value"}
+OUT: {"kind":"crm.custom_step"}
+UNKNOWN-FIELD-SURVIVES: no

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/bakeoff/p07-prefix-items/schema.json",
+  "title": "Bakeoff p07 — prefixItems + items:false",
+  "description": "Кортеж фиксированной длины (пример: пара хешей 'до/после' side-эффекта) через prefixItems 2020-12 (заменяет tuple-форму items в draft-07), закрытый items:false запрещает лишние элементы массива.",
+  "type": "object",
+  "required": ["hash_pair"],
+  "properties": {
+    "hash_pair": {
+      "type": "array",
+      "prefixItems": [
+        { "type": "string", "description": "хеш состояния до side-эффекта" },
+        { "type": "string", "description": "хеш состояния после side-эффекта" }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    }
+  }
+}
