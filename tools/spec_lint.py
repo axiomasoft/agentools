@@ -5,6 +5,7 @@
     python3 tools/spec_lint.py <revision_dir> [--allow-missing]
     python3 tools/spec_lint.py --keywords-check <schema.json> [--list A|B]
     python3 tools/spec_lint.py --legacy-check <revision_dir>
+    python3 tools/spec_lint.py --fixtures-check <fixtures_root>
 
 Ревизий в репозитории больше одной, и они живут по РАЗНЫМ конвенциям (`2026-07-draft`
 — история, `2026-08` — modern-only против MCP 2026-07-28), поэтому линтер параметризован
@@ -30,6 +31,13 @@
   6. Структурная сверка примера со своей схемой (№2).
   7. Легаси-лексика вне огороженного блока (D20/D45).
   8. Таблица покрытия решений `DR-01` в каждом документе.
+
+Режим `--fixtures-check` (P4.1, `research/03-p4-vector-corpus-2026-08.md` §3) — структурная
+сверка корпуса `fixtures/2026-08/**` со схемой класса своего вектора (`behavior`/`artifact`/
+`harness`), проверка `spec_rev`, потолка `spec_rule_ids` (8, анти-вырождение) и соответствия
+каталога классу. Полная JSON-Schema-валидация вне периметра (D14, stdlib-only) — приходит
+эмпирически (`bakeoff/`) и с раннером фазы P6; двунаправленная traceability «правило ↔
+вектор» — отдельный гейт фазы P4.5, этим режимом не подменяется.
 
 Без сетевых обращений, stdlib-only. Ошибки собираются списком и печатаются
 разом; exit 1 при наличии хотя бы одной ошибки, иначе exit 0.
@@ -156,6 +164,18 @@ COVERAGE_MATRIX_2026_08 = {
     ),
 }
 
+# --- корпус `fixtures/2026-08/**` (`--fixtures-check`, P4.1) -------------------
+# Каталог → (класс вектора, файл схемы формата, обязательные поля класса сверх общих
+# шести). Три независимых пространства имён id (по каталогу), не одно на весь корпус
+# (README.md §8).
+FIXTURE_VECTOR_CLASSES = {
+    "vectors": {"class": "behavior", "schema": "vector.json", "required": ("given", "script", "expect")},
+    "static": {"class": "artifact", "schema": "static-check.json", "required": ("subject", "expect")},
+    "harness": {"class": "harness", "schema": "harness-case.json", "required": ("transcript", "expect")},
+}
+FIXTURE_COMMON_REQUIRED = ("id", "title", "vector_class", "spec_rev", "spec_rule_ids", "conformance_level")
+FIXTURE_ID_RE = re.compile(r"^[a-z][a-z0-9]*-[0-9]{3}$")
+
 REVISION_PROFILES = {
     "2026-07-draft": {
         # Профиль повторяет поведение линтера до введения профилей: ревизия закрыта
@@ -196,6 +216,9 @@ REVISION_PROFILES = {
         # Порог поднимает фаза P4: на момент P3 корпуса ещё нет, и «зелёный на
         # пустом» здесь не самообман, а честное отсутствие предмета.
         "min_vectors": 0,
+        # D53 (P4.1): три схемы формата по классу вектора, не единый fixture.json —
+        # check_fixtures делегирует структурную сверку --fixtures-check.
+        "fixtures_multi_class": True,
         "rule_prefixes": RULE_PREFIXES_2026_08,
         "rule_line_re": RULE_LINE_RE_2026_08,
         "keyword_lists": True,
@@ -361,6 +384,17 @@ def check_fixtures(revision_dir, profile, errors):
         if min_vectors == 0:
             return
         errors.append(f"отсутствует директория {profile['fixtures_root']}/ (P0.9)")
+        return
+
+    if profile.get("fixtures_multi_class"):
+        # D53 (P4.1): корпус 2026-08 несёт ТРИ схемы формата (по классу вектора),
+        # а не единый fixture.json — структурная сверка и золотой минимум живут в
+        # `--fixtures-check` (check_fixtures_format) и в точечной Validation P4.1/
+        # P4.3, а не в этом общем проходе. Пока `min_vectors == 0` (гейт P4.5 ещё
+        # не поднял порог), корпус официально «ещё не populated» той же логикой,
+        # что и отсутствующий каталог веткой выше — общий проход фикстуры не судит.
+        if min_vectors == 0:
+            return
         return
 
     fixture_schema_path = fixtures_dir / "schema" / "fixture.json"
@@ -840,6 +874,90 @@ def check_coverage_tables(revision_dir, profile, errors):
             )
 
 
+def check_fixtures_format(fixtures_root, profile, errors):
+    """`--fixtures-check` (P4.1, Scope Included е): структурная сверка КАЖДОГО файла
+    корпуса `fixtures/2026-08/**` со схемой своего класса — не полная JSON-Schema-
+    валидация (D14, stdlib-only: та приходит эмпирически, `bakeoff/`, и с раннером
+    фазы P6), а проверка обязательных полей, потолка `spec_rule_ids` и соответствия
+    каталога классу. `spec_ref_re` берётся из профиля ревизии (`resolve_profile`) —
+    маркер вектора и маркер правила ревизии проверяются ОДНОЙ грамматикой, а не
+    второй копией (anti-regression №3 наоборот)."""
+    schema_dir = fixtures_root / "schema"
+    spec_ref_re = profile["spec_ref_re"]
+    seen_ids = {}
+    for dirname, meta in FIXTURE_VECTOR_CLASSES.items():
+        schema_path = schema_dir / meta["schema"]
+        if not schema_path.is_file():
+            errors.append(f"отсутствует {schema_path} — схема класса {meta['class']!r} (P4.1)")
+            continue
+        load_json(schema_path, errors)
+
+        directory = fixtures_root / dirname
+        if not directory.is_dir():
+            continue
+        pattern = "**/*.json" if dirname == "vectors" else "*.json"
+        files = sorted(directory.glob(pattern))
+
+        for vf in files:
+            data = load_json(vf, errors)
+            if data is None:
+                continue
+            if not isinstance(data, dict):
+                errors.append(f"{vf}: корень вектора должен быть объектом")
+                continue
+
+            missing = [k for k in FIXTURE_COMMON_REQUIRED if k not in data]
+            if missing:
+                errors.append(f"{vf}: отсутствуют обязательные поля {missing}")
+                continue
+
+            vector_id = data["id"]
+            if not isinstance(vector_id, str) or not FIXTURE_ID_RE.match(vector_id):
+                errors.append(f"{vf}: id {vector_id!r} не соответствует форме '<область>-<NNN>' (README.md §8)")
+            elif vf.stem != vector_id:
+                errors.append(f"{vf}: id вектора {vector_id!r} не совпадает с именем файла")
+
+            key = (dirname, vector_id)
+            if key in seen_ids:
+                errors.append(f"{vf}: дублирующийся id {vector_id!r} в каталоге {dirname!r} (уже в {seen_ids[key]})")
+            else:
+                seen_ids[key] = vf
+
+            if data["vector_class"] != meta["class"]:
+                errors.append(
+                    f"{vf}: vector_class {data['vector_class']!r} не совпадает с классом каталога "
+                    f"{dirname!r} (ожидался {meta['class']!r})"
+                )
+            if data["spec_rev"] != "2026-08":
+                errors.append(f"{vf}: spec_rev {data['spec_rev']!r} должен быть '2026-08'")
+
+            rule_ids = data["spec_rule_ids"]
+            if not isinstance(rule_ids, list) or not rule_ids:
+                errors.append(f"{vf}: spec_rule_ids должен быть непустым списком")
+            else:
+                if len(rule_ids) > 8:
+                    errors.append(
+                        f"{vf}: spec_rule_ids несёт {len(rule_ids)} маркеров, потолок 8 "
+                        f"(анти-вырождение, research/03-… §7)"
+                    )
+                for ref in rule_ids:
+                    if not isinstance(ref, str) or not spec_ref_re.match(ref):
+                        errors.append(f"{vf}: spec_rule_id {ref!r} не соответствует формату маркера ревизии 2026-08")
+
+            if data["conformance_level"] not in ("L1", "L2", "L3"):
+                errors.append(f"{vf}: conformance_level должен быть L1|L2|L3")
+
+            required_extra = meta["required"]
+            missing_extra = [k for k in required_extra if k not in data]
+            if missing_extra:
+                errors.append(f"{vf}: отсутствуют обязательные поля класса {meta['class']!r}: {missing_extra}")
+
+            allowed_keys = set(FIXTURE_COMMON_REQUIRED) | set(required_extra)
+            unknown = sorted(set(data) - allowed_keys)
+            if unknown:
+                errors.append(f"{vf}: неизвестные поля верхнего уровня {unknown} (схема класса {meta['class']!r} закрыта)")
+
+
 # --- точечные режимы ----------------------------------------------------------
 
 def run_keywords_check(schema_path, list_name):
@@ -871,6 +989,16 @@ def run_legacy_check(revision_dir):
     return report(errors, f"--legacy-check, {revision_dir.name}")
 
 
+def run_fixtures_check(fixtures_root):
+    errors = []
+    if not fixtures_root.is_dir():
+        print(f"Ошибка: {fixtures_root} не является директорией", file=sys.stderr)
+        return 2
+    profile = REVISION_PROFILES["2026-08"]
+    check_fixtures_format(fixtures_root, profile, errors)
+    return report(errors, f"--fixtures-check, {fixtures_root}")
+
+
 def report(errors, suffix=None):
     if errors:
         print(f"spec_lint: {len(errors)} ошибок(a):", file=sys.stderr)
@@ -886,7 +1014,8 @@ def usage():
         "Использование:\n"
         "  python3 spec_lint.py <revision_dir> [--allow-missing]\n"
         "  python3 spec_lint.py --keywords-check <schema.json> [--list A|B]\n"
-        "  python3 spec_lint.py --legacy-check <revision_dir>",
+        "  python3 spec_lint.py --legacy-check <revision_dir>\n"
+        "  python3 spec_lint.py --fixtures-check <fixtures_root>",
         file=sys.stderr,
     )
     return 2
@@ -894,6 +1023,13 @@ def usage():
 
 def main():
     args = sys.argv[1:]
+
+    if "--fixtures-check" in args:
+        try:
+            target = Path(args[args.index("--fixtures-check") + 1])
+        except IndexError:
+            return usage()
+        return run_fixtures_check(target)
 
     if "--keywords-check" in args or "--legacy-check" in args:
         mode = "--keywords-check" if "--keywords-check" in args else "--legacy-check"

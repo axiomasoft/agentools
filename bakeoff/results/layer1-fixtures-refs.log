@@ -1,0 +1,5 @@
+RESOLVED offline: fixtures/2026-08/schema/vector.json (json_schema 5.2.2, RefProvider, без сети)
+RESOLVED offline: fixtures/2026-08/schema/static-check.json (json_schema 5.2.2, RefProvider, без сети)
+RESOLVED offline: fixtures/2026-08/schema/harness-case.json (json_schema 5.2.2, RefProvider, без сети)
+VALID: контрольный instance против vector.json (given.tools[0] = common/tool-read.json) — 0 ошибок
+РЕЗУЛЬТАТ: OK, офлайн-резолв кросс-файловых $ref подтверждён (0 отказов)

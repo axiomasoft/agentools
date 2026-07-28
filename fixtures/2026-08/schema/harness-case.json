@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/fixtures/2026-08/harness-case.json",
+  "title": "Тест-вектор класса harness ревизии 2026-08",
+  "description": "Формат вектора, проверяющего самотест раннера conformance над протоколом обмена (11_conformance-harness.md): transcript несёт упорядоченную последовательность сообщений harness-протокола по фазам start → config → (golden_pair)? → run × N → stop (CFH-3), а expect называет исход, который самотест раннера MUST вынести над этой последовательностью. Класс harness исполняется самотестом раннера с фазы P6 (research/03-p4-vector-corpus-2026-08.md §3); в фазе P4 проверяется только структурная валидность каждого сообщения против schema/harness-protocol.json и разрешимость spec_rule_ids (оговорка честности D26).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "vector_class", "spec_rev", "spec_rule_ids", "conformance_level", "transcript", "expect"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*-[0-9]{3}$",
+      "description": "Идентификатор вектора '<область>-<NNN>'. MUST совпадать с именем файла без расширения и быть уникальным по всему каталогу harness/ (README.md §1)."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Человекочитаемое (ru) название проверяемого случая протокола."
+    },
+    "vector_class": {
+      "const": "harness",
+      "description": "Класс вектора (D53): транскрипт harness-протокола, самотест раннера."
+    },
+    "spec_rev": {
+      "const": "2026-08",
+      "description": "Ревизия спеки, против которой написан вектор (CFH-13)."
+    },
+    "spec_rule_ids": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "string",
+        "pattern": "^(OVR|EXT|TLP|ALC|CNF|CLR|SCN|LOP|AOB|IDE|SEC|CFH)-T?[0-9]+$"
+      },
+      "description": "Непустой список маркеров правил, которые вектор покрывает (CFH-13, CFH-14). Потолок 8 — анти-вырождение."
+    },
+    "conformance_level": {
+      "type": "string",
+      "enum": ["L1", "L2", "L3"],
+      "description": "Уровень соответствия, на котором вектор обязателен (00_overview.md §4)."
+    },
+    "transcript": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/TranscriptEntry" },
+      "description": "Упорядоченный обмен по последовательности фаз start → config → (golden_pair)? → run × N → stop (CFH-3); ровно одно сообщение на строку в реальном обмене (CFH-1), здесь — один элемент массива на сообщение."
+    },
+    "expect": {
+      "$ref": "#/$defs/Expect",
+      "description": "Ожидаемый вывод самотеста раннера над этим транскриптом."
+    }
+  },
+  "$defs": {
+    "TranscriptEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["direction", "message"],
+      "properties": {
+        "direction": {
+          "type": "string",
+          "enum": ["runner_to_adapter", "adapter_to_runner"],
+          "description": "Направление сообщения в обмене (CFH-1): раннер → адаптер либо адаптер → раннер."
+        },
+        "message": {
+          "$ref": "../../schema/2026-08/harness-protocol.json",
+          "description": "Само сообщение harness-протокола, структурно валидное против опубликованной схемы обмена."
+        }
+      },
+      "description": "Один элемент обмена: кто говорит и что именно."
+    },
+    "Expect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outcome"],
+      "if": {
+        "properties": { "outcome": { "const": "violation" } }
+      },
+      "then": {
+        "required": ["violated_rule"]
+      },
+      "properties": {
+        "outcome": {
+          "type": "string",
+          "enum": ["conformant", "violation"],
+          "description": "conformant — транскрипт удовлетворяет всем правилам harness-протокола; violation — транскрипт нарушает названное правило (самотест обязан ОБНАРУЖИТЬ нарушение, а не пропустить его — CFH-6, CFH-54)."
+        },
+        "violated_rule": {
+          "type": "string",
+          "pattern": "^CFH-T?[0-9]+$",
+          "description": "Обязательное при outcome=violation правило документа 11, которое транскрипт демонстративно нарушает."
+        }
+      }
+    }
+  }
+}

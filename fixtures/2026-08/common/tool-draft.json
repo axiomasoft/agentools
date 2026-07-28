@@ -1,0 +1,32 @@
+{
+  "name": "crm_report_draft_save",
+  "title": "Сохранить черновик отчёта",
+  "description": "Сохраняет черновик отчёта о работе без публикации: виден только автору, внешнего следствия не порождает.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "report_id": { "type": "string" },
+      "text": { "type": "string" }
+    },
+    "required": ["text"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "report_id": { "type": "string" },
+      "draft_version": { "type": "integer" }
+    }
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "idempotentHint": false,
+    "openWorldHint": false
+  },
+  "_meta": {
+    "dev.agentools/action": {
+      "side_effect": "draft",
+      "permissions_hint": ["crm.report.write"]
+    }
+  }
+}

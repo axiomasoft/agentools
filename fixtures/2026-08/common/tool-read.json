@@ -1,0 +1,31 @@
+{
+  "name": "crm_report_list",
+  "title": "Список отчётов о работе",
+  "description": "Возвращает страницу отчётов сотрудника за период. Только чтение.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "period": { "type": "string" },
+      "cursor": { "type": "string" }
+    }
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "items": { "type": "array" },
+      "next_cursor": { "type": "string" }
+    }
+  },
+  "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+  },
+  "_meta": {
+    "dev.agentools/action": {
+      "side_effect": "read",
+      "permissions_hint": ["crm.report.read"]
+    }
+  }
+}

@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/fixtures/2026-08/vector.json",
+  "title": "Тест-вектор класса behavior ревизии 2026-08",
+  "description": "Формат языконезависимого тест-вектора поведения: given описывает стартовые условия (инструменты, опциональный сценарий, policy, виртуальное 'now', предзаданное состояние дедупликации), script — детерминированный драйвер входа, expect — ожидаемое поведение SUT в терминах частичных матчей событий, финального состояния действия (03_action-lifecycle.md) и вызовов инструментов. Алгоритм частичного матча expect.events и семантика ключа '!field' — README.md этой папки (нормативная часть контракта, не JSON Schema). Класс behavior исполняется раннером conformance с фазы P6 (research/03-p4-vector-corpus-2026-08.md §3); в фазе P4 проверяется только структурная валидность и разрешимость spec_rule_ids.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "vector_class", "spec_rev", "spec_rule_ids", "conformance_level", "given", "script", "expect"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*-[0-9]{3}$",
+      "description": "Идентификатор вектора '<область>-<NNN>' (напр. 'lifecycle-001'). MUST совпадать с именем файла без расширения и быть уникальным по всему каталогу vectors/ (README.md §1)."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Человекочитаемое (ru) название проверяемого сценария."
+    },
+    "vector_class": {
+      "const": "behavior",
+      "description": "Класс вектора (D53, research/03-… §3): поведение SUT, исполняется раннером conformance."
+    },
+    "spec_rev": {
+      "const": "2026-08",
+      "description": "Ревизия спеки, против которой написан вектор (CFH-13)."
+    },
+    "spec_rule_ids": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "string",
+        "pattern": "^(OVR|EXT|TLP|ALC|CNF|CLR|SCN|LOP|AOB|IDE|SEC|CFH)-T?[0-9]+$"
+      },
+      "description": "Непустой список маркеров правил, которые вектор покрывает (CFH-13, CFH-14). Потолок 8 — анти-вырождение (research/03-… §7)."
+    },
+    "conformance_level": {
+      "$ref": "#/$defs/ConformanceLevel",
+      "description": "Уровень соответствия, на котором вектор обязателен (00_overview.md §4, OVR-13)."
+    },
+    "given": {
+      "$ref": "#/$defs/Given",
+      "description": "Стартовые условия исполнения вектора."
+    },
+    "script": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/ScriptStep" },
+      "description": "Упорядоченный детерминированный драйвер: события, которые харнесс подаёт SUT. Реальная модель в script запрещена — только llm_stub."
+    },
+    "expect": {
+      "$ref": "#/$defs/Expect",
+      "description": "Ожидаемое поведение SUT."
+    }
+  },
+  "$defs": {
+    "ConformanceLevel": {
+      "type": "string",
+      "enum": ["L1", "L2", "L3"],
+      "description": "L1 Core, L2 Scenario, L3 Full — накопительно (00_overview.md §4)."
+    },
+    "Given": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tools"],
+      "properties": {
+        "tools": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "../../schema/2026-08/tool-descriptor.json" },
+          "description": "Полные дескрипторы инструментов, доступные в этом векторе (02_tool-contract-profile.md). Инлайнятся целиком, канонические фрагменты — из common/ (копированием, не $ref)."
+        },
+        "scenario": {
+          "$ref": "../../schema/2026-08/scenario.json",
+          "description": "Опциональный инлайн-сценарий (06_scenarios.md) для L2/L3-векторов."
+        },
+        "policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "allowed_tools": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Closed-world allowlist инструментов сессии — понятие драйвера харнесса, векторов permission-отказа (10_security.md); собственного носителя в схемах провода не имеет."
+            }
+          },
+          "description": "Опциональные policy-ограничения сессии, проверяемые до показа превью."
+        },
+        "now": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Опциональный фиксированный момент 'сейчас' (RFC 3339, UTC) для детерминированных проверок TTL/expires_at."
+        },
+        "preseed": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "idempotency": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["tool_name", "state"],
+                "properties": {
+                  "tool_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Имя инструмента, чья запись дедупликации преcидируется (idempotency.json)."
+                  },
+                  "state": {
+                    "$ref": "../../schema/2026-08/idempotency.json#/$defs/DedupState",
+                    "description": "Состояние записи ДО начала script (09_idempotency-errors.md)."
+                  },
+                  "stored_result": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Сохранённый результат для state=duplicate_completed — то, что MUST вернуться без переисполнения commit."
+                  }
+                }
+              },
+              "description": "Заранее существующие записи хранилища идемпотентности — единственный способ детерминированно проверить протокол dedupe без моделирования реальной сетевой гонки."
+            }
+          },
+          "description": "Опциональное предзаданное состояние хранилищ рантайма перед началом script."
+        }
+      }
+    },
+    "ScriptStep": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 1,
+      "additionalProperties": false,
+      "description": "Один шаг драйвера — ровно одно из пяти событий, подаваемых SUT (форма 'oneOf по ключу').",
+      "properties": {
+        "user_input": {
+          "type": "string",
+          "description": "Реплика пользователя, подаваемая на вход llm-шага."
+        },
+        "llm_stub": {
+          "$ref": "#/$defs/LlmStub",
+          "description": "Заскриптованный (не реальный) ответ модели на текущий llm-шаг."
+        },
+        "clarification_answer": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Снимок input_responses раунда уточнения (05_clarification-mrtr.md, clarification.json)."
+        },
+        "approval": {
+          "anyOf": [
+            { "$ref": "#/$defs/ApprovalDecision" },
+            { "$ref": "#/$defs/ApprovalWithArgsOverride" }
+          ],
+          "description": "Решение по открытому предложению гейта (04_confirmation.md): approve|reject|revoke. 'edit' не отдельное решение — моделируется reject с последующим новым llm_stub/user_input, порождающим новое предложение. Объектная форма {decision, args_override} — единственное отступление от enum: моделирует адверсариальную подмену аргументов между prepare и commit тем же токеном."
+        },
+        "tick_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Продвинуть виртуальные часы харнесса на N секунд — единственный способ детерминированно достичь TTL/expires_at без реального ожидания."
+        }
+      }
+    },
+    "LlmStub": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "maxProperties": 1,
+      "properties": {
+        "toolCall": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tool", "args"],
+          "properties": {
+            "tool": { "type": "string", "description": "Имя вызываемого инструмента." },
+            "args": { "type": "object", "additionalProperties": true, "description": "Доменные аргументы вызова, без confirmation_token — его подставляет рантайм на commit." }
+          },
+          "description": "Заглушка решения модели вызвать инструмент."
+        },
+        "text": {
+          "type": "string",
+          "description": "Заглушка текстового ответа модели."
+        },
+        "structured": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Заглушка структурированного вывода llm-шага."
+        }
+      },
+      "description": "Ровно один вариант заскриптованного ответа модели — реальных LLM в fixtures нет."
+    },
+    "ApprovalDecision": {
+      "type": "string",
+      "enum": ["approve", "reject", "revoke"],
+      "description": "Явное решение пользователя по открытому предложению гейта (decision-audit.json#/$defs/Decision, подмножество без expire — истечение достигается tick_seconds)."
+    },
+    "ApprovalWithArgsOverride": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision"],
+      "properties": {
+        "decision": {
+          "$ref": "#/$defs/ApprovalDecision",
+          "description": "То же решение, что и в краткой строковой форме."
+        },
+        "args_override": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Доменные аргументы, которые драйвер посылает на commit ВМЕСТО тех, что сформировали превью на prepare — адверсариальная подмена. Присутствие поля MUST привести к отказу commit по несовпадению args_hash_at_decision/args_hash_at_commit (04_confirmation.md)."
+        }
+      },
+      "description": "Расширенная форма approval для векторов, проверяющих устойчивость к подмене аргументов между prepare и commit."
+    },
+    "Expect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["events", "final_state"],
+      "properties": {
+        "events": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/EventMatch" },
+          "description": "Упорядоченный список частичных матчей событий (lifecycle- либо audit-конверт). Алгоритм матчинга — README.md §2."
+        },
+        "final_state": {
+          "$ref": "../../schema/2026-08/session-state.json#/$defs/ActionStatus",
+          "description": "Ожидаемое состояние действия по завершении script (03_action-lifecycle.md)."
+        },
+        "tool_calls": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ToolCallMatch" },
+          "description": "Опциональный список ожидаемых вызовов инструмента — независимая от events проверка на уровне границы инструмента."
+        },
+        "error": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["code"],
+          "properties": {
+            "code": {
+              "$ref": "../../schema/2026-08/error.json#/$defs/ErrorCode",
+              "description": "Ожидаемый код ошибки (09_idempotency-errors.md), если вектор проверяет отказ."
+            }
+          },
+          "description": "Опциональная ожидаемая ошибка, если сценарий вектора заканчивается отказом инструмента/policy."
+        }
+      }
+    },
+    "EventMatch": {
+      "type": "object",
+      "required": ["kind"],
+      "additionalProperties": true,
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "Вид события — lifecycle-kind (03_action-lifecycle.md) либо audit-kind (08_audit-observability.md)."
+        }
+      },
+      "description": "Частичный матч одного события журнала. Помимо kind MAY нести любые ключи payload-конверта для сверки ПОДМНОЖЕСТВОМ; ключ с префиксом '!' требует ОТСУТСТВИЯ поля — алгоритм и примеры нормируются README.md, не этой схемой."
+    },
+    "ToolCallMatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool", "phase"],
+      "properties": {
+        "tool": { "type": "string", "description": "Имя инструмента." },
+        "args_subset": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Подмножество доменных аргументов вызова, проверяемых рекурсивно (алгоритм — README.md); опционально."
+        },
+        "phase": {
+          "type": "string",
+          "enum": ["prepare", "commit"],
+          "description": "Фаза two-phase-конвенции (02_tool-contract-profile.md): prepare — вызов без confirmation_token; commit — вызов с ним."
+        }
+      },
+      "description": "Ожидаемый вызов инструмента харнессом со стороны SUT."
+    }
+  }
+}
