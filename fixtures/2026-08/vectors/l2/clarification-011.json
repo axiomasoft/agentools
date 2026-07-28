@@ -1,0 +1,129 @@
+{
+  "id": "clarification-011",
+  "title": "Независимый повторный вызов после утраты состояния запроса (не MRTR-раунд одного цикла, контраст с clarification-002): вызов начинается заново с фазы подготовки, уже полученный ответ свёрнут в аргументы, действие не отказывает",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CLR-3"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "fina_payment_send",
+        "title": "Отправить платёж",
+        "description": "Отправляет платёжное поручение во внешнюю систему. Необратимое действие.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "counterparty_id": {
+              "type": "string"
+            },
+            "amount_minor": {
+              "type": "integer"
+            },
+            "purpose": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "counterparty_id",
+            "amount_minor",
+            "purpose"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "payment_id": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "irreversible",
+            "confirmation": "double_confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "fina.payment.send"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "user_input": "Отправь платёж Ромашке на 50000, назначение — аванс"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "fina_payment_send",
+          "args": {
+            "amount_minor": 50000,
+            "purpose": "Аванс"
+          }
+        }
+      }
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "fina_payment_send",
+          "args": {
+            "counterparty_id": "cp-3391",
+            "amount_minor": 50000,
+            "purpose": "Аванс"
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "input_recorded",
+        "payload": {
+          "round": 1,
+          "direction": "request"
+        }
+      },
+      {
+        "kind": "confirmation_requested"
+      },
+      {
+        "kind": "confirmation_resolved",
+        "payload": {
+          "decision": "approve"
+        }
+      }
+    ],
+    "final_state": "completed",
+    "tool_calls": [
+      {
+        "tool": "fina_payment_send",
+        "args_subset": {
+          "counterparty_id": "cp-3391",
+          "amount_minor": 50000,
+          "purpose": "Аванс"
+        },
+        "phase": "prepare"
+      },
+      {
+        "tool": "fina_payment_send",
+        "phase": "commit"
+      }
+    ]
+  }
+}
