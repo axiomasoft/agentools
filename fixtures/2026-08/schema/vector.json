@@ -112,6 +112,14 @@
                     "$ref": "../../schema/2026-08/idempotency.json#/$defs/DedupState",
                     "description": "Состояние записи ДО начала script (09_idempotency-errors.md)."
                   },
+                  "key": {
+                    "$ref": "../../schema/2026-08/idempotency.json#/$defs/IdempotencyKey",
+                    "description": "Ключ преcидируемой записи (09_idempotency-errors.md IDE-4/IDE-5) — точка сравнения с _meta.idempotency_key, предъявляемым script'ом того же вектора."
+                  },
+                  "args_fingerprint": {
+                    "$ref": "../../schema/2026-08/idempotency.json#/$defs/ArgsFingerprint",
+                    "description": "Отпечаток аргументов первого предъявления (09_idempotency-errors.md IDE-16/IDE-17) — точка сравнения для векторов повторного предъявления ключа с другим отпечатком."
+                  },
                   "stored_result": {
                     "type": "object",
                     "additionalProperties": true,
@@ -172,7 +180,18 @@
           "required": ["tool", "args"],
           "properties": {
             "tool": { "type": "string", "description": "Имя вызываемого инструмента." },
-            "args": { "type": "object", "additionalProperties": true, "description": "Доменные аргументы вызова, без confirmation_token — его подставляет рантайм на commit." }
+            "args": { "type": "object", "additionalProperties": true, "description": "Доменные аргументы вызова, без confirmation_token — его подставляет рантайм на commit." },
+            "meta": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "idempotency_key": {
+                  "type": "string",
+                  "description": "Значение _meta[\"dev.agentools/action\"].idempotency_key, подаваемое вызывающим отдельно от args (09_idempotency-errors.md IDE-3: ключ MUST NOT передаваться обычным аргументом; IDE-4: грамматика ^at1:[A-Za-z0-9_-]{8,128}$)."
+                }
+              },
+              "description": "Опциональный блок _meta[\"dev.agentools/action\"], несомый вызовом отдельно от доменных args (02_tool-contract-profile.md, TLP-12)."
+            }
           },
           "description": "Заглушка решения модели вызвать инструмент."
         },

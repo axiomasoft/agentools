@@ -2559,40 +2559,40 @@
       "doc": "09_idempotency-errors.md",
       "normative_word": "MUST",
       "level": "L2",
-      "not_testable": null,
-      "text_digest": "c871a6dbda053e35f4ce4eadf51600ac7d21f03b5597f5a3b2f999151a7b2ede"
+      "not_testable": "ревизия 2026-08 не вводит ни одного депрекированного core-значения — стадия наблюдаема только начиная с ревизии, депрецирующей первое такое значение",
+      "text_digest": "8d909dc1739b08b4fcba961f7c3aa868d8b4aa92916b30ea9d094e6bfd09c09f"
     },
     {
       "rule_id": "IDE-45",
       "doc": "09_idempotency-errors.md",
       "normative_word": "MUST",
       "level": "L2",
-      "not_testable": null,
-      "text_digest": "9c16c955cb8a2d966a508e3d8cb7ecb3870dcc8d292ae7acbf531e67544e1b7b"
+      "not_testable": "та же причина, что IDE-44 — ни одно депрекированное core-значение в ревизии 2026-08 не существует, поведение по нему ненаблюдаемо до первой депрекации",
+      "text_digest": "1c6966194fc297f826f1995a19b9fe33402f3ef037b0f4a28837c711fcafbf26"
     },
     {
       "rule_id": "IDE-46",
       "doc": "09_idempotency-errors.md",
       "normative_word": "MUST NOT",
       "level": "L2",
-      "not_testable": null,
-      "text_digest": "2df755b6b5898186b9f7af78fa687ff921c9e964fe66f1f139f731ca71212cd1"
+      "not_testable": "та же причина, что IDE-44 — без депрекированного core-значения в корпусе нет производителя, которого можно поймать на его использовании",
+      "text_digest": "8081c9d2f4006109acd6cbd2de399b3d13e41dccdd81801d22d79b8d6459a84b"
     },
     {
       "rule_id": "IDE-47",
       "doc": "09_idempotency-errors.md",
       "normative_word": "MUST",
       "level": "L2",
-      "not_testable": null,
-      "text_digest": "a908857c4e3261f3d55199c4be0378cdafb70295c8107f1ffda52533edf895e4"
+      "not_testable": "та же причина, что IDE-44 — ревизия 2026-08 не несёт ни одного удалённого после окна core-значения, отвергать закрытой схемой пока нечего",
+      "text_digest": "6d60c57865cd2755bf7d8f723930aeb6eff8b53457ea464cdebd48d1c9064dce"
     },
     {
       "rule_id": "IDE-48",
       "doc": "09_idempotency-errors.md",
       "normative_word": "MUST NOT",
       "level": "L2",
-      "not_testable": null,
-      "text_digest": "9684201bc62619146b4942a2255e7227744163bd17660e26c5b689e22f0fc70d"
+      "not_testable": "адресат — автор будущей ревизии, вводящей удаление core-значения; ревизия 2026-08 сама ни одного значения не удаляет и депрекированных значений не имеет",
+      "text_digest": "94e91efe8ab3341dff4dde74614b389a339c9eda0c06da183d7310162afae451"
     },
     {
       "rule_id": "SEC-1",

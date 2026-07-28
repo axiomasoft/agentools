@@ -957,6 +957,49 @@ def check_fixtures_format(fixtures_root, profile, errors):
             if unknown:
                 errors.append(f"{vf}: неизвестные поля верхнего уровня {unknown} (схема класса {meta['class']!r} закрыта)")
 
+    check_golden_meta(fixtures_root, profile, errors)
+
+
+def check_golden_meta(fixtures_root, profile, errors):
+    """Golden-пары (`README.md` §7) не несут `spec_rule_ids` в самом `.input.json`/
+    `.golden.txt` — это исказило бы официальный тест-вектор RFC 8785/пару ключа
+    идемпотентности. Покрытие регистрирует компаньон `<имя>.meta.json`: ровно один на
+    пару, ровно два поля (`spec_rule_ids`, `conformance_level`), без полей вектора
+    (`id`/`vector_class`/`spec_rev` — компаньон не вектор ни одного из трёх классов)."""
+    golden_dir = fixtures_root / "golden"
+    if not golden_dir.is_dir():
+        return
+    spec_ref_re = profile["spec_ref_re"]
+    for pair_file in sorted(golden_dir.glob("**/*.input.json")):
+        stem = pair_file.name[: -len(".input.json")]
+        golden_txt = pair_file.with_name(f"{stem}.golden.txt")
+        meta_path = pair_file.with_name(f"{stem}.meta.json")
+        if not golden_txt.is_file():
+            errors.append(f"{pair_file}: нет парного {golden_txt.name}")
+        if not meta_path.is_file():
+            errors.append(f"{pair_file}: нет компаньона {meta_path.name} (README.md §7 — golden-пара непокрыта)")
+            continue
+        meta = load_json(meta_path, errors)
+        if not isinstance(meta, dict):
+            continue
+        unknown = sorted(set(meta) - {"spec_rule_ids", "conformance_level"})
+        if unknown:
+            errors.append(f"{meta_path}: неизвестные поля {unknown} (компаньон несёт только spec_rule_ids/conformance_level)")
+        rule_ids = meta.get("spec_rule_ids")
+        if not isinstance(rule_ids, list) or not rule_ids:
+            errors.append(f"{meta_path}: spec_rule_ids должен быть непустым списком")
+        else:
+            for ref in rule_ids:
+                if not isinstance(ref, str) or not spec_ref_re.match(ref):
+                    errors.append(f"{meta_path}: spec_rule_id {ref!r} не соответствует формату маркера ревизии {fixtures_root.name}")
+        if meta.get("conformance_level") not in ("L1", "L2", "L3"):
+            errors.append(f"{meta_path}: conformance_level должен быть L1|L2|L3")
+
+    for meta_path in sorted(golden_dir.glob("**/*.meta.json")):
+        stem = meta_path.name[: -len(".meta.json")]
+        if not meta_path.with_name(f"{stem}.input.json").is_file():
+            errors.append(f"{meta_path}: нет парного {stem}.input.json (компаньон без пары)")
+
 
 # --- точечные режимы ----------------------------------------------------------
 
