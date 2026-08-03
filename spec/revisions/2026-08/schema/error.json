@@ -83,6 +83,10 @@
           "description": "Токен подтверждения предъявлен принципалом, отличным от покрытого токеном."
         },
         {
+          "const": "agentools.permission.foreign_access_token",
+          "description": "Предъявленный токен доступа выпущен не для этой реализации."
+        },
+        {
           "const": "agentools.precondition.extension_unsupported",
           "description": "Расширение обязательно для запрошенной операции, а контрагент его не объявил."
         },

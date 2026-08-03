@@ -93,6 +93,7 @@ LEGACY_FENCE_DOC = "00_overview.md"
 RFC2119_WORDS_RE = re.compile(r"(?<![A-Za-z])(MUST NOT|MUST|SHOULD NOT|SHOULD|MAY)(?![A-Za-z])")
 
 COVERAGE_HEADING = "## Покрытие решений"
+ERROR_CODE_TABLE_HEADER = "| Код | Категория | Производитель | Когда возникает |"
 
 # Извлечение label решения из строки таблицы покрытия: первая ячейка вида
 # «§B7 (пиннинг дескриптора, …)» или «D19 (…)» — label обрывается на первом
@@ -577,6 +578,55 @@ def check_enum_single_defs(revision_dir, profile, errors):
                 f"перечисление {list(values)} объявлено и в $defs ({defined[values][0]}), "
                 f"и инлайн ({places[0]}) — инлайн-копия обязана быть $ref (anti-regression №1)"
             )
+
+
+def check_error_code_registry(revision_dir, errors):
+    """Сверяет таблицу IDE-31 с published ErrorCode без второго словаря в коде."""
+    document = revision_dir / "09_idempotency-errors.md"
+    schema_file = revision_dir / "schema/error.json"
+    text = document.read_text(encoding="utf-8")
+    table_start = text.find(ERROR_CODE_TABLE_HEADER)
+    if table_start == -1:
+        errors.append(f"{document}: не найдена каноническая таблица IDE-31 кодов ошибок")
+        return
+
+    table_codes = []
+    for line in text[table_start:].splitlines()[2:]:
+        if not line.startswith("|"):
+            break
+        cells = [cell.strip() for cell in line.split("|")[1:-1]]
+        if len(cells) != 4:
+            errors.append(f"{document}: строка таблицы IDE-31 должна нести четыре ячейки: {line}")
+            continue
+        code, category = cells[:2]
+        if not (code.startswith("`") and code.endswith("`")):
+            errors.append(f"{document}: код IDE-31 обязан быть заключён в backticks: {code!r}")
+            continue
+        code = code[1:-1]
+        parts = code.split(".")
+        if not code.startswith("agentools."):
+            errors.append(f"{document}: код IDE-31 обязан принадлежать agentools.: {code!r}")
+        if len(parts) != 3 or parts[1] != category.strip("`"):
+            errors.append(f"{document}: категория {category!r} не согласована с кодом {code!r}")
+        table_codes.append(code)
+
+    duplicates = sorted({code for code in table_codes if table_codes.count(code) > 1})
+    if duplicates:
+        errors.append(f"{document}: дублирующиеся коды IDE-31: {', '.join(duplicates)}")
+
+    schema = load_json(schema_file, errors)
+    try:
+        variants = schema["$defs"]["ErrorCode"]["oneOf"]
+    except (TypeError, KeyError):
+        errors.append(f"{schema_file}: не найден $defs/ErrorCode/oneOf")
+        return
+    enum_codes = [variant["const"] for variant in variants if isinstance(variant, dict) and isinstance(variant.get("const"), str)]
+    missing_from_schema = sorted(set(table_codes) - set(enum_codes))
+    missing_from_table = sorted(set(enum_codes) - set(table_codes))
+    if missing_from_schema:
+        errors.append(f"{schema_file}: коды IDE-31 отсутствуют в ErrorCode: {', '.join(missing_from_schema)}")
+    if missing_from_table:
+        errors.append(f"{document}: ErrorCode содержит коды вне IDE-31: {', '.join(missing_from_table)}")
 
 
 def check_description_no_norm(revision_dir, profile, errors):
@@ -1753,6 +1803,7 @@ def main():
 
     if profile["enum_single_defs"]:
         check_enum_single_defs(revision_dir, profile, errors)
+        check_error_code_registry(revision_dir, errors)
     if profile["description_no_norm"]:
         check_description_no_norm(revision_dir, profile, errors)
     if profile["refs_offline"]:
