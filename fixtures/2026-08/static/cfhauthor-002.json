@@ -1,0 +1,17 @@
+{
+  "id": "cfhauthor-002",
+  "title": "schema/authoring/tool-descriptor.json — актуальный прогон tools/close_schema.py --check на закоммиченном дереве",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CFH-28"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "derived_schema",
+    "path": "spec/revisions/2026-08/schema/authoring/tool-descriptor.json"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

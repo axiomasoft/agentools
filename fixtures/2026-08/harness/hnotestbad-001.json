@@ -1,0 +1,68 @@
+{
+  "id": "hnotestbad-001",
+  "title": "Тот же исход not_testable без причины — тихий SKIP вместо названного статуса",
+  "vector_class": "harness",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CFH-11"
+  ],
+  "conformance_level": "L1",
+  "transcript": [
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "start",
+        "harness_protocol_version": "1.0",
+        "spec_rev": "2026-08"
+      }
+    },
+    {
+      "direction": "adapter_to_runner",
+      "message": {
+        "type": "ready",
+        "sdk": "agentools-php/0.1.0",
+        "spec_rev": "2026-08",
+        "declared_level": "L1"
+      }
+    },
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "config",
+        "fixed_clock": "2026-08-01T00:00:00Z",
+        "fixed_seed": "harness-0001"
+      }
+    },
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "run",
+        "vector_id": "lop-task-poll",
+        "vector": {
+          "spec_rule_ids": [
+            "LOP-9"
+          ],
+          "spec_rev": "2026-08"
+        }
+      }
+    },
+    {
+      "direction": "adapter_to_runner",
+      "message": {
+        "type": "result",
+        "vector_id": "lop-task-poll",
+        "outcome": "not_testable"
+      }
+    },
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "stop"
+      }
+    }
+  ],
+  "expect": {
+    "outcome": "violation",
+    "violated_rule": "CFH-11"
+  }
+}

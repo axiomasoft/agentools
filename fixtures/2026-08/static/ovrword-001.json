@@ -1,0 +1,18 @@
+{
+  "id": "ovrword-001",
+  "title": "Нормативное слово записано по-русски ('ОБЯЗАН') вместо английского RFC 2119 токена",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "OVR-6"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "rule_line",
+    "inline": "**OVR-93 (ОБЯЗАН, L1).** Нормативное слово переведено — грамматика нарушена."
+  },
+  "expect": {
+    "linter": "reject",
+    "diagnostic_substring": "не соответствует грамматике"
+  }
+}

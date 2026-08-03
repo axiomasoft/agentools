@@ -1,0 +1,18 @@
+{
+  "id": "ovrsfx-003",
+  "title": "Инструмент irreversible: side_effect='irreversible', gate double_confirm — ослабление гейта запрещено",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "OVR-19",
+    "OVR-20"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "tool_descriptor",
+    "path": "fixtures/2026-08/common/tool-irreversible.json"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

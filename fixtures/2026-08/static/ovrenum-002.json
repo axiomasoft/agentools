@@ -1,0 +1,17 @@
+{
+  "id": "ovrenum-002",
+  "title": "Тот же вход без дефекта: одно перечисление side_effect в $defs, оба узла ссылаются $ref",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "OVR-16"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "schema",
+    "inline": "{\"$defs\": {\"SideEffect\": {\"enum\": [\"read\", \"draft\", \"write\", \"irreversible\"]}}, \"properties\": {\"toolA\": {\"properties\": {\"side_effect\": {\"$ref\": \"#/$defs/SideEffect\"}}}, \"toolB\": {\"properties\": {\"side_effect\": {\"$ref\": \"#/$defs/SideEffect\"}}}}}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

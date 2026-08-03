@@ -1,0 +1,18 @@
+{
+  "id": "cfhindex-001",
+  "title": "Запись rules.json несёт text_digest, не совпадающий с перегенерированным (протухший индекс)",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CFH-15"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "derived_index",
+    "inline": "{\"doc\": \"00_overview.md\", \"level\": \"L1\", \"normative_word\": \"MUST\", \"not_testable\": null, \"rule_id\": \"OVR-1\", \"text_digest\": \"0000000000000000000000000000000000000000000000000000000000000000\"}"
+  },
+  "expect": {
+    "linter": "reject",
+    "diagnostic_substring": "расходится со сгенерированным (--check)"
+  }
+}

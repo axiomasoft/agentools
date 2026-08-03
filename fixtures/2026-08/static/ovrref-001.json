@@ -1,0 +1,18 @@
+{
+  "id": "ovrref-001",
+  "title": "Сетевой $ref на внешний хост вместо относительной ссылки на файл ревизии",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "OVR-17"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "schema",
+    "inline": "{\"properties\": {\"error\": {\"$ref\": \"https://agentools.dev/schema/2026-08/error.json\"}}}"
+  },
+  "expect": {
+    "linter": "reject",
+    "diagnostic_substring": "запрещён (автодереференс — DR-01 §E5, SEP-2106)"
+  }
+}

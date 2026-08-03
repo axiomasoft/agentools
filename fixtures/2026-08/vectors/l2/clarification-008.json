@@ -1,0 +1,96 @@
+{
+  "id": "clarification-008",
+  "title": "Запрашиваемый ввод режима формы плоский; кодирование составного значения строкой не проходит как валидный раунд",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CLR-16",
+    "CLR-17"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "fina_payment_send",
+        "title": "Отправить платёж",
+        "description": "Отправляет платёжное поручение во внешнюю систему. Необратимое действие.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "counterparty_id": {
+              "type": "string"
+            },
+            "amount_minor": {
+              "type": "integer"
+            },
+            "purpose": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "counterparty_id",
+            "amount_minor",
+            "purpose"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "payment_id": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "irreversible",
+            "confirmation": "double_confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "fina.payment.send"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "user_input": "Отправь платёж Ромашке на 50000, назначение — аванс"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "fina_payment_send",
+          "args": {
+            "amount_minor": 50000,
+            "purpose": "Аванс"
+          }
+        }
+      }
+    },
+    {
+      "clarification_answer": {
+        "counterparty_id": "cp-3391;cp-3392"
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "input_recorded",
+        "payload": {
+          "round": 1,
+          "direction": "request"
+        }
+      }
+    ],
+    "final_state": "running"
+  }
+}

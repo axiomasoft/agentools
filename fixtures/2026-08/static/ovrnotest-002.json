@@ -1,0 +1,18 @@
+{
+  "id": "ovrnotest-002",
+  "title": "Тот же вход с непустой причиной недоступности — статус 'Not testable' назван честно",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "OVR-7",
+    "CFH-20"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "rule_line",
+    "inline": "**OVR-95 (MUST, L1, Not testable: контрагент не реализует функцию X).** Правило с причиной недоступности."
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

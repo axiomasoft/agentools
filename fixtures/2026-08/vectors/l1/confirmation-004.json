@@ -1,0 +1,107 @@
+{
+  "id": "confirmation-004",
+  "title": "Подмена аргументов между prepare и commit тем же токеном отвергается",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CNF-18",
+    "CNF-22"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "fina_payment_send",
+        "title": "Отправить платёж",
+        "description": "Отправляет платёжное поручение во внешнюю систему. Необратимое действие.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "counterparty_id": {
+              "type": "string"
+            },
+            "amount_minor": {
+              "type": "integer"
+            },
+            "purpose": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "counterparty_id",
+            "amount_minor",
+            "purpose"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "payment_id": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "irreversible",
+            "confirmation": "double_confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "fina.payment.send"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "user_input": "Отправь платёж контрагенту cp-1 на 145000 минорных единиц, назначение — счёт 118"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "fina_payment_send",
+          "args": {
+            "counterparty_id": "cp-1",
+            "amount_minor": 145000,
+            "purpose": "Счёт 118"
+          }
+        }
+      }
+    },
+    {
+      "approval": {
+        "decision": "approve",
+        "args_override": {
+          "counterparty_id": "cp-1",
+          "amount_minor": 999999,
+          "purpose": "Счёт 118"
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "confirmation_requested"
+      },
+      {
+        "kind": "confirmation_resolved",
+        "payload": {
+          "decision": "approve"
+        }
+      }
+    ],
+    "final_state": "failed",
+    "error": {
+      "code": "agentools.precondition.confirmation_args_mismatch"
+    }
+  }
+}

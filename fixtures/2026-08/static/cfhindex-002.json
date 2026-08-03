@@ -1,0 +1,17 @@
+{
+  "id": "cfhindex-002",
+  "title": "rules.json ревизии — актуальный прогон tools/rules_index.py --check на закоммиченном дереве",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CFH-15"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "derived_index",
+    "path": "spec/revisions/2026-08/rules.json"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

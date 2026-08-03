@@ -1,0 +1,13 @@
+{
+  "warehouse_id": "wh-msk-1",
+  "items": [
+    {
+      "sku": "A-1",
+      "qty": 2
+    },
+    {
+      "sku": "B-7",
+      "qty": 1
+    }
+  ]
+}

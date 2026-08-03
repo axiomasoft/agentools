@@ -1,0 +1,17 @@
+{
+  "id": "ovrpin-001",
+  "title": "Пин MCP-ревизии 2026-07-28, поверх которого MUST реализовываться ревизия 2026-08",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "OVR-1"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "mcp_pin",
+    "path": "spec/vendor/mcp/2026-07-28/PIN.md"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

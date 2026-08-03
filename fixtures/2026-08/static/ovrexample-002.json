@@ -1,0 +1,17 @@
+{
+  "id": "ovrexample-002",
+  "title": "Тот же пример без лишнего ключа: каждый ключ объявлен схемой, required-поля присутствуют",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "OVR-18"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "example_block",
+    "inline": "{\"example\": {\"id\": \"x001\", \"name\": \"Тест\"}, \"schema\": {\"properties\": {\"id\": {\"type\": \"string\"}, \"name\": {\"type\": \"string\"}}, \"required\": [\"id\", \"name\"]}}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "id": "scncomp-011",
+  "title": "Провал самой компенсации останавливает разворот и фиксирует шаг остановки — исход COMPENSATION_FAILED",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SCN-26",
+    "SCN-27"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "fina_funds_reserve",
+        "title": "Зарезервировать средства",
+        "description": "Резервирует средства на счёте под предстоящий платёж.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "account_id": {
+              "type": "string"
+            },
+            "amount_minor": {
+              "type": "integer"
+            },
+            "reservation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "account_id"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "reservation_id": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "write",
+            "confirmation": "confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "fina.funds.write"
+            ]
+          }
+        }
+      },
+      {
+        "name": "fina_funds_release",
+        "title": "Освободить резерв средств",
+        "description": "Отменяет ранее сделанный резерв средств.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "account_id": {
+              "type": "string"
+            },
+            "amount_minor": {
+              "type": "integer"
+            },
+            "reservation_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "account_id"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "reservation_id": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "write",
+            "confirmation": "confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "fina.funds.write"
+            ]
+          }
+        }
+      },
+      {
+        "name": "fina_payment_send",
+        "title": "Отправить платёж",
+        "description": "Отправляет платёжное поручение во внешнюю систему. Необратимое действие.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "counterparty_id": {
+              "type": "string"
+            },
+            "amount_minor": {
+              "type": "integer"
+            },
+            "purpose": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "counterparty_id",
+            "amount_minor",
+            "purpose"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "payment_id": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "irreversible",
+            "confirmation": "double_confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "fina.payment.send"
+            ]
+          }
+        }
+      }
+    ],
+    "scenario": {
+      "scenario_id": "payment_send_compensation_failed",
+      "title": "Два компенсируемых шага; компенсация ближнего к отказу шага сама технически не удаётся — разворот дальше не идёт",
+      "spec_rev": "2026-08",
+      "steps": [
+        {
+          "id": "hold",
+          "tool": "fina_funds_reserve",
+          "input_map": {
+            "account_id": "$ctx.account_id",
+            "amount_minor": "$ctx.hold_amount_minor"
+          },
+          "compensate": {
+            "tool": "fina_funds_release",
+            "input_map": {
+              "reservation_id": "$steps.hold.reservation_id"
+            }
+          }
+        },
+        {
+          "id": "reserve",
+          "tool": "fina_funds_reserve",
+          "input_map": {
+            "account_id": "$ctx.account_id",
+            "amount_minor": "$ctx.amount_minor"
+          },
+          "compensate": {
+            "tool": "fina_funds_release",
+            "input_map": {
+              "reservation_id": "$ctx.absent_reservation_field"
+            }
+          }
+        },
+        {
+          "id": "send",
+          "tool": "fina_payment_send",
+          "input_map": {
+            "counterparty_id": "$ctx.counterparty_id",
+            "amount_minor": "$steps.reserve.amount_minor",
+            "purpose": "$ctx.absent_purpose_field"
+          },
+          "on_technical_fail": {
+            "action": "abort"
+          }
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Прогони сценарий с двумя резервами и отправкой платежа."
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_failed"
+      },
+      {
+        "kind": "audit.scenario_run_finished",
+        "payload": {
+          "scenario_id": "payment_send_compensation_failed",
+          "outcome": "COMPENSATION_FAILED",
+          "stopped_at_step_id": "reserve"
+        }
+      }
+    ],
+    "final_state": "failed"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "ovrword-002",
+  "title": "Тот же текст с английским нормативным словом MUST",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "OVR-6"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "rule_line",
+    "inline": "**OVR-93 (MUST, L1).** Нормативное слово по-английски — грамматика соблюдена."
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

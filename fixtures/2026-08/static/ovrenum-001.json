@@ -1,0 +1,18 @@
+{
+  "id": "ovrenum-001",
+  "title": "Инлайн-дубль перечисления side_effect в двух узлах схемы вместо одного $defs",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "OVR-16"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "schema",
+    "inline": "{\"properties\": {\"toolA\": {\"properties\": {\"side_effect\": {\"enum\": [\"read\", \"draft\", \"write\", \"irreversible\"]}}}, \"toolB\": {\"properties\": {\"side_effect\": {\"enum\": [\"read\", \"draft\", \"write\", \"irreversible\"]}}}}}"
+  },
+  "expect": {
+    "linter": "reject",
+    "diagnostic_substring": "обязано жить одним $defs-узлом (anti-regression №1)"
+  }
+}

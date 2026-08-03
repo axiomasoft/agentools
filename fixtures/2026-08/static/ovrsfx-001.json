@@ -1,0 +1,18 @@
+{
+  "id": "ovrsfx-001",
+  "title": "Инструмент read: side_effect='read', гейт по умолчанию не требуется (нет поля confirmation)",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "OVR-19",
+    "OVR-20"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "tool_descriptor",
+    "path": "fixtures/2026-08/common/tool-read.json"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

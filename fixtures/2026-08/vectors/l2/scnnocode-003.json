@@ -1,0 +1,144 @@
+{
+  "id": "scnnocode-003",
+  "title": "Инъекция host-кода через выражение отвергается разбором до вычисления (пример 3 документа 06)",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SCN-4",
+    "SCN-13",
+    "SCN-14",
+    "SCN-15"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "fina_document_extract",
+        "title": "Разобрать вложение документа",
+        "description": "Извлекает структурированные поля из приложенного документа. Только чтение.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "document_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "document_id"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "total_minor": {
+              "type": "integer"
+            },
+            "currency": {
+              "type": "string"
+            },
+            "counterparty_id": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "fina.document.read"
+            ]
+          }
+        }
+      },
+      {
+        "name": "fina_invoice_draft",
+        "title": "Создать черновик счёта",
+        "description": "Сохраняет черновик счёта без публикации.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "counterparty_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "counterparty_id"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "invoice_id": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "draft",
+            "permissions_hint": [
+              "fina.invoice.write"
+            ]
+          }
+        }
+      }
+    ],
+    "scenario": {
+      "scenario_id": "rejected_expression",
+      "title": "Отвергаемое выражение: вызов вне грамматики",
+      "spec_rev": "2026-08",
+      "steps": [
+        {
+          "id": "extract",
+          "tool": "fina_document_extract",
+          "input_map": {
+            "document_id": "$ctx.document_id"
+          }
+        },
+        {
+          "id": "draft",
+          "tool": "fina_invoice_draft",
+          "when": "$ctx.tenant == exec(\"id\")",
+          "input_map": {
+            "counterparty_id": "$steps.extract.counterparty_id"
+          },
+          "on_technical_fail": {
+            "action": "abort"
+          }
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Разбери приложенный счёт и создай черновик."
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_failed"
+      },
+      {
+        "kind": "audit.scenario_run_finished",
+        "payload": {
+          "scenario_id": "rejected_expression",
+          "outcome": "FAILED"
+        }
+      }
+    ],
+    "final_state": "failed"
+  }
+}

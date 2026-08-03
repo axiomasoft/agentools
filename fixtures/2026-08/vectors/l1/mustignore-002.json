@@ -1,0 +1,86 @@
+{
+  "id": "mustignore-002",
+  "title": "Неизвестное значение класса побочного эффекта не ослабляет требование гейта",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "IDE-43"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "erp_period_close",
+        "title": "Закрыть учётный период",
+        "description": "Закрывает учётный период контура ERP. Продуктовое расширение класса побочного эффекта, неизвестное ревизии.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "period_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "period_id"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "period_id": {
+              "type": "string"
+            },
+            "closed_at": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "erp.close_period",
+            "confirmation": "confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "erp.period.close"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "erp_period_close",
+          "args": {
+            "period_id": "2026-07"
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "confirmation_requested"
+      },
+      {
+        "kind": "confirmation_resolved"
+      },
+      {
+        "kind": "action_completed"
+      }
+    ],
+    "final_state": "completed"
+  }
+}

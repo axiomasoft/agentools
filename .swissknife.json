@@ -1,0 +1,18 @@
+{
+  "buckets": [
+    "dart",
+    "mobile",
+    "php-packages"
+  ],
+  "providers": {
+    "selection": {
+      "claude-code": {
+        "enabled": true
+      },
+      "codex": {
+        "enabled": true
+      }
+    },
+    "contract_version": "1.0.0"
+  }
+}

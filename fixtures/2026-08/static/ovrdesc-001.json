@@ -1,0 +1,18 @@
+{
+  "id": "ovrdesc-001",
+  "title": "description узла схемы несёт нормативное слово MUST вместо пояснения формы",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "OVR-15"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "schema",
+    "inline": "{\"properties\": {\"side_effect\": {\"description\": \"Инструмент MUST объявлять side_effect ядра или отвергается получателем.\", \"type\": \"string\"}}}"
+  },
+  "expect": {
+    "linter": "reject",
+    "diagnostic_substring": "норма живёт в markdown-правиле (anti-regression №5)"
+  }
+}

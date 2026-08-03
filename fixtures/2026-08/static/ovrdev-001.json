@@ -1,0 +1,17 @@
+{
+  "id": "ovrdev-001",
+  "title": "Правило-отклонение от уровня документа без фразы-обоснования 'уровень <Ln>, потому что …'",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "OVR-14"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "rule_deviation_note",
+    "inline": "**SEC-90 (MUST, L3).** Метка происхождения снабжается подписью без обоснования отклонения уровня."
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

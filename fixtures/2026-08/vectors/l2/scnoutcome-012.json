@@ -1,0 +1,109 @@
+{
+  "id": "scnoutcome-012",
+  "title": "Исход прогона сценария (прописными) отличен от состояния действия (строчными); требование ввода на шаге не есть отказ шага",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SCN-29",
+    "SCN-30"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "crm_task_update",
+        "title": "Обновить задачу",
+        "description": "Изменяет статус либо поля задачи CRM. Обратимая операционная запись: изменение устранимо повторным вызовом с прежними значениями.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "task_id": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "assignee_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "task_id"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "task_id": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "write",
+            "confirmation": "confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "crm.task.write"
+            ]
+          }
+        }
+      }
+    ],
+    "scenario": {
+      "scenario_id": "single_step_completed",
+      "title": "Единственный шаг, чей вызов проходит через раунд уточнения перед завершением",
+      "spec_rev": "2026-08",
+      "steps": [
+        {
+          "id": "update",
+          "tool": "crm_task_update",
+          "input_map": {
+            "task_id": "$ctx.task_id"
+          }
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Обнови статус задачи."
+    },
+    {
+      "clarification_answer": {
+        "status": "done"
+      }
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "input_recorded"
+      },
+      {
+        "kind": "action_completed"
+      },
+      {
+        "kind": "audit.scenario_run_finished",
+        "payload": {
+          "scenario_id": "single_step_completed",
+          "outcome": "COMPLETED"
+        }
+      }
+    ],
+    "final_state": "completed"
+  }
+}

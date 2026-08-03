@@ -1,0 +1,17 @@
+{
+  "id": "ovrref-002",
+  "title": "Тот же узел без дефекта: $ref относительный, резолвится офлайн",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "OVR-17"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "schema",
+    "inline": "{\"properties\": {\"error\": {\"$ref\": \"error.json\"}}}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

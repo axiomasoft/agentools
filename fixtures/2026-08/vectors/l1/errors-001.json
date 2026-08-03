@@ -1,0 +1,94 @@
+{
+  "id": "errors-001",
+  "title": "Продуктовый код ошибки вне пространства agentools принимается наравне с кодами ревизии",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "IDE-26",
+    "IDE-35"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "fina_ledger_post",
+        "title": "Провести запись в учёте",
+        "description": "Создаёт проводку в учётном периоде. Обратимая операционная запись до закрытия периода.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "counterparty_id": {
+              "type": "string"
+            },
+            "amount_minor": {
+              "type": "integer"
+            },
+            "posted_at": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "counterparty_id",
+            "amount_minor",
+            "posted_at"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "entry_id": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "write",
+            "confirmation": "confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "fina.ledger.write"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "fina_ledger_post",
+          "args": {
+            "counterparty_id": "cp-3391",
+            "amount_minor": 1450000,
+            "posted_at": "2026-07-01"
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "confirmation_requested"
+      },
+      {
+        "kind": "confirmation_resolved"
+      }
+    ],
+    "final_state": "failed",
+    "error": {
+      "code": "fina.validation.period_closed"
+    }
+  }
+}
