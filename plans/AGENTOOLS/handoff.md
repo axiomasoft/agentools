@@ -1,29 +1,28 @@
-# HANDOFF — 2026-08-03 — after P4.4
+# HANDOFF — 2026-08-03 — after P4.7
 
-**Next:** run-items: task:plan-run AGENTOOLS P4.7-P4.8
+**Next:** manual: implementation/high — P4.8
 
 | Параметр | Значение |
 |:--|:--|
-| Model class | implementation |
-| Effort | high |
-| Capabilities | `command.subagents`, `command.workflow-carrier` |
-| Context | cold-start — orchestration |
-| Суть | Запустить независимый остаток W1: P4.7 и P4.8; P4.4 уже предоставил общий нормативный вход. |
-| Команда | `$ task:plan-run AGENTOOLS P4.7-P4.8` |
+| Model | implementation |
+| Thinking | high — отрицательный корпус и точные диагностики |
+| Context | continue (reset the session context) — ручной item |
+| Суть | Закрыть остаток W1: artifact-векторы `00` и harness-кейсы `11`. |
+| Команда | `$ task:plan-run AGENTOOLS P4.8` |
 
 **Done:**
 
-- P4.4 закрыт item-коммитом `4d86009`: `TLP-33`/`TLP-34`, 399-rule index, D140-compatible DoS probes и сверенная пара §J9.
-- `rules_index`, structural fixtures-check и общий `spec_lint` зелёные; P4.5 остаётся владельцем исполнения artifact-приговоров.
+- P4.7 закрыт item-коммитом `94aa14b`: behavior-векторы документов `06`, `07`, `10`; локальный `COV` пуст.
+- Fixture-schema и общий `spec_lint --allow-missing` зелёные; P4.7 использовал только объявленные каталоги.
 
 **Remaining:**
 
-- Выполнить workflow W1 для P4.7/P4.8, затем P4.5 на полном закоммиченном корпусе.
+- Выполнить P4.8, затем solo P4.5 на полном закоммиченном корпусе.
 
-**Sources of truth:** `phases/P4.md` P4.4/P4.7/P4.8 · `roadmap.md` W1 · `plan.md` D139/D140.
+**Sources of truth:** `phases/P4.md` P4.7/P4.8 · `roadmap.md` W1 · `rules.json`.
 
 **Open risks:**
 
-- Artifact-приговоры depth/subschemas/network ещё не исполнялись: P4.5 обязан использовать один общий walker, без веток по id.
+- P4.8 обязан брать `diagnostic_substring` из фактических сообщений `spec_lint.py`; исполнение artifact-векторов принадлежит P4.5, harness-кейсов — P6.
 
 **Workarounds/Deferred/Open questions:** —

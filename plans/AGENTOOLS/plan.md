@@ -10,7 +10,7 @@
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-03 (P4.4 закрыт: D139/D140, TLP-33/TLP-34, GREASE/DoS/§J9; artifact-приговоры отложены до P4.5.) |
+| Last Updated | 2026-08-03 (P4.7 закрыт: behavior-векторы сценариев, long operations и безопасности; остаток W1 — P4.8.) |
 | Repository | `~/projects/packages/agentools` (приватный, без remote) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
@@ -195,7 +195,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P1 | **A0** — ре-верификация финала MCP 2026-07-28 + пин коммита и `schema.json` | 3/3 | 🟢 Done |
 | P2 | **A1** — bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
 | P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 15/15 | 🟢 Done |
-| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 5/8 | 🟡 In progress |
+| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 6/8 | 🟡 In progress |
 | P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 0/3 | ⬜ Not started |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | ⬜ Not started |
@@ -379,6 +379,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 ## 6. Update Log
 
 | Дата | Кто (role/model) | Что |
+| 2026-08-03 | plan-run/frontier-high (`gpt-5`) | P4.7 закрыт 🟢: behavior-векторы покрывают MUST документов `06`/`07`/`10`; Session `frontier/high`, route `implementation/high` — детали см. phases/P4.md P4.7 Completion Notes. |
 | 2026-08-03 | plan-exec/Codex | P4.4 закрыт 🟢: TLP-33/TLP-34 и 399-rule index, DoS ids D140, J9 canonical pair; `spec_lint`/fixtures/index зелёные, item `4d86009`; artifact-приговоры исполняет P4.5. |
 | 2026-08-03 | plan-design/frontier-high | P4.4 re-design: D140 заменяет невалидные DoS ids на однотокенные `dosdepth`/`dossubschemas`/`dosnetwork`, не переоткрывая P4.1; 0.18.0 → 0.19.0. |
 | 2026-08-03 | plan-design/frontier-high | P4.4 ре-дизайн до DoR: D139 фиксирует depth 16 / subschemas 256, `diagnostic_substring`, владение P4.4→P4.5 и solo-маршрут вне W1; 0.17.0 → 0.18.0. |
