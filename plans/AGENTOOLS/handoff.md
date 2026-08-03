@@ -24,5 +24,6 @@
 **Open risks:**
 
 - P4.5 должен исполнить все artifact-векторы единым механизмом, включая DoS bounds P4.4 и диагностические подстроки P4.8; структурного `--fixtures-check` недостаточно.
+- Отдельный checkout vault `Brain` на хосте отсутствует; bookkeeping P4.7/P4.8 живёт в репозиторном зеркале и требует синхронизации при восстановлении vault-root (D30).
 
 **Workarounds/Deferred/Open questions:** —
