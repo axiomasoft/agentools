@@ -1,44 +1,29 @@
 # HANDOFF — 2026-08-03 — after P4.4
 
-**Next:** /task:plan-design AGENTOOLS P4.4
+**Next:** run-items: task:plan-run AGENTOOLS P4.7-P4.8
 
 | Параметр | Значение |
 |:--|:--|
-| Model | frontier/high |
-| Thinking | high — устранить конфликт контракта P4.4 |
-| Context | NEW SESSION — шаг-не-item |
-| Суть | Синхронизировать поля artifact-вектора, DoS-лимиты и владение проверками до повторного исполнения P4.4. |
-| Команда | `/task:plan-design AGENTOOLS P4.4` |
-
-```text
-/task:plan-design AGENTOOLS P4.4
-```
+| Model class | implementation |
+| Effort | high |
+| Capabilities | `command.subagents`, `command.workflow-carrier` |
+| Context | cold-start — orchestration |
+| Суть | Запустить независимый остаток W1: P4.7 и P4.8; P4.4 уже предоставил общий нормативный вход. |
+| Команда | `$ task:plan-run AGENTOOLS P4.7-P4.8` |
 
 **Done:**
 
-- Routing-гейт `frontier/high` ≥ `implementation/high` и pre-mutation Task Contract пройдены: `allow`.
-- P4.4 остановлен до мутации Scope: выявлен конфликт `diagnostic_contains` ↔ нормативный
-  `diagnostic_substring` в `fixtures/2026-08/schema/static-check.json`.
-- Подтверждено отсутствие предписанных численных лимитов глубины/числа подсхем и соответствующих
-  диагностик в текущем `tools/spec_lint.py`; значения запрещено изобретать Code Guidance item'а.
-- Уже синхронизированные `fixtures/2026-08/**/grease-*` сохранены без изменений и не выданы за
-  завершённый item.
+- P4.4 закрыт item-коммитом `4d86009`: `TLP-33`/`TLP-34`, 399-rule index, D140-compatible DoS probes и сверенная пара §J9.
+- `rules_index`, structural fixtures-check и общий `spec_lint` зелёные; P4.5 остаётся владельцем исполнения artifact-приговоров.
 
 **Remaining:**
 
-- Перепроектировать P4.4 и повторить `/task:plan-run AGENTOOLS P4.4` после устранения конфликта.
-- P4.7, P4.8 и P4.5 остаются незакрытыми; P4.5 по-прежнему владеет исполнением artifact-векторов.
+- Выполнить workflow W1 для P4.7/P4.8, затем P4.5 на полном закоммиченном корпусе.
 
-**Sources of truth:** `phases/P4.md` P4.4 · `fixtures/2026-08/README.md` §4/§10 ·
-`fixtures/2026-08/schema/static-check.json` · `tools/spec_lint.py`.
+**Sources of truth:** `phases/P4.md` P4.4/P4.7/P4.8 · `roadmap.md` W1 · `plan.md` D139/D140.
 
 **Open risks:**
 
-- Validation P4.4 не может пройти с `diagnostic_contains`: закрытая схема разрешает только
-  `diagnostic_substring`.
-- Без нормативных лимитов глубины и числа подсхем DoS-пробы недетерминированы; без проверок
-  `spec_lint.py` их ожидаемые диагностики не существуют.
-- Импортный коммит `89c92ec` уже содержит часть имён P4.4, но план не фиксирует их происхождение
-  как завершённое исполнение; plan-design должен явно принять, заменить либо исключить эти файлы.
+- Artifact-приговоры depth/subschemas/network ещё не исполнялись: P4.5 обязан использовать один общий walker, без веток по id.
 
-**Workarounds/Deferred/Open questions:** workaround не принят; вопросы адресованы plan-design P4.4.
+**Workarounds/Deferred/Open questions:** —
