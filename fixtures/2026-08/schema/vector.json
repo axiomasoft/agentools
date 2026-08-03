@@ -92,6 +92,24 @@
           "format": "date-time",
           "description": "Опциональный фиксированный момент 'сейчас' (RFC 3339, UTC) для детерминированных проверок TTL/expires_at."
         },
+        "identity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tenant_id", "session_id"],
+          "properties": {
+            "tenant_id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Тенант текущего предъявления вызова. Для дедупликации входит в область ключа вместе с именем инструмента и ключом (IDE-5)."
+            },
+            "session_id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Сессия текущего предъявления вызова. В область дедупликации не входит: повтор из новой сессии того же тенанта обязан увидеть ту же запись (IDE-5)."
+            }
+          },
+          "description": "Идентичность вызова, доступная драйверу только для векторов, проверяющих область дедупликации. Не является полем MCP-провода."
+        },
         "preseed": {
           "type": "object",
           "additionalProperties": false,
@@ -111,6 +129,16 @@
                   "state": {
                     "$ref": "../../schema/2026-08/idempotency.json#/$defs/DedupState",
                     "description": "Состояние записи ДО начала script (09_idempotency-errors.md)."
+                  },
+                  "tenant_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Тенант, которому принадлежит предзаданная запись дедупликации. Сравнивается с given.identity.tenant_id для IDE-5."
+                  },
+                  "session_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Сессия первого предъявления записи; сохраняется как контекст вектора, но не участвует в ключе дедупликации (IDE-5)."
                   },
                   "key": {
                     "$ref": "../../schema/2026-08/idempotency.json#/$defs/IdempotencyKey",

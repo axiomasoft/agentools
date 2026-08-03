@@ -961,11 +961,13 @@ def check_fixtures_format(fixtures_root, profile, errors):
 
 
 def check_golden_meta(fixtures_root, profile, errors):
-    """Golden-пары (`README.md` §7) не несут `spec_rule_ids` в самом `.input.json`/
-    `.golden.txt` — это исказило бы официальный тест-вектор RFC 8785/пару ключа
-    идемпотентности. Покрытие регистрирует компаньон `<имя>.meta.json`: ровно один на
-    пару, ровно два поля (`spec_rule_ids`, `conformance_level`), без полей вектора
-    (`id`/`vector_class`/`spec_rev` — компаньон не вектор ни одного из трёх классов)."""
+    """Golden-кейсы (`README.md` §7) не несут `spec_rule_ids` в самом `.input.json`/
+    `.golden.txt`: это исказило бы официальный тест-вектор RFC 8785/пару ключа
+    идемпотентности. Успешный кейс имеет `.golden.txt`; отрицательный — ровно один
+    `.error.json` с кодом ошибки и получает сырой JSON с дублирующимися ключами.
+    Покрытие регистрирует компаньон `<имя>.meta.json`: ровно один на кейс, ровно два
+    поля (`spec_rule_ids`, `conformance_level`), без полей вектора (`id`/
+    `vector_class`/`spec_rev` — компаньон не вектор ни одного из трёх классов)."""
     golden_dir = fixtures_root / "golden"
     if not golden_dir.is_dir():
         return
@@ -973,9 +975,33 @@ def check_golden_meta(fixtures_root, profile, errors):
     for pair_file in sorted(golden_dir.glob("**/*.input.json")):
         stem = pair_file.name[: -len(".input.json")]
         golden_txt = pair_file.with_name(f"{stem}.golden.txt")
+        error_json = pair_file.with_name(f"{stem}.error.json")
         meta_path = pair_file.with_name(f"{stem}.meta.json")
-        if not golden_txt.is_file():
-            errors.append(f"{pair_file}: нет парного {golden_txt.name}")
+        outcomes = [path for path in (golden_txt, error_json) if path.is_file()]
+        if not outcomes:
+            errors.append(f"{pair_file}: нет результата {golden_txt.name} или {error_json.name}")
+        elif len(outcomes) > 1:
+            errors.append(f"{pair_file}: одновременно существуют {golden_txt.name} и {error_json.name}")
+        elif error_json.is_file():
+            error_data = load_json(error_json, errors)
+            if isinstance(error_data, dict):
+                if set(error_data) != {"code"}:
+                    errors.append(f"{error_json}: отрицательный golden-кейс несёт только поле code")
+                elif error_data["code"] != "agentools.validation.canonicalization_failed":
+                    errors.append(f"{error_json}: code должен быть 'agentools.validation.canonicalization_failed'")
+            try:
+                duplicate_keys = []
+
+                def collect_pairs(pairs):
+                    seen = set()
+                    duplicate_keys.extend(key for key, _ in pairs if key in seen or seen.add(key))
+                    return dict(pairs)
+
+                json.loads(pair_file.read_text(encoding="utf-8"), object_pairs_hook=collect_pairs)
+                if not duplicate_keys:
+                    errors.append(f"{pair_file}: отрицательный golden-кейс должен нести дублирующийся ключ объекта")
+            except json.JSONDecodeError as exc:
+                errors.append(f"{pair_file}: невалидный сырой JSON ({exc})")
         if not meta_path.is_file():
             errors.append(f"{pair_file}: нет компаньона {meta_path.name} (README.md §7 — golden-пара непокрыта)")
             continue
@@ -999,6 +1025,11 @@ def check_golden_meta(fixtures_root, profile, errors):
         stem = meta_path.name[: -len(".meta.json")]
         if not meta_path.with_name(f"{stem}.input.json").is_file():
             errors.append(f"{meta_path}: нет парного {stem}.input.json (компаньон без пары)")
+
+    for error_path in sorted(golden_dir.glob("**/*.error.json")):
+        stem = error_path.name[: -len(".error.json")]
+        if not error_path.with_name(f"{stem}.input.json").is_file():
+            errors.append(f"{error_path}: нет парного {stem}.input.json (результат без входа)")
 
 
 # --- точечные режимы ----------------------------------------------------------
