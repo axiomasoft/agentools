@@ -6,6 +6,8 @@
     python3 tools/spec_lint.py --keywords-check <schema.json> [--list A|B]
     python3 tools/spec_lint.py --legacy-check <revision_dir>
     python3 tools/spec_lint.py --fixtures-check <fixtures_root>
+    python3 tools/spec_lint.py --namespace-inventory <revision_dir>
+    python3 tools/spec_lint.py --namespace-inventory-selftest
 
 Ревизий в репозитории больше одной, и они живут по РАЗНЫМ конвенциям (`2026-07-draft`
 — история, `2026-08` — modern-only против MCP 2026-07-28), поэтому линтер параметризован
@@ -47,6 +49,7 @@
 import json
 import re
 import sys
+import tempfile
 from pathlib import Path
 
 EXPECTED_SCHEMA_DIALECT = "https://json-schema.org/draft/2020-12/schema"
@@ -242,6 +245,14 @@ REVISION_PROFILES = {
         "refs_offline": True,
         "examples_structural": True,
         "coverage_matrix": True,
+        # D144/P3.17: owner-ветка A сохраняет namespace. Счётчики фиксируют
+        # реальную цену миграции, а не прежнюю оценку «два носителя» из D46.
+        "namespace_domain": "agentools.dev",
+        "namespace_vendor_prefix": "dev.agentools",
+        "namespace_expected": {
+            "domain_file_count": 32,
+            "combined_file_count": 35,
+        },
     },
 }
 
@@ -1667,6 +1678,121 @@ def apply_coverage_mode(revision_dir, rules, coverage, errors, write, check):
 
 # --- точечные режимы ----------------------------------------------------------
 
+def collect_namespace_inventory(revision_dir, domain, vendor_prefix):
+    """Возвращает сортированный реестр текстовых carriers двух namespace-значений.
+
+    Считаются файлы, а не вхождения: миграция обязана охватить каждый физический
+    носитель. Нечитаемый UTF-8 файл не игнорируется молча — это дефект ревизии.
+    """
+    domain_files = []
+    vendor_files = []
+    for path in sorted(revision_dir.rglob("*")):
+        if not path.is_file() or path.is_symlink():
+            continue
+        text = path.read_text(encoding="utf-8")
+        relative = path.relative_to(revision_dir).as_posix()
+        if domain in text:
+            domain_files.append(relative)
+        if vendor_prefix in text:
+            vendor_files.append(relative)
+
+    combined_files = sorted(set(domain_files) | set(vendor_files))
+    return {
+        "combined": {
+            "file_count": len(combined_files),
+            "files": combined_files,
+        },
+        "domain": {
+            "file_count": len(domain_files),
+            "files": domain_files,
+            "value": domain,
+        },
+        "vendor_prefix": {
+            "file_count": len(vendor_files),
+            "files": vendor_files,
+            "value": vendor_prefix,
+        },
+    }
+
+
+def run_namespace_inventory(revision_dir):
+    if not revision_dir.is_dir():
+        print(f"Ошибка: {revision_dir} не является директорией", file=sys.stderr)
+        return 2
+    try:
+        profile = resolve_profile(revision_dir)
+    except KeyError as exc:
+        print(f"Ошибка: {exc}", file=sys.stderr)
+        return 2
+
+    domain = profile.get("namespace_domain")
+    vendor_prefix = profile.get("namespace_vendor_prefix")
+    expected = profile.get("namespace_expected")
+    if not domain or not vendor_prefix or not expected:
+        print(f"Ошибка: профиль ревизии {revision_dir.name} не пиннит namespace", file=sys.stderr)
+        return 2
+
+    try:
+        inventory = collect_namespace_inventory(revision_dir, domain, vendor_prefix)
+    except (OSError, UnicodeError) as exc:
+        print(f"Ошибка inventory: {exc}", file=sys.stderr)
+        return 2
+
+    counts = {
+        "domain_file_count": inventory["domain"]["file_count"],
+        "vendor_file_count": inventory["vendor_prefix"]["file_count"],
+        "combined_file_count": inventory["combined"]["file_count"],
+    }
+    actual = {key: counts[key] for key in expected}
+    inventory["expected"] = expected
+    inventory["matches_expected"] = actual == expected
+    print(json.dumps(inventory, ensure_ascii=False, indent=2, sort_keys=True))
+    if actual != expected:
+        print(
+            f"namespace inventory расходится с пином: ожидалось {expected}, получено {actual}",
+            file=sys.stderr,
+        )
+        return 1
+    return 0
+
+
+def namespace_inventory_selftest():
+    """Минимальное дерево различает domain-only, vendor-only и оба значения."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        root = Path(temp_dir)
+        fixtures = {
+            "z-domain-only.txt": "https://agentools.dev/schema/example.json\n",
+            "a-vendor-only.txt": "dev.agentools/action\n",
+            "m-both.txt": "agentools.dev\ndev.agentools/core\n",
+            "n-neither.txt": "example.invalid\n",
+        }
+        for name, content in fixtures.items():
+            (root / name).write_text(content, encoding="utf-8", newline="\n")
+        actual = collect_namespace_inventory(root, "agentools.dev", "dev.agentools")
+
+    expected = {
+        "combined": {
+            "file_count": 3,
+            "files": ["a-vendor-only.txt", "m-both.txt", "z-domain-only.txt"],
+        },
+        "domain": {
+            "file_count": 2,
+            "files": ["m-both.txt", "z-domain-only.txt"],
+            "value": "agentools.dev",
+        },
+        "vendor_prefix": {
+            "file_count": 2,
+            "files": ["a-vendor-only.txt", "m-both.txt"],
+            "value": "dev.agentools",
+        },
+    }
+    if actual != expected:
+        print(f"namespace inventory selftest: FAIL\nexpected={expected}\nactual={actual}", file=sys.stderr)
+        return 1
+    print("namespace inventory selftest: OK (domain-only/vendor-only/both)")
+    return 0
+
+
 def run_keywords_check(schema_path, list_name):
     """Точечный прогон одного файла схемы. Список берётся ЯВНО: по умолчанию B —
     `B = A ∪ {закрытие}`, то есть самый широкий список, применимый к файлу вне
@@ -1731,7 +1857,9 @@ def usage():
         "  python3 spec_lint.py <revision_dir> [--allow-missing] [--coverage --write|--check]\n"
         "  python3 spec_lint.py --keywords-check <schema.json> [--list A|B]\n"
         "  python3 spec_lint.py --legacy-check <revision_dir>\n"
-        "  python3 spec_lint.py --fixtures-check <fixtures_root>",
+        "  python3 spec_lint.py --fixtures-check <fixtures_root>\n"
+        "  python3 spec_lint.py --namespace-inventory <revision_dir>\n"
+        "  python3 spec_lint.py --namespace-inventory-selftest",
         file=sys.stderr,
     )
     return 2
@@ -1739,6 +1867,16 @@ def usage():
 
 def main():
     args = sys.argv[1:]
+
+    if args == ["--namespace-inventory-selftest"]:
+        return namespace_inventory_selftest()
+
+    if "--namespace-inventory" in args:
+        try:
+            target = Path(args[args.index("--namespace-inventory") + 1])
+        except IndexError:
+            return usage()
+        return run_namespace_inventory(target)
 
     if "--fixtures-check" in args:
         try:

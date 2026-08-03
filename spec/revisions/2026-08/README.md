@@ -53,7 +53,13 @@ GREEN) плюс git-тегом ревизии; каталог при этом Н
 
 ```
 python3 tools/spec_lint.py spec/revisions/2026-08
+python3 tools/spec_lint.py --namespace-inventory spec/revisions/2026-08
+python3 tools/spec_lint.py --namespace-inventory-selftest
 ```
+
+Namespace inventory — машинный регрессионный контракт решения D144: он отдельно
+перечисляет carriers домена и vendor-префикса, их сортированное объединение и
+проверяет пин 32 domain / 35 domain+vendor файлов.
 
 Все 12 документов написаны — линтер прогоняется **без** `--allow-missing` (флаг
 существовал на время написания ревизии; ГЕЙТ A2 требует его отсутствия). Индекс
