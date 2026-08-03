@@ -1,0 +1,18 @@
+{
+  "id": "cfhgrease-001",
+  "title": "GREASE входит в обязательный корпус и исполняется на каждом прогоне обеими реализациями",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CFH-50",
+    "CFH-51"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "fixture_vector",
+    "path": "fixtures/2026-08/vectors/l1/grease-001.json"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

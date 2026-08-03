@@ -1,0 +1,20 @@
+{
+  "id": "cfhseverity-001",
+  "title": "Severity выводится из нормативного слова, Not testable печатается с причиной и не считается pass",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CFH-17",
+    "CFH-18",
+    "CFH-19",
+    "CFH-21"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "conformance_report",
+    "inline": "{\"rule_id\":\"LOP-9\",\"normative_word\":\"MUST\",\"outcome\":\"Not testable\",\"reason\":\"контрагент не объявил notifications/tasks\",\"counts_toward_level\":false}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

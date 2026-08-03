@@ -1,0 +1,18 @@
+{
+  "id": "ovrlevel-001",
+  "title": "Порог уровня и окно депрекации имеют единственный нормативный носитель в 00_overview.md",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "OVR-13",
+    "OVR-24"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "revision_conventions",
+    "path": "spec/revisions/2026-08/00_overview.md"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

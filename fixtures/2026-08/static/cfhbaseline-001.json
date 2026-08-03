@@ -1,0 +1,21 @@
+{
+  "id": "cfhbaseline-001",
+  "title": "Baseline хранит адрес проверки и маркер правила, запрещает GREASE и краснеет на healed entry",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CFH-22",
+    "CFH-23",
+    "CFH-24",
+    "CFH-25",
+    "CFH-26"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "known_failures",
+    "inline": "{\"known_failures\":[{\"scenario\":\"longop-002\",\"check\":\"notification-channel\",\"rule_id\":\"LOP-9\"}],\"actual_failures\":[\"longop-002:notification-channel\"],\"reject_passing_entries\":true,\"grease_allowed\":false}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

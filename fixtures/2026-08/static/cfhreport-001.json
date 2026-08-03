@@ -1,0 +1,19 @@
+{
+  "id": "cfhreport-001",
+  "title": "Детерминированный отчёт обосновывает уровень и не объявляет успех при пропущенном поданном векторе",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CFH-52",
+    "CFH-53",
+    "CFH-54"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "conformance_report",
+    "inline": "{\"order\":\"rule_id,vector_id\",\"declared_level\":\"L1\",\"failed\":[],\"warnings\":[],\"not_testable\":[{\"rule_id\":\"LOP-9\",\"reason\":\"capability unavailable\"}],\"submitted_vectors\":45,\"reported_vectors\":45,\"success\":true}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

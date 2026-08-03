@@ -1,0 +1,20 @@
+{
+  "id": "ovrboundary-001",
+  "title": "00_overview.md явно удерживает границы ревизии, субъект каждой нормы и запрет точек расширения без потребителя",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "OVR-3",
+    "OVR-4",
+    "OVR-5",
+    "OVR-9"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "revision_conventions",
+    "path": "spec/revisions/2026-08/00_overview.md"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}
