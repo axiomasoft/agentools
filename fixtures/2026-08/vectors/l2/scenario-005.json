@@ -1,0 +1,67 @@
+{
+  "id": "scenario-005",
+  "title": "Выражение из 513 кодовых точек превышает предел 512",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SCN-17",
+    "SCN-21",
+    "SCN-22"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Детерминированный пробный инструмент для проверки поведения рантайма.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {}
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "confirmation": "none",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "user_input": "Выражение из 513 кодовых точек превышает предел 512"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "observed": 513,
+            "limit": 512
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "step_failed",
+        "payload": {
+          "failure_class": "technical",
+          "limit": 512,
+          "observed": 513
+        }
+      }
+    ],
+    "final_state": "failed",
+    "error": {
+      "code": "agentools.budget.limit_exceeded"
+    }
+  }
+}

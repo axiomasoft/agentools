@@ -1,0 +1,82 @@
+{
+  "id": "scenario-003",
+  "title": "AST-интерпретатор отвергает host-code до вычисления и принимает выражения только в when/input_map",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SCN-12",
+    "SCN-13",
+    "SCN-14",
+    "SCN-15"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Детерминированный пробный инструмент для проверки поведения рантайма.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {}
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "confirmation": "none",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "scenario": {
+      "scenario_id": "ast_only",
+      "title": "Сценарий ast_only",
+      "spec_rev": "2026-08",
+      "steps": [
+        {
+          "id": "reject_codegen",
+          "tool": "demo_probe",
+          "when": "$ctx.value == exec(\"id\")",
+          "input_map": {
+            "value": "$ctx.value"
+          }
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "AST-интерпретатор отвергает host-code до вычисления и принимает выражения только в when/input_map"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "scenario-003"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "step_failed",
+        "payload": {
+          "step_id": "reject_codegen",
+          "failure_class": "technical",
+          "reason": "expression_syntax"
+        }
+      }
+    ],
+    "final_state": "failed",
+    "error": {
+      "code": "demo.validation.expression_syntax"
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "id": "security-003",
+  "title": "Свёрнутая тройка user-agent-call-scope отвергается: scope обязан быть per-call",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SEC-13",
+    "SEC-14",
+    "SEC-15",
+    "SEC-16",
+    "SEC-17"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Детерминированный пробный инструмент для проверки поведения рантайма.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {}
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "confirmation": "none",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "user_input": "Свёрнутая тройка user-agent-call-scope отвергается: scope обязан быть per-call"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "session-wide-scope"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_failed",
+        "actor": {
+          "type": "agent"
+        },
+        "payload": {
+          "reason": "principal_tuple_incomplete",
+          "!delegation_claim_schema": true
+        }
+      }
+    ],
+    "final_state": "failed",
+    "error": {
+      "code": "agentools.permission.confirmation_principal_mismatch"
+    }
+  }
+}

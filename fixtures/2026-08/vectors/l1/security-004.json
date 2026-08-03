@@ -1,0 +1,69 @@
+{
+  "id": "security-004",
+  "title": "Запись решения не заменяет независимую авторизацию и не дублируется вторым носителем",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SEC-18",
+    "SEC-19"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Детерминированный пробный инструмент для проверки поведения рантайма.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {}
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "confirmation": "none",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "user_input": "Запись решения не заменяет независимую авторизацию и не дублируется вторым носителем"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "reuse-old-decision"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "confirmation_resolved",
+        "payload": {
+          "decision": "approve"
+        }
+      },
+      {
+        "kind": "action_failed",
+        "payload": {
+          "reason": "authorization_required"
+        }
+      }
+    ],
+    "final_state": "failed",
+    "error": {
+      "code": "agentools.permission.confirmation_principal_mismatch"
+    }
+  }
+}

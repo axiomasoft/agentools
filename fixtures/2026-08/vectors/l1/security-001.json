@@ -1,0 +1,74 @@
+{
+  "id": "security-001",
+  "title": "Чужой, транзитный и извлечённый из данных токен отвергается permission-ошибкой без проброса",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SEC-1",
+    "SEC-2",
+    "SEC-3",
+    "SEC-4",
+    "SEC-5",
+    "SEC-6"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Детерминированный пробный инструмент для проверки поведения рантайма.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {}
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "confirmation": "none",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "policy": {
+      "allowed_tools": [
+        "demo_probe"
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Чужой, транзитный и извлечённый из данных токен отвергается permission-ошибкой без проброса"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "Bearer downstream-api-token"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_failed",
+        "payload": {
+          "category": "permission",
+          "reason": "foreign_token",
+          "!forwarded_token": true
+        }
+      }
+    ],
+    "final_state": "failed",
+    "error": {
+      "code": "agentools.permission.confirmation_principal_mismatch"
+    }
+  }
+}
