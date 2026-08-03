@@ -1,0 +1,102 @@
+# P3/P4 — проект ремедиации Gate B round 1
+
+**Дата:** 2026-08-03  
+**Статус:** design input для реопена P3/P4  
+**Сырьё:** `../artifacts/P5-gate-b.md` (полная матрица 382 MUST/MUST NOT, F1–F8) ·
+`../findings/P5-adr-contours.md` (живые ADR совместимы; нужны адаптеры, не новая норма)
+
+## 1. Диагноз и граница
+
+Формальный A3 зелёный (`382/382`), но 116 обязательных правил имеют только негодные носители.
+Ремедиация не меняет `DR-01`/`DR-02` и не трогает `2026-07-draft`: нормативный текст верен,
+кроме трёх недостающих операционных адресов — отдельного кода SEC-3, честной механики смены
+namespace и owner-вердикта по измеримости требования малых моделей. `RAG:— (repo-grounded:
+artifacts/P5-gate-b.md §§Почему RED, Находки; findings/P5-adr-contours.md §Вывод)`.
+
+Старые terminal-items сохраняются как история. Новая работа живёт в remediation-items P3.16–P3.19
+и P4.9–P4.13; это не переписывает прежние Completion Notes и их git-якоря.
+
+## 2. Hotspot A — формальный driver state вектора
+
+Текущий `Given` выражает tools/scenario/policy/now/identity/idempotency, а `ScriptStep` — только
+user/LLM/clarification/approval/time. Поэтому ожидания по provenance, principal/auth, baggage,
+journal/effect, tool-result и task-channel не выводятся из входа (F2/F4).
+
+P4.9 вводит один закрытый driver-контракт:
+
+- `given.driver_state.principals`: `initiator`, `agent`, `authorizer` и их стабильные ids;
+- `given.driver_state.authorization`: ресурс/инструмент + разрешённые permissions на момент шага;
+- `given.driver_state.credentials[]`: `kind`, `source`, `issuer`, `audience`, `integrity`,
+  `principal_id`, `scopes`; `source` различает trusted credential / argument / model output /
+  tool result;
+- `given.driver_state.provenance[]`: адрес значения + `content_origin`;
+- `given.driver_state.baggage[]`: key/value для точной проверки лимитов;
+- `given.driver_state.journal[]` и `effects[]`: предзаданные события и effect-registry;
+- `given.driver_state.tool_results[]` и `task_channel[]`: результаты/сообщения до начала script;
+- `script` получает ровно два новых взаимоисключающих шага: `tool_result` и `task_message`.
+
+Это состояние принадлежит harness-драйверу и НЕ является новым полем MCP-провода. Названия
+предметных значений берутся из схем ревизии; driver-обёртка описывается в README корпуса.
+Схема остаётся закрытой, каждый новый класс имеет положительный и отрицательный fixtures-check.
+`RAG:— (repo-grounded: fixtures/2026-08/schema/vector.json $defs.Given/$defs.ScriptStep;
+artifacts/P5-gate-b.md F2/F4)`.
+
+## 3. Hotspot B — нормативные входы P3
+
+### SEC-3
+
+`SEC-3` требует permission-ошибку, отличимую от CNF-18…CNF-21, но таблица кодов документа `09`
+отдельного производителя SEC-3 не имеет. P3.16 добавляет ровно один код
+`agentools.permission.foreign_access_token` с производителем `SEC-3`, синхронизирует
+`schema/error.json`/authoring-производную/rules и оставляет остальные коды неизменными.
+`security-001` обязан ждать новый код; повторное использование
+`confirmation_principal_mismatch` запрещено. `RAG:— (repo-grounded:
+spec/revisions/2026-08/10_security.md:73-76; 09_idempotency-errors.md §6; artifacts/P5-gate-b.md F1)`.
+
+### Namespace Q-5
+
+Цена смены — 32 domain-файла и 35 domain+vendor-файлов, а не «одна строка + один profile key».
+P3.17 сначала создаёт детерминированный inventory/миграционный check, затем исполняет выбранную
+владельцем ветку: (A) владение подтверждено — значения остаются, inventory становится регрессией;
+(B) домен меняется — одна атомарная миграция всех 35 carriers + производных схем и повтор всех
+гейтов. Частичная замена запрещена. Вопрос остаётся owner-gate до явного ответа.
+`RAG:— (repo-grounded: artifacts/P5-gate-b.md Линза 6/F7; open-questions.md Q-5)`.
+
+### Small-model descriptions Q-27
+
+P3.18 не вводит непроверяемое слово «достаточно». Владелец выбирает одну из двух честных веток:
+
+1. `measurable`: профиль требует непустое actionable-description с назначением, условиями вызова,
+   обязательными аргументами и одним примером; минимальная/исправленная пара artifact-кейсов
+   проверяет структуру, а P10.6 отдельно измеряет модельное качество;
+2. `defer`: требование эффективности для малых моделей явно исключается из ревизии `2026-08`,
+   переносится в P10.6/следующую ревизию и фиксируется refinement'ом владельца — Gate B больше не
+   выдаёт наличие поля за доказательство качества.
+
+Ветка без owner-решения не исполняется. `RAG:— (repo-grounded: brief/00-brief.md §3;
+open-questions.md Q-27; artifacts/P5-gate-b.md F8)`.
+
+## 4. Декомпозиция P4
+
+| Item | Закрывает | Вход | Выход |
+|:--|:--|:--|:--|
+| P4.9 | F2/F4 — невыразимый stimulus | P3.19 + этот документ | driver-state schema/README + negative schema probes |
+| P4.10 | F1/F2/F4 | P3.16, P3.19, P4.9 | различающие security/lifecycle/confirmation/clarification/longop/audit behavior-кейсы |
+| P4.11 | F5 | P3.19, P4.9 | адресные parse/order/host-code/limit scenario-кейсы |
+| P4.12 | F3/F6 (+ measurable-ветка F8) | P3.17–P3.19, P4.9 | шесть исправленных checker branches, static pairs baseline/report/GREASE/deviation/description |
+| P4.13 | интеграция | P4.10–P4.12 | A3 PASS + evidence-таблица F1–F6/32 carriers/116 rules; затем новый P5.1 |
+
+P4.10/P4.11/P4.12 независимы после P3.19+P4.9 и имеют детерминированные Validation, поэтому
+критерий оркестрации срабатывает. Носитель — `workflows/wf-agentools-p4-remediation.js` (W2);
+P4.9 и P4.13 остаются solo.
+
+## 5. Инварианты приёмки
+
+- Никакого спец-кода «под Gate B»: каждая замена обязана иметь различающий stimulus и
+  позитивно-негативную пару; подмена ссылки `spec_rule_ids` не считается исправлением.
+- 32 названных носителя из round 1 получают статус `replaced` либо доказанный `retained-pass` в
+  evidence-таблице; все 116 sole-carrier MUST после замены имеют хотя бы один годный carrier.
+- Формальные A2/A3 остаются зелёными, но их PASS не объявляется содержательным GREEN.
+- Единственный содержательный вердикт после ремедиации — новый cold-start P5.1 round 2.
+- Любое изменение `DR-01`/`DR-02`, `2026-07-draft`, живых ADR либо P6–P11 запрещено.
+

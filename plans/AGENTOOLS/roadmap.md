@@ -1,6 +1,6 @@
 # Roadmap исполнения — AGENTOOLS
 
-**Обновлён:** 2026-08-03 · **Соответствует plan.md:** v0.20.0 · **Следующий исполнимый участок:** workflow W1 P4.7/P4.8. Brain — SSOT; эта копия синхронизирована для работы из репозитория.
+**Обновлён:** 2026-08-03 · **Соответствует plan.md:** v0.21.0 · **Следующий исполнимый участок:** solo P3.16. Brain — SSOT; эта копия синхронизирована для работы из репозитория.
 
 Карта отвечает на «какую команду дальше?» без разбора всего плана. Она **не переопределяет**
 `plan.md` §3 Routing (модели и effort — оттуда), а только группирует запуски и называет гейты
@@ -22,11 +22,9 @@ bookkeeping + handoff), батч закрытия не сливает. (2) `solo
 
 **Порядок фаз.** P1 и P2 независимы (D21) — P2 закрыта. Дальше строго последовательно:
 P3 гейтится P1, P4 гейтится P3, P5 гейтится P3+P4; P6–P11 — GREEN P5.1, baseline P5.3 и freeze P5.2.
-**Порядок ВНУТРИ фазы P4 (фактический).** P4.1, P4.2, P4.3 и P4.6 уже закрыты. Далее строго:
-**P4.4 закрыт → остаток W1 P4.7/P4.8 → P4.5**. P4.4 добавил общий нормативный вход
-`02_tool-contract-profile.md`/`rules.json` по D139; workflow пропускает терминальные P4.2/P4.3
-и P4.4 и пишет только независимые остаточные каталоги P4.7/P4.8. P4.5 запускается только против
-закоммиченного полного корпуса и исполняет artifact-пробы P4.4.
+**Remediation-order после Gate B round 1 (D141–D143):** P3.16 → owner-gates P3.17/P3.18 →
+P3.19/A2 → close P3 → P4.9 → workflow W2 (P4.10/P4.11/P4.12) → P4.13/A3 → close P4 →
+P5.1 round 2. Старый W1 и P4.1–P4.8 терминальны и повторно не запускаются.
 
 ---
 
@@ -49,14 +47,23 @@ P3 гейтится P1, P4 гейтится P3, P5 гейтится P3+P4; P6–
 | P3.11, P3.12 | B6 | `plan-run` серия | frontier/high | — | идемпотентность/ошибки → безопасность: коды и принципалы разбираются вместе |
 | P3.13 | solo | `plan-run` | frontier/high | — | `11_conformance-harness.md` нормирует ВСЁ, что реализует фаза P6 (харнесс, severity, baseline, CI, golden **включая способ доставки пары** — D117, lockstep); объём и цена ошибки не допускают соседа в сессии |
 | P3.14 | solo | `plan-run` | implementation/high | — | генератор `rules.json` + сводный `ГЕЙТ A2` — гейт-item фазы, читает все двенадцать документов; маршрут отличается от батчей авторинга |
+| P3.16 | solo | `plan-run` | implementation/high | — | первый prerequisite: отдельный SEC-3 permission-код; собственная сессия из-за единственного public error dictionary |
+| P3.17 | solo | `plan-run` | **frontier/high** | ✅ **Q-5** | namespace inventory 32/35 + owner-ветка keep/migrate; без D# не стартует |
+| P3.18 | solo | `plan-run` | **frontier/high** | ✅ **Q-27** | measurable actionable-description либо explicit defer; без D# не стартует |
+| P3.19 | solo | `plan-run` | implementation/high | — | терминальный повтор A2 после трёх remediation-items; запускается последним в реопененной P3 |
 | P4.1 | — | — | — | — | **закрыт**; формат корпуса уже заморожен |
 | P4.6 | — | — | — | — | **закрыт**; must-ignore калиброван фактом |
 | P4.2 | — | — | — | — | **закрыт**; повторный запуск W1 не должен перезаписывать его артефакты |
 | P4.3 | — | — | — | — | **закрыт**; JCS/idempotency-корпус и golden-пары зафиксированы |
 | P4.4 | — | — | — | — | **закрыт** `4d86009`; общий вход D139/D140 готов, artifact-приговоры — P4.5 |
-| P4.7 | W1 | workflow | implementation/high | — | после P4.4: сценарии, длинные операции, безопасность; независимый остаток волны |
-| P4.8 | W1 | workflow | implementation/high | — | после P4.4: artifact- и harness-кейсы; независимый остаток волны |
-| P4.5 | solo | `plan-run` | implementation/high | — | гейт-item фазы: двунаправленный линтер + отчёт покрытия + `ГЕЙТ A3`; запускается ПОСЛЕДНИМ в фазе — считает уже закоммиченный корпус |
+| P4.7 | — | — | — | — | **закрыт**; старый W1 повторно не запускается |
+| P4.8 | — | — | — | — | **закрыт**; старый W1 повторно не запускается |
+| P4.5 | — | — | — | — | **закрыт исторически**; формальный A3 не равен Gate B GREEN |
+| P4.9 | solo | `plan-run` | implementation/high | — | общий driver-state input W2; после terminal P3.19 |
+| P4.10 | W2 | workflow | implementation/high | — | F1/F2/F4 behavior carriers; scope независим от scenario/static после P4.9 |
+| P4.11 | W2 | workflow | implementation/high | — | F5 scenario carriers; отдельные ids/files |
+| P4.12 | W2 | workflow | implementation/high | — | F3/F6/F8 static/checker; потребляет owner outcomes P3.17/P3.18 |
+| P4.13 | solo | `plan-run` | implementation/high | — | terminal A3 + evidence-map 32/116; после W2, перед Gate B round 2 |
 | P5.1 | solo | `plan-run` | frontier/xhigh | — | адверсариальный гейт волны: вердикт обязан быть ОДНИМ и когерентным (D59/D61). **Команда — НЕ `task:plan-audit`**: её субъект — фазы плана, а здесь — артефакты ревизии |
 | P5.3 | solo | `plan-run` | frontier/high | ✅ **Q-30, Q-31** | package-quality baseline и reconciliation identity/authority. Выполняется после GREEN P5.1 и ДО freeze; без ответа владельца — `🔴 Blocked` |
 | — | — | — | — | ✅ **Q-5 (домен) + Q-10 (trademark)** | гейт СТОИТ МЕЖДУ items фазы (D64): нет ответа — P5.2 ждёт со строкой `Возобновление:`, ревизия остаётся `draft`; молчание ≠ «да» |
@@ -90,16 +97,45 @@ P3 гейтится P1, P4 гейтится P3, P5 гейтится P3+P4; P6–
 | P11.3 | solo | `plan-run` | implementation/high | — | clean-checkout quality gate через единственный `tools/ci_gate.py` |
 | P11.4 | solo | `plan-run` | implementation/high | ✅ публикация только по owner decision | release candidate + независимый PHP/Dart consumer smoke |
 
-**Итого:** 85 items в фазах P1–P11. Точный живой счёт статусов — только `plan.md` §4; эта карта
-фиксирует порядок. Историческая раскладка запусков: **7 групп `Batch`**
-— B1 (3 items), B2–B6 (10), B7 (3), всего 16 items · **1 `workflow`** — W1 (4 items) ·
-**55 solo** · **6 гейтов владельца, блокирующих items плана** (плюс пять вопросов вне фаз —
-Q-2, Q-4, Q-8, Q-26, Q-27 — и ТРИ вне плана: Q-1 и Q-25 продуктово-юридические, Q-24 — адресат
-владелец скилла `plan-protocol`; сводка ниже).
+**Итого:** 94 items в фазах P1–P11. Точный живой счёт статусов — только `plan.md` §4; эта карта
+фиксирует порядок. Историческая раскладка: 7 групп `Batch` (16 items) и W1 (4 items).
+Текущая remediation добавляет 6 solo-items (P3.16–P3.19, P4.9, P4.13) и workflow W2
+(P4.10–P4.12). Owner-гейты Q-5/Q-27 перенесены в P3.17/P3.18 до повторного A2.
 
 ---
 
 ## Готовые launch-block'и групп
+
+### Gate B remediation — immediate P3.16
+
+**Next:** run-items: task:plan-run AGENTOOLS P3.16
+
+| Параметр | Значение |
+|:--|:--|
+| Model class | implementation |
+| Effort | high — единственный public error-code dictionary |
+| Capabilities | — |
+| Context | same-session — item |
+| Суть | Добавить отдельный SEC-3 permission-код; затем owner-gates P3.17/P3.18 и terminal P3.19. |
+| Команда | `$ task:plan-run AGENTOOLS P3.16` |
+
+### W2 — Gate B carrier remediation (P4.10–P4.12)
+
+**Next:** waiting: P3.19 и P4.9 терминальны → manual: implementation/high
+
+| Параметр | Значение |
+|:--|:--|
+| Model class | implementation |
+| Effort | high — различающая сила contract vectors |
+| Capabilities | `command.subagents`, `command.workflow-carrier` |
+| Context | cold-start — orchestration |
+| Суть | Параллельно исправить behavior/scenario/static carriers, затем закрыть P4.13 solo. |
+| Команда | — |
+
+```text
+# НЕ раньше: P3.19 и P4.9 терминальны
+native orchestration carrier: plans/AGENTOOLS/workflows/wf-agentools-p4-remediation.js
+```
 
 ### B1 — фаза P1 (A0): пин финала MCP, дельта-таблица, реконсиляция `DR-01`
 
@@ -159,7 +195,7 @@ run-items: task:plan-run AGENTOOLS P3.3-P3.4
      inherited-plan и сверяет ФАКТИЧЕСКИЙ маршрут сессии с §3 Routing; undershoot →
      ROUTING-BLOCKED. Solo-items фазы (P3.1, P3.2, P3.13, P3.14) — той же командой без диапазона. -->
 
-### W1 — волна авторинга корпуса векторов (фаза P4)
+### W1 — волна авторинга корпуса векторов (история; повторный запуск запрещён)
 
 | Параметр | Значение |
 |:--|:--|
@@ -167,11 +203,11 @@ run-items: task:plan-run AGENTOOLS P3.3-P3.4
 | Effort | high — авторинг данных контракта против замороженных правил; ложная ссылка на правило проходит машинный гейт |
 | Capabilities | `command.subagents`, `command.workflow-carrier` |
 | Context | cold-start — orchestration: `plan.md` §3 → `roadmap.md` → `phases/P4.md` → `research/03-p4-vector-corpus-2026-08.md` |
-| Суть | Четыре items с непересекающимися каталогами одним прогоном; терминальные P4.2/P4.3 пропускаются, агенты остатка НЕ коммитят и НЕ закрывают items — закрытие последовательной стадией (D55/D139) |
+| Суть | Исторический carrier P4.2/P4.3/P4.7/P4.8; все четыре terminal, remediation использует W2. |
 
 ```
-# НЕ раньше: P4.1, P4.6 и solo P4.4 закрыты
-Workflow({scriptPath: "05-Projects/03-Packages/AgenTools/plans/AGENTOOLS/workflows/wf-agentools-p4-vectors.js"})
+# ИСТОРИЯ — НЕ ЗАПУСКАТЬ ПОВТОРНО
+plans/AGENTOOLS/workflows/wf-agentools-p4-vectors.js
 ```
 
 <!-- Предусловие запуска: закрыты P4.1 (формат вектора и схемы фикстур заморожены), P4.6
@@ -214,13 +250,14 @@ exec-items: task:plan-exec AGENTOOLS P7.1
 
 | Где | Что утверждает владелец | Блокирует |
 |:--|:--|:--|
+| после P3.16, до P3.19 | **Q-5:** keep/migrate namespace по inventory 32/35 · **Q-27:** measurable actionable-description либо explicit defer | P3.17/P3.18 → P3.19 → вся remediation P4; нет D# ⇒ freeze/P6 также запрещены (D143) |
 | **до P5.2** (рекоменд. — до старта P6) | **Q-12:** исход owner-gate `DR-02` §6 — слой 2 четырёхслойного CI на стороне SDK | ветку исполнения P6.7, P7.12, P8.13. **Цена промедления названа:** до freeze ветка (B) стоит одной строки Списка A и правки фазы P3, после freeze — перевыпуска ревизии целиком (D68) |
-| между P5.1 и P5.2 | **P5.3**, Q-30 (legal/publication identity), Q-31 (authority DR-01), затем Q-5/Q-10 | baseline и owner-решения блокируют freeze и старт P6–P11; нет ответа ⇒ соответствующий item ждёт с внешним blocker |
+| между P5.1 и P5.2 | **P5.3**, Q-30 (legal/publication identity), Q-31 (authority DR-01), затем Q-10 | baseline и owner-решения блокируют freeze и старт P6–P11; Q-5 уже должен быть закрыт P3.17 |
 | после P9.1 | **Q-18:** дом кода вертикального среза — ветка (A) зависимость `corex/ai` на SDK · (B) тонкий мост · (C) пакет не создан | P9.3–P9.7 (D102) |
 | внутри P9.2 | **Q-19:** размещение журнала действия относительно канонных `ai_*` — ветка (a) или (b) | P9.4 (D103) |
 | после P10.1 | **Q-20:** дом кода переноса — (A)/(B)/(C1 `waiting:`)/(C2 демонстрационный стенд вне контура) | P10.3–P10.5; **не блокирует P10.6** (D113) |
 | внутри P10.2 | **Q-21** (журнал против `ai_*` контура ERP) · **Q-22** (владение движком сценариев — Rule of Three) · **Q-23** (пин `mcp_dart` контура против эры ревизии) | P10.3–P10.5 (D111, D112) |
-| вне фаз | **Q-2** (remote репозитория) · **Q-4** (канон-папка продукта) · **Q-8** (стратегия релиза ДВУХ pub-пакетов) · **Q-26** (голосовой канал и голосовое подтверждение — вне предмета ревизии, D126) · **Q-27** (достаточность описаний инструментов для малых моделей; детекция вменена линзе 5 аудита P5.1, D126) | ничего в плане; Q-2 честно ограничивает гейт CI локальным прогоном (D69); Q-27 не блокирует, но его отсутствие обязано быть названо отчётом гейта B |
+| вне фаз | **Q-2** (remote репозитория) · **Q-4** (канон-папка продукта) · **Q-8** (стратегия релиза ДВУХ pub-пакетов) · **Q-26** (голосовой канал и голосовое подтверждение — вне предмета ревизии, D126) | ничего в плане; Q-2 честно ограничивает гейт CI локальным прогоном (D69) |
 | вне плана (продукт / юр.) | **Q-1** (кадровый домен — владелец продукта AiFina/AiResto, D114) · **Q-25** (юридический sign-off 152-ФЗ на облачные LLM — ревизия LLM не вызывает, D126) | ничего в плане; обе — честные границы, а не отложенные решения |
 | вне плана (скилл) | **Q-24:** закрытый enum `Next` не покрывает режимы `finish`/`roadmap` — адресат владелец скилла `general/plan-protocol` | ничего; обход — форма `manual` |
 
