@@ -1,28 +1,28 @@
-# HANDOFF — 2026-08-03 — after P4.7
+# HANDOFF — 2026-08-03 — after P4.8
 
-**Next:** manual: implementation/high — P4.8
+**Next:** manual: implementation/high — P4.5
 
 | Параметр | Значение |
 |:--|:--|
 | Model | implementation |
-| Thinking | high — отрицательный корпус и точные диагностики |
+| Thinking | high — двунаправленный гейт и artifact verdicts |
 | Context | continue (reset the session context) — ручной item |
-| Суть | Закрыть остаток W1: artifact-векторы `00` и harness-кейсы `11`. |
-| Команда | `$ task:plan-run AGENTOOLS P4.8` |
+| Суть | Реализовать traceability/coverage, исполнить artifact-корпус и вынести ГЕЙТ A3. |
+| Команда | `$ task:plan-run AGENTOOLS P4.5` |
 
 **Done:**
 
-- P4.7 закрыт item-коммитом `94aa14b`: behavior-векторы документов `06`, `07`, `10`; локальный `COV` пуст.
-- Fixture-schema и общий `spec_lint --allow-missing` зелёные; P4.7 использовал только объявленные каталоги.
+- W1 закрыт: P4.7 `94aa14b`, P4.8 `5e1d2a1`; локальные COV для `06`/`07`/`10` и `00`/`11` пусты.
+- P4.8 structural fixtures-check зелёный; artifact/harness execution честно остаётся у P4.5/P6.
 
 **Remaining:**
 
-- Выполнить P4.8, затем solo P4.5 на полном закоммиченном корпусе.
+- P4.5 — последний item фазы: общий walker, двунаправленная трассировка, `coverage.md`, artifact-приговоры и `ГЕЙТ A3`.
 
-**Sources of truth:** `phases/P4.md` P4.7/P4.8 · `roadmap.md` W1 · `rules.json`.
+**Sources of truth:** `phases/P4.md` P4.5/P4.8 · `roadmap.md` P4.5 · `rules.json` · `fixtures/2026-08/README.md`.
 
 **Open risks:**
 
-- P4.8 обязан брать `diagnostic_substring` из фактических сообщений `spec_lint.py`; исполнение artifact-векторов принадлежит P4.5, harness-кейсов — P6.
+- P4.5 должен исполнить все artifact-векторы единым механизмом, включая DoS bounds P4.4 и диагностические подстроки P4.8; структурного `--fixtures-check` недостаточно.
 
 **Workarounds/Deferred/Open questions:** —
