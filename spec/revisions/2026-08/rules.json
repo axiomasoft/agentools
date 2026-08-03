@@ -611,6 +611,22 @@
       "text_digest": "4e68e4310e38b2703db6007c5832ad29471a6195ba87d9a90be25f8745390c01"
     },
     {
+      "rule_id": "TLP-33",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "e56ca792c9d4c24302d1a955c8a151eac773879bda707875283bee915b9f60be"
+    },
+    {
+      "rule_id": "TLP-34",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "0491f991ec3caa81b5e50d14bb4b1ca8f26792e98df62a265c34f5e543ac835b"
+    },
+    {
       "rule_id": "ALC-1",
       "doc": "03_action-lifecycle.md",
       "normative_word": "MUST",

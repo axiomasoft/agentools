@@ -20,7 +20,7 @@ GREEN) плюс git-тегом ревизии; каталог при этом Н
 |:--|:--|:--|:--|
 | `00_overview.md` | `OVR-` | конвенции, глоссарий, RFC 2119, уровни L1–L3, out of scope by design | написан (`OVR-1`…`OVR-27`) |
 | `01_extension-identity.md` | `EXT-` | идентичность расширения, грамматика вендорных ключей, negotiation | написан (`EXT-1`…`EXT-17`) |
-| `02_tool-contract-profile.md` | `TLP-` | профиль инструмента, `descriptor_digest`, `content_origin` | написан (`TLP-1`…`TLP-32`) |
+| `02_tool-contract-profile.md` | `TLP-` | профиль инструмента, `descriptor_digest`, `content_origin` | написан (`TLP-1`…`TLP-34`) |
 | `03_action-lifecycle.md` | `ALC-` | журнал как источник истины, эпоха, снапшот, хеш-цепочка | написан (`ALC-1`…`ALC-37`, переходы `ALC-T1`…`ALC-T38`) |
 | `04_confirmation.md` | `CNF-` | подтверждение: токен, решения, TTL, dual control | написан (`CNF-1`…`CNF-41`) |
 | `05_clarification-mrtr.md` | `CLR-` | уточнения и единственный биндинг MRTR | написан (`CLR-1`…`CLR-21`) |
@@ -41,7 +41,7 @@ GREEN) плюс git-тегом ревизии; каталог при этом Н
 `06_scenarios.md`.
 
 Индекс правил [`rules.json`](rules.json) — производный артефакт, генерируется
-`tools/rules_index.py` (item P3.14), руками не пишется: 397 записей
+`tools/rules_index.py` (item P3.14), руками не пишется: 399 записей
 (`{rule_id, doc, normative_word, level, not_testable, text_digest}`), сортировка
 детерминирована (документ, затем числовая часть маркера). Корпус тест-векторов
 ревизии — `fixtures/2026-08/` (фаза P4).
