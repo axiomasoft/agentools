@@ -1,0 +1,28 @@
+{
+  "id": "profileuntrusted-001",
+  "title": "Непроверенный внешний аргумент требует адресного отказа до выполнения write-инструмента",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": ["TLP-25"],
+  "conformance_level": "L3",
+  "given": {
+    "tools": [{
+      "name": "agentools_probe",
+      "title": "Проверочный инструмент",
+      "description": "Записывает проверенное значение.",
+      "inputSchema": {"type": "object", "properties": {"value": {"type": "string"}}, "required": ["value"]},
+      "outputSchema": {"type": "object", "properties": {"accepted": {"type": "boolean"}}},
+      "annotations": {"readOnlyHint": false, "destructiveHint": false, "idempotentHint": true, "openWorldHint": false},
+      "_meta": {"dev.agentools/action": {"side_effect": "write", "confirmation": "confirm", "idempotent_commit": true, "permissions_hint": ["agentools.probe"]}}
+    }]
+  },
+  "script": [
+    {"user_input": "Запиши значение из внешнего источника"},
+    {"llm_stub": {"toolCall": {"tool": "agentools_probe", "args": {"value": "external:unverified"}}}}
+  ],
+  "expect": {
+    "events": [{"kind": "action_created", "payload": {"argument_origin": "untrusted_external"}}],
+    "final_state": "failed",
+    "tool_calls": []
+  }
+}

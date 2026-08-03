@@ -1,0 +1,17 @@
+{
+  "id": "lifecycleindex-001",
+  "title": "Новое состояние или событие требует синхронной правки матрицы переходов",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "ALC-14"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "lifecycle_index",
+    "inline": "{\"state_event_matrix_synced\":true,\"new_value_requires_matrix_update\":true}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

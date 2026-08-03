@@ -1,0 +1,22 @@
+{
+  "id": "toolauthoring-001",
+  "title": "Публичная схема открыта, authoring-схема закрыта и точные значения не теряют форму",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "TLP-26",
+    "TLP-27",
+    "TLP-28",
+    "TLP-30",
+    "TLP-31",
+    "TLP-32"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "authoring_schema_profile",
+    "inline": "{\"published_schema_open\":true,\"authoring_schema_closed\":true,\"extensible_values\":\"oneOf_const_plus_string_fallback\",\"pattern_properties\":\"variable_key_maps_only\",\"pair_or_tuple\":\"named_object\",\"exact_number\":\"decimal_string\"}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

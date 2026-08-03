@@ -8,23 +8,23 @@
 |:--|--:|
 | Правил всего | 399 |
 | Тестируемых правил | 393 |
-| Тестируемых правил с покрытием | 305 |
-| MUST/MUST NOT с покрытием | 304 / 382 |
+| Тестируемых правил с покрытием | 383 |
+| MUST/MUST NOT с покрытием | 382 / 382 |
 
 ### По уровням
 
 | Уровень | Тестируемых | С покрытием |
 |:--|--:|--:|
-| L1 | 274 | 201 |
-| L2 | 77 | 74 |
-| L3 | 42 | 30 |
+| L1 | 274 | 269 |
+| L2 | 77 | 76 |
+| L3 | 42 | 38 |
 
 ### По классам корпуса
 
 | Класс | Носителей | Ссылок на правила |
 |:--|--:|--:|
-| behavior | 85 | 310 |
-| artifact | 44 | 81 |
+| behavior | 93 | 351 |
+| artifact | 50 | 118 |
 | harness | 11 | 28 |
 | golden | 10 | 53 |
 
@@ -59,107 +59,107 @@
 | OVR-25 | 00_overview.md | MUST | L1 | artifact | artifact:ovrgloss-001 |
 | OVR-26 | 00_overview.md | MUST NOT | L1 | artifact | artifact:ovrlegacy-001, artifact:ovrlegacy-002 |
 | OVR-27 | 00_overview.md | MUST | L1 | artifact | artifact:ovrgloss-001 |
-| EXT-1 | 01_extension-identity.md | MUST | L1 | — | — |
-| EXT-2 | 01_extension-identity.md | MUST NOT | L1 | — | — |
-| EXT-3 | 01_extension-identity.md | MUST | L1 | — | — |
-| EXT-4 | 01_extension-identity.md | MUST | L1 | — | — |
-| EXT-5 | 01_extension-identity.md | MUST | L1 | — | — |
-| EXT-6 | 01_extension-identity.md | MUST NOT | L1 | — | — |
+| EXT-1 | 01_extension-identity.md | MUST | L1 | artifact | artifact:extidentity-001 |
+| EXT-2 | 01_extension-identity.md | MUST NOT | L1 | artifact | artifact:extidentity-001 |
+| EXT-3 | 01_extension-identity.md | MUST | L1 | artifact | artifact:extidentity-001 |
+| EXT-4 | 01_extension-identity.md | MUST | L1 | artifact | artifact:extidentity-001 |
+| EXT-5 | 01_extension-identity.md | MUST | L1 | artifact | artifact:extidentity-001 |
+| EXT-6 | 01_extension-identity.md | MUST NOT | L1 | artifact | artifact:extidentity-001 |
 | EXT-7 | 01_extension-identity.md | MUST | L1 | behavior | behavior:extension-001 |
-| EXT-8 | 01_extension-identity.md | MUST | L1 | — | — |
-| EXT-9 | 01_extension-identity.md | MUST NOT | L1 | — | — |
+| EXT-8 | 01_extension-identity.md | MUST | L1 | artifact | artifact:extidentity-001 |
+| EXT-9 | 01_extension-identity.md | MUST NOT | L1 | artifact | artifact:extidentity-001 |
 | EXT-10 | 01_extension-identity.md | MUST NOT | L1 | behavior | behavior:extension-001 |
-| EXT-11 | 01_extension-identity.md | MUST | L1 | — | — |
-| EXT-12 | 01_extension-identity.md | MUST NOT | L1 | — | — |
-| EXT-13 | 01_extension-identity.md | MUST | L1 | — | — |
-| EXT-14 | 01_extension-identity.md | MUST | L1 | — | — |
-| EXT-15 | 01_extension-identity.md | MUST | L1 | — | — |
-| EXT-16 | 01_extension-identity.md | MUST NOT | L1 | — | — |
-| EXT-17 | 01_extension-identity.md | MUST NOT | L1 | — | — |
-| TLP-1 | 02_tool-contract-profile.md | MUST | L1 | — | — |
-| TLP-2 | 02_tool-contract-profile.md | MUST | L1 | — | — |
+| EXT-11 | 01_extension-identity.md | MUST | L1 | artifact | artifact:extnegotiation-001 |
+| EXT-12 | 01_extension-identity.md | MUST NOT | L1 | artifact | artifact:extnegotiation-001 |
+| EXT-13 | 01_extension-identity.md | MUST | L1 | artifact | artifact:extnegotiation-001 |
+| EXT-14 | 01_extension-identity.md | MUST | L1 | artifact | artifact:extnegotiation-001 |
+| EXT-15 | 01_extension-identity.md | MUST | L1 | artifact | artifact:extnegotiation-001 |
+| EXT-16 | 01_extension-identity.md | MUST NOT | L1 | artifact | artifact:extnegotiation-001 |
+| EXT-17 | 01_extension-identity.md | MUST NOT | L1 | artifact | artifact:extnegotiation-001 |
+| TLP-1 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-001 |
+| TLP-2 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-001 |
 | TLP-3 | 02_tool-contract-profile.md | SHOULD | L1 | — | — |
 | TLP-4 | 02_tool-contract-profile.md | SHOULD | L1 | — | — |
-| TLP-5 | 02_tool-contract-profile.md | MUST | L1 | — | — |
-| TLP-6 | 02_tool-contract-profile.md | MUST NOT | L1 | — | — |
-| TLP-7 | 02_tool-contract-profile.md | MUST | L1 | — | — |
+| TLP-5 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-001 |
+| TLP-6 | 02_tool-contract-profile.md | MUST NOT | L1 | artifact | artifact:toolcontract-001 |
+| TLP-7 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-001 |
 | TLP-8 | 02_tool-contract-profile.md | SHOULD | L1 | — | — |
-| TLP-9 | 02_tool-contract-profile.md | MUST | L1 | — | — |
-| TLP-10 | 02_tool-contract-profile.md | MUST | L1 | — | — |
-| TLP-11 | 02_tool-contract-profile.md | MUST NOT | L1 | — | — |
-| TLP-12 | 02_tool-contract-profile.md | MUST | L1 | — | — |
+| TLP-9 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-001 |
+| TLP-10 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-001 |
+| TLP-11 | 02_tool-contract-profile.md | MUST NOT | L1 | behavior | behavior:confpolicy-001 |
+| TLP-12 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-001 |
 | TLP-13 | 02_tool-contract-profile.md | MUST NOT | L1 | behavior | behavior:grease-001, behavior:profile-001 |
 | TLP-14 | 02_tool-contract-profile.md | MAY | L1 | behavior | behavior:grease-004 |
 | TLP-15 | 02_tool-contract-profile.md | SHOULD | L1 | — | — |
 | TLP-16 | 02_tool-contract-profile.md | SHOULD | L1 | — | — |
-| TLP-17 | 02_tool-contract-profile.md | MUST NOT | L1 | — | — |
-| TLP-18 | 02_tool-contract-profile.md | MUST | L1 | — | — |
-| TLP-19 | 02_tool-contract-profile.md | MUST | L1 | — | — |
-| TLP-20 | 02_tool-contract-profile.md | MUST NOT | L1 | — | — |
-| TLP-21 | 02_tool-contract-profile.md | MUST | L1 | — | — |
-| TLP-22 | 02_tool-contract-profile.md | MUST | L1 | — | — |
-| TLP-23 | 02_tool-contract-profile.md | MUST NOT | L1 | — | — |
+| TLP-17 | 02_tool-contract-profile.md | MUST NOT | L1 | artifact | artifact:tooldigest-001 |
+| TLP-18 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:tooldigest-001 |
+| TLP-19 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:tooldigest-001 |
+| TLP-20 | 02_tool-contract-profile.md | MUST NOT | L1 | artifact | artifact:tooldigest-001 |
+| TLP-21 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:tooldigest-001 |
+| TLP-22 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:tooldigest-001 |
+| TLP-23 | 02_tool-contract-profile.md | MUST NOT | L1 | artifact | artifact:tooldigest-001 |
 | TLP-24 | 02_tool-contract-profile.md | MAY | L3 | — | — |
-| TLP-25 | 02_tool-contract-profile.md | MUST | L3 | — | — |
-| TLP-26 | 02_tool-contract-profile.md | MUST NOT | L1 | — | — |
-| TLP-27 | 02_tool-contract-profile.md | MUST | L1 | — | — |
-| TLP-28 | 02_tool-contract-profile.md | MUST | L1 | — | — |
+| TLP-25 | 02_tool-contract-profile.md | MUST | L3 | behavior | behavior:profileuntrusted-001 |
+| TLP-26 | 02_tool-contract-profile.md | MUST NOT | L1 | artifact | artifact:toolauthoring-001 |
+| TLP-27 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolauthoring-001 |
+| TLP-28 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolauthoring-001 |
 | TLP-29 | 02_tool-contract-profile.md | MUST NOT | L1 | artifact | artifact:dosnetwork-001 |
-| TLP-30 | 02_tool-contract-profile.md | MUST | L1 | — | — |
-| TLP-31 | 02_tool-contract-profile.md | MUST | L1 | — | — |
-| TLP-32 | 02_tool-contract-profile.md | MUST | L1 | — | — |
+| TLP-30 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolauthoring-001 |
+| TLP-31 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolauthoring-001 |
+| TLP-32 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolauthoring-001 |
 | TLP-33 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:dosdepth-001 |
 | TLP-34 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:dossubschemas-001 |
 | ALC-1 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecycle-001 |
-| ALC-2 | 03_action-lifecycle.md | MUST NOT | L1 | — | — |
-| ALC-3 | 03_action-lifecycle.md | MUST | L1 | — | — |
-| ALC-4 | 03_action-lifecycle.md | MUST NOT | L1 | — | — |
+| ALC-2 | 03_action-lifecycle.md | MUST NOT | L1 | behavior | behavior:lifecyclefold-001 |
+| ALC-3 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecyclefold-001 |
+| ALC-4 | 03_action-lifecycle.md | MUST NOT | L1 | behavior | behavior:lifecyclefold-001 |
 | ALC-5 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecycle-001 |
-| ALC-6 | 03_action-lifecycle.md | MUST | L1 | — | — |
-| ALC-7 | 03_action-lifecycle.md | MUST NOT | L1 | — | — |
+| ALC-6 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecyclefold-001 |
+| ALC-7 | 03_action-lifecycle.md | MUST NOT | L1 | behavior | behavior:lifecyclefold-001 |
 | ALC-8 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:confirmation-001 |
 | ALC-9 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecycle-001 |
 | ALC-10 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecycle-001 |
 | ALC-11 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecycle-002, behavior:lifecycle-003 |
 | ALC-12 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecycle-003 |
 | ALC-13 | 03_action-lifecycle.md | MUST NOT | L1 | behavior | behavior:lifecycle-002, behavior:lifecycle-003 |
-| ALC-14 | 03_action-lifecycle.md | MUST | L1 | — | — |
-| ALC-15 | 03_action-lifecycle.md | MUST | L1 | — | — |
-| ALC-16 | 03_action-lifecycle.md | MUST | L1 | — | — |
+| ALC-14 | 03_action-lifecycle.md | MUST | L1 | artifact | artifact:lifecycleindex-001 |
+| ALC-15 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecyclefold-001 |
+| ALC-16 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecyclefold-001 |
 | ALC-17 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:confirmation-001 |
-| ALC-18 | 03_action-lifecycle.md | MUST NOT | L1 | — | — |
-| ALC-19 | 03_action-lifecycle.md | MUST | L1 | — | — |
-| ALC-20 | 03_action-lifecycle.md | MUST | L1 | — | — |
-| ALC-21 | 03_action-lifecycle.md | MUST | L1 | — | — |
-| ALC-22 | 03_action-lifecycle.md | MUST | L1 | — | — |
-| ALC-23 | 03_action-lifecycle.md | MUST NOT | L1 | — | — |
+| ALC-18 | 03_action-lifecycle.md | MUST NOT | L1 | behavior | behavior:lifecyclefold-001 |
+| ALC-19 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecycleconcurrency-001 |
+| ALC-20 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecycleconcurrency-001 |
+| ALC-21 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecycleconcurrency-001 |
+| ALC-22 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecycleconcurrency-001 |
+| ALC-23 | 03_action-lifecycle.md | MUST NOT | L1 | behavior | behavior:lifecycleconcurrency-001 |
 | ALC-24 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:confirmation-001 |
-| ALC-25 | 03_action-lifecycle.md | MUST | L1 | — | — |
-| ALC-26 | 03_action-lifecycle.md | MUST | L1 | — | — |
-| ALC-27 | 03_action-lifecycle.md | MUST | L1 | — | — |
-| ALC-28 | 03_action-lifecycle.md | MUST NOT | L1 | — | — |
+| ALC-25 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecycleconcurrency-001 |
+| ALC-26 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecycleconcurrency-001 |
+| ALC-27 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecycleconcurrency-001 |
+| ALC-28 | 03_action-lifecycle.md | MUST NOT | L1 | behavior | behavior:lifecycleintegrity-001 |
 | ALC-29 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecycle-001 |
-| ALC-30 | 03_action-lifecycle.md | MUST | L1 | — | — |
-| ALC-31 | 03_action-lifecycle.md | MUST NOT | L1 | — | — |
+| ALC-30 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecycleintegrity-001 |
+| ALC-31 | 03_action-lifecycle.md | MUST NOT | L1 | behavior | behavior:lifecycleintegrity-001 |
 | ALC-32 | 03_action-lifecycle.md | MAY | L3 | — | — |
-| ALC-33 | 03_action-lifecycle.md | MUST | L3 | — | — |
-| ALC-34 | 03_action-lifecycle.md | MUST NOT | L3 | — | — |
-| ALC-35 | 03_action-lifecycle.md | MUST | L3 | — | — |
-| ALC-36 | 03_action-lifecycle.md | MUST | L3 | — | — |
-| ALC-37 | 03_action-lifecycle.md | MUST | L3 | — | — |
+| ALC-33 | 03_action-lifecycle.md | MUST | L3 | behavior | behavior:lifecycleintegrity-001 |
+| ALC-34 | 03_action-lifecycle.md | MUST NOT | L3 | behavior | behavior:lifecycleintegrity-001 |
+| ALC-35 | 03_action-lifecycle.md | MUST | L3 | behavior | behavior:lifecycleintegrity-001 |
+| ALC-36 | 03_action-lifecycle.md | MUST | L3 | behavior | behavior:lifecycleintegrity-001 |
+| ALC-37 | 03_action-lifecycle.md | MUST | L3 | behavior | behavior:lifecycleintegrity-001 |
 | CNF-1 | 04_confirmation.md | MUST NOT | L1 | behavior | behavior:clarification-010 |
 | CNF-2 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-001, behavior:profile-001 |
-| CNF-3 | 04_confirmation.md | MUST | L1 | — | — |
-| CNF-4 | 04_confirmation.md | MUST | L1 | — | — |
-| CNF-5 | 04_confirmation.md | MUST | L1 | — | — |
-| CNF-6 | 04_confirmation.md | MUST NOT | L1 | — | — |
+| CNF-3 | 04_confirmation.md | MUST | L1 | behavior | behavior:confpolicy-001 |
+| CNF-4 | 04_confirmation.md | MUST | L1 | behavior | behavior:confpolicy-001 |
+| CNF-5 | 04_confirmation.md | MUST | L1 | behavior | behavior:confpolicy-001 |
+| CNF-6 | 04_confirmation.md | MUST NOT | L1 | behavior | behavior:confpolicy-001 |
 | CNF-7 | 04_confirmation.md | MUST | L1 | behavior | behavior:profile-001 |
-| CNF-8 | 04_confirmation.md | MUST NOT | L1 | — | — |
+| CNF-8 | 04_confirmation.md | MUST NOT | L1 | behavior | behavior:confpolicy-001 |
 | CNF-9 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-001 |
 | CNF-10 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-001 |
 | CNF-11 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-001 |
 | CNF-12 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-001 |
-| CNF-13 | 04_confirmation.md | MUST NOT | L1 | — | — |
+| CNF-13 | 04_confirmation.md | MUST NOT | L1 | behavior | behavior:conftoken-001 |
 | CNF-14 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-002 |
 | CNF-15 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-002 |
 | CNF-16 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-003 |
@@ -167,9 +167,9 @@
 | CNF-18 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-004 |
 | CNF-19 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-005 |
 | CNF-20 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-003 |
-| CNF-21 | 04_confirmation.md | MUST | L1 | — | — |
+| CNF-21 | 04_confirmation.md | MUST | L1 | behavior | behavior:conftoken-001 |
 | CNF-22 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-003, behavior:confirmation-004 |
-| CNF-23 | 04_confirmation.md | MUST | L1 | — | — |
+| CNF-23 | 04_confirmation.md | MUST | L1 | behavior | behavior:conftoken-001 |
 | CNF-24 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-006, behavior:confirmation-008 |
 | CNF-25 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-006, behavior:confirmation-007 |
 | CNF-26 | 04_confirmation.md | MUST NOT | L1 | behavior | behavior:confirmation-008 |
@@ -179,23 +179,23 @@
 | CNF-30 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-005 |
 | CNF-31 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-005 |
 | CNF-32 | 04_confirmation.md | MAY | L3 | — | — |
-| CNF-33 | 04_confirmation.md | MUST | L3 | — | — |
-| CNF-34 | 04_confirmation.md | MUST NOT | L3 | — | — |
-| CNF-35 | 04_confirmation.md | MUST | L1 | — | — |
-| CNF-36 | 04_confirmation.md | MUST NOT | L1 | — | — |
+| CNF-33 | 04_confirmation.md | MUST | L3 | behavior | behavior:confdual-001 |
+| CNF-34 | 04_confirmation.md | MUST NOT | L3 | behavior | behavior:confdual-001 |
+| CNF-35 | 04_confirmation.md | MUST | L1 | behavior | behavior:confpolicy-001 |
+| CNF-36 | 04_confirmation.md | MUST NOT | L1 | behavior | behavior:confpolicy-001 |
 | CNF-37 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-009 |
-| CNF-38 | 04_confirmation.md | MUST | L1 | — | — |
+| CNF-38 | 04_confirmation.md | MUST | L1 | behavior | behavior:conftoken-001 |
 | CNF-39 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-006 |
 | CNF-40 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-009 |
 | CNF-41 | 04_confirmation.md | MUST NOT | L1 | behavior | behavior:confirmation-009 |
 | CLR-1 | 05_clarification-mrtr.md | MUST | L2 | behavior | behavior:clarification-001, behavior:clarification-010 |
-| CLR-2 | 05_clarification-mrtr.md | MUST | L2 | — | — |
+| CLR-2 | 05_clarification-mrtr.md | MUST | L2 | behavior | behavior:clarificationstate-001 |
 | CLR-3 | 05_clarification-mrtr.md | MUST NOT | L2 | behavior | behavior:clarification-011 |
 | CLR-4 | 05_clarification-mrtr.md | MUST | L2 | behavior | behavior:clarification-001, behavior:clarification-010 |
 | CLR-5 | 05_clarification-mrtr.md | MUST | L2 | behavior | behavior:clarification-007 |
 | CLR-6 | 05_clarification-mrtr.md | MUST | L2 | behavior | behavior:clarification-001, behavior:clarification-002 |
 | CLR-7 | 05_clarification-mrtr.md | MUST | L2 | behavior | behavior:clarification-001 |
-| CLR-8 | 05_clarification-mrtr.md | MUST NOT | L2 | — | — |
+| CLR-8 | 05_clarification-mrtr.md | MUST NOT | L2 | behavior | behavior:clarificationstate-001 |
 | CLR-9 | 05_clarification-mrtr.md | MUST NOT | L2 | behavior | behavior:clarification-006 |
 | CLR-10 | 05_clarification-mrtr.md | MUST | L2 | behavior | behavior:clarification-002 |
 | CLR-11 | 05_clarification-mrtr.md | MUST | L2 | behavior | behavior:clarification-002, behavior:clarification-003 |

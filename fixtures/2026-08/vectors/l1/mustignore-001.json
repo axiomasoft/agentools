@@ -11,7 +11,7 @@
   "given": {
     "tools": [
       {
-        "name": "crm_task_update",
+        "name": "crm_task_update_future",
         "title": "Обновить задачу",
         "description": "Изменяет статус либо поля задачи CRM. Обратимая операционная запись: изменение устранимо повторным вызовом с прежними значениями.",
         "inputSchema": {
@@ -69,7 +69,7 @@
     {
       "llm_stub": {
         "toolCall": {
-          "tool": "crm_task_update",
+          "tool": "crm_task_update_future",
           "args": {
             "task_id": "tsk-501",
             "status": "done"
@@ -96,7 +96,7 @@
     "final_state": "completed",
     "tool_calls": [
       {
-        "tool": "crm_task_update",
+        "tool": "crm_task_update_future",
         "phase": "commit"
       }
     ]

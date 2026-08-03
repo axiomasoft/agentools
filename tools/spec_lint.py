@@ -227,7 +227,7 @@ REVISION_PROFILES = {
         "fixtures_root": "fixtures/2026-08",
         # P4.5: храповик равен фактическому числу файлов трёх классов на item-коммите
         # (behavior + artifact + harness; golden-meta — регистрация покрытия, не вектор).
-        "min_vectors": 140,
+        "min_vectors": 154,
         # D53 (P4.1): три схемы формата по классу вектора, не единый fixture.json —
         # check_fixtures делегирует структурную сверку --fixtures-check.
         "fixtures_multi_class": True,
@@ -1112,6 +1112,75 @@ def validate_artifact_subject(subject, repo_root, source):
             errors.append(f"{source}: success противоречит фактическому результату")
         if "submitted_vectors" in data and data.get("submitted_vectors") != data.get("reported_vectors"):
             errors.append(f"{source}: отчёт потерял переданные векторы")
+    elif kind == "extension_identity":
+        data = json.loads(inline)
+        expected = {
+            "category": "unofficial",
+            "extension_id": "dev.agentools/core",
+            "breaking_change": "new_extension_id",
+            "meta_key_pattern": "^dev\\.agentools/[a-z][a-z0-9._-]*$",
+            "vendor_prefix": "dev.agentools",
+            "version_in_key": False,
+            "foreign_prefix_rejected": True,
+        }
+        if data != expected:
+            errors.append(f"{source}: identity расширения расходится с контрактом EXT-1..EXT-9")
+    elif kind == "extension_negotiation":
+        data = json.loads(inline)
+        expected = {
+            "schema_id_base": "https://agentools.dev/schema/2026-08/",
+            "load_schema_by_id": False,
+            "declaration_map_key": "dev.agentools/core",
+            "settings_required": ["spec_rev"],
+            "absent_peer": "do_not_send_extension_data",
+            "unknown_extension_data": "ignore_without_reject",
+            "cache_scope": "connection_only",
+        }
+        if data != expected:
+            errors.append(f"{source}: negotiation расширения расходится с контрактом EXT-11..EXT-17")
+    elif kind == "tool_contract_case":
+        data = json.loads(inline)
+        required = {"name", "description", "inputSchema", "outputSchema", "annotations", "_meta"}
+        annotations = data.get("annotations", {})
+        action = data.get("_meta", {}).get("dev.agentools/action", {})
+        if set(data) != required:
+            errors.append(f"{source}: дескриптор обязан нести ровно MCP-поля профиля")
+        if not re.match(r"^[a-z][a-z0-9_]{0,63}$", str(data.get("name", ""))):
+            errors.append(f"{source}: name не соответствует профилю")
+        if set(annotations) != {"readOnlyHint", "destructiveHint", "idempotentHint", "openWorldHint"}:
+            errors.append(f"{source}: четыре annotations должны быть заданы явно")
+        if action.get("side_effect") != "write" or action.get("confirmation") != "confirm":
+            errors.append(f"{source}: annotations/_meta не согласованы с write-профилем")
+        if data.get("outputSchema", {}).get("type") != "object":
+            errors.append(f"{source}: outputSchema обязан описывать structuredContent")
+    elif kind == "descriptor_digest_case":
+        data = json.loads(inline)
+        if data.get("input_keys") != ["name", "description", "inputSchema", "outputSchema", "annotations"]:
+            errors.append(f"{source}: вход descriptor_digest обязан состоять ровно из пяти членов")
+        if data.get("steps") != ["jcs", "utf8", "sha256"]:
+            errors.append(f"{source}: descriptor_digest вычисляется JCS → UTF-8 → SHA-256")
+        if data.get("excluded") != ["_meta", "title", "icons"]:
+            errors.append(f"{source}: во вход descriptor_digest попали ненормированные поля")
+        if not data.get("byte_identical") or data.get("capture_phase") != "prepare":
+            errors.append(f"{source}: digest недетерминирован или вычисляется не на prepare")
+        if data.get("mismatch_code") != "agentools.precondition.descriptor_drift":
+            errors.append(f"{source}: descriptor_drift подменён общей ошибкой")
+    elif kind == "authoring_schema_profile":
+        data = json.loads(inline)
+        expected = {
+            "published_schema_open": True,
+            "authoring_schema_closed": True,
+            "extensible_values": "oneOf_const_plus_string_fallback",
+            "pattern_properties": "variable_key_maps_only",
+            "pair_or_tuple": "named_object",
+            "exact_number": "decimal_string",
+        }
+        if data != expected:
+            errors.append(f"{source}: authoring schema profile расходится с TLP-26..TLP-32")
+    elif kind == "lifecycle_index":
+        data = json.loads(inline)
+        if not data.get("state_event_matrix_synced") or not data.get("new_value_requires_matrix_update"):
+            errors.append(f"{source}: новое состояние/событие не синхронизировано с матрицей ALC-14")
     elif kind in {"traceability_index", "fixture_vector", "tool_descriptor"}:
         try:
             data = json.loads(path.read_text(encoding="utf-8"))

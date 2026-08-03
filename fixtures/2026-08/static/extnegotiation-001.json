@@ -1,0 +1,23 @@
+{
+  "id": "extnegotiation-001",
+  "title": "Объявление расширения живёт в соединении и не загружает схемы по $id",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "EXT-11",
+    "EXT-12",
+    "EXT-13",
+    "EXT-14",
+    "EXT-15",
+    "EXT-16",
+    "EXT-17"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "extension_negotiation",
+    "inline": "{\"schema_id_base\":\"https://agentools.dev/schema/2026-08/\",\"load_schema_by_id\":false,\"declaration_map_key\":\"dev.agentools/core\",\"settings_required\":[\"spec_rev\"],\"absent_peer\":\"do_not_send_extension_data\",\"unknown_extension_data\":\"ignore_without_reject\",\"cache_scope\":\"connection_only\"}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

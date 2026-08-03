@@ -1,0 +1,24 @@
+{
+  "id": "extidentity-001",
+  "title": "Идентичность unofficial-расширения и вендорного пространства",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "EXT-1",
+    "EXT-2",
+    "EXT-3",
+    "EXT-4",
+    "EXT-5",
+    "EXT-6",
+    "EXT-8",
+    "EXT-9"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "extension_identity",
+    "inline": "{\"category\":\"unofficial\",\"extension_id\":\"dev.agentools/core\",\"breaking_change\":\"new_extension_id\",\"meta_key_pattern\":\"^dev\\\\.agentools/[a-z][a-z0-9._-]*$\",\"vendor_prefix\":\"dev.agentools\",\"version_in_key\":false,\"foreign_prefix_rejected\":true}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

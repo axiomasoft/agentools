@@ -1,6 +1,96 @@
 {
-  "id":"audit-002","title":"Табличные аудит-события несут воспроизводимый безопасный состав payload","vector_class":"behavior","spec_rev":"2026-08","spec_rule_ids":["AOB-9","AOB-10","AOB-11","AOB-12","AOB-13","AOB-14","AOB-15","AOB-16"],"conformance_level":"L3",
-  "given":{"tools":[{"name":"crm_report_list","title":"Список отчётов","description":"Только чтение.","inputSchema":{"type":"object","properties":{"period":{"type":"string"}}},"outputSchema":{"type":"object","properties":{"items":{"type":"array"}}},"annotations":{"readOnlyHint":true,"destructiveHint":false,"idempotentHint":true,"openWorldHint":false},"_meta":{"dev.agentools/action":{"side_effect":"read","permissions_hint":["crm.report.read"]}}}]},
-  "script":[{"llm_stub":{"toolCall":{"tool":"crm_report_list","args":{"period":"2026-08"}}}}],
-  "expect":{"events":[{"kind":"audit.policy_evaluated","payload":{"tool_name":"crm_report_list","verdict":"allow"}},{"kind":"audit.cost_recorded","payload":{"tokens_in":120,"tokens_out":40,"amount_minor":17,"currency":"RUB","price_table_version":"2026-08"}}],"final_state":"completed"}
+  "id": "audit-002",
+  "title": "Табличные аудит-события несут воспроизводимый безопасный состав payload",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "AOB-9",
+    "AOB-10",
+    "AOB-11",
+    "AOB-12",
+    "AOB-13",
+    "AOB-14",
+    "AOB-15",
+    "AOB-16"
+  ],
+  "conformance_level": "L3",
+  "given": {
+    "tools": [
+      {
+        "name": "crm_report_list",
+        "title": "Список отчётов о работе",
+        "description": "Возвращает страницу отчётов сотрудника за период. Только чтение.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "period": {
+              "type": "string"
+            },
+            "cursor": {
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "items": {
+              "type": "array"
+            },
+            "next_cursor": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "crm.report.read"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "crm_report_list",
+          "args": {
+            "period": "2026-08"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "audit.policy_evaluated",
+        "payload": {
+          "tool_name": "crm_report_list",
+          "verdict": "allow"
+        }
+      },
+      {
+        "kind": "audit.cost_recorded",
+        "payload": {
+          "tokens_in": 120,
+          "tokens_out": 40,
+          "amount_minor": 17,
+          "currency": "RUB",
+          "price_table_version": "2026-08"
+        }
+      }
+    ],
+    "final_state": "completed"
+  }
 }

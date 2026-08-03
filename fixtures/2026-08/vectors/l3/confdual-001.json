@@ -1,0 +1,29 @@
+{
+  "id": "confdual-001",
+  "title": "Dual control требует разных идентифицированных субъектов, а не разные сессии одного субъекта",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": ["CNF-33", "CNF-34"],
+  "conformance_level": "L3",
+  "given": {
+    "tools": [{
+      "name": "agentools_probe",
+      "title": "Необратимый проверочный инструмент",
+      "description": "Выполняет действие только после dual control.",
+      "inputSchema": {"type": "object", "properties": {"value": {"type": "string"}}, "required": ["value"]},
+      "outputSchema": {"type": "object", "properties": {"accepted": {"type": "boolean"}}},
+      "annotations": {"readOnlyHint": false, "destructiveHint": true, "idempotentHint": false, "openWorldHint": false},
+      "_meta": {"dev.agentools/action": {"side_effect": "irreversible", "confirmation": "double_confirm", "idempotent_commit": false, "permissions_hint": ["agentools.probe.irreversible"]}}
+    }]
+  },
+  "script": [
+    {"user_input": "Выполни необратимое действие"},
+    {"llm_stub": {"toolCall": {"tool": "agentools_probe", "args": {"value": "dual"}}}},
+    {"approval": "approve"}
+  ],
+  "expect": {
+    "events": [{"kind": "confirmation_resolved", "payload": {"proposer_principal": "user-a", "approver_principal": "user-b", "principals_distinct": true, "session_difference_not_sufficient": true}}],
+    "final_state": "completed",
+    "tool_calls": [{"tool": "agentools_probe", "args_subset": {"value": "dual"}, "phase": "commit"}]
+  }
+}

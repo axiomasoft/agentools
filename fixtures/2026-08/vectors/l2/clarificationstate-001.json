@@ -1,0 +1,32 @@
+{
+  "id": "clarificationstate-001",
+  "title": "MRTR хранит незавершённый диалог в input_required и не ждёт синхронный результат",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": ["CLR-2", "CLR-8"],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [{
+      "name": "agentools_probe",
+      "title": "Уточняющий инструмент",
+      "description": "Возвращает input_required до получения ответа.",
+      "inputSchema": {"type": "object", "properties": {"value": {"type": "string"}}},
+      "outputSchema": {"type": "object", "properties": {"accepted": {"type": "boolean"}}},
+      "annotations": {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": false},
+      "_meta": {"dev.agentools/action": {"side_effect": "read", "permissions_hint": ["agentools.probe"]}}
+    }]
+  },
+  "script": [
+    {"user_input": "Уточни значение"},
+    {"llm_stub": {"toolCall": {"tool": "agentools_probe", "args": {}}}},
+    {"clarification_answer": {"input_responses": {"value": "confirmed"}}}
+  ],
+  "expect": {
+    "events": [
+      {"kind": "input_recorded", "payload": {"result_type": "input_required", "dialog_state_persisted": true, "synchronous_wait": false}},
+      {"kind": "action_completed"}
+    ],
+    "final_state": "completed",
+    "tool_calls": []
+  }
+}
