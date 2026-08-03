@@ -4,7 +4,13 @@
   "vector_class": "behavior",
   "spec_rev": "2026-08",
   "spec_rule_ids": [
-    "IDE-10"
+    "IDE-1",
+    "IDE-2",
+    "IDE-3",
+    "IDE-4",
+    "IDE-9",
+    "IDE-10",
+    "IDE-11"
   ],
   "conformance_level": "L1",
   "given": {
@@ -68,6 +74,9 @@
           "args": {
             "task_id": "tsk-501",
             "status": "done"
+          },
+          "meta": {
+            "idempotency_key": "at1:newintent_501"
           }
         }
       }

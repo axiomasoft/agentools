@@ -67,7 +67,8 @@
       "idempotency": [
         {
           "tool_name": "crm_task_update",
-          "state": "concurrent_in_flight"
+          "state": "concurrent_in_flight",
+          "key": "at1:inflight_501"
         }
       ]
     }
@@ -80,6 +81,9 @@
           "args": {
             "task_id": "tsk-501",
             "status": "done"
+          },
+          "meta": {
+            "idempotency_key": "at1:inflight_501"
           }
         }
       }
