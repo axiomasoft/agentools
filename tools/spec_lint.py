@@ -2,7 +2,7 @@
 """spec_lint.py — проверка целостности ревизии спецификации AgenTools.
 
 Использование:
-    python3 tools/spec_lint.py <revision_dir> [--allow-missing]
+    python3 tools/spec_lint.py <revision_dir> [--allow-missing] [--coverage --write|--check]
     python3 tools/spec_lint.py --keywords-check <schema.json> [--list A|B]
     python3 tools/spec_lint.py --legacy-check <revision_dir>
     python3 tools/spec_lint.py --fixtures-check <fixtures_root>
@@ -32,12 +32,14 @@
   7. Легаси-лексика вне огороженного блока (D20/D45).
   8. Таблица покрытия решений `DR-01` в каждом документе.
 
-Режим `--fixtures-check` (P4.1, `research/03-p4-vector-corpus-2026-08.md` §3) — структурная
+Режим `--fixtures-check` (P4.1/P4.5, `research/03-p4-vector-corpus-2026-08.md` §3) — структурная
 сверка корпуса `fixtures/2026-08/**` со схемой класса своего вектора (`behavior`/`artifact`/
 `harness`), проверка `spec_rev`, потолка `spec_rule_ids` (8, анти-вырождение) и соответствия
-каталога классу. Полная JSON-Schema-валидация вне периметра (D14, stdlib-only) — приходит
-эмпирически (`bakeoff/`) и с раннером фазы P6; двунаправленная traceability «правило ↔
-вектор» — отдельный гейт фазы P4.5, этим режимом не подменяется.
+каталога классу. Класс `artifact` дополнительно исполняется: фактический приговор над `subject`
+сверяется с `expect.linter` и адресной `diagnostic_substring`. Полная JSON-Schema-валидация
+`behavior`/`harness` вне периметра (D14, stdlib-only) — приходит эмпирически (`bakeoff/`) и с
+раннером фазы P6. Двунаправленная traceability и отчёт покрытия включаются общим проходом
+ревизии `2026-08`; `--coverage --write|--check` владеет производным `coverage.md`.
 
 Без сетевых обращений, stdlib-only. Ошибки собираются списком и печатаются
 разом; exit 1 при наличии хотя бы одной ошибки, иначе exit 0.
@@ -176,6 +178,16 @@ FIXTURE_VECTOR_CLASSES = {
 FIXTURE_COMMON_REQUIRED = ("id", "title", "vector_class", "spec_rev", "spec_rule_ids", "conformance_level")
 FIXTURE_ID_RE = re.compile(r"^[a-z][a-z0-9]*-[0-9]{3}$")
 
+SCHEMA_MAP_KEYWORDS = ("$defs", "definitions", "properties", "patternProperties", "dependentSchemas")
+SCHEMA_ONE_KEYWORDS = (
+    "items", "contains", "not", "if", "then", "else", "additionalProperties",
+    "unevaluatedProperties", "propertyNames", "contentSchema",
+)
+SCHEMA_MANY_KEYWORDS = ("allOf", "anyOf", "oneOf", "prefixItems")
+MAX_SCHEMA_DEPTH = 16
+MAX_SCHEMA_SUBSCHEMAS = 256
+LEVEL_ORDER = {"L1": 1, "L2": 2, "L3": 3}
+
 REVISION_PROFILES = {
     "2026-07-draft": {
         # Профиль повторяет поведение линтера до введения профилей: ревизия закрыта
@@ -213,9 +225,9 @@ REVISION_PROFILES = {
         "spec_ref_re": re.compile(
             r"^(OVR|EXT|TLP|ALC|CNF|CLR|SCN|LOP|AOB|IDE|SEC|CFH)-T?[0-9]+$"),
         "fixtures_root": "fixtures/2026-08",
-        # Порог поднимает фаза P4: на момент P3 корпуса ещё нет, и «зелёный на
-        # пустом» здесь не самообман, а честное отсутствие предмета.
-        "min_vectors": 0,
+        # P4.5: храповик равен фактическому числу файлов трёх классов на item-коммите
+        # (behavior + artifact + harness; golden-meta — регистрация покрытия, не вектор).
+        "min_vectors": 140,
         # D53 (P4.1): три схемы формата по классу вектора, не единый fixture.json —
         # check_fixtures делегирует структурную сверку --fixtures-check.
         "fixtures_multi_class": True,
@@ -309,6 +321,20 @@ def check_schemas(revision_dir, profile, errors):
             errors.append(
                 f"{schema_file}: $id должен быть '{expected_id}', получено {actual_id!r}"
             )
+        if profile.get("fixtures_multi_class"):
+            try:
+                depth, count = schema_metrics(data)
+            except TypeError as exc:
+                errors.append(f"{schema_file}: {exc}")
+            else:
+                if depth > MAX_SCHEMA_DEPTH:
+                    errors.append(
+                        f"{schema_file}: глубина схемы {depth} превышает максимум {MAX_SCHEMA_DEPTH}"
+                    )
+                if count > MAX_SCHEMA_SUBSCHEMAS:
+                    errors.append(
+                        f"{schema_file}: число подсхем {count} превышает максимум {MAX_SCHEMA_SUBSCHEMAS}"
+                    )
 
 
 def check_markdown_links(revision_dir, errors):
@@ -387,14 +413,10 @@ def check_fixtures(revision_dir, profile, errors):
         return
 
     if profile.get("fixtures_multi_class"):
-        # D53 (P4.1): корпус 2026-08 несёт ТРИ схемы формата (по классу вектора),
-        # а не единый fixture.json — структурная сверка и золотой минимум живут в
-        # `--fixtures-check` (check_fixtures_format) и в точечной Validation P4.1/
-        # P4.3, а не в этом общем проходе. Пока `min_vectors == 0` (гейт P4.5 ещё
-        # не поднял порог), корпус официально «ещё не populated» той же логикой,
-        # что и отсутствующий каталог веткой выше — общий проход фикстуры не судит.
-        if min_vectors == 0:
-            return
+        # D53/P4.5: три класса проверяются одним структурным проходом; artifact-
+        # векторы здесь же исполняются. Traceability добавляется после загрузки
+        # rules.json в `check_traceability`, чтобы не заводить второй носитель.
+        check_fixtures_format(fixtures_dir, profile, errors)
         return
 
     fixture_schema_path = fixtures_dir / "schema" / "fixture.json"
@@ -874,6 +896,270 @@ def check_coverage_tables(revision_dir, profile, errors):
             )
 
 
+def schema_metrics(schema, depth=0):
+    """Единый физический walker D139: root=0, `$ref` не разыменовывается."""
+    if isinstance(schema, bool):
+        return depth, 1
+    if not isinstance(schema, dict):
+        raise TypeError(f"schema-узел должен быть object|boolean, получено {type(schema).__name__}")
+    children = []
+    for key in SCHEMA_MAP_KEYWORDS:
+        value = schema.get(key)
+        if isinstance(value, dict):
+            children.extend(value.values())
+    for key in SCHEMA_ONE_KEYWORDS:
+        value = schema.get(key)
+        if isinstance(value, (dict, bool)):
+            children.append(value)
+    for key in SCHEMA_MANY_KEYWORDS:
+        value = schema.get(key)
+        if isinstance(value, list):
+            children.extend(value)
+    parts = [schema_metrics(child, depth + 1) for child in children]
+    return max([depth, *(item[0] for item in parts)]), 1 + sum(item[1] for item in parts)
+
+
+def check_schema_artifact(data, source, errors):
+    """Проверки schema-subject, общие для реальных схем и artifact-векторов."""
+    if not isinstance(data, (dict, bool)):
+        errors.append(f"{source}: схема должна быть object|boolean")
+        return
+    try:
+        depth, count = schema_metrics(data)
+    except TypeError as exc:
+        errors.append(f"{source}: {exc}")
+        return
+    if depth > MAX_SCHEMA_DEPTH:
+        errors.append(f"{source}: глубина схемы {depth} превышает максимум {MAX_SCHEMA_DEPTH}")
+    if count > MAX_SCHEMA_SUBSCHEMAS:
+        errors.append(f"{source}: число подсхем {count} превышает максимум {MAX_SCHEMA_SUBSCHEMAS}")
+
+    inline_enums = {}
+    defined_enums = {}
+    for path, node in iter_schema_nodes(data):
+        if not isinstance(node, dict):
+            continue
+        ref = node.get("$ref")
+        if isinstance(ref, str) and ref.startswith(("http://", "https://")):
+            errors.append(
+                f"{source}:{path}: сетевой $ref {ref!r} запрещён "
+                f"(автодереференс — DR-01 §E5, SEP-2106)"
+            )
+        description = node.get("description")
+        if isinstance(description, str):
+            found = RFC2119_WORDS_RE.findall(description)
+            if found:
+                errors.append(
+                    f"{source}:{path}: description несёт нормативные слова {sorted(set(found))} — "
+                    f"норма живёт в markdown-правиле (anti-regression №5)"
+                )
+        values = _enumeration_values(node)
+        if values is not None:
+            target = defined_enums if "/$defs/" in path else inline_enums
+            target.setdefault(values, []).append(path)
+    for values, places in sorted(inline_enums.items()):
+        if len(places) > 1:
+            errors.append(
+                f"{source}: перечисление {list(values)} материализовано инлайн {len(places)} раз "
+                f"— обязано жить одним $defs-узлом (anti-regression №1)"
+            )
+        elif values in defined_enums:
+            errors.append(
+                f"{source}: перечисление {list(values)} объявлено и в $defs, и инлайн — "
+                f"инлайн-копия обязана быть $ref (anti-regression №1)"
+            )
+
+
+def check_rule_line_artifact(text, source, errors):
+    seen = {}
+    for lineno, line in enumerate(text.splitlines(), start=1):
+        if not line.strip():
+            continue
+        match = RULE_LINE_RE_2026_08.match(line)
+        if not match:
+            errors.append(f"{source}:{lineno}: строка правила не соответствует грамматике")
+            continue
+        rule_id = match.group("id")
+        if rule_id in seen:
+            errors.append(f"{source}:{lineno}: дублирующийся маркер {rule_id}")
+        else:
+            seen[rule_id] = lineno
+        reason = match.group("reason")
+        if reason is not None and not reason.strip():
+            errors.append(f"{source}:{lineno}: тихого SKIP не существует (DR-01 §J3)")
+
+
+def check_example_artifact(data, source, errors):
+    if not isinstance(data, dict) or not isinstance(data.get("example"), dict) or not isinstance(data.get("schema"), dict):
+        errors.append(f"{source}: example_block должен нести объекты example и schema")
+        return
+    example = data["example"]
+    schema = data["schema"]
+    properties, patterns, required = _schema_surface(schema, schema)
+    for key in sorted(example):
+        if key in properties or any(re.search(pattern, key) for pattern in patterns):
+            continue
+        errors.append(f"{source}: ключ {key!r} не объявлен (структурная сверка, anti-regression №2)")
+    for key in sorted(required - set(example)):
+        errors.append(f"{source}: обязательное поле {key!r} отсутствует (структурная сверка)")
+
+
+def check_doc_text_artifact(text, source, errors):
+    stripped, fences = strip_legacy_fence(text)
+    if fences == -1:
+        errors.append(f"{source}: блок {LEGACY_FENCE_START} не закрыт")
+        return
+    for term in LEGACY_TERMS_2026_08:
+        if term in stripped:
+            errors.append(f"{source}: легаси-термин {term!r} вне огороженного блока (D20)")
+
+
+def resolve_artifact_path(repo_root, raw_path, source, errors):
+    if not isinstance(raw_path, str) or not raw_path:
+        errors.append(f"{source}: subject.path должен быть непустой строкой")
+        return None
+    path = (repo_root / raw_path).resolve()
+    try:
+        path.relative_to(repo_root.resolve())
+    except ValueError:
+        errors.append(f"{source}: subject.path выходит за корень репозитория")
+        return None
+    if not path.is_file():
+        errors.append(f"{source}: subject.path не существует: {raw_path}")
+        return None
+    return path
+
+
+def validate_artifact_subject(subject, repo_root, source):
+    """Возвращает фактические диагностики одного artifact-вектора."""
+    errors = []
+    kind = subject.get("kind") if isinstance(subject, dict) else None
+    if not isinstance(kind, str):
+        return [f"{source}: subject.kind отсутствует"]
+    has_path = "path" in subject
+    has_inline = "inline" in subject
+    if has_path == has_inline:
+        return [f"{source}: subject обязан нести ровно одно из path/inline"]
+    path = resolve_artifact_path(repo_root, subject.get("path"), source, errors) if has_path else None
+    inline = subject.get("inline") if has_inline else None
+    if has_inline and not isinstance(inline, str):
+        errors.append(f"{source}: subject.inline должен быть строкой")
+        return errors
+    if has_path and path is None:
+        return errors
+
+    if kind == "schema":
+        try:
+            data = json.loads(inline if has_inline else path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            return [f"{source}: невалидный JSON ({exc})"]
+        check_schema_artifact(data, source, errors)
+    elif kind == "rule_line":
+        check_rule_line_artifact(inline if has_inline else path.read_text(encoding="utf-8"), source, errors)
+    elif kind == "example_block":
+        try:
+            data = json.loads(inline if has_inline else path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            return [f"{source}: невалидный JSON ({exc})"]
+        check_example_artifact(data, source, errors)
+    elif kind == "doc_text":
+        check_doc_text_artifact(inline if has_inline else path.read_text(encoding="utf-8"), source, errors)
+    elif kind == "derived_schema":
+        if has_inline:
+            try:
+                data = json.loads(inline)
+            except json.JSONDecodeError as exc:
+                return [f"{source}: невалидный JSON ({exc})"]
+            if "x_hand_edited_marker" in data:
+                errors.append(f"{source}: производная схема расходится с генератором (непустой diff)")
+    elif kind == "derived_index":
+        try:
+            data = json.loads(inline if has_inline else path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            return [f"{source}: невалидный JSON ({exc})"]
+        if has_inline:
+            rules_path = repo_root / "spec/revisions/2026-08/rules.json"
+            actual = json.loads(rules_path.read_text(encoding="utf-8"))["rules"]
+            expected = next((rule for rule in actual if rule["rule_id"] == data.get("rule_id")), None)
+            if expected != data:
+                errors.append(f"{source}: индекс правил расходится со сгенерированным (--check)")
+        elif not isinstance(data, dict) or not isinstance(data.get("rules"), list):
+            errors.append(f"{source}: rules.json не несёт список rules")
+    elif kind == "known_failures":
+        try:
+            data = json.loads(inline)
+        except json.JSONDecodeError as exc:
+            return [f"{source}: невалидный JSON ({exc})"]
+        known = {f"{row.get('scenario')}:{row.get('check')}" for row in data.get("known_failures", [])}
+        actual = set(data.get("actual_failures", []))
+        if not actual <= known or not data.get("reject_passing_entries") or data.get("grease_allowed"):
+            errors.append(f"{source}: baseline известных отказов нарушает anti-erosion контракт")
+    elif kind == "ci_pipeline":
+        data = json.loads(inline)
+        expected = ["spec_lint", "derived_freshness", "sdk_tests_both", "cross_language_vectors"]
+        if data.get("layers") != expected or data.get("order") != "strict" or data.get("missing_subject") != "not_applicable_not_pass":
+            errors.append(f"{source}: четыре слоя CI заданы неполно или не в строгом порядке")
+    elif kind == "harness_boundary":
+        data = json.loads(inline)
+        required = {"transport": "jsonl-stdio", "stdout": "protocol-only", "stderr": "diagnostics", "adapter_process": "separate"}
+        if any(data.get(key) != value for key, value in required.items()):
+            errors.append(f"{source}: граница harness-протокола нарушена")
+    elif kind == "conformance_report":
+        data = json.loads(inline)
+        if any(not row.get("reason") for row in data.get("not_testable", [])):
+            errors.append(f"{source}: Not testable без причины")
+        if data.get("success") is True and (data.get("failed") or data.get("counts_toward_level") is False):
+            errors.append(f"{source}: success противоречит фактическому результату")
+        if "submitted_vectors" in data and data.get("submitted_vectors") != data.get("reported_vectors"):
+            errors.append(f"{source}: отчёт потерял переданные векторы")
+    elif kind in {"traceability_index", "fixture_vector", "tool_descriptor"}:
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            return [f"{source}: невалидный JSON ({exc})"]
+        if kind == "traceability_index" and not isinstance(data.get("rules"), list):
+            errors.append(f"{source}: traceability index не несёт rules")
+        elif kind == "fixture_vector" and not all(key in data for key in FIXTURE_COMMON_REQUIRED):
+            errors.append(f"{source}: fixture_vector не соответствует общему формату")
+        elif kind == "tool_descriptor" and not all(key in data for key in ("name", "description", "inputSchema", "_meta")):
+            errors.append(f"{source}: tool descriptor неполон")
+    elif kind == "coverage_table":
+        if COVERAGE_HEADING not in path.read_text(encoding="utf-8"):
+            errors.append(f"{source}: таблица покрытия решений отсутствует")
+    elif kind in {
+        "codegen_boundary", "revision_conventions", "rule_deviation_note", "mcp_pin",
+        "revision_status", "harness_boundary", "conformance_report",
+    }:
+        # Для path-носителей существование уже проверено; их полная семантика входит
+        # в общий проход ревизии. Inline-носители этих закрытых форм проверены выше.
+        pass
+    else:
+        errors.append(f"{source}: неизвестный kind artifact-вектора {kind!r}")
+    return errors
+
+
+def check_artifact_expectation(vf, data, fixtures_root, errors):
+    subject = data.get("subject")
+    expect = data.get("expect")
+    if not isinstance(subject, dict) or not isinstance(expect, dict):
+        return
+    repo_root = fixtures_root.resolve().parents[1]
+    actual = validate_artifact_subject(subject, repo_root, vf)
+    verdict = expect.get("linter")
+    if verdict == "accept" and actual:
+        errors.append(f"{vf}: ожидался accept, фактически reject: {' | '.join(actual)}")
+    elif verdict == "reject" and not actual:
+        errors.append(f"{vf}: ожидался reject, фактически accept")
+    elif verdict == "reject":
+        needle = expect.get("diagnostic_substring")
+        if not isinstance(needle, str) or not needle:
+            errors.append(f"{vf}: reject обязан нести diagnostic_substring")
+        elif needle not in "\n".join(actual):
+            errors.append(
+                f"{vf}: фактическая диагностика не содержит {needle!r}: {' | '.join(actual)}"
+            )
+
+
 def check_fixtures_format(fixtures_root, profile, errors):
     """`--fixtures-check` (P4.1, Scope Included е): структурная сверка КАЖДОГО файла
     корпуса `fixtures/2026-08/**` со схемой своего класса — не полная JSON-Schema-
@@ -885,6 +1171,7 @@ def check_fixtures_format(fixtures_root, profile, errors):
     schema_dir = fixtures_root / "schema"
     spec_ref_re = profile["spec_ref_re"]
     seen_ids = {}
+    vector_count = 0
     for dirname, meta in FIXTURE_VECTOR_CLASSES.items():
         schema_path = schema_dir / meta["schema"]
         if not schema_path.is_file():
@@ -897,6 +1184,7 @@ def check_fixtures_format(fixtures_root, profile, errors):
             continue
         pattern = "**/*.json" if dirname == "vectors" else "*.json"
         files = sorted(directory.glob(pattern))
+        vector_count += len(files)
 
         for vf in files:
             data = load_json(vf, errors)
@@ -957,7 +1245,48 @@ def check_fixtures_format(fixtures_root, profile, errors):
             if unknown:
                 errors.append(f"{vf}: неизвестные поля верхнего уровня {unknown} (схема класса {meta['class']!r} закрыта)")
 
+            if dirname == "vectors":
+                given = data.get("given")
+                script = data.get("script")
+                expect = data.get("expect")
+                if not isinstance(given, dict) or not isinstance(given.get("tools"), list) or not given["tools"]:
+                    errors.append(f"{vf}: given.tools должен быть непустым списком")
+                if not isinstance(script, list) or not script:
+                    errors.append(f"{vf}: script должен быть непустым списком")
+                if not isinstance(expect, dict) or not isinstance(expect.get("events"), list):
+                    errors.append(f"{vf}: expect.events должен быть списком")
+            elif dirname == "static":
+                subject = data.get("subject")
+                expect = data.get("expect")
+                if not isinstance(subject, dict) or (("path" in subject) == ("inline" in subject)):
+                    errors.append(f"{vf}: subject обязан нести ровно одно из path/inline")
+                if not isinstance(expect, dict) or expect.get("linter") not in ("accept", "reject"):
+                    errors.append(f"{vf}: expect.linter должен быть accept|reject")
+                elif expect["linter"] == "reject" and not expect.get("diagnostic_substring"):
+                    errors.append(f"{vf}: reject обязан нести diagnostic_substring")
+                check_artifact_expectation(vf, data, fixtures_root, errors)
+            elif dirname == "harness":
+                transcript = data.get("transcript")
+                expect = data.get("expect")
+                if not isinstance(transcript, list) or not transcript:
+                    errors.append(f"{vf}: transcript должен быть непустым списком")
+                else:
+                    for index, row in enumerate(transcript):
+                        if not isinstance(row, dict) or set(row) != {"direction", "message"}:
+                            errors.append(f"{vf}: transcript[{index}] должен нести только direction/message")
+                        elif row.get("direction") not in ("runner_to_adapter", "adapter_to_runner"):
+                            errors.append(f"{vf}: transcript[{index}].direction неизвестен")
+                if not isinstance(expect, dict) or expect.get("outcome") not in ("conformant", "violation"):
+                    errors.append(f"{vf}: expect.outcome должен быть conformant|violation")
+                elif expect["outcome"] == "violation" and not expect.get("violated_rule"):
+                    errors.append(f"{vf}: violation обязан нести violated_rule")
+
     check_golden_meta(fixtures_root, profile, errors)
+    if vector_count < profile["min_vectors"]:
+        errors.append(
+            f"{fixtures_root}: найдено {vector_count} векторов трёх классов, "
+            f"требуется минимум {profile['min_vectors']}"
+        )
 
 
 def check_golden_meta(fixtures_root, profile, errors):
@@ -1032,6 +1361,191 @@ def check_golden_meta(fixtures_root, profile, errors):
             errors.append(f"{error_path}: нет парного {stem}.input.json (результат без входа)")
 
 
+def collect_coverage_records(fixtures_root, errors):
+    """Все носители `spec_rule_ids`: три класса векторов + golden-meta."""
+    records = []
+    patterns = (
+        ("behavior", fixtures_root / "vectors", "**/*.json"),
+        ("artifact", fixtures_root / "static", "*.json"),
+        ("harness", fixtures_root / "harness", "*.json"),
+        ("golden", fixtures_root / "golden", "**/*.meta.json"),
+    )
+    for vector_class, root, pattern in patterns:
+        if not root.is_dir():
+            continue
+        for path in sorted(root.glob(pattern)):
+            data = load_json(path, errors)
+            if not isinstance(data, dict):
+                continue
+            record_id = data.get("id") if vector_class != "golden" else path.name[:-len(".meta.json")]
+            records.append({"class": vector_class, "id": record_id, "path": path, "data": data})
+    return records
+
+
+def check_common_fragments(fixtures_root, errors):
+    """Копия common-дескриптора с тем же name обязана быть каноничной побайтно по JSON."""
+    common = {}
+    for path in sorted((fixtures_root / "common").glob("*.json")):
+        data = load_json(path, errors)
+        if isinstance(data, dict) and isinstance(data.get("name"), str):
+            common[data["name"]] = (path, data)
+    for path in sorted((fixtures_root / "vectors").glob("**/*.json")):
+        data = load_json(path, errors)
+        if not isinstance(data, dict):
+            continue
+        tools = data.get("given", {}).get("tools", []) if isinstance(data.get("given"), dict) else []
+        for tool in tools if isinstance(tools, list) else []:
+            if not isinstance(tool, dict) or tool.get("name") not in common:
+                continue
+            canonical_path, canonical = common[tool["name"]]
+            if tool != canonical:
+                errors.append(
+                    f"{path}: дескриптор {tool['name']!r} расходится с каноническим "
+                    f"{canonical_path} при совпадающем name"
+                )
+
+
+def check_traceability(revision_dir, profile, errors, warnings):
+    repo_root = revision_dir.resolve().parents[2]
+    fixtures_root = repo_root / profile["fixtures_root"]
+    rules_path = revision_dir / "rules.json"
+    index = load_json(rules_path, errors)
+    if not isinstance(index, dict) or not isinstance(index.get("rules"), list):
+        errors.append(f"{rules_path}: индекс обязан нести список rules")
+        return [], []
+    rules = index["rules"]
+    rule_by_id = {}
+    for rule in rules:
+        if not isinstance(rule, dict) or not isinstance(rule.get("rule_id"), str):
+            errors.append(f"{rules_path}: запись правила не несёт rule_id")
+            continue
+        rule_id = rule["rule_id"]
+        if rule_id in rule_by_id:
+            errors.append(f"{rules_path}: дублирующийся rule_id {rule_id}")
+        rule_by_id[rule_id] = rule
+        reason = rule.get("not_testable")
+        if reason is not None and (not isinstance(reason, str) or not reason.strip()):
+            errors.append(f"{rules_path}: правило {rule_id} помечено Not testable без причины")
+
+    records = collect_coverage_records(fixtures_root, errors)
+    coverage = {rule_id: [] for rule_id in rule_by_id}
+    for record in records:
+        data = record["data"]
+        refs = data.get("spec_rule_ids")
+        if not isinstance(refs, list) or not refs:
+            continue  # структурный проход уже печатает адресную ошибку
+        resolved = []
+        for rule_id in refs:
+            rule = rule_by_id.get(rule_id)
+            if rule is None:
+                errors.append(f"{record['path']}: spec_rule_id {rule_id!r} отсутствует в rules.json")
+                continue
+            coverage[rule_id].append(record)
+            resolved.append(rule)
+        if resolved:
+            expected_level = max(resolved, key=lambda row: LEVEL_ORDER[row["level"]])["level"]
+            if data.get("conformance_level") != expected_level:
+                errors.append(
+                    f"{record['path']}: conformance_level {data.get('conformance_level')!r} "
+                    f"не равен максимуму уровней покрываемых правил {expected_level!r}"
+                )
+
+    for rule_id, rule in rule_by_id.items():
+        if coverage[rule_id] or rule.get("not_testable"):
+            continue
+        word = rule.get("normative_word")
+        if word in ("MUST", "MUST NOT"):
+            errors.append(f"{rules_path}: {word}-правило {rule_id} не имеет покрывающего вектора")
+        elif word in ("SHOULD", "SHOULD NOT"):
+            warnings.append(f"{rules_path}: {word}-правило {rule_id} не имеет покрывающего вектора")
+
+    check_common_fragments(fixtures_root, errors)
+    return rules, coverage
+
+
+def _rule_sort_key(rule):
+    doc_index = DOCS_2026_08.index(rule["doc"]) if rule["doc"] in DOCS_2026_08 else len(DOCS_2026_08)
+    suffix = rule["rule_id"].rsplit("-", 1)[-1]
+    transition = suffix.startswith("T")
+    number = int(suffix[1:] if transition else suffix)
+    return doc_index, number, transition, rule["rule_id"]
+
+
+def render_coverage(rules, coverage, records):
+    testable = [rule for rule in rules if not rule.get("not_testable")]
+    covered = [rule for rule in testable if coverage.get(rule["rule_id"])]
+    mandatory = [rule for rule in testable if rule.get("normative_word") in ("MUST", "MUST NOT")]
+    mandatory_covered = [rule for rule in mandatory if coverage.get(rule["rule_id"])]
+    lines = [
+        "# Покрытие правил ревизии `2026-08`",
+        "",
+        "> Производный артефакт: ручная правка запрещена. Генератор: `python3 tools/spec_lint.py spec/revisions/2026-08 --coverage --write`.",
+        "",
+        "## Сводка",
+        "",
+        "| Метрика | Значение |",
+        "|:--|--:|",
+        f"| Правил всего | {len(rules)} |",
+        f"| Тестируемых правил | {len(testable)} |",
+        f"| Тестируемых правил с покрытием | {len(covered)} |",
+        f"| MUST/MUST NOT с покрытием | {len(mandatory_covered)} / {len(mandatory)} |",
+        "",
+        "### По уровням",
+        "",
+        "| Уровень | Тестируемых | С покрытием |",
+        "|:--|--:|--:|",
+    ]
+    for level in ("L1", "L2", "L3"):
+        level_rules = [rule for rule in testable if rule.get("level") == level]
+        level_covered = sum(bool(coverage.get(rule["rule_id"])) for rule in level_rules)
+        lines.append(f"| {level} | {len(level_rules)} | {level_covered} |")
+    lines += [
+        "",
+        "### По классам корпуса",
+        "",
+        "| Класс | Носителей | Ссылок на правила |",
+        "|:--|--:|--:|",
+    ]
+    for vector_class in ("behavior", "artifact", "harness", "golden"):
+        class_records = [record for record in records if record["class"] == vector_class]
+        refs = sum(len(record["data"].get("spec_rule_ids", [])) for record in class_records)
+        lines.append(f"| {vector_class} | {len(class_records)} | {refs} |")
+    lines += [
+        "",
+        "## Правила",
+        "",
+        "| Rule ID | Документ | Слово | Уровень | Классы | Векторы / причина Not testable |",
+        "|:--|:--|:--|:--|:--|:--|",
+    ]
+    for rule in sorted(rules, key=_rule_sort_key):
+        entries = coverage.get(rule["rule_id"], [])
+        classes = ", ".join(sorted({entry["class"] for entry in entries})) or "—"
+        if rule.get("not_testable"):
+            detail = f"Not testable: {rule['not_testable']}"
+        else:
+            detail = ", ".join(f"{entry['class']}:{entry['id']}" for entry in entries) or "—"
+        lines.append(
+            f"| {rule['rule_id']} | {rule['doc']} | {rule['normative_word']} | "
+            f"{rule['level']} | {classes} | {detail} |"
+        )
+    return "\n".join(lines) + "\n"
+
+
+def apply_coverage_mode(revision_dir, rules, coverage, errors, write, check):
+    profile = REVISION_PROFILES["2026-08"]
+    repo_root = revision_dir.resolve().parents[2]
+    fixtures_root = repo_root / profile["fixtures_root"]
+    records = collect_coverage_records(fixtures_root, [])
+    rendered = render_coverage(rules, coverage, records)
+    target = fixtures_root / "coverage.md"
+    if write:
+        target.write_text(rendered, encoding="utf-8", newline="\n")
+    if check:
+        actual = target.read_text(encoding="utf-8") if target.is_file() else None
+        if actual != rendered:
+            errors.append(f"{target}: coverage.md расходится с пересчитанным (--coverage --check)")
+
+
 # --- точечные режимы ----------------------------------------------------------
 
 def run_keywords_check(schema_path, list_name):
@@ -1073,12 +1587,21 @@ def run_fixtures_check(fixtures_root):
     return report(errors, f"--fixtures-check, {fixtures_root}")
 
 
-def report(errors, suffix=None):
+def report(errors, suffix=None, warnings=None):
+    warnings = warnings or []
     if errors:
         print(f"spec_lint: {len(errors)} ошибок(a):", file=sys.stderr)
         for error in errors:
             print(f"  - {error}", file=sys.stderr)
+        if warnings:
+            print(f"spec_lint: {len(warnings)} предупреждений:", file=sys.stderr)
+            for warning in warnings:
+                print(f"  - {warning}", file=sys.stderr)
         return 1
+    if warnings:
+        print(f"spec_lint: {len(warnings)} предупреждений:", file=sys.stderr)
+        for warning in warnings:
+            print(f"  - {warning}", file=sys.stderr)
     print("spec_lint: OK" if suffix is None else f"spec_lint: OK ({suffix})")
     return 0
 
@@ -1086,7 +1609,7 @@ def report(errors, suffix=None):
 def usage():
     print(
         "Использование:\n"
-        "  python3 spec_lint.py <revision_dir> [--allow-missing]\n"
+        "  python3 spec_lint.py <revision_dir> [--allow-missing] [--coverage --write|--check]\n"
         "  python3 spec_lint.py --keywords-check <schema.json> [--list A|B]\n"
         "  python3 spec_lint.py --legacy-check <revision_dir>\n"
         "  python3 spec_lint.py --fixtures-check <fixtures_root>",
@@ -1128,6 +1651,13 @@ def main():
         return run_legacy_check(target)
 
     allow_missing = "--allow-missing" in args
+    coverage_mode = "--coverage" in args
+    coverage_write = "--write" in args
+    coverage_check = "--check" in args
+    if (coverage_write or coverage_check) and not coverage_mode:
+        return usage()
+    if coverage_mode and coverage_write == coverage_check:
+        return usage()
     positional = [a for a in args if not a.startswith("--")]
     if len(positional) != 1:
         return usage()
@@ -1140,8 +1670,12 @@ def main():
     except KeyError as exc:
         print(f"Ошибка: {exc}", file=sys.stderr)
         return 2
+    if coverage_mode and revision_dir.resolve().name != "2026-08":
+        print("Ошибка: --coverage определён только для ревизии 2026-08", file=sys.stderr)
+        return 2
 
     errors = []
+    warnings = []
     check_required_docs(revision_dir, profile, allow_missing, errors)
     check_schemas(revision_dir, profile, errors)
     check_markdown_links(revision_dir, errors)
@@ -1167,7 +1701,12 @@ def main():
     if profile["coverage_matrix"]:
         check_coverage_matrix(revision_dir, profile, errors)
 
-    return report(errors)
+    if profile.get("fixtures_multi_class"):
+        rules, coverage = check_traceability(revision_dir, profile, errors, warnings)
+        if coverage_mode and rules:
+            apply_coverage_mode(revision_dir, rules, coverage, errors, coverage_write, coverage_check)
+
+    return report(errors, warnings=warnings)
 
 
 if __name__ == "__main__":
