@@ -10,7 +10,7 @@
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-03 (P4.5 закрыт 🟠: механизм A3 реализован, гейт BLOCKED входным корпусом; требуется remediation-дизайн P4.) |
+| Last Updated | 2026-08-03 (P4.5 remediated 🟢: 382/382 тестируемых MUST/MUST NOT покрыты, ГЕЙТ A3 PASS.) |
 | Repository | `~/projects/packages/agentools` (приватный, без remote) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
@@ -195,7 +195,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P1 | **A0** — ре-верификация финала MCP 2026-07-28 + пин коммита и `schema.json` | 3/3 | 🟢 Done |
 | P2 | **A1** — bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
 | P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 15/15 | 🟢 Done |
-| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 7/8 | 🟠 Done with deviations |
+| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 8/8 | 🟢 Done |
 | P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 0/3 | ⬜ Not started |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | ⬜ Not started |
@@ -379,6 +379,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 ## 6. Update Log
 
 | Дата | Кто (role/model) | Что |
+| 2026-08-03 | task-dev/gpt-5.6-sol-high | P4.5 remediated 🟢 по прямой команде владельца: 78 пробелов и 10 common-divergence устранены, `ГЕЙТ A3: PASS` — детали см. phases/P4.md P4.5 Completion Notes. |
 | 2026-08-03 | plan-run/gpt-5.6-sol-high | P4.5 закрыт 🟠: механизм A3 готов, но гейт BLOCKED — входной корпус имеет обязательные пробелы и common-divergence; Session `gpt-5.6-sol/high` — детали см. phases/P4.md P4.5 Completion Notes. |
 | 2026-08-03 | plan-run/frontier-high (`gpt-5`) | P4.8 закрыт 🟢: artifact/harness-корпус покрывает MUST документов `00`/`11`; Session `frontier/high`, route `implementation/high` — детали см. phases/P4.md P4.8 Completion Notes. |
 | 2026-08-03 | plan-run/frontier-high (`gpt-5`) | P4.7 закрыт 🟢: behavior-векторы покрывают MUST документов `06`/`07`/`10`; Session `frontier/high`, route `implementation/high` — детали см. phases/P4.md P4.7 Completion Notes. |
