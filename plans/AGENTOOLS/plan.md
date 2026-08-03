@@ -196,7 +196,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P2 | **A1** — bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
 | P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 15/15 | 🟢 Done |
 | P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 8/8 | 🟢 Done |
-| P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 0/3 | ⬜ Not started |
+| P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 0/3 | 🔴 Blocked |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | ⬜ Not started |
 | P8 | Dart SDK `agentools` — зелёный на тех же векторах | 0/13 | ⬜ Not started |
@@ -379,6 +379,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 ## 6. Update Log
 
 | Дата | Кто (role/model) | Что |
+| 2026-08-03 | plan-run/frontier-xhigh (`gpt-5.6-sol`) | P5.1 раунд 1 завершил аудит, но item `🔴 Blocked`: `RED`, 8 находок, 116/382 обязательных правил без годного носителя, 32 domain-carrier файла; item `3f4a96b`, remediation — `$ task:plan-design AGENTOOLS P4`. |
 | 2026-08-03 | task-dev/gpt-5.6-sol-high | P4.5 remediated 🟢 по прямой команде владельца: 78 пробелов и 10 common-divergence устранены, `ГЕЙТ A3: PASS` — детали см. phases/P4.md P4.5 Completion Notes. |
 | 2026-08-03 | plan-run/gpt-5.6-sol-high | P4.5 закрыт 🟠: механизм A3 готов, но гейт BLOCKED — входной корпус имеет обязательные пробелы и common-divergence; Session `gpt-5.6-sol/high` — детали см. phases/P4.md P4.5 Completion Notes. |
 | 2026-08-03 | plan-run/frontier-high (`gpt-5`) | P4.8 закрыт 🟢: artifact/harness-корпус покрывает MUST документов `00`/`11`; Session `frontier/high`, route `implementation/high` — детали см. phases/P4.md P4.8 Completion Notes. |
