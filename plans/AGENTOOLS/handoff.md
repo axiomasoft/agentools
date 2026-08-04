@@ -1,31 +1,31 @@
-# HANDOFF — 2026-08-04 — after P5.3
+# HANDOFF — 2026-08-04 — after P5.2
 
-**Next:** «ЗАПУСК ВРУЧНУЮ: `implementation/high`»
+**Next:** `/task:plan-audit AGENTOOLS P5`
 
 | Параметр | Значение |
 |:--|:--|
-| Model | implementation |
-| Thinking | high — invariant-preserving freeze |
+| Model | implementation, затем frontier |
+| Thinking | low close, затем xhigh audit |
 | Context | continue — ручной item |
-| Суть | Выполнить P5.2: Q-10 safe boundary, prefreeze checks, README frozen, annotated tag, Contracts/handoff. |
+| Суть | Все 3 items зелёные; формально закрыть P5 и выполнить обязательный adversarial phase audit. |
 | Команда | — |
 
 ```
-select session model class implementation
-select session effort high
-$ task:plan-run AGENTOOLS P5.2
+$ task:plan-close AGENTOOLS P5
+$ task:plan-audit AGENTOOLS P5
 ```
 
-**Done:** P5.1 (`f810d62`) = GREEN. P5.3 (`6ece4e7`) создал package-quality baseline; Q-30
-resolved D174 (proprietary/internal, no external publication), Q-31 resolved D175 (DR-01 ratified).
+**Done:** P5.1 (`f810d62`) GREEN; P5.3 (`6ece4e7`) baseline; P5.2 (`84128d4`) frozen README и
+аннотированный локальный tag `spec-2026-08`. Q-30/Q-31/Q-10 resolved D174–D176.
 
-**Remaining:** P5.2 freeze/tag → close/audit P5.
+**Remaining:** close/audit P5; исправить все findings до terminal verdict.
 
 **Sources of truth:** `research/22-p5-round2-observational-remediation-2026-08.md` ·
 `artifacts/P5-gate-b.md` F9–F17 · `plan.md` D161–D164 · `phases/P3.md` P3.25 ·
 `phases/P4.md` P4.16–P4.21 · `phases/P7.md` F16 anchors · D165 (P3.25 skip).
 
-**Open risks:** тег `spec-2026-08` запрещён до terminal P5.3 и предфриз-проверок. PHP P7.1–P7.10 имеют код и зелёный current-tree QA, но
+**Open risks:** внешние планы Flex/Axioma не уведомлены и не помечены `Consumed` (Q-11); публичная
+публикация запрещена D174/D176. PHP P7.1–P7.10 имеют код и зелёный current-tree QA, но
 terminal item reconciliation сознательно отложена до штатной фазы P7.
 
 **Workarounds/Deferred/Open questions:**

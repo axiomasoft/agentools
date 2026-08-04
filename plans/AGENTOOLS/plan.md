@@ -6,11 +6,11 @@
 |:--|:--|
 | Plan ID | AGENTOOLS |
 | Title | AgenTools: ревизия спеки `2026-08` (modern-only, MCP 2026-07-28) + conformance + PHP/Dart SDK + срезы CRM/ERP |
-| Version | 0.36.0 |
+| Version | 0.37.0 |
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-04 (P5.3 baseline и owner reconciliation закрыты; следующий freeze P5.2.) |
+| Last Updated | 2026-08-04 (P5.2 frozen/tagged; phase close/audit pending.) |
 | Repository | `~/projects/packages/agentools` (приватный, без remote) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
@@ -213,7 +213,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P2 | **A1** — bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
 | P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/25 | 🟠 Done with deviations |
 | P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 21/21 | 🟢 Done |
-| P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 2/3 | 🟡 In progress |
+| P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 3/3 | 🟢 Done |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | 🟡 In progress |
 | P8 | Dart SDK `agentools` — зелёный на тех же векторах | 0/13 | ⬜ Not started |
@@ -427,6 +427,8 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | D173 | 2026-08-04 | **Gate B round 3 = GREEN на item anchor `f810d62`: формальный 383/383 дополнен exact-51 observational proof, 51 адресными и 11 составными отвергнутыми мутантами; F9–F17 закрыты.** **Consequences:** P5.1 терминален; прежние RED-раунды сохраняются append-only, а P5.3 разблокирован. Freeze по-прежнему запрещён до baseline и owner-gates P5.3/P5.2. | P5.1 round 3, scoped verdict/lenses 1/6; owner directive №4. `RAG:— (repo-grounded)` |
 | D174 | 2026-08-04 | **Q-30: до отдельного release-owner решения AgenTools остаётся proprietary/internal по tracked `LICENSE`; Packagist/pub.dev и OSS-объявление запрещены.** Старая project-card метка `category: oss` — stale evidence, не license grant. **Consequences:** P5.3/P6 могут продолжаться без внешней публикации; P11 обязан либо сохранить private distribution, либо получить новое owner decision и атомарно согласовать license/metadata/docs. | Явная owner-autonomy директива выполнить внутрифазовые gates безопасным решением; `LICENSE`; package-quality baseline. `RAG:— (owner decision + repo-grounded)` |
 | D175 | 2026-08-04 | **Q-31: DR-01 ратифицирован как authority ревизии `2026-08` без переоткрытия решений.** P3/P4 уже реализовали решения, Gate B round 3 GREEN. **Consequences:** P5.2 может freeze текущие bytes; изменение semantics после freeze — только новая датированная ревизия. P5.3 не переписывает историческую шапку DR-01. | Owner directive; D173; package-quality baseline. `RAG:— (owner decision + repo-grounded)` |
+| D176 | 2026-08-04 | **Q-10 закрыт безопасной юридической границей: внутренний freeze/tag под рабочим именем AgenTools разрешён без заявления о trademark clearance; внешняя публикация запрещена до профессионального поиска либо нового явного owner risk-acceptance.** **Consequences:** локальная спецификация может быть frozen, но P11 не вправе публиковать пакеты по текущему решению. | Owner directive разрешает безопасно принять внутрифазовые gates; Q-30/D174. `RAG:— (owner decision)` |
+| D177 | 2026-08-04 | **Ревизия `2026-08` frozen на source-коммите `84128d4` и аннотированном локальном теге `spec-2026-08`; Gate B anchor `f810d62`.** Идентификатор ревизии = каталог = тег; SDK manifests обязаны объявлять `2026-08`, автоматическая сверка — P6. **Consequences:** любые normative/fixture изменения теперь требуют новой датированной ревизии; внутренние P6–P10 разблокированы, внешние plans не помечены уведомлёнными. | P5.2 prefreeze validation; DR-01 §J8; plan-protocol §11. `RAG:— (repo-grounded)` |
 
 ## 6. Update Log
 
@@ -434,6 +436,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 
 | Дата | Кто (role/model) | Что |
 |:--|:--|:--|
+| 2026-08-04 | plan-run/gpt-5.6-sol-high | P5.2 (`84128d4`) closed: revision frozen, annotated local tag `spec-2026-08`, Q-10 safe boundary D176, lockstep D177; 0.36.0 → 0.37.0. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P5.3 (`6ece4e7`) closed: package-quality baseline; Q-30 proprietary/internal D174, Q-31 DR-01 ratified D175; 0.35.2 → 0.36.0. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-xhigh | P5.1 round 3 (`f810d62`) GREEN: 383/383 testable mandatory, exact 51 observational carriers, 51+11 mutants rejected, F9–F17 closed; 0.35.1 → 0.35.2. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.21 (`a12db23`) closed: CLR-8 raw request type kills fifth-operation mutant; P4 21/21 🟢, Gate B round 3 resumed. |
@@ -592,8 +595,8 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 
 | Контракт | Версия | Статус | Потребители | Уведомлены |
 |:--|:--|:--|:--|:--|
-| `spec/revisions/2026-08/` (нормативная ревизия + схемы + `rules.json`) | 2026-08 | draft (freeze — гейт фазы P5/B) | AGENTOOLS (P6–P10) · будущие: план-контур Flex (corex/ai, P9) · план-контур Axioma (axioma_assistant, P10) · ВТОРАЯ ОЧЕРЕДЬ: FlexStore, FlexCMS — наследуют SDK через `corex/ai`, собственных фаз в плане нет (D126) | — |
-| `fixtures/2026-08/` (тест-векторы трёх классов + golden + `coverage.md`) | 2026-08 | draft (freeze — гейт фазы P5/B) | AGENTOOLS (P6–P8) | — |
+| `spec/revisions/2026-08/` (нормативная ревизия + схемы + `rules.json`) | 2026-08 | frozen · tag `spec-2026-08` · lockstep D177 | AGENTOOLS (P6–P10) · будущие: план-контур Flex (corex/ai, P9) · план-контур Axioma (axioma_assistant, P10) · ВТОРАЯ ОЧЕРЕДЬ: FlexStore, FlexCMS — наследуют SDK через `corex/ai`, собственных фаз в плане нет (D126) | 2026-08-04: внутренние P6–P10; внешние — не уведомлены |
+| `fixtures/2026-08/` (тест-векторы трёх классов + golden + `coverage.md`) | 2026-08 | frozen · tag `spec-2026-08` · lockstep D177 | AGENTOOLS (P6–P8) | 2026-08-04: внутренние P6–P8 |
 
 **Границы столбца `Потребители`** (D63, D108, D126). Строка перечисляет ЗАЯВЛЕННЫХ потребителей,
 а не уведомлённых — колонка `Уведомлены` = «—» честно говорит, что кросс-план-линт чужие корни
