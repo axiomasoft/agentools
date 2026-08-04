@@ -8,6 +8,7 @@
     python3 tools/spec_lint.py --fixtures-check <fixtures_root>
     python3 tools/spec_lint.py --namespace-inventory <revision_dir>
     python3 tools/spec_lint.py --namespace-inventory-selftest
+    python3 tools/spec_lint.py --actionable-description-selftest <revision_dir>
 
 Ревизий в репозитории больше одной, и они живут по РАЗНЫМ конвенциям (`2026-07-draft`
 — история, `2026-08` — modern-only против MCP 2026-07-28), поэтому линтер параметризован
@@ -220,6 +221,7 @@ REVISION_PROFILES = {
         "refs_offline": False,
         "examples_structural": False,
         "coverage_matrix": False,
+        "actionable_description": False,
     },
     "2026-08": {
         "required_docs": DOCS_2026_08,
@@ -245,6 +247,7 @@ REVISION_PROFILES = {
         "refs_offline": True,
         "examples_structural": True,
         "coverage_matrix": True,
+        "actionable_description": True,
         # D144/P3.17: owner-ветка A сохраняет namespace. Счётчики фиксируют
         # реальную цену миграции, а не прежнюю оценку «два носителя» из D46.
         "namespace_domain": "agentools.dev",
@@ -657,6 +660,60 @@ def check_description_no_norm(revision_dir, profile, errors):
                     f"{schema_file}:{path}: description несёт нормативные слова "
                     f"{sorted(set(found))} — норма живёт в markdown-правиле (anti-regression №5)"
                 )
+
+
+ACTIONABLE_DESCRIPTION_POSITIVE = (
+    "Purpose: Возвращает отчёт.\n"
+    "Call when: Пользователь запросил отчёт.\n"
+    "Required arguments: period\n"
+    "Example: report_get({\"period\":\"2026-07\"})"
+)
+ACTIONABLE_DESCRIPTION_NEGATIVE = (
+    "Purpose: Возвращает отчёт.\n"
+    "Call when: Пользователь запросил отчёт.\n"
+    "Required arguments: period"
+)
+
+
+def check_actionable_description_profile(revision_dir, profile, errors):
+    """D145 проверяет СТРУКТУРУ description, а не его длину или модельное качество.
+
+    Паттерн published-схемы — единственный исполняемый носитель формы; линтер сверяет
+    с ним производную authoring-схему и прогоняет минимальную positive/negative пару.
+    """
+    if not profile.get("actionable_description"):
+        return
+
+    patterns = []
+    for relative in ("schema/tool-descriptor.json", "schema/authoring/tool-descriptor.json"):
+        schema_file = revision_dir / relative
+        data = load_json(schema_file, errors)
+        try:
+            pattern = data["properties"]["description"]["pattern"]
+        except (TypeError, KeyError):
+            errors.append(f"{schema_file}: properties/description не несёт actionable pattern")
+            continue
+        if not isinstance(pattern, str) or not pattern:
+            errors.append(f"{schema_file}: actionable pattern обязан быть непустой строкой")
+            continue
+        patterns.append((schema_file, pattern))
+
+    if len(patterns) != 2:
+        return
+    if patterns[0][1] != patterns[1][1]:
+        errors.append(
+            f"{patterns[1][0]}: actionable pattern расходится с published-схемой {patterns[0][0]}"
+        )
+        return
+    try:
+        compiled = re.compile(patterns[0][1])
+    except re.error as exc:
+        errors.append(f"{patterns[0][0]}: actionable pattern не компилируется: {exc}")
+        return
+    if compiled.search(ACTIONABLE_DESCRIPTION_POSITIVE) is None:
+        errors.append(f"{patterns[0][0]}: actionable positive-пример отвергнут")
+    if compiled.search(ACTIONABLE_DESCRIPTION_NEGATIVE) is not None:
+        errors.append(f"{patterns[0][0]}: actionable negative-пример без Example принят")
 
 
 def check_refs_offline(revision_dir, profile, errors):
@@ -1793,6 +1850,20 @@ def namespace_inventory_selftest():
     return 0
 
 
+def run_actionable_description_selftest(revision_dir):
+    if not revision_dir.is_dir():
+        print(f"Ошибка: {revision_dir} не является директорией", file=sys.stderr)
+        return 2
+    try:
+        profile = resolve_profile(revision_dir)
+    except KeyError as exc:
+        print(f"Ошибка: {exc}", file=sys.stderr)
+        return 2
+    errors = []
+    check_actionable_description_profile(revision_dir, profile, errors)
+    return report(errors, "actionable description: positive accepted; negative rejected")
+
+
 def run_keywords_check(schema_path, list_name):
     """Точечный прогон одного файла схемы. Список берётся ЯВНО: по умолчанию B —
     `B = A ∪ {закрытие}`, то есть самый широкий список, применимый к файлу вне
@@ -1859,7 +1930,8 @@ def usage():
         "  python3 spec_lint.py --legacy-check <revision_dir>\n"
         "  python3 spec_lint.py --fixtures-check <fixtures_root>\n"
         "  python3 spec_lint.py --namespace-inventory <revision_dir>\n"
-        "  python3 spec_lint.py --namespace-inventory-selftest",
+        "  python3 spec_lint.py --namespace-inventory-selftest\n"
+        "  python3 spec_lint.py --actionable-description-selftest <revision_dir>",
         file=sys.stderr,
     )
     return 2
@@ -1870,6 +1942,13 @@ def main():
 
     if args == ["--namespace-inventory-selftest"]:
         return namespace_inventory_selftest()
+
+    if "--actionable-description-selftest" in args:
+        try:
+            target = Path(args[args.index("--actionable-description-selftest") + 1])
+        except IndexError:
+            return usage()
+        return run_actionable_description_selftest(target)
 
     if "--namespace-inventory" in args:
         try:
@@ -1944,6 +2023,8 @@ def main():
         check_error_code_registry(revision_dir, errors)
     if profile["description_no_norm"]:
         check_description_no_norm(revision_dir, profile, errors)
+    if profile.get("actionable_description"):
+        check_actionable_description_profile(revision_dir, profile, errors)
     if profile["refs_offline"]:
         check_refs_offline(revision_dir, profile, errors)
     if profile["keyword_lists"]:

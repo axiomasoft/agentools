@@ -25,8 +25,14 @@
 (разделы 2–3) и добавляет метаданные в точке расширения (раздел 4).
 
 **TLP-2 (MUST, L1).** Дескриптор инструмента AgenTools MUST нести `name`, `description`,
-`inputSchema` и блок расширения `_meta["dev.agentools/action"]`. Инструмент без блока
-расширения — обычный MCP-инструмент, к которому нормы ревизии не применяются.
+`inputSchema` и блок расширения `_meta["dev.agentools/action"]`. Поле `description` записывается
+как actionable-description из ровно четырёх непустых строк в фиксированном порядке:
+`Purpose: <назначение>`, `Call when: <условия вызова>`, `Required arguments: <имена обязательных
+аргументов либо none>`, `Example: <пример вызова>`. Инструмент без блока расширения — обычный
+MCP-инструмент, к которому нормы ревизии не применяются.
+
+Эта форма проверяет наличие четырёх операционных компонентов, но не утверждает эффективность
+описания для конкретной модели. Модельное качество измеряется отдельно в P10.6.
 
 **TLP-3 (SHOULD, L1).** Автор инструмента SHOULD задавать `title` — человекочитаемое имя для
 интерфейса; `name` для показа человеку не предназначен и используется как программный адрес.
@@ -234,7 +240,7 @@ keywords: значениям карт `$defs`/`definitions`/`properties`/`patter
 {
   "name": "crm_report_list",
   "title": "Список отчётов о работе",
-  "description": "Возвращает страницу отчётов сотрудника за период. Только чтение.",
+  "description": "Purpose: Возвращает страницу отчётов сотрудника за период.\nCall when: Пользователю нужен список отчётов без изменения данных.\nRequired arguments: period\nExample: crm_report_list({\"period\":\"2026-07\"})",
   "inputSchema": {
     "type": "object",
     "properties": {
@@ -273,7 +279,7 @@ keywords: значениям карт `$defs`/`definitions`/`properties`/`patter
 {
   "name": "fina_payment_send",
   "title": "Отправить платёж",
-  "description": "Отправляет платёжное поручение во внешнюю систему. Необратимое действие.",
+  "description": "Purpose: Отправляет платёжное поручение во внешнюю систему.\nCall when: Подтверждённый платёж нужно необратимо передать провайдеру.\nRequired arguments: counterparty_id, amount_minor, purpose\nExample: fina_payment_send({\"counterparty_id\":\"cp_42\",\"amount_minor\":12500,\"purpose\":\"invoice-17\"})",
   "inputSchema": {
     "type": "object",
     "properties": {
