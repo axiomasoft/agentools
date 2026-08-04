@@ -76,7 +76,7 @@
 | `spec/revisions/2026-07-draft/` | ревизия против MCP 2025-11-25: 7 документов + 10 схем + expression.md | история, неизменяема (D18) |
 | `spec/revisions/2026-08/` | ревизия modern-only против MCP 2026-07-28 + `rules.json` + схемы провода и авторинга | draft существует; P3.24 закрыл fail-closed gate без изменения нормативного snapshot; freeze — гейт P5 |
 | `conformance/` | раннер, эталонный адаптер, самотест harness, baseline, реестр SDK, отчёты по уровням | плейсхолдер (один README со ссылкой на legacy-контракт); строится фазой P6 |
-| `tools/ci_gate.py` + `.github/workflows/ci.yml` | четырёхслойный гейт CI одним носителем | не созданы (item P6.7); без remote гейт доказывается локально (Q-2) |
+| `tools/ci_gate.py` + `.github/workflows/ci.yml` | четырёхслойный гейт CI одним носителем | не созданы (item P6.7); `origin` настроен, но CI/merge protection не доказаны, поэтому local gate и отрицательные прогоны обязательны (D178) |
 | `spec/vendor/mcp/2026-07-28/` | пин финала MCP: `schema.json` + `PIN.md` (коммит, sha256, URL) | не создан (item P1.1) |
 | `fixtures/` | 15 векторов + 4 golden-пары ревизии `2026-07-draft` | история, не переносится (D44) |
 | `fixtures/2026-08/` | корпус ревизии: три схемы классов, `common/`, векторы `behavior`/`artifact`/`harness`, golden, производный `coverage.md` | создан; historical A3 формально PASS, W2 P4.10–P4.12 ремедиирует semantic RED Gate B, затем P4.13 переиздаёт evidence |

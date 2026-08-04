@@ -6,12 +6,12 @@
 |:--|:--|
 | Plan ID | AGENTOOLS |
 | Title | AgenTools: ревизия спеки `2026-08` (modern-only, MCP 2026-07-28) + conformance + PHP/Dart SDK + срезы CRM/ERP |
-| Version | 0.37.0 |
+| Version | 0.37.1 |
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-04 (P5.2 frozen/tagged; phase close/audit pending.) |
-| Repository | `~/projects/packages/agentools` (приватный, без remote) |
+| Last Updated | 2026-08-04 (P5 audit remediation D178; audit verdict pending.) |
+| Repository | `~/projects/packages/agentools`; configured `origin=https://github.com/axiomasoft/agentools.git`; visibility и CI execution не верифицированы (D178) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
 | Target Operator Models | sonnet (exec) · haiku (LOW) · opus (нормативный авторинг/аудит) |
@@ -429,6 +429,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | D175 | 2026-08-04 | **Q-31: DR-01 ратифицирован как authority ревизии `2026-08` без переоткрытия решений.** P3/P4 уже реализовали решения, Gate B round 3 GREEN. **Consequences:** P5.2 может freeze текущие bytes; изменение semantics после freeze — только новая датированная ревизия. P5.3 не переписывает историческую шапку DR-01. | Owner directive; D173; package-quality baseline. `RAG:— (owner decision + repo-grounded)` |
 | D176 | 2026-08-04 | **Q-10 закрыт безопасной юридической границей: внутренний freeze/tag под рабочим именем AgenTools разрешён без заявления о trademark clearance; внешняя публикация запрещена до профессионального поиска либо нового явного owner risk-acceptance.** **Consequences:** локальная спецификация может быть frozen, но P11 не вправе публиковать пакеты по текущему решению. | Owner directive разрешает безопасно принять внутрифазовые gates; Q-30/D174. `RAG:— (owner decision)` |
 | D177 | 2026-08-04 | **Ревизия `2026-08` frozen на source-коммите `84128d4` и аннотированном локальном теге `spec-2026-08`; Gate B anchor `f810d62`.** Идентификатор ревизии = каталог = тег; SDK manifests обязаны объявлять `2026-08`, автоматическая сверка — P6. **Consequences:** любые normative/fixture изменения теперь требуют новой датированной ревизии; внутренние P6–P10 разблокированы, внешние plans не помечены уведомлёнными. | P5.2 prefreeze validation; DR-01 §J8; plan-protocol §11. `RAG:— (repo-grounded)` |
+| D178 | 2026-08-04 | **Audit P5 исправляет устаревшую Q-2 premise: remote `origin=https://github.com/axiomasoft/agentools.git` настроен; visibility, branch protection и запуск CI не доказаны, push/tag publish не выполнялись.** **Consequences:** исторические наблюдения D69/P6-recon сохраняют дату 2026-07-27, но активный P6.7 обязан проверять фактический CI run/merge protection либо честно доказать только локальный gate; наличие remote само по себе не означает работающий CI. | `git remote -v` на audit tree; P5 Audit F1. `RAG:— (repo-grounded)` |
 
 ## 6. Update Log
 
@@ -436,6 +437,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 
 | Дата | Кто (role/model) | Что |
 |:--|:--|:--|
+| 2026-08-04 | plan-audit/frontier-xhigh | P5 audit F1: configured origin опроверг stale Q-2 premise; D178 синхронизирует P6 CI boundary без push/network action; 0.37.0 → 0.37.1. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P5.2 (`84128d4`) closed: revision frozen, annotated local tag `spec-2026-08`, Q-10 safe boundary D176, lockstep D177; 0.36.0 → 0.37.0. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P5.3 (`6ece4e7`) closed: package-quality baseline; Q-30 proprietary/internal D174, Q-31 DR-01 ratified D175; 0.35.2 → 0.36.0. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-xhigh | P5.1 round 3 (`f810d62`) GREEN: 383/383 testable mandatory, exact 51 observational carriers, 51+11 mutants rejected, F9–F17 closed; 0.35.1 → 0.35.2. |

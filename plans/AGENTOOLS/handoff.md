@@ -25,7 +25,8 @@ $ task:plan-audit AGENTOOLS P5
 `phases/P4.md` P4.16–P4.21 · `phases/P7.md` F16 anchors · D165 (P3.25 skip).
 
 **Open risks:** внешние планы Flex/Axioma не уведомлены и не помечены `Consumed` (Q-11); публичная
-публикация запрещена D174/D176. PHP P7.1–P7.10 имеют код и зелёный current-tree QA, но
+публикация запрещена D174/D176. `origin` настроен, но visibility/CI/merge protection не
+верифицированы (D178); tag не pushed. PHP P7.1–P7.10 имеют код и зелёный current-tree QA, но
 terminal item reconciliation сознательно отложена до штатной фазы P7.
 
 **Workarounds/Deferred/Open questions:**
