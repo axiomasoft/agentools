@@ -3,7 +3,7 @@
 Карта файлов плана + провенанс «источник → фаза-потребитель». Не носитель статуса (это
 `plan.md` §4 и `phases/Pn.md`) и не носитель «куда дальше» (это `handoff.md`).
 
-**Обновлён:** 2026-08-04 (RED-аудит P3, заход 2: третий реопен D150–D151, research §14, P3.24)
+**Обновлён:** 2026-08-04 (P4 W2 DoR-reconcile D154: research §16, exact 27/116, workflow/roadmap/handoff)
 
 ## Карта директорий
 
@@ -15,7 +15,7 @@
 | `phases/P6.md … P11.md` | волна реализации и release hygiene: conformance · PHP SDK · Dart SDK · срез CRM · перенос ERP · чистый release candidate |
 | `handoff.md` | rolling-указатель «где мы» (перезаписывается целиком) |
 | `journal.jsonl` | append-only история запусков `task:plan-*` |
-| `brief/` | **слой 0** — вход владельца: `00-brief.md` (реконструкция 2026-07-07) + append-only `01-refinements.md` (включая два RED-аудита P3 2026-08-04) |
+| `brief/` | **слой 0** — вход владельца: `00-brief.md` (реконструкция 2026-07-07) + append-only `01-refinements.md` (включая RED-аудиты P3 и повторный design P4/W2 2026-08-04) |
 | `research/` | **слой 2** — авторский синтез: трассировка ОБОИХ файлов брифа (`00-user-intent.md` §0 — `00-brief.md` построчно, §1.0 — реестр двенадцати датированных блоков `01-refinements.md` с объявленной формой трассировки, §1.1 — построчно блоки Б-1/Б-2), целевая структура работ, конвенции авторинга ревизии `2026-08`, проектные решения корпуса тест-векторов, предмет и механика гейта волны B, предмет фаз conformance / PHP SDK / Dart SDK |
 | `artifacts/` | рабочие артефакты фаз (судьба — архив): вердикт `ГЕЙТ A2` фазы P3 (`P3-gate-a2.md`, исторические P3.14/P3.19/P3.23 и актуальный P3.24), `ГЕЙТ A3` фазы P4 (`P4-gate-a3.md`, item P4.5), отчёт гейта волны B (`P5-gate-b.md`, item P5.1 — вердикт `GREEN`/`ATTENTION`/`RED`) вердикт `ГЕЙТ P6` (`P6-gate.md`, item P6.9), вердикт `ГЕЙТ P7` (`P7-gate.md`, item P7.12) и вердикт `ГЕЙТ P8` (`P8-gate.md`, item P8.13), отчёт среза CRM (`P9-slice-report.md`, item P9.7) и отчёт применимости — выход всего плана (`P10-applicability-report.md`, item P10.6) |
 | `findings/` | **слой 1** — сырьё исполнения: пин финала MCP, дельта-таблица, вердикт транспорта Dart, ре-замер must-ignore на открытых схемах (`P4-must-ignore-open-2026-07.md`, item P4.6), основание локальных schema DoS bounds (`P4.4-schema-dos-bounds-2026-08-03.md`, D139), живая сверка ADR обоих контуров (`P5-adr-contours.md`, item P5.1), разведка состояния репозитория под conformance (`P6-conformance-recon-2026-07-27.md`), наблюдение по Q-7 (`P6-ext-tasks-observation.md`, item P6.3), разведка PHP-стороны со свежестью пинов D15 (`P7-php-sdk-recon-2026-07-27.md`), разведка Dart-стороны со свежестью пинов D15/R-09, вердиктом триггера T-1 и разбором находки F7 (`P8-dart-sdk-recon-2026-07-27.md`), измерение живого контура Flex/CoreX (`P9-flex-corex-recon-2026-07-27.md`) и измерение живого ERP-контура Axioma (`P10-axioma-erp-recon-2026-07-27.md`) |
@@ -24,7 +24,7 @@
 | `root/contracts/` | долгоживущее (судьба — docs проекта): P5.3 создаёт `package-quality-baseline.md`; P9.2/P10.2 создают интеграционные контракты для чужих планов. Каталог создаётся при первом item'е-владельце |
 | `90_inbox/` | входные материалы 2026-07 (первичный анализ, заметка offline-разрыва) |
 | `00_MASTER_PLAN.md` | дизайн-документ 2026-07-07: миссия, решения D1–D14, архитектура, стек-пины |
-| `workflows/` | `wf-agentools-p4-vectors.js` — исторический W1, повторный запуск запрещён · `wf-agentools-p4-remediation.js` — W2 P4.10–P4.12 после terminal P3/P4.9 (D143/D150) · `wf-agentools-drive.js` — **устарел** (D23) |
+| `workflows/` | `wf-agentools-p4-vectors.js` — исторический W1, повторный запуск запрещён · `wf-agentools-p4-remediation.js` — W2 P4.10–P4.12 после terminal P3/P4.14/P4.9; parallel authoring + sequential high-route close (D143/D154) · `wf-agentools-drive.js` — **устарел** (D23) |
 | `open-questions.md` | спорное/нерешённое с колонкой «Владелец-фаза» (включая Q-30 legal/publication identity и Q-31 authority DR-01 — оба обязательны для P5.3) |
 | `roadmap.md` | исполнительская карта, включая P5.3 и terminal P11. Не переопределяет §3 Routing и не назначает членство в группах — носитель членства колонка `Batch` §3 |
 
@@ -43,10 +43,11 @@
 | `research/00-user-intent.md` | research | P1–P10 | трассировка «мысль брифа → адрес в плане», матрица «решение `DR-01` → фаза», механика traceability, anti-regression список ревизии `2026-07-draft` |
 | `research/01-target-structure-2026-08.md` | research | P1, P2, P3, P4 | карта `§K → Pn`, раскладка ревизии `2026-08`, дизайн 10 проб bakeoff, критерии выбора транспорта Dart, вердикт по оркестрации |
 | `research/03-p4-vector-corpus-2026-08.md` | research | P4, P5, P6 | три класса векторов (`behavior`/`artifact`/`harness`), раскладка `fixtures/2026-08/**`, распределение правил по items, 11 проверок двунаправленного гейта, пороги `min_vectors`/`spec_rule_ids`, построчный разбор критерия оркестрации, метод ре-замера must-ignore |
-| `research/12-p3-p4-gate-b-remediation-2026-08.md` | research | P3, P4, P5 | синтез F1–F8: driver-state contract, SEC-3 code, owner-ветки Q-5/Q-27, декомпозиция P3.16–P3.19/P4.9–P4.13 и evidence-map 32/116 |
+| `research/12-p3-p4-gate-b-remediation-2026-08.md` | research | P3, P4, P5 | синтез F1–F8: driver-state contract, SEC-3 code, owner-ветки Q-5/Q-27, декомпозиция P3.16–P3.19/P4.9–P4.13; D154 уточняет evidence-map до exact 27/116 |
 | `research/13-p3-red-audit-remediation-2026-08.md` | research | P3, P4, P6–P8 | синтез RED-аудита P3 F1–F6: open-enum repair, lifecycle markdown↔schema contract, нормативный долг CFH/OVR, повторный A2 и pre-mortem |
 | `findings/P3-jsonschema-oracle-2026-08.md` | findings | P3 | официальный API `Draft202012Validator`, локальная доступность oracle и вердикт dependency-explicit/fail-closed для schema-values selftest |
 | `research/14-p3-open-enum-fail-closed-2026-08.md` | research | P3, P4 | синтез второго RED-аудита P3: полный branch/keyword shape, Draft 2020-12 mutation-oracle, границы P3.24 и pre-mortem |
+| `research/16-p4-w2-dor-reconcile-2026-08.md` | research | P4, P5 | фактический precheck W2; reconcile headline 32 с exact 27 fixture carriers/116 rules; безопасная граница parallel authoring → sequential high-route close; pre-mortem D154 |
 | `research/05-p6-conformance-harness-2026-08.md` | research | P6, P7, P8 | раскладка `conformance/**` и три «единственных носителя»; разбор пробелов скелета и дробление на 9 items; три ветки owner-gate `DR-02` §6 и найденный срок ответа; приземление Q-2/Q-7/Q-8; шесть обязательных отрицательных прогонов против «зелёного на пустом»; построчный разбор критерия оркестрации; pre-mortem фазы |
 | `findings/P6-conformance-recon-2026-07-27.md` | findings | P6, P7, P8 | наблюдаемое состояние репозитория артефактов на `4344265`: пустой `conformance/`, нет remote, нет тегов, пустые `php/`/`dart/`, правила игнорирования (`composer.lock`, `out/`), тулчейн исполнителя, что берётся из прежнего ТЗ раннера в git-истории |
 | `research/04-p5-audit-gate-2026-08.md` | research | P5, P6 | десять дыр, зелёных на машинном гейте A3 (предмет фазы); шесть линз аудита; таксономия находок и правило вердикта GREEN; носитель отчёта и почему это НЕ `plan-audit`; построчный разбор критерия оркестрации; жёсткий порядок шести шагов freeze; состав пакета owner-гейта Q-5/Q-10 |
@@ -73,7 +74,7 @@
 | `tools/ci_gate.py` + `.github/workflows/ci.yml` | четырёхслойный гейт CI одним носителем | не созданы (item P6.7); без remote гейт доказывается локально (Q-2) |
 | `spec/vendor/mcp/2026-07-28/` | пин финала MCP: `schema.json` + `PIN.md` (коммит, sha256, URL) | не создан (item P1.1) |
 | `fixtures/` | 15 векторов + 4 golden-пары ревизии `2026-07-draft` | история, не переносится (D44) |
-| `fixtures/2026-08/` | корпус ревизии: три схемы классов, `common/`, векторы `behavior`/`artifact`/`harness`, golden, производный `coverage.md` | не создан (фаза P4) |
+| `fixtures/2026-08/` | корпус ревизии: три схемы классов, `common/`, векторы `behavior`/`artifact`/`harness`, golden, производный `coverage.md` | создан; historical A3 формально PASS, W2 P4.10–P4.12 ремедиирует semantic RED Gate B, затем P4.13 переиздаёт evidence |
 | `tools/spec_lint.py` | основной линтер ревизии stdlib-only; адресный schema-values selftest dependency-explicit по D151 | живой; fail-closed ремонт — P3.24 |
 | `bakeoff/` | корпус проб (`probes/`), результаты прогонов генераторов (`php/`, `dart/`, `results/`), прототипы транспорта (`dart-transport/`) | **создан фазой P2**, item-коммиты `c0f6f8b` (P2.1) · `b803d53` (P2.2) · `b3f164f` (P2.3) · `4344265` (P2.4); фаза закрыта `🟠`. Расширяется item'ом P4.6 — датированный ре-замер must-ignore на ОТКРЫТЫХ схемах, матрицы P2 при этом не переписываются (D51) |
 | `php/` | пакет `agentools/sdk`: контракты и порты, VO+JCS, идентичность, профиль инструмента, журнал, эффекты, подтверждение, идемпотентность, ошибки, сценарии, длинные операции/аудит/безопасность + conformance-адаптер `php/conformance/` | плейсхолдер (один README с прежней нумерацией фаз); строится фазой P7 |

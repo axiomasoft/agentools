@@ -84,18 +84,21 @@ open-questions.md Q-27; artifacts/P5-gate-b.md F8)`.
 | P4.10 | F1/F2/F4 | P3.16, P3.19, P4.9 | различающие security/lifecycle/confirmation/clarification/longop/audit behavior-кейсы |
 | P4.11 | F5 | P3.19, P4.9 | адресные parse/order/host-code/limit scenario-кейсы |
 | P4.12 | F3/F6 (+ measurable-ветка F8) | P3.17–P3.19, P4.9 | шесть исправленных checker branches, static pairs baseline/report/GREASE/deviation/description |
-| P4.13 | интеграция | P4.10–P4.12 | A3 PASS + evidence-таблица F1–F6/32 carriers/116 rules; затем новый P5.1 |
+| P4.13 | интеграция | P4.10–P4.12 | A3 PASS + evidence-таблица F1–F6 exact 27 fixture carriers/116 rules; historical reported count 32 — отдельное provenance-поле; затем новый P5.1 |
 
-P4.10/P4.11/P4.12 независимы после P3.19+P4.9 и имеют детерминированные Validation, поэтому
-критерий оркестрации срабатывает. Носитель — `workflows/wf-agentools-p4-remediation.js` (W2);
+P4.10/P4.11/P4.12 имеют непересекающиеся authoring write-sets после terminal P3/P4.14/P4.9 и
+детерминированные Validation, поэтому критерий оркестрации срабатывает. Носитель —
+`workflows/wf-agentools-p4-remediation.js` (W2); общие гейты/close последовательны по D154.
 P4.9 и P4.13 остаются solo.
 
 ## 5. Инварианты приёмки
 
 - Никакого спец-кода «под Gate B»: каждая замена обязана иметь различающий stimulus и
   позитивно-негативную пару; подмена ссылки `spec_rule_ids` не считается исправлением.
-- 32 названных носителя из round 1 получают статус `replaced` либо доказанный `retained-pass` в
-  evidence-таблице; все 116 sole-carrier MUST после замены имеют хотя бы один годный carrier.
+- Exact 27 fixture-carriers из round 1 получают статус `replaced` либо доказанный
+  `retained-pass` в evidence-таблице; все 116 sole-carrier MUST после замены имеют хотя бы один
+  годный carrier. Headline `32` из отчёта хранится как provenance, но не дополняется выдуманными
+  строками; reconcile и полный список — `research/16-p4-w2-dor-reconcile-2026-08.md` §2 (D154).
 - Формальные A2/A3 остаются зелёными, но их PASS не объявляется содержательным GREEN.
 - Единственный содержательный вердикт после ремедиации — новый cold-start P5.1 round 2.
 - Любое изменение `DR-01`/`DR-02`, `2026-07-draft`, живых ADR либо P6–P11 запрещено.
@@ -123,3 +126,12 @@ expect и `spec_rule_ids` не меняются. Адресный selftest и Da
 committed bytes common-фрагмента без in-memory normalization. Отдельный item отклонён: у
 правки нет самостоятельного deliverable, она является прямым предусловием обязательного
 offline evidence P4.9; перенос в P4.12 отклонён, потому что W2 не стартует до terminal P4.9.
+
+## 7. W2 DoR-reconcile 2026-08-04
+
+После terminal P3/P4.14/P4.9 повторный design-заход P4 обнаружил две исполнительские дыры:
+workflow не разрешал P4.12 писать обязательную CFH-55 schema/harness pair и закрывал high-items
+low-route агентом; число 32 не имело перечисленного exact-set. D154 и
+`research/16-p4-w2-dor-reconcile-2026-08.md` заменяют только эти две границы: authoring остаётся
+параллельным, после join common gates/close последовательны под `implementation/high`, а P4.13
+гейтит exact 27 fixture ids/116 rules. Остальная декомпозиция этого документа не меняется.

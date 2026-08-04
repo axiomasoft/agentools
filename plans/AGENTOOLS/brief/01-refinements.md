@@ -776,3 +776,19 @@ Task Contract запрещает четвёртый P3-item кодом `LOOP_BUD
 P4.14 немедленно чинит outer `$defs` shape и exact inventory до P4.9. Директива не разрешает
 менять normative schemas, `CFH-55`, fixtures, P4.9–P4.13, Gate B или исторические Completion
 Notes P3.1–P3.24. Решение зарегистрировано как D152.
+
+---
+
+## 2026-08-04 — повторный design P4 перед запуском W2
+
+Владелец повторно запустил `$ task:plan-design AGENTOOLS P4` после terminal P4.9 и двух
+локальных правок workflow. Заход не реопенит фазу заново: P4 уже `🟡`, закрытые P4.1–P4.9/P4.14
+и их Completion Notes не меняются. Scope — довести оставшиеся P4.10–P4.13 и W2 до исполнимого
+DoR по фактическому terminal P3/P4.14/P4.9.
+
+Reconcile приземлён D154: exact acceptance использует 27 поимённых round-1 fixture carriers и
+116 FAIL rules; headline `32` из Gate B остаётся provenance, а не дополняется выдуманными
+строками. W2 разрешает P4.12 писать CFH-55 schema/harness pair; параллелен только authoring,
+после join review/gates/close идут последовательно под `implementation/high`. Адреса:
+`research/16-p4-w2-dor-reconcile-2026-08.md`, `phases/P4.md` P4.10–P4.13,
+`workflows/wf-agentools-p4-remediation.js`, `roadmap.md` W2 и `handoff.md`.

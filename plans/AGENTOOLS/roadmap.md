@@ -1,6 +1,6 @@
 # Roadmap исполнения — AGENTOOLS
 
-**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.25.1 · **Следующий исполнимый участок:** P4.9. Brain — SSOT; эта копия синхронизирована для работы из репозитория.
+**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.26.0 · **Следующий исполнимый участок:** workflow W2 (P4.10–P4.12). Brain — SSOT; эта копия синхронизирована для работы из репозитория.
 
 Карта отвечает на «какую команду дальше?» без разбора всего плана. Она **не переопределяет**
 `plan.md` §3 Routing (модели и effort — оттуда), а только группирует запуски и называет гейты
@@ -10,7 +10,8 @@
 сессией; закрытие КАЖДОГО item'а идёт полным протоколом `plan-protocol` §8 (item-коммит +
 bookkeeping + handoff), батч закрытия не сливает. (2) `solo` — собственная сессия; в колонке
 «Примечание» обязано стоять, почему нельзя слить. (3) `workflow` — независимые по scope items
-одним скриптом; агенты волны НЕ коммитят и НЕ закрывают items (D55).
+одним скриптом; parallel authors НЕ коммитят и НЕ закрывают items, после join общий carrier
+последовательно валидирует и закрывает их предписанным маршрутом (D55/D154).
 
 **Носитель членства в группе — `plan.md` §3 Routing, колонка `Batch`** (D122): карта её ПОКАЗЫВАЕТ,
 но не назначает — как и модели с effort. Расхождение колонки `Batch` этой карты с §3 = дефект карты,
@@ -24,7 +25,8 @@ bookkeeping + handoff), батч закрытия не сливает. (2) `solo
 P3 гейтится P1, P4 гейтится P3, P5 гейтится P3+P4; P6–P11 — GREEN P5.1, baseline P5.3 и freeze P5.2.
 **Remediation-order после Gate B round 1 и трёх RED-аудитов P3 (D141–D152):** P3.16 → owner-gates
 P3.17/P3.18 → P3.19/A2 → RED-аудит → P3.20 → P3.21 → P3.22 → P3.23/A2 → close/audit P3 → P3.24 → RED/AUDIT-CAP →
-P4.14 fix-forward (`51fc06f`, закрыт) → P4.9 → workflow W2 (P4.10/P4.11/P4.12, включая CFH-55 carrier D149) → P4.13/A3 → close P4 → P5.1 round 2. Старый W1 и
+P4.14 fix-forward (`51fc06f`, закрыт) → P4.9 (`ef80fcd`, закрыт) → workflow W2
+(P4.10/P4.11/P4.12, включая CFH-55 carrier D149) → P4.13/A3 → close P4 → P5.1 round 2. Старый W1 и
 P4.1–P4.8 терминальны и повторно не запускаются.
 
 ---
@@ -66,11 +68,11 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | P4.8 | — | — | — | — | **закрыт**; старый W1 повторно не запускается |
 | P4.5 | — | — | — | — | **закрыт исторически**; формальный A3 не равен Gate B GREEN |
 | P4.14 | — | — | — | — | **закрыт** `51fc06f`; exact registry/full-definition gate устранил AUDIT-CAP debt F1/F2 до P4.9 |
-| P4.9 | solo | `plan-run` | implementation/high | — | общий driver-state input W2; D153 включает D145-valid common read-tool + 7 точных копий и запрещает in-memory normalization |
+| P4.9 | — | — | — | — | **закрыт** `ef80fcd`; driver-state и D145-valid real-byte offline control — общий input W2 |
 | P4.10 | W2 | workflow | implementation/high | — | F1/F2/F4 behavior carriers; scope независим от scenario/static после P4.9 |
 | P4.11 | W2 | workflow | implementation/high | — | F5 scenario carriers; отдельные ids/files |
-| P4.12 | W2 | workflow | implementation/high | — | F3/F6/F8 static/checker + CFH-55 test-only `mcp_errors` schema и distinguishing harness pair; потребляет P3.23 |
-| P4.13 | solo | `plan-run` | implementation/high | — | terminal A3 + evidence-map 32/116; после W2, перед Gate B round 2 |
+| P4.12 | W2 | workflow | implementation/high | — | F3/F6/F8 static/checker + CFH-55 test-only `mcp_errors` schema и distinguishing harness pair; потребляет terminal P3/P4.14/P4.9 |
+| P4.13 | solo | `plan-run` | implementation/high | — | terminal A3 + evidence-map exact 27 fixture carriers/116 rules; historical 32 хранится только как provenance D154; после W2, перед Gate B round 2 |
 | P5.1 | solo | `plan-run` | frontier/xhigh | — | адверсариальный гейт волны: вердикт обязан быть ОДНИМ и когерентным (D59/D61). **Команда — НЕ `task:plan-audit`**: её субъект — фазы плана, а здесь — артефакты ревизии |
 | P5.3 | solo | `plan-run` | frontier/high | ✅ **Q-30, Q-31** | package-quality baseline и reconciliation identity/authority. Выполняется после GREEN P5.1 и ДО freeze; без ответа владельца — `🔴 Blocked` |
 | — | — | — | — | ✅ **Q-5 (домен) + Q-10 (trademark)** | гейт СТОИТ МЕЖДУ items фазы (D64): нет ответа — P5.2 ждёт со строкой `Возобновление:`, ревизия остаётся `draft`; молчание ≠ «да» |
@@ -113,28 +115,9 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 
 ## Готовые launch-block'и групп
 
-### P4.9 — formal driver state перед W2
-
-**Next:** ЗАПУСК ВРУЧНУЮ: implementation/high
-
-| Параметр | Значение |
-|:--|:--|
-| Model class | implementation |
-| Effort | high |
-| Capabilities | — |
-| Context | continue (reset the session context) — ручной item |
-| Суть | Добавить формальный driver state и два script-step carrier как общий вход W2. |
-| Команда | — |
-
-```text
-select the session model class implementation
-select the session effort high
-$ task:plan-run AGENTOOLS P4.9
-```
-
 ### W2 — Gate B carrier remediation (P4.10–P4.12)
 
-**Next:** manual: implementation/high (P4.9 terminal)
+**Next:** manual: implementation/high
 
 | Параметр | Значение |
 |:--|:--|
@@ -142,11 +125,11 @@ $ task:plan-run AGENTOOLS P4.9
 | Effort | high — различающая сила contract vectors |
 | Capabilities | `command.subagents`, `command.workflow-carrier` |
 | Context | cold-start — orchestration |
-| Суть | Параллельно исправить behavior/scenario/static carriers, затем закрыть P4.13 solo. |
+| Суть | Параллельно авторить behavior/scenario/static carriers; после join последовательно проверить и закрыть P4.12→P4.10→P4.11. |
 | Команда | — |
 
 ```text
-# НЕ раньше: P3 терминальна и P4.9 терминальна
+# НЕ раньше: P3, P4.14 и P4.9 терминальны; full lint имеет единственный debt CFH-55
 native orchestration carrier: plans/AGENTOOLS/workflows/wf-agentools-p4-remediation.js
 ```
 
