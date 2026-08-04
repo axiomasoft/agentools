@@ -1,6 +1,6 @@
 # Roadmap исполнения — AGENTOOLS
 
-**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.29.0 · **Следующий исполнимый участок:** solo P4.13. Brain — SSOT; эта копия синхронизирована для работы из репозитория.
+**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.30.0 · **Следующий исполнимый участок:** solo P4.10 repair D158. Brain — SSOT; эта копия синхронизирована для работы из репозитория.
 
 Карта отвечает на «какую команду дальше?» без разбора всего плана. Она **не переопределяет**
 `plan.md` §3 Routing (модели и effort — оттуда), а только группирует запуски и называет гейты
@@ -26,7 +26,8 @@ P3 гейтится P1, P4 гейтится P3, P5 гейтится P3+P4; P6–
 **Remediation-order после Gate B round 1 и трёх RED-аудитов P3 (D141–D152):** P3.16 → owner-gates
 P3.17/P3.18 → P3.19/A2 → RED-аудит → P3.20 → P3.21 → P3.22 → P3.23/A2 → close/audit P3 → P3.24 → RED/AUDIT-CAP →
 P4.14 fix-forward (`51fc06f`, закрыт) → P4.9 (`ef80fcd`, закрыт) → workflow W2
-(P4.10/P4.11/P4.12, включая CFH-55 carrier D149) → P4.13/A3 → close P4 → P5.1 round 2. Старый W1 и
+(P4.10/P4.11/P4.12, закрыт) → адресный re-open P4.10 D158 → re-design/resume P4.13/A3 →
+close P4 → P5.1 round 2. Старый W1 и
 P4.1–P4.8 терминальны и повторно не запускаются.
 
 ---
@@ -70,10 +71,10 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | P4.14 | — | — | — | — | **закрыт** `51fc06f`; exact registry/full-definition gate устранил AUDIT-CAP debt F1/F2 до P4.9 |
 | P4.9 | — | — | — | — | **закрыт** `ef80fcd`; driver-state и D145-valid real-byte offline control — общий input W2 |
 | P4.15 | — | — | — | — | **закрыт** `8919b92`; closed policy/confirmation/audit-export inputs and selftest |
-| P4.10 | — | — | — | — | **закрыт** `7a3840b`; D156 exact 65/65 behavior pairs + retained longop |
-| P4.11 | — | — | — | — | **закрыт** `0581400`; F5 scenario positive/negative pairs |
-| P4.12 | — | — | — | — | **закрыт** `e50bb5e`; static SEC-17/AOB-26 and CFH-55 pair |
-| P4.13 | solo | `plan-run` | implementation/high | — | terminal A3 + evidence-map exact 27/116 и D156 partition 65+retained+2 static; historical 32 — provenance |
+| P4.10 | solo | `plan-run` | implementation/high | — | **реопенён D158**: typed confirmation для CNF-35/36 + factual SEC-11 address; dirty P4.13 diff не коммитить |
+| P4.11 | W2 | — | — | — | **закрыт** `0581400`; F5 scenario positive/negative pairs, исторический workflow повторно не запускается |
+| P4.12 | W2 | — | — | — | **закрыт** `e50bb5e`; static SEC-17/AOB-26 and CFH-55 pair, исторический workflow повторно не запускается |
+| P4.13 | solo | `plan-run` | implementation/high | — | `🔴 Blocked`: после P4.10 сначала re-design pair-level present/absent/length extraction, затем terminal A3 + evidence-map exact 27/116 |
 | P5.1 | solo | `plan-run` | frontier/xhigh | — | адверсариальный гейт волны: вердикт обязан быть ОДНИМ и когерентным (D59/D61). **Команда — НЕ `task:plan-audit`**: её субъект — фазы плана, а здесь — артефакты ревизии |
 | P5.3 | solo | `plan-run` | frontier/high | ✅ **Q-30, Q-31** | package-quality baseline и reconciliation identity/authority. Выполняется после GREEN P5.1 и ДО freeze; без ответа владельца — `🔴 Blocked` |
 | — | — | — | — | ✅ **Q-5 (домен) + Q-10 (trademark)** | гейт СТОИТ МЕЖДУ items фазы (D64): нет ответа — P5.2 ждёт со строкой `Возобновление:`, ревизия остаётся `draft`; молчание ≠ «да» |
@@ -116,34 +117,23 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 
 ## Готовые launch-block'и групп
 
-### P4.15 — typed driver contract remediation
+### P4.10 — narrow counterfactual repair D158
 
 **Next:** manual: implementation/high
 
 | Параметр | Значение |
 |:--|:--|
 | Model class | implementation |
-| Effort | high — общая schema boundary, от которой зависит весь W2 |
-| Context | cold-start — P4.15 перед сохранённым candidate |
-| Суть | Добавить only driver-only closed inputs policy/confirmation/audit-export и selftest, не меняя candidate. |
-| Команда | `task:plan-run AGENTOOLS P4.15` |
-
-### W2 — Gate B carrier remediation (P4.10–P4.12)
-
-**Next:** manual: implementation/high
-
-| Параметр | Значение |
-|:--|:--|
-| Model class | implementation |
-| Effort | high — различающая сила contract vectors |
-| Capabilities | `command.subagents`, `command.workflow-carrier` |
-| Context | cold-start — orchestration |
-| Суть | Возобновить W2 candidate по D156: пять shards P4.10 → 65 single-rule pairs, static SEC-17/AOB-26, единый exact-evidence review/fix → close P4.12→P4.10→P4.11. |
+| Effort | high — correctness-critical behavior fixtures against frozen normative rules |
+| Capabilities | — |
+| Context | same-session — item |
+| Суть | Исправить четыре CNF fixtures и два SEC-11 pointers, не меняя ALC/AOB и dirty P4.13 checker. |
 | Команда | — |
 
 ```text
-# RESUME D155/D156/D157: P4.15 terminal; candidate сохраняется; broad pairs нормализуются review/fix, plan files clean
-native orchestration carrier: plans/AGENTOOLS/workflows/wf-agentools-p4-remediation.js
+# select the session model class implementation
+# select the session effort high
+$ task:plan-run AGENTOOLS P4.10
 ```
 
 ### B1 — фаза P1 (A0): пин финала MCP, дельта-таблица, реконсиляция `DR-01`

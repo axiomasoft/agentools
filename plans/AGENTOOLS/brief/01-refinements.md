@@ -824,3 +824,18 @@ pair и exact `rule_evidence`; `longop-002/102` остаётся отдельн�
 Чтобы одна итерация была исполнима, P4.10 author/resume/fix разделён на пять непересекающихся
 file/rule shards (`security`, `confirmation`, `lifecycle`, `audit`, `dialog`); только их полный
 детерминированный aggregate проходит единый cold-start review 65/65.
+
+---
+
+## 2026-08-04 — реопен P4.10 после блокировки P4.13
+
+Владелец снова запустил `$ task:plan-design AGENTOOLS P4.10` после того, как P4.13 добавил
+`--gate-b-remediation-check` и остановился на пяти rule-pairs. Заход обязан сохранить текущий
+незакоммиченный продуктовый diff P4.13 и не присваивать его P4.10.
+
+Read-only проверка уточнила вход: ALC-35 и AOB-31 уже имеют нормативные presence/length
+counterfactuals; CNF-35/CNF-36 имеют permissions-delta, но не используют typed confirmation
+snapshot terminal P4.15; SEC-11 ссылается на несуществующий `driver_state/tools` вместо
+`given.tools`. D158 реопенит P4.10 только для четырёх CNF и двух SEC fixtures. Pair-level
+checker present/absent/length остаётся долгом P4.13; подгонять ALC/AOB fixtures или добавлять
+self-asserted runtime payload ради зелёного checker'а запрещено.
