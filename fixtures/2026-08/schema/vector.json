@@ -347,6 +347,7 @@
       "required": ["task_id", "channel", "status", "message"],
       "properties": {
         "task_id": { "type": "string", "minLength": 1 },
+        "operation": { "type": "string", "enum": ["GetPromptRequest", "ReadResourceRequest", "CallToolRequest", "GetTaskPayloadRequest", "ListResourcesRequest"] },
         "channel": { "$ref": "../../schema/2026-08/task-binding.json#/$defs/StatusChannel" },
         "status": { "$ref": "../../schema/2026-08/task-binding.json#/$defs/TaskStatus" },
         "message": { "type": "string" }
@@ -614,7 +615,7 @@
         "task_id": { "type": "string", "minLength": 1 },
         "binding_id": { "type": "string", "minLength": 1 },
         "state": { "type": "string", "enum": ["working", "input_required", "completed", "failed"] },
-        "input_required_operations": { "type": "array", "uniqueItems": true, "items": { "type": "string", "enum": ["prompts/get", "resources/read", "tools/call", "tasks/result"] } }
+        "input_required_operations": { "type": "array", "uniqueItems": true, "items": { "type": "string", "enum": ["GetPromptRequest", "ReadResourceRequest", "CallToolRequest", "GetTaskPayloadRequest"] } }
       }
     },
     "CredentialBoundaryObservation": {

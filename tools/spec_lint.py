@@ -2748,16 +2748,25 @@ def _semantic_preflight_checks(by_rule, repo_root):
 
     register("confirmation-layer-boundary", ("TLP-11", "CNF-6", "CNF-8"), confirmation_layer, mutate_confirmation)
 
-    allowed_operations = {"prompts/get", "resources/read", "tools/call", "tasks/result"}
+    allowed_operations = {"GetPromptRequest", "ReadResourceRequest", "CallToolRequest", "GetTaskPayloadRequest"}
 
     def clarification_operations(source):
         rows = source["CLR-8"]
         operations = [observations(data, "task_binding")[0]["input_required_operations"] for data in rows]
-        return all(set(items) <= allowed_operations for items in operations) and {tuple(items) for items in operations} == {(), ("tasks/result",)}
+        raw_operations = [next(step["task_message"]["operation"] for step in data["script"] if "task_message" in step) for data in rows]
+        states = [observations(data, "task_binding")[0]["state"] for data in rows]
+        final_states = [data["expect"]["final_state"] for data in rows]
+        return (
+            all(set(items) <= allowed_operations for items in operations)
+            and raw_operations == ["ListResourcesRequest", "GetTaskPayloadRequest"]
+            and operations == [[], ["GetTaskPayloadRequest"]]
+            and states == ["failed", "input_required"]
+            and final_states == ["failed", "running"]
+        )
 
     register(
         "clarification-protocol-operations", ("CLR-8",), clarification_operations,
-        lambda source: observations(source["CLR-8"][0], "task_binding")[0].update(input_required_operations=[]),
+        lambda source: next(step["task_message"] for step in source["CLR-8"][0]["script"] if "task_message" in step).update(operation="GetTaskPayloadRequest"),
     )
 
     def mapping_registry(source):
@@ -3667,7 +3676,7 @@ def run_observational_carriers_selftest(fixtures_root):
         "task_binding": {
             "kind": "task_binding", "probe_id": "task-channel", "task_id": "task-1",
             "binding_id": "binding-1", "state": "input_required",
-            "input_required_operations": ["tasks/result"],
+            "input_required_operations": ["GetTaskPayloadRequest"],
         },
         "credential_boundary": {
             "kind": "credential_boundary", "probe_id": "resource-spy", "resource": "ledger",

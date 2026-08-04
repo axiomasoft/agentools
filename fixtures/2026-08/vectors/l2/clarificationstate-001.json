@@ -49,6 +49,7 @@
     {
       "task_message": {
         "task_id": "task-1",
+        "operation": "GetTaskPayloadRequest",
         "channel": "poll",
         "status": "input_required",
         "message": "Обновление статуса"
@@ -66,7 +67,7 @@
         "binding_id": "binding:task-1",
         "state": "input_required",
         "input_required_operations": [
-          "tasks/result"
+          "GetTaskPayloadRequest"
         ]
       }
     ]

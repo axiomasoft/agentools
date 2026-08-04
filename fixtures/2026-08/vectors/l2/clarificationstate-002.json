@@ -49,6 +49,7 @@
     {
       "task_message": {
         "task_id": "task-1",
+        "operation": "ListResourcesRequest",
         "channel": "poll",
         "status": "input_required",
         "message": "Обновление статуса"
@@ -57,17 +58,15 @@
   ],
   "expect": {
     "events": [],
-    "final_state": "running",
+    "final_state": "failed",
     "observations": [
       {
         "kind": "task_binding",
         "probe_id": "clr_8_task_channel",
         "task_id": "task-1",
         "binding_id": "binding:task-1",
-        "state": "input_required",
-        "input_required_operations": [
-          "tasks/result"
-        ]
+        "state": "failed",
+        "input_required_operations": []
       }
     ]
   }

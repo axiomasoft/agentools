@@ -49,23 +49,26 @@
     {
       "task_message": {
         "task_id": "task-1",
+        "operation": "GetTaskPayloadRequest",
         "channel": "poll",
-        "status": "completed",
+        "status": "input_required",
         "message": "Обновление статуса"
       }
     }
   ],
   "expect": {
     "events": [],
-    "final_state": "completed",
+    "final_state": "running",
     "observations": [
       {
         "kind": "task_binding",
         "probe_id": "clr_8_task_channel",
         "task_id": "task-1",
         "binding_id": "binding:task-1",
-        "state": "completed",
-        "input_required_operations": []
+        "state": "input_required",
+        "input_required_operations": [
+          "GetTaskPayloadRequest"
+        ]
       }
     ]
   }

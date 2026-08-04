@@ -49,6 +49,7 @@
     {
       "task_message": {
         "task_id": "task-1",
+        "operation": "GetTaskPayloadRequest",
         "channel": "poll",
         "status": "completed",
         "message": "Обновление статуса"

@@ -1339,7 +1339,7 @@
           "classes": [
             "task_binding"
           ],
-          "oracle_sha256": "40aded59eb10f2b08e3c704771f365068b600bdfaa00ac6d211d2d3c84ea115e"
+          "oracle_sha256": "bbb9a1559d9f8f5f60eeaf03b53b751d4d6ec83c5bc2682a0184d9ee382107be"
         },
         {
           "carrier_id": "clarificationstate-101",
@@ -1392,14 +1392,14 @@
           "classes": [
             "task_binding"
           ],
-          "oracle_sha256": "707b13c9f2217d6449d22c89f1bbe74142f0f4d565f98bb759213e78375a017f"
+          "oracle_sha256": "8612e22d1a2c28adf479855e3ffa3ee19c6f8068afcedf22c7f6513c0d6e63ed"
         },
         {
           "carrier_id": "clarificationstate-102",
           "classes": [
             "task_binding"
           ],
-          "oracle_sha256": "ddd352551b9f431ee325b6a48f6e89e2c3a011566ea328053c734982e2875054"
+          "oracle_sha256": "de3784d573308b9eff9918f46d16a611e9e0ccba4f288c094f5713f3c47c03d5"
         }
       ],
       "rule_id": "CLR-8",
@@ -1409,20 +1409,20 @@
             "id": "clarificationstate-002",
             "oracle": {
               "event_kinds": [],
-              "final_state": "running"
+              "final_state": "failed"
             },
-            "value_hash": "597c0c565ae5c56f2128fe26c743dccd45a4dab664d04f5220f61cc41f639dcd"
+            "value_hash": "032bdac02f67a0dc974f318ede756b73d9e1de2d80e2e1b69e4cdb495be7c399"
           },
           {
             "id": "clarificationstate-102",
             "oracle": {
               "event_kinds": [],
-              "final_state": "completed"
+              "final_state": "running"
             },
-            "value_hash": "dfb1f7f74a12259e3f1e30c31e2f5cbbc86c5a2092b274c84b26c296206ffc40"
+            "value_hash": "8dcd887c75f0bf1c94c2ae5bfe0c3c276c910eb5219a2e755be1d2ab7e3965ed"
           }
         ],
-        "pointer": "/script/2/task_message/status",
+        "pointer": "/script/2/task_message/operation",
         "relation": "value"
       }
     },

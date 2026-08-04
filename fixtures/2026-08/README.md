@@ -120,7 +120,9 @@ TTL/`expires_at` без реального ожидания).
 
 Два дополнительных взаимоисключающих шага также принадлежат driver-у, а не MCP-проводу:
 `tool_result` подаёт закрытый `{tool, content, is_error}`, `task_message` — закрытый
-`{task_id, channel, status, message}`. Они могут следовать за начальным состоянием из
+`{task_id, operation?, channel, status, message}`. `operation` называет raw request type
+driver-а; допустимые для `input_required` четыре типа фиксирует task-binding observation.
+Они могут следовать за начальным состоянием из
 `given.driver_state` и тем самым различают результат/сообщение, появившееся во время
 script, от уже предзаданного. Как и у остальных шагов, `maxProperties: 1` запрещает
 объединять два стимула в один шаг.
