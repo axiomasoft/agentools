@@ -78,3 +78,27 @@ F6 закрывается при дизайне новой D-записью, sup
 source-item, а P3.23 потребляет все три результата; условия `N≥3 независимых items` и «длинная
 автономная цепочка с внешним состоянием» не выполняются. Все четыре items идут solo по
 `task:plan-run`, `implementation/high`, `Review=full`.
+
+## 7. Reconcile эскалации P3.22 — post-A3 coverage
+
+Первая попытка P3.22 закономерно остановилась: item добавляет testable MUST `CFH-55`, но его
+`Files` не включали производный `rules.json`, а полный `spec_lint` требует carrier, принадлежащий
+уже реопененной P4. Простое расширение P3.22 fixture-путями нарушило бы phase-first; `Not
+testable`, SHOULD или ссылка на существующий harness-case скрыли бы отсутствие различающего
+числового предиката. `RAG:— (repo-grounded: P3.22 escalation; tools/spec_lint.py output on
+2026-08-04: sole error `CFH-55 не имеет покрывающего вектора`)`.
+
+Решение D149 разводит доказательство по его естественным владельцам:
+
+- P3.22 — нормативный текст, глоссарий и детерминированный `rules.json`;
+- P3.23 — authoring A2, где отдельные selftests зелёные, а exact-set разбор полного линтера
+  доказывает его единственную ошибку `[CFH-55]` и адрес `P4.12`; никакой full-coverage PASS не
+  заявляется;
+- P4.12 — test-only поле `mcp_errors` в `harness-case`, exact-code positive и wrong-code
+  negative, одинаковые во всём кроме одного числа; P4.13 требует полный green;
+- P6.6 — исполнение пары самотестом раннера и отдельный wrong-code mutant.
+
+Это один coupling-hotspot `source rule → vector contract → runtime consumer`: интеграционная
+валидация стоит на P3.23, P4.13 и P6.6, а красный сигнал не ослабляется ни на одной ступени.
+`RAG:— (repo-grounded: plan.md D149; phases/P3.md P3.22/P3.23; phases/P4.md P4.12/P4.13;
+phases/P6.md P6.6)`.

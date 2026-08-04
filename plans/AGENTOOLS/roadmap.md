@@ -1,6 +1,6 @@
 # Roadmap исполнения — AGENTOOLS
 
-**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.21.0 · **Следующий исполнимый участок:** аудит P3, затем solo P4.9. Brain — SSOT; эта копия синхронизирована для работы из репозитория.
+**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.23.0 · **Следующий исполнимый участок:** возобновить P3.22, затем P3.23/close/audit P3. Brain — SSOT; эта копия синхронизирована для работы из репозитория.
 
 Карта отвечает на «какую команду дальше?» без разбора всего плана. Она **не переопределяет**
 `plan.md` §3 Routing (модели и effort — оттуда), а только группирует запуски и называет гейты
@@ -24,7 +24,7 @@ bookkeeping + handoff), батч закрытия не сливает. (2) `solo
 P3 гейтится P1, P4 гейтится P3, P5 гейтится P3+P4; P6–P11 — GREEN P5.1, baseline P5.3 и freeze P5.2.
 **Remediation-order после Gate B round 1 и RED-аудита P3 (D141–D148):** P3.16 → owner-gates
 P3.17/P3.18 → P3.19/A2 → RED-аудит → P3.20 → P3.21 → P3.22 → P3.23/A2 → close/audit P3 →
-P4.9 → workflow W2 (P4.10/P4.11/P4.12) → P4.13/A3 → close P4 → P5.1 round 2. Старый W1 и
+P4.9 → workflow W2 (P4.10/P4.11/P4.12, включая CFH-55 carrier D149) → P4.13/A3 → close P4 → P5.1 round 2. Старый W1 и
 P4.1–P4.8 терминальны и повторно не запускаются.
 
 ---
@@ -54,8 +54,8 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | P3.19 | solo | `plan-run` | implementation/high | — | терминальный повтор A2 после трёх remediation-items; запускается последним в реопененной P3 |
 | P3.20 | solo | `plan-run` | implementation/high | — | чинит пересечение `oneOf` в `ResultType`/`StatusChannel`/`TaskStatus` и вводит общий schema-values selftest |
 | P3.21 | solo | `plan-run` | implementation/high | — | синхронизирует lifecycle markdown с `EventKind`; solo из-за общего `tools/spec_lint.py` с P3.20 |
-| P3.22 | solo | `plan-run` | implementation/high | — | `CFH-55` для фактических кодов MCP + шесть точных глоссарных определений `OVR-25` |
-| P3.23 | solo | `plan-run` | implementation/high | — | terminal A2 после RED-аудита: производные + schema-values negative/positive evidence F1–F5 |
+| P3.22 | solo | `plan-run` | implementation/high | — | source + `rules.json`: `CFH-55`, шесть терминов OVR-25, exact gap `[CFH-55 → P4.12]`; fixtures не трогает |
+| P3.23 | solo | `plan-run` | implementation/high | — | terminal authoring A2: schema-values evidence F1–F5 + честный coverage debt D149, без full-coverage claim |
 | P4.1 | — | — | — | — | **закрыт**; формат корпуса уже заморожен |
 | P4.6 | — | — | — | — | **закрыт**; must-ignore калиброван фактом |
 | P4.2 | — | — | — | — | **закрыт**; повторный запуск W1 не должен перезаписывать его артефакты |
@@ -67,7 +67,7 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | P4.9 | solo | `plan-run` | implementation/high | — | общий driver-state input W2; после terminal P3.23 и повторного close/audit P3 |
 | P4.10 | W2 | workflow | implementation/high | — | F1/F2/F4 behavior carriers; scope независим от scenario/static после P4.9 |
 | P4.11 | W2 | workflow | implementation/high | — | F5 scenario carriers; отдельные ids/files |
-| P4.12 | W2 | workflow | implementation/high | — | F3/F6/F8 static/checker; потребляет owner outcomes P3.17/P3.18 |
+| P4.12 | W2 | workflow | implementation/high | — | F3/F6/F8 static/checker + CFH-55 test-only `mcp_errors` schema и distinguishing harness pair; потребляет P3.23 |
 | P4.13 | solo | `plan-run` | implementation/high | — | terminal A3 + evidence-map 32/116; после W2, перед Gate B round 2 |
 | P5.1 | solo | `plan-run` | frontier/xhigh | — | адверсариальный гейт волны: вердикт обязан быть ОДНИМ и когерентным (D59/D61). **Команда — НЕ `task:plan-audit`**: её субъект — фазы плана, а здесь — артефакты ревизии |
 | P5.3 | solo | `plan-run` | frontier/high | ✅ **Q-30, Q-31** | package-quality baseline и reconciliation identity/authority. Выполняется после GREEN P5.1 и ДО freeze; без ответа владельца — `🔴 Blocked` |
@@ -76,7 +76,7 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | P6.1 | solo | `plan-run` | implementation/high | — | раннер — предмет, от которого зависят все восемь остальных items фазы; инвариант матчера и различение «отказ SUT ↔ отказ раннера» |
 | P6.2 | solo | `plan-run` | implementation/high | — | эталонный адаптер, ядро действия: исполняемое прочтение замороженной семантики `01`–`05`/`09`; расхождение с вектором разбирается тремя гипотезами, а не подгоняется |
 | P6.3 | solo | `plan-run` | implementation/high | — | вторая половина эталона (`06`–`08`, `10`) + приземление Q-7; отдельная сессия — другой предмет и другой набор отрицательных прогонов |
-| P6.4, P6.5, P6.6 | B7 | `plan-run` серия | implementation/high | — | три механики ОДНОГО модуля `conformance/src/**` с общим прогоном тестов: severity/baseline → golden (несёт `--out`-независимый предмет и Q-16) → самотест harness. Батчуемы по критерию D122: предмет батча — ВНУТРЕННИЙ модуль раннера, и терминальный гейт-item фазы (P6.9: зелёный прогон + прогон мутанта + отчёт по уровням) машинно перепроверяет ВЕСЬ его предмет до закрытия фазы. `Review=full` при этом не подавляется — глубина ревью наследуется батчем целиком (§9, инвариант D6) |
+| P6.4, P6.5, P6.6 | B7 | `plan-run` серия | implementation/high | — | три механики одного модуля: severity/baseline → golden → harness-selftest; P6.6 исполняет CFH-55 exact/wrong-code pair D149. Батч легален по D122, терминальный P6.9 перепроверяет весь предмет; `Review=full` не подавляется. |
 | P6.7 | solo | `plan-run` | implementation/high | ✅ **исход `DR-02` §6 (Q-12)** | исполняет ФАКТИЧЕСКИЙ исход owner-gate тремя ветками (D68); ветка (B) обязывает item встать `🔴` — сессия обязана быть отдельной, чтобы блок не утащил соседей |
 | P6.8 | solo | `plan-run` | implementation/high | — | lockstep при НУЛЕ существующих SDK доказывается отрицательными прогонами на фикстурах; здесь же фиксируется форма объявления ревизии, которую читают P7.1 и P8.1 (D81/D89) |
 | P6.9 | solo | `plan-run` | implementation/high | — | гейт-item фазы: пара прогонов (зелёный + мутант) + отчёт по уровням с обязательным `--out` (D118); запускается ПОСЛЕДНИМ |
