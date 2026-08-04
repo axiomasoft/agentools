@@ -28,3 +28,27 @@ P9/P10: они запрещают прямое копирование терми
 сохранить единственные точки авторизации, каталога и provider access каждого контура. Эта
 совместимость не исправляет красные находки самого корпуса P5.1: адаптер нельзя проверять
 вектором, стартовое состояние которого не выражает provenance, principal, baggage или исход tool.
+
+## Раунд 2 — 2026-08-04
+
+Сверка повторена по текущим живым байтам. Якоря: Axioma/ERP SDK
+`43500e83b7456c014ee25cdb2a4a40b9a53bded2`; CoreX
+`7545ef41caa4d2e39138363ed6c3cf43cbb1376b`; Flex
+`80182e8f1a30b848c35805ed08a7a206adc17bf7`; vault с tracked-копиями ADR-020 и
+blueprints B-13/B-16 `55edccecbc612493e80a8d073f713c6cfe6ad8b1` (последний коммит выбранных
+Flex-blueprints `88109c9da3e6e0c2786ffe17f8b5a54fb5185ad8`). Выбранные Axioma/vault-файлы
+не имеют working-tree diff. Копии B-13/B-16 в репозитории Flex untracked, но побайтно совпадают
+с tracked vault-каноном; источником истины для этой строки считается vault.
+
+| Контур и живой канон | Правила ревизии | Вердикт раунда 2 | Наблюдение |
+|:--|:--|:--|:--|
+| Axioma — ADR-004 `AI via MCP Only` | EXT-1…EXT-17, SEC-1…SEC-6 | совместимо | MCP остаётся единственным AI-каналом; прямой DB/provider bypass не появился. |
+| Axioma — ADR-005 `Finance Immutability` | TLP-10…TLP-16, CNF-1…CNF-41 | совместимо | Finance posting по-прежнему запрещён, draft не повышается до write/irreversible; это более строгая policy контура. |
+| Axioma — ADR-010 `AI Write Tiers` | OVR-18…OVR-23, AOB-14…AOB-24 | нужен адаптер | Tier остаётся контурной политикой и отображается в `side_effect`, не становится вторым carrier. |
+| Axioma — ADR-012 + `axioma_mcp`/`axioma_assistant` | CLR-1…CLR-21, LOP-1…LOP-27, SEC-7…SEC-19 | нужен адаптер | Text/voice pipeline совместим; principal/provenance/task inputs должны быть типизированы адаптером, а не выведены из текста. |
+| CoreX — ADR-020 `AiGateway` | AOB-1…AOB-31, SEC-1…SEC-19 | нужен адаптер | Единственный gateway, PII mask и budget/ledger сохраняются; AgenTools не открывает второй provider path. |
+| Flex — B-13 CRM и B-16 satellite contracts | TLP-9…TLP-17, CNF-3…CNF-36, SEC-13…SEC-19 | нужен адаптер | ToolRegistry, user×agent intersection, повторная execute-проверка, Reverb delivery и HITL совместимы; stake/HITL проецируются без второго носителя согласия. |
+
+Контрактных конфликтов по-прежнему нет. Round-2 RED относится к различающей силе fixtures и
+checker subjects, а не к ADR контуров: перечисленные адаптеры не могут исправить self-asserted
+stimulus внутри замораживаемого conformance-корпуса.

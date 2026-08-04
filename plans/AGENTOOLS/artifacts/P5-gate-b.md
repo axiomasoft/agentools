@@ -584,3 +584,278 @@ PLAUSIBLE-гипотез после опровержения не публику
 ВХОД: plans/AGENTOOLS/artifacts/P5-gate-b.md и findings/P5-adr-contours.md; прочитать F1–F8 и полную матрицу ПЕРВЫМИ
 СКОУП: 1) P4.1 — расширить формальный driver state для provenance/principal/auth/baggage/journal/effect/tool-result/task-channel 2) P4.5/P4.7/P4.8 — заменить 32 негодных носителя различающими позитивно-негативными кейсами, исправить шесть static checker branches и повторить coverage/fixtures gates 3) P3.11/P3.12 — только если отдельный SEC-3 error code невыразим текущей таблицей 4) P3 + владелец — честная механика миграции 32/35 domain/vendor carriers и измеримый verdict Q-27 5) после зелёной remediation повторить task:plan-run AGENTOOLS P5.1 новым заходом
 НЕ ТРОГАТЬ: DR-01/DR-02; frozen-history 2026-07-draft; живые ADR Flex/Axioma; P6–P11; freeze/tag/contracts P5.2 до GREEN
+## Раунд 2 — 2026-08-04
+
+**Вердикт: RED**
+
+Предметный якорь P4.13: `2ffff1cc17d1f3a2f6f5bdd2526e0fdfb6f99b32`. Перепрогон
+выполнен на текущем `e232fc548d8ee52b9b33779425345e5cc412b399`; `git diff
+2ffff1c..e232fc5 -- spec/revisions/2026-08 fixtures/2026-08 tools/spec_lint.py` пуст, то есть
+последующие PHP-коммиты не меняют проверяемые байты спеки, корпуса и линтера.
+
+### Почему RED
+
+Формальная relation-aware карта P4.13 проходит: exact 27 исходных carriers, 116 round-1 FAIL
+rules и CFH-55 pair. Содержательная проверка каждой строки карты не проходит. Из 116
+ремедиированных обязательных правил 51 всё ещё не имеет годного различающего носителя; 65
+прошли. Вместе с 266 неизменёнными строками раунда 1 и новым CFH-55 текущая полная матрица
+даёт 332 PASS и 51 FAIL из 383 тестируемых MUST/MUST NOT.
+
+Преобладающий дефект — не отсутствие input-diff, а подмена причины исхода самоутверждённым
+полем: `write_back_upcast`, `source_of_truth`, `hash_input_includes_prev_hash`, `chain_valid`,
+`reject_passing_entries`, `grease_allowed` или диагностическим payload, который SUT может
+напечатать без требуемого поведения. Корректная реализация, не читающая эти ненормированные
+флаги, провалит корпус; мутант, ветвящийся по ним, пройдёт. Это blocker по прямой таксономии
+Gate B: freeze закрепил бы неверный conformance-контракт.
+
+### Линза 1 — спека ↔ решения
+
+Повторная сверка DR-01 §A–§L и DR-02 против 12 документов не нашла нового противоречия в
+нормативном тексте. D142/D147/D149/D159 выражены: отдельный SEC-3 code существует, открытые
+enum fail-closed, CFH-55 добавлен, pair relation формализован. Именно граница D159 остаётся
+существенной: relation доказывает реальный JSON-diff, но не доказывает, что pointer является
+нормативным stimulus правила. Решения не дают права считать self-asserted payload поведением.
+
+### Линза 2 — спека ↔ ADR контуров
+
+Живые каноны перечитаны на текущих якорях: Axioma `43500e83`, CoreX `7545ef41`, Flex
+`80182e8f`, tracked vault-копии ADR-020/B-13/B-16 — `55edccec` (последний коммит выбранных
+blueprints `88109c9d`). Контрактных конфликтов не найдено. MCP-only, Finance immutability,
+Tier/side-effect, AiGateway, ToolRegistry, user×agent permissions, Reverb delivery и HITL
+требуют адаптеров, но не нового поля провода. Датированная таблица раунда 2 дописана в
+`findings/P5-adr-contours.md`.
+
+### Линза 3 — правила ↔ векторы содержательно
+
+Полная текущая энумерация задана без переписывания истории: 266 строк раунда 1, не входящих в
+`gate-b-remediation.json.round1_fail_rules`, сохраняют свои carrier/predicate/PASS; таблица ниже
+заменяет все 116 remediated-строк и добавляет CFH-55. Поэтому правило чтения матрицы
+однозначно: delta-строка раунда 2 имеет приоритет, отсутствие delta означает неизменённый PASS
+раунда 1. Ни один MUST/MUST NOT не выбран выборкой.
+
+| Маркер | Текущий carrier | Заявленный различающий признак | Аудит раунда 2 |
+|:--|:--|:--|:--|
+| OVR-14 | ovrdev-001, ovrdev-002 | artifact `rule_deviation_note`; accept ↔ reject:фразу-обоснование | PASS |
+| EXT-1 | extidentity-001 | artifact `extension_identity`; accept | PASS |
+| EXT-2 | extidentity-001 | artifact `extension_identity`; accept | PASS |
+| EXT-3 | extidentity-001 | artifact `extension_identity`; accept | PASS |
+| EXT-4 | extidentity-001 | artifact `extension_identity`; accept | PASS |
+| EXT-5 | extidentity-001 | artifact `extension_identity`; accept | PASS |
+| EXT-6 | extidentity-001, extidentity-002 | artifact `extension_identity`; accept ↔ reject:identity расширения | PASS |
+| EXT-8 | extidentity-001 | artifact `extension_identity`; accept | PASS |
+| EXT-9 | extidentity-001 | artifact `extension_identity`; accept | PASS |
+| EXT-11 | extnegotiation-001 | artifact `extension_negotiation`; accept | PASS |
+| EXT-12 | extnegotiation-001 | artifact `extension_negotiation`; accept | PASS |
+| EXT-13 | extnegotiation-001 | artifact `extension_negotiation`; accept | PASS |
+| EXT-14 | extnegotiation-001, extnegotiation-002 | artifact `extension_negotiation`; accept ↔ reject:negotiation расширения | PASS |
+| EXT-15 | extnegotiation-001 | artifact `extension_negotiation`; accept | PASS |
+| EXT-16 | extnegotiation-001 | artifact `extension_negotiation`; accept | PASS |
+| EXT-17 | extnegotiation-001 | artifact `extension_negotiation`; accept | PASS |
+| TLP-1 | toolcontract-001 | artifact `tool_contract_case`; accept | PASS |
+| TLP-2 | toolcontract-001, toolcontract-002, tooldescription-001, tooldescription-002 | artifact `tool_contract_case,tool_description`; accept ↔ reject:actionable contract ↔ accept ↔ reject:actionable contract | PASS |
+| TLP-5 | toolcontract-003, toolcontract-004 | artifact `tool_result_case`; accept ↔ reject:structured result | PASS |
+| TLP-6 | toolcontract-001 | artifact `tool_contract_case`; accept | PASS |
+| TLP-7 | toolcontract-001 | artifact `tool_contract_case`; accept | FAIL F9 |
+| TLP-9 | toolcontract-001 | artifact `tool_contract_case`; accept | PASS |
+| TLP-10 | toolcontract-001 | artifact `tool_contract_case`; accept | PASS |
+| TLP-11 | confpolicy-001 ↔ confpolicy-101 | value `/given/tools/0/_meta/dev.agentools~1action/confirmation`; failed/action_failed → failed/action_failed | FAIL F9 |
+| TLP-12 | toolcontract-001 | artifact `tool_contract_case`; accept | FAIL F9 |
+| TLP-17 | tooldigest-001, tooldigest-002 | artifact `descriptor_digest_case`; accept ↔ reject:пяти членов | PASS |
+| TLP-18 | tooldigest-001 | artifact `descriptor_digest_case`; accept | PASS |
+| TLP-19 | tooldigest-001 | artifact `descriptor_digest_case`; accept | PASS |
+| TLP-20 | tooldigest-001 | artifact `descriptor_digest_case`; accept | PASS |
+| TLP-21 | tooldigest-001 | artifact `descriptor_digest_case`; accept | PASS |
+| TLP-22 | tooldigest-001 | artifact `descriptor_digest_case`; accept | PASS |
+| TLP-23 | tooldigest-001 | artifact `descriptor_digest_case`; accept | PASS |
+| TLP-25 | profileuntrusted-001 ↔ profileuntrusted-101 | value `/given/driver_state/provenance/0/content_origin`; completed/confirmation_resolved,action_completed → completed/confirmation_resolved,action_completed | FAIL F9 |
+| TLP-26 | toolauthoring-001, toolauthoring-002 | artifact `authoring_schema_profile`; accept ↔ reject:authoring schema profile | FAIL F10 |
+| TLP-27 | toolauthoring-001 | artifact `authoring_schema_profile`; accept | FAIL F10 |
+| TLP-28 | toolauthoring-001 | artifact `authoring_schema_profile`; accept | FAIL F10 |
+| TLP-30 | toolauthoring-001 | artifact `authoring_schema_profile`; accept | FAIL F10 |
+| TLP-31 | toolauthoring-001 | artifact `authoring_schema_profile`; accept | FAIL F10 |
+| TLP-32 | toolauthoring-001 | artifact `authoring_schema_profile`; accept | FAIL F10 |
+| ALC-2 | lifecyclefold-001 ↔ lifecyclefold-101 | value `/script/1/llm_stub/toolCall/args/value`; failed/action_failed → completed/action_completed | FAIL F11 |
+| ALC-3 | lifecyclefold-002 ↔ lifecyclefold-102 | value `/script/1/llm_stub/toolCall/args/value`; failed/action_failed → completed/action_completed | FAIL F11 |
+| ALC-4 | lifecyclefold-003 ↔ lifecyclefold-103 | value `/given/driver_state/journal/0/payload/projection_source`; failed/action_failed → completed/action_completed | FAIL F11 |
+| ALC-6 | lifecyclefold-004 ↔ lifecyclefold-104 | value `/given/driver_state/journal/0/seq`; failed/action_failed → completed/action_created | PASS |
+| ALC-7 | lifecyclefold-005 ↔ lifecyclefold-105 | value `/given/driver_state/journal/0/ts`; failed/action_failed → completed/action_started | PASS |
+| ALC-14 | lifecycleindex-001, lifecycleindex-002 | artifact `lifecycle_index`; accept ↔ reject:не синхронизировано | FAIL F10 |
+| ALC-15 | lifecyclefold-006 ↔ lifecyclefold-106 | value `/given/driver_state/journal/0/kind`; failed/action_failed → completed/vendor.known | FAIL F11 |
+| ALC-16 | lifecyclefold-007 ↔ lifecyclefold-107 | value `/given/driver_state/journal/0/kind`; failed/action_failed → failed/action_failed | PASS |
+| ALC-18 | lifecyclefold-008 ↔ lifecyclefold-108 | value `/script/1/llm_stub/toolCall/args/value`; failed/action_failed → completed/action_completed | FAIL F11 |
+| ALC-19 | lifecycleconcurrency-001 ↔ lifecycleconcurrency-101 | value `/script/1/llm_stub/toolCall/args/value`; failed/action_failed → completed/effect_requested | FAIL F11 |
+| ALC-20 | lifecycleconcurrency-002 ↔ lifecycleconcurrency-102 | value `/given/driver_state/journal/1/expected_prev_seq`; failed/action_failed → completed/action_started | FAIL F11 |
+| ALC-21 | lifecycleconcurrency-003 ↔ lifecycleconcurrency-103 | value `/given/driver_state/journal/1/expected_prev_seq`; failed/action_failed → completed/action_started | PASS |
+| ALC-22 | lifecycleconcurrency-004 ↔ lifecycleconcurrency-104 | value `/given/driver_state/journal/1/expected_prev_seq`; failed/action_failed → completed/action_started | FAIL F11 |
+| ALC-23 | lifecycleconcurrency-005 ↔ lifecycleconcurrency-105 | value `/given/driver_state/journal/1/expected_prev_seq`; failed/action_failed → completed/effect_requested | FAIL F11 |
+| ALC-25 | lifecycleconcurrency-006 ↔ lifecycleconcurrency-106 | value `/given/driver_state/effects/0/effects/demo_probe:record-1/status`; completed/effect_confirmed → completed/effect_requested | PASS |
+| ALC-26 | lifecycleconcurrency-007 ↔ lifecycleconcurrency-107 | value `/given/driver_state/journal/0/payload/epoch`; failed/action_failed → completed/epoch_started | FAIL F11 |
+| ALC-27 | lifecycleconcurrency-008 ↔ lifecycleconcurrency-108 | value `/given/driver_state/journal/1/epoch`; failed/action_failed → completed/effect_requested | PASS |
+| ALC-28 | lifecycleintegrity-001 ↔ lifecycleintegrity-101 | value `/script/1/llm_stub/toolCall/meta/idempotency_key`; failed/action_failed → completed/action_completed | FAIL F11 |
+| ALC-30 | lifecycleintegrity-002 ↔ lifecycleintegrity-102 | value `/given/driver_state/journal/0/event_version`; failed/action_failed → completed/action_completed | FAIL F11 |
+| ALC-31 | lifecycleintegrity-003 ↔ lifecycleintegrity-103 | value `/given/driver_state/journal/0/payload/write_back_upcast`; failed/action_failed → completed/action_completed | FAIL F11 |
+| ALC-33 | lifecycleintegrity-004 ↔ lifecycleintegrity-104 | value `/given/driver_state/journal/0/payload/snapshot/spec_rev`; failed/action_failed → completed/action_completed | FAIL F11 |
+| ALC-34 | lifecycleintegrity-005 ↔ lifecycleintegrity-105 | value `/given/driver_state/journal/0/payload/snapshot/source_of_truth`; failed/action_failed → completed/action_completed | FAIL F11 |
+| ALC-35 | lifecycleintegrity-006 ↔ lifecycleintegrity-106 | presence `/given/driver_state/journal/0/prev_hash`; failed/action_failed → completed/action_completed | FAIL F11 |
+| ALC-36 | lifecycleintegrity-007 ↔ lifecycleintegrity-107 | value `/given/driver_state/journal/0/payload/hash_input_includes_prev_hash`; failed/action_failed → completed/action_completed | FAIL F11 |
+| ALC-37 | lifecycleintegrity-008 ↔ lifecycleintegrity-108 | value `/given/driver_state/journal/1/payload/chain_valid`; failed/action_failed → completed/action_completed | FAIL F11 |
+| CNF-3 | confpolicy-002 ↔ confpolicy-102 | value `/given/policy/rules/0/verdict`; failed/action_failed → completed/confirmation_resolved,action_completed | FAIL F12 |
+| CNF-4 | confpolicy-003 ↔ confpolicy-103 | value `/given/policy/rules/0/verdict`; failed/action_failed → completed/confirmation_resolved,action_completed | PASS |
+| CNF-5 | confpolicy-004 ↔ confpolicy-104 | value `/given/policy/rules/0/verdict`; failed/action_failed → completed/confirmation_resolved,action_completed | PASS |
+| CNF-6 | confpolicy-005 ↔ confpolicy-105 | value `/given/policy/rules/0/verdict`; failed/action_failed → completed/confirmation_resolved,action_completed | FAIL F12 |
+| CNF-8 | confpolicy-006 ↔ confpolicy-106 | value `/given/policy/rules/0/verdict`; failed/action_failed → completed/confirmation_resolved,action_completed | FAIL F12 |
+| CNF-13 | conftoken-001 ↔ conftoken-101 | value `/given/driver_state/confirmation/proposal_version`; failed/action_failed → completed/confirmation_resolved,action_completed | PASS |
+| CNF-21 | conftoken-002 ↔ conftoken-102 | value `/given/driver_state/confirmation/covered_principal_id`; failed/action_failed → completed/confirmation_resolved,action_completed | PASS |
+| CNF-23 | conftoken-003 ↔ conftoken-103 | value `/given/driver_state/confirmation/current_descriptor_digest`; failed/action_failed → completed/confirmation_resolved,action_completed | PASS |
+| CNF-33 | confdual-001 ↔ confdual-101 | value `/given/driver_state/principals/authorizer/id`; failed/action_failed → completed/confirmation_resolved,action_completed | PASS |
+| CNF-34 | confdual-002 ↔ confdual-102 | value `/given/driver_state/principals/authorizer/id`; failed/action_failed → completed/confirmation_resolved,action_completed | PASS |
+| CNF-35 | confpolicy-007 ↔ confpolicy-107 | length `/given/driver_state/authorization/permissions`; failed/action_failed → completed/confirmation_resolved,action_completed | PASS |
+| CNF-36 | confpolicy-008 ↔ confpolicy-108 | length `/given/driver_state/authorization/permissions`; failed/action_failed → completed/confirmation_resolved,action_completed | PASS |
+| CNF-38 | conftoken-004 ↔ conftoken-104 | value `/given/driver_state/confirmation/commit_args_fingerprint`; failed/action_failed → completed/confirmation_resolved,action_completed | PASS |
+| CLR-2 | clarificationstate-001 ↔ clarificationstate-101 | value `/script/2/task_message/status`; running/input_recorded → completed/task_status_observed,action_completed | FAIL F12 |
+| CLR-8 | clarificationstate-002 ↔ clarificationstate-102 | value `/script/2/task_message/status`; running/input_recorded → completed/task_status_observed,action_completed | FAIL F12 |
+| SCN-9 | scenario-002, scnforward-013, scnorder-002 | artifact `behavior`; failed ↔ completed ↔ failed | PASS |
+| AOB-25 | audit-004 ↔ audit-104 | value `/given/driver_state/audit_export/mapping_version`; failed/action_failed → completed/action_completed | FAIL F13 |
+| AOB-26 | auditschema-001, auditschema-002 | artifact `audit_schema`; reject:audit_schema ↔ accept | PASS |
+| AOB-27 | audit-006 ↔ audit-106 | value `/given/driver_state/audit_export/attributes/0`; failed/action_failed → completed/action_completed | PASS |
+| AOB-28 | audit-007 ↔ audit-107 | value `/given/driver_state/audit_export/attributes/0`; failed/action_failed → completed/action_completed | PASS |
+| AOB-29 | audit-008 ↔ audit-108 | value `/given/driver_state/baggage/0/value`; failed/action_failed → completed/action_completed | FAIL F13 |
+| AOB-30 | audit-009 ↔ audit-109 | value `/given/driver_state/baggage/0/value`; failed/action_failed → completed/action_completed | FAIL F13 |
+| AOB-31 | audit-010 ↔ audit-110 | length `/given/driver_state/baggage`; failed/audit.limit_exceeded → completed/action_completed | FAIL F13 |
+| SEC-1 | security-001 ↔ security-101 | value `/given/driver_state/credentials/0/audience`; failed/action_failed → completed/action_completed | PASS |
+| SEC-2 | security-002 ↔ security-102 | value `/given/driver_state/credentials/0/integrity`; failed/action_failed → completed/action_completed | PASS |
+| SEC-3 | security-003 ↔ security-103 | value `/given/driver_state/credentials/0/audience`; failed/action_failed → completed/action_completed | PASS |
+| SEC-4 | security-004 ↔ security-104 | value `/given/driver_state/credentials/0/audience`; failed/action_failed → completed/action_completed | FAIL F14 |
+| SEC-5 | security-005 ↔ security-105 | value `/given/driver_state/credentials/0/source`; failed/action_failed → completed/action_completed | PASS |
+| SEC-6 | security-006 ↔ security-106 | value `/given/driver_state/credentials/0/kind`; failed/action_failed → completed/action_completed | PASS |
+| SEC-7 | security-007 ↔ security-107 | value `/given/driver_state/provenance/0/content_origin`; failed/action_failed → completed/action_completed | PASS |
+| SEC-8 | security-008 ↔ security-108 | value `/given/driver_state/provenance/0/content_origin`; failed/action_failed → completed/action_completed | PASS |
+| SEC-9 | security-009 ↔ security-109 | value `/given/driver_state/provenance/0/content_origin`; failed/action_failed → completed/action_completed | FAIL F14 |
+| SEC-10 | security-010 ↔ security-110 | value `/given/driver_state/provenance/0/content_origin`; failed/action_failed → completed/action_completed | FAIL F14 |
+| SEC-11 | security-011 ↔ security-111 | presence `/given/tools/0/_meta/dev.agentools~1action/confirmation`; failed/action_failed → completed/action_completed | PASS |
+| SEC-12 | security-012 ↔ security-112 | value `/given/driver_state/provenance/0/content_origin`; failed/action_failed → completed/action_completed | FAIL F14 |
+| SEC-13 | security-013 ↔ security-113 | value `/given/driver_state/principals/agent/id`; failed/action_failed → completed/action_completed | FAIL F14 |
+| SEC-14 | security-014 ↔ security-114 | value `/given/driver_state/principals/agent/id`; failed/action_failed → completed/action_completed | FAIL F14 |
+| SEC-15 | security-015 ↔ security-115 | value `/given/driver_state/principals/initiator/id`; failed/action_failed → completed/action_completed | FAIL F14 |
+| SEC-16 | security-016 ↔ security-116 | value `/given/driver_state/authorization/resource`; failed/action_failed → completed/action_completed | FAIL F14 |
+| SEC-17 | securityauthoring-001, securityauthoring-002 | artifact `security_authoring`; reject:security_authoring ↔ accept | PASS |
+| SEC-18 | security-018 ↔ security-118 | value `/given/driver_state/confirmation/token_id`; failed/action_failed → completed/action_completed | FAIL F14 |
+| SEC-19 | security-019 ↔ security-119 | length `/given/driver_state/authorization/permissions`; failed/action_failed → completed/action_completed | PASS |
+| CFH-22 | cfhbaseline-001 | artifact `known_failures`; accept | PASS |
+| CFH-23 | cfhbaseline-001 | artifact `known_failures`; accept | PASS |
+| CFH-24 | cfhbaseline-001 | artifact `known_failures`; accept | FAIL F15 |
+| CFH-25 | cfhbaseline-001, cfhbaseline-002 | artifact `known_failures`; accept ↔ reject:issue-link | PASS |
+| CFH-26 | cfhbaseline-001 | artifact `known_failures`; accept | FAIL F15 |
+| CFH-50 | cfhgrease-001, cfhgrease-002 | artifact `grease_registration`; accept ↔ reject:три неизвестных | PASS |
+| CFH-51 | cfhgrease-001 | artifact `grease_registration`; accept | FAIL F15 |
+| CFH-52 | cfhreport-001, cfhreport-002 | artifact `conformance_report`; accept ↔ reject:per-vector records | PASS |
+| CFH-53 | cfhreport-001 | artifact `conformance_report`; accept | FAIL F15 |
+| CFH-54 | cfhreport-001 | artifact `conformance_report`; accept | PASS |
+| CFH-55 | hmcpcode-001 ↔ hmcpcodebad-001 | exact `mcp_errors`: `-32003/-32004` ↔ `-32002/-32004`; conformant ↔ violation CFH-55 | PASS |
+
+Все пять SHOULD (`TLP-3`, `TLP-4`, `TLP-8`, `TLP-15`, `TLP-16`) проверены целиком, а не
+выборкой. Они по-прежнему намеренно не входят в mandatory coverage и дают пять warnings; новой
+обязанности, способной закрыть перечисленные FAIL, в них нет.
+
+### Линза 4 — фазы плана между собой
+
+Контракт-блоки P1–P10 и Required Reads по-прежнему имеют производителей и существующие пути;
+Routing P5.1 = `frontier/xhigh`, `manual`. Но фактическая последовательность и Status Board
+разошлись: при P5 `Blocked/In progress`, P6 `Not started` и P7 `0/12 Not started` в текущей ветке
+уже лежат одиннадцать PHP item-коммитов P7.1–P7.10 (`b11cf41`…`e232fc5`). Это не правилось
+аудитом, но названо F16: status-driven resume теперь способен повторно выполнить уже
+закоммиченный scope, а реализация строится против не прошедшего freeze контракта.
+
+Общий свип `open-questions.md` выявил F17: Q-28 остаётся `Decision pending`, владелец — закрытая
+P4, хотя текст уже принял boundary «scenario cancellation не нормируется». Перед freeze реестр
+должен либо зафиксировать этот принятый исход, либо получить явное owner decision; текущая
+строка не имеет исполнимого будущего адресата.
+
+### Линза 5 — no-op, дыры и anti-regression
+
+Семь исторических anti-regression классов формально закрыты: один носитель enum, prose↔schema,
+ровно один level, двунаправленный coverage, description без нормы, offline refs и неизменяемое
+имя каталога. Семантическая часть anti-regression №4 остаётся красной: 383/383 ссылки есть, но
+51 sole-carrier rule не может отличить корректную реализацию от мутанта.
+
+Перепрогон гейтов на текущем дереве:
+
+| Гейт | Наблюдение | Итог |
+|:--|:--|:--|
+| A0 | vendor SHA-256 `bd19a7a9…d234` совпадает с PIN; один `ГЕЙТ A0: PASS` | PASS |
+| A1 | один `ГЕЙТ A1: PASS`; p01…p10 присутствуют; Q-9 не pending | PASS |
+| A2 | full spec lint OK с 5 SHOULD warnings; rules_index 400; close_schema 15; legacy OK | PASS формального гейта |
+| A3 | coverage 383/383; fixtures OK; Gate-B remediation exact 27/116 + mutation rejects + CFH-55 | PASS формального гейта, SEMANTIC RED |
+
+Q-16 детектирован: CFH-38…CFH-44 и `golden_case` выражают fixed input → expected bytes, а D98
+разрешает извлекать остальные три anchors командой из PHP test data. Структурного blocker до
+freeze нет; вопрос честно остаётся Exploration до реализации P6.5.
+
+### Линза 6 — лексика, термины и цена домена
+
+Legacy-check чист; возврата legacy-эры или конфликтующего глоссария не найдено. Round-1 F7
+закрыт решениями D144 и P3.17: владелец подтвердил `agentools.dev`, а цена больше не заявлена как
+два файла — inventory стабильно даёт 32 domain files и 35 domain+vendor files. Это измеренная
+цена принятого namespace, не текущий blocker.
+
+## Находки раунда 2
+
+| ID | Линза | Severity | Файл:строка | failure_scenario | Адресат |
+|:--|:--:|:--|:--|:--|:--|
+| F9 | 3 | blocker | `02_tool-contract-profile.md` TLP-7/TLP-11/TLP-12/TLP-25; `toolcontract-001`; `confpolicy-001/101`; `profileuntrusted-001/101` | Корректная реализация игнорирует `confirmation` как источник класса эффекта и реально изолирует untrusted route, но пары требуют разного self-reported payload; реализация без изоляции, печатающая `execution_route=isolated`, проходит. Уникальность имён и закрытость action-block не проверяются. | P4 carrier/checker; owner после лимита раундов |
+| F10 | 3 | blocker | `tools/spec_lint.py:1806-1821`; `toolauthoring-001`; `lifecycleindex-001` | Published schema с `unevaluatedProperties:false`, голым open-enum, tuple либо exponent проходит `authoring_schema_profile`, потому что branch смотрит только `additionalProperties`; кандидат, вписанный в self-provided `matrix_rows`, проходит без сверки реальной transition table. | P4 checker/artifact carriers |
+| F11 | 3 | blocker | `lifecyclefold-*`, `lifecycleconcurrency-*`, `lifecycleintegrity-*`; ALC-2/3/4/15/18/19/20/22/23/26/28/30/31/33–37 | Корректный reducer не читает ненормированные `projection_source`, `write_back_upcast`, `source_of_truth`, `hash_input_includes_prev_hash`, `chain_valid`; поэтому он не выдаёт предписанный fixture failure. Мутант, ветвящийся только по этим payload flags/строкам `deterministic`, проходит. | P4 behavior carriers/driver contract |
+| F12 | 3 | blocker | `confpolicy-002..006/102..106`; `clarificationstate-001/101/002/102` | Реализация, clamping `allow` к обязательному irreversible-gate, соответствует CNF-6, но vector требует отказ; CNF-8 self-reports layer ownership без input о mechanics. CLR-2/CLR-8 меняют task status, не opaque MRTR state и не запрещённую пятую точку `input_required`. | P4 behavior carriers |
+| F13 | 3 | blocker | `audit-004/104`, `audit-008/108`, `audit-009/109`, `audit-010/110`; AOB-25/AOB-29/AOB-30/AOB-31 | Implementation получает raw `tenant:acme` без формального opaque/PII classifier и не может вывести fixture verdict; mapping_version не имеет declared current value, а AOB-31 проверяет 64/65 items, но не обязательный 8192-byte boundary. | P4 driver contract + behavior carriers |
+| F14 | 3 | blocker | `security-004/104`, `009/109`, `010/110`, `012/112`, `013..016`, `018`; SEC-4/9/10/12–16/18 | SEC-4 pair считает downstream-audience token запрещённым, а runtime-audience допустимым без моделирования downstream credential; SEC-9 provenance указывает `args.derived_value`, которого нет в tool args; остальные пары выводят carrier/type из магических строк `runtime-daemon`, `session:*`, `audit-record-*` либо не наблюдают required actor/payload. Корректная typed implementation провалит ожидания. | P4 behavior carriers/typed driver inputs |
+| F15 | 3 | blocker | `tools/spec_lint.py:1701-1757,1824-1831`; `cfhbaseline-001`; `cfhgrease-001`; `cfhreport-001`; CFH-24/26/51/53 | Runner с healed baseline entry и ни разу не запущенным GREASE проходит artifact checker: он доверяет booleans `reject_passing_entries`/`grease_allowed` и видит регистрацию, не every-run обеими реализациями. Report без явного перечня failed L3 также принят. | P4 harness/artifact carriers; P6 boundary |
+| F16 | 4 | major | git `b11cf41..e232fc5`; `plan.md` Status Board; `phases/P7.md:144-153` | Новый executor читает P7 как 0/12 Not started и повторяет/перетирает scope, хотя одиннадцать P7-коммитов уже в ветке; одновременно код пинится к contract до GREEN/freeze. | owner + P7 bookkeeping; код этим аудитом не трогать |
+| F17 | 4/5 | major | `open-questions.md:36` Q-28; `07_long-operations.md` LOP-26 | Freeze может пройти с `Decision pending`, владельцем которого остаётся уже terminal P4: реестр не различает «boundary принят» и «решение ещё нужно», поэтому обязательство не имеет исполнимого адресата. | owner; при смене boundary — P3 новой ревизией |
+
+Факты опровержения: F9–F15 подтверждены прямым сравнением нормативной строки, pair JSON и
+реального checker branch, а не отсутствием runtime; F16 — commit graph + текущими Status Board и
+Phase Status; F17 — дословной строкой реестра и уже существующим boundary LOP-26. PLAUSIBLE-
+гипотез после опровержения не публикуется.
+
+### Вменённая детекция — раунд 2
+
+- Q-16: детекция исполнена — механизм умеет fixed input → expected bytes; три некорпусных
+  anchors остаются за командным извлечением P6.5/D98. В текущем реестре это единственная строка,
+  чей текст содержит `P5.1`.
+- Общий свип незакрытых вопросов исполнен; Q-28 опубликован отдельной major-находкой F17.
+
+## что НЕ проверялось — раунд 2
+
+- Behavior/harness по-прежнему не исполнялись общим conformance runner: фаза P6 по плану не
+  начата. Проверена выводимость oracle из формального input и способность carrier убить мутант.
+- PHP-код коммитов P7.1–P7.10 не ревьюился и не тестировался: он вне Files/Scope P5.1; проверен
+  только факт его существования и расхождение со статусом.
+- Юридические owner-гейты Q-10/Q-30/Q-31 не решались.
+- MAY-правила не аудировались; SHOULD проверены все пять.
+- Чужие runtime-кодовые базы не запускались; линза 2 читала живые canons read-only.
+
+## Перепрогнанные команды и наблюдаемые числа — раунд 2
+
+| Команда | Наблюдение |
+|:--|:--|
+| `python3 tools/spec_lint.py --gate-b-remediation-check fixtures/2026-08` | OK; exact 27 carriers / 116 rules; 6 F-mutations + relation mutations + CFH-55 reject |
+| `python3 tools/spec_lint.py --fixtures-check fixtures/2026-08` | OK |
+| `python3 tools/spec_lint.py spec/revisions/2026-08` | OK; 5 SHOULD warnings |
+| `python3 tools/spec_lint.py spec/revisions/2026-08 --coverage --check` | OK; MUST/MUST NOT 383/383 |
+| `python3 tools/spec_lint.py --legacy-check spec/revisions/2026-08` | OK |
+| `python3 tools/rules_index.py --check spec/revisions/2026-08` | OK; 400 rules |
+| `python3 tools/close_schema.py --check spec/revisions/2026-08` | OK; 15 schemas |
+| corpus inventory | behavior 214; artifact 68; harness 13; golden registrations 10 |
+| domain inventory | 32 domain files; 35 domain+vendor files |
+
+Append-only правило раундов создаёт в целом файле два verdict literals и двенадцать заголовков
+линз; scoped-проверка блока `## Раунд 2` даёт ровно 1 verdict и 6 lenses. Это процессное
+несогласование буквальных whole-file grep из Validation с правилом «не переписывать прежний
+раунд», а не основание удалить историю.
+
+### Что запускать — раунд 2
+
+РЕЖИМ: owner gate после Gate B round 2 = RED; третий аудит запрещён лимитом раундов
+ВХОД: `artifacts/P5-gate-b.md` F9–F17, delta-матрица 116 правил, `findings/P5-adr-contours.md`
+СКОУП: владелец выбирает, переоткрывать ли P3/P4 для настоящих observational carriers и синхронизации plan truth либо менять контракт тестируемости новой ревизией; только после решения допускается новый плановый маршрут
+НЕ ТРОГАТЬ: DR-01/DR-02 и историю round 1/2; `spec/revisions/2026-07-draft`; freeze/tag P5.2; существующие PHP-коммиты P7 без отдельного owner-approved решения
