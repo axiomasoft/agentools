@@ -1,14 +1,14 @@
-# P4 — итоговый гейт A3 после observational remediation
+# P4 — итоговый гейт A3 после semantic preflight P4.20
 
 **Дата:** 2026-08-04
 
-**Якорь дерева:** item-коммит P4.19 `b29a023`. Детерминированный
+**Якорь дерева:** item-коммит P4.20 `7abfd3e`. Детерминированный
 якорь содержимого manifest: SHA-256
-`777060cdb9f028c9106ec0168a88ef846e7ebeddb44c68b2b9ca17eaf265a520`.
+`f01bb26bf16fbfdc90b13222625e82fec1b996906cdf7de5481b5ee21fd8811e`.
 
 Исторические A3 P4.13 и Gate B round 1/2 не переписываются: их факты сохранены в git и в
 `P5-gate-b.md`. Этот отчёт supersedes только утверждение прежнего A3 о достаточности
-relation-only evidence (D161/D162).
+relation/ownership-only evidence (D161/D162/D169).
 
 ## Команды гейта
 
@@ -30,12 +30,13 @@ git diff --check
 | Условие | Наблюдаемый факт | Вердикт |
 |:--|:--|:--|
 | Exact remediation | manifest v2 содержит 51 строку: 38 behavior + 13 artifact, `gaps=[]` | PASS |
-| Harness ownership | пять закрытых observation types; schema-positive/schema-invalid/self-report selftest 5/5 | PASS |
+| Harness ownership | шесть закрытых observation types; schema-positive/schema-invalid/self-report selftest 6/6 | PASS |
 | Behavior carriers | 76 schema-valid members; каждый из 38 rules имеет exact pair и harness-owned observation | PASS |
 | Artifact carriers | 13 raw negative/positive pairs; checker выводит verdict из candidate/reference/run outcomes | PASS |
+| Semantic sufficiency | 11/11 named preflight checks: confirmation mechanics, protocol operations, mapping registry, wire bytes, derivation/per-call binding, append adapter, hash composition, every-run baseline и accounting | PASS |
 | Shortcut registry | `projection_source`, `write_back_upcast`, `source_of_truth`, hash/route verdict flags, baseline booleans и magic carriers — 0 | PASS |
-| Mutation strength | 51/51 addressable self-report/raw-fact mutants отвергнуты; pure manifest mutations 51/51 отвергнуты | PASS |
-| Byte stability | write → check не меняет bytes; manifest SHA-256 `777060cd…265a520` | PASS |
+| Mutation strength | 51/51 addressable self-report/raw-fact mutants, 51/51 pure manifest mutations и 11/11 semantic preflight mutations отвергнуты | PASS |
+| Byte stability | write → check не меняет bytes; manifest SHA-256 `f01bb26b…fd8811e` | PASS |
 | Формат корпуса | `--fixtures-check` = 0 | PASS |
 | Coverage | 400 rules; 394 testable; MUST/MUST NOT 383/383; пять исторических SHOULD warnings | PASS с предупреждениями |
 | Индекс и closure | `rules_index --check`: 400; `close_schema --check`: 15 | PASS |
@@ -50,7 +51,7 @@ carriers D168; покрытие 383/383 не достигнуто ложным m
 
 ## Граница вердикта
 
-**ГЕЙТ A3: PASS.** В отличие от прежнего formal A3, этот PASS включает ownership и реальные
-mutation rejects exact 51 F9–F15. Он всё ещё не является Gate B: независимый cold-start
+**ГЕЙТ A3: PASS.** В отличие от прежнего formal A3, этот PASS включает ownership, адресные
+semantic invariants и реальные mutation rejects exact 51 F9–F15. Он всё ещё не является Gate B: независимый cold-start
 аудит P5.1 round 3 обязан заново сверить нормативную строку, raw stimulus, boundary observation
 и mutant каждого правила. Только его semantic GREEN разблокирует P5.3 и freeze/tag P5.2.
