@@ -368,7 +368,7 @@
       "normative_word": "MUST",
       "level": "L1",
       "not_testable": null,
-      "text_digest": "d6cf824445bc1cc67d1f8c24720f70190f5b8e185c83bc659eb5adffe2ddb03f"
+      "text_digest": "d472e80e09afc5be17d5e46f96d3a4bf31cb5c6a67d915eabe5b428afd3b6d35"
     },
     {
       "rule_id": "TLP-3",
@@ -2480,7 +2480,7 @@
       "normative_word": "MUST NOT",
       "level": "L1",
       "not_testable": null,
-      "text_digest": "37218864467c2a81886980b0f147bee25df0c1eb85b054486bfb561b5b05e937"
+      "text_digest": "220d16cf5cd623bfa491bfce4c6eec7ed670ec1919cdbcbfcc06f12a4560aead"
     },
     {
       "rule_id": "IDE-33",
