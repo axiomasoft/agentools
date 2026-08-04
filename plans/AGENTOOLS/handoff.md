@@ -1,27 +1,26 @@
-# HANDOFF — 2026-08-04 — after P3.19
+# HANDOFF — 2026-08-04 — after P3
 
-**Next:** /task:plan-close AGENTOOLS P3
+**Next:** /task:plan-audit AGENTOOLS P3
 
 | Параметр | Значение |
 |:--|:--|
-| Model | implementation |
-| Thinking | low — механическая сверка фазы |
+| Model | frontier |
+| Thinking | xhigh — независимая проверка закрытой фазы |
 | Context | NEW SESSION — шаг-не-item |
-| Суть | Сверить P3 по git-фактам и закрыть Phase Handoff. |
-| Команда | `/task:plan-close AGENTOOLS P3` |
+| Суть | Аудировать P3 после двух process-отклонений; затем продолжить P4.9. |
+| Команда | `/task:plan-audit AGENTOOLS P3` |
 
 **Done:**
-- P3.19 закрыт `🟢`: rules index и 15 authoring schemas повторно выведены и проверены.
-- Актуальный A2 записан в `artifacts/P3-gate-a2.md`; 399 rules, owner inventory D144 согласован.
-- PASS ограничен формой P3 snapshot и не заявляет GREEN Gate B.
+- P3 закрыта: 19/19 items `🟢`; Phase Handoff сверяет актуальный A2 snapshot.
+- `rules_index` подтверждает 399 правил, `close_schema` — 15 authoring schemas; `spec_lint` зелёный.
+- P3.19 сохраняет границу: `ГЕЙТ A2: PASS` не означает GREEN Gate B.
 
 **Remaining:**
-- Закрыть фазу P3 командой из Next.
-- Затем выполнить P4.9 и workflow W2 по `roadmap.md`.
+- Провести аудит P3; затем P4.9 и workflow W2 по `roadmap.md`.
 
 **Sources of truth:**
 - `plans/AGENTOOLS/plan.md` — D141–D145, Routing и Status Board.
-- `plans/AGENTOOLS/phases/P3.md` — P3.19 Completion Notes и актуальный статус фазы.
+- `plans/AGENTOOLS/phases/P3.md` — Phase Handoff и Completion Notes items.
 - `plans/AGENTOOLS/artifacts/P3-gate-a2.md` — воспроизводимый A2 evidence.
 
 **Open risks:**
