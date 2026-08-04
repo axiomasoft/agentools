@@ -163,6 +163,22 @@
           "description": "Действие завершено неустранимым отказом."
         },
         {
+          "const": "task_bound",
+          "description": "Действие связано с долгой задачей."
+        },
+        {
+          "const": "task_binding_lost",
+          "description": "Связь действия с долгой задачей утрачена."
+        },
+        {
+          "const": "cancellation_requested",
+          "description": "Для действия записан запрос кооперативной отмены."
+        },
+        {
+          "const": "action_cancelled",
+          "description": "Действие завершено отменой."
+        },
+        {
           "type": "string",
           "pattern": "^[a-z][a-z0-9]*\\.[a-z0-9_]+$",
           "description": "Продуктовое расширение вида события: двухуровневый префикс контура."

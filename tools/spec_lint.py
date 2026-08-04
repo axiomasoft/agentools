@@ -703,8 +703,74 @@ def check_open_enum_contracts(revision_dir, errors):
         _check_open_string_definition(schema_file, pointer, name, core_branches, fallbacks, errors)
 
 
+LIFECYCLE_EVENT_LIST_PREFIX = "**Виды событий.** "
+LIFECYCLE_EVENT_LIST_RE = re.compile(r"^`[a-z][a-z0-9_]*`(?:, `[a-z][a-z0-9_]*`)*\.$")
+
+
+def lifecycle_markdown_event_names(revision_dir, errors):
+    """Извлекает единственный канонический перечень событий из документа `03`."""
+    document = revision_dir / "03_action-lifecycle.md"
+    try:
+        lines = document.read_text(encoding="utf-8").splitlines()
+    except OSError as exc:
+        errors.append(f"{document}: канонический перечень EventKind недоступен ({exc})")
+        return None
+
+    headings = [index for index, line in enumerate(lines) if line.startswith(LIFECYCLE_EVENT_LIST_PREFIX)]
+    if len(headings) != 1:
+        errors.append(
+            f"{document}: канонический перечень EventKind должен быть ровно одной строкой '**Виды событий.**'"
+        )
+        return None
+
+    start = headings[0]
+    items = [lines[start].removeprefix(LIFECYCLE_EVENT_LIST_PREFIX)]
+    for line in lines[start + 1:]:
+        if not line.startswith("`"):
+            break
+        items.append(line)
+    items_text = " ".join(items)
+    if not LIFECYCLE_EVENT_LIST_RE.fullmatch(items_text):
+        errors.append(
+            f"{document}: канонический перечень EventKind должен быть списком backtick-имён, разделённых запятыми"
+        )
+        return None
+
+    names = re.findall(r"`([a-z][a-z0-9_]*)`", items_text)
+    if len(names) != len(set(names)):
+        errors.append(f"{document}: канонический перечень EventKind содержит повтор: {names}")
+        return None
+    return set(names)
+
+
+def event_kind_schema_names(definitions, errors):
+    """Возвращает core-имена `EventKind`; fallback намеренно не является core-значением."""
+    entries = [entry for entry in definitions if entry[2] == "EventKind"]
+    if len(entries) != 1:
+        errors.append(f"schema-values: $defs.EventKind должен быть найден ровно в одной published schema, найдено {len(entries)}")
+        return None
+    return {branch["const"] for branch in entries[0][3]}
+
+
+def check_lifecycle_event_contract(revision_dir, errors, definitions=None):
+    """Сверяет единственные носители core EventKind в обе стороны."""
+    markdown_names = lifecycle_markdown_event_names(revision_dir, errors)
+    if definitions is None:
+        definitions = list(_open_string_definitions(revision_dir, errors))
+    schema_names = event_kind_schema_names(definitions, errors)
+    if markdown_names is None or schema_names is None:
+        return
+
+    missing_in_schema = sorted(markdown_names - schema_names)
+    missing_in_markdown = sorted(schema_names - markdown_names)
+    if missing_in_schema:
+        errors.append(f"lifecycle EventKind missing_in_schema: {', '.join(missing_in_schema)}")
+    if missing_in_markdown:
+        errors.append(f"lifecycle EventKind missing_in_markdown: {', '.join(missing_in_markdown)}")
+
+
 def run_schema_values_selftest(revision_dir):
-    """Адресный positive/negative selftest P3.20 без внешних зависимостей."""
+    """Адресный positive/negative selftest P3.20/P3.21 без внешних зависимостей."""
     if not revision_dir.is_dir():
         print(f"Ошибка: {revision_dir} не является директорией", file=sys.stderr)
         return 2
@@ -725,6 +791,8 @@ def run_schema_values_selftest(revision_dir):
     if missing:
         errors.append(f"schema-values selftest: отсутствуют regression $defs: {', '.join(missing)}")
 
+    check_lifecycle_event_contract(revision_dir, errors, definitions)
+
     # Отрицательная проба должна падать именно на прежнем классе дефекта: убираем
     # not из копии fallback ResultType и ожидаем адресную диагностику oneOf.
     result_type = next((entry for entry in definitions if entry[2] == "ResultType"), None)
@@ -739,9 +807,26 @@ def run_schema_values_selftest(revision_dir):
     else:
         errors.append("schema-values selftest: не найден однозначный fallback ResultType для negative probe")
 
+    event_kind = next((entry for entry in definitions if entry[2] == "EventKind"), None)
+    if event_kind is None:
+        errors.append("schema-values selftest: не найден $defs.EventKind для negative probe")
+    else:
+        schema_file, pointer, name, core_branches, fallbacks = event_kind
+        broken_core = [branch for branch in core_branches if branch.get("const") != "task_bound"]
+        negative_errors = []
+        markdown_names = lifecycle_markdown_event_names(revision_dir, negative_errors)
+        if markdown_names is not None:
+            missing_in_schema = sorted(markdown_names - {branch["const"] for branch in broken_core})
+            if missing_in_schema:
+                negative_errors.append(
+                    f"lifecycle EventKind missing_in_schema: {', '.join(missing_in_schema)}"
+                )
+        if not any("missing_in_schema: task_bound" in error for error in negative_errors):
+            errors.append("schema-values selftest: negative EventKind probe не выявил missing_in_schema: task_bound")
+
     return report(
         errors,
-        "schema values: ResultType/StatusChannel/TaskStatus core=1, vendor=fallback, empty=rejected; negative fallback=rejected",
+        "schema values: ResultType/StatusChannel/TaskStatus/EventKind core=1, vendor=fallback, empty=rejected; lifecycle markdown=schema; negative probes=rejected",
     )
 
 
@@ -2180,6 +2265,7 @@ def main():
     if profile["enum_single_defs"]:
         check_enum_single_defs(revision_dir, profile, errors)
         check_open_enum_contracts(revision_dir, errors)
+        check_lifecycle_event_contract(revision_dir, errors)
         check_error_code_registry(revision_dir, errors)
     if profile["description_no_norm"]:
         check_description_no_norm(revision_dir, profile, errors)
