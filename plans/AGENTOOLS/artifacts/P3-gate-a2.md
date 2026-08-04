@@ -188,3 +188,26 @@ PASS относится к согласованному authoring/selftest snaps
 утверждает зелёный полный `spec_lint`: единственный coverage debt — `CFH-55 → P4.12`; P4.12
 создаёт различающую exact-code positive/negative pair, а P4.13 возвращает полный coverage в
 green. **Gate B round 1: RED.**
+
+## P3.24 — fail-closed schema-values gate после RED-аудита захода 2 (2026-08-04)
+
+**Якорь item-коммита:** `0279f59`
+(`fix(spec): fail closed open-enum gate (P3.24)`). Source-схемы и `rules.json` не менялись:
+`git diff --exit-code 86395cf..HEAD -- spec/revisions/2026-08/schema spec/revisions/2026-08/rules.json`
+→ exit 0.
+
+| Проверка | Команда | Результат | Статус |
+|:--|:--|:--|:--|
+| Полный структурный охват | inventory через `_open_string_definitions` | 12 extensible `$defs`: `AuditEventKind`, `ResultType`, `Decision`, `ErrorCode`, `ErrorCategory`, `ActorType`, `EventKind`, `SideEffect`, `Confirmation`, `StatusChannel`, `TaskStatus`, `ContentOrigin` | 🟢 |
+| Draft 2020-12 probes | `python3 tools/spec_lint.py --schema-values-selftest spec/revisions/2026-08` | Для каждого из 12 definitions: core принят, vendor принят, пустая строка отклонена; lifecycle markdown = `EventKind` schema | 🟢 |
+| Мутация `maxLength: 1` | тот же selftest, in-memory copy `ResultType` fallback | oracle: `vendor.extension` отклонён; structural gate: unknown keyword отклонён | 🟢 |
+| Мутация extra integer branch | тот же selftest, in-memory copy `ResultType` `oneOf` | oracle: integer `7` принят; structural gate: non-string branch отклонён | 🟢 |
+| Зависимость oracle fail-closed | `python3 -S tools/spec_lint.py --schema-values-selftest spec/revisions/2026-08` | exit 2, stderr содержит prerequisite `python-jsonschema`; fallback PASS отсутствует | 🟢 |
+| Обычный lint без third-party | `python3 -S tools/spec_lint.py spec/revisions/2026-08` | выполнился stdlib-only; exit 1 ровно из-за известного coverage debt `CFH-55` | 🟢 |
+| Exact-set полного lint | P3.22 exact-set Python-команда | exit 1; единственная ошибка — `MUST-правило CFH-55 не имеет покрывающего вектора` | 🟢 |
+
+## Вердикт P3.24
+
+**ГЕЙТ A2: PASS** для fail-closed authoring/selftest gate. Это не меняет source snapshot,
+не объявляет полный coverage зелёным и не снимает **Gate B round 1: RED**. `CFH-55` остаётся
+закреплён за P4.12; P3 требует штатного close и третьего независимого audit перед запуском P4.9.

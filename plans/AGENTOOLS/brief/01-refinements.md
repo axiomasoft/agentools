@@ -751,3 +751,17 @@ DoR без ложного покрытия и без переноса fixtures �
 `[CFH-55 → P4.12]`; P4.12 создаёт различающую exact/wrong-code harness-пару; P6.6 исполняет её.
 Ослабление MUST/`Not testable`, приписка id существующему кейсу и заявление полного зелёного A2
 при красном coverage отклонены.
+
+---
+
+## 2026-08-04 — второй RED-аудит P3: fail-closed schema-values gate
+
+Владелец повторно запустил `$ task:plan-design AGENTOOLS P3` из scope-payload второго блока
+`phases/P3.md` → `## Audit P3 — 2026-08-04` (заход 2). Разрешён узкий реопен по четырём шагам:
+новый item обязан сделать open-enum checker fail-closed по полному shape/keyword/ветвям и
+закрепить мутации `maxLength` и extra non-string branch настоящей Draft 2020-12 семантикой.
+
+В этом же design-заходе исправляется только бухгалтерия F2–F5: протухший launch-block roadmap,
+потерянное Known Deviation P3.21, item-хеши P3.20–P3.23 в Update Log и плавающий `HEAD`-якорь
+P3.23. Анти-скоуп аудита сохраняется: не менять нормативные source-схемы, `CFH-55`, глоссарий,
+F1–F6 первого аудита, P4/P6 fixtures, Gate B, `2026-07-draft` и owner-гейты Q-10/Q-30/Q-31.

@@ -1,29 +1,35 @@
-# HANDOFF — 2026-08-04 — after P3
+# HANDOFF — 2026-08-04 — after P3.24
 
-**Next:** `/task:plan-audit AGENTOOLS P3`
+**Next:** manual: implementation/low
 
 | Параметр | Значение |
 |:--|:--|
-| Model | frontier |
-| Thinking | xhigh — adversarial audit повторно закрытой фазы |
-| Context | NEW SESSION — шаг-не-item |
-| Суть | Независимо проверить P3 после remediation P3.20–P3.23. |
-| Команда | `/task:plan-audit AGENTOOLS P3` |
+| Model class | implementation |
+| Effort | low |
+| Capabilities | — |
+| Context | NEW SESSION — phase close |
+| Суть | Закрыть P3 после terminal P3.24; затем независимый audit P3. |
+| Команда | — |
 
-**Done:** P3 повторно закрыта: 23/23 `🟢`; P3.23 (`86395cf`) переиздал A2 evidence F1–F5,
-с зелёными authoring/selftest-ами и точным sole debt `CFH-55 → P4.12`.
+```text
+$ task:plan-close AGENTOOLS P3
+```
 
-**Remaining:** Повторно аудировать P3. Полный coverage возвращает P4.12, затем P4.13; P6.6
-исполняет runtime wrong-code mutant.
+**Done:** P3.24 закрыт item-коммитом `0279f59`. Open-enum checker теперь классифицирует полный
+`oneOf` fail-closed; `--schema-values-selftest` использует `Draft202012Validator` только
+адресно и возвращает exit 2 без `python-jsonschema`. Обе мутации (`maxLength`, integer branch)
+показывают расходящиеся semantic verdict и structural reject. Source schemas/rules не менялись.
 
-**Sources of truth:** `plans/AGENTOOLS/plan.md` D146–D149/§3/§4 ·
-`plans/AGENTOOLS/phases/P3.md` P3.23 · `plans/AGENTOOLS/artifacts/P3-gate-a2.md` P3.23 ·
-`plans/AGENTOOLS/phases/P4.md` P4.12/P4.13 · `plans/AGENTOOLS/phases/P6.md` P6.6.
+**Remaining:** Закрыть P3, затем выполнить новый `$ task:plan-audit AGENTOOLS P3`. P4.9 не
+запускать до GREEN/ATTENTION без нового реопена.
 
-**Open risks:** До P4.12 полный `spec_lint` обязан оставаться красным ровно на `CFH-55`; любой
-иной gap/error блокирует дальнейшее продвижение. Gate B round 1 остаётся RED.
-Проверка цитат: 31 накопленная неразрешимая ссылка (26 уже в перечне исключений), новых от
-закрытия P3 нет; устранение вне Scope этой фазы.
+**Sources of truth:** `plans/AGENTOOLS/phases/P3.md` P3.24 и Phase Handoff ·
+`plans/AGENTOOLS/artifacts/P3-gate-a2.md` P3.24 · `tools/spec_lint.py` ·
+`plans/AGENTOOLS/plan.md` D150–D151/§3/§4.
+
+**Open risks:** Сам selftest требует локальный `python-jsonschema`; его отсутствие намеренно
+останавливает команду с exit 2. До P4.12 полный `spec_lint` остаётся красным ровно на `CFH-55`.
+Gate B round 1 остаётся RED.
 
 **Workarounds/Deferred/Open questions:**
 
