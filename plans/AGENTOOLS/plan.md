@@ -10,7 +10,7 @@
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-03 (P3.17 closed: D144 + namespace inventory 32/35.) |
+| Last Updated | 2026-08-04 (P3.18 closed: D145 + actionable-description profile.) |
 | Repository | `~/projects/packages/agentools` (приватный, без remote) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
@@ -200,7 +200,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P0 | История: ревизия `2026-07-draft` (MCP 2025-11-25) — терминальна, не переоткрывается | 7/11 | 🟠 Done with deviations |
 | P1 | **A0** — ре-верификация финала MCP 2026-07-28 + пин коммита и `schema.json` | 3/3 | 🟢 Done |
 | P2 | **A1** — bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
-| P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 17/19 | 🟡 In progress |
+| P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 18/19 | 🟡 In progress |
 | P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 8/13 | 🟡 In progress |
 | P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 0/3 | 🔴 Blocked |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
@@ -386,10 +386,12 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | D142 | 2026-08-03 | **Нормативно-форматный hotspot закрывается двумя контрактами:** (1) P3.16 добавляет единственный код `agentools.permission.foreign_access_token`, producer `SEC-3`; (2) P4.9 вводит закрытый `given.driver_state` (principals, authorization, credentials, provenance, baggage, journal, effects, tool_results, task_channel) и script-шаги `tool_result`/`task_message`, driver-only, НЕ MCP wire. Альтернативы отклонены: reuse CNF-21 прямо нарушает отличимость SEC-3; свободный `state`/`additionalProperties:true` лишь переименовывает скрытый stub. | `10_security.md` SEC-3; `09_idempotency-errors.md` §6; `fixtures/2026-08/schema/vector.json`; Gate B F1/F2/F4; research §2–§3. `RAG:— (repo-grounded)` |
 | D143 | 2026-08-03 | **Remediation декомпозирована P3.16–P3.19 + P4.9–P4.13; W2 обязателен только для P4.10–P4.12.** P3.17 исполняет explicit owner-ветку Q-5 по inventory 32/35; P3.18 — owner-ветку Q-27 (`measurable` structural contract либо explicit `defer`); P3.19 и P4.13 — terminal gates. После P3.19+P4.9 три P4-предмета независимы и имеют deterministic Validation, поэтому критерий orchestration срабатывает; carrier `workflows/wf-agentools-p4-remediation.js`. Альтернатива «переоткрыть старые items и переписать Completion Notes» отклонена как потеря провенанса; «один mega-item F1–F8» скрывает owner-гейты и не позволяет изолировать регрессии. | `research/12-p3-p4-gate-b-remediation-2026-08.md` §§3–5; `plan-protocol` §7 criterion. `RAG:— (repo-grounded)` |
 | D144 | 2026-08-03 | **Q-5 закрыт веткой A: namespace сохраняется.** Владелец подтвердил домен `agentools.dev`; vendor-префикс остаётся `dev.agentools`, независимо от того, будет пакет закрытым или опубликованным. P3.17 не мигрирует carriers и закрепляет фактический inventory 32 domain / 35 domain+vendor файлов как регрессионный контракт. | Ответ владельца в сессии P3.17: «Вообще agentools.dev, но возможно пакет будет закрытый вообще»; возможная закрытость не меняет выбранные идентификаторы. `RAG:— (owner decision)` |
+| D145 | 2026-08-04 | **Q-27 закрыт веткой `measurable`: actionable-description имеет четыре непустых компонента в фиксированном порядке — назначение, условия вызова, обязательные аргументы и пример.** Published/authoring schema и stdlib-linter проверяют только эту структуру; эффективность конкретной малой модели остаётся отдельным измерением P10.6. Альтернативы отклонены: `defer` ослабляет прямое требование брифа; длина/NLP-скоринг выдаёт эвристику за качество модели. | Ответ владельца в сессии P3.18: `measurable`; `brief/00-brief.md` §3; `artifacts/P5-gate-b.md` F8; `research/12-p3-p4-gate-b-remediation-2026-08.md` §3. `RAG:— (owner decision + repo-grounded)` |
 
 ## 6. Update Log
 
 | Дата | Кто (role/model) | Что |
+| 2026-08-04 | plan-run/gpt-5-high | P3.18 закрыт: D145 вводит измеримый actionable-description без утверждения модельной эффективности — детали см. phases/P3.md P3.18 Completion Notes. |
 | 2026-08-03 | plan-run/gpt-5-high | P3.17 закрыт: D144 сохраняет namespace и закрепляет машинный inventory — детали см. phases/P3.md P3.17 Completion Notes. |
 | 2026-08-03 | plan-design/frontier-high | Gate B RED приземлён реопеном P3/P4: 9 remediation-items до DoR, D141–D143, research §12, workflow W2, roadmap/handoff; 0.20.0 → 0.21.0. |
 | 2026-08-03 | plan-run/gpt-5/high | P3.16 закрыт: отдельный SEC-3 permission-код и table↔enum check — детали см. phases/P3.md P3.16 Completion Notes. |

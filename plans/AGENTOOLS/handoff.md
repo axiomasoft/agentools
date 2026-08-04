@@ -1,41 +1,40 @@
-# HANDOFF — 2026-08-03 — after P3.17
+# HANDOFF — 2026-08-04 — after P3.18
 
-**Next:** ЗАПУСК ВРУЧНУЮ: frontier/high — сначала получить явный owner-выбор Q-27 (`measurable` или `defer`), затем исполнить P3.18.
+**Next:** ЗАПУСК ВРУЧНУЮ: implementation/high — исполнить повторный терминальный A2 после P3.16–P3.18.
 
 | Параметр | Значение |
 |:--|:--|
-| Model | frontier |
-| Thinking | high — owner-ветка меняет границу брифа |
+| Model | implementation |
+| Thinking | high — инвариантность производных артефактов |
 | Context | continue (/clear) — ручной item |
-| Суть | Закрыть Q-27 измеримым actionable-description либо явным defer эффективности малых моделей. |
+| Суть | Регенерировать rules.json, повторить полный гейт A2 и закрыть P3.19. |
 | Команда | — |
 
 ```text
-$ task:plan-run AGENTOOLS P3.18
+$ task:plan-run AGENTOOLS P3.19
 ```
 
 **Done:**
-- P3.17 закрыт `🟢`: owner-решение D144 сохранило `agentools.dev` и `dev.agentools`; возможная закрытость пакета namespace не меняет.
-- Q-5 переведён в `Resolved → D144`.
-- `tools/spec_lint.py` получил сортированный namespace inventory, пины 32 domain / 35 combined и selftest; item-коммит `07328d5`.
-- Inventory, selftest, schema closer и spec lint прошли.
+- P3.18 закрыт `🟢`: owner-решение D145 выбрало ветку `measurable`.
+- TLP-2 и обе tool-descriptor schemas требуют actionable-description из назначения, условий вызова, обязательных аргументов и примера.
+- Линтер сверяет published/authoring pattern и исполняет минимальную positive/negative пару; item-коммит `0075336`.
+- Q-27 переведён в `Resolved → D145`; brief refinement не выдаёт структуру за доказательство эффективности модели.
 
 **Remaining:**
-- P3.18 — owner-вердикт Q-27.
-- P3.19 — повторный терминальный A2 после P3.16–P3.18.
+- P3.19 — регенерация производных артефактов и повторный терминальный A2.
 - Затем закрытие P3 и remediation P4 по `roadmap.md`.
 
 **Sources of truth:**
-- `plans/AGENTOOLS/plan.md` — D144, Routing и Status Board.
-- `plans/AGENTOOLS/phases/P3.md` — P3.17 Completion Notes и ТЗ P3.18.
-- `plans/AGENTOOLS/open-questions.md` — Q-5/Q-27.
-- `tools/spec_lint.py` — машинный namespace inventory.
+- `plans/AGENTOOLS/plan.md` — D145, Routing и Status Board.
+- `plans/AGENTOOLS/phases/P3.md` — P3.18 Completion Notes и ТЗ P3.19.
+- `plans/AGENTOOLS/open-questions.md` — resolved Q-27.
+- `spec/revisions/2026-08/02_tool-contract-profile.md` и `tools/spec_lint.py` — actionable-description contract.
 
 **Open risks:**
-- Q-27 остаётся owner-gate: молчание не выбирает `measurable` или `defer`, поэтому P3.18 до ответа не мутирует артефакты.
-- Q-10 (trademark) остаётся отдельным owner-гейтом P5.2; D144 его не закрывает.
+- `rules.json` и повторный A2 намеренно принадлежат P3.19; до него remediation P4 не стартует.
+- Q-10/Q-30/Q-31 остаются последующими owner-gates перед freeze/release.
 
 **Workarounds/Deferred/Open questions:**
 - workarounds: —
-- deferred: —
-- open_questions: Q-27, Q-10.
+- deferred: фактическая эффективность описаний для малых моделей измеряется P10.6.
+- open_questions: Q-10, Q-30, Q-31.
