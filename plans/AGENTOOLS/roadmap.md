@@ -22,9 +22,10 @@ bookkeeping + handoff), батч закрытия не сливает. (2) `solo
 
 **Порядок фаз.** P1 и P2 независимы (D21) — P2 закрыта. Дальше строго последовательно:
 P3 гейтится P1, P4 гейтится P3, P5 гейтится P3+P4; P6–P11 — GREEN P5.1, baseline P5.3 и freeze P5.2.
-**Remediation-order после Gate B round 1 (D141–D143):** P3.16 → owner-gates P3.17/P3.18 →
-P3.19/A2 → close P3 → audit P3 → P4.9 → workflow W2 (P4.10/P4.11/P4.12) → P4.13/A3 → close P4 →
-P5.1 round 2. Старый W1 и P4.1–P4.8 терминальны и повторно не запускаются.
+**Remediation-order после Gate B round 1 и RED-аудита P3 (D141–D148):** P3.16 → owner-gates
+P3.17/P3.18 → P3.19/A2 → RED-аудит → P3.20 → P3.21 → P3.22 → P3.23/A2 → close/audit P3 →
+P4.9 → workflow W2 (P4.10/P4.11/P4.12) → P4.13/A3 → close P4 → P5.1 round 2. Старый W1 и
+P4.1–P4.8 терминальны и повторно не запускаются.
 
 ---
 
@@ -51,6 +52,10 @@ P5.1 round 2. Старый W1 и P4.1–P4.8 терминальны и повт�
 | P3.17 | solo | `plan-run` | **frontier/high** | ✅ **Q-5** | namespace inventory 32/35 + owner-ветка keep/migrate; без D# не стартует |
 | P3.18 | solo | `plan-run` | **frontier/high** | ✅ **Q-27** | measurable actionable-description либо explicit defer; без D# не стартует |
 | P3.19 | solo | `plan-run` | implementation/high | — | терминальный повтор A2 после трёх remediation-items; запускается последним в реопененной P3 |
+| P3.20 | solo | `plan-run` | implementation/high | — | чинит пересечение `oneOf` в `ResultType`/`StatusChannel`/`TaskStatus` и вводит общий schema-values selftest |
+| P3.21 | solo | `plan-run` | implementation/high | — | синхронизирует lifecycle markdown с `EventKind`; solo из-за общего `tools/spec_lint.py` с P3.20 |
+| P3.22 | solo | `plan-run` | implementation/high | — | `CFH-55` для фактических кодов MCP + шесть точных глоссарных определений `OVR-25` |
+| P3.23 | solo | `plan-run` | implementation/high | — | terminal A2 после RED-аудита: производные + schema-values negative/positive evidence F1–F5 |
 | P4.1 | — | — | — | — | **закрыт**; формат корпуса уже заморожен |
 | P4.6 | — | — | — | — | **закрыт**; must-ignore калиброван фактом |
 | P4.2 | — | — | — | — | **закрыт**; повторный запуск W1 не должен перезаписывать его артефакты |
@@ -59,7 +64,7 @@ P5.1 round 2. Старый W1 и P4.1–P4.8 терминальны и повт�
 | P4.7 | — | — | — | — | **закрыт**; старый W1 повторно не запускается |
 | P4.8 | — | — | — | — | **закрыт**; старый W1 повторно не запускается |
 | P4.5 | — | — | — | — | **закрыт исторически**; формальный A3 не равен Gate B GREEN |
-| P4.9 | solo | `plan-run` | implementation/high | — | общий driver-state input W2; после terminal P3.19 |
+| P4.9 | solo | `plan-run` | implementation/high | — | общий driver-state input W2; после terminal P3.23 и повторного close/audit P3 |
 | P4.10 | W2 | workflow | implementation/high | — | F1/F2/F4 behavior carriers; scope независим от scenario/static после P4.9 |
 | P4.11 | W2 | workflow | implementation/high | — | F5 scenario carriers; отдельные ids/files |
 | P4.12 | W2 | workflow | implementation/high | — | F3/F6/F8 static/checker; потребляет owner outcomes P3.17/P3.18 |
@@ -97,31 +102,31 @@ P5.1 round 2. Старый W1 и P4.1–P4.8 терминальны и повт�
 | P11.3 | solo | `plan-run` | implementation/high | — | clean-checkout quality gate через единственный `tools/ci_gate.py` |
 | P11.4 | solo | `plan-run` | implementation/high | ✅ публикация только по owner decision | release candidate + независимый PHP/Dart consumer smoke |
 
-**Итого:** 94 items в фазах P1–P11. Точный живой счёт статусов — только `plan.md` §4; эта карта
+**Итого:** 98 items в фазах P1–P11. Точный живой счёт статусов — только `plan.md` §4; эта карта
 фиксирует порядок. Историческая раскладка: 7 групп `Batch` (16 items) и W1 (4 items).
-Текущая remediation добавляет 6 solo-items (P3.16–P3.19, P4.9, P4.13) и workflow W2
-(P4.10–P4.12). Owner-гейты Q-5/Q-27 перенесены в P3.17/P3.18 до повторного A2.
+Текущая remediation добавляет 10 solo-items (P3.16–P3.23, P4.9, P4.13) и workflow W2
+(P4.10–P4.12). Owner-гейты Q-5/Q-27 закрыты P3.17/P3.18; второй реопен owner-гейтов не добавляет.
 
 ---
 
 ## Готовые launch-block'и групп
 
-### Gate B remediation — immediate P3.16
+### RED-аудит P3 — immediate P3.20
 
-**Next:** run-items: task:plan-run AGENTOOLS P3.16
+**Next:** run-items: task:plan-run AGENTOOLS P3.20
 
 | Параметр | Значение |
 |:--|:--|
 | Model class | implementation |
-| Effort | high — единственный public error-code dictionary |
+| Effort | high — public schema-contract и межъязыковая семантика |
 | Capabilities | — |
 | Context | same-session — item |
-| Суть | Добавить отдельный SEC-3 permission-код; затем owner-gates P3.17/P3.18 и terminal P3.19. |
-| Команда | `$ task:plan-run AGENTOOLS P3.16` |
+| Суть | Исправить три open-enum `$defs`; затем P3.21/P3.22 и terminal P3.23. |
+| Команда | `$ task:plan-run AGENTOOLS P3.20` |
 
 ### W2 — Gate B carrier remediation (P4.10–P4.12)
 
-**Next:** waiting: P3.19 и P4.9 терминальны → manual: implementation/high
+**Next:** waiting: P3.23 и P4.9 терминальны → manual: implementation/high
 
 | Параметр | Значение |
 |:--|:--|
@@ -133,7 +138,7 @@ P5.1 round 2. Старый W1 и P4.1–P4.8 терминальны и повт�
 | Команда | — |
 
 ```text
-# НЕ раньше: P3.19 и P4.9 терминальны
+# НЕ раньше: P3.23 и P4.9 терминальны
 native orchestration carrier: plans/AGENTOOLS/workflows/wf-agentools-p4-remediation.js
 ```
 
@@ -229,7 +234,7 @@ plans/AGENTOOLS/workflows/wf-agentools-p4-vectors.js
 run-items: task:plan-run AGENTOOLS P6.4-P6.6
 ```
 
-### Solo-цепочки фаз P7–P10 (38 items) и solo-items фаз P3–P6 (16)
+### Solo-цепочки фаз P7–P10 (38 items) и solo-items фаз P3–P6 (20)
 
 Общая форма; маршрут каждого item'а — из `plan.md` §3 построчно, **сессия обязана ему
 соответствовать** (`plan-run` инвертирует routing-гейт и сверяет фактический маршрут):
@@ -269,7 +274,7 @@ exec-items: task:plan-exec AGENTOOLS P7.1
   цепочек вех (`FLEX-2` item `P6.15`; `ERP-IMPL` P1 `⬜` 0/10 → критпуть → строки `MCP`/`AS`
   борда `erp` §8), которыми этот план не владеет и статус которых не вправе читать как
   разрешение. Законный исход сверки — `waiting:` (D115).
-- **Число сессий как оценку трудоёмкости.** 54 solo — это не «54 равных шага»: solo назначен
+- **Число сессий как оценку трудоёмкости.** 58 solo — это не «58 равных шагов»: solo назначен
   критерием D122 (уточнён D127), а не размером items. У items фаз P7–P10 не выполнено ни одно
   из двух его условий: предмет группы ПУБЛИКУЕТСЯ ею же (поверхность пакетов `agentools/sdk` и
   `agentools`, запись в чужие кодовые базы контуров), а гейт-items фаз гоняют КОРПУС и класс

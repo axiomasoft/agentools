@@ -1,33 +1,38 @@
-# HANDOFF — 2026-08-04 — after P3
+# HANDOFF — 2026-08-04 — after P3.21
 
-**Next:** /task:plan-audit AGENTOOLS P3
+**Next:** ЗАПУСК ВРУЧНУЮ: implementation/high
 
 | Параметр | Значение |
 |:--|:--|
-| Model | frontier |
-| Thinking | xhigh — независимая проверка закрытой фазы |
-| Context | NEW SESSION — шаг-не-item |
-| Суть | Аудировать P3 после двух process-отклонений; затем продолжить P4.9. |
-| Команда | `/task:plan-audit AGENTOOLS P3` |
+| Model | implementation |
+| Thinking | high — нормативный public-contract и глоссарий harness |
+| Context | continue (/clear) — ручной item |
+| Суть | Нормативно закрепить коды MCP и закрыть шесть адресных терминов OVR-25. |
+| Команда | — |
 
-**Done:**
-- P3 закрыта: 19/19 items `🟢`; Phase Handoff сверяет актуальный A2 snapshot.
-- `rules_index` подтверждает 399 правил, `close_schema` — 15 authoring schemas; `spec_lint` зелёный.
-- P3.19 сохраняет границу: `ГЕЙТ A2: PASS` не означает GREEN Gate B.
+```
+/model implementation
+/effort high
+$ task:plan-run AGENTOOLS P3.22
+```
 
-**Remaining:**
-- Провести аудит P3; затем P4.9 и workflow W2 по `roadmap.md`.
+**Done:** P3.21 закрыт item-коммитом `933444e`: schema `EventKind` содержит полный набор
+событий lifecycle; `spec_lint` сверяет markdown↔schema в обе стороны и исполняет positive/
+negative probes.
 
-**Sources of truth:**
-- `plans/AGENTOOLS/plan.md` — D141–D145, Routing и Status Board.
-- `plans/AGENTOOLS/phases/P3.md` — Phase Handoff и Completion Notes items.
-- `plans/AGENTOOLS/artifacts/P3-gate-a2.md` — воспроизводимый A2 evidence.
+**Remaining:** P3.22 → P3.23; затем `task:plan-close AGENTOOLS P3` и новый аудит фазы перед
+P4.9.
 
-**Open risks:**
-- RED Gate B round 1 остаётся действующим: P4.9–P4.13 обязательны до нового P5.1.
-- Q-10/Q-30/Q-31 остаются owner-gates перед freeze/release.
+**Sources of truth:** `plans/AGENTOOLS/plan.md` D146–D148/§3/§4 ·
+`plans/AGENTOOLS/phases/P3.md` Audit P3 и P3.20–P3.23 ·
+`plans/AGENTOOLS/research/13-p3-red-audit-remediation-2026-08.md` ·
+`spec/revisions/2026-08/` · `tools/spec_lint.py`
+
+**Open risks:** Gate B round 1 остаётся RED до P4.13 и нового P5.1. Унаследованный
+bookkeeping P3.20/reopen D146 закрыт одним same-plan bookkeeping-коммитом вместе с P3.21;
+это process-deviation, не изменение source Scope P3.21.
 
 **Workarounds/Deferred/Open questions:**
 - workarounds: —
-- deferred: фактическая эффективность описаний для малых моделей измеряется P10.6.
-- open_questions: Q-10, Q-30, Q-31.
+- deferred: —
+- open_questions: Q-10/Q-30/Q-31 — owner-gates P5.

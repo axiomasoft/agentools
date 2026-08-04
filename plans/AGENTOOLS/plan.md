@@ -6,18 +6,18 @@
 |:--|:--|
 | Plan ID | AGENTOOLS |
 | Title | AgenTools: ревизия спеки `2026-08` (modern-only, MCP 2026-07-28) + conformance + PHP/Dart SDK + срезы CRM/ERP |
-| Version | 0.21.0 |
+| Version | 0.22.0 |
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-04 (P3 closed: 19/19 items reconciled; A2 snapshot handed to P4.) |
+| Last Updated | 2026-08-04 (P3.21 closed: EventKind matches the lifecycle markdown contract.) |
 | Repository | `~/projects/packages/agentools` (приватный, без remote) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
 | Target Operator Models | sonnet (exec) · haiku (LOW) · opus (нормативный авторинг/аудит) |
 | Approval Owner | Dmitry Vostrikov |
 | Home | brain |
-| Design Passes | 3/3 — кросс-репо (vault + `agentools` + corex + erp-sdk) и ядро экосистемы: проход 1 (2026-07-27) — верхний вид + P1/P2 до DoR; проход 2 (2026-07-27, закрыт) — P3, P4, P5 доведены до DoR тремя фазовыми заходами; проход 3 (2026-07-27, ЗАВЕРШЁН) — P6, P7, P8, P9 и P10 доведены до DoR пятью фазовыми заходами; скелет-маркеров в плане не осталось, следующий шаг — `plan-design AGENTOOLS finish` (сквозной reconcile + `roadmap.md`), затем `plan-audit AGENTOOLS design`. Счётчик инкрементируется по ЗАВЕРШЕНИИ прохода, а не по каждой фазе: заходы фазовые (одна фаза за сессию — канон `plan-protocol` §5), ремонт фазы P2 счётчик не двигал. **Заход `finish` (2026-07-27) счётчик НЕ двигает** — режим 5 не является проходом дизайна: он закрывает дыры между уже детализированными фазами и собирает `roadmap.md`; следующий шаг — `plan-audit AGENTOOLS design` |
+| Design Passes | 3/3 — кросс-репо и ядро экосистемы: три прохода авторинга завершены 2026-07-27, все фазы доведены до DoR, `finish`/`roadmap.md` и design-аудит выполнены. Поздние audit-driven реопены D141/D146 не увеличивают авторский бюджет: это адресная ремедиация исполняемого плана. Текущий следующий шаг — P3.20, затем P3.21–P3.23 и повторный close/audit P3. |
 
 ## 1. Context
 
@@ -120,6 +120,9 @@ solo, — D122.
 | — | P3.16 | implementation/high | manual | full | отдельный SEC-3 error code против замороженной нормы: форма предписана D142, effort high за единственный словарь public error codes |
 | — | P3.17–P3.18 | frontier/high | manual | full | два owner-gate до freeze (namespace Q-5 и измеримость Q-27): ветки открыты и меняют опубликованный контракт либо границу брифа, поэтому frontier; solo, не batch |
 | — | P3.19 | implementation/high | manual | full | терминальный A2 после owner-веток: детерминированная регенерация и полный гейт, effort high за инвариантность snapshot |
+| — | P3.20–P3.21 | implementation/high | manual | full | предписанный ремонт двух frozen schema-контрактов по RED-аудиту: решений не открывает, но effort high обязателен из-за public-contract/межъязыкового влияния; items solo, потому что оба пишут общий `tools/spec_lint.py` |
+| — | P3.22 | implementation/high | manual | full | точечный нормативный долг F4/F5 с закрытой семантикой из D147: prescribed implementation без открытого design, effort high за нормативный public contract |
+| — | P3.23 | implementation/high | manual | full | повторный A2 после P3.20–P3.22: детерминированная регенерация, полный schema-value gate и evidence-map F1–F5; effort high за инвариантность snapshot |
 | — | P4.1 | implementation/high | manual | full | формат вектора замораживает форму всего корпуса и исполняется параллельно пятью авторами: ошибка стоит переписывания всех векторов; конвенции предписаны (`research/03-p4-vector-corpus-2026-08.md` §3–§4), открытых решений нет — предписанная реализация против замороженного канона (Tier policy §9) |
 | W1 | P4.2–P4.3 | implementation/high | manual | full | авторинг данных контракта против замороженных правил (`rules.json`) и замороженного формата; открытых решений нет, риск-класс один — ложная ссылка на правило проходит машинный гейт и обесценивает покрытие, effort high за различающую силу вектора |
 | — | P4.4 | implementation/high | manual | full | D139 уже зафиксировал authoring-bounds и семантику счёта; item механически вносит нормативный амендмент + данные, но solo: пишет общий вход `02_tool-contract-profile.md`/`rules.json`, который читают P4.7/P4.8 |
@@ -200,7 +203,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P0 | История: ревизия `2026-07-draft` (MCP 2025-11-25) — терминальна, не переоткрывается | 7/11 | 🟠 Done with deviations |
 | P1 | **A0** — ре-верификация финала MCP 2026-07-28 + пин коммита и `schema.json` | 3/3 | 🟢 Done |
 | P2 | **A1** — bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
-| P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 19/19 | 🟢 Done |
+| P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 21/23 | 🟡 In progress |
 | P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 8/13 | 🟡 In progress |
 | P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 0/3 | 🔴 Blocked |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
@@ -387,10 +390,16 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | D143 | 2026-08-03 | **Remediation декомпозирована P3.16–P3.19 + P4.9–P4.13; W2 обязателен только для P4.10–P4.12.** P3.17 исполняет explicit owner-ветку Q-5 по inventory 32/35; P3.18 — owner-ветку Q-27 (`measurable` structural contract либо explicit `defer`); P3.19 и P4.13 — terminal gates. После P3.19+P4.9 три P4-предмета независимы и имеют deterministic Validation, поэтому критерий orchestration срабатывает; carrier `workflows/wf-agentools-p4-remediation.js`. Альтернатива «переоткрыть старые items и переписать Completion Notes» отклонена как потеря провенанса; «один mega-item F1–F8» скрывает owner-гейты и не позволяет изолировать регрессии. | `research/12-p3-p4-gate-b-remediation-2026-08.md` §§3–5; `plan-protocol` §7 criterion. `RAG:— (repo-grounded)` |
 | D144 | 2026-08-03 | **Q-5 закрыт веткой A: namespace сохраняется.** Владелец подтвердил домен `agentools.dev`; vendor-префикс остаётся `dev.agentools`, независимо от того, будет пакет закрытым или опубликованным. P3.17 не мигрирует carriers и закрепляет фактический inventory 32 domain / 35 domain+vendor файлов как регрессионный контракт. | Ответ владельца в сессии P3.17: «Вообще agentools.dev, но возможно пакет будет закрытый вообще»; возможная закрытость не меняет выбранные идентификаторы. `RAG:— (owner decision)` |
 | D145 | 2026-08-04 | **Q-27 закрыт веткой `measurable`: actionable-description имеет четыре непустых компонента в фиксированном порядке — назначение, условия вызова, обязательные аргументы и пример.** Published/authoring schema и stdlib-linter проверяют только эту структуру; эффективность конкретной малой модели остаётся отдельным измерением P10.6. Альтернативы отклонены: `defer` ослабляет прямое требование брифа; длина/NLP-скоринг выдаёт эвристику за качество модели. | Ответ владельца в сессии P3.18: `measurable`; `brief/00-brief.md` §3; `artifacts/P5-gate-b.md` F8; `research/12-p3-p4-gate-b-remediation-2026-08.md` §3. `RAG:— (owner decision + repo-grounded)` |
+| D146 | 2026-08-04 | **P3 повторно реопенена после RED-аудита: старые terminal-items P3.1–P3.19 сохраняются, ремедиация живёт в P3.20–P3.23.** Phase Status и Status Board переведены в `🟡`, версия 0.21.0 → 0.22.0, прежний Phase Handoff инвалидирован. **Consequences:** supersedes D141 только в части утверждения, что P3-remediation исчерпывается P3.16–P3.19; платим повторным A2 и задержкой P4.9, зато не переписываем исторические Completion Notes и не передаём известный schema-дефект в P4/P6–P8. | `phases/P3.md` Audit P3 F1–F6; `research/13-p3-red-audit-remediation-2026-08.md`. `RAG:— (repo-grounded)` |
+| D147 | 2026-08-04 | **Schema-remediation использует один канон открытого строкового перечисления: `oneOf` core-`const` + string-fallback, который через `not`/`enum` исключает весь core-набор; A2 исполняет positive/negative значения и markdown↔schema согласование.** Альтернативы `anyOf` и закрытый `enum` отклонены: первая маскирует пересечение, вторая ломает must-ignore/vendor-extension. P3.20 чинит `ResultType`/`StatusChannel`/`TaskStatus`, P3.21 — `EventKind`, P3.23 переиздаёт гейт. | `09_idempotency-errors.md` IDE-35…IDE-37; Audit P3 F1–F3; `research/13-p3-red-audit-remediation-2026-08.md` §§2–4. `RAG:— (repo-grounded)` |
+| D148 | 2026-08-04 | **Supersedes D5 в части генератора idempotency key: ключ `at1:*` создаёт вызывающий и передаёт как намерение; сервер детерминированно вычисляет только `args_fingerprint` по каноническим аргументам.** JCS и версия-префикс сохраняются. **Consequences:** старые исполнители, читавшие D5 без `IDE-3`/`IDE-6`, должны сменить источник ключа; совместимость с несуществующей реализацией не требуется, но D5 остаётся историческим носителем раннего решения. | `03_action-lifecycle.md`/`09_idempotency-errors.md` IDE-3, IDE-6; Audit P3 F6. `RAG:— (repo-grounded)` |
 
 ## 6. Update Log
 
 | Дата | Кто (role/model) | Что |
+| 2026-08-04 | plan-run/gpt-5.6-high | P3.21 закрыт: `EventKind` двунаправленно сверяется с lifecycle markdown; четыре core-события и authoring schema согласованы — детали см. phases/P3.md P3.21 Completion Notes. |
+| 2026-08-04 | plan-run/gpt-5-high | P3.20 закрыт: `ResultType`/`StatusChannel`/`TaskStatus` не пересекаются с fallback; общий schema-values selftest зелёный — детали см. phases/P3.md P3.20 Completion Notes. |
+| 2026-08-04 | plan-design/frontier-high | RED-аудит P3 приземлён реопеном: P3.20–P3.23 до DoR, D146–D148, research §13; Status Board 19/23, 0.21.0 → 0.22.0. |
 | 2026-08-04 | plan-close/implementation-low | Фаза P3 закрыта: 19/19 🟢; A2 snapshot передан P4, Gate B round 1 остаётся RED; Docs-sync: не требуется. |
 | 2026-08-04 | plan-run/gpt-5-high | P3.19 закрыт: повторный A2 подтвердил согласованный snapshot P3 и не отменяет RED Gate B round 1 — детали см. phases/P3.md P3.19 Completion Notes. |
 | 2026-08-04 | plan-run/gpt-5-high | P3.18 закрыт: D145 вводит измеримый actionable-description без утверждения модельной эффективности — детали см. phases/P3.md P3.18 Completion Notes. |
