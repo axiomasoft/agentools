@@ -214,6 +214,14 @@ OBSERVATIONAL_BANNED_KEYS = frozenset({
     "reject_passing_entries", "grease_allowed",
 })
 OBSERVATIONAL_MAGIC_RE = re.compile(r"^(?:runtime-daemon|session:|audit-record-)")
+OBSERVATIONAL_ARTIFACT_KINDS = {
+    "TLP-7": "tool_catalog", "TLP-12": "tool_contract_case",
+    "TLP-26": "authoring_schema_profile", "TLP-27": "authoring_schema_profile",
+    "TLP-28": "authoring_schema_profile", "TLP-30": "authoring_schema_profile",
+    "TLP-31": "authoring_schema_profile", "TLP-32": "authoring_schema_profile",
+    "ALC-14": "lifecycle_index", "CFH-24": "known_failures", "CFH-26": "known_failures",
+    "CFH-51": "grease_registration", "CFH-53": "conformance_report",
+}
 
 SCHEMA_MAP_KEYWORDS = ("$defs", "definitions", "properties", "patternProperties", "dependentSchemas")
 SCHEMA_ONE_KEYWORDS = (
@@ -1668,6 +1676,46 @@ def _actionable_description(value):
     ) is not None
 
 
+def _closed_authoring_projection(schema):
+    """Small deterministic closure oracle for inline authoring-profile candidates."""
+    if isinstance(schema, list):
+        return [_closed_authoring_projection(value) for value in schema]
+    if not isinstance(schema, dict):
+        return schema
+    result = {key: _closed_authoring_projection(value) for key, value in schema.items()}
+    if result.get("type") == "object":
+        result["additionalProperties"] = False
+    return result
+
+
+def _walk_schema_nodes(schema):
+    if not isinstance(schema, dict):
+        return
+    yield schema
+    for key, value in schema.items():
+        if key in SCHEMA_MAP_KEYWORDS and isinstance(value, dict):
+            for child in value.values():
+                yield from _walk_schema_nodes(child)
+        elif key in SCHEMA_ONE_KEYWORDS and isinstance(value, dict):
+            yield from _walk_schema_nodes(value)
+        elif key in SCHEMA_MANY_KEYWORDS and isinstance(value, list):
+            for child in value:
+                yield from _walk_schema_nodes(child)
+
+
+def _lifecycle_transition_reference(repo_root):
+    """Parse the canonical ALC-T table; fixture bytes never supply the reference."""
+    text = (repo_root / "spec/revisions/2026-08/03_action-lifecycle.md").read_text(encoding="utf-8")
+    rows = {}
+    pattern = re.compile(r"^\| (ALC-T\d+) \| (.*?) \| `([^`]+)` \| `([^`]+)` \|", re.MULTILINE)
+    for transition_id, source, event, target in pattern.findall(text):
+        source_value = None if source.startswith("—") else source.strip("`")
+        rows[transition_id] = {
+            "transition_id": transition_id, "from": source_value, "event": event, "to": target,
+        }
+    return rows
+
+
 def validate_artifact_subject(subject, repo_root, source):
     """Возвращает фактические диагностики одного artifact-вектора."""
     errors = []
@@ -1737,9 +1785,21 @@ def validate_artifact_subject(subject, repo_root, source):
             errors.append(f"{source}: baseline entry обязан нести scenario/check/rule_id/issue-link")
             return errors
         known = {f"{row['scenario']}:{row['check']}" for row in rows}
-        actual = set(data.get("actual_failures", []))
-        if not actual <= known or not data.get("reject_passing_entries") or data.get("grease_allowed"):
-            errors.append(f"{source}: baseline известных отказов нарушает anti-erosion контракт")
+        if any(row["scenario"].startswith("grease-") or row["check"] == "not_testable" for row in rows):
+            errors.append(f"{source}: baseline не может содержать GREASE/Not testable")
+        runs = data.get("runs")
+        if not isinstance(runs, list) or not runs or any(
+            not isinstance(run, dict) or set(run) != {"run_id", "implementation", "outcomes"}
+            or run.get("implementation") not in {"php", "dart"}
+            or not isinstance(run.get("run_id"), str) or not run["run_id"]
+            or not isinstance(run.get("outcomes"), dict)
+            for run in runs
+        ):
+            errors.append(f"{source}: baseline обязан нести raw run outcomes PHP/Dart")
+        else:
+            observed = {key: status for run in runs for key, status in run["outcomes"].items()}
+            if any(observed.get(key) != "failed" for key in known):
+                errors.append(f"{source}: healed baseline entry обязана быть ошибкой прогона")
     elif kind == "ci_pipeline":
         data = json.loads(inline)
         expected = ["spec_lint", "derived_freshness", "sdk_tests_both", "cross_language_vectors"]
@@ -1761,8 +1821,9 @@ def validate_artifact_subject(subject, repo_root, source):
             return errors
         if not isinstance(records, list) or not records or any(
             not isinstance(row, dict)
-            or set(row) != {"id", "outcome", "rule_ids"}
+            or set(row) != {"id", "level", "outcome", "rule_ids"}
             or not isinstance(row["id"], str) or not row["id"]
+            or row["level"] not in {"L1", "L2", "L3"}
             or row["outcome"] not in {"completed", "failed", "not_testable"}
             or not isinstance(row["rule_ids"], list) or not row["rule_ids"]
             for row in records
@@ -1773,8 +1834,9 @@ def validate_artifact_subject(subject, repo_root, source):
             errors.append(f"{source}: per-vector records не отсортированы по vector_id")
         if data.get("submitted_vectors") != [row["id"] for row in records]:
             errors.append(f"{source}: отчёт потерял переданные векторы")
-        if not isinstance(data.get("level_summary"), dict):
-            errors.append(f"{source}: отчёт не несёт сводку по уровням")
+        failed_l3 = sorted(row["id"] for row in records if row["level"] == "L3" and row["outcome"] != "completed")
+        if data.get("failed_l3") != failed_l3:
+            errors.append(f"{source}: перечень непройденных L3 не выведен из per-vector outcomes")
         if any(not row.get("reason") for row in data.get("not_testable", [])):
             errors.append(f"{source}: Not testable без причины")
         if data.get("success") is True and (data.get("failed") or data.get("counts_toward_level") is False):
@@ -1810,8 +1872,21 @@ def validate_artifact_subject(subject, repo_root, source):
             errors.append(f"{source}: description не соответствует actionable contract")
         if action.get("side_effect") != "write" or action.get("confirmation") is not True or annotations.get("readOnlyHint") is not False or annotations.get("destructiveHint") is not False:
             errors.append(f"{source}: annotations/_meta не согласованы с write-профилем")
+        if not isinstance(action, dict) or not set(action) <= {"side_effect", "confirmation", "idempotent_commit", "permissions_hint", "content_origin"}:
+            errors.append(f"{source}: action block содержит поле вне закрытого TLP-12 перечня")
         if data.get("outputSchema", {}).get("type") != "object":
             errors.append(f"{source}: outputSchema обязан описывать structuredContent")
+    elif kind == "tool_catalog":
+        data = _artifact_object(inline, source, errors)
+        if data is None:
+            return errors
+        tools = data.get("tools")
+        if not isinstance(tools, list) or not tools or any(not isinstance(row, dict) for row in tools):
+            errors.append(f"{source}: tool catalog обязан нести raw descriptors")
+        else:
+            names = [row.get("name") for row in tools]
+            if any(not isinstance(name, str) or not name for name in names) or len(names) != len(set(names)):
+                errors.append(f"{source}: имена инструментов каталога не уникальны")
     elif kind == "descriptor_digest_case":
         data = _artifact_object(inline, source, errors)
         if data is None:
@@ -1833,14 +1908,32 @@ def validate_artifact_subject(subject, repo_root, source):
         if data is None:
             return errors
         published, authoring = data.get("published"), data.get("authoring")
-        if not isinstance(published, dict) or not isinstance(authoring, dict) or published.get("additionalProperties") is not True or authoring.get("additionalProperties") is not False or not isinstance(authoring.get("properties"), dict):
+        if set(data) != {"published", "authoring"} or not isinstance(published, dict) or not isinstance(authoring, dict):
             errors.append(f"{source}: authoring schema profile расходится с TLP-26..TLP-32")
+            return errors
+        published_nodes = list(_walk_schema_nodes(published))
+        if any(node.get("additionalProperties") is False or "unevaluatedProperties" in node for node in published_nodes):
+            errors.append(f"{source}: published schema закрыта (TLP-26)")
+        if authoring != _closed_authoring_projection(published):
+            errors.append(f"{source}: authoring schema не является generator-derived closure (TLP-27)")
+        if any("enum" in node for node in published_nodes):
+            errors.append(f"{source}: extensible values заданы голым enum вместо oneOf+const+pattern (TLP-28)")
+        if any(
+            isinstance(node.get("patternProperties"), dict)
+            and any(pattern != "^dev\\.[a-z0-9.-]+/[A-Za-z0-9._-]+$" for pattern in node["patternProperties"])
+            for node in published_nodes
+        ):
+            errors.append(f"{source}: patternProperties применён к известным ключам (TLP-30)")
+        if any("prefixItems" in node or isinstance(node.get("items"), list) for node in published_nodes):
+            errors.append(f"{source}: tuple обязан быть объектом с именованными полями (TLP-31)")
+        if re.search(r"(?<![A-Za-z0-9_.-])-?\d+(?:\.\d+)?[eE][+-]?\d+", inline):
+            errors.append(f"{source}: exact quantity использует exponent notation (TLP-32)")
     elif kind == "lifecycle_index":
         data = _artifact_object(inline, source, errors)
         if data is None:
             return errors
-        rows, candidate = data.get("matrix_rows"), data.get("candidate")
-        if not isinstance(rows, list) or not rows or not isinstance(candidate, dict) or set(candidate) != {"state", "event"} or candidate not in rows:
+        reference = _lifecycle_transition_reference(repo_root)
+        if set(data) != {"transition_id", "from", "event", "to"} or reference.get(data.get("transition_id")) != data:
             errors.append(f"{source}: новое состояние/событие не синхронизировано с матрицей ALC-14")
     elif kind == "rule_deviation_note":
         text = inline if has_inline else path.read_text(encoding="utf-8")
@@ -1852,8 +1945,17 @@ def validate_artifact_subject(subject, repo_root, source):
             return errors
         vectors = data.get("vectors")
         kinds = {row.get("kind") for row in vectors} if isinstance(vectors, list) and all(isinstance(row, dict) for row in vectors) else set()
-        if kinds != {"unknown_event", "unknown_error_category", "unknown_extension_key"} or any(not isinstance(row.get("value"), str) or not row["value"] for row in vectors):
+        if kinds != {"unknown_event", "unknown_error_category", "unknown_extension_key"} or any(not isinstance(row.get("id"), str) or not row["id"] or not isinstance(row.get("value"), str) or not row["value"] for row in vectors):
             errors.append(f"{source}: GREASE registration обязан содержать три неизвестных значения")
+        vector_ids = {row.get("id") for row in vectors} if isinstance(vectors, list) else set()
+        runs = data.get("runs")
+        if not isinstance(runs, list) or {run.get("implementation") for run in runs if isinstance(run, dict)} != {"php", "dart"} or any(
+            not isinstance(run, dict) or set(run) != {"run_id", "implementation", "executed_vectors"}
+            or not isinstance(run.get("run_id"), str) or not run["run_id"]
+            or set(run.get("executed_vectors", [])) != vector_ids
+            for run in runs or []
+        ):
+            errors.append(f"{source}: GREASE должен исполняться в каждом raw PHP/Dart run")
     elif kind == "tool_result_case":
         data = _artifact_object(inline, source, errors)
         if data is None:
@@ -3071,10 +3173,10 @@ def _observational_carrier_errors(fixtures_root, validator=None):
         target = set(data.get("spec_rule_ids", [])) & OBSERVATIONAL_ARTIFACT_RULES
         if target:
             seen_artifact.update(target)
-            # P4.18 replaces these carriers with checker-derived raw evidence.
-            # Until then the exact-set command remains intentionally RED.
-            if not data.get("observational_evidence"):
-                errors.append(f"{path}: target artifact carrier не имеет checker-derived observational_evidence")
+            subject = data.get("subject") if isinstance(data.get("subject"), dict) else {}
+            expected_kinds = {OBSERVATIONAL_ARTIFACT_KINDS[rule] for rule in target}
+            if len(target) != 1 or {subject.get("kind")} != expected_kinds or not isinstance(subject.get("inline"), str):
+                errors.append(f"{path}: artifact observation должен быть single-rule raw candidate ожидаемого kind")
             for shortcut in _walk_observational_shortcuts(data):
                 errors.append(f"{path}: запрещён self-report/magic shortcut {shortcut}")
     missing_behavior = sorted(OBSERVATIONAL_BEHAVIOR_RULES - seen_behavior)

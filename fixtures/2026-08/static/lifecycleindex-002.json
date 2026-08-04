@@ -1,1 +1,17 @@
-{"id":"lifecycleindex-002","title":"Новое значение вне матрицы переходов отвергается","vector_class":"artifact","spec_rev":"2026-08","spec_rule_ids":["ALC-14"],"conformance_level":"L1","subject":{"kind":"lifecycle_index","inline":"{\"matrix_rows\":[{\"state\":\"created\",\"event\":\"action_created\"},{\"state\":\"completed\",\"event\":\"action_completed\"}],\"candidate\":{\"state\":\"failed\",\"event\":\"action_failed\"}}"},"expect":{"linter":"reject","diagnostic_substring":"не синхронизировано"}}
+{
+  "id": "lifecycleindex-002",
+  "title": "Candidate совпадает с canonical ALC table",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "ALC-14"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "lifecycle_index",
+    "inline": "{\"transition_id\":\"ALC-T9\",\"from\":\"running\",\"event\":\"action_completed\",\"to\":\"completed\"}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

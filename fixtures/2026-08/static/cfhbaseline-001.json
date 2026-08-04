@@ -1,21 +1,18 @@
 {
   "id": "cfhbaseline-001",
-  "title": "Baseline хранит адрес проверки и маркер правила, запрещает GREASE и краснеет на healed entry",
+  "title": "Healed baseline entry отклоняется из raw outcomes",
   "vector_class": "artifact",
   "spec_rev": "2026-08",
   "spec_rule_ids": [
-    "CFH-22",
-    "CFH-23",
-    "CFH-24",
-    "CFH-25",
-    "CFH-26"
+    "CFH-24"
   ],
   "conformance_level": "L1",
   "subject": {
     "kind": "known_failures",
-    "inline": "{\"known_failures\":[{\"scenario\":\"longop-002\",\"check\":\"notification-channel\",\"rule_id\":\"LOP-9\",\"issue\":\"https://tracker.example/LOP-9\"}],\"actual_failures\":[\"longop-002:notification-channel\"],\"reject_passing_entries\":true,\"grease_allowed\":false}"
+    "inline": "{\"known_failures\":[{\"scenario\":\"longop-002\",\"check\":\"notification-channel\",\"rule_id\":\"LOP-9\",\"issue\":\"https://tracker.example/LOP-9\"}],\"runs\":[{\"run_id\":\"php-1\",\"implementation\":\"php\",\"outcomes\":{\"longop-002:notification-channel\":\"passed\"}},{\"run_id\":\"dart-1\",\"implementation\":\"dart\",\"outcomes\":{\"longop-002:notification-channel\":\"passed\"}}]}"
   },
   "expect": {
-    "linter": "accept"
+    "linter": "reject",
+    "diagnostic_substring": "healed baseline"
   }
 }

@@ -1,19 +1,18 @@
 {
   "id": "cfhreport-001",
-  "title": "Детерминированный отчёт обосновывает уровень и не объявляет успех при пропущенном поданном векторе",
+  "title": "Failed L3 обязан быть перечислен",
   "vector_class": "artifact",
   "spec_rev": "2026-08",
   "spec_rule_ids": [
-    "CFH-52",
-    "CFH-53",
-    "CFH-54"
+    "CFH-53"
   ],
   "conformance_level": "L1",
   "subject": {
     "kind": "conformance_report",
-    "inline": "{\"order\":\"vector_id\",\"declared_level\":\"L1\",\"failed\":[],\"warnings\":[],\"not_testable\":[{\"rule_id\":\"LOP-9\",\"reason\":\"capability unavailable\"}],\"submitted_vectors\":[\"alpha-001\",\"beta-001\"],\"vectors\":[{\"id\":\"alpha-001\",\"outcome\":\"completed\",\"rule_ids\":[\"CFH-52\"]},{\"id\":\"beta-001\",\"outcome\":\"not_testable\",\"rule_ids\":[\"CFH-53\"]}],\"level_summary\":{\"L1\":2},\"success\":true}"
+    "inline": "{\"declared_level\":\"L1\",\"submitted_vectors\":[\"alpha-001\",\"gamma-001\"],\"vectors\":[{\"id\":\"alpha-001\",\"level\":\"L1\",\"outcome\":\"completed\",\"rule_ids\":[\"CFH-52\"]},{\"id\":\"gamma-001\",\"level\":\"L3\",\"outcome\":\"failed\",\"rule_ids\":[\"AOB-25\"]}],\"failed_l3\":[],\"failed\":[\"gamma-001\"],\"warnings\":[],\"not_testable\":[],\"success\":false}"
   },
   "expect": {
-    "linter": "accept"
+    "linter": "reject",
+    "diagnostic_substring": "непройденных L3"
   }
 }

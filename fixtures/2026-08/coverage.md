@@ -24,7 +24,7 @@
 | Класс | Носителей | Ссылок на правила |
 |:--|--:|--:|
 | behavior | 214 | 425 |
-| artifact | 68 | 135 |
+| artifact | 89 | 142 |
 | harness | 13 | 30 |
 | golden | 10 | 53 |
 
@@ -76,18 +76,18 @@
 | EXT-15 | 01_extension-identity.md | MUST | L1 | artifact | artifact:extnegotiation-001 |
 | EXT-16 | 01_extension-identity.md | MUST NOT | L1 | artifact | artifact:extnegotiation-001 |
 | EXT-17 | 01_extension-identity.md | MUST NOT | L1 | artifact | artifact:extnegotiation-001 |
-| TLP-1 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-001 |
-| TLP-2 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-001, artifact:toolcontract-002, artifact:tooldescription-001, artifact:tooldescription-002 |
+| TLP-1 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-007 |
+| TLP-2 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-002, artifact:tooldescription-001, artifact:tooldescription-002 |
 | TLP-3 | 02_tool-contract-profile.md | SHOULD | L1 | — | — |
 | TLP-4 | 02_tool-contract-profile.md | SHOULD | L1 | — | — |
 | TLP-5 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-003, artifact:toolcontract-004 |
-| TLP-6 | 02_tool-contract-profile.md | MUST NOT | L1 | artifact | artifact:toolcontract-001 |
-| TLP-7 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-001 |
+| TLP-6 | 02_tool-contract-profile.md | MUST NOT | L1 | artifact | artifact:toolcontract-007 |
+| TLP-7 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-001, artifact:toolcontract-101 |
 | TLP-8 | 02_tool-contract-profile.md | SHOULD | L1 | — | — |
-| TLP-9 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-001 |
-| TLP-10 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-001 |
+| TLP-9 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-007 |
+| TLP-10 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-007 |
 | TLP-11 | 02_tool-contract-profile.md | MUST NOT | L1 | behavior | behavior:confpolicy-001, behavior:confpolicy-101 |
-| TLP-12 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-001 |
+| TLP-12 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolcontract-005, artifact:toolcontract-105 |
 | TLP-13 | 02_tool-contract-profile.md | MUST NOT | L1 | behavior | behavior:grease-001, behavior:profile-001 |
 | TLP-14 | 02_tool-contract-profile.md | MAY | L1 | behavior | behavior:grease-004 |
 | TLP-15 | 02_tool-contract-profile.md | SHOULD | L1 | — | — |
@@ -101,13 +101,13 @@
 | TLP-23 | 02_tool-contract-profile.md | MUST NOT | L1 | artifact | artifact:tooldigest-001 |
 | TLP-24 | 02_tool-contract-profile.md | MAY | L3 | — | — |
 | TLP-25 | 02_tool-contract-profile.md | MUST | L3 | behavior | behavior:profileuntrusted-001, behavior:profileuntrusted-101 |
-| TLP-26 | 02_tool-contract-profile.md | MUST NOT | L1 | artifact | artifact:toolauthoring-001, artifact:toolauthoring-002 |
-| TLP-27 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolauthoring-001 |
-| TLP-28 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolauthoring-001 |
+| TLP-26 | 02_tool-contract-profile.md | MUST NOT | L1 | artifact | artifact:toolauthoring-001, artifact:toolauthoring-101 |
+| TLP-27 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolauthoring-002, artifact:toolauthoring-102 |
+| TLP-28 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolauthoring-003, artifact:toolauthoring-103 |
 | TLP-29 | 02_tool-contract-profile.md | MUST NOT | L1 | artifact | artifact:dosnetwork-001 |
-| TLP-30 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolauthoring-001 |
-| TLP-31 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolauthoring-001 |
-| TLP-32 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolauthoring-001 |
+| TLP-30 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolauthoring-004, artifact:toolauthoring-104 |
+| TLP-31 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolauthoring-005, artifact:toolauthoring-105 |
+| TLP-32 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:toolauthoring-006, artifact:toolauthoring-106 |
 | TLP-33 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:dosdepth-001 |
 | TLP-34 | 02_tool-contract-profile.md | MUST | L1 | artifact | artifact:dossubschemas-001 |
 | ALC-1 | 03_action-lifecycle.md | MUST | L1 | behavior | behavior:lifecycle-001 |
@@ -398,11 +398,11 @@
 | CFH-19 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhseverity-001 |
 | CFH-20 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:ovrnotest-001, artifact:ovrnotest-002 |
 | CFH-21 | 11_conformance-harness.md | MUST NOT | L1 | artifact | artifact:cfhseverity-001 |
-| CFH-22 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhbaseline-001 |
-| CFH-23 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhbaseline-001 |
-| CFH-24 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhbaseline-001 |
-| CFH-25 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhbaseline-001, artifact:cfhbaseline-002 |
-| CFH-26 | 11_conformance-harness.md | MUST NOT | L1 | artifact | artifact:cfhbaseline-001 |
+| CFH-22 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhbaseline-004 |
+| CFH-23 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhbaseline-004 |
+| CFH-24 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhbaseline-001, artifact:cfhbaseline-101 |
+| CFH-25 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhbaseline-002 |
+| CFH-26 | 11_conformance-harness.md | MUST NOT | L1 | artifact | artifact:cfhbaseline-003, artifact:cfhbaseline-103 |
 | CFH-27 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhci-001 |
 | CFH-28 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhauthor-001, artifact:cfhauthor-002 |
 | CFH-29 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhci-001 |
@@ -426,9 +426,9 @@
 | CFH-47 | 11_conformance-harness.md | MUST | L1 | harness | harness:hrevmis-001 |
 | CFH-48 | 11_conformance-harness.md | MUST | L1 | artifact, behavior | behavior:grease-003, artifact:grease-001 |
 | CFH-49 | 11_conformance-harness.md | MUST | L1 | artifact, behavior | behavior:grease-003, artifact:grease-001 |
-| CFH-50 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhgrease-001, artifact:cfhgrease-002 |
-| CFH-51 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhgrease-001 |
-| CFH-52 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhreport-001, artifact:cfhreport-002 |
-| CFH-53 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhreport-001 |
-| CFH-54 | 11_conformance-harness.md | MUST NOT | L1 | artifact | artifact:cfhreport-001 |
+| CFH-50 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhgrease-002 |
+| CFH-51 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhgrease-001, artifact:cfhgrease-101 |
+| CFH-52 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhreport-002 |
+| CFH-53 | 11_conformance-harness.md | MUST | L1 | artifact | artifact:cfhreport-001, artifact:cfhreport-101 |
+| CFH-54 | 11_conformance-harness.md | MUST NOT | L1 | artifact | artifact:cfhreport-003 |
 | CFH-55 | 11_conformance-harness.md | MUST | L1 | harness | harness:hmcpcode-001, harness:hmcpcodebad-001 |

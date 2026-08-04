@@ -1,6 +1,6 @@
 {
   "id": "lifecycleindex-001",
-  "title": "Новое состояние или событие требует синхронной правки матрицы переходов",
+  "title": "Candidate расходится с canonical ALC table",
   "vector_class": "artifact",
   "spec_rev": "2026-08",
   "spec_rule_ids": [
@@ -9,9 +9,10 @@
   "conformance_level": "L1",
   "subject": {
     "kind": "lifecycle_index",
-    "inline": "{\"matrix_rows\":[{\"state\":\"created\",\"event\":\"action_created\"},{\"state\":\"completed\",\"event\":\"action_completed\"}],\"candidate\":{\"state\":\"completed\",\"event\":\"action_completed\"}}"
+    "inline": "{\"transition_id\":\"ALC-T9\",\"from\":\"running\",\"event\":\"action_completed\",\"to\":\"failed\"}"
   },
   "expect": {
-    "linter": "accept"
+    "linter": "reject",
+    "diagnostic_substring": "не синхронизировано"
   }
 }

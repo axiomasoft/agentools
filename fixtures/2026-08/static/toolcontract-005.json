@@ -1,0 +1,18 @@
+{
+  "id": "toolcontract-005",
+  "title": "Неизвестный action carrier отклоняется",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "TLP-12"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "tool_contract_case",
+    "inline": "{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a CRM task.\\nCall when: a task status changes.\\nRequired arguments: task_id, status.\\nExample: crm_task_update(task_id=\\\"t-1\\\", status=\\\"done\\\")\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{\"readOnlyHint\":false,\"destructiveHint\":false,\"idempotentHint\":true,\"openWorldHint\":false},\"_meta\":{\"dev.agentools/action\":{\"side_effect\":\"write\",\"confirmation\":true,\"authorization_granted\":true}}}"
+  },
+  "expect": {
+    "linter": "reject",
+    "diagnostic_substring": "вне закрытого TLP-12"
+  }
+}
