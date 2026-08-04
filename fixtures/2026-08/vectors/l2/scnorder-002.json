@@ -1,99 +1,38 @@
 {
   "id": "scnorder-002",
-  "title": "Ссылка на шаг, идущий позже в перечне, отвергается статически — граф сценария есть цепочка, не граф с циклами",
+  "title": "Прямая ссылка на следующий шаг отвергается до первого вызова",
   "vector_class": "behavior",
   "spec_rev": "2026-08",
-  "spec_rule_ids": [
-    "SCN-9"
-  ],
+  "spec_rule_ids": ["SCN-9"],
   "conformance_level": "L2",
   "given": {
     "tools": [
       {
-        "name": "crm_task_update",
-        "title": "Обновить задачу",
-        "description": "Изменяет статус либо поля задачи CRM. Обратимая операционная запись: изменение устранимо повторным вызовом с прежними значениями.",
-        "inputSchema": {
-          "type": "object",
-          "properties": {
-            "task_id": {
-              "type": "string"
-            },
-            "status": {
-              "type": "string"
-            },
-            "assignee_id": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "task_id"
-          ]
-        },
-        "outputSchema": {
-          "type": "object",
-          "properties": {
-            "task_id": {
-              "type": "string"
-            },
-            "status": {
-              "type": "string"
-            }
-          }
-        },
-        "annotations": {
-          "readOnlyHint": false,
-          "destructiveHint": false,
-          "idempotentHint": true,
-          "openWorldHint": false
-        },
-        "_meta": {
-          "dev.agentools/action": {
-            "side_effect": "write",
-            "confirmation": "confirm",
-            "idempotent_commit": true,
-            "permissions_hint": [
-              "crm.task.write"
-            ]
-          }
-        }
+        "name": "demo_probe",
+        "description": "Purpose: Проверяет детерминированный сценарный вызов без побочного эффекта.\nCall when: Нужен безопасный probe для проверки исполнения сценария.\nRequired arguments: value\nExample: demo_probe({\"value\":\"probe\"})",
+        "inputSchema": {"type": "object", "properties": {"value": {}}},
+        "outputSchema": {"type": "object", "properties": {"value": {}}},
+        "annotations": {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": false},
+        "_meta": {"dev.agentools/action": {"side_effect": "read", "confirmation": "none", "permissions_hint": ["demo.read"]}}
       }
     ],
     "scenario": {
       "scenario_id": "forward_reference_rejected",
-      "title": "Первый шаг читает результат второго — второй в перечне идёт позже первого",
+      "title": "Первый шаг читает результат последующего шага",
       "spec_rev": "2026-08",
       "steps": [
-        {
-          "id": "first",
-          "tool": "crm_task_update",
-          "input_map": {
-            "task_id": "$ctx.task_id",
-            "status": "$steps.second.status"
-          }
-        },
-        {
-          "id": "second",
-          "tool": "crm_task_update",
-          "input_map": {
-            "task_id": "$ctx.task_id",
-            "status": "done"
-          }
-        }
+        {"id": "first", "tool": "demo_probe", "input_map": {"value": "$steps.second.value"}},
+        {"id": "second", "tool": "demo_probe", "input_map": {"value": "second"}}
       ]
     }
   },
-  "script": [
-    {
-      "user_input": "Обнови задачу по этому сценарию."
-    }
-  ],
+  "script": [{"user_input": "Выполни сценарий с прямой ссылкой на следующий шаг."}],
   "expect": {
     "events": [
-      {
-        "kind": "action_failed"
-      }
+      {"kind": "step_failed", "payload": {"scenario_id": "forward_reference_rejected", "step_id": "first", "failure_class": "technical", "reason": "forward_reference", "referenced_step_id": "second"}},
+      {"kind": "audit.scenario_run_finished", "payload": {"scenario_id": "forward_reference_rejected", "outcome": "FAILED"}}
     ],
-    "final_state": "failed"
+    "final_state": "failed",
+    "error": {"code": "demo.validation.forward_reference"}
   }
 }
