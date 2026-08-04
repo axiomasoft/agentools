@@ -55,7 +55,7 @@ final class ActionReducer
             throw new LifecycleException('All records in an action journal must have the same action id.');
         }
         if ($this->isEffectEvent($event->kind) && ($event->epoch === null || $event->epoch < $state->epoch)) {
-            throw new LifecycleException('An effect event was written by a stale executor epoch.');
+            throw new StaleExecutorEpoch($event->epoch ?? 0, $state->epoch);
         }
         if ($this->hashChain !== null && $event->previousHash !== $state->previousHash) {
             throw new JournalIntegrityException('The event previous hash does not match the journal chain.');
