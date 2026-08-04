@@ -1,0 +1,28 @@
+{
+  "name": "agentools/sdk",
+  "description": "PHP contracts and runtime primitives for AgenTools.",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "AgenTools\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AgenTools\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit"
+  },
+  "config": {
+    "sort-packages": true
+  }
+}
