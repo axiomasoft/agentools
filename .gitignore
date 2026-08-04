@@ -6,6 +6,8 @@
 /conformance/vendor/
 /conformance/composer.lock
 /out/
+__pycache__/
+*.py[cod]
 *.log
 .DS_Store
 .mcp.json
