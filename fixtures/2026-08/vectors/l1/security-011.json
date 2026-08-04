@@ -67,7 +67,7 @@
         "payload": {
           "reason": "irreversible_untrusted_route_without_gate",
           "security_rule": "SEC-11",
-          "stimulus_pointer": "/given/driver_state/tools/0/_meta/dev.agentools~1action/confirmation",
+          "stimulus_pointer": "/given/tools/0/_meta/dev.agentools~1action/confirmation",
           "!tool_effect": true
         }
       }

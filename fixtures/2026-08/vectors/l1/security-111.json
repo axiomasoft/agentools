@@ -67,7 +67,7 @@
         "kind": "action_completed",
         "payload": {
           "security_rule": "SEC-11",
-          "stimulus_pointer": "/given/driver_state/tools/0/_meta/dev.agentools~1action/confirmation"
+          "stimulus_pointer": "/given/tools/0/_meta/dev.agentools~1action/confirmation"
         }
       }
     ],

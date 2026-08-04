@@ -59,6 +59,16 @@
         "resource": "record-1",
         "tool": "demo_probe",
         "permissions": []
+      },
+      "confirmation": {
+        "proposal_id": "proposal-1",
+        "proposal_version": 1,
+        "token_id": "token-1",
+        "covered_principal_id": "user-a",
+        "prepared_descriptor_digest": "sha-256:descriptor-1",
+        "current_descriptor_digest": "sha-256:descriptor-1",
+        "prepared_args_fingerprint": "sha-256:args-1",
+        "commit_args_fingerprint": "sha-256:args-1"
       }
     }
   },
