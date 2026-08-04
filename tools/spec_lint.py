@@ -2641,6 +2641,195 @@ def run_gate_b_remediation_write(fixtures_root):
     return report([], f"gate-b remediation: wrote only {manifest_path}")
 
 
+# P4.19/D161: v2 supersedes the historical round-1 relation manifest above. The
+# old builder remains readable as the evidence implementation that produced the
+# append-only round-1/2 audit, while these final definitions own the CLI names.
+GATE_B_SEMANTIC_MANIFEST_VERSION = 2
+
+
+def _observational_finding(rule_id):
+    if rule_id in {"TLP-11", "TLP-25"}:
+        return "F9"
+    if rule_id in {"TLP-7", "TLP-12", "TLP-26", "TLP-27", "TLP-28", "TLP-30", "TLP-31", "TLP-32", "ALC-14"}:
+        return "F10"
+    if rule_id.startswith("ALC-"):
+        return "F11"
+    if rule_id.startswith("CNF-") or rule_id.startswith("CLR-"):
+        return "F12"
+    if rule_id.startswith("AOB-"):
+        return "F13"
+    if rule_id.startswith("SEC-"):
+        return "F14"
+    return "F15"
+
+
+def _spec_source_digest(repo_root):
+    root = repo_root / "spec/revisions/2026-08"
+    digest = hashlib.sha256()
+    for path in sorted(p for p in root.rglob("*") if p.is_file()):
+        digest.update(path.relative_to(repo_root).as_posix().encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(path.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
+def build_gate_b_semantic_manifest(fixtures_root):
+    """Build exact 51-rule observational projection and execute every mutant."""
+    repo_root = fixtures_root.resolve().parents[1]
+    errors = []
+    records = collect_coverage_records(fixtures_root, errors)
+    by_rule = {}
+    for record in records:
+        for rule_id in record["data"].get("spec_rule_ids", []):
+            by_rule.setdefault(rule_id, []).append(record)
+    target = sorted(OBSERVATIONAL_BEHAVIOR_RULES | OBSERVATIONAL_ARTIFACT_RULES)
+    evidence = []
+    validator = None
+    try:
+        validator = _fixture_vector_validator(fixtures_root)
+    except Exception as exc:
+        errors.append(f"gate-b semantic manifest: offline vector validator недоступен ({exc})")
+    for rule_id in target:
+        expected_class = "behavior" if rule_id in OBSERVATIONAL_BEHAVIOR_RULES else "artifact"
+        members = sorted(
+            [record for record in by_rule.get(rule_id, []) if record["class"] == expected_class],
+            key=lambda record: record["id"],
+        )
+        if len(members) != 2:
+            errors.append(f"gate-b semantic manifest: {rule_id} требует exact 2 {expected_class} carriers, получено {len(members)}")
+            continue
+        shortcuts = sorted({
+            path for member in members for path in _walk_observational_shortcuts(member["data"])
+        })
+        if shortcuts:
+            errors.append(f"gate-b semantic manifest: {rule_id} содержит shortcuts {shortcuts}")
+        row = {
+            "rule_id": rule_id,
+            "finding": _observational_finding(rule_id),
+            "carrier_class": expected_class,
+            "carrier_ids": [member["id"] for member in members],
+            "banned_shortcuts": shortcuts,
+        }
+        if expected_class == "behavior":
+            pair = _pair_evidence(rule_id, members, errors)
+            observations = []
+            for member in members:
+                if validator is not None:
+                    schema_errors = list(validator.iter_errors(member["data"]))
+                    if schema_errors:
+                        errors.append(f"gate-b semantic manifest: {member['id']} schema-invalid ({schema_errors[0].message})")
+                ownership_errors = []
+                _check_behavior_observation_ownership(member["data"], member["id"], ownership_errors)
+                errors.extend(ownership_errors)
+                kinds = sorted({item.get("kind") for item in member["data"].get("expect", {}).get("observations", [])})
+                observations.append({
+                    "carrier_id": member["id"],
+                    "classes": kinds,
+                    "oracle_sha256": hashlib.sha256(_canonical_json(member["data"].get("expect")).encode("utf-8")).hexdigest(),
+                })
+            mutant = deepcopy(members[0]["data"])
+            mutant.get("expect", {}).pop("observations", None)
+            mutant_errors = []
+            _check_behavior_observation_ownership(mutant, f"mutant:{rule_id}", mutant_errors)
+            if not mutant_errors:
+                errors.append(f"gate-b semantic manifest: {rule_id} self-report mutant не отвергнут")
+            row.update({
+                "stimulus": pair,
+                "observations": observations,
+                "mutant": {"id": f"self-report:{rule_id}", "result": "rejected", "diagnostic_count": len(mutant_errors)},
+            })
+        else:
+            negative = [member for member in members if member["data"].get("expect", {}).get("linter") == "reject"]
+            positive = [member for member in members if member["data"].get("expect", {}).get("linter") == "accept"]
+            if len(negative) != 1 or len(positive) != 1:
+                errors.append(f"gate-b semantic manifest: {rule_id} требует raw negative + positive")
+                continue
+            positive_errors = validate_artifact_subject(positive[0]["data"].get("subject"), repo_root, positive[0]["id"])
+            negative_errors = validate_artifact_subject(negative[0]["data"].get("subject"), repo_root, negative[0]["id"])
+            if positive_errors or not negative_errors:
+                errors.append(f"gate-b semantic manifest: {rule_id} raw checker pair не различается")
+            row.update({
+                "stimulus": {
+                    "negative_subject_sha256": hashlib.sha256(negative[0]["data"]["subject"]["inline"].encode("utf-8")).hexdigest(),
+                    "positive_subject_sha256": hashlib.sha256(positive[0]["data"]["subject"]["inline"].encode("utf-8")).hexdigest(),
+                },
+                "observations": [{
+                    "carrier_id": positive[0]["id"],
+                    "classes": [f"checker_derived:{positive[0]['data']['subject']['kind']}"],
+                    "oracle_sha256": hashlib.sha256(_canonical_json(positive[0]["data"].get("expect")).encode("utf-8")).hexdigest(),
+                }],
+                "mutant": {"id": f"raw-fact:{rule_id}", "result": "rejected", "diagnostic_count": len(negative_errors)},
+            })
+        evidence.append(row)
+    present = {row["rule_id"] for row in evidence}
+    gaps = sorted(set(target) - present)
+    manifest = {
+        "schema_version": GATE_B_SEMANTIC_MANIFEST_VERSION,
+        "generated_by": "tools/spec_lint.py --gate-b-remediation-write",
+        "source_tree_sha256": _spec_source_digest(repo_root),
+        "checker_subject": "tools/spec_lint.py",
+        "observation_schema_subject": "fixtures/2026-08/schema/vector.json",
+        "partitions": {"behavior": 38, "artifact": 13, "total": 51},
+        "evidence": evidence,
+        "gaps": gaps,
+        "mutation_reject_count": sum(row.get("mutant", {}).get("result") == "rejected" for row in evidence),
+    }
+    if len(evidence) != 51 or gaps:
+        errors.append(f"gate-b semantic manifest: exact 51 нарушен (evidence={len(evidence)}, gaps={gaps})")
+    return manifest, errors
+
+
+def _semantic_manifest_pure_mutations(manifest):
+    errors = []
+    rejected = 0
+    for index, row in enumerate(manifest.get("evidence", [])):
+        mutant = deepcopy(manifest)
+        mutant["evidence"][index]["mutant"]["result"] = "accepted"
+        if _validate_gate_b_manifest(mutant, manifest):
+            rejected += 1
+        else:
+            errors.append(f"gate-b semantic manifest: pure mutation принят для {row.get('rule_id')}")
+    if rejected != 51:
+        errors.append(f"gate-b semantic manifest: pure mutation rejects {rejected}/51")
+    return errors
+
+
+def run_gate_b_remediation_check(fixtures_root):
+    if not fixtures_root.is_dir():
+        print(f"Ошибка: {fixtures_root} не является директорией", file=sys.stderr)
+        return 2
+    manifest, errors = build_gate_b_semantic_manifest(fixtures_root)
+    if manifest["partitions"] != {"behavior": 38, "artifact": 13, "total": 51}:
+        errors.append("gate-b semantic manifest: partition должен быть 38+13=51")
+    if manifest["mutation_reject_count"] != 51:
+        errors.append("gate-b semantic manifest: требуется 51 addressable mutation reject")
+    errors.extend(_semantic_manifest_pure_mutations(manifest))
+    path = fixtures_root / "gate-b-remediation.json"
+    if not path.is_file():
+        errors.append(f"gate-b semantic manifest: отсутствует {path}")
+    else:
+        actual = load_json(path, errors)
+        errors.extend(_validate_gate_b_manifest(actual, manifest))
+    return report(errors, "gate-b semantic manifest v2: exact 51 (38 behavior + 13 artifact), 51 mutants rejected")
+
+
+def run_gate_b_remediation_write(fixtures_root):
+    if not fixtures_root.is_dir():
+        print(f"Ошибка: {fixtures_root} не является директорией", file=sys.stderr)
+        return 2
+    manifest, errors = build_gate_b_semantic_manifest(fixtures_root)
+    errors.extend(_semantic_manifest_pure_mutations(manifest))
+    if errors:
+        return report(errors, "gate-b semantic manifest v2 не записан")
+    path = fixtures_root / "gate-b-remediation.json"
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=fixtures_root, delete=False) as stream:
+        stream.write(_canonical_json(manifest))
+        temporary_path = Path(stream.name)
+    temporary_path.replace(path)
+    return report([], f"gate-b semantic manifest v2: wrote only {path}")
+
+
 def check_common_fragments(fixtures_root, errors):
     """Копия common-дескриптора с тем же name обязана быть каноничной побайтно по JSON."""
     common = {}
