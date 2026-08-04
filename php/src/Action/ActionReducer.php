@@ -56,7 +56,7 @@ final class ActionReducer
         }
 
         // Unknown kinds occupy their sequence but deliberately do not alter the projection.
-        if (!isset(self::KNOWN_KINDS[$event->kind])) {
+        if (!array_key_exists($event->kind, self::KNOWN_KINDS)) {
             return new FoldedAction($event->actionId, $state->status, $event->seq, $state->epoch, $state->inputs, $state->effects, $state->cancellationRequested);
         }
 
@@ -79,7 +79,7 @@ final class ActionReducer
         if ($event->kind === 'effect_requested') {
             $effectId = $this->requiredString($event, 'effect_id');
             $eventEpoch = $this->requiredEpoch($event);
-            if (isset($effects[$effectId])) {
+            if (array_key_exists($effectId, $effects)) {
                 throw new LifecycleException('An effect can only be requested once.');
             }
             $effects[$effectId] = new EffectRecord(
