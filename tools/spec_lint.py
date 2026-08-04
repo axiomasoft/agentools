@@ -9,6 +9,7 @@
     python3 tools/spec_lint.py --namespace-inventory <revision_dir>
     python3 tools/spec_lint.py --namespace-inventory-selftest
     python3 tools/spec_lint.py --actionable-description-selftest <revision_dir>
+    python3 tools/spec_lint.py --schema-values-selftest <revision_dir>
 
 Ревизий в репозитории больше одной, и они живут по РАЗНЫМ конвенциям (`2026-07-draft`
 — история, `2026-08` — modern-only против MCP 2026-07-28), поэтому линтер параметризован
@@ -34,6 +35,8 @@
   6. Структурная сверка примера со своей схемой (№2).
   7. Легаси-лексика вне огороженного блока (D20/D45).
   8. Таблица покрытия решений `DR-01` в каждом документе.
+  9. У каждого расширяемого string `$defs` core-ветви `oneOf` не пересекаются
+     с fallback-ветвью; адресный `--schema-values-selftest` исполняет probes.
 
 Режим `--fixtures-check` (P4.1/P4.5, `research/03-p4-vector-corpus-2026-08.md` §3) — структурная
 сверка корпуса `fixtures/2026-08/**` со схемой класса своего вектора (`behavior`/`artifact`/
@@ -592,6 +595,154 @@ def check_enum_single_defs(revision_dir, profile, errors):
                 f"перечисление {list(values)} объявлено и в $defs ({defined[values][0]}), "
                 f"и инлайн ({places[0]}) — инлайн-копия обязана быть $ref (anti-regression №1)"
             )
+
+
+def _matches_open_enum_branch(branch, value):
+    """Минимальный исполняемый срез формы open-enum.
+
+    P3.20 намеренно не добавляет JSON Schema validator: для `oneOf`-словаря
+    достаточно проверить const, string, minLength, pattern и not. Если новая
+    ветвь выйдет за этот контракт, selftest откажет по форме, а не станет
+    молчаливо гадать о её семантике.
+    """
+    if not isinstance(branch, dict):
+        return False
+    if "const" in branch and value != branch["const"]:
+        return False
+    if "enum" in branch and value not in branch["enum"]:
+        return False
+    if branch.get("type") == "string" and not isinstance(value, str):
+        return False
+    if "minLength" in branch and (not isinstance(value, str) or len(value) < branch["minLength"]):
+        return False
+    if "pattern" in branch:
+        if not isinstance(value, str) or re.search(branch["pattern"], value) is None:
+            return False
+    if "not" in branch and _matches_open_enum_branch(branch["not"], value):
+        return False
+    return True
+
+
+def _open_string_definitions(revision_dir, errors):
+    """Возвращает расширяемые string `$defs` опубликованных схем.
+
+    Производные authoring-схемы не второй источник: P3.20 проверяет published
+    источник, а `close_schema.py --check` доказывает точное наследование.
+    """
+    schema_dir = revision_dir / "schema"
+    for schema_file in sorted(schema_dir.glob("*.json")):
+        data = load_json(schema_file, errors)
+        if not isinstance(data, dict):
+            continue
+        for path, definition in iter_schema_nodes(data):
+            parts = path.split("/")
+            if len(parts) < 2 or parts[-2] != "$defs":
+                continue
+            name = parts[-1]
+            if not isinstance(definition, dict):
+                continue
+            variants = definition.get("oneOf")
+            if not isinstance(variants, list):
+                continue
+            core = [branch for branch in variants if isinstance(branch, dict) and isinstance(branch.get("const"), str)]
+            fallback = [
+                branch for branch in variants
+                if isinstance(branch, dict) and branch.get("type") == "string" and "const" not in branch
+            ]
+            if core or fallback:
+                pointer = "#" + path.removeprefix("<root>")
+                yield schema_file, pointer, name, core, fallback
+
+
+def _check_open_string_definition(schema_file, pointer, name, core_branches, fallbacks, errors):
+    location = f"{schema_file}{pointer}"
+    core_values = [branch["const"] for branch in core_branches]
+    if not core_values or len(fallbacks) != 1:
+        errors.append(
+            f"{location}: extensible string $defs обязан иметь core const-ветви и ровно один string fallback"
+        )
+        return
+    if len(set(core_values)) != len(core_values):
+        errors.append(f"{location}: core const-значения повторяются: {core_values}")
+        return
+
+    fallback = fallbacks[0]
+    # Свободная строковая ветвь пересекалась с каждым const до P3.20. Pattern-
+    # fallback'и сами исключают short core-слова, но свободный fallback обязан
+    # объявить точный запрет явно — это канон D147.
+    if "pattern" not in fallback:
+        excluded = fallback.get("not", {}).get("enum") if isinstance(fallback.get("not"), dict) else None
+        if not isinstance(excluded, list) or set(excluded) != set(core_values) or len(excluded) != len(core_values):
+            errors.append(
+                f"{location}: свободный string fallback обязан исключать точный core-набор через not.enum"
+            )
+
+    for value in core_values:
+        matches = [branch for branch in core_branches + [fallback] if _matches_open_enum_branch(branch, value)]
+        if len(matches) != 1:
+            errors.append(
+                f"{location}: core {value!r} проходит {len(matches)} ветви oneOf, ожидалась ровно одна"
+            )
+
+    vendor_candidates = ("crm.custom", "crm.custom.value", "vendor.extension", "vendor.extension.value")
+    vendor = next(
+        (candidate for candidate in vendor_candidates
+         if _matches_open_enum_branch(fallback, candidate)
+         and not any(_matches_open_enum_branch(branch, candidate) for branch in core_branches)),
+        None,
+    )
+    if vendor is None:
+        errors.append(f"{location}: fallback не принимает ни один канонический vendor probe")
+    if any(_matches_open_enum_branch(branch, "") for branch in core_branches + [fallback]):
+        errors.append(f"{location}: пустая строка не должна проходить ни одну ветвь oneOf")
+
+
+def check_open_enum_contracts(revision_dir, errors):
+    """Проверяет непересечение всех расширяемых string `$defs` ревизии."""
+    for schema_file, pointer, name, core_branches, fallbacks in _open_string_definitions(revision_dir, errors):
+        _check_open_string_definition(schema_file, pointer, name, core_branches, fallbacks, errors)
+
+
+def run_schema_values_selftest(revision_dir):
+    """Адресный positive/negative selftest P3.20 без внешних зависимостей."""
+    if not revision_dir.is_dir():
+        print(f"Ошибка: {revision_dir} не является директорией", file=sys.stderr)
+        return 2
+    try:
+        resolve_profile(revision_dir)
+    except KeyError as exc:
+        print(f"Ошибка: {exc}", file=sys.stderr)
+        return 2
+
+    errors = []
+    definitions = list(_open_string_definitions(revision_dir, errors))
+    for schema_file, pointer, name, core_branches, fallbacks in definitions:
+        _check_open_string_definition(schema_file, pointer, name, core_branches, fallbacks, errors)
+
+    required = {"ResultType", "StatusChannel", "TaskStatus"}
+    found = {name for _, _, name, _, _ in definitions}
+    missing = sorted(required - found)
+    if missing:
+        errors.append(f"schema-values selftest: отсутствуют regression $defs: {', '.join(missing)}")
+
+    # Отрицательная проба должна падать именно на прежнем классе дефекта: убираем
+    # not из копии fallback ResultType и ожидаем адресную диагностику oneOf.
+    result_type = next((entry for entry in definitions if entry[2] == "ResultType"), None)
+    if result_type is not None and len(result_type[4]) == 1:
+        schema_file, pointer, name, core_branches, fallbacks = result_type
+        broken_fallback = json.loads(json.dumps(fallbacks[0], ensure_ascii=False))
+        broken_fallback.pop("not", None)
+        negative_errors = []
+        _check_open_string_definition(schema_file, pointer, name, core_branches, [broken_fallback], negative_errors)
+        if not negative_errors:
+            errors.append("schema-values selftest: negative fallback probe не был отклонён")
+    else:
+        errors.append("schema-values selftest: не найден однозначный fallback ResultType для negative probe")
+
+    return report(
+        errors,
+        "schema values: ResultType/StatusChannel/TaskStatus core=1, vendor=fallback, empty=rejected; negative fallback=rejected",
+    )
 
 
 def check_error_code_registry(revision_dir, errors):
@@ -1931,7 +2082,8 @@ def usage():
         "  python3 spec_lint.py --fixtures-check <fixtures_root>\n"
         "  python3 spec_lint.py --namespace-inventory <revision_dir>\n"
         "  python3 spec_lint.py --namespace-inventory-selftest\n"
-        "  python3 spec_lint.py --actionable-description-selftest <revision_dir>",
+        "  python3 spec_lint.py --actionable-description-selftest <revision_dir>\n"
+        "  python3 spec_lint.py --schema-values-selftest <revision_dir>",
         file=sys.stderr,
     )
     return 2
@@ -1949,6 +2101,13 @@ def main():
         except IndexError:
             return usage()
         return run_actionable_description_selftest(target)
+
+    if "--schema-values-selftest" in args:
+        try:
+            target = Path(args[args.index("--schema-values-selftest") + 1])
+        except IndexError:
+            return usage()
+        return run_schema_values_selftest(target)
 
     if "--namespace-inventory" in args:
         try:
@@ -2020,6 +2179,7 @@ def main():
 
     if profile["enum_single_defs"]:
         check_enum_single_defs(revision_dir, profile, errors)
+        check_open_enum_contracts(revision_dir, errors)
         check_error_code_registry(revision_dir, errors)
     if profile["description_no_norm"]:
         check_description_no_norm(revision_dir, profile, errors)

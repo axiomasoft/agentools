@@ -44,6 +44,12 @@
         {
           "type": "string",
           "minLength": 1,
+          "not": {
+            "enum": [
+              "poll",
+              "notification"
+            ]
+          },
           "description": "Значение, неизвестное ревизии: записывается как наблюдалось и обрабатывается по правилу must-ignore документа 09."
         }
       ]
@@ -74,6 +80,15 @@
         {
           "type": "string",
           "minLength": 1,
+          "not": {
+            "enum": [
+              "working",
+              "input_required",
+              "completed",
+              "failed",
+              "cancelled"
+            ]
+          },
           "description": "Значение, неизвестное ревизии: записывается как наблюдалось и не трактуется ни как завершение, ни как отказ."
         }
       ]
