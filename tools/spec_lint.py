@@ -600,6 +600,24 @@ def check_enum_single_defs(revision_dir, profile, errors):
 OPEN_ENUM_CORE_KEYS = frozenset(("const", "description"))
 OPEN_ENUM_FALLBACK_KEYS = frozenset(("type", "minLength", "pattern", "not", "description"))
 OPEN_ENUM_NOT_FORMS = (frozenset(("enum",)), frozenset(("pattern",)))
+OPEN_ENUM_DEFINITION_KEYS = frozenset(("description", "oneOf"))
+OPEN_ENUM_COMBINATORS = ("oneOf", "anyOf", "allOf")
+OPEN_ENUM_INVENTORY = frozenset(
+    (
+        ("audit-event.json", "AuditEventKind"),
+        ("clarification.json", "ResultType"),
+        ("decision-audit.json", "Decision"),
+        ("error.json", "ErrorCode"),
+        ("error.json", "ErrorCategory"),
+        ("lifecycle-event.json", "ActorType"),
+        ("lifecycle-event.json", "EventKind"),
+        ("side-effect.json", "SideEffect"),
+        ("side-effect.json", "Confirmation"),
+        ("task-binding.json", "StatusChannel"),
+        ("task-binding.json", "TaskStatus"),
+        ("tool-descriptor.json", "ContentOrigin"),
+    )
+)
 
 
 def _matches_open_enum_branch(branch, value):
@@ -618,37 +636,92 @@ def _matches_open_enum_branch(branch, value):
     return "pattern" not in not_node or re.search(not_node["pattern"], value) is None
 
 
+def _looks_like_open_string_definition(definition):
+    """Находит незарегистрированный string candidate без доверия к `oneOf`."""
+    if not isinstance(definition, dict):
+        return False
+    for keyword in OPEN_ENUM_COMBINATORS:
+        variants = definition.get(keyword)
+        if not isinstance(variants, list):
+            continue
+        if any(
+            isinstance(branch, dict)
+            and (isinstance(branch.get("const"), str) or branch.get("type") == "string")
+            for branch in variants
+        ):
+            return True
+    return False
+
+
+def _format_open_enum_key(key):
+    schema_name, definition_name = key
+    return f"{schema_name}#/$defs/{definition_name}"
+
+
+def _check_open_enum_inventory(observed, errors):
+    """Exact-set gate: carrier нельзя потерять или добавить эвристикой."""
+    missing = sorted(OPEN_ENUM_INVENTORY - set(observed))
+    unexpected = sorted(set(observed) - OPEN_ENUM_INVENTORY)
+    if missing:
+        errors.append(
+            "open-enum inventory missing: "
+            + ", ".join(_format_open_enum_key(key) for key in missing)
+        )
+    if unexpected:
+        errors.append(
+            "open-enum inventory unexpected: "
+            + ", ".join(_format_open_enum_key(key) for key in unexpected)
+        )
+
+
 def _open_string_definitions(revision_dir, errors):
-    """Возвращает кандидаты extensible string `$defs` с полным исходным `oneOf`.
+    """Возвращает exact inventory extensible `$defs` как полные definitions.
 
     Производные authoring-схемы не второй источник: published-схемы проверяет
     этот gate, а `close_schema.py --check` доказывает точное наследование.
+    Registry lookup не зависит от shape, поэтому `oneOf` нельзя убрать из gate.
     """
     schema_dir = revision_dir / "schema"
+    observed = set()
+    definitions = []
     for schema_file in sorted(schema_dir.glob("*.json")):
         data = load_json(schema_file, errors)
         if not isinstance(data, dict):
             continue
-        for path, definition in iter_schema_nodes(data):
-            parts = path.split("/")
-            if len(parts) < 2 or parts[-2] != "$defs" or not isinstance(definition, dict):
-                continue
-            variants = definition.get("oneOf")
-            if not isinstance(variants, list):
-                continue
-            has_string_core = any(isinstance(branch, dict) and isinstance(branch.get("const"), str) for branch in variants)
-            has_string_fallback = any(
-                isinstance(branch, dict) and branch.get("type") == "string" and "const" not in branch
-                for branch in variants
-            )
-            if has_string_core or has_string_fallback:
-                pointer = "#" + path.removeprefix("<root>")
-                yield schema_file, pointer, parts[-1], variants
+        defs = data.get("$defs")
+        if not isinstance(defs, dict):
+            continue
+        for name, definition in defs.items():
+            key = (schema_file.name, name)
+            if key in OPEN_ENUM_INVENTORY:
+                observed.add(key)
+                definitions.append((schema_file, f"#/$defs/{name}", name, definition))
+            elif _looks_like_open_string_definition(definition):
+                observed.add(key)
+    _check_open_enum_inventory(observed, errors)
+    yield from definitions
 
 
-def _check_open_string_definition(schema_file, pointer, name, variants, errors):
-    """Fail-closed классифицирует каждую исходную ветвь канона D147."""
+def _check_open_string_definition(schema_file, pointer, name, definition, errors):
+    """Fail-closed проверяет внешний carrier и каждую ветвь канона D147."""
     location = f"{schema_file}{pointer}"
+    if not isinstance(definition, dict):
+        errors.append(f"{location}: open-enum definition обязан быть object")
+        return [], []
+
+    unknown = sorted(set(definition) - OPEN_ENUM_DEFINITION_KEYS)
+    missing = sorted(OPEN_ENUM_DEFINITION_KEYS - set(definition))
+    if unknown:
+        errors.append(f"{location}: definition содержит неизвестные keywords: {', '.join(unknown)}")
+    if missing:
+        errors.append(f"{location}: definition не содержит обязательные keywords: {', '.join(missing)}")
+    if not isinstance(definition.get("description"), str):
+        errors.append(f"{location}: definition обязан иметь string description")
+    variants = definition.get("oneOf")
+    if not isinstance(variants, list):
+        errors.append(f"{location}: definition oneOf обязан быть list")
+        return [], []
+
     core_branches = []
     fallbacks = []
     for index, branch in enumerate(variants):
@@ -712,8 +785,10 @@ def _check_open_string_definition(schema_file, pointer, name, variants, errors):
 
 def check_open_enum_contracts(revision_dir, errors):
     """Fail-closed проверяет полный shape каждого extensible string `$defs`."""
-    for schema_file, pointer, name, variants in _open_string_definitions(revision_dir, errors):
-        _check_open_string_definition(schema_file, pointer, name, variants, errors)
+    definitions = list(_open_string_definitions(revision_dir, errors))
+    for schema_file, pointer, name, definition in definitions:
+        _check_open_string_definition(schema_file, pointer, name, definition, errors)
+    return definitions
 
 
 LIFECYCLE_EVENT_LIST_PREFIX = "**Виды событий.** "
@@ -762,9 +837,11 @@ def event_kind_schema_names(definitions, errors):
     if len(entries) != 1:
         errors.append(f"schema-values: $defs.EventKind должен быть найден ровно в одной published schema, найдено {len(entries)}")
         return None
+    definition = entries[0][3]
+    variants = definition.get("oneOf", []) if isinstance(definition, dict) else []
     return {
         branch["const"]
-        for branch in entries[0][3]
+        for branch in variants
         if isinstance(branch, dict) and isinstance(branch.get("const"), str)
     }
 
@@ -787,7 +864,7 @@ def check_lifecycle_event_contract(revision_dir, errors, definitions=None):
 
 
 def run_schema_values_selftest(revision_dir):
-    """Адресный Draft 2020-12 selftest P3.24 с явной test-зависимостью."""
+    """Адресный Draft 2020-12 selftest P4.14 с явной test-зависимостью."""
     if not revision_dir.is_dir():
         print(f"Ошибка: {revision_dir} не является директорией", file=sys.stderr)
         return 2
@@ -805,9 +882,14 @@ def run_schema_values_selftest(revision_dir):
     errors = []
     definitions = list(_open_string_definitions(revision_dir, errors))
     checked = []
-    for schema_file, pointer, name, variants in definitions:
-        core_branches, fallbacks = _check_open_string_definition(schema_file, pointer, name, variants, errors)
-        checked.append((schema_file, pointer, name, variants, core_branches, fallbacks))
+    for schema_file, pointer, name, definition in definitions:
+        core_branches, fallbacks = _check_open_string_definition(
+            schema_file, pointer, name, definition, errors
+        )
+        variants = definition.get("oneOf", []) if isinstance(definition, dict) else []
+        checked.append(
+            (schema_file, pointer, name, definition, variants, core_branches, fallbacks)
+        )
 
     required = {"ResultType", "StatusChannel", "TaskStatus"}
     found = {name for _, _, name, _ in definitions}
@@ -817,12 +899,13 @@ def run_schema_values_selftest(revision_dir):
 
     check_lifecycle_event_contract(revision_dir, errors, definitions)
 
-    for schema_file, pointer, name, variants, core_branches, fallbacks in checked:
+    for schema_file, pointer, name, definition, variants, core_branches, fallbacks in checked:
         if not core_branches or len(fallbacks) != 1:
             continue
         try:
-            Draft202012Validator.check_schema({"oneOf": variants})
-            validator = Draft202012Validator({"oneOf": variants})
+            oracle_definition = json.loads(json.dumps(definition, ensure_ascii=False))
+            Draft202012Validator.check_schema(oracle_definition)
+            validator = Draft202012Validator(oracle_definition)
         except Exception as exc:
             errors.append(f"{schema_file}{pointer}: Draft202012Validator не принял schema ({exc})")
             continue
@@ -838,49 +921,124 @@ def run_schema_values_selftest(revision_dir):
         if not errors:
             print(f"schema values: {name}: core accepted, vendor accepted, empty rejected")
 
-    # Две мутации из F1 обязаны иметь независимые вердикты: Draft 2020-12
-    # показывает изменённую семантику, а structural gate отвергает сам shape.
+    # Branch-мутации P3.24 и outer-shape мутации P4.14 имеют независимые
+    # verdicts: Draft показывает семантику, structural/inventory gate — shape.
     result_type = next((entry for entry in checked if entry[2] == "ResultType"), None)
     if result_type is None:
         errors.append("schema-values selftest: не найден $defs.ResultType для mutation probes")
     else:
-        schema_file, pointer, name, variants, _, _ = result_type
-        max_length_variants = json.loads(json.dumps(variants, ensure_ascii=False))
-        max_length_fallback = next(
-            (branch for branch in max_length_variants if isinstance(branch, dict) and branch.get("type") == "string" and "const" not in branch),
-            None,
-        )
-        if max_length_fallback is None:
-            errors.append("schema-values selftest: не найден fallback ResultType для maxLength mutation")
-        else:
-            max_length_fallback["maxLength"] = 1
-            structural_errors = []
-            _check_open_string_definition(schema_file, pointer, name, max_length_variants, structural_errors)
-            oracle_rejects_vendor = not Draft202012Validator({"oneOf": max_length_variants}).is_valid("vendor.extension")
-            if not oracle_rejects_vendor:
-                errors.append("schema-values selftest: maxLength mutation oracle принял vendor.extension")
-            if not structural_errors:
-                errors.append("schema-values selftest: maxLength mutation structural gate не отклонил")
-            if oracle_rejects_vendor and structural_errors:
-                print("schema values mutation maxLength: oracle vendor reject; structural reject")
+        schema_file, pointer, name, definition, _, _, _ = result_type
+        if isinstance(definition, dict) and isinstance(definition.get("oneOf"), list):
+            max_length_definition = json.loads(json.dumps(definition, ensure_ascii=False))
+            max_length_variants = max_length_definition["oneOf"]
+            max_length_fallback = next(
+                (
+                    branch
+                    for branch in max_length_variants
+                    if isinstance(branch, dict)
+                    and branch.get("type") == "string"
+                    and "const" not in branch
+                ),
+                None,
+            )
+            if max_length_fallback is None:
+                errors.append("schema-values selftest: не найден fallback ResultType для maxLength mutation")
+            else:
+                max_length_fallback["maxLength"] = 1
+                structural_errors = []
+                _check_open_string_definition(
+                    schema_file, pointer, name, max_length_definition, structural_errors
+                )
+                oracle_rejects_vendor = not Draft202012Validator(max_length_definition).is_valid(
+                    "vendor.extension"
+                )
+                if not oracle_rejects_vendor:
+                    errors.append("schema-values selftest: maxLength mutation oracle принял vendor.extension")
+                if not structural_errors:
+                    errors.append("schema-values selftest: maxLength mutation structural gate не отклонил")
+                if oracle_rejects_vendor and structural_errors:
+                    print("schema values mutation maxLength: oracle vendor reject; structural reject")
 
-        integer_variants = json.loads(json.dumps(variants, ensure_ascii=False))
-        integer_variants.append({"type": "integer"})
-        structural_errors = []
-        _check_open_string_definition(schema_file, pointer, name, integer_variants, structural_errors)
-        oracle_accepts_integer = Draft202012Validator({"oneOf": integer_variants}).is_valid(7)
-        if not oracle_accepts_integer:
-            errors.append("schema-values selftest: extra integer branch oracle отверг 7")
-        if not structural_errors:
-            errors.append("schema-values selftest: extra integer branch structural gate не отклонил")
-        if oracle_accepts_integer and structural_errors:
-            print("schema values mutation extra integer branch: oracle integer accept; structural reject")
+            integer_definition = json.loads(json.dumps(definition, ensure_ascii=False))
+            integer_definition["oneOf"].append({"type": "integer"})
+            structural_errors = []
+            _check_open_string_definition(
+                schema_file, pointer, name, integer_definition, structural_errors
+            )
+            oracle_accepts_integer = Draft202012Validator(integer_definition).is_valid(7)
+            if not oracle_accepts_integer:
+                errors.append("schema-values selftest: extra integer branch oracle отверг 7")
+            if not structural_errors:
+                errors.append("schema-values selftest: extra integer branch structural gate не отклонил")
+            if oracle_accepts_integer and structural_errors:
+                print("schema values mutation extra integer branch: oracle integer accept; structural reject")
+
+            outer_max_length = json.loads(json.dumps(definition, ensure_ascii=False))
+            outer_max_length["maxLength"] = 1
+            structural_errors = []
+            _check_open_string_definition(
+                schema_file, pointer, name, outer_max_length, structural_errors
+            )
+            oracle_rejects_vendor = not Draft202012Validator(outer_max_length).is_valid(
+                "vendor.extension"
+            )
+            structural_rejects_keyword = any(
+                "definition содержит неизвестные keywords: maxLength" in error
+                for error in structural_errors
+            )
+            if not oracle_rejects_vendor:
+                errors.append("schema-values selftest: outer maxLength oracle принял vendor.extension")
+            if not structural_rejects_keyword:
+                errors.append("schema-values selftest: outer maxLength structural gate не отклонил keyword")
+            if oracle_rejects_vendor and structural_rejects_keyword:
+                print("schema values mutation outer maxLength: oracle vendor reject; structural reject")
+
+    content_origin = next((entry for entry in checked if entry[2] == "ContentOrigin"), None)
+    if content_origin is None:
+        errors.append("schema-values selftest: не найден $defs.ContentOrigin для allOf mutation")
+    else:
+        schema_file, pointer, name, definition, _, _, _ = content_origin
+        if isinstance(definition, dict) and isinstance(definition.get("oneOf"), list):
+            all_of_definition = json.loads(json.dumps(definition, ensure_ascii=False))
+            all_of_definition["allOf"] = all_of_definition.pop("oneOf")
+            structural_errors = []
+            _check_open_string_definition(
+                schema_file, pointer, name, all_of_definition, structural_errors
+            )
+            validator = Draft202012Validator(all_of_definition)
+            oracle_rejects_core = not validator.is_valid("model")
+            oracle_rejects_vendor = not validator.is_valid("vendor.extension")
+            structural_rejects_shape = any(
+                "definition содержит неизвестные keywords: allOf" in error
+                for error in structural_errors
+            ) and any(
+                "definition не содержит обязательные keywords: oneOf" in error
+                for error in structural_errors
+            )
+            if not oracle_rejects_core or not oracle_rejects_vendor:
+                errors.append("schema-values selftest: oneOf→allOf oracle не отверг core+vendor")
+            if not structural_rejects_shape:
+                errors.append("schema-values selftest: oneOf→allOf structural gate не отклонил shape")
+            if oracle_rejects_core and oracle_rejects_vendor and structural_rejects_shape:
+                print("schema values mutation oneOf→allOf: oracle core+vendor reject; structural reject")
+
+    inventory_errors = []
+    removed_key = ("tool-descriptor.json", "ContentOrigin")
+    _check_open_enum_inventory(OPEN_ENUM_INVENTORY - {removed_key}, inventory_errors)
+    if not any(
+        "open-enum inventory missing: tool-descriptor.json#/$defs/ContentOrigin" in error
+        for error in inventory_errors
+    ):
+        errors.append("schema-values selftest: inventory removal gate не выявил ContentOrigin")
+    else:
+        print("schema values mutation inventory removal: missing ContentOrigin rejected")
 
     event_kind = next((entry for entry in definitions if entry[2] == "EventKind"), None)
     if event_kind is None:
         errors.append("schema-values selftest: не найден $defs.EventKind для negative probe")
     else:
-        schema_file, pointer, name, variants = event_kind
+        schema_file, pointer, name, definition = event_kind
+        variants = definition.get("oneOf", []) if isinstance(definition, dict) else []
         broken_core = [
             branch for branch in variants
             if not (isinstance(branch, dict) and branch.get("const") == "task_bound")
@@ -903,7 +1061,7 @@ def run_schema_values_selftest(revision_dir):
 
     return report(
         errors,
-        "schema values: ResultType/StatusChannel/TaskStatus/EventKind core=1, vendor=fallback, empty=rejected; lifecycle markdown=schema; negative probes=rejected",
+        "schema values: exact inventory=12; full definitions Draft-valid; core=1, vendor=fallback, empty=rejected; lifecycle markdown=schema; branch+outer+inventory negatives=rejected",
     )
 
 
@@ -2341,8 +2499,8 @@ def main():
 
     if profile["enum_single_defs"]:
         check_enum_single_defs(revision_dir, profile, errors)
-        check_open_enum_contracts(revision_dir, errors)
-        check_lifecycle_event_contract(revision_dir, errors)
+        definitions = check_open_enum_contracts(revision_dir, errors)
+        check_lifecycle_event_contract(revision_dir, errors, definitions)
         check_error_code_registry(revision_dir, errors)
     if profile["description_no_norm"]:
         check_description_no_norm(revision_dir, profile, errors)
