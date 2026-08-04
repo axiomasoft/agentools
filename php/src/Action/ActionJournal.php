@@ -29,4 +29,15 @@ final readonly class ActionJournal
     {
         return ($reducer ?? new ActionReducer())->fold($this->events);
     }
+
+    /** @param list<ActionEvent> $tail */
+    public static function restore(ActionSnapshot $snapshot, array $tail, ?ActionReducer $reducer = null): FoldedAction
+    {
+        $reducer ??= new ActionReducer($snapshot->specRevision);
+        $state = $snapshot->state;
+        foreach ($tail as $event) {
+            $state = $reducer->apply($state, $event);
+        }
+        return $state;
+    }
 }

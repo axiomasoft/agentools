@@ -48,4 +48,34 @@ final readonly class ActionEvent
             'payload' => $this->payload,
         ], static fn (mixed $value): bool => $value !== null);
     }
+
+    /**
+     * ALC-36 input: the immutable event envelope without its chain link.
+     *
+     * @return array<string, mixed>
+     */
+    public function hashInput(): array
+    {
+        $input = $this->toArray();
+        unset($input['prev_hash']);
+        return $input;
+    }
+
+    public function withPreviousHash(?string $previousHash): self
+    {
+        return new self(
+            $this->eventId,
+            $this->actionId,
+            $this->seq,
+            $this->expectedPrevSeq,
+            $this->timestamp,
+            $this->actor,
+            $this->kind,
+            $this->eventVersion,
+            $this->specRevision,
+            $this->payload,
+            $this->epoch,
+            $previousHash,
+        );
+    }
 }

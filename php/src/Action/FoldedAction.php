@@ -25,6 +25,7 @@ final readonly class FoldedAction
         array $inputs = [],
         array $effects = [],
         public bool $cancellationRequested = false,
+        public ?string $previousHash = null,
     ) {
         $this->inputs = $inputs;
         $this->effects = $effects;

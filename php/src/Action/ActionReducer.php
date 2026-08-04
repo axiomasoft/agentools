@@ -18,8 +18,11 @@ final class ActionReducer
         'task_binding_lost' => true, 'cancellation_requested' => true, 'action_cancelled' => true,
     ];
 
-    public function __construct(private readonly string $specRevision = '2026-08')
-    {
+    public function __construct(
+        private readonly string $specRevision = '2026-08',
+        private readonly ?JournalHashChain $hashChain = null,
+        private readonly EventUpcasterChain $upcasters = new EventUpcasterChain(),
+    ) {
     }
 
     /** @param list<ActionEvent> $events */
@@ -27,7 +30,7 @@ final class ActionReducer
     {
         $state = new FoldedAction();
         foreach ($events as $event) {
-            $state = $this->apply($state, $event);
+            $state = $this->apply($state, $this->upcasters->upcast($event));
         }
 
         return $state;
@@ -35,7 +38,7 @@ final class ActionReducer
 
     public function apply(FoldedAction $state, ActionEvent $event): FoldedAction
     {
-        // ALC-16: terminality, sequence, version, epoch, (L3 chain), transition.
+        // ALC-16: terminality, sequence, version, epoch, chain, transition.
         if ($state->status?->isTerminal()) {
             throw new LifecycleException('A terminal action cannot accept another event.');
         }
@@ -54,10 +57,13 @@ final class ActionReducer
         if ($this->isEffectEvent($event->kind) && ($event->epoch === null || $event->epoch < $state->epoch)) {
             throw new LifecycleException('An effect event was written by a stale executor epoch.');
         }
+        if ($this->hashChain !== null && $event->previousHash !== $state->previousHash) {
+            throw new JournalIntegrityException('The event previous hash does not match the journal chain.');
+        }
 
         // Unknown kinds occupy their sequence but deliberately do not alter the projection.
         if (!array_key_exists($event->kind, self::KNOWN_KINDS)) {
-            return new FoldedAction($event->actionId, $state->status, $event->seq, $state->epoch, $state->inputs, $state->effects, $state->cancellationRequested);
+            return new FoldedAction($event->actionId, $state->status, $event->seq, $state->epoch, $state->inputs, $state->effects, $state->cancellationRequested, $this->hash($event));
         }
 
         $status = $this->nextStatus($state, $event);
@@ -112,7 +118,7 @@ final class ActionReducer
             $cancelled = true;
         }
 
-        return new FoldedAction($event->actionId, $status, $event->seq, $epoch, $inputs, $effects, $cancelled);
+        return new FoldedAction($event->actionId, $status, $event->seq, $epoch, $inputs, $effects, $cancelled, $this->hash($event));
     }
 
     private function nextStatus(FoldedAction $state, ActionEvent $event): ActionStatus
@@ -225,5 +231,10 @@ final class ActionReducer
         }
 
         return $event->epoch;
+    }
+
+    private function hash(ActionEvent $event): ?string
+    {
+        return $this->hashChain?->hash($event);
     }
 }
