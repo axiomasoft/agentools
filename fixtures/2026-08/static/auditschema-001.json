@@ -1,0 +1,1 @@
+{"id":"auditschema-001","title":"Audit schema не содержит внешнее telemetry имя","vector_class":"artifact","spec_rev":"2026-08","spec_rule_ids":["AOB-26"],"conformance_level":"L3","subject":{"kind":"audit_schema","inline":"{\"schema\":{\"properties\":{\"gen_ai.provider.name\":{\"type\":\"string\"}}}}"},"expect":{"linter":"reject","diagnostic_substring":"audit_schema"}}

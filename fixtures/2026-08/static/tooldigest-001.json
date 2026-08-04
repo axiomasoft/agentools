@@ -15,7 +15,7 @@
   "conformance_level": "L1",
   "subject": {
     "kind": "descriptor_digest_case",
-    "inline": "{\"input_keys\":[\"name\",\"description\",\"inputSchema\",\"outputSchema\",\"annotations\"],\"steps\":[\"jcs\",\"utf8\",\"sha256\"],\"excluded\":[\"_meta\",\"title\",\"icons\"],\"byte_identical\":true,\"capture_phase\":\"prepare\",\"mismatch_code\":\"agentools.precondition.descriptor_drift\"}"
+    "inline": "{\"descriptor\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{},\"_meta\":{},\"title\":\"Task\"},\"digest_input\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{}},\"algorithm\":[\"jcs\",\"utf8\",\"sha256\"],\"capture_phase\":\"prepare\",\"mismatch_code\":\"agentools.precondition.descriptor_drift\"}"
   },
   "expect": {
     "linter": "accept"

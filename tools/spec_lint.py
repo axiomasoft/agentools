@@ -1620,6 +1620,26 @@ def resolve_artifact_path(repo_root, raw_path, source, errors):
     return path
 
 
+def _artifact_object(raw, source, errors):
+    """Разбирает raw subject: проверка получает фактические значения, а не verdict-флаги."""
+    try:
+        value = json.loads(raw)
+    except (TypeError, json.JSONDecodeError) as exc:
+        errors.append(f"{source}: невалидный JSON subject ({exc})")
+        return None
+    if not isinstance(value, dict):
+        errors.append(f"{source}: subject должен быть JSON-объектом")
+        return None
+    return value
+
+
+def _actionable_description(value):
+    return isinstance(value, str) and re.fullmatch(
+        r"Purpose: [^\r\n]+\nCall when: [^\r\n]+\nRequired arguments: [^\r\n]+\nExample: [^\r\n]+",
+        value,
+    ) is not None
+
+
 def validate_artifact_subject(subject, repo_root, source):
     """Возвращает фактические диагностики одного artifact-вектора."""
     errors = []
@@ -1676,11 +1696,19 @@ def validate_artifact_subject(subject, repo_root, source):
         elif not isinstance(data, dict) or not isinstance(data.get("rules"), list):
             errors.append(f"{source}: rules.json не несёт список rules")
     elif kind == "known_failures":
-        try:
-            data = json.loads(inline)
-        except json.JSONDecodeError as exc:
-            return [f"{source}: невалидный JSON ({exc})"]
-        known = {f"{row.get('scenario')}:{row.get('check')}" for row in data.get("known_failures", [])}
+        data = _artifact_object(inline, source, errors)
+        if data is None:
+            return errors
+        rows = data.get("known_failures")
+        if not isinstance(rows, list) or not rows or any(
+            not isinstance(row, dict)
+            or set(row) != {"scenario", "check", "rule_id", "issue"}
+            or not all(isinstance(row[key], str) and row[key] for key in row)
+            for row in rows
+        ):
+            errors.append(f"{source}: baseline entry обязан нести scenario/check/rule_id/issue-link")
+            return errors
+        known = {f"{row['scenario']}:{row['check']}" for row in rows}
         actual = set(data.get("actual_failures", []))
         if not actual <= known or not data.get("reject_passing_entries") or data.get("grease_allowed"):
             errors.append(f"{source}: baseline известных отказов нарушает anti-erosion контракт")
@@ -1695,38 +1723,49 @@ def validate_artifact_subject(subject, repo_root, source):
         if any(data.get(key) != value for key, value in required.items()):
             errors.append(f"{source}: граница harness-протокола нарушена")
     elif kind == "conformance_report":
-        data = json.loads(inline)
+        data = _artifact_object(inline, source, errors)
+        if data is None:
+            return errors
+        records = data.get("vectors")
+        if "rule_id" in data:
+            if data.get("normative_word") not in {"MUST", "MUST NOT", "SHOULD", "SHOULD NOT", "MAY"} or data.get("outcome") == "Not testable" and (not data.get("reason") or data.get("counts_toward_level") is not False):
+                errors.append(f"{source}: severity/Not testable report нарушает контракт")
+            return errors
+        if not isinstance(records, list) or not records or any(
+            not isinstance(row, dict)
+            or set(row) != {"id", "outcome", "rule_ids"}
+            or not isinstance(row["id"], str) or not row["id"]
+            or row["outcome"] not in {"completed", "failed", "not_testable"}
+            or not isinstance(row["rule_ids"], list) or not row["rule_ids"]
+            for row in records
+        ):
+            errors.append(f"{source}: отчёт обязан нести per-vector records id/outcome/rule_ids")
+            return errors
+        if [row["id"] for row in records] != sorted(row["id"] for row in records):
+            errors.append(f"{source}: per-vector records не отсортированы по vector_id")
+        if data.get("submitted_vectors") != [row["id"] for row in records]:
+            errors.append(f"{source}: отчёт потерял переданные векторы")
+        if not isinstance(data.get("level_summary"), dict):
+            errors.append(f"{source}: отчёт не несёт сводку по уровням")
         if any(not row.get("reason") for row in data.get("not_testable", [])):
             errors.append(f"{source}: Not testable без причины")
         if data.get("success") is True and (data.get("failed") or data.get("counts_toward_level") is False):
             errors.append(f"{source}: success противоречит фактическому результату")
-        if "submitted_vectors" in data and data.get("submitted_vectors") != data.get("reported_vectors"):
+        if "reported_vectors" in data and data.get("submitted_vectors") != data.get("reported_vectors"):
             errors.append(f"{source}: отчёт потерял переданные векторы")
     elif kind == "extension_identity":
-        data = json.loads(inline)
-        expected = {
-            "category": "unofficial",
-            "extension_id": "dev.agentools/core",
-            "breaking_change": "new_extension_id",
-            "meta_key_pattern": "^dev\\.agentools/[a-z][a-z0-9._-]*$",
-            "vendor_prefix": "dev.agentools",
-            "version_in_key": False,
-            "foreign_prefix_rejected": True,
-        }
-        if data != expected:
+        data = _artifact_object(inline, source, errors)
+        if data is None:
+            return errors
+        keys = {"category", "extension_id", "breaking_extension_id", "data_key"}
+        if set(data) != keys or data.get("category") != "Unofficial per SEP-2133" or data.get("extension_id") != "dev.agentools/core" or data.get("breaking_extension_id") != "dev.agentools/core-v2" or not re.fullmatch(r"dev\.agentools/[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?", str(data.get("data_key"))) or re.search(r"(?:[-/]v[0-9]+)$", data.get("data_key", "")):
             errors.append(f"{source}: identity расширения расходится с контрактом EXT-1..EXT-9")
     elif kind == "extension_negotiation":
-        data = json.loads(inline)
-        expected = {
-            "schema_id_base": "https://agentools.dev/schema/2026-08/",
-            "load_schema_by_id": False,
-            "declaration_map_key": "dev.agentools/core",
-            "settings_required": ["spec_rev"],
-            "absent_peer": "do_not_send_extension_data",
-            "unknown_extension_data": "ignore_without_reject",
-            "cache_scope": "connection_only",
-        }
-        if data != expected:
+        data = _artifact_object(inline, source, errors)
+        if data is None:
+            return errors
+        declaration = data.get("declaration")
+        if set(data) != {"schema_id", "declaration", "absent_peer", "unknown_extension", "cache_scope"} or not isinstance(data.get("schema_id"), str) or not data["schema_id"].startswith("https://agentools.dev/schema/2026-08/") or not isinstance(declaration, dict) or declaration != {"map_key": "dev.agentools/core", "specRevision": "2026-08", "scope": "per_request"} or data.get("absent_peer") != "core_or_typed_error" or data.get("unknown_extension") != "ignore" or data.get("cache_scope") != "exchange":
             errors.append(f"{source}: negotiation расширения расходится с контрактом EXT-11..EXT-17")
     elif kind == "tool_contract_case":
         data = json.loads(inline)
@@ -1735,42 +1774,80 @@ def validate_artifact_subject(subject, repo_root, source):
         action = data.get("_meta", {}).get("dev.agentools/action", {})
         if set(data) != required:
             errors.append(f"{source}: дескриптор обязан нести ровно MCP-поля профиля")
-        if not re.match(r"^[a-z][a-z0-9_]{0,63}$", str(data.get("name", ""))):
+        if not re.fullmatch(r"[a-z][a-z0-9]*(_[a-z0-9]+)+", str(data.get("name", ""))) or len(data.get("name", "")) > 64:
             errors.append(f"{source}: name не соответствует профилю")
         if set(annotations) != {"readOnlyHint", "destructiveHint", "idempotentHint", "openWorldHint"}:
             errors.append(f"{source}: четыре annotations должны быть заданы явно")
-        if action.get("side_effect") != "write" or action.get("confirmation") != "confirm":
+        if not _actionable_description(data.get("description")):
+            errors.append(f"{source}: description не соответствует actionable contract")
+        if action.get("side_effect") != "write" or action.get("confirmation") is not True or annotations.get("readOnlyHint") is not False or annotations.get("destructiveHint") is not False:
             errors.append(f"{source}: annotations/_meta не согласованы с write-профилем")
         if data.get("outputSchema", {}).get("type") != "object":
             errors.append(f"{source}: outputSchema обязан описывать structuredContent")
     elif kind == "descriptor_digest_case":
-        data = json.loads(inline)
-        if data.get("input_keys") != ["name", "description", "inputSchema", "outputSchema", "annotations"]:
+        data = _artifact_object(inline, source, errors)
+        if data is None:
+            return errors
+        descriptor, digest_input = data.get("descriptor"), data.get("digest_input")
+        keys = ["name", "description", "inputSchema", "outputSchema", "annotations"]
+        if not isinstance(descriptor, dict) or not isinstance(digest_input, dict) or set(digest_input) != set(keys) or any(digest_input.get(key) != descriptor.get(key) for key in keys):
             errors.append(f"{source}: вход descriptor_digest обязан состоять ровно из пяти членов")
-        if data.get("steps") != ["jcs", "utf8", "sha256"]:
+        if data.get("algorithm") != ["jcs", "utf8", "sha256"]:
             errors.append(f"{source}: descriptor_digest вычисляется JCS → UTF-8 → SHA-256")
-        if data.get("excluded") != ["_meta", "title", "icons"]:
+        if any(key in digest_input for key in ("_meta", "title", "icons")):
             errors.append(f"{source}: во вход descriptor_digest попали ненормированные поля")
-        if not data.get("byte_identical") or data.get("capture_phase") != "prepare":
+        if data.get("capture_phase") != "prepare":
             errors.append(f"{source}: digest недетерминирован или вычисляется не на prepare")
         if data.get("mismatch_code") != "agentools.precondition.descriptor_drift":
             errors.append(f"{source}: descriptor_drift подменён общей ошибкой")
     elif kind == "authoring_schema_profile":
-        data = json.loads(inline)
-        expected = {
-            "published_schema_open": True,
-            "authoring_schema_closed": True,
-            "extensible_values": "oneOf_const_plus_string_fallback",
-            "pattern_properties": "variable_key_maps_only",
-            "pair_or_tuple": "named_object",
-            "exact_number": "decimal_string",
-        }
-        if data != expected:
+        data = _artifact_object(inline, source, errors)
+        if data is None:
+            return errors
+        published, authoring = data.get("published"), data.get("authoring")
+        if not isinstance(published, dict) or not isinstance(authoring, dict) or published.get("additionalProperties") is not True or authoring.get("additionalProperties") is not False or not isinstance(authoring.get("properties"), dict):
             errors.append(f"{source}: authoring schema profile расходится с TLP-26..TLP-32")
     elif kind == "lifecycle_index":
-        data = json.loads(inline)
-        if not data.get("state_event_matrix_synced") or not data.get("new_value_requires_matrix_update"):
+        data = _artifact_object(inline, source, errors)
+        if data is None:
+            return errors
+        rows, candidate = data.get("matrix_rows"), data.get("candidate")
+        if not isinstance(rows, list) or not rows or not isinstance(candidate, dict) or set(candidate) != {"state", "event"} or candidate not in rows:
             errors.append(f"{source}: новое состояние/событие не синхронизировано с матрицей ALC-14")
+    elif kind == "rule_deviation_note":
+        text = inline if has_inline else path.read_text(encoding="utf-8")
+        if not re.search(r"уровень L[123], потому что .+", text):
+            errors.append(f"{source}: отклонение уровня не содержит фразу-обоснование OVR-14")
+    elif kind == "grease_registration":
+        data = _artifact_object(inline, source, errors)
+        if data is None:
+            return errors
+        vectors = data.get("vectors")
+        kinds = {row.get("kind") for row in vectors} if isinstance(vectors, list) and all(isinstance(row, dict) for row in vectors) else set()
+        if kinds != {"unknown_event", "unknown_error_category", "unknown_extension_key"} or any(not isinstance(row.get("value"), str) or not row["value"] for row in vectors):
+            errors.append(f"{source}: GREASE registration обязан содержать три неизвестных значения")
+    elif kind == "tool_result_case":
+        data = _artifact_object(inline, source, errors)
+        if data is None:
+            return errors
+        schema, result = data.get("outputSchema"), data.get("result")
+        required = schema.get("required", []) if isinstance(schema, dict) else []
+        if not isinstance(result, dict) or not isinstance(required, list) or any(key not in result for key in required):
+            errors.append(f"{source}: structured result не соответствует outputSchema")
+    elif kind == "tool_description":
+        data = _artifact_object(inline, source, errors)
+        if data is None:
+            return errors
+        if set(data) != {"description"} or not _actionable_description(data.get("description")):
+            errors.append(f"{source}: description не соответствует actionable contract")
+    elif kind in {"security_authoring", "audit_schema"}:
+        data = _artifact_object(inline, source, errors)
+        if data is None:
+            return errors
+        raw = json.dumps(data, ensure_ascii=False)
+        forbidden = "delegation_claim" if kind == "security_authoring" else "gen_ai.provider.name"
+        if forbidden in raw:
+            errors.append(f"{source}: {kind} содержит запрещённый внешний/claim carrier {forbidden}")
     elif kind in {"traceability_index", "fixture_vector", "tool_descriptor"}:
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
@@ -1900,6 +1977,8 @@ def check_fixtures_format(fixtures_root, profile, errors):
                 errors.append(f"{vf}: отсутствуют обязательные поля класса {meta['class']!r}: {missing_extra}")
 
             allowed_keys = set(FIXTURE_COMMON_REQUIRED) | set(required_extra)
+            if dirname == "harness":
+                allowed_keys.add("mcp_errors")
             unknown = sorted(set(data) - allowed_keys)
             if unknown:
                 errors.append(f"{vf}: неизвестные поля верхнего уровня {unknown} (схема класса {meta['class']!r} закрыта)")
@@ -1939,6 +2018,43 @@ def check_fixtures_format(fixtures_root, profile, errors):
                     errors.append(f"{vf}: expect.outcome должен быть conformant|violation")
                 elif expect["outcome"] == "violation" and not expect.get("violated_rule"):
                     errors.append(f"{vf}: violation обязан нести violated_rule")
+                has_cfh55 = "CFH-55" in rule_ids if isinstance(rule_ids, list) else False
+                mcp_errors = data.get("mcp_errors")
+                if has_cfh55:
+                    expected_names = {
+                        "MissingRequiredClientCapabilityError",
+                        "UnsupportedProtocolVersionError",
+                    }
+                    if not isinstance(mcp_errors, list) or len(mcp_errors) != 2 or {
+                        row.get("name") for row in mcp_errors if isinstance(row, dict)
+                    } != expected_names or any(
+                        not isinstance(row, dict) or set(row) != {"name", "code"} or not isinstance(row.get("code"), int)
+                        for row in mcp_errors
+                    ):
+                        errors.append(f"{vf}: CFH-55 обязан нести точные два mcp_errors name/code")
+                    elif vector_id == "hmcpcode-001" and {
+                        row["name"]: row["code"] for row in mcp_errors
+                    } != {"MissingRequiredClientCapabilityError": -32003, "UnsupportedProtocolVersionError": -32004}:
+                        errors.append(f"{vf}: CFH-55 positive обязан нести core-коды -32003/-32004")
+                elif mcp_errors is not None:
+                    errors.append(f"{vf}: mcp_errors разрешён только CFH-55 harness-кейсу")
+
+    positive = fixtures_root / "harness" / "hmcpcode-001.json"
+    negative = fixtures_root / "harness" / "hmcpcodebad-001.json"
+    if positive.exists() or negative.exists():
+        positive_data, negative_data = load_json(positive, errors), load_json(negative, errors)
+        if not isinstance(positive_data, dict) or not isinstance(negative_data, dict):
+            errors.append("CFH-55 harness-пара должна состоять из двух JSON-объектов")
+        else:
+            def _pair_view(data):
+                return {key: value for key, value in data.items() if key not in {"id", "title", "expect", "mcp_errors"}}
+            if _pair_view(positive_data) != _pair_view(negative_data):
+                errors.append("CFH-55 negative обязан сохранять transcript и вход positive-пары")
+            pos = {row.get("name"): row.get("code") for row in positive_data.get("mcp_errors", []) if isinstance(row, dict)}
+            neg = {row.get("name"): row.get("code") for row in negative_data.get("mcp_errors", []) if isinstance(row, dict)}
+            changed = [name for name in pos if pos.get(name) != neg.get(name)]
+            if len(changed) != 1 or set(pos) != set(neg) or negative_data.get("expect") != {"outcome": "violation", "violated_rule": "CFH-55"}:
+                errors.append("CFH-55 negative обязан менять ровно один code и ждать violation/CFH-55")
 
     check_golden_meta(fixtures_root, profile, errors)
     if vector_count < profile["min_vectors"]:

@@ -9,8 +9,8 @@
   ],
   "conformance_level": "L1",
   "subject": {
-    "kind": "fixture_vector",
-    "path": "fixtures/2026-08/vectors/l1/grease-001.json"
+    "kind": "grease_registration",
+    "inline": "{\"vectors\":[{\"kind\":\"unknown_event\",\"value\":\"vendor.event\"},{\"kind\":\"unknown_error_category\",\"value\":\"vendor.error\"},{\"kind\":\"unknown_extension_key\",\"value\":\"dev.vendor/feature\"}]}"
   },
   "expect": {
     "linter": "accept"

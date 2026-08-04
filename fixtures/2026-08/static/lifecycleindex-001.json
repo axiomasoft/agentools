@@ -9,7 +9,7 @@
   "conformance_level": "L1",
   "subject": {
     "kind": "lifecycle_index",
-    "inline": "{\"state_event_matrix_synced\":true,\"new_value_requires_matrix_update\":true}"
+    "inline": "{\"matrix_rows\":[{\"state\":\"created\",\"event\":\"action_created\"},{\"state\":\"completed\",\"event\":\"action_completed\"}],\"candidate\":{\"state\":\"completed\",\"event\":\"action_completed\"}}"
   },
   "expect": {
     "linter": "accept"

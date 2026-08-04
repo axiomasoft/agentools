@@ -11,7 +11,7 @@
   "conformance_level": "L1",
   "subject": {
     "kind": "conformance_report",
-    "inline": "{\"order\":\"rule_id,vector_id\",\"declared_level\":\"L1\",\"failed\":[],\"warnings\":[],\"not_testable\":[{\"rule_id\":\"LOP-9\",\"reason\":\"capability unavailable\"}],\"submitted_vectors\":45,\"reported_vectors\":45,\"success\":true}"
+    "inline": "{\"order\":\"vector_id\",\"declared_level\":\"L1\",\"failed\":[],\"warnings\":[],\"not_testable\":[{\"rule_id\":\"LOP-9\",\"reason\":\"capability unavailable\"}],\"submitted_vectors\":[\"alpha-001\",\"beta-001\"],\"vectors\":[{\"id\":\"alpha-001\",\"outcome\":\"completed\",\"rule_ids\":[\"CFH-52\"]},{\"id\":\"beta-001\",\"outcome\":\"not_testable\",\"rule_ids\":[\"CFH-53\"]}],\"level_summary\":{\"L1\":2},\"success\":true}"
   },
   "expect": {
     "linter": "accept"

@@ -16,7 +16,7 @@
   "conformance_level": "L1",
   "subject": {
     "kind": "extension_identity",
-    "inline": "{\"category\":\"unofficial\",\"extension_id\":\"dev.agentools/core\",\"breaking_change\":\"new_extension_id\",\"meta_key_pattern\":\"^dev\\\\.agentools/[a-z][a-z0-9._-]*$\",\"vendor_prefix\":\"dev.agentools\",\"version_in_key\":false,\"foreign_prefix_rejected\":true}"
+    "inline": "{\"category\":\"Unofficial per SEP-2133\",\"extension_id\":\"dev.agentools/core\",\"breaking_extension_id\":\"dev.agentools/core-v2\",\"data_key\":\"dev.agentools/action\"}"
   },
   "expect": {
     "linter": "accept"

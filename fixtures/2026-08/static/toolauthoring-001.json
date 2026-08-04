@@ -14,7 +14,7 @@
   "conformance_level": "L1",
   "subject": {
     "kind": "authoring_schema_profile",
-    "inline": "{\"published_schema_open\":true,\"authoring_schema_closed\":true,\"extensible_values\":\"oneOf_const_plus_string_fallback\",\"pattern_properties\":\"variable_key_maps_only\",\"pair_or_tuple\":\"named_object\",\"exact_number\":\"decimal_string\"}"
+    "inline": "{\"published\":{\"type\":\"object\",\"additionalProperties\":true},\"authoring\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"amount\":{\"type\":\"integer\"}}}}"
   },
   "expect": {
     "linter": "accept"

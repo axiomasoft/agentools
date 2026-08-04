@@ -15,7 +15,7 @@
   "conformance_level": "L1",
   "subject": {
     "kind": "extension_negotiation",
-    "inline": "{\"schema_id_base\":\"https://agentools.dev/schema/2026-08/\",\"load_schema_by_id\":false,\"declaration_map_key\":\"dev.agentools/core\",\"settings_required\":[\"spec_rev\"],\"absent_peer\":\"do_not_send_extension_data\",\"unknown_extension_data\":\"ignore_without_reject\",\"cache_scope\":\"connection_only\"}"
+    "inline": "{\"schema_id\":\"https://agentools.dev/schema/2026-08/tool-descriptor.json\",\"declaration\":{\"map_key\":\"dev.agentools/core\",\"specRevision\":\"2026-08\",\"scope\":\"per_request\"},\"absent_peer\":\"core_or_typed_error\",\"unknown_extension\":\"ignore\",\"cache_scope\":\"exchange\"}"
   },
   "expect": {
     "linter": "accept"

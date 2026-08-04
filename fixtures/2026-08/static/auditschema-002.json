@@ -1,0 +1,1 @@
+{"id":"auditschema-002","title":"Audit schema хранит только внутреннее поле поставщика","vector_class":"artifact","spec_rev":"2026-08","spec_rule_ids":["AOB-26"],"conformance_level":"L3","subject":{"kind":"audit_schema","inline":"{\"schema\":{\"properties\":{\"provider_id\":{\"type\":\"string\"}}}}"},"expect":{"linter":"accept"}}
