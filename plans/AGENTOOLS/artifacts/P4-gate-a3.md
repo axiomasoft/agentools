@@ -1,10 +1,10 @@
-# P4 — итоговый гейт A3 после semantic preflight P4.20
+# P4 — итоговый гейт A3 после CLR-8 admission fix P4.21
 
 **Дата:** 2026-08-04
 
-**Якорь дерева:** item-коммит P4.20 `7abfd3e`. Детерминированный
+**Якорь дерева:** item-коммит P4.21 `a12db23`. Детерминированный
 якорь содержимого manifest: SHA-256
-`f01bb26bf16fbfdc90b13222625e82fec1b996906cdf7de5481b5ee21fd8811e`.
+`fedaa391cd5608751f9ab784b93bf59574b05052446040cfc104eeed2a1b92ab`.
 
 Исторические A3 P4.13 и Gate B round 1/2 не переписываются: их факты сохранены в git и в
 `P5-gate-b.md`. Этот отчёт supersedes только утверждение прежнего A3 о достаточности
@@ -33,10 +33,10 @@ git diff --check
 | Harness ownership | шесть закрытых observation types; schema-positive/schema-invalid/self-report selftest 6/6 | PASS |
 | Behavior carriers | 76 schema-valid members; каждый из 38 rules имеет exact pair и harness-owned observation | PASS |
 | Artifact carriers | 13 raw negative/positive pairs; checker выводит verdict из candidate/reference/run outcomes | PASS |
-| Semantic sufficiency | 11/11 named preflight checks: confirmation mechanics, protocol operations, mapping registry, wire bytes, derivation/per-call binding, append adapter, hash composition, every-run baseline и accounting | PASS |
+| Semantic sufficiency | 11/11 named preflight checks; CLR-8 теперь имеет raw `ListResourcesRequest` ↔ `GetTaskPayloadRequest`, одинаковый `input_required` и failed ↔ running oracle | PASS |
 | Shortcut registry | `projection_source`, `write_back_upcast`, `source_of_truth`, hash/route verdict flags, baseline booleans и magic carriers — 0 | PASS |
 | Mutation strength | 51/51 addressable self-report/raw-fact mutants, 51/51 pure manifest mutations и 11/11 semantic preflight mutations отвергнуты | PASS |
-| Byte stability | write → check не меняет bytes; manifest SHA-256 `f01bb26b…fd8811e` | PASS |
+| Byte stability | write → check не меняет bytes; manifest SHA-256 `fedaa391…b92ab` | PASS |
 | Формат корпуса | `--fixtures-check` = 0 | PASS |
 | Coverage | 400 rules; 394 testable; MUST/MUST NOT 383/383; пять исторических SHOULD warnings | PASS с предупреждениями |
 | Индекс и closure | `rules_index --check`: 400; `close_schema --check`: 15 | PASS |
