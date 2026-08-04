@@ -1,26 +1,25 @@
-# HANDOFF — 2026-08-04 — after P5.1
+# HANDOFF — 2026-08-04 — after P5.3
 
-**Next:** «ЗАПУСК ВРУЧНУЮ: `frontier/high`»
+**Next:** «ЗАПУСК ВРУЧНУЮ: `implementation/high`»
 
 | Параметр | Значение |
 |:--|:--|
-| Model | frontier |
-| Thinking | high — package-quality policy and owner reconciliation |
+| Model | implementation |
+| Thinking | high — invariant-preserving freeze |
 | Context | continue — ручной item |
-| Суть | Выполнить P5.3 после Gate B GREEN; owner-authorized decisions Q-30/Q-31 принять безопасно и локально. |
+| Суть | Выполнить P5.2: Q-10 safe boundary, prefreeze checks, README frozen, annotated tag, Contracts/handoff. |
 | Команда | — |
 
 ```
-select session model class frontier
+select session model class implementation
 select session effort high
-$ task:plan-run AGENTOOLS P5.3
+$ task:plan-run AGENTOOLS P5.2
 ```
 
-**Done:** P5.1 round 3 (`f810d62`) = GREEN: 383/383 testable mandatory, exact 51 observational
-carriers, 51 addressable + 11 named semantic mutants rejected. F9–F17 закрыты; живые ADR-
-контуры не конфликтуют с ревизией.
+**Done:** P5.1 (`f810d62`) = GREEN. P5.3 (`6ece4e7`) создал package-quality baseline; Q-30
+resolved D174 (proprietary/internal, no external publication), Q-31 resolved D175 (DR-01 ratified).
 
-**Remaining:** P5.3 → P5.2 freeze/tag → close/audit P5.
+**Remaining:** P5.2 freeze/tag → close/audit P5.
 
 **Sources of truth:** `research/22-p5-round2-observational-remediation-2026-08.md` ·
 `artifacts/P5-gate-b.md` F9–F17 · `plan.md` D161–D164 · `phases/P3.md` P3.25 ·
