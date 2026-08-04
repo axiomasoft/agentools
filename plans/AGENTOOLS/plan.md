@@ -404,7 +404,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | 2026-08-04 | plan-run/gpt-5.6-high | P3.21 закрыт: `EventKind` двунаправленно сверяется с lifecycle markdown; четыре core-события и authoring schema согласованы — детали см. phases/P3.md P3.21 Completion Notes. |
 | 2026-08-04 | plan-run/gpt-5-high | P3.20 закрыт: `ResultType`/`StatusChannel`/`TaskStatus` не пересекаются с fallback; общий schema-values selftest зелёный — детали см. phases/P3.md P3.20 Completion Notes. |
 | 2026-08-04 | plan-design/frontier-high | RED-аудит P3 приземлён реопеном: P3.20–P3.23 до DoR, D146–D148, research §13; Status Board 19/23, 0.21.0 → 0.22.0. |
-| 2026-08-04 | plan-close/implementation-low | Фаза P3 закрыта: 19/19 🟢; A2 snapshot передан P4, Gate B round 1 остаётся RED; Docs-sync: не требуется. |
+| 2026-08-04 | plan-close/implementation-low | P3 повторно закрыта: 23/23 🟢; A2 F1–F5 подтверждён, `CFH-55` передан P4.12; Docs-sync: не требуется. |
 | 2026-08-04 | plan-run/gpt-5-high | P3.19 закрыт: повторный A2 подтвердил согласованный snapshot P3 и не отменяет RED Gate B round 1 — детали см. phases/P3.md P3.19 Completion Notes. |
 | 2026-08-04 | plan-run/gpt-5-high | P3.18 закрыт: D145 вводит измеримый actionable-description без утверждения модельной эффективности — детали см. phases/P3.md P3.18 Completion Notes. |
 | 2026-08-03 | plan-run/gpt-5-high | P3.17 закрыт: D144 сохраняет namespace и закрепляет машинный inventory — детали см. phases/P3.md P3.17 Completion Notes. |
