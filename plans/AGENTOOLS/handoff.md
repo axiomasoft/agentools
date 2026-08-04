@@ -1,35 +1,32 @@
-# HANDOFF — 2026-08-04 — after P4
+# HANDOFF — 2026-08-04 — after P5.1
 
-**Next:** «ЗАПУСК ВРУЧНУЮ: `frontier/xhigh`»
+**Next:** «ЗАПУСК ВРУЧНУЮ: `frontier/high`»
 
 | Параметр | Значение |
 |:--|:--|
 | Model | frontier |
-| Thinking | xhigh — independent semantic audit |
-| Context | continue (reset the session context) — ручной item |
-| Суть | Возобновить текущий P5.1 round 3 на terminal P4.21 без нового verdict slot. |
+| Thinking | high — package-quality policy and owner reconciliation |
+| Context | continue — ручной item |
+| Суть | Выполнить P5.3 после Gate B GREEN; owner-authorized decisions Q-30/Q-31 принять безопасно и локально. |
 | Команда | — |
 
 ```
 select session model class frontier
-select session effort xhigh
-$ task:plan-run AGENTOOLS P5.1
+select session effort high
+$ task:plan-run AGENTOOLS P5.3
 ```
 
-**Done:** P4.21 (`a12db23`) опубликовал semantic manifest v2 exact 51, gaps/shortcuts 0,
-51 addressable + 11 named semantic mutants rejected и semantic A3 PASS. D162/D169 определили evidence. F16
-синхронизирован честно: P7.1–P7.10 = `🟡 In progress` с commit anchors, без выдуманного route.
-F17/Q-28 resolved D164 на существующей границе LOP-26.
+**Done:** P5.1 round 3 (`f810d62`) = GREEN: 383/383 testable mandatory, exact 51 observational
+carriers, 51 addressable + 11 named semantic mutants rejected. F9–F17 закрыты; живые ADR-
+контуры не конфликтуют с ревизией.
 
-**Remaining:** Gate B round 3 → при GREEN P5.3 → P5.2 freeze/tag → close/audit P5.
-owner-authorized Gate B round 3. Только semantic GREEN допускает P5.3/P5.2.
+**Remaining:** P5.3 → P5.2 freeze/tag → close/audit P5.
 
 **Sources of truth:** `research/22-p5-round2-observational-remediation-2026-08.md` ·
 `artifacts/P5-gate-b.md` F9–F17 · `plan.md` D161–D164 · `phases/P3.md` P3.25 ·
 `phases/P4.md` P4.16–P4.21 · `phases/P7.md` F16 anchors · D165 (P3.25 skip).
 
-**Open risks:** Gate B остаётся RED до fresh round 3; тег
-`spec-2026-08` до GREEN запрещён. PHP P7.1–P7.10 имеют код и зелёный current-tree QA, но
+**Open risks:** тег `spec-2026-08` запрещён до terminal P5.3 и предфриз-проверок. PHP P7.1–P7.10 имеют код и зелёный current-tree QA, но
 terminal item reconciliation сознательно отложена до штатной фазы P7.
 
 **Workarounds/Deferred/Open questions:**

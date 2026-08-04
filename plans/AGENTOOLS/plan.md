@@ -6,18 +6,18 @@
 |:--|:--|
 | Plan ID | AGENTOOLS |
 | Title | AgenTools: ревизия спеки `2026-08` (modern-only, MCP 2026-07-28) + conformance + PHP/Dart SDK + срезы CRM/ERP |
-| Version | 0.35.1 |
+| Version | 0.35.2 |
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-04 (P3 повторно закрыта с отклонениями; remediation продолжается P4.16.) |
+| Last Updated | 2026-08-04 (Gate B round 3 GREEN; следующий P5.3.) |
 | Repository | `~/projects/packages/agentools` (приватный, без remote) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
 | Target Operator Models | sonnet (exec) · haiku (LOW) · opus (нормативный авторинг/аудит) |
 | Approval Owner | Dmitry Vostrikov |
 | Home | brain |
-| Design Passes | 3/3 — кросс-репо и ядро экосистемы: три прохода авторинга завершены 2026-07-27. Поздние audit-driven реопены, включая owner-authorized D161–D164 после Gate B round 2, не увеличивают авторский бюджет: это адресная ремедиация исполняемого плана. Следующий шаг — P3.25, затем P4.16–P4.19 и только после фактического ремонта Gate B round 3. |
+| Design Passes | 3/3 — кросс-репо и ядро экосистемы: три прохода авторинга завершены 2026-07-27. Поздние audit-driven реопены, включая owner-authorized D161–D164 после Gate B round 2, не увеличивают авторский бюджет: это адресная ремедиация исполняемого плана. Gate B round 3 завершён GREEN; следующий шаг — P5.3. |
 
 ## 1. Context
 
@@ -213,7 +213,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P2 | **A1** — bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
 | P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/25 | 🟠 Done with deviations |
 | P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 21/21 | 🟢 Done |
-| P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 0/3 | 🔴 Blocked |
+| P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 1/3 | 🟡 In progress |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | 🟡 In progress |
 | P8 | Dart SDK `agentools` — зелёный на тех же векторах | 0/13 | ⬜ Not started |
@@ -424,6 +424,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | D170 | 2026-08-04 | **P4.20 терминально закрывает preflight remediation: Gate B round 3 разрешён только на source anchor `7abfd3e` и manifest `f01bb26b…fd8811e`.** 11 named semantic checks и их адресные mutations становятся частью A3, а не advisory отчётом. **Consequences:** P4 = 20/20 🟢; P5.1 больше не blocked отсутствием фактической remediation, но обязан вынести собственный cold-start verdict. | P4.20 Validation; owner directive №4. `RAG:— (repo-grounded)` |
 | D171 | 2026-08-04 | **Gate B round 3 admission нашёл один residual blocker до публикации verdict: CLR-8 observation называл несуществующий в текущем Tasks profile `tasks/result`, а raw task stimulus вообще не называл request type; P4 адресно реопенится P4.21.** Round 3 остаётся незавершённым, новый verdict literal не издан. **Consequences:** pair меняет permitted `GetTaskPayloadRequest` на forbidden control `ListResourcesRequest` при одинаковом `input_required`; semantic invariant связывает raw request type с boundary observation и отвергает fifth-operation mutant. | P5.1 adversarial read CLR-8 + P1 final delta п.12/13 против `clarificationstate-002/102`; owner directive №4. `RAG:— (repo-grounded)` |
 | D172 | 2026-08-04 | **P4.21 закрывает D171 на source anchor `a12db23`: CLR-8 input отличается ровно raw request type и различает forbidden fifth operation.** **Consequences:** P4 = 21/21 🟢, manifest `fedaa391…b92ab`; текущий Gate B round 3 возобновляется без нового audit round/verdict slot. | P4.21 Validation. `RAG:— (repo-grounded)` |
+| D173 | 2026-08-04 | **Gate B round 3 = GREEN на item anchor `f810d62`: формальный 383/383 дополнен exact-51 observational proof, 51 адресными и 11 составными отвергнутыми мутантами; F9–F17 закрыты.** **Consequences:** P5.1 терминален; прежние RED-раунды сохраняются append-only, а P5.3 разблокирован. Freeze по-прежнему запрещён до baseline и owner-gates P5.3/P5.2. | P5.1 round 3, scoped verdict/lenses 1/6; owner directive №4. `RAG:— (repo-grounded)` |
 
 ## 6. Update Log
 
@@ -431,6 +432,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 
 | Дата | Кто (role/model) | Что |
 |:--|:--|:--|
+| 2026-08-04 | plan-run/gpt-5.6-sol-xhigh | P5.1 round 3 (`f810d62`) GREEN: 383/383 testable mandatory, exact 51 observational carriers, 51+11 mutants rejected, F9–F17 closed; 0.35.1 → 0.35.2. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.21 (`a12db23`) closed: CLR-8 raw request type kills fifth-operation mutant; P4 21/21 🟢, Gate B round 3 resumed. |
 | 2026-08-04 | plan-design/frontier-high | D171: Gate B admission остановил ложный CLR-8 PASS до verdict; P4.21 добавляет raw operation stimulus, 0.34.1 → 0.35.0. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.20 (`7abfd3e`) closed: six typed observation boundaries, 11/11 named semantic checks/mutants, exact 51 manifest; P4 20/20 🟢. |
