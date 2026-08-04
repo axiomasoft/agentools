@@ -10,6 +10,7 @@
     python3 tools/spec_lint.py --namespace-inventory-selftest
     python3 tools/spec_lint.py --actionable-description-selftest <revision_dir>
     python3 tools/spec_lint.py --schema-values-selftest <revision_dir>
+    python3 tools/spec_lint.py --driver-state-selftest <fixtures_root>
 
 Ревизий в репозитории больше одной, и они живут по РАЗНЫМ конвенциям (`2026-07-draft`
 — история, `2026-08` — modern-only против MCP 2026-07-28), поэтому линтер параметризован
@@ -2335,6 +2336,134 @@ def run_actionable_description_selftest(revision_dir):
     return report(errors, "actionable description: positive accepted; negative rejected")
 
 
+def run_driver_state_selftest(fixtures_root):
+    """P4.9: проверяет Draft 2020-12 oracle для каждой новой driver-секции.
+
+    `--fixtures-check` сознательно остаётся stdlib-структурной проверкой корпуса. Этот
+    адресный selftest использует тот же published/fixture schema graph, что и внешний
+    offline validator, и печатает для каждой секции число ошибок positive/negative
+    probe. Так закрытый driver wrapper не может незаметно превратиться в свободный
+    state, а external `$ref` остаются частью реально исполняемой проверки.
+    """
+    if not fixtures_root.is_dir():
+        print(f"Ошибка: {fixtures_root} не является директорией", file=sys.stderr)
+        return 2
+    try:
+        from jsonschema import Draft202012Validator, RefResolver
+    except ImportError:
+        print("Ошибка: prerequisite python-jsonschema (Draft202012Validator) недоступен", file=sys.stderr)
+        return 2
+
+    schema_path = fixtures_root / "schema" / "vector.json"
+    tool_path = fixtures_root / "common" / "tool-read.json"
+    repo_root = fixtures_root.resolve().parents[1]
+    errors = []
+    try:
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        tool = json.loads(tool_path.read_text(encoding="utf-8"))
+        # Контрольная проба использует ровно committed bytes канонического descriptor:
+        # подмена description в памяти скрыла бы расхождение common-фрагмента с корпусом.
+        store = {}
+        for path in sorted((fixtures_root / "schema").glob("*.json")):
+            data = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(data.get("$id"), str):
+                store[data["$id"]] = data
+        for path in sorted((repo_root / "spec" / "revisions" / "2026-08" / "schema").glob("*.json")):
+            data = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(data.get("$id"), str):
+                store[data["$id"]] = data
+        Draft202012Validator.check_schema(schema)
+        resolver = RefResolver(base_uri=schema["$id"], referrer=schema, store=store)
+        validator = Draft202012Validator(schema, resolver=resolver)
+    except Exception as exc:
+        return report([f"driver-state selftest: не удалось собрать offline validator ({exc})"])
+
+    base = {
+        "id": "driverstate-000",
+        "title": "Контрольная проба driver state (не входит в корпус)",
+        "vector_class": "behavior",
+        "spec_rev": "2026-08",
+        "spec_rule_ids": ["SEC-7"],
+        "conformance_level": "L1",
+        "given": {"tools": [tool]},
+        "script": [{"user_input": "проверка driver state"}],
+        "expect": {"events": [], "final_state": "completed"},
+    }
+    sections = {
+        "principals": {
+            "initiator": {"id": "user-1"}, "agent": {"id": "agent-1"}, "authorizer": {"id": "auth-1"},
+        },
+        "authorization": {"resource": "tenant:1", "tool": "invoice_read", "permissions": ["invoice.read"]},
+        "credentials": [{
+            "kind": "access_token", "source": "trusted_credential", "issuer": "issuer-1",
+            "audience": "agentools", "integrity": "verified", "principal_id": "user-1", "scopes": ["invoice.read"],
+        }],
+        "provenance": [{"address": "/args/customer_id", "content_origin": "untrusted_external"}],
+        "baggage": [{"key": "trace", "value": "abc"}],
+        "journal": [{
+            "event_id": "event-1", "action_id": "action-1", "seq": 1, "expected_prev_seq": 0,
+            "ts": "2026-08-04T00:00:00Z", "actor": {"type": "user", "id": "user-1"},
+            "kind": "action_created", "event_version": 1, "spec_rev": "2026-08", "payload": {},
+        }],
+        "effects": [{"action_id": "action-1", "effects": {}}],
+        "tool_results": [{"tool": "invoice_read", "content": "ok", "is_error": False}],
+        "task_channel": [{"task_id": "task-1", "channel": "poll", "status": "working", "message": "started"}],
+    }
+    negative_paths = {
+        "principals": ("initiator", "unexpected"),
+        "authorization": (None, "unexpected"),
+        "credentials": (0, "unexpected"),
+        "provenance": (0, "unexpected"),
+        "baggage": (0, "unexpected"),
+        "journal": (0, "event_id"),
+        "effects": (0, "action_id"),
+        "tool_results": (0, "unexpected"),
+        "task_channel": (0, "unexpected"),
+    }
+    for name, value in sections.items():
+        positive = json.loads(json.dumps(base, ensure_ascii=False))
+        positive["given"]["driver_state"] = {name: value}
+        positive_errors = list(validator.iter_errors(positive))
+
+        negative = json.loads(json.dumps(positive, ensure_ascii=False))
+        index, key = negative_paths[name]
+        target = negative["given"]["driver_state"][name]
+        if name in ("journal", "effects"):
+            target[index].pop(key)
+        elif index is None:
+            target[key] = "forbidden"
+        elif isinstance(index, str):
+            target[index][key] = "forbidden"
+        else:
+            target[index][key] = "forbidden"
+        negative_errors = list(validator.iter_errors(negative))
+        if positive_errors or not negative_errors:
+            errors.append(
+                f"driver-state selftest {name}: valid={len(positive_errors)}, invalid={len(negative_errors)}"
+            )
+        else:
+            print(f"driver-state {name}: valid=0, invalid={len(negative_errors)}")
+
+    for name, step in {
+        "script.tool_result": {"tool_result": sections["tool_results"][0]},
+        "script.task_message": {"task_message": sections["task_channel"][0]},
+    }.items():
+        positive = json.loads(json.dumps(base, ensure_ascii=False))
+        positive["script"] = [step]
+        positive_errors = list(validator.iter_errors(positive))
+        negative = json.loads(json.dumps(positive, ensure_ascii=False))
+        negative["script"][0].update({"user_input": "second stimulus"})
+        negative_errors = list(validator.iter_errors(negative))
+        if positive_errors or not negative_errors:
+            errors.append(
+                f"driver-state selftest {name}: valid={len(positive_errors)}, invalid={len(negative_errors)}"
+            )
+        else:
+            print(f"driver-state {name}: valid=0, invalid={len(negative_errors)}")
+
+    return report(errors, "driver-state: 9 sections + 2 script steps; valid=0, invalid>0")
+
+
 def run_keywords_check(schema_path, list_name):
     """Точечный прогон одного файла схемы. Список берётся ЯВНО: по умолчанию B —
     `B = A ∪ {закрытие}`, то есть самый широкий список, применимый к файлу вне
@@ -2403,7 +2532,8 @@ def usage():
         "  python3 spec_lint.py --namespace-inventory <revision_dir>\n"
         "  python3 spec_lint.py --namespace-inventory-selftest\n"
         "  python3 spec_lint.py --actionable-description-selftest <revision_dir>\n"
-        "  python3 spec_lint.py --schema-values-selftest <revision_dir>",
+        "  python3 spec_lint.py --schema-values-selftest <revision_dir>\n"
+        "  python3 spec_lint.py --driver-state-selftest <fixtures_root>",
         file=sys.stderr,
     )
     return 2
@@ -2428,6 +2558,13 @@ def main():
         except IndexError:
             return usage()
         return run_schema_values_selftest(target)
+
+    if "--driver-state-selftest" in args:
+        try:
+            target = Path(args[args.index("--driver-state-selftest") + 1])
+        except IndexError:
+            return usage()
+        return run_driver_state_selftest(target)
 
     if "--namespace-inventory" in args:
         try:

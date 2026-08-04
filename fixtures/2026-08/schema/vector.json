@@ -159,15 +159,144 @@
             }
           },
           "description": "Опциональное предзаданное состояние хранилищ рантайма перед началом script."
+        },
+        "driver_state": {
+          "$ref": "#/$defs/DriverState",
+          "description": "Закрытое предзаданное состояние harness-драйвера для behavior-вектора. Это НЕ поле MCP-провода: оно делает stimulus provenance, principals, authorization, baggage, journal/effects, tool results и task channel явным до начала script (README.md §2)."
         }
       }
+    },
+    "DriverState": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "principals": { "$ref": "#/$defs/DriverPrincipals" },
+        "authorization": { "$ref": "#/$defs/DriverAuthorization" },
+        "credentials": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/DriverCredential" }
+        },
+        "provenance": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/DriverProvenance" }
+        },
+        "baggage": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/DriverBaggageEntry" }
+        },
+        "journal": {
+          "type": "array",
+          "items": { "$ref": "../../schema/2026-08/lifecycle-event.json" }
+        },
+        "effects": {
+          "type": "array",
+          "items": { "$ref": "../../schema/2026-08/effect-registry.json" }
+        },
+        "tool_results": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/DriverToolResult" }
+        },
+        "task_channel": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/DriverTaskMessage" }
+        }
+      },
+      "description": "Закрытая driver-only обёртка. Секции опциональны: вектор задаёт только нужный stimulus; свободный state и неописанные ключи запрещены."
+    },
+    "DriverPrincipal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "description": "Стабильный id принципала в пределах вектора." }
+      }
+    },
+    "DriverPrincipals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["initiator", "agent", "authorizer"],
+      "properties": {
+        "initiator": { "$ref": "#/$defs/DriverPrincipal" },
+        "agent": { "$ref": "#/$defs/DriverPrincipal" },
+        "authorizer": { "$ref": "#/$defs/DriverPrincipal" }
+      },
+      "description": "Три формальные роли с устойчивыми ids: инициатор, агент и авторизатор."
+    },
+    "DriverAuthorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resource", "tool", "permissions"],
+      "properties": {
+        "resource": { "type": "string", "minLength": 1 },
+        "tool": { "type": "string", "minLength": 1 },
+        "permissions": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      },
+      "description": "Разрешения на указанный resource/tool в момент шага; это driver input, а не MCP-wire authorization."
+    },
+    "DriverCredential": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "source", "issuer", "audience", "integrity", "principal_id", "scopes"],
+      "properties": {
+        "kind": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "enum": ["trusted_credential", "argument", "model_output", "tool_result"] },
+        "issuer": { "type": "string", "minLength": 1 },
+        "audience": { "type": "string", "minLength": 1 },
+        "integrity": { "type": "string", "minLength": 1 },
+        "principal_id": { "type": "string", "minLength": 1 },
+        "scopes": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      },
+      "description": "Credential с явным источником, чтобы trusted credential, argument, model output и tool result не сливались в скрытый stub."
+    },
+    "DriverProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["address", "content_origin"],
+      "properties": {
+        "address": { "type": "string", "minLength": 1, "description": "Адрес значения в driver input или подготовленном вызове." },
+        "content_origin": { "$ref": "../../schema/2026-08/tool-descriptor.json#/$defs/ContentOrigin" }
+      },
+      "description": "Происхождение конкретного значения; enum берётся из опубликованной schema, а не дублируется."
+    },
+    "DriverBaggageEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "value"],
+      "properties": {
+        "key": { "type": "string", "minLength": 1 },
+        "value": { "type": "string" }
+      },
+      "description": "Одна пара baggage для точной проверки count/bytes boundary."
+    },
+    "DriverToolResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool", "content", "is_error"],
+      "properties": {
+        "tool": { "type": "string", "minLength": 1 },
+        "content": { "type": "string" },
+        "is_error": { "type": "boolean" }
+      },
+      "description": "Минимальный driver-only результат инструмента: текстовое содержимое и факт ошибки; это не MCP result envelope."
+    },
+    "DriverTaskMessage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "channel", "status", "message"],
+      "properties": {
+        "task_id": { "type": "string", "minLength": 1 },
+        "channel": { "$ref": "../../schema/2026-08/task-binding.json#/$defs/StatusChannel" },
+        "status": { "$ref": "../../schema/2026-08/task-binding.json#/$defs/TaskStatus" },
+        "message": { "type": "string" }
+      },
+      "description": "Предзаданное сообщение канала долгой задачи; channel/status используют опубликованные перечисления task-binding."
     },
     "ScriptStep": {
       "type": "object",
       "minProperties": 1,
       "maxProperties": 1,
       "additionalProperties": false,
-      "description": "Один шаг драйвера — ровно одно из пяти событий, подаваемых SUT (форма 'oneOf по ключу').",
+      "description": "Один шаг драйвера — ровно одно из семи событий, подаваемых SUT (форма 'oneOf по ключу').",
       "properties": {
         "user_input": {
           "type": "string",
@@ -193,6 +322,14 @@
           "type": "integer",
           "minimum": 1,
           "description": "Продвинуть виртуальные часы харнесса на N секунд — единственный способ детерминированно достичь TTL/expires_at без реального ожидания."
+        },
+        "tool_result": {
+          "$ref": "#/$defs/DriverToolResult",
+          "description": "Результат инструмента, подаваемый драйвером в момент script; форма driver-only, не MCP-wire message."
+        },
+        "task_message": {
+          "$ref": "#/$defs/DriverTaskMessage",
+          "description": "Сообщение канала долгой задачи, подаваемое драйвером в момент script; форма driver-only, не MCP-wire message."
         }
       }
     },

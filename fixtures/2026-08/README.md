@@ -65,6 +65,28 @@ profile.md`; инлайнятся целиком — канонические ф
 `session_id` намеренно не участвует в сопоставлении. Поля существуют только в корпусе
 векторов и не являются полями MCP-провода.
 
+`given.driver_state` — закрытое, целиком driver-only предзаданное состояние для
+behavior-векторов. Оно не добавляет полей в MCP-провод и существует, чтобы ожидаемый
+результат нельзя было получить из скрытого stub реализации. Каждая секция опциональна:
+вектор объявляет только stimulus, нужный его правилу; неизвестные ключи запрещены.
+
+| Секция | Содержимое | Граница |
+|:--|:--|:--|
+| `principals` | обязательные stable ids ролей `initiator`, `agent`, `authorizer` | ids driver-а, не wire identity |
+| `authorization` | `resource`, `tool`, разрешённые `permissions` на момент шага | вход энфорсмента, не MCP authorization header |
+| `credentials[]` | `kind`, `source`, `issuer`, `audience`, `integrity`, `principal_id`, `scopes` | `source` различает `trusted_credential`, `argument`, `model_output`, `tool_result` |
+| `provenance[]` | `address` значения и `content_origin` | origin переиспользует published enum `tool-descriptor.json` |
+| `baggage[]` | точные пары `key`/`value` | носитель count/bytes boundary |
+| `journal[]` | предзаданные lifecycle events | каждый элемент — published `lifecycle-event.json` |
+| `effects[]` | предзаданные projections effect registry | каждый элемент — published `effect-registry.json` |
+| `tool_results[]` | `{tool, content, is_error}` | минимальный result driver-а, не MCP result envelope |
+| `task_channel[]` | `{task_id, channel, status, message}` | `channel`/`status` переиспользуют published `task-binding.json` |
+
+Внутри `driver_state` нет свободного `state` и нет `additionalProperties: true`.
+Предметный payload либо ссылается на опубликованную схему, либо остаётся минимальным
+закрытым driver-only контрактом, прямо отмеченным в схеме. Так P4.9 не создаёт новую
+нормативную семантику и не подменяет её удобным тестовым объектом.
+
 `llm_stub.toolCall` несёт опциональный `meta.idempotency_key` — носитель
 `_meta["dev.agentools/action"].idempotency_key`, ключ идемпотентности, который
 предъявляет ВЫЗЫВАЮЩИЙ (`IDE-1`…`IDE-4`): поле отдельно от `args` (ключ MUST NOT
@@ -83,6 +105,13 @@ profile.md`; инлайнятся целиком — канонические ф
 `expire` не входит в `approval` — истечение достигается только `tick_seconds`), `tick_seconds`
 (продвинуть виртуальные часы харнесса — единственный способ детерминированно достичь
 TTL/`expires_at` без реального ожидания).
+
+Два дополнительных взаимоисключающих шага также принадлежат driver-у, а не MCP-проводу:
+`tool_result` подаёт закрытый `{tool, content, is_error}`, `task_message` — закрытый
+`{task_id, channel, status, message}`. Они могут следовать за начальным состоянием из
+`given.driver_state` и тем самым различают результат/сообщение, появившееся во время
+script, от уже предзаданного. Как и у остальных шагов, `maxProperties: 1` запрещает
+объединять два стимула в один шаг.
 
 `expect` — ожидаемое поведение: `events` (упорядоченный список частичных матчей, алгоритм —
 §3), `final_state` (одно из десяти состояний действия, `session-state.json#/$defs/
