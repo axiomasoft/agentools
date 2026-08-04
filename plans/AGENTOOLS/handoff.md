@@ -1,36 +1,37 @@
-# HANDOFF — 2026-08-04 — after P4
+# HANDOFF — 2026-08-04 — after P5.1
 
-**Next:** ЗАПУСК ВРУЧНУЮ: `frontier/xhigh`
+**Next:** waiting: ОЖИДАНИЕ: решение владельца по P5.1 round 2 RED → owner-approved execution route
 
 | Параметр | Значение |
 |:--|:--|
-| Model | frontier (`gpt-5.6-sol`) |
-| Thinking | xhigh — независимый semantic Gate B |
-| Context | continue (reset the session context) — ручной item |
-| Суть | Провести новый cold-start P5.1 round 2 и вынести единый вердикт Gate B. |
+| Model | owner |
+| Thinking | — |
+| Context | continue (/clear) — ручной item |
+| Суть | Выбрать remediation/revision и реконсиляцию P7 plan truth; новый design/audit автоматически не запускать. |
 | Команда | — |
 
 ```
-select the session model class: frontier
-select the session effort: xhigh
-$ task:plan-run AGENTOOLS P5.1
+OWNER GATE AGENTOOLS P5.1: выбрать (1) адресный реопен P3/P4 для observational carriers и синхронизации P7 plan truth или (2) новую ревизию контракта тестируемости; третий аудит P5.1 до решения не запускать.
 ```
 
-**Done:** P4 закрыта: 15/15 🟢. P4.13 (`2ffff1c`) выпустил deterministic relation-aware evidence-map
-с exact 27 carriers/116 FAIL rules и переиздал формальный A3.
+**Done:** Gate B round 2 опубликован item-коммитом `633d2e8`. Формальные гейты зелёные, но
+семантическая матрица даёт 332 PASS / 51 FAIL из 383 обязательных правил: F9–F15 — blockers,
+F16–F17 — major. Живые ADR-контуры сверены без контрактных конфликтов.
 
-**Remaining:** P5.1 round 2 — единственный носитель semantic Gate B verdict.
+**Remaining:** Владелец выбирает одно из направлений: (1) адресно переоткрыть P3/P4 и заменить
+self-report/magic-input проверки настоящими observational carriers, одновременно синхронизировав
+plan truth с уже существующими PHP-коммитами P7; либо (2) изменить контракт тестируемости новой
+ревизией. До решения третий аудит P5.1 и freeze P5.2 запрещены.
 
-**Sources of truth:** `plans/AGENTOOLS/phases/P4.md` Phase Handoff и P4.13 Completion Notes ·
-`plans/AGENTOOLS/artifacts/P4-gate-a3.md` · `fixtures/2026-08/gate-b-remediation.json` ·
-`plans/AGENTOOLS/phases/P5.md` P5.1 · `plans/AGENTOOLS/plan.md` D159/D160.
+**Sources of truth:** `plans/AGENTOOLS/artifacts/P5-gate-b.md` round 2 и F9–F17 ·
+`plans/AGENTOOLS/findings/P5-adr-contours.md` round 2 · `plans/AGENTOOLS/phases/P5.md` P5.1 ·
+`plans/AGENTOOLS/plan.md` Status Board · item commit `633d2e8`.
 
-**Open risks:** A3 подтверждает формальную/remediation-состоятельность, не semantic GREEN Gate B.
-Проверка ссылок-доказательств: 43 остаточные находки вне P4 (новых от закрытия P4: 0); их нужно
-разобрать отдельным scope, не ослабляя проверку.
+**Open risks:** 51 mandatory carriers не доказывают нормативное поведение; P7 уже имеет PHP-коммиты,
+хотя Status Board показывает `0/12 Not started`; Q-28 остаётся pending с терминальным владельцем P4.
 
 **Workarounds/Deferred/Open questions:**
 
 - workarounds: —
-- deferred: P5.1 semantic verdict after terminal P4 close; 43 residual citation findings outside P4.
-- open_questions: —
+- deferred: freeze P5.2, P5.3 и дальнейшее исполнение до owner decision.
+- open_questions: owner choice по маршруту remediation/revision и реконсиляции P7 plan truth.

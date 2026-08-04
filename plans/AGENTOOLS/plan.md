@@ -10,7 +10,7 @@
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-04 (P4 closed: 15/15 🟢; formal A3 reissued, semantic Gate B remains P5.1.) |
+| Last Updated | 2026-08-04 (P5.1 round 2 = RED; owner-gate, третий аудит запрещён до решения.) |
 | Repository | `~/projects/packages/agentools` (приватный, без remote) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
@@ -415,6 +415,8 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | 2026-08-04 | P4 закрыта: 15/15 🟢; P4.13 evidence-map подтвердил formal A3 (27 carriers/116 FAIL rules). Semantic Gate B остаётся предметом fresh P5.1 round 2. |
 
 | Дата | Кто (role/model) | Что |
+|:--|:--|:--|
+| 2026-08-04 | plan-run/gpt-5.6-sol-xhigh | P5.1 round 2 (`633d2e8`) = RED: formal gates green, semantic 332/383 PASS и 51 FAIL; лимит аудита исчерпан, следующий шаг — owner-gate, не design. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.13 (`2ffff1c`) closed: relation-aware 27/116 evidence-map, real mutation rejects and formal A3; P4 is ready to close. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.10 (`499fe1a`) closed: AOB-25 `audit-004/104` now has one mapping-version counterfactual; P4.13 resumes on its preserved candidate — details in phases/P4.md. |
 | 2026-08-04 | plan-design/frontier-high | P4.10 снова доведён до DoR по greenfield-инварианту D160: `audit-004/104` получает exact-one AOB-25 counterfactual; Done → In progress, 0.31.0 → 0.32.0. |
