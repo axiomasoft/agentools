@@ -55,3 +55,16 @@ carriers D168; покрытие 383/383 не достигнуто ложным m
 semantic invariants и реальные mutation rejects exact 51 F9–F15. Он всё ещё не является Gate B: независимый cold-start
 аудит P5.1 round 3 обязан заново сверить нормативную строку, raw stimulus, boundary observation
 и mutant каждого правила. Только его semantic GREEN разблокирует P5.3 и freeze/tag P5.2.
+
+## Freeze projection addendum — 2026-08-04
+
+Обязательный audit P5 обнаружил, что флип единственного status-carrier в README после prefreeze
+изменил source-tree digest manifest. Semantic payload не изменился: единственный diff
+`gate-b-remediation.json` — `source_tree_sha256` с `24ce17d2…300215` на frozen-tree digest
+`be19c372…8e97f`; exact 51, partitions 38+13, gaps/shortcuts 0, 51 addressable и 11 semantic
+mutation rejects прежние. Пересобранный manifest SHA-256 —
+`2dd789dd88bd030859840305217090459a45242ed7db6dc347fda3f657fc8249`.
+
+Этот addendum не меняет исторический P4.21 verdict и фиксирует post-freeze deterministic
+projection. Канонический freeze tag переиздаётся audit-remediation только после полного повторного
+прогона гейтов; старый непубликованный target сохраняется отдельным audit-backup tag.
