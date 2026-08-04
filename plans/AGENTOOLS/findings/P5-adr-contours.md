@@ -52,3 +52,25 @@ Flex-blueprints `88109c9da3e6e0c2786ffe17f8b5a54fb5185ad8`). Выбранные 
 Контрактных конфликтов по-прежнему нет. Round-2 RED относится к различающей силе fixtures и
 checker subjects, а не к ADR контуров: перечисленные адаптеры не могут исправить self-asserted
 stimulus внутри замораживаемого conformance-корпуса.
+
+## Раунд 3 — 2026-08-04
+
+Живая сверка повторена после observational remediation P4.16–P4.21. Якоря не изменились:
+Axioma/ERP SDK `43500e83b7456c014ee25cdb2a4a40b9a53bded2`, CoreX
+`7545ef41caa4d2e39138363ed6c3cf43cbb1376b`, Flex
+`80182e8f1a30b848c35805ed08a7a206adc17bf7`, vault
+`55edccecbc612493e80a8d073f713c6cfe6ad8b1`. Источником истины остаются живые файлы ADR и
+blueprints; вызов общей памяти вернул исторический контекст из `ns:axioma`, но connector
+идентифицировал проект как `swissknifeman`, поэтому память использована только как вспомогательная
+подсказка и не как доказательство.
+
+| Контур | Вердикт раунда 3 | Проверенная граница |
+|:--|:--|:--|
+| Axioma ADR-004/005 | совместимо | MCP-only и finance immutability не ослаблены ревизией. |
+| Axioma ADR-010/012 + modules | нужен адаптер | Tier, principal, provenance и task inputs типизируются адаптером; второго carrier согласия или provider path не появляется. |
+| CoreX ADR-020 | нужен адаптер | AiGateway, PII mask и budget/ledger остаются единственной контурной границей provider access. |
+| Flex B-13/B-16 | нужен адаптер | ToolRegistry, user×agent intersection, execute re-check и HITL сохраняются; stake не становится вторым wire-полем. |
+
+Контрактных конфликтов не найдено. Remediation изменила только доказательную силу conformance-
+корпуса: raw stimuli теперь наблюдаются через шесть driver-owned boundaries, поэтому прежняя
+оговорка о self-asserted carrier закрыта, не изменяя ни один внешний ADR-контракт.

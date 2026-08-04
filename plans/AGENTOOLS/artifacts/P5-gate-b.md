@@ -859,3 +859,156 @@ Append-only правило раундов создаёт в целом файл�
 ВХОД: `artifacts/P5-gate-b.md` F9–F17, delta-матрица 116 правил, `findings/P5-adr-contours.md`
 СКОУП: владелец выбирает, переоткрывать ли P3/P4 для настоящих observational carriers и синхронизации plan truth либо менять контракт тестируемости новой ревизией; только после решения допускается новый плановый маршрут
 НЕ ТРОГАТЬ: DR-01/DR-02 и историю round 1/2; `spec/revisions/2026-07-draft`; freeze/tag P5.2; существующие PHP-коммиты P7 без отдельного owner-approved решения
+
+## Раунд 3 — 2026-08-04
+
+**Вердикт: GREEN**
+
+Якорь проверенного source-дерева observational remediation: `a12db23`; bookkeeping-якорь
+закрытой P4.21: `dc6990f`. Раунд продолжает один ранее открытый слот: промежуточный дефект CLR-8
+был найден до публикации verdict, адресно исправлен P4.21 и только затем аудит возобновлён.
+
+### Линза 1 — решения DR-01/DR-02 ↔ ревизия
+
+Полная round-1 матрица решений повторно сверена с текущими 400 правилами. Адреса §A–§J и
+решений DR-02 сохранились; remediation P4.16–P4.21 не меняла normative bytes P3 (digest source-
+дерева P3 `24ce17d…300215`). Пересмотры §J9/§E5/§J6, ручные DTO и owner-gate DR-02 §6 не
+получили висящих либо противоречащих формулировок. Решений без нормативного адреса нет.
+
+### Линза 2 — ревизия ↔ живые ADR контуров
+
+Живая сверка опубликована в `findings/P5-adr-contours.md`, раунд 3. Якоря Axioma/CoreX/Flex/vault:
+`43500e8`, `7545ef4`, `80182e8`, `55edcce`. Конфликтов нет; для tier/stake, principal,
+provenance и gateway boundaries по-прежнему нужен адаптер P9/P10, но он не ослабляет контурные
+authorization/provider paths и не вводит второй carrier. Shared-memory результат из-за scope-
+mismatch использован только как подсказка; доказательство основано на живых канонических файлах.
+
+### Линза 3 — MUST/MUST NOT ↔ различающие carriers
+
+В `rules.json` 389 обязательных правил: 383 testable покрыты 383/383; шесть явно
+`not_testable` — `LOP-9`, `IDE-44`, `IDE-45`, `IDE-46`, `IDE-47`, `IDE-48`. Все 332 обязательных правила вне F9–F15 повторно
+прошли прежнюю полную матрицу раундов 1/2. Для спорных 51 правил проверены одновременно: сырой
+stimulus либо независимый checker-subject, driver-owned observation, парный oracle и адресный
+мутант. `gaps=[]`, запрещённых shortcuts 0; 51/51 адресных и 11/11 межправильных semantic
+mutants отвергнуты. Полная exact-51 перекличка следует ниже.
+
+| Правило | Пара carriers | Stimulus → observation | Мутант |
+|:--|:--|:--|:--|
+| ALC-14 | lifecycleindex-001/002 | raw index → checker-derived index | rejected |
+| ALC-15 | lifecyclefold-006/106 | journal entry → projection | rejected |
+| ALC-18 | lifecyclefold-008/108 | journal entry → projection + tool boundary | rejected |
+| ALC-19 | lifecycleconcurrency-001/101 | raw append attempt → projection | rejected |
+| ALC-2 | lifecyclefold-001/101 | journal entry → projection + tool boundary | rejected |
+| ALC-20 | lifecycleconcurrency-002/102 | append adapter conflict → projection | rejected |
+| ALC-22 | lifecycleconcurrency-004/104 | append adapter conflict → projection | rejected |
+| ALC-23 | lifecycleconcurrency-005/105 | append adapter conflict → projection | rejected |
+| ALC-26 | lifecycleconcurrency-007/107 | raw append attempt → projection | rejected |
+| ALC-28 | lifecycleintegrity-001/101 | journal bytes → projection | rejected |
+| ALC-3 | lifecyclefold-002/102 | journal entry → projection | rejected |
+| ALC-30 | lifecycleintegrity-002/102 | journal bytes → projection | rejected |
+| ALC-31 | lifecycleintegrity-003/103 | journal bytes → projection | rejected |
+| ALC-33 | lifecycleintegrity-004/104 | journal bytes → projection | rejected |
+| ALC-34 | lifecycleintegrity-005/105 | journal bytes → projection | rejected |
+| ALC-35 | lifecycleintegrity-006/106 | journal bytes → projection | rejected |
+| ALC-36 | lifecycleintegrity-007/107 | three-event chain → projection | rejected |
+| ALC-37 | lifecycleintegrity-008/108 | journal bytes → projection | rejected |
+| ALC-4 | lifecyclefold-003/103 | journal entry → projection | rejected |
+| AOB-25 | audit-004/104 | mapping registry membership → audit sink | rejected |
+| AOB-29 | audit-008/108 | raw audit input → audit sink | rejected |
+| AOB-30 | audit-009/109 | raw audit input → audit sink | rejected |
+| AOB-31 | audit-010/110 | 8192/8195 wire bytes → audit sink | rejected |
+| CFH-24 | cfhbaseline-001/101 | every-run baseline subject → checker | rejected |
+| CFH-26 | cfhbaseline-003/103 | healed-entry subject → checker | rejected |
+| CFH-51 | cfhgrease-001/101 | GREASE registration/run subject → checker | rejected |
+| CFH-53 | cfhreport-001/101 | failed-L3 subject → checker | rejected |
+| CLR-2 | clarificationstate-001/101 | opaque protocol state → task binding | rejected |
+| CLR-8 | clarificationstate-002/102 | exact request type → task binding | rejected |
+| CNF-3 | confpolicy-002/102 | policy input → tool boundary | rejected |
+| CNF-6 | confpolicy-005/105 | irreversible policy → confirmation spy/tool | rejected |
+| CNF-8 | confpolicy-006/106 | policy ownership → confirmation spy/tool | rejected |
+| SEC-10 | security-010/110 | typed security input → tool boundary | rejected |
+| SEC-12 | security-012/112 | typed security input → tool boundary | rejected |
+| SEC-13 | security-013/113 | typed actor input → tool boundary | rejected |
+| SEC-14 | security-014/114 | typed actor input → tool boundary | rejected |
+| SEC-15 | security-015/115 | typed actor input → tool boundary | rejected |
+| SEC-16 | security-016/116 | per-call id/binding → tool boundary | rejected |
+| SEC-18 | security-018/118 | typed payload input → tool boundary | rejected |
+| SEC-4 | security-004/104 | credential audience → credential boundary | rejected |
+| SEC-9 | security-009/109 | args derivation lineage → tool boundary | rejected |
+| TLP-11 | confpolicy-001/101 | side effect → confirmation spy/tool | rejected |
+| TLP-12 | toolcontract-005/105 | raw tool contract → checker | rejected |
+| TLP-25 | profileuntrusted-001/101 | untrusted origin → tool boundary | rejected |
+| TLP-26 | toolauthoring-001/101 | raw schema → authoring checker | rejected |
+| TLP-27 | toolauthoring-002/102 | raw schema → authoring checker | rejected |
+| TLP-28 | toolauthoring-003/103 | raw open-enum schema → checker | rejected |
+| TLP-30 | toolauthoring-004/104 | raw schema → authoring checker | rejected |
+| TLP-31 | toolauthoring-005/105 | raw tuple schema → checker | rejected |
+| TLP-32 | toolauthoring-006/106 | raw exponent schema → checker | rejected |
+| TLP-7 | toolcontract-001/101 | raw catalog names → checker | rejected |
+
+Пять SHOULD (`TLP-3`, `TLP-4`, `TLP-8`, `TLP-15`, `TLP-16`) просмотрены как полная выборка:
+они не создают обязательства покрытия и остаются честными warnings, а не скрытым GREEN.
+
+### Линза 4 — согласованность фаз и plan truth
+
+Производители/потребители и Required Reads остаются связными. F16 закрыта: фактические PHP-
+коммиты `b11cf41`…`e232fc5` отражены в P7.1–P7.10 как `In progress` с якорями; повторный executor
+не увидит их как `Not started`. F17 закрыта D164: Q-28 = `Resolved`, граница LOP-26 сохраняет
+отмену на уровне действия без нового outcome сценария. Scope P5.1 не ревьюил PHP-код.
+
+### Линза 5 — no-op, дыры и anti-regression
+
+Семь anti-regression классов проходят. Ключевая прежняя дыра «ссылка есть, правило не
+различается» теперь закрыта наблюдаемыми carriers: шесть ownership-классов отвергают self-report
+shape, exact-51 manifest привязан к source digests, а 11 semantic preflight проверок ловят
+confirmation mechanics, exact request type CLR-8, independent mapping registry, wire-byte
+boundary, derivation lineage, per-call binding, append conflicts, собственный `prev_hash`, every-
+run checker, append accounting и пустой audit sink при reject. F9–F15 закрыты по существу.
+
+Гейты A0/A1/A2/A3 перепройдены; A2/A3 формально зелёные и теперь согласуются с семантической
+проверкой. Почему не RED: нет blocker/major finding, нет непривязанного mandatory rule, нет пары,
+где sole stimulus является ожидаемым результатом, и все адресные/межправильные мутанты убиты.
+
+### Линза 6 — лексика, термины и цена домена
+
+Legacy-check чист. В замораживаемой ревизии измерено 32 файла с `agentools.dev` и 35 файлов с
+`agentools.dev|dev.agentools/`; это реальная цена принятого namespace, а не «два файла».
+Терминологического конфликта между 11 документами и glossary не найдено. Публично-юридическое
+решение не подменялось аудитом и адресовано P5.3/P5.2.
+
+## Находки раунда 3
+
+Открытых blocker/major/minor/editorial findings нет. F9–F15 закрыты P4.16–P4.21, F16 — plan-
+truth reconciliation, F17 — D164/Q-28. Исторические таблицы раундов 1/2 сохранены append-only.
+
+### Вменённая детекция — раунд 3
+
+- Q-16: детекция исполнена — corpus golden выражает fixed input → expected bytes, а три
+  некорпусных anchors остаются честно адресованным командным извлечением P6.5/D98.
+- Общий свип реестра: Q-28 разрешён D164; Q-30/Q-31 — owner-gates следующего item P5.3;
+  Q-5/Q-10 — вход P5.2. Новых потерянных адресатов нет.
+
+## что НЕ проверялось — раунд 3
+
+- Общий conformance runtime runner ещё не существует (P6); проверена выводимость oracle и
+  способность каждого carrier убить мутант, а не будущая реализация SDK.
+- PHP P7.1–P7.10 не ревьюился в P5.1; проверены только git-факты и plan truth.
+- Публичная юридическая очистка имени не выполнялась; безопасная публикационная граница должна
+  быть зафиксирована owner-gate до freeze.
+- MAY-правила не аудировались; все пять SHOULD просмотрены.
+
+## Перепрогнанные команды и наблюдаемые числа — раунд 3
+
+| Команда | Наблюдение |
+|:--|:--|
+| observational carriers selftest/check | 6 ownership kinds; exact 51; self-report rejects |
+| Gate-B remediation check | manifest v2; 38 behavior + 13 artifact; 51 mutants rejected; 11/11 semantic preflight mutants rejected |
+| fixtures check | OK |
+| full spec lint + coverage | OK; 5 SHOULD warnings; MUST/MUST NOT 383/383 testable |
+| rules index / close schema / legacy | 400 rules; 15 schemas; legacy OK |
+| corpus inventory | behavior 214; artifact 89; harness 13; golden registrations 10 |
+| domain inventory, revision scope | 32 domain files; 35 domain+vendor files |
+
+Append-only история даёт в целом файле три verdict literals и 18 заголовков линз. Scoped-
+проверка блока от `## Раунд 3` до EOF даёт ровно один verdict и шесть линз; удаление прежних RED-
+раундов нарушило бы обязательный журнал аудита.
