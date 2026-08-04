@@ -210,7 +210,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P1 | **A0** — ре-верификация финала MCP 2026-07-28 + пин коммита и `schema.json` | 3/3 | 🟢 Done |
 | P2 | **A1** — bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
 | P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/25 | 🟠 Done with deviations |
-| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 18/19 | 🟡 In progress |
+| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 19/19 | 🟢 Done |
 | P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 0/3 | 🔴 Blocked |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | 🟡 In progress |
@@ -425,6 +425,8 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 
 | Дата | Кто (role/model) | Что |
 |:--|:--|:--|
+| 2026-08-04 | plan-close/implementation-low | P4 повторно закрыта 19/19 🟢 после observational remediation; A3 semantic PASS, следующий P5.1 Gate B round 3. |
+| 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.19 (`b29a023`) closed: manifest v2 exact 51, gaps 0, shortcuts 0, 51 addressable + 51 pure mutants rejected; A3 semantic PASS. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.18 (`2081c86`) closed: exact 13 raw artifact pairs, 13/13 mutants rejected, observational 51 PASS, full coverage retained. |
 | 2026-08-04 | plan-design/frontier-high | D168: P4.18 сохраняет 7 non-target rules отдельными raw carriers и владеет обновлением coverage; 0.33.3 → 0.33.4. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.17 (`8ca0a8e`) closed: exact 38 behavior pairs, 76 schema-valid members, 38/38 self-report mutants rejected, banned shortcuts 0. |
