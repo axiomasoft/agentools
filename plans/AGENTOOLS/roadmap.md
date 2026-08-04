@@ -1,6 +1,6 @@
 # Roadmap исполнения — AGENTOOLS
 
-**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.30.0 · **Следующий исполнимый участок:** solo P4.10 repair D158. Brain — SSOT; эта копия синхронизирована для работы из репозитория.
+**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.33.0 · **Следующий исполнимый участок:** solo P3.25 owner reconciliation D164. Репозиторная копия — исполнимый SSOT этой сессии.
 
 Карта отвечает на «какую команду дальше?» без разбора всего плана. Она **не переопределяет**
 `plan.md` §3 Routing (модели и effort — оттуда), а только группирует запуски и называет гейты
@@ -27,8 +27,8 @@ P3 гейтится P1, P4 гейтится P3, P5 гейтится P3+P4; P6–
 P3.17/P3.18 → P3.19/A2 → RED-аудит → P3.20 → P3.21 → P3.22 → P3.23/A2 → close/audit P3 → P3.24 → RED/AUDIT-CAP →
 P4.14 fix-forward (`51fc06f`, закрыт) → P4.9 (`ef80fcd`, закрыт) → workflow W2
 (P4.10/P4.11/P4.12, закрыт) → адресный re-open P4.10 D158 (`ea0a08f`, закрыт) →
-greenfield re-open P4.10 D160 → resume P4.13/A3 по D159 →
-close P4 → P5.1 round 2. Старый W1 и
+greenfield re-open P4.10 D160 → P4.13/A3 → close P4 → P5.1 round 2 RED → owner D161 →
+P3.25 → P4.16 → P4.17 → P4.18 → P4.19 → close P3/P4 → Gate B round 3. Старый W1 и
 P4.1–P4.8 терминальны и повторно не запускаются.
 
 ---
@@ -61,6 +61,7 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | P3.22 | solo | `plan-run` | implementation/high | — | source + `rules.json`: `CFH-55`, шесть терминов OVR-25, exact gap `[CFH-55 → P4.12]`; fixtures не трогает |
 | P3.23 | solo | `plan-run` | implementation/high | — | terminal authoring A2: schema-values evidence F1–F5 + честный coverage debt D149, без full-coverage claim |
 | P3.24 | solo | `plan-run` | implementation/high | — | fail-closed schema-values checker: полный shape + Draft 2020-12 oracle + две обязательные мутации; нормативные schemas не меняет |
+| P3.25 | solo | `plan-run` | frontier/high | ✅ D164 | immutable evidence: Q-28 resolved на существующей LOP-26 boundary, normative bytes не меняются |
 | P4.1 | — | — | — | — | **закрыт**; формат корпуса уже заморожен |
 | P4.6 | — | — | — | — | **закрыт**; must-ignore калиброван фактом |
 | P4.2 | — | — | — | — | **закрыт**; повторный запуск W1 не должен перезаписывать его артефакты |
@@ -72,10 +73,14 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | P4.14 | — | — | — | — | **закрыт** `51fc06f`; exact registry/full-definition gate устранил AUDIT-CAP debt F1/F2 до P4.9 |
 | P4.9 | — | — | — | — | **закрыт** `ef80fcd`; driver-state и D145-valid real-byte offline control — общий input W2 |
 | P4.15 | — | — | — | — | **закрыт** `8919b92`; closed policy/confirmation/audit-export inputs and selftest |
-| P4.10 | solo | `plan-run` | implementation/high | — | `🟡 In progress`, DoR D160: нормализовать только `audit-004/104`, оставив exact-one AOB-25 mapping-version counterfactual; dirty P4.13 diff не коммитить |
+| P4.10 | — | — | — | — | **закрыт** `499fe1a`; historical relation-only evidence не является semantic GREEN |
 | P4.11 | W2 | — | — | — | **закрыт** `0581400`; F5 scenario positive/negative pairs, исторический workflow повторно не запускается |
 | P4.12 | W2 | — | — | — | **закрыт** `e50bb5e`; static SEC-17/AOB-26 and CFH-55 pair, исторический workflow повторно не запускается |
-| P4.13 | solo | `plan-run` | implementation/high | — | `🔴 Blocked` до terminal P4.10 D160; затем возобновить сохранённый D159 candidate, terminal A3 + evidence-map exact 27/116 |
+| P4.13 | — | — | — | — | **закрыт** `2ffff1c`; formal A3/evidence-map, недостаточность доказана Gate B round 2 |
+| P4.16 | solo | `plan-run` | implementation/high | — | harness-owned observation schema + anti-self-report mutations; общий вход остальных remediation-items |
+| P4.17 | solo | `plan-run` | implementation/high | — | exact 38 behavior rules F9/F11–F14; после terminal P4.16 |
+| P4.18 | solo | `plan-run` | implementation/high | — | exact 13 artifact rules F9/F10/F15; после terminal P4.17, пишет общий checker |
+| P4.19 | solo | `plan-run` | implementation/high | — | exact 51 semantic manifest + fresh A3; единственный вход Gate B round 3 |
 | P5.1 | solo | `plan-run` | frontier/xhigh | — | адверсариальный гейт волны: вердикт обязан быть ОДНИМ и когерентным (D59/D61). **Команда — НЕ `task:plan-audit`**: её субъект — фазы плана, а здесь — артефакты ревизии |
 | P5.3 | solo | `plan-run` | frontier/high | ✅ **Q-30, Q-31** | package-quality baseline и reconciliation identity/authority. Выполняется после GREEN P5.1 и ДО freeze; без ответа владельца — `🔴 Blocked` |
 | — | — | — | — | ✅ **Q-5 (домен) + Q-10 (trademark)** | гейт СТОИТ МЕЖДУ items фазы (D64): нет ответа — P5.2 ждёт со строкой `Возобновление:`, ревизия остаётся `draft`; молчание ≠ «да» |
@@ -87,8 +92,9 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | P6.7 | solo | `plan-run` | implementation/high | ✅ **исход `DR-02` §6 (Q-12)** | исполняет ФАКТИЧЕСКИЙ исход owner-gate тремя ветками (D68); ветка (B) обязывает item встать `🔴` — сессия обязана быть отдельной, чтобы блок не утащил соседей |
 | P6.8 | solo | `plan-run` | implementation/high | — | lockstep при НУЛЕ существующих SDK доказывается отрицательными прогонами на фикстурах; здесь же фиксируется форма объявления ревизии, которую читают P7.1 и P8.1 (D81/D89) |
 | P6.9 | solo | `plan-run` | implementation/high | — | гейт-item фазы: пара прогонов (зелёный + мутант) + отчёт по уровням с обязательным `--out` (D118); запускается ПОСЛЕДНИМ |
-| P7.1 | solo | `plan-exec` | implementation/medium | — | скелет пакета: единственный item фазы с ЖЁСТКИМ routing-гейтом (`plan-exec`), сливать с `manual`-соседями нельзя — маршрут другой |
-| P7.2 … P7.11 | solo ×10 | `plan-run` | implementation/high | — | **батчинг ЗАПРЕЩЁН D84, критерий — D122**: каждый item строит ПУБЛИЧНУЮ поверхность пакета, который в фазе P9 реализует чужая кодовая база, а гейт-item P7.12 гоняет корпус — то есть НЕ видит по построению дефект формы публичного API; замены «подтверждения между items» терминальным гейтом здесь нет, и инвариант D6 (`plan-protocol` §9) запрещает сворачивать такие `full`-срезы в поток. Порядок — по номерам, `Inputs` каждого ссылаются на предыдущие |
+| P7.1 | solo | reconciliation pending | implementation/medium | — | `🟡` F16 anchor `b11cf41`; повторная реализация запрещена, terminal closure после восстановления provenance/validation |
+| P7.2 … P7.10 | solo ×9 | reconciliation pending | implementation/high | — | `🟡` F16 anchors `c690a67`…`e232fc5`; current-tree PHPUnit 65/65 и PHPStan green, route прежних исполнителей не выдумывается (D163) |
+| P7.11 | solo | `plan-run` | implementation/high | — | ещё не начат; старт только после штатного phase-first gate и reconciliation P7.1–P7.10 |
 | P7.12 | solo | `plan-run` | implementation/high | ⚠️ ветка (C) `DR-02` §6 | гейт-item фазы: прогон против замороженного корпуса + приземление исхода owner-gate + ВЫЧИСЛЕНИЕ уровня по порогам D7 (заявление выше измеренного — провал гейта, D82) |
 | P8.1 | solo | `plan-exec` | implementation/medium | — | скелет ядра, жёсткий routing-гейт; форма объявления ревизии берётся у читателя `bin/lockstep` — её отсутствие даёт `🔴` с адресатом P6.8 (D89) |
 | P8.2 … P8.11 | solo ×10 | `plan-run` | implementation/high | — | **батчинг ЗАПРЕЩЁН D96** (та же причина, что D84; критерий — D122: пять межъязыковых якорей раннер не видит по построению, D98) + запрет транслитерации PHP (D97): расхождение объявляется дефектом только после прогона того же вектора против ЭТАЛОНА и адаптера PHP |
@@ -109,32 +115,32 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | P11.3 | solo | `plan-run` | implementation/high | — | clean-checkout quality gate через единственный `tools/ci_gate.py` |
 | P11.4 | solo | `plan-run` | implementation/high | ✅ публикация только по owner decision | release candidate + независимый PHP/Dart consumer smoke |
 
-**Итого:** 100 items в фазах P1–P11. Точный живой счёт статусов — только `plan.md` §4; эта карта
+**Итого:** 105 items в фазах P1–P11. Точный живой счёт статусов — только `plan.md` §4; эта карта
 фиксирует порядок. Историческая раскладка: 7 групп `Batch` (16 items) и W1 (4 items).
-Текущая remediation добавляет 12 solo-items (P3.16–P3.24, P4.14, P4.9, P4.13) и workflow W2
+Текущая remediation добавляет 17 solo-items (исторические P3/P4 repair + P3.25/P4.16–P4.19) и workflow W2
 (P4.10–P4.12). Owner-гейты Q-5/Q-27 закрыты P3.17/P3.18; второй реопен owner-гейтов не добавляет.
 
 ---
 
 ## Готовые launch-block'и групп
 
-### P4.10 — greenfield AOB-25 repair D160
+### P3.25 — owner reconciliation D164/Q-28
 
-**Next:** manual: implementation/high
+**Next:** «ЗАПУСК ВРУЧНУЮ: `frontier/high`»
 
 | Параметр | Значение |
 |:--|:--|
-| Model class | implementation |
-| Effort | high — correctness-critical behavior fixtures against frozen normative rules |
+| Model class | frontier |
+| Effort | high — owner decision reconciliation |
 | Capabilities | — |
-| Context | same-session — item |
-| Суть | Нормализовать только `audit-004/104`: одинаковая tool description, единственный input-diff — independently versioned mapping export-adapter. |
+| Context | continue (reset the session context) — ручной item |
+| Суть | Выпустить immutable evidence совпадения D164/Q-28 с LOP-26 без изменения normative bytes. |
 | Команда | — |
 
 ```text
-# select the session model class implementation
+# select the session model class frontier
 # select the session effort high
-$ task:plan-run AGENTOOLS P4.10
+$ task:plan-run AGENTOOLS P3.25
 ```
 
 ### B1 — фаза P1 (A0): пин финала MCP, дельта-таблица, реконсиляция `DR-01`

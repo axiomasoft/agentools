@@ -6,18 +6,18 @@
 |:--|:--|
 | Plan ID | AGENTOOLS |
 | Title | AgenTools: ревизия спеки `2026-08` (modern-only, MCP 2026-07-28) + conformance + PHP/Dart SDK + срезы CRM/ERP |
-| Version | 0.32.0 |
+| Version | 0.33.0 |
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-04 (P5.1 round 2 = RED; owner-gate, третий аудит запрещён до решения.) |
+| Last Updated | 2026-08-04 (owner выбрал observational remediation; P3/P4 адресно реопенены.) |
 | Repository | `~/projects/packages/agentools` (приватный, без remote) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
 | Target Operator Models | sonnet (exec) · haiku (LOW) · opus (нормативный авторинг/аудит) |
 | Approval Owner | Dmitry Vostrikov |
 | Home | brain |
-| Design Passes | 3/3 — кросс-репо и ядро экосистемы: три прохода авторинга завершены 2026-07-27, все фазы доведены до DoR, `finish`/`roadmap.md` и design-аудит выполнены. Поздние audit-driven реопены D141/D146/D150, item-reconcile D149, fix-forward D152, item re-design D153/D156/D158/D159/D160 и driver-contract remediation D157 не увеличивают авторский бюджет: это адресная ремедиация исполняемого плана. Следующий шаг — закрыть P4, затем запустить новый P5.1 round 2 свежим контекстом. |
+| Design Passes | 3/3 — кросс-репо и ядро экосистемы: три прохода авторинга завершены 2026-07-27. Поздние audit-driven реопены, включая owner-authorized D161–D164 после Gate B round 2, не увеличивают авторский бюджет: это адресная ремедиация исполняемого плана. Следующий шаг — P3.25, затем P4.16–P4.19 и только после фактического ремонта Gate B round 3. |
 
 ## 1. Context
 
@@ -124,6 +124,7 @@ solo, — D122.
 | — | P3.22 | implementation/high | manual | full | точечный нормативный долг F4/F5 по D149: source + детерминированный `rules.json`, exact coverage debt `CFH-55 → P4.12`; effort high за public contract |
 | — | P3.23 | implementation/high | manual | full | повторный authoring A2 после P3.20–P3.22: schema-value gate + exact `[CFH-55]` debt, без ложного full-coverage PASS; effort high за инвариантность snapshot |
 | — | P3.24 | implementation/high | manual | full | fail-closed ремонт checker'а против D151: форма предписана полностью, Draft 2020-12 oracle и две мутации детерминированы; public-contract риск требует effort high, новых design-решений у исполнителя нет |
+| — | P3.25 | frontier/high | manual | full | owner reconciliation F17/Q-28 после AUDIT-CAP: решение меняет pre-freeze truth и обязано быть названо явно, но normative bytes сохраняются |
 | — | P4.15 | implementation/high | manual | full | закрытый driver-only контракт уже выбран D157; работа расширяет только test input/schema+selftest до начала W2, чтобы behavior-pairs не опирались на скрытые stubs |
 | — | P4.1 | implementation/high | manual | full | формат вектора замораживает форму всего корпуса и исполняется параллельно пятью авторами: ошибка стоит переписывания всех векторов; конвенции предписаны (`research/03-p4-vector-corpus-2026-08.md` §3–§4), открытых решений нет — предписанная реализация против замороженного канона (Tier policy §9) |
 | W1 | P4.2–P4.3 | implementation/high | manual | full | авторинг данных контракта против замороженных правил (`rules.json`) и замороженного формата; открытых решений нет, риск-класс один — ложная ссылка на правило проходит машинный гейт и обесценивает покрытие, effort high за различающую силу вектора |
@@ -136,6 +137,7 @@ solo, — D122.
 | W2 | P4.11–P4.12 | implementation/high | manual | full | исторически закрытая часть W2: scenario + static/checker; повторный запуск запрещён, текущий P4.10 исполняется solo по D160 |
 | — | P4.13 | implementation/high | manual | full | терминальный A3 + deterministic evidence-map exact 27 fixture carriers/116 rules (headline 32 только provenance D154); solo, потому что потребляет весь W2 и формирует единственный вход Gate B round 2 |
 | — | P4.14 | implementation/high | manual | full | немедленный fix-forward P3 Audit F1/F2 после AUDIT-CAP: outer `$defs` shape + exact inventory; solo до P4.9, потому что пишет общий `tools/spec_lint.py` и восстанавливает честный A2 carrier |
+| — | P4.16–P4.19 | implementation/high | manual | full | observational remediation F9–F15: schema/checker → 38 behavior → 13 artifact → exact semantic manifest; последовательные solo-items пишут общие corpus/checker surfaces и каждый требует full review |
 | — | P5.1 | frontier/xhigh | manual | full | гейт волны: содержательный адверсариальный аудит — открытые суждения (различает ли вектор своё правило, конфликт с ADR чужих контуров, no-op-нормы), цена ошибки необратима (GREEN размораживает P6–P10 и открывает freeze) — Tier policy §9. Носитель — голый промпт item'а либо `task:plan-run` из сессии `frontier/xhigh`; `task:plan-audit` НЕ подходит: его субъект — фазы плана, а не артефакты ревизии (D61) |
 | — | P5.3 | frontier/high | manual | full | quality baseline и reconciliation двух owner-решений: требуется суждение о публичной границе, но не новая семантика протокола; Chatom/AzGuard — evidence, не integration targets |
 | — | P5.2 | implementation/high | manual | full | freeze — необратимая публикация контракта (потребители пинят ревизию и тег), но открытых решений в item'е нет: механика предписана D19/D62, суждение вынесено владельцу гейтом Q-5/Q-10; effort high за инвариантность порядка шагов (прецедент P3.14/P4.5); поднято с черновой строки `implementation/medium`/`plan-exec` — D65 |
@@ -207,11 +209,11 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P0 | История: ревизия `2026-07-draft` (MCP 2025-11-25) — терминальна, не переоткрывается | 7/11 | 🟠 Done with deviations |
 | P1 | **A0** — ре-верификация финала MCP 2026-07-28 + пин коммита и `schema.json` | 3/3 | 🟢 Done |
 | P2 | **A1** — bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
-| P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/24 | 🟠 Done with deviations |
-| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 15/15 | 🟢 Done |
+| P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/25 | 🟡 In progress |
+| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 15/19 | 🟡 In progress |
 | P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 0/3 | 🔴 Blocked |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
-| P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | ⬜ Not started |
+| P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | 🟡 In progress |
 | P8 | Dart SDK `agentools` — зелёный на тех же векторах | 0/13 | ⬜ Not started |
 | P9 | Вертикальный срез в CRM (сквозной сценарий с записью в БД) | 0/7 | ⬜ Not started |
 | P10 | Перенос в ERP-контур + анализ offline-разрыва (отчёт применимости) | 0/6 | ⬜ Not started |
@@ -409,6 +411,10 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | D158 | 2026-08-04 | **P4.10 реопенится узко: CNF-35/CNF-36 pairs обязаны потребить terminal P4.15 confirmation snapshot, а SEC-11 evidence address исправляется с несуществующего `driver_state/tools` на фактический `given.tools`; ALC-35 presence/absence и AOB-31 length-boundary fixtures сохраняются.** Supersedes D156 только в части утверждения, что cold-start review доказал все 65 stimulus pointers, и уточняет слишком широкий диагноз P4.13: четыре пары имеют реальный input-diff, но pair-level checker ошибочно требует leaf существовать в обеих половинах. P4.13 отдельно чинит `present↔absent`/`length` extraction; добавлять self-asserted runtime payload ради зелёного checker'а запрещено. **Consequences:** платим повторным item-close P4.10 и последующим re-design/resume P4.13; зато не искажаем нормативные ALC/AOB fixtures под дефект проверки и не выдаём token/proposal за доказательство commit-time authorization. | `research/19-p4.10-counterfactual-reopen-2026-08.md`; read-only pair diff и `tools/spec_lint.py` 2026-08-04. `RAG:— (repo-grounded)` |
 | D159 | 2026-08-04 | **P4.13 кодирует behavior stimulus как один structured counterfactual на rule-pair: закрытый enum `value/presence/length`, общий pointer и два отсортированных member-наблюдения; explicit pointer обязан совпасть с вычисленным, а один-sided presence и list-length адресуются без требования leaf существовать в обеих половинах. Mutation evidence считается только при реальном reject validator'ом, не по факту изменения JSON.** Отклонены: self-asserted fixture metadata, `exists-in-either` без relation и подгонка boundary fixtures. | `research/20-p4.13-pair-evidence-resume-2026-08.md` §§1–3; текущий P4.13 candidate. `RAG:— (repo-grounded)` |
 | D160 | 2026-08-04 | **AgenTools — greenfield-пакет: промежуточные draft-fixtures не являются legacy API. P4.10 снова реопенится и нормализует `audit-004/104` против текущей AOB-25: tool description одинакова, единственный input-counterfactual — independently versioned `audit_export.mapping_version`.** Supersedes D156 только в неявном требовании сохранять байты уже собранного candidate, когда они противоречат различающей силе pair; exact 65 single-rule pairs и D159 exact-one predicate сохраняются. **Consequences:** платим ещё одним узким source+bookkeeping циклом и откладываем P4.13; взамен не заводим legacy/migration слой в невыпущенном пакете и убираем ложную вторую причину исхода. | Директива владельца 2026-08-04 «пакет с нуля создаётся»; `research/21-p4.10-greenfield-aob25-repair-2026-08.md`; фактический diff `audit-004/104`; `08_audit-observability.md` AOB-25. `RAG:— (repo-grounded)` |
+| D161 | 2026-08-04 | **После Gate B round 2 RED владелец выбрал адресный реопен P3/P4 и замену exact 51 негодного carrier настоящими observational carriers; новая ревизия тестируемости отклонена.** Лимит аудитов снимается только для одного post-remediation Gate B round 3; история round 1/2 append-only. **Consequences:** supersedes D152/D154/D156/D159 только в утверждении о достаточности прежних repair/evidence gates; платим P3.25 + P4.16–P4.19 и повторным close/audit, зато freeze не закрепляет self-report контракт. | Owner directive 2026-08-04; `artifacts/P5-gate-b.md` F9–F15; `research/22-p5-round2-observational-remediation-2026-08.md`. `RAG:— (owner decision + repo-grounded)` |
+| D162 | 2026-08-04 | **Observational evidence принадлежит harness, а не SUT event payload.** Разрешены пять закрытых классов: tool/credential boundary spy, journal projection, audit sink, task binding; artifact checker вычисляет verdict из raw candidate/reference. Поля `projection_source`, `write_back_upcast`, `source_of_truth`, `hash_input_includes_prev_hash`, `chain_valid`, SUT-payload `execution_route`, `reject_passing_entries`, `grease_allowed` и magic carrier/type strings запрещены exact gate'ом. **Consequences:** часть fixtures становится подробнее и P6 runner обязан реализовать harness-owned probes; взамен мутант не проходит, просто напечатав правильный payload. | Gate B F9–F15; `research/22-p5-round2-observational-remediation-2026-08.md` §2. `RAG:— (repo-grounded)` |
+| D163 | 2026-08-04 | **F16 синхронизируется без ложного terminal status:** P7.1–P7.10 переводятся `Not started` → `In progress` с anchors `b11cf41`…`e232fc5`; прежний route исполнителей неизвестен и не выдумывается, штатный terminal reconcile остаётся фазе P7.** На текущем дереве PHPUnit 65/65 и PHPStan 0 errors — evidence существования, не write-site closure. **Consequences:** Status Board всё ещё показывает 0 terminal items, но новый executor видит committed partial/implemented scope и не перезаписывает его; позднее потребуется честная реконсиляция каждого item'а. | Gate B F16; git history; `research/22-p5-round2-observational-remediation-2026-08.md` §4. `RAG:— (repo-grounded)` |
+| D164 | 2026-08-04 | **F17/Q-28 resolved: ревизия `2026-08` нормирует отмену только на уровне действия; scenario-run cancellation не нормируется и outcome `CANCELLED` не вводится.** Ратифицируется существующая норма LOP-26, normative bytes не меняются. **Consequences:** отменённый шаг не получает придуманного маршрута SCN-6; расширение возможно только новой датированной ревизией. | Owner decision 2026-08-04; `07_long-operations.md` LOP-26; `open-questions.md` Q-28. `RAG:— (owner decision + repo-grounded)` |
 
 ## 6. Update Log
 
@@ -416,6 +422,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 
 | Дата | Кто (role/model) | Что |
 |:--|:--|:--|
+| 2026-08-04 | plan-design/frontier-high | Owner remediation D161–D164: P3/P4 реопенены для P3.25/P4.16–P4.19; exact 51 observational carriers, F16 truth-sync и F17/Q-28 resolution доведены до DoR; 0.32.0 → 0.33.0. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-xhigh | P5.1 round 2 (`633d2e8`) = RED: formal gates green, semantic 332/383 PASS и 51 FAIL; лимит аудита исчерпан, следующий шаг — owner-gate, не design. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.13 (`2ffff1c`) closed: relation-aware 27/116 evidence-map, real mutation rejects and formal A3; P4 is ready to close. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.10 (`499fe1a`) closed: AOB-25 `audit-004/104` now has one mapping-version counterfactual; P4.13 resumes on its preserved candidate — details in phases/P4.md. |

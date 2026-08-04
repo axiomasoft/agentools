@@ -1,37 +1,39 @@
-# HANDOFF — 2026-08-04 — after P5.1
+# HANDOFF — 2026-08-04 — after P4
 
-**Next:** waiting: ОЖИДАНИЕ: решение владельца по P5.1 round 2 RED → owner-approved execution route
+**Next:** «ЗАПУСК ВРУЧНУЮ: `frontier/high`»
 
 | Параметр | Значение |
 |:--|:--|
-| Model | owner |
-| Thinking | — |
-| Context | continue (/clear) — ручной item |
-| Суть | Выбрать remediation/revision и реконсиляцию P7 plan truth; новый design/audit автоматически не запускать. |
+| Model | frontier |
+| Thinking | high — owner decision reconciliation |
+| Context | continue (reset the session context) — ручной item |
+| Суть | Исполнить P3.25: выпустить immutable evidence по D164/Q-28 без изменения normative bytes. |
 | Команда | — |
 
 ```
-OWNER GATE AGENTOOLS P5.1: выбрать (1) адресный реопен P3/P4 для observational carriers и синхронизации P7 plan truth или (2) новую ревизию контракта тестируемости; третий аудит P5.1 до решения не запускать.
+select session model class frontier
+select session effort high
+$ task:plan-run AGENTOOLS P3.25
 ```
 
-**Done:** Gate B round 2 опубликован item-коммитом `633d2e8`. Формальные гейты зелёные, но
-семантическая матрица даёт 332 PASS / 51 FAIL из 383 обязательных правил: F9–F15 — blockers,
-F16–F17 — major. Живые ADR-контуры сверены без контрактных конфликтов.
+**Done:** Owner выбрал remediation-вариант D161: P3/P4 адресно реопенены; P3.25 и
+P4.16–P4.19 доведены до DoR. D162 определил harness-owned observational evidence. F16
+синхронизирован честно: P7.1–P7.10 = `🟡 In progress` с commit anchors, без выдуманного route.
+F17/Q-28 resolved D164 на существующей границе LOP-26.
 
-**Remaining:** Владелец выбирает одно из направлений: (1) адресно переоткрыть P3/P4 и заменить
-self-report/magic-input проверки настоящими observational carriers, одновременно синхронизировав
-plan truth с уже существующими PHP-коммитами P7; либо (2) изменить контракт тестируемости новой
-ревизией. До решения третий аудит P5.1 и freeze P5.2 запрещены.
+**Remaining:** P3.25 → P4.16 → P4.17 → P4.18 → P4.19 → close P3/P4 → единственный
+owner-authorized Gate B round 3. Только semantic GREEN допускает P5.3/P5.2.
 
-**Sources of truth:** `plans/AGENTOOLS/artifacts/P5-gate-b.md` round 2 и F9–F17 ·
-`plans/AGENTOOLS/findings/P5-adr-contours.md` round 2 · `plans/AGENTOOLS/phases/P5.md` P5.1 ·
-`plans/AGENTOOLS/plan.md` Status Board · item commit `633d2e8`.
+**Sources of truth:** `research/22-p5-round2-observational-remediation-2026-08.md` ·
+`artifacts/P5-gate-b.md` F9–F17 · `plan.md` D161–D164 · `phases/P3.md` P3.25 ·
+`phases/P4.md` P4.16–P4.19 · `phases/P7.md` F16 anchors.
 
-**Open risks:** 51 mandatory carriers не доказывают нормативное поведение; P7 уже имеет PHP-коммиты,
-хотя Status Board показывает `0/12 Not started`; Q-28 остаётся pending с терминальным владельцем P4.
+**Open risks:** 51 carriers ещё фактически не заменены; Gate B остаётся RED; тег
+`spec-2026-08` до GREEN запрещён. PHP P7.1–P7.10 имеют код и зелёный current-tree QA, но
+terminal item reconciliation сознательно отложена до штатной фазы P7.
 
 **Workarounds/Deferred/Open questions:**
 
 - workarounds: —
-- deferred: freeze P5.2, P5.3 и дальнейшее исполнение до owner decision.
-- open_questions: owner choice по маршруту remediation/revision и реконсиляции P7 plan truth.
+- deferred: freeze/tag P5.2 до semantic GREEN и P5.3.
+- open_questions: Q-30/Q-31 разрешаются внутри P5.3; Q-5/Q-10 — внутри P5.2 по owner-autonomy.
