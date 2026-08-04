@@ -83,6 +83,11 @@
               "type": "array",
               "items": { "type": "string" },
               "description": "Closed-world allowlist инструментов сессии — понятие драйвера харнесса, векторов permission-отказа (10_security.md); собственного носителя в схемах провода не имеет."
+            },
+            "rules": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/DriverPolicyRule" },
+              "description": "Применимые правила Policy Layer: closed verdict и scope, подаваемые драйвером до prepare; не MCP wire и не ожидаемый verdict."
             }
           },
           "description": "Опциональные policy-ограничения сессии, проверяемые до показа превью."
@@ -199,8 +204,10 @@
         "task_channel": {
           "type": "array",
           "items": { "$ref": "#/$defs/DriverTaskMessage" }
-        }
-      },
+        },
+        "confirmation": { "$ref": "#/$defs/DriverConfirmation" },
+        "audit_export": { "$ref": "#/$defs/DriverAuditExport" }
+        },
       "description": "Закрытая driver-only обёртка. Секции опциональны: вектор задаёт только нужный stimulus; свободный state и неописанные ключи запрещены."
     },
     "DriverPrincipal": {
@@ -290,6 +297,45 @@
         "message": { "type": "string" }
       },
       "description": "Предзаданное сообщение канала долгой задачи; channel/status используют опубликованные перечисления task-binding."
+    },
+    "DriverPolicyRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "verdict"],
+      "properties": {
+        "scope": { "type": "string", "enum": ["system", "tenant", "user", "tool"] },
+        "verdict": { "type": "string", "enum": ["deny", "ask", "allow"] }
+      },
+      "description": "Одно применимое правило Policy Layer; порядок массива и специфичность не являются входом precedence CNF-4."
+    },
+    "DriverConfirmation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["proposal_id", "proposal_version", "token_id", "covered_principal_id", "prepared_descriptor_digest", "current_descriptor_digest", "prepared_args_fingerprint", "commit_args_fingerprint"],
+      "properties": {
+        "proposal_id": { "type": "string", "minLength": 1 },
+        "proposal_version": { "type": "integer", "minimum": 1 },
+        "token_id": { "type": "string", "minLength": 1 },
+        "covered_principal_id": { "type": "string", "minLength": 1 },
+        "prepared_descriptor_digest": { "type": "string", "minLength": 1 },
+        "current_descriptor_digest": { "type": "string", "minLength": 1 },
+        "prepared_args_fingerprint": { "type": "string", "minLength": 1 },
+        "commit_args_fingerprint": { "type": "string", "minLength": 1 }
+      },
+      "description": "Закрытый driver-only снимок proposal/token binding между prepare и commit; digest/fingerprint сопоставляются реализацией, не self-asserted verdict."
+    },
+    "DriverAuditExport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapter_id", "mapping_version", "boundary", "attributes", "audit_fields"],
+      "properties": {
+        "adapter_id": { "type": "string", "minLength": 1 },
+        "mapping_version": { "type": "string", "minLength": 1 },
+        "boundary": { "const": "external" },
+        "attributes": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "audit_fields": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      },
+      "description": "Вход adapter-side export: versioned mapping, external boundary и наблюдаемые имена; не поле audit schema и не claim conformance."
     },
     "ScriptStep": {
       "type": "object",

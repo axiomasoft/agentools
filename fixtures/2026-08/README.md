@@ -81,6 +81,14 @@ behavior-векторов. Оно не добавляет полей в MCP-пр
 | `effects[]` | предзаданные projections effect registry | каждый элемент — published `effect-registry.json` |
 | `tool_results[]` | `{tool, content, is_error}` | минимальный result driver-а, не MCP result envelope |
 | `task_channel[]` | `{task_id, channel, status, message}` | `channel`/`status` переиспользуют published `task-binding.json` |
+| `confirmation` | proposal/token id, principal, prepared/current descriptor digest и args fingerprints | typed binding prepare→commit, не token wire format |
+| `audit_export` | adapter id, mapping version, `external` boundary, attributes и audit fields | adapter-side вход, не поля audit schema |
+
+`given.policy.rules[]` задаёт только применимые `{scope, verdict}` с закрытыми enum
+`system|tenant|user|tool` и `deny|ask|allow`. Это вход Policy Layer для precedence, не
+ожидаемый результат и не wire policy. `confirmation` и `audit_export` столь же driver-only:
+они делают проверяемыми bindings/token-drift и границу export, но не разрешают помещать
+внешние telemetry-имена в схему ревизии.
 
 Внутри `driver_state` нет свободного `state` и нет `additionalProperties: true`.
 Предметный payload либо ссылается на опубликованную схему, либо остаётся минимальным

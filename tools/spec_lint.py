@@ -2408,6 +2408,16 @@ def run_driver_state_selftest(fixtures_root):
         "effects": [{"action_id": "action-1", "effects": {}}],
         "tool_results": [{"tool": "invoice_read", "content": "ok", "is_error": False}],
         "task_channel": [{"task_id": "task-1", "channel": "poll", "status": "working", "message": "started"}],
+        "confirmation": {
+            "proposal_id": "proposal-1", "proposal_version": 1, "token_id": "token-1",
+            "covered_principal_id": "user-1", "prepared_descriptor_digest": "digest-a",
+            "current_descriptor_digest": "digest-a", "prepared_args_fingerprint": "args-a",
+            "commit_args_fingerprint": "args-a",
+        },
+        "audit_export": {
+            "adapter_id": "otel", "mapping_version": "v1", "boundary": "external",
+            "attributes": ["gen_ai.provider.name", "input_tokens"], "audit_fields": ["action_id"],
+        },
     }
     negative_paths = {
         "principals": ("initiator", "unexpected"),
@@ -2419,6 +2429,8 @@ def run_driver_state_selftest(fixtures_root):
         "effects": (0, "action_id"),
         "tool_results": (0, "unexpected"),
         "task_channel": (0, "unexpected"),
+        "confirmation": (None, "unexpected"),
+        "audit_export": (None, "unexpected"),
     }
     for name, value in sections.items():
         positive = json.loads(json.dumps(base, ensure_ascii=False))
@@ -2444,6 +2456,17 @@ def run_driver_state_selftest(fixtures_root):
         else:
             print(f"driver-state {name}: valid=0, invalid={len(negative_errors)}")
 
+    policy_positive = json.loads(json.dumps(base, ensure_ascii=False))
+    policy_positive["given"]["policy"] = {"rules": [{"scope": "tenant", "verdict": "ask"}]}
+    policy_negative = json.loads(json.dumps(policy_positive, ensure_ascii=False))
+    policy_negative["given"]["policy"]["rules"][0]["verdict"] = "bypass"
+    policy_ok = list(validator.iter_errors(policy_positive))
+    policy_bad = list(validator.iter_errors(policy_negative))
+    if policy_ok or not policy_bad:
+        errors.append(f"driver-state policy: valid={len(policy_ok)}, invalid={len(policy_bad)}")
+    else:
+        print(f"driver-state policy: valid=0, invalid={len(policy_bad)}")
+
     for name, step in {
         "script.tool_result": {"tool_result": sections["tool_results"][0]},
         "script.task_message": {"task_message": sections["task_channel"][0]},
@@ -2461,7 +2484,7 @@ def run_driver_state_selftest(fixtures_root):
         else:
             print(f"driver-state {name}: valid=0, invalid={len(negative_errors)}")
 
-    return report(errors, "driver-state: 9 sections + 2 script steps; valid=0, invalid>0")
+    return report(errors, "driver-state: 12 sections + policy + 2 script steps; valid=0, invalid>0")
 
 
 def run_keywords_check(schema_path, list_name):
