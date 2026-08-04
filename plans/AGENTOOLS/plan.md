@@ -10,7 +10,7 @@
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-04 (P3.24 closed; P3 awaits close and third audit.) |
+| Last Updated | 2026-08-04 (P3 closed after P3.24; third independent audit awaits.) |
 | Repository | `~/projects/packages/agentools` (приватный, без remote) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
@@ -401,6 +401,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 ## 6. Update Log
 
 | Дата | Кто (role/model) | Что |
+| 2026-08-04 | plan-close/implementation-low | P3 закрыта: 24/24 🟢, P3.24 восстановил fail-closed A2 gate; следующий шаг — независимый audit P3, Docs-sync не требуется. |
 | 2026-08-04 | plan-run/gpt-5.6-high | P3.24 (`0279f59`) закрыт: open-enum checker fail-closed, Draft 2020-12 oracle ловит обе мутации; P3 ждёт close/audit — детали см. phases/P3.md P3.24 Completion Notes. |
 | 2026-08-04 | plan-design/frontier-high | RED-аудит P3 захода 2 приземлён реопеном: P3.24 доведён до DoR, D150–D151, research §14; бухгалтерия F2–F5 исправлена; 0.23.0 → 0.24.0. |
 | 2026-08-04 | plan-run/gpt-5.6-high | P3.23 (`86395cf`) закрыт: A2 selftest-evidence подтверждает F1–F5, единственный `CFH-55` debt передан P4.12 — детали см. phases/P3.md P3.23 Completion Notes. |
