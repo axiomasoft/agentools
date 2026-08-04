@@ -10,7 +10,7 @@
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-04 (P3.25 skip D165; исполнимая remediation продолжается P4.16.) |
+| Last Updated | 2026-08-04 (P3 повторно закрыта с отклонениями; remediation продолжается P4.16.) |
 | Repository | `~/projects/packages/agentools` (приватный, без remote) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
@@ -423,6 +423,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 
 | Дата | Кто (role/model) | Что |
 |:--|:--|:--|
+| 2026-08-04 | plan-close/implementation-low | P3 повторно закрыта 🟠: 23 green, P3.24 deviation, P3.25 skipped D165; F17/Q-28 terminal D164/LOP-26, дальше P4.16. |
 | 2026-08-04 | plan-design/frontier-high | P3.25 ⛔ D165: compiler audit-cap не обходится; F17 остаётся resolved D164/Q-28 без normative diff, следующий исполнимый item P4.16; 0.33.0 → 0.33.1. |
 | 2026-08-04 | plan-design/frontier-high | Owner remediation D161–D164: P3/P4 реопенены для P3.25/P4.16–P4.19; exact 51 observational carriers, F16 truth-sync и F17/Q-28 resolution доведены до DoR; 0.32.0 → 0.33.0. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-xhigh | P5.1 round 2 (`633d2e8`) = RED: formal gates green, semantic 332/383 PASS и 51 FAIL; лимит аудита исчерпан, следующий шаг — owner-gate, не design. |

@@ -28,7 +28,7 @@ P3.17/P3.18 → P3.19/A2 → RED-аудит → P3.20 → P3.21 → P3.22 → P3
 P4.14 fix-forward (`51fc06f`, закрыт) → P4.9 (`ef80fcd`, закрыт) → workflow W2
 (P4.10/P4.11/P4.12, закрыт) → адресный re-open P4.10 D158 (`ea0a08f`, закрыт) →
 greenfield re-open P4.10 D160 → P4.13/A3 → close P4 → P5.1 round 2 RED → owner D161 →
-P3.25 → P4.16 → P4.17 → P4.18 → P4.19 → close P3/P4 → Gate B round 3. Старый W1 и
+P4.16 → P4.17 → P4.18 → P4.19 → close P4 → Gate B round 3. Старый W1 и
 P4.1–P4.8 терминальны и повторно не запускаются.
 
 ---
