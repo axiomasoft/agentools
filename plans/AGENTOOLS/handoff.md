@@ -8,28 +8,32 @@
 | Effort | high |
 | Capabilities | `command.subagents`, `command.workflow-carrier` |
 | Context | cold-start — orchestration |
-| Суть | W2 параллельно авторит P4.10–P4.12, затем последовательно валидирует и закрывает P4.12→P4.10→P4.11. |
+| Суть | Resume W2: восстановить результаты авторов из W2-only candidate, провести review/fix и закрыть P4.12→P4.10→P4.11. |
 | Команда | — |
 
 ```text
-# НЕ раньше: P3, P4.14 и P4.9 терминальны; full lint имеет единственный debt CFH-55
+# RESUME D155: не перезапускать fresh-authoring и не очищать dirty W2 candidate
 native orchestration carrier: plans/AGENTOOLS/workflows/wf-agentools-p4-remediation.js
 ```
 
-**Done:** Повторный design P4 довёл W2 до DoR: D154 фиксирует exact 27 fixture-carriers/116
-FAIL rules вместо невосстановимого headline 32; P4.12 write-set включает CFH-55 schema+harness;
-parallel authoring отделён от sequential high-route review/gates/close. Фактический precheck:
-P3/P4.14/P4.9 terminal, full lint красный ровно на CFH-55, fixtures-check зелёный.
+**Done:** Design P4 закрыл interrupted-state DoR: D155 добавил двухрежимный precheck
+`fresh|resume`, read-only reconstruction результатов авторов и fail-closed границу dirty-set.
+P4.10–P4.12 честно синхронизированы как `🟡 In progress`. На текущем candidate
+`--fixtures-check`, полный spec lint и `git diff --check` зелёные; implementation-файлы не
+изменялись этим design-заходом.
 
-**Remaining:** W2 закрывает P4.10–P4.12; затем solo P4.13 выпускает A3/evidence-map, `plan-close
-AGENTOOLS P4` и cold-start Gate B round 2 P5.1.
+**Remaining:** Resume W2 проводит adversarial review и последовательное закрытие
+P4.12→P4.10→P4.11; затем solo P4.13 выпускает A3/evidence-map, `plan-close AGENTOOLS P4` и
+cold-start Gate B round 2 P5.1.
 
 **Sources of truth:** `plans/AGENTOOLS/phases/P4.md` P4.10–P4.13 ·
-`plans/AGENTOOLS/research/16-p4-w2-dor-reconcile-2026-08.md` · `plans/AGENTOOLS/plan.md` D154 ·
-`plans/AGENTOOLS/roadmap.md` W2 · `plans/AGENTOOLS/workflows/wf-agentools-p4-remediation.js`.
+`plans/AGENTOOLS/research/16-p4-w2-dor-reconcile-2026-08.md` §5 ·
+`plans/AGENTOOLS/plan.md` D155 · `plans/AGENTOOLS/roadmap.md` W2 ·
+`plans/AGENTOOLS/workflows/wf-agentools-p4-remediation.js`.
 
-**Open risks:** P4.13 не имеет права объявлять semantic Gate B GREEN; historical reported count
-32 хранится только как provenance, exact acceptance — 27 fixture ids/116 rule ids.
+**Open risks:** Зеленые базовые линтеры не заменяют distinguishing-strength review; workflow
+обязан остановиться при чужом dirty path, неполном scope или Major/Blocker после одной
+fix-итерации. P4.13 не имеет права объявлять semantic Gate B GREEN.
 
 **Workarounds/Deferred/Open questions:**
 

@@ -1,6 +1,6 @@
 # Roadmap исполнения — AGENTOOLS
 
-**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.26.0 · **Следующий исполнимый участок:** workflow W2 (P4.10–P4.12). Brain — SSOT; эта копия синхронизирована для работы из репозитория.
+**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.26.1 · **Следующий исполнимый участок:** resume workflow W2 (P4.10–P4.12). Brain — SSOT; эта копия синхронизирована для работы из репозитория.
 
 Карта отвечает на «какую команду дальше?» без разбора всего плана. Она **не переопределяет**
 `plan.md` §3 Routing (модели и effort — оттуда), а только группирует запуски и называет гейты
@@ -125,11 +125,11 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | Effort | high — различающая сила contract vectors |
 | Capabilities | `command.subagents`, `command.workflow-carrier` |
 | Context | cold-start — orchestration |
-| Суть | Параллельно авторить behavior/scenario/static carriers; после join последовательно проверить и закрыть P4.12→P4.10→P4.11. |
+| Суть | Возобновить W2 candidate: read-only reconstruction → review/fix → последовательное закрытие P4.12→P4.10→P4.11; на чистом дереве carrier сохраняет fresh-authoring. |
 | Команда | — |
 
 ```text
-# НЕ раньше: P3, P4.14 и P4.9 терминальны; full lint имеет единственный debt CFH-55
+# RESUME D155: dirty-set только P4.10–P4.12, plan files clean, joined fixtures/full lint green
 native orchestration carrier: plans/AGENTOOLS/workflows/wf-agentools-p4-remediation.js
 ```
 

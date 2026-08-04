@@ -99,3 +99,30 @@ phases/P4.md items; workflows/wf-agentools-p4-remediation.js до D154; D149)`.
 | Low closer фактически исполняет high item | Task Contract route mismatch или нет доказуемого executor route | closer = implementation/high; фактический route в Completion Notes/journal |
 | Evidence-map «достигает 32» фиктивными строками | отсутствует source row для carrier | exact 27 fixture ids + 116 rule ids; headline хранится отдельно |
 | P4.13 объявляет Gate B GREEN | A3 artifact содержит содержательный verdict | P4.13 только evidence/A3; единственный semantic verdict — cold-start P5.1 round 2 |
+
+## 5. Interrupted-state recovery (D155)
+
+После parallel authoring в рабочем дереве появился незакоммиченный candidate всех трёх scopes
+W2, но carrier не дошёл до последовательных review/close стадий. На этом дереве
+`python3 tools/spec_lint.py --fixtures-check fixtures/2026-08`, полный
+`python3 tools/spec_lint.py spec/revisions/2026-08` и `git diff --check` зелёные; изменённые и
+новые пути ограничены `Files` P4.10–P4.12, plan files до этого design-захода чисты.
+`RAG:— (repo-grounded: git status/diff и три команды 2026-08-04)`.
+
+Fresh-only перезапуск невозможен по построению: старый precheck требует `git clean`, а обход
+проверки либо повторный authoring рискуют затереть готовый candidate. Resume-контракт поэтому
+двухрежимный:
+
+1. `fresh` сохраняет прежний exact precheck D154: clean tree, fixtures-check green, единственный
+   full-lint debt `CFH-55`;
+2. `resume` разрешён только при W2-only dirty-set, наличии изменений во всех трёх item scopes,
+   чистых plan files и зелёных joined-tree fixtures/full gates;
+3. author results восстанавливаются read-only по item scope, после чего выполняются неизменные
+   adversarial review, максимум одна fix-итерация и close `P4.12 → P4.10 → P4.11`;
+4. любой чужой path, неполный scope или красный gate останавливает carrier без reset/stash,
+   коммита или solo-fallback.
+
+Альтернативы отклонены: удалить/откатить candidate — потеря уже выполненной работы; повторить
+parallel authoring — неидемпотентная подмена provenance; закоммитить без восстановления review
+контекста — обход D154 и `Review=full`. Цена resume — дополнительный read-only проход по трём
+scope, но единственная мутация до review остаётся явно ограниченной fix-итерацией.

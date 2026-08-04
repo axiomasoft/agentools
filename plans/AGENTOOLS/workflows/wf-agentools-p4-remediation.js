@@ -1,8 +1,10 @@
 // W2 — параллельная ремедиация Gate B round 1 для AGENTOOLS P4.
 //
-// Предусловия: P3, P4.14 и P4.9 терминальны; рабочее дерево чисто; fixtures-check зелёный, а
-// полный lint до P4.12 имеет ровно ожидаемый единственный debt CFH-55 (D149/D154). Скрипт
-// исполняет только P4.10–P4.12. P4.13 (интеграционный A3) остаётся solo.
+// Предусловия: P3, P4.14 и P4.9 терминальны. Fresh-режим требует чистое дерево,
+// fixtures-check green и ровно один debt CFH-55. Resume-режим (D155) принимает только уже
+// собранный незакоммиченный candidate P4.10–P4.12: все dirty paths лежат в их Files,
+// представлены все три scope, fixtures/full lint green, plan files чисты. Скрипт исполняет
+// только P4.10–P4.12. P4.13 (интеграционный A3) остаётся solo.
 // Agents не коммитят план параллельно: только авторинг идёт параллельно; общие гейты, review и
 // закрытие идут после join последовательно под implementation/high.
 
@@ -11,8 +13,8 @@ export const meta = {
   description: 'W2: различающие behavior/scenario/artifact carriers по F1–F6 Gate B',
   whenToUse: 'Только после терминальности AGENTOOLS P3, P4.14 и P4.9; затем закрыть P4.13 solo',
   phases: [
-    { title: 'Precheck', detail: 'P3/P4.14/P4.9 terminal, only CFH-55 debt и fixtures-check зелёный, git clean' },
-    { title: 'Author', detail: 'P4.10/P4.11/P4.12 параллельно, непересекающиеся предметы' },
+    { title: 'Precheck', detail: 'fresh: only CFH-55 + git clean; resume: W2-only dirty candidate + full gates green' },
+    { title: 'Author', detail: 'fresh — параллельный authoring; resume — read-only реконструкция трёх author results' },
     { title: 'Review', detail: 'после join: адресная проверка различающей силы и negative/positive pairs' },
     { title: 'Close', detail: 'implementation/high: P4.12 → P4.10 → P4.11, полные гейты и §8' },
   ],
@@ -43,8 +45,12 @@ const WAVE = [
 const CLOSE_ORDER = ['P4.12', 'P4.10', 'P4.11']
 
 const PRECHECK_SCHEMA = {
-  type: 'object', required: ['ok', 'reasons'], additionalProperties: false,
-  properties: { ok: { type: 'boolean' }, reasons: { type: 'array', items: { type: 'string' } } },
+  type: 'object', required: ['ok', 'mode', 'reasons', 'dirty_paths'], additionalProperties: false,
+  properties: {
+    ok: { type: 'boolean' }, mode: { enum: ['fresh', 'resume'] },
+    reasons: { type: 'array', items: { type: 'string' } },
+    dirty_paths: { type: 'array', items: { type: 'string' } },
+  },
 }
 const RESULT_SCHEMA = {
   type: 'object', required: ['status', 'summary', 'files', 'validation', 'covered_rules', 'pending', 'load_bearing', 'failure_scenario', 'tests_green'],
@@ -84,13 +90,18 @@ const CLOSE_SCHEMA = {
   },
 }
 
-const precheckPrompt = `Read-only precheck W2 AGENTOOLS. Прочитай ${PLAN}/plan.md §4,
+const precheckPrompt = `Read-only precheck W2 AGENTOOLS по D155. Прочитай ${PLAN}/plan.md §4,
 ${PLAN}/phases/P3.md и ${PLAN}/phases/P4.md. P3 обязана быть terminal (green либо orange),
-P4.14 и P4.9 terminal; git -C ${ROOT} status --short пуст.
-До P4.12 полный python3 ${ROOT}/tools/spec_lint.py ${ROOT}/spec/revisions/2026-08 обязан
-завершиться exit 1 и назвать РОВНО одну ошибку: MUST-правило CFH-55 не имеет покрывающего вектора;
-любая другая ошибка — fail. python3 ${ROOT}/tools/spec_lint.py --fixtures-check
-${ROOT}/fixtures/2026-08 обязан дать exit 0. Ничего не менять. ok=true только при всех условиях.`
+P4.14 и P4.9 terminal. Получи exact git -C ${ROOT} status --short.
+Режим fresh: status пуст; полный python3 ${ROOT}/tools/spec_lint.py
+${ROOT}/spec/revisions/2026-08 завершён exit 1 и называет РОВНО одну ошибку — MUST-правило
+CFH-55 без покрывающего вектора; fixtures-check exit 0.
+Режим resume: status не пуст; КАЖДЫЙ dirty path входит в Files P4.10, P4.11 или P4.12,
+ни один ${PLAN}/** не dirty, и представлены изменения всех трёх item scopes. В этом режиме
+fixtures-check И полный lint без --allow-missing обязаны дать exit 0. Любой посторонний path,
+неполный набор scopes или иной результат gate = fail closed: ok=false, mode=resume, причина
+поимённо. Ничего не менять. Верни dirty_paths repo-relative; ok=true только при всех условиях
+одного из двух режимов.`
 
 const authorPrompt = (item) => `Ты исполняешь ${item.id} плана AGENTOOLS: ${item.subject}.
 Порядок чтения: 1) ${PLAN}/research/12-p3-p4-gate-b-remediation-2026-08.md 2)
@@ -103,6 +114,16 @@ coverage и full-lint gates перечисли в pending для sequential clos
 означает «authoring закончен», не «item закрыт». Конфликт с нормативным текстом → status=blocked,
 не самовольная правка P3. tests_green относится только к item-local проверкам; load_bearing
 перечисляет реально различаемые нормы, failure_scenario объясняет, что сломается при ложном PASS.
+Финальный текст = данные по RESULT_SCHEMA, не сообщение человеку.`
+
+const resumePrompt = (item, dirtyPaths) => `Read-only реконструкция результата автора ${item.id}
+для resume W2 по D155. ТЗ: ${PLAN}/phases/P4.md ${item.id}; dirty candidate paths:
+${dirtyPaths.join('\n')}. Прочитай git diff и untracked files только в Files item'а, Gate B
+${PLAN}/artifacts/P5-gate-b.md и research/16-p4-w2-dor-reconcile-2026-08.md. Убедись, что
+candidate действительно меняет этот scope; выполни item-local проверки, которые не мутируют
+дерево. Ничего не менять и не коммитить. status=ready только если можно честно восстановить
+summary/files/covered_rules/load_bearing/failure_scenario и tests_green=true; общие joined-tree
+gates перечисли в validation либо pending. Отсутствующий scope или неразрешимый факт → blocked.
 Финальный текст = данные по RESULT_SCHEMA, не сообщение человеку.`
 
 const reviewPrompt = (item, result) => `Read-only adversarial review ${item.id}. ТЗ:
@@ -141,7 +162,10 @@ if (!pre?.ok) return { stopped: true, reasons: pre?.reasons || ['precheck failed
 
 phase('Author')
 const authored = await parallel(WAVE.map(item => () =>
-  agent(authorPrompt(item), { label: `author:${item.id}`, model: ROUTE.model, effort: ROUTE.effort, schema: RESULT_SCHEMA })
+  agent(pre.mode === 'fresh' ? authorPrompt(item) : resumePrompt(item, pre.dirty_paths), {
+    label: `${pre.mode === 'fresh' ? 'author' : 'resume'}:${item.id}`,
+    model: ROUTE.model, effort: ROUTE.effort, schema: RESULT_SCHEMA,
+  })
     .then(result => ({ item, result }))
 ))
 

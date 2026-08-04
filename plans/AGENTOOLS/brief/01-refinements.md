@@ -792,3 +792,17 @@ Reconcile приземлён D154: exact acceptance использует 27 по
 после join review/gates/close идут последовательно под `implementation/high`. Адреса:
 `research/16-p4-w2-dor-reconcile-2026-08.md`, `phases/P4.md` P4.10–P4.13,
 `workflows/wf-agentools-p4-remediation.js`, `roadmap.md` W2 и `handoff.md`.
+
+---
+
+## 2026-08-04 — повторный design P4 после прерванного W2 authoring
+
+Владелец снова запустил `$ task:plan-design AGENTOOLS P4`, когда в рабочем дереве уже находился
+незакоммиченный candidate P4.10–P4.12. Заход не удаляет, не stash'ит и не переписывает этот
+implementation-срез; он обязан сделать заявленный orchestration carrier возобновляемым и
+синхронизировать живые статусы items.
+
+Решение D155: P4.10–P4.12 имеют `🟡 In progress`; workflow различает clean `fresh` и строго
+ограниченный W2-only `resume`. Resume восстанавливает author results read-only, затем сохраняет
+обычные review/fix/sequential-close гейты. Чужой dirty path, неполный scope либо красный joined
+gate блокирует запуск без destructive cleanup или неявного solo-fallback.
