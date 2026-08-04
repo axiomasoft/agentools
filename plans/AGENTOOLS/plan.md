@@ -6,7 +6,7 @@
 |:--|:--|
 | Plan ID | AGENTOOLS |
 | Title | AgenTools: ревизия спеки `2026-08` (modern-only, MCP 2026-07-28) + conformance + PHP/Dart SDK + срезы CRM/ERP |
-| Version | 0.34.1 |
+| Version | 0.35.0 |
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
@@ -139,6 +139,7 @@ solo, — D122.
 | — | P4.14 | implementation/high | manual | full | немедленный fix-forward P3 Audit F1/F2 после AUDIT-CAP: outer `$defs` shape + exact inventory; solo до P4.9, потому что пишет общий `tools/spec_lint.py` и восстанавливает честный A2 carrier |
 | — | P4.16–P4.19 | implementation/high | manual | full | observational remediation F9–F15: schema/checker → 38 behavior → 13 artifact → exact semantic manifest; последовательные solo-items пишут общие corpus/checker surfaces и каждый требует full review |
 | — | P4.20 | implementation/high | manual | full | post-remediation semantic preflight corrections: confirmation/append/mapping/task/call boundaries; затем manifest/A3 rebuild |
+| — | P4.21 | implementation/high | manual | full | Gate B admission fix CLR-8: raw protocol-operation stimulus вместо observation-only operation; manifest/A3 rebuild |
 | — | P5.1 | frontier/xhigh | manual | full | гейт волны: содержательный адверсариальный аудит — открытые суждения (различает ли вектор своё правило, конфликт с ADR чужих контуров, no-op-нормы), цена ошибки необратима (GREEN размораживает P6–P10 и открывает freeze) — Tier policy §9. Носитель — голый промпт item'а либо `task:plan-run` из сессии `frontier/xhigh`; `task:plan-audit` НЕ подходит: его субъект — фазы плана, а не артефакты ревизии (D61) |
 | — | P5.3 | frontier/high | manual | full | quality baseline и reconciliation двух owner-решений: требуется суждение о публичной границе, но не новая семантика протокола; Chatom/AzGuard — evidence, не integration targets |
 | — | P5.2 | implementation/high | manual | full | freeze — необратимая публикация контракта (потребители пинят ревизию и тег), но открытых решений в item'е нет: механика предписана D19/D62, суждение вынесено владельцу гейтом Q-5/Q-10; effort high за инвариантность порядка шагов (прецедент P3.14/P4.5); поднято с черновой строки `implementation/medium`/`plan-exec` — D65 |
@@ -211,7 +212,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P1 | **A0** — ре-верификация финала MCP 2026-07-28 + пин коммита и `schema.json` | 3/3 | 🟢 Done |
 | P2 | **A1** — bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
 | P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/25 | 🟠 Done with deviations |
-| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 20/20 | 🟢 Done |
+| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 20/21 | 🟡 In progress |
 | P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 0/3 | 🔴 Blocked |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | 🟡 In progress |
@@ -421,6 +422,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | D168 | 2026-08-04 | **P4.18 сохраняет non-target coverage отдельными raw carriers и обновляет производный `coverage.md` в том же item, потому что target carriers становятся single-rule.** Совмещение target с прежними правилами отклонено: exact 13 checker не должен маскироваться агрегирующим positive. **Consequences:** `coverage.md` добавлен в Files P4.18; P4.19 всё равно переиздаёт финальный semantic manifest/A3. | Фактический traceability diff после single-rule rewrite; P4.18 Validation full coverage=0. `RAG:— (repo-grounded)` |
 | D169 | 2026-08-04 | **Gate B round 3 не считается начатым, пока semantic preflight нашёл остаточные self-report/magic gaps P4.19; P4 адресно реопенится одним P4.20.** Исправляются confirmation facts TLP-11/CNF-6/8, protocol operations CLR-8, registered mapping AOB-25, wire-byte boundary AOB-31, provenance derivation SEC-9, per-call binding SEC-16, append-adapter ALC-20/22/23, hash composition ALC-36 и per-run CFH-24. **Consequences:** history P4.16–P4.19 сохраняется, manifest/A3 переиздаются; owner-authorized Gate B расходуется только после terminal P4.20. | Read-only semantic preflight exact 51 против нормативных строк; owner directive «формальный линтер без семантики не успех». `RAG:— (owner decision + repo-grounded)` |
 | D170 | 2026-08-04 | **P4.20 терминально закрывает preflight remediation: Gate B round 3 разрешён только на source anchor `7abfd3e` и manifest `f01bb26b…fd8811e`.** 11 named semantic checks и их адресные mutations становятся частью A3, а не advisory отчётом. **Consequences:** P4 = 20/20 🟢; P5.1 больше не blocked отсутствием фактической remediation, но обязан вынести собственный cold-start verdict. | P4.20 Validation; owner directive №4. `RAG:— (repo-grounded)` |
+| D171 | 2026-08-04 | **Gate B round 3 admission нашёл один residual blocker до публикации verdict: CLR-8 observation называл `tasks/result`, но raw task stimulus не называл operation; P4 адресно реопенится P4.21.** Round 3 остаётся незавершённым, новый verdict literal не издан. **Consequences:** pair меняет permitted `tasks/result` на forbidden `resources/subscribe` при одинаковом `input_required`; semantic invariant обязан связать raw operation с boundary observation и отвергнуть fifth-operation mutant. | P5.1 adversarial read нормативной строки CLR-8 против `clarificationstate-002/102`; owner directive №4. `RAG:— (repo-grounded)` |
 
 ## 6. Update Log
 
@@ -428,6 +430,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 
 | Дата | Кто (role/model) | Что |
 |:--|:--|:--|
+| 2026-08-04 | plan-design/frontier-high | D171: Gate B admission остановил ложный CLR-8 PASS до verdict; P4.21 добавляет raw operation stimulus, 0.34.1 → 0.35.0. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.20 (`7abfd3e`) closed: six typed observation boundaries, 11/11 named semantic checks/mutants, exact 51 manifest; P4 20/20 🟢. |
 | 2026-08-04 | plan-design/frontier-high | D169: preflight не допустил ложный Gate B; P4 реопенена P4.20 для 11 boundary corrections и rebuild manifest/A3; 0.33.4 → 0.34.0. |
 | 2026-08-04 | plan-close/implementation-low | P4 повторно закрыта 19/19 🟢 после observational remediation; A3 semantic PASS, следующий P5.1 Gate B round 3. |
