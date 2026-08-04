@@ -10,14 +10,14 @@
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-04 (owner выбрал fix-forward после P3 AUDIT-CAP; immediate P4.14.) |
+| Last Updated | 2026-08-04 (P4.14 закрыл outer-shape AUDIT-CAP debt; следующий item P4.9.) |
 | Repository | `~/projects/packages/agentools` (приватный, без remote) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
 | Target Operator Models | sonnet (exec) · haiku (LOW) · opus (нормативный авторинг/аудит) |
 | Approval Owner | Dmitry Vostrikov |
 | Home | brain |
-| Design Passes | 3/3 — кросс-репо и ядро экосистемы: три прохода авторинга завершены 2026-07-27, все фазы доведены до DoR, `finish`/`roadmap.md` и design-аудит выполнены. Поздние audit-driven реопены D141/D146/D150, item-reconcile D149 и fix-forward D152 не увеличивают авторский бюджет: это адресная ремедиация исполняемого плана. Текущий следующий шаг — P4.14, затем P4.9/W2. |
+| Design Passes | 3/3 — кросс-репо и ядро экосистемы: три прохода авторинга завершены 2026-07-27, все фазы доведены до DoR, `finish`/`roadmap.md` и design-аудит выполнены. Поздние audit-driven реопены D141/D146/D150, item-reconcile D149 и fix-forward D152 не увеличивают авторский бюджет: это адресная ремедиация исполняемого плана. P4.14 закрыт; текущий следующий шаг — P4.9, затем W2. |
 
 ## 1. Context
 
@@ -206,7 +206,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P1 | **A0** — ре-верификация финала MCP 2026-07-28 + пин коммита и `schema.json` | 3/3 | 🟢 Done |
 | P2 | **A1** — bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
 | P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/24 | 🟠 Done with deviations |
-| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 8/14 | 🟡 In progress |
+| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 9/14 | 🟡 In progress |
 | P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 0/3 | 🔴 Blocked |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | ⬜ Not started |
@@ -403,6 +403,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 ## 6. Update Log
 
 | Дата | Кто (role/model) | Что |
+| 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.14 (`51fc06f`) закрыт: exact 12-entry registry и full-definition structural/Draft gates ловят outer-shape F1/F2; следующий item P4.9 — детали в phases/P4.md. |
 | 2026-08-04 | plan-design/frontier-high | Owner fix-forward после P3 AUDIT-CAP: D152, P3 → 🟠 с debt F1/F2, immediate P4.14 доведён до DoR; 0.24.0 → 0.25.0. |
 | 2026-08-04 | plan-close/implementation-low | P3 закрыта: 24/24 🟢, P3.24 восстановил fail-closed A2 gate; следующий шаг — независимый audit P3, Docs-sync не требуется. |
 | 2026-08-04 | plan-run/gpt-5.6-high | P3.24 (`0279f59`) закрыт: open-enum checker fail-closed, Draft 2020-12 oracle ловит обе мутации; P3 ждёт close/audit — детали см. phases/P3.md P3.24 Completion Notes. |

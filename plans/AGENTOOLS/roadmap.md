@@ -1,6 +1,6 @@
 # Roadmap исполнения — AGENTOOLS
 
-**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.25.0 · **Следующий исполнимый участок:** immediate P4.14, затем P4.9. Brain — SSOT; эта копия синхронизирована для работы из репозитория.
+**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.25.0 · **Следующий исполнимый участок:** P4.9. Brain — SSOT; эта копия синхронизирована для работы из репозитория.
 
 Карта отвечает на «какую команду дальше?» без разбора всего плана. Она **не переопределяет**
 `plan.md` §3 Routing (модели и effort — оттуда), а только группирует запуски и называет гейты
@@ -24,7 +24,7 @@ bookkeeping + handoff), батч закрытия не сливает. (2) `solo
 P3 гейтится P1, P4 гейтится P3, P5 гейтится P3+P4; P6–P11 — GREEN P5.1, baseline P5.3 и freeze P5.2.
 **Remediation-order после Gate B round 1 и трёх RED-аудитов P3 (D141–D152):** P3.16 → owner-gates
 P3.17/P3.18 → P3.19/A2 → RED-аудит → P3.20 → P3.21 → P3.22 → P3.23/A2 → close/audit P3 → P3.24 → RED/AUDIT-CAP →
-P4.14 fix-forward → P4.9 → workflow W2 (P4.10/P4.11/P4.12, включая CFH-55 carrier D149) → P4.13/A3 → close P4 → P5.1 round 2. Старый W1 и
+P4.14 fix-forward (`51fc06f`, закрыт) → P4.9 → workflow W2 (P4.10/P4.11/P4.12, включая CFH-55 carrier D149) → P4.13/A3 → close P4 → P5.1 round 2. Старый W1 и
 P4.1–P4.8 терминальны и повторно не запускаются.
 
 ---
@@ -65,7 +65,7 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | P4.7 | — | — | — | — | **закрыт**; старый W1 повторно не запускается |
 | P4.8 | — | — | — | — | **закрыт**; старый W1 повторно не запускается |
 | P4.5 | — | — | — | — | **закрыт исторически**; формальный A3 не равен Gate B GREEN |
-| P4.14 | solo | `plan-run` | implementation/high | — | immediate outer-shape/exact-inventory fix-forward D152; исполняется до P4.9 и пишет общий `tools/spec_lint.py` |
+| P4.14 | — | — | — | — | **закрыт** `51fc06f`; exact registry/full-definition gate устранил AUDIT-CAP debt F1/F2 до P4.9 |
 | P4.9 | solo | `plan-run` | implementation/high | — | общий driver-state input W2; только после terminal P4.14 |
 | P4.10 | W2 | workflow | implementation/high | — | F1/F2/F4 behavior carriers; scope независим от scenario/static после P4.9 |
 | P4.11 | W2 | workflow | implementation/high | — | F5 scenario carriers; отдельные ids/files |
@@ -113,7 +113,7 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 
 ## Готовые launch-block'и групп
 
-### P3 AUDIT-CAP — immediate P4.14
+### P4.9 — formal driver state перед W2
 
 **Next:** ЗАПУСК ВРУЧНУЮ: implementation/high
 
@@ -123,18 +123,18 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | Effort | high |
 | Capabilities | — |
 | Context | continue (reset the session context) — ручной item |
-| Суть | Исправить outer `$defs` shape и exact inventory до запуска P4.9. |
+| Суть | Добавить формальный driver state и два script-step carrier как общий вход W2. |
 | Команда | — |
 
 ```text
 select the session model class implementation
 select the session effort high
-$ task:plan-run AGENTOOLS P4.14
+$ task:plan-run AGENTOOLS P4.9
 ```
 
 ### W2 — Gate B carrier remediation (P4.10–P4.12)
 
-**Next:** waiting: P4.14 и P4.9 терминальны → manual: implementation/high
+**Next:** waiting: P4.9 терминален → manual: implementation/high
 
 | Параметр | Значение |
 |:--|:--|
