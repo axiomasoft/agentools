@@ -1,0 +1,3500 @@
+{
+  "checker_subject": "tools/spec_lint.py",
+  "driver_schema_subject": "fixtures/2026-08/schema/vector.json",
+  "evidence": [
+    {
+      "finding": "FAIL F6",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "ovrdev-001",
+          "subject": {
+            "inline": "**SEC-90 (MUST, L3).** Метка происхождения снабжается подписью; уровень L3, потому что проверка требует межконтурного аудита.",
+            "kind": "rule_deviation_note"
+          }
+        },
+        {
+          "class": "artifact",
+          "expect": {
+            "diagnostic_substring": "фразу-обоснование",
+            "linter": "reject"
+          },
+          "id": "ovrdev-002",
+          "subject": {
+            "inline": "**SEC-90 (MUST, L3).** Метка происхождения снабжается подписью без обоснования.",
+            "kind": "rule_deviation_note"
+          }
+        }
+      ],
+      "rule_id": "OVR-14",
+      "source_carrier": "ovrdev-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "extidentity-001",
+          "subject": {
+            "inline": "{\"category\":\"Unofficial per SEP-2133\",\"extension_id\":\"dev.agentools/core\",\"breaking_extension_id\":\"dev.agentools/core-v2\",\"data_key\":\"dev.agentools/action\"}",
+            "kind": "extension_identity"
+          }
+        }
+      ],
+      "rule_id": "EXT-1",
+      "source_carrier": "extidentity-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "extidentity-001",
+          "subject": {
+            "inline": "{\"category\":\"Unofficial per SEP-2133\",\"extension_id\":\"dev.agentools/core\",\"breaking_extension_id\":\"dev.agentools/core-v2\",\"data_key\":\"dev.agentools/action\"}",
+            "kind": "extension_identity"
+          }
+        }
+      ],
+      "rule_id": "EXT-2",
+      "source_carrier": "extidentity-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "extidentity-001",
+          "subject": {
+            "inline": "{\"category\":\"Unofficial per SEP-2133\",\"extension_id\":\"dev.agentools/core\",\"breaking_extension_id\":\"dev.agentools/core-v2\",\"data_key\":\"dev.agentools/action\"}",
+            "kind": "extension_identity"
+          }
+        }
+      ],
+      "rule_id": "EXT-3",
+      "source_carrier": "extidentity-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "extidentity-001",
+          "subject": {
+            "inline": "{\"category\":\"Unofficial per SEP-2133\",\"extension_id\":\"dev.agentools/core\",\"breaking_extension_id\":\"dev.agentools/core-v2\",\"data_key\":\"dev.agentools/action\"}",
+            "kind": "extension_identity"
+          }
+        }
+      ],
+      "rule_id": "EXT-4",
+      "source_carrier": "extidentity-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "extidentity-001",
+          "subject": {
+            "inline": "{\"category\":\"Unofficial per SEP-2133\",\"extension_id\":\"dev.agentools/core\",\"breaking_extension_id\":\"dev.agentools/core-v2\",\"data_key\":\"dev.agentools/action\"}",
+            "kind": "extension_identity"
+          }
+        }
+      ],
+      "rule_id": "EXT-5",
+      "source_carrier": "extidentity-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "extidentity-001",
+          "subject": {
+            "inline": "{\"category\":\"Unofficial per SEP-2133\",\"extension_id\":\"dev.agentools/core\",\"breaking_extension_id\":\"dev.agentools/core-v2\",\"data_key\":\"dev.agentools/action\"}",
+            "kind": "extension_identity"
+          }
+        },
+        {
+          "class": "artifact",
+          "expect": {
+            "diagnostic_substring": "identity расширения",
+            "linter": "reject"
+          },
+          "id": "extidentity-002",
+          "subject": {
+            "inline": "{\"category\":\"Unofficial per SEP-2133\",\"extension_id\":\"dev.agentools/core\",\"breaking_extension_id\":\"dev.agentools/core-v2\",\"data_key\":\"dev.agentools/action-v1\"}",
+            "kind": "extension_identity"
+          }
+        }
+      ],
+      "rule_id": "EXT-6",
+      "source_carrier": "extidentity-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "extidentity-001",
+          "subject": {
+            "inline": "{\"category\":\"Unofficial per SEP-2133\",\"extension_id\":\"dev.agentools/core\",\"breaking_extension_id\":\"dev.agentools/core-v2\",\"data_key\":\"dev.agentools/action\"}",
+            "kind": "extension_identity"
+          }
+        }
+      ],
+      "rule_id": "EXT-8",
+      "source_carrier": "extidentity-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "extidentity-001",
+          "subject": {
+            "inline": "{\"category\":\"Unofficial per SEP-2133\",\"extension_id\":\"dev.agentools/core\",\"breaking_extension_id\":\"dev.agentools/core-v2\",\"data_key\":\"dev.agentools/action\"}",
+            "kind": "extension_identity"
+          }
+        }
+      ],
+      "rule_id": "EXT-9",
+      "source_carrier": "extidentity-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "extnegotiation-001",
+          "subject": {
+            "inline": "{\"schema_id\":\"https://agentools.dev/schema/2026-08/tool-descriptor.json\",\"declaration\":{\"map_key\":\"dev.agentools/core\",\"specRevision\":\"2026-08\",\"scope\":\"per_request\"},\"absent_peer\":\"core_or_typed_error\",\"unknown_extension\":\"ignore\",\"cache_scope\":\"exchange\"}",
+            "kind": "extension_negotiation"
+          }
+        }
+      ],
+      "rule_id": "EXT-11",
+      "source_carrier": "extnegotiation-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "extnegotiation-001",
+          "subject": {
+            "inline": "{\"schema_id\":\"https://agentools.dev/schema/2026-08/tool-descriptor.json\",\"declaration\":{\"map_key\":\"dev.agentools/core\",\"specRevision\":\"2026-08\",\"scope\":\"per_request\"},\"absent_peer\":\"core_or_typed_error\",\"unknown_extension\":\"ignore\",\"cache_scope\":\"exchange\"}",
+            "kind": "extension_negotiation"
+          }
+        }
+      ],
+      "rule_id": "EXT-12",
+      "source_carrier": "extnegotiation-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "extnegotiation-001",
+          "subject": {
+            "inline": "{\"schema_id\":\"https://agentools.dev/schema/2026-08/tool-descriptor.json\",\"declaration\":{\"map_key\":\"dev.agentools/core\",\"specRevision\":\"2026-08\",\"scope\":\"per_request\"},\"absent_peer\":\"core_or_typed_error\",\"unknown_extension\":\"ignore\",\"cache_scope\":\"exchange\"}",
+            "kind": "extension_negotiation"
+          }
+        }
+      ],
+      "rule_id": "EXT-13",
+      "source_carrier": "extnegotiation-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "extnegotiation-001",
+          "subject": {
+            "inline": "{\"schema_id\":\"https://agentools.dev/schema/2026-08/tool-descriptor.json\",\"declaration\":{\"map_key\":\"dev.agentools/core\",\"specRevision\":\"2026-08\",\"scope\":\"per_request\"},\"absent_peer\":\"core_or_typed_error\",\"unknown_extension\":\"ignore\",\"cache_scope\":\"exchange\"}",
+            "kind": "extension_negotiation"
+          }
+        },
+        {
+          "class": "artifact",
+          "expect": {
+            "diagnostic_substring": "negotiation расширения",
+            "linter": "reject"
+          },
+          "id": "extnegotiation-002",
+          "subject": {
+            "inline": "{\"schema_id\":\"https://agentools.dev/schema/2026-08/tool-descriptor.json\",\"declaration\":{\"map_key\":\"dev.agentools/core\",\"specRevision\":\"2026-07\",\"scope\":\"per_request\"},\"absent_peer\":\"core_or_typed_error\",\"unknown_extension\":\"ignore\",\"cache_scope\":\"exchange\"}",
+            "kind": "extension_negotiation"
+          }
+        }
+      ],
+      "rule_id": "EXT-14",
+      "source_carrier": "extnegotiation-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "extnegotiation-001",
+          "subject": {
+            "inline": "{\"schema_id\":\"https://agentools.dev/schema/2026-08/tool-descriptor.json\",\"declaration\":{\"map_key\":\"dev.agentools/core\",\"specRevision\":\"2026-08\",\"scope\":\"per_request\"},\"absent_peer\":\"core_or_typed_error\",\"unknown_extension\":\"ignore\",\"cache_scope\":\"exchange\"}",
+            "kind": "extension_negotiation"
+          }
+        }
+      ],
+      "rule_id": "EXT-15",
+      "source_carrier": "extnegotiation-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "extnegotiation-001",
+          "subject": {
+            "inline": "{\"schema_id\":\"https://agentools.dev/schema/2026-08/tool-descriptor.json\",\"declaration\":{\"map_key\":\"dev.agentools/core\",\"specRevision\":\"2026-08\",\"scope\":\"per_request\"},\"absent_peer\":\"core_or_typed_error\",\"unknown_extension\":\"ignore\",\"cache_scope\":\"exchange\"}",
+            "kind": "extension_negotiation"
+          }
+        }
+      ],
+      "rule_id": "EXT-16",
+      "source_carrier": "extnegotiation-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "extnegotiation-001",
+          "subject": {
+            "inline": "{\"schema_id\":\"https://agentools.dev/schema/2026-08/tool-descriptor.json\",\"declaration\":{\"map_key\":\"dev.agentools/core\",\"specRevision\":\"2026-08\",\"scope\":\"per_request\"},\"absent_peer\":\"core_or_typed_error\",\"unknown_extension\":\"ignore\",\"cache_scope\":\"exchange\"}",
+            "kind": "extension_negotiation"
+          }
+        }
+      ],
+      "rule_id": "EXT-17",
+      "source_carrier": "extnegotiation-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "toolcontract-001",
+          "subject": {
+            "inline": "{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a CRM task.\\nCall when: a task status changes.\\nRequired arguments: task_id, status.\\nExample: crm_task_update(task_id=\\\"t-1\\\", status=\\\"done\\\")\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{\"readOnlyHint\":false,\"destructiveHint\":false,\"idempotentHint\":true,\"openWorldHint\":false},\"_meta\":{\"dev.agentools/action\":{\"side_effect\":\"write\",\"confirmation\":true}}}",
+            "kind": "tool_contract_case"
+          }
+        }
+      ],
+      "rule_id": "TLP-1",
+      "source_carrier": "toolcontract-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "toolcontract-001",
+          "subject": {
+            "inline": "{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a CRM task.\\nCall when: a task status changes.\\nRequired arguments: task_id, status.\\nExample: crm_task_update(task_id=\\\"t-1\\\", status=\\\"done\\\")\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{\"readOnlyHint\":false,\"destructiveHint\":false,\"idempotentHint\":true,\"openWorldHint\":false},\"_meta\":{\"dev.agentools/action\":{\"side_effect\":\"write\",\"confirmation\":true}}}",
+            "kind": "tool_contract_case"
+          }
+        },
+        {
+          "class": "artifact",
+          "expect": {
+            "diagnostic_substring": "actionable contract",
+            "linter": "reject"
+          },
+          "id": "toolcontract-002",
+          "subject": {
+            "inline": "{\"name\":\"crm_task_update\",\"description\":\"Обновляет задачу.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{\"readOnlyHint\":false,\"destructiveHint\":false,\"idempotentHint\":true,\"openWorldHint\":false},\"_meta\":{\"dev.agentools/action\":{\"side_effect\":\"write\",\"confirmation\":true}}}",
+            "kind": "tool_contract_case"
+          }
+        },
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "tooldescription-001",
+          "subject": {
+            "inline": "{\"description\":\"Purpose: Read an invoice.\\nCall when: an invoice must be inspected.\\nRequired arguments: invoice_id.\\nExample: invoice_read(invoice_id=\\\"i-1\\\")\"}",
+            "kind": "tool_description"
+          }
+        },
+        {
+          "class": "artifact",
+          "expect": {
+            "diagnostic_substring": "actionable contract",
+            "linter": "reject"
+          },
+          "id": "tooldescription-002",
+          "subject": {
+            "inline": "{\"description\":\"Purpose: Read an invoice.\\nCall when: an invoice must be inspected.\\nRequired arguments: invoice_id.\"}",
+            "kind": "tool_description"
+          }
+        }
+      ],
+      "rule_id": "TLP-2",
+      "source_carrier": "toolcontract-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "toolcontract-003",
+          "subject": {
+            "inline": "{\"outputSchema\":{\"required\":[\"task_id\"]},\"result\":{\"task_id\":\"t-1\"}}",
+            "kind": "tool_result_case"
+          }
+        },
+        {
+          "class": "artifact",
+          "expect": {
+            "diagnostic_substring": "structured result",
+            "linter": "reject"
+          },
+          "id": "toolcontract-004",
+          "subject": {
+            "inline": "{\"outputSchema\":{\"required\":[\"task_id\"]},\"result\":{}}",
+            "kind": "tool_result_case"
+          }
+        }
+      ],
+      "rule_id": "TLP-5",
+      "source_carrier": "toolcontract-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "toolcontract-001",
+          "subject": {
+            "inline": "{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a CRM task.\\nCall when: a task status changes.\\nRequired arguments: task_id, status.\\nExample: crm_task_update(task_id=\\\"t-1\\\", status=\\\"done\\\")\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{\"readOnlyHint\":false,\"destructiveHint\":false,\"idempotentHint\":true,\"openWorldHint\":false},\"_meta\":{\"dev.agentools/action\":{\"side_effect\":\"write\",\"confirmation\":true}}}",
+            "kind": "tool_contract_case"
+          }
+        }
+      ],
+      "rule_id": "TLP-6",
+      "source_carrier": "toolcontract-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "toolcontract-001",
+          "subject": {
+            "inline": "{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a CRM task.\\nCall when: a task status changes.\\nRequired arguments: task_id, status.\\nExample: crm_task_update(task_id=\\\"t-1\\\", status=\\\"done\\\")\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{\"readOnlyHint\":false,\"destructiveHint\":false,\"idempotentHint\":true,\"openWorldHint\":false},\"_meta\":{\"dev.agentools/action\":{\"side_effect\":\"write\",\"confirmation\":true}}}",
+            "kind": "tool_contract_case"
+          }
+        }
+      ],
+      "rule_id": "TLP-7",
+      "source_carrier": "toolcontract-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "toolcontract-001",
+          "subject": {
+            "inline": "{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a CRM task.\\nCall when: a task status changes.\\nRequired arguments: task_id, status.\\nExample: crm_task_update(task_id=\\\"t-1\\\", status=\\\"done\\\")\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{\"readOnlyHint\":false,\"destructiveHint\":false,\"idempotentHint\":true,\"openWorldHint\":false},\"_meta\":{\"dev.agentools/action\":{\"side_effect\":\"write\",\"confirmation\":true}}}",
+            "kind": "tool_contract_case"
+          }
+        }
+      ],
+      "rule_id": "TLP-9",
+      "source_carrier": "toolcontract-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "toolcontract-001",
+          "subject": {
+            "inline": "{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a CRM task.\\nCall when: a task status changes.\\nRequired arguments: task_id, status.\\nExample: crm_task_update(task_id=\\\"t-1\\\", status=\\\"done\\\")\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{\"readOnlyHint\":false,\"destructiveHint\":false,\"idempotentHint\":true,\"openWorldHint\":false},\"_meta\":{\"dev.agentools/action\":{\"side_effect\":\"write\",\"confirmation\":true}}}",
+            "kind": "tool_contract_case"
+          }
+        }
+      ],
+      "rule_id": "TLP-10",
+      "source_carrier": "toolcontract-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "confpolicy-001",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "b9ca9244fa4639a7ad1b0be4d9ffbf905e7ddea75162e98611b5f0f6f1e168a8"
+          },
+          {
+            "id": "confpolicy-101",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "2d84769f1ad1c5338ee25c427778a0a3767fcab45b2e81e8f11005b7454ab3b9"
+          }
+        ],
+        "pointer": "/given/tools/0/_meta/dev.agentools~1action/confirmation",
+        "relation": "value"
+      },
+      "rule_id": "TLP-11",
+      "source_carrier": "confpolicy-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "toolcontract-001",
+          "subject": {
+            "inline": "{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a CRM task.\\nCall when: a task status changes.\\nRequired arguments: task_id, status.\\nExample: crm_task_update(task_id=\\\"t-1\\\", status=\\\"done\\\")\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{\"readOnlyHint\":false,\"destructiveHint\":false,\"idempotentHint\":true,\"openWorldHint\":false},\"_meta\":{\"dev.agentools/action\":{\"side_effect\":\"write\",\"confirmation\":true}}}",
+            "kind": "tool_contract_case"
+          }
+        }
+      ],
+      "rule_id": "TLP-12",
+      "source_carrier": "toolcontract-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "tooldigest-001",
+          "subject": {
+            "inline": "{\"descriptor\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{},\"_meta\":{},\"title\":\"Task\"},\"digest_input\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{}},\"algorithm\":[\"jcs\",\"utf8\",\"sha256\"],\"capture_phase\":\"prepare\",\"mismatch_code\":\"agentools.precondition.descriptor_drift\"}",
+            "kind": "descriptor_digest_case"
+          }
+        },
+        {
+          "class": "artifact",
+          "expect": {
+            "diagnostic_substring": "пяти членов",
+            "linter": "reject"
+          },
+          "id": "tooldigest-002",
+          "subject": {
+            "inline": "{\"descriptor\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{},\"outputSchema\":{},\"annotations\":{},\"_meta\":{}},\"digest_input\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{},\"outputSchema\":{},\"annotations\":{},\"_meta\":{}},\"algorithm\":[\"jcs\",\"utf8\",\"sha256\"],\"capture_phase\":\"prepare\",\"mismatch_code\":\"agentools.precondition.descriptor_drift\"}",
+            "kind": "descriptor_digest_case"
+          }
+        }
+      ],
+      "rule_id": "TLP-17",
+      "source_carrier": "tooldigest-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "tooldigest-001",
+          "subject": {
+            "inline": "{\"descriptor\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{},\"_meta\":{},\"title\":\"Task\"},\"digest_input\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{}},\"algorithm\":[\"jcs\",\"utf8\",\"sha256\"],\"capture_phase\":\"prepare\",\"mismatch_code\":\"agentools.precondition.descriptor_drift\"}",
+            "kind": "descriptor_digest_case"
+          }
+        }
+      ],
+      "rule_id": "TLP-18",
+      "source_carrier": "tooldigest-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "tooldigest-001",
+          "subject": {
+            "inline": "{\"descriptor\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{},\"_meta\":{},\"title\":\"Task\"},\"digest_input\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{}},\"algorithm\":[\"jcs\",\"utf8\",\"sha256\"],\"capture_phase\":\"prepare\",\"mismatch_code\":\"agentools.precondition.descriptor_drift\"}",
+            "kind": "descriptor_digest_case"
+          }
+        }
+      ],
+      "rule_id": "TLP-19",
+      "source_carrier": "tooldigest-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "tooldigest-001",
+          "subject": {
+            "inline": "{\"descriptor\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{},\"_meta\":{},\"title\":\"Task\"},\"digest_input\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{}},\"algorithm\":[\"jcs\",\"utf8\",\"sha256\"],\"capture_phase\":\"prepare\",\"mismatch_code\":\"agentools.precondition.descriptor_drift\"}",
+            "kind": "descriptor_digest_case"
+          }
+        }
+      ],
+      "rule_id": "TLP-20",
+      "source_carrier": "tooldigest-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "tooldigest-001",
+          "subject": {
+            "inline": "{\"descriptor\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{},\"_meta\":{},\"title\":\"Task\"},\"digest_input\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{}},\"algorithm\":[\"jcs\",\"utf8\",\"sha256\"],\"capture_phase\":\"prepare\",\"mismatch_code\":\"agentools.precondition.descriptor_drift\"}",
+            "kind": "descriptor_digest_case"
+          }
+        }
+      ],
+      "rule_id": "TLP-21",
+      "source_carrier": "tooldigest-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "tooldigest-001",
+          "subject": {
+            "inline": "{\"descriptor\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{},\"_meta\":{},\"title\":\"Task\"},\"digest_input\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{}},\"algorithm\":[\"jcs\",\"utf8\",\"sha256\"],\"capture_phase\":\"prepare\",\"mismatch_code\":\"agentools.precondition.descriptor_drift\"}",
+            "kind": "descriptor_digest_case"
+          }
+        }
+      ],
+      "rule_id": "TLP-22",
+      "source_carrier": "tooldigest-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "tooldigest-001",
+          "subject": {
+            "inline": "{\"descriptor\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{},\"_meta\":{},\"title\":\"Task\"},\"digest_input\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{}},\"algorithm\":[\"jcs\",\"utf8\",\"sha256\"],\"capture_phase\":\"prepare\",\"mismatch_code\":\"agentools.precondition.descriptor_drift\"}",
+            "kind": "descriptor_digest_case"
+          }
+        }
+      ],
+      "rule_id": "TLP-23",
+      "source_carrier": "tooldigest-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "profileuntrusted-001",
+            "oracle": {
+              "event_kinds": [
+                "confirmation_resolved",
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "8778fae2f6a9cf2e6bb3037286e817fc25fca09643f988dbd04f3a1886cdc3da"
+          },
+          {
+            "id": "profileuntrusted-101",
+            "oracle": {
+              "event_kinds": [
+                "confirmation_resolved",
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "8fec632f957f512eed2545b2c779fb8a73b8817c8841f14f4c85ea9705003b74"
+          }
+        ],
+        "pointer": "/given/driver_state/provenance/0/content_origin",
+        "relation": "value"
+      },
+      "rule_id": "TLP-25",
+      "source_carrier": "profileuntrusted-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "toolauthoring-001",
+          "subject": {
+            "inline": "{\"published\":{\"type\":\"object\",\"additionalProperties\":true},\"authoring\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"amount\":{\"type\":\"integer\"}}}}",
+            "kind": "authoring_schema_profile"
+          }
+        },
+        {
+          "class": "artifact",
+          "expect": {
+            "diagnostic_substring": "authoring schema profile",
+            "linter": "reject"
+          },
+          "id": "toolauthoring-002",
+          "subject": {
+            "inline": "{\"published\":{\"type\":\"object\",\"additionalProperties\":true},\"authoring\":{\"type\":\"object\",\"additionalProperties\":true,\"properties\":{\"amount\":{\"type\":\"integer\"}}}}",
+            "kind": "authoring_schema_profile"
+          }
+        }
+      ],
+      "rule_id": "TLP-26",
+      "source_carrier": "toolauthoring-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "toolauthoring-001",
+          "subject": {
+            "inline": "{\"published\":{\"type\":\"object\",\"additionalProperties\":true},\"authoring\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"amount\":{\"type\":\"integer\"}}}}",
+            "kind": "authoring_schema_profile"
+          }
+        }
+      ],
+      "rule_id": "TLP-27",
+      "source_carrier": "toolauthoring-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "toolauthoring-001",
+          "subject": {
+            "inline": "{\"published\":{\"type\":\"object\",\"additionalProperties\":true},\"authoring\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"amount\":{\"type\":\"integer\"}}}}",
+            "kind": "authoring_schema_profile"
+          }
+        }
+      ],
+      "rule_id": "TLP-28",
+      "source_carrier": "toolauthoring-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "toolauthoring-001",
+          "subject": {
+            "inline": "{\"published\":{\"type\":\"object\",\"additionalProperties\":true},\"authoring\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"amount\":{\"type\":\"integer\"}}}}",
+            "kind": "authoring_schema_profile"
+          }
+        }
+      ],
+      "rule_id": "TLP-30",
+      "source_carrier": "toolauthoring-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "toolauthoring-001",
+          "subject": {
+            "inline": "{\"published\":{\"type\":\"object\",\"additionalProperties\":true},\"authoring\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"amount\":{\"type\":\"integer\"}}}}",
+            "kind": "authoring_schema_profile"
+          }
+        }
+      ],
+      "rule_id": "TLP-31",
+      "source_carrier": "toolauthoring-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "toolauthoring-001",
+          "subject": {
+            "inline": "{\"published\":{\"type\":\"object\",\"additionalProperties\":true},\"authoring\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"amount\":{\"type\":\"integer\"}}}}",
+            "kind": "authoring_schema_profile"
+          }
+        }
+      ],
+      "rule_id": "TLP-32",
+      "source_carrier": "toolauthoring-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecyclefold-001",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "0016b0bd88d722a96d24af3ba567a5944de8d629da87579f061c96f79353519d"
+          },
+          {
+            "id": "lifecyclefold-101",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "6bde135a41691052e974613772804a5984fecf27e64aa834b091b65a11be0c74"
+          }
+        ],
+        "pointer": "/script/1/llm_stub/toolCall/args/value",
+        "relation": "value"
+      },
+      "rule_id": "ALC-2",
+      "source_carrier": "lifecyclefold-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecyclefold-002",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "58913f55468fc017b8a6b63709e31344467f0f49596e4017f6d251b32f128b8e"
+          },
+          {
+            "id": "lifecyclefold-102",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "15f6c08f4d2ff2d597a1c8954621cbea3d3c49edc4e0e3e6916d4d601f5696f8"
+          }
+        ],
+        "pointer": "/script/1/llm_stub/toolCall/args/value",
+        "relation": "value"
+      },
+      "rule_id": "ALC-3",
+      "source_carrier": "lifecyclefold-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecyclefold-003",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "54c93c1688fb2d030e43353804d1407cf836e4606aeb35aa110af6af2452bc59"
+          },
+          {
+            "id": "lifecyclefold-103",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "10282c97f89d4f5f255dfbccd8d1098c14115a42fff62fc13fc41bf76b6d73a3"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/0/payload/projection_source",
+        "relation": "value"
+      },
+      "rule_id": "ALC-4",
+      "source_carrier": "lifecyclefold-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecyclefold-004",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+          },
+          {
+            "id": "lifecyclefold-104",
+            "oracle": {
+              "event_kinds": [
+                "action_created"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/0/seq",
+        "relation": "value"
+      },
+      "rule_id": "ALC-6",
+      "source_carrier": "lifecyclefold-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecyclefold-005",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "0c9e378b969199175e788d63910ab7e84b081c0dd6cc2e9617cd5d4db9de4178"
+          },
+          {
+            "id": "lifecyclefold-105",
+            "oracle": {
+              "event_kinds": [
+                "action_started"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "6bde135a41691052e974613772804a5984fecf27e64aa834b091b65a11be0c74"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/0/ts",
+        "relation": "value"
+      },
+      "rule_id": "ALC-7",
+      "source_carrier": "lifecyclefold-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F3",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "lifecycleindex-001",
+          "subject": {
+            "inline": "{\"matrix_rows\":[{\"state\":\"created\",\"event\":\"action_created\"},{\"state\":\"completed\",\"event\":\"action_completed\"}],\"candidate\":{\"state\":\"completed\",\"event\":\"action_completed\"}}",
+            "kind": "lifecycle_index"
+          }
+        },
+        {
+          "class": "artifact",
+          "expect": {
+            "diagnostic_substring": "не синхронизировано",
+            "linter": "reject"
+          },
+          "id": "lifecycleindex-002",
+          "subject": {
+            "inline": "{\"matrix_rows\":[{\"state\":\"created\",\"event\":\"action_created\"},{\"state\":\"completed\",\"event\":\"action_completed\"}],\"candidate\":{\"state\":\"failed\",\"event\":\"action_failed\"}}",
+            "kind": "lifecycle_index"
+          }
+        }
+      ],
+      "rule_id": "ALC-14",
+      "source_carrier": "lifecycleindex-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecyclefold-006",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "7daa1f163ba35e313d9fced8257ffc53f88415838e1de374c8c4c5514ab25e17"
+          },
+          {
+            "id": "lifecyclefold-106",
+            "oracle": {
+              "event_kinds": [
+                "vendor.known"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "af7e60c58192b8308cf8a81f539ae77e5ea0ccd498121701af8259fee00638f1"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/0/kind",
+        "relation": "value"
+      },
+      "rule_id": "ALC-15",
+      "source_carrier": "lifecyclefold-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecyclefold-007",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "efd6ffefd8c375bba0452e6d1df8ee6638a2c12331a2a14bd22a5062f61e1067"
+          },
+          {
+            "id": "lifecyclefold-107",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "2217f0846b27a9031dedfd5b5354d4c5e3a673b620bae924e757cac8ff08dcae"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/0/kind",
+        "relation": "value"
+      },
+      "rule_id": "ALC-16",
+      "source_carrier": "lifecyclefold-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecyclefold-008",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "220b3223431254a1b5fd98ba15d784da2a722972d830d46e7a92611a97f1ae25"
+          },
+          {
+            "id": "lifecyclefold-108",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "8634843255a48d5e25bdeeded8e541ec312ccf1935b241441b71574a1263744a"
+          }
+        ],
+        "pointer": "/script/1/llm_stub/toolCall/args/value",
+        "relation": "value"
+      },
+      "rule_id": "ALC-18",
+      "source_carrier": "lifecyclefold-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecycleconcurrency-001",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "68730fedacbf1a777b7eb2605756a947cfee61116ce2b8c41fdaa01b5082e342"
+          },
+          {
+            "id": "lifecycleconcurrency-101",
+            "oracle": {
+              "event_kinds": [
+                "effect_requested"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "6571594d75b7418ed199ed157b1fbbf7cd0692afe58d0c64c38422411010718a"
+          }
+        ],
+        "pointer": "/script/1/llm_stub/toolCall/args/value",
+        "relation": "value"
+      },
+      "rule_id": "ALC-19",
+      "source_carrier": "lifecycleconcurrency-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecycleconcurrency-002",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+          },
+          {
+            "id": "lifecycleconcurrency-102",
+            "oracle": {
+              "event_kinds": [
+                "action_started"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/1/expected_prev_seq",
+        "relation": "value"
+      },
+      "rule_id": "ALC-20",
+      "source_carrier": "lifecycleconcurrency-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecycleconcurrency-003",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+          },
+          {
+            "id": "lifecycleconcurrency-103",
+            "oracle": {
+              "event_kinds": [
+                "action_started"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/1/expected_prev_seq",
+        "relation": "value"
+      },
+      "rule_id": "ALC-21",
+      "source_carrier": "lifecycleconcurrency-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecycleconcurrency-004",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+          },
+          {
+            "id": "lifecycleconcurrency-104",
+            "oracle": {
+              "event_kinds": [
+                "action_started"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/1/expected_prev_seq",
+        "relation": "value"
+      },
+      "rule_id": "ALC-22",
+      "source_carrier": "lifecycleconcurrency-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecycleconcurrency-005",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+          },
+          {
+            "id": "lifecycleconcurrency-105",
+            "oracle": {
+              "event_kinds": [
+                "effect_requested"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/1/expected_prev_seq",
+        "relation": "value"
+      },
+      "rule_id": "ALC-23",
+      "source_carrier": "lifecycleconcurrency-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecycleconcurrency-006",
+            "oracle": {
+              "event_kinds": [
+                "effect_confirmed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "f3cc31f7dd2bc428477e255b4a6d44590a903e0e47a18e1579275660d8c7f7b6"
+          },
+          {
+            "id": "lifecycleconcurrency-106",
+            "oracle": {
+              "event_kinds": [
+                "effect_requested"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "e9c6c7eab63b97ace1ed584f168beaba80eb77c85e4aef9d014e7242bef77f8e"
+          }
+        ],
+        "pointer": "/given/driver_state/effects/0/effects/demo_probe:record-1/status",
+        "relation": "value"
+      },
+      "rule_id": "ALC-25",
+      "source_carrier": "lifecycleconcurrency-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecycleconcurrency-007",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          },
+          {
+            "id": "lifecycleconcurrency-107",
+            "oracle": {
+              "event_kinds": [
+                "epoch_started"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/0/payload/epoch",
+        "relation": "value"
+      },
+      "rule_id": "ALC-26",
+      "source_carrier": "lifecycleconcurrency-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecycleconcurrency-008",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          },
+          {
+            "id": "lifecycleconcurrency-108",
+            "oracle": {
+              "event_kinds": [
+                "effect_requested"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/1/epoch",
+        "relation": "value"
+      },
+      "rule_id": "ALC-27",
+      "source_carrier": "lifecycleconcurrency-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecycleintegrity-001",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "ff1b1a7a3785e7b646f80c7cfbe4a6e3c59ad1de2769bf0e6a4ad8c9d5f90277"
+          },
+          {
+            "id": "lifecycleintegrity-101",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "9d9d09310242b229547342c363504ed9517d0f0ecbc8e4e2fb0d5610bd1929e2"
+          }
+        ],
+        "pointer": "/script/1/llm_stub/toolCall/meta/idempotency_key",
+        "relation": "value"
+      },
+      "rule_id": "ALC-28",
+      "source_carrier": "lifecycleintegrity-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecycleintegrity-002",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          },
+          {
+            "id": "lifecycleintegrity-102",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/0/event_version",
+        "relation": "value"
+      },
+      "rule_id": "ALC-30",
+      "source_carrier": "lifecycleintegrity-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecycleintegrity-003",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "a17fcf0a2f50e2d495e4f90ce263410edc183add6c62699a2facbccf60410f74"
+          },
+          {
+            "id": "lifecycleintegrity-103",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "2ed27c1421e6928dbe13dbfdb5c59e1045b30341fe7ebe05700006bc5ac572c0"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/0/payload/write_back_upcast",
+        "relation": "value"
+      },
+      "rule_id": "ALC-31",
+      "source_carrier": "lifecycleintegrity-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecycleintegrity-004",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "e30309d1d5bb4b0311be21de096466e84163f3b0c6a3aef37f8b64eb1e9e1b49"
+          },
+          {
+            "id": "lifecycleintegrity-104",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "d2a00a915410343ecba384bac1af54d644df8219f1f0f437bb010693afed50f6"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/0/payload/snapshot/spec_rev",
+        "relation": "value"
+      },
+      "rule_id": "ALC-33",
+      "source_carrier": "lifecycleintegrity-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecycleintegrity-005",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "a17fcf0a2f50e2d495e4f90ce263410edc183add6c62699a2facbccf60410f74"
+          },
+          {
+            "id": "lifecycleintegrity-105",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "2ed27c1421e6928dbe13dbfdb5c59e1045b30341fe7ebe05700006bc5ac572c0"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/0/payload/snapshot/source_of_truth",
+        "relation": "value"
+      },
+      "rule_id": "ALC-34",
+      "source_carrier": "lifecycleintegrity-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecycleintegrity-006",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "present": true,
+            "value_hash": "4852f888b84b1d4b96488d59837e33d47bb777effcd04626c01f48110a0bafe7"
+          },
+          {
+            "id": "lifecycleintegrity-106",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "present": false
+          }
+        ],
+        "pointer": "/given/driver_state/journal/0/prev_hash",
+        "relation": "presence"
+      },
+      "rule_id": "ALC-35",
+      "source_carrier": "lifecycleintegrity-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecycleintegrity-007",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "a17fcf0a2f50e2d495e4f90ce263410edc183add6c62699a2facbccf60410f74"
+          },
+          {
+            "id": "lifecycleintegrity-107",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "2ed27c1421e6928dbe13dbfdb5c59e1045b30341fe7ebe05700006bc5ac572c0"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/0/payload/hash_input_includes_prev_hash",
+        "relation": "value"
+      },
+      "rule_id": "ALC-36",
+      "source_carrier": "lifecycleintegrity-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "lifecycleintegrity-008",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "2ed27c1421e6928dbe13dbfdb5c59e1045b30341fe7ebe05700006bc5ac572c0"
+          },
+          {
+            "id": "lifecycleintegrity-108",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "a17fcf0a2f50e2d495e4f90ce263410edc183add6c62699a2facbccf60410f74"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/1/payload/chain_valid",
+        "relation": "value"
+      },
+      "rule_id": "ALC-37",
+      "source_carrier": "lifecycleintegrity-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "confpolicy-002",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "02f97a1800ef06704f994cae34328477c8ac48b002dc7cc67de1d1fe3bb336cf"
+          },
+          {
+            "id": "confpolicy-102",
+            "oracle": {
+              "event_kinds": [
+                "confirmation_resolved",
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "398818caecab25590aa9e67481384e381f17a5946fc712ebcd168699a8ec9a88"
+          }
+        ],
+        "pointer": "/given/policy/rules/0/verdict",
+        "relation": "value"
+      },
+      "rule_id": "CNF-3",
+      "source_carrier": "confpolicy-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "confpolicy-003",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "02f97a1800ef06704f994cae34328477c8ac48b002dc7cc67de1d1fe3bb336cf"
+          },
+          {
+            "id": "confpolicy-103",
+            "oracle": {
+              "event_kinds": [
+                "confirmation_resolved",
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "398818caecab25590aa9e67481384e381f17a5946fc712ebcd168699a8ec9a88"
+          }
+        ],
+        "pointer": "/given/policy/rules/0/verdict",
+        "relation": "value"
+      },
+      "rule_id": "CNF-4",
+      "source_carrier": "confpolicy-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "confpolicy-004",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "02f97a1800ef06704f994cae34328477c8ac48b002dc7cc67de1d1fe3bb336cf"
+          },
+          {
+            "id": "confpolicy-104",
+            "oracle": {
+              "event_kinds": [
+                "confirmation_resolved",
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "398818caecab25590aa9e67481384e381f17a5946fc712ebcd168699a8ec9a88"
+          }
+        ],
+        "pointer": "/given/policy/rules/0/verdict",
+        "relation": "value"
+      },
+      "rule_id": "CNF-5",
+      "source_carrier": "confpolicy-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "confpolicy-005",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "a42e03abf3ceafd8d316664a5ae7e9f7cce41c478e0da289bc2cd7b74d63056b"
+          },
+          {
+            "id": "confpolicy-105",
+            "oracle": {
+              "event_kinds": [
+                "confirmation_resolved",
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "398818caecab25590aa9e67481384e381f17a5946fc712ebcd168699a8ec9a88"
+          }
+        ],
+        "pointer": "/given/policy/rules/0/verdict",
+        "relation": "value"
+      },
+      "rule_id": "CNF-6",
+      "source_carrier": "confpolicy-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "confpolicy-006",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "02f97a1800ef06704f994cae34328477c8ac48b002dc7cc67de1d1fe3bb336cf"
+          },
+          {
+            "id": "confpolicy-106",
+            "oracle": {
+              "event_kinds": [
+                "confirmation_resolved",
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "398818caecab25590aa9e67481384e381f17a5946fc712ebcd168699a8ec9a88"
+          }
+        ],
+        "pointer": "/given/policy/rules/0/verdict",
+        "relation": "value"
+      },
+      "rule_id": "CNF-8",
+      "source_carrier": "confpolicy-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "conftoken-001",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          },
+          {
+            "id": "conftoken-101",
+            "oracle": {
+              "event_kinds": [
+                "confirmation_resolved",
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+          }
+        ],
+        "pointer": "/given/driver_state/confirmation/proposal_version",
+        "relation": "value"
+      },
+      "rule_id": "CNF-13",
+      "source_carrier": "conftoken-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "conftoken-002",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "6eb0dc4d9869dd9b48db2713ccca1ce602a14efe825b1c9abf862420b7fed9dd"
+          },
+          {
+            "id": "conftoken-102",
+            "oracle": {
+              "event_kinds": [
+                "confirmation_resolved",
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "23fcf52d5f01011ef75343a1d7580ab2f2213e21b477f3af861cdf04bc276fbc"
+          }
+        ],
+        "pointer": "/given/driver_state/confirmation/covered_principal_id",
+        "relation": "value"
+      },
+      "rule_id": "CNF-21",
+      "source_carrier": "conftoken-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "conftoken-003",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "bc2a8a92a18bd9ca5b3caace3d6402ee47cf2671dd59cf0662aaac721cff7f9a"
+          },
+          {
+            "id": "conftoken-103",
+            "oracle": {
+              "event_kinds": [
+                "confirmation_resolved",
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "6306e7a81c7a8ce2dee09536d89a6122a74b6a8297bbb34d8f85271e844624e9"
+          }
+        ],
+        "pointer": "/given/driver_state/confirmation/current_descriptor_digest",
+        "relation": "value"
+      },
+      "rule_id": "CNF-23",
+      "source_carrier": "conftoken-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "confdual-001",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "6eb0dc4d9869dd9b48db2713ccca1ce602a14efe825b1c9abf862420b7fed9dd"
+          },
+          {
+            "id": "confdual-101",
+            "oracle": {
+              "event_kinds": [
+                "confirmation_resolved",
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "23fcf52d5f01011ef75343a1d7580ab2f2213e21b477f3af861cdf04bc276fbc"
+          }
+        ],
+        "pointer": "/given/driver_state/principals/authorizer/id",
+        "relation": "value"
+      },
+      "rule_id": "CNF-33",
+      "source_carrier": "confdual-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "confdual-002",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "6eb0dc4d9869dd9b48db2713ccca1ce602a14efe825b1c9abf862420b7fed9dd"
+          },
+          {
+            "id": "confdual-102",
+            "oracle": {
+              "event_kinds": [
+                "confirmation_resolved",
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "23fcf52d5f01011ef75343a1d7580ab2f2213e21b477f3af861cdf04bc276fbc"
+          }
+        ],
+        "pointer": "/given/driver_state/principals/authorizer/id",
+        "relation": "value"
+      },
+      "rule_id": "CNF-34",
+      "source_carrier": "confdual-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "confpolicy-007",
+            "length": 0,
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            }
+          },
+          {
+            "id": "confpolicy-107",
+            "length": 1,
+            "oracle": {
+              "event_kinds": [
+                "confirmation_resolved",
+                "action_completed"
+              ],
+              "final_state": "completed"
+            }
+          }
+        ],
+        "pointer": "/given/driver_state/authorization/permissions",
+        "relation": "length"
+      },
+      "rule_id": "CNF-35",
+      "source_carrier": "confpolicy-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "confpolicy-008",
+            "length": 0,
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            }
+          },
+          {
+            "id": "confpolicy-108",
+            "length": 1,
+            "oracle": {
+              "event_kinds": [
+                "confirmation_resolved",
+                "action_completed"
+              ],
+              "final_state": "completed"
+            }
+          }
+        ],
+        "pointer": "/given/driver_state/authorization/permissions",
+        "relation": "length"
+      },
+      "rule_id": "CNF-36",
+      "source_carrier": "confpolicy-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "conftoken-004",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "d5df345d227175ade4a44cf88d68cd8ab5a33db54359fd8d9a9e7e62edc0a02a"
+          },
+          {
+            "id": "conftoken-104",
+            "oracle": {
+              "event_kinds": [
+                "confirmation_resolved",
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "aec56945c3047c8f1ff951f357bf2f03ce91dedbaa2a30cc2d63bfe32e390932"
+          }
+        ],
+        "pointer": "/given/driver_state/confirmation/commit_args_fingerprint",
+        "relation": "value"
+      },
+      "rule_id": "CNF-38",
+      "source_carrier": "conftoken-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "clarificationstate-001",
+            "oracle": {
+              "event_kinds": [
+                "input_recorded"
+              ],
+              "final_state": "running"
+            },
+            "value_hash": "597c0c565ae5c56f2128fe26c743dccd45a4dab664d04f5220f61cc41f639dcd"
+          },
+          {
+            "id": "clarificationstate-101",
+            "oracle": {
+              "event_kinds": [
+                "task_status_observed",
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "dfb1f7f74a12259e3f1e30c31e2f5cbbc86c5a2092b274c84b26c296206ffc40"
+          }
+        ],
+        "pointer": "/script/2/task_message/status",
+        "relation": "value"
+      },
+      "rule_id": "CLR-2",
+      "source_carrier": "clarificationstate-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F4",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "clarificationstate-002",
+            "oracle": {
+              "event_kinds": [
+                "input_recorded"
+              ],
+              "final_state": "running"
+            },
+            "value_hash": "597c0c565ae5c56f2128fe26c743dccd45a4dab664d04f5220f61cc41f639dcd"
+          },
+          {
+            "id": "clarificationstate-102",
+            "oracle": {
+              "event_kinds": [
+                "task_status_observed",
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "dfb1f7f74a12259e3f1e30c31e2f5cbbc86c5a2092b274c84b26c296206ffc40"
+          }
+        ],
+        "pointer": "/script/2/task_message/status",
+        "relation": "value"
+      },
+      "rule_id": "CLR-8",
+      "source_carrier": "clarificationstate-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F5",
+      "raw_evidence": [
+        {
+          "class": "behavior",
+          "expect": {
+            "events": [
+              {
+                "kind": "step_failed",
+                "payload": {
+                  "attempts": 3,
+                  "failure_class": "technical",
+                  "step_id": "probe"
+                }
+              },
+              {
+                "kind": "scenario_failed",
+                "payload": {
+                  "outcome": "FAILED"
+                }
+              }
+            ],
+            "final_state": "failed"
+          },
+          "id": "scenario-002"
+        },
+        {
+          "class": "behavior",
+          "expect": {
+            "events": [
+              {
+                "kind": "scenario_started",
+                "payload": {
+                  "scenario_id": "forward_reference_rejected"
+                }
+              },
+              {
+                "kind": "step_started",
+                "payload": {
+                  "step_id": "second"
+                }
+              },
+              {
+                "kind": "step_started",
+                "payload": {
+                  "step_id": "first"
+                }
+              },
+              {
+                "kind": "scenario_completed",
+                "payload": {
+                  "outcome": "COMPLETED",
+                  "scenario_id": "forward_reference_rejected"
+                }
+              }
+            ],
+            "final_state": "completed"
+          },
+          "id": "scnforward-013"
+        },
+        {
+          "class": "behavior",
+          "expect": {
+            "error": {
+              "code": "demo.validation.forward_reference"
+            },
+            "events": [
+              {
+                "kind": "step_failed",
+                "payload": {
+                  "failure_class": "technical",
+                  "reason": "forward_reference",
+                  "referenced_step_id": "second",
+                  "scenario_id": "forward_reference_rejected",
+                  "step_id": "first"
+                }
+              },
+              {
+                "kind": "audit.scenario_run_finished",
+                "payload": {
+                  "outcome": "FAILED",
+                  "scenario_id": "forward_reference_rejected"
+                }
+              }
+            ],
+            "final_state": "failed"
+          },
+          "id": "scnorder-002"
+        }
+      ],
+      "rule_id": "SCN-9",
+      "source_carrier": "scnorder-002",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "audit-004",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "b983beca6fd51a7bec9535e5180375b7eccddc76c0bd4e5c708f1c0c27c60d41"
+          },
+          {
+            "id": "audit-104",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "7b34258345b984068e93c653aa0f130b84d723b7d99c5434be34827bcd44d362"
+          }
+        ],
+        "pointer": "/given/driver_state/audit_export/mapping_version",
+        "relation": "value"
+      },
+      "rule_id": "AOB-25",
+      "source_carrier": "audit-004",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "diagnostic_substring": "audit_schema",
+            "linter": "reject"
+          },
+          "id": "auditschema-001",
+          "subject": {
+            "inline": "{\"schema\":{\"properties\":{\"gen_ai.provider.name\":{\"type\":\"string\"}}}}",
+            "kind": "audit_schema"
+          }
+        },
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "auditschema-002",
+          "subject": {
+            "inline": "{\"schema\":{\"properties\":{\"provider_id\":{\"type\":\"string\"}}}}",
+            "kind": "audit_schema"
+          }
+        }
+      ],
+      "rule_id": "AOB-26",
+      "source_carrier": "audit-004",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "audit-006",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "b85f01456c75a9fba07052766e95c6495bb3e0dd404cc92aa4d15caa45fe84df"
+          },
+          {
+            "id": "audit-106",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "64e76ebdd3b41cdd34de680e89804482a027a8860ab7b19c9a79cf1c81152555"
+          }
+        ],
+        "pointer": "/given/driver_state/audit_export/attributes/0",
+        "relation": "value"
+      },
+      "rule_id": "AOB-27",
+      "source_carrier": "audit-004",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "audit-007",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "f632321a0c7c9e4681f3faf1fe472bda51795e738d2ec628e877552301c84e3d"
+          },
+          {
+            "id": "audit-107",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "37c061a5f3c46ab1fe9013c1e990634c162ca72e11d6f34dce2a8a5c0e0dacf1"
+          }
+        ],
+        "pointer": "/given/driver_state/audit_export/attributes/0",
+        "relation": "value"
+      },
+      "rule_id": "AOB-28",
+      "source_carrier": "audit-004",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "audit-008",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "d0ba02612a172741dfe365a0f717c3cd46b3cc302a2e6148f41c759c1231d41d"
+          },
+          {
+            "id": "audit-108",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "f76aa30ca6fc8895c1a1d3f491ff5cc8ef2fef5b5ca9902dc2a7612211834cb3"
+          }
+        ],
+        "pointer": "/given/driver_state/baggage/0/value",
+        "relation": "value"
+      },
+      "rule_id": "AOB-29",
+      "source_carrier": "audit-004",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "audit-009",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "61790063f1fb2819371f4173d29a8dfc7d7f65bd77e23c339096096504313ff2"
+          },
+          {
+            "id": "audit-109",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "f76aa30ca6fc8895c1a1d3f491ff5cc8ef2fef5b5ca9902dc2a7612211834cb3"
+          }
+        ],
+        "pointer": "/given/driver_state/baggage/0/value",
+        "relation": "value"
+      },
+      "rule_id": "AOB-30",
+      "source_carrier": "audit-004",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "audit-010",
+            "length": 65,
+            "oracle": {
+              "event_kinds": [
+                "audit.limit_exceeded"
+              ],
+              "final_state": "failed"
+            }
+          },
+          {
+            "id": "audit-110",
+            "length": 64,
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            }
+          }
+        ],
+        "pointer": "/given/driver_state/baggage",
+        "relation": "length"
+      },
+      "rule_id": "AOB-31",
+      "source_carrier": "audit-004",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F1",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-001",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "ce8b697ae28765382f13a932ff5dc7b409eaab70c1cf825f74a288478afad6e2"
+          },
+          {
+            "id": "security-101",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "381d47ab67ca543f04e417fe3c6261d359f9295de8d2b48f145f7d14e1ffaad4"
+          }
+        ],
+        "pointer": "/given/driver_state/credentials/0/audience",
+        "relation": "value"
+      },
+      "rule_id": "SEC-1",
+      "source_carrier": "security-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F1",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-002",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "67ce03f7d7c53ce6cb275f84bf6d0edbd13cb03b763cd3046f54e060f4213060"
+          },
+          {
+            "id": "security-102",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "5ea8378ca586ef8ffacf1af3e8f8ff07a8062dcdd423d4f60ac21cfb3b7ab339"
+          }
+        ],
+        "pointer": "/given/driver_state/credentials/0/integrity",
+        "relation": "value"
+      },
+      "rule_id": "SEC-2",
+      "source_carrier": "security-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F1",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-003",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "ce8b697ae28765382f13a932ff5dc7b409eaab70c1cf825f74a288478afad6e2"
+          },
+          {
+            "id": "security-103",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "381d47ab67ca543f04e417fe3c6261d359f9295de8d2b48f145f7d14e1ffaad4"
+          }
+        ],
+        "pointer": "/given/driver_state/credentials/0/audience",
+        "relation": "value"
+      },
+      "rule_id": "SEC-3",
+      "source_carrier": "security-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F1",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-004",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "ce8b697ae28765382f13a932ff5dc7b409eaab70c1cf825f74a288478afad6e2"
+          },
+          {
+            "id": "security-104",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "381d47ab67ca543f04e417fe3c6261d359f9295de8d2b48f145f7d14e1ffaad4"
+          }
+        ],
+        "pointer": "/given/driver_state/credentials/0/audience",
+        "relation": "value"
+      },
+      "rule_id": "SEC-4",
+      "source_carrier": "security-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F1",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-005",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "91feb5e71f4ac5f3b4434e1125c0e059b75b43654e7ad2fc71df8aa75032f2ec"
+          },
+          {
+            "id": "security-105",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "967e38b25579f163f0b7f4aa085d564a83256faecb79d44ce6ef5a224d756e2e"
+          }
+        ],
+        "pointer": "/given/driver_state/credentials/0/source",
+        "relation": "value"
+      },
+      "rule_id": "SEC-5",
+      "source_carrier": "security-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F1",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-006",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "f632321a0c7c9e4681f3faf1fe472bda51795e738d2ec628e877552301c84e3d"
+          },
+          {
+            "id": "security-106",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "bb51f16db3be1f7230c7d709e83686b88fa91fb544c3a095815759956a4bc65e"
+          }
+        ],
+        "pointer": "/given/driver_state/credentials/0/kind",
+        "relation": "value"
+      },
+      "rule_id": "SEC-6",
+      "source_carrier": "security-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-007",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "8778fae2f6a9cf2e6bb3037286e817fc25fca09643f988dbd04f3a1886cdc3da"
+          },
+          {
+            "id": "security-107",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "8fec632f957f512eed2545b2c779fb8a73b8817c8841f14f4c85ea9705003b74"
+          }
+        ],
+        "pointer": "/given/driver_state/provenance/0/content_origin",
+        "relation": "value"
+      },
+      "rule_id": "SEC-7",
+      "source_carrier": "security-002",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-008",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "8778fae2f6a9cf2e6bb3037286e817fc25fca09643f988dbd04f3a1886cdc3da"
+          },
+          {
+            "id": "security-108",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "8fec632f957f512eed2545b2c779fb8a73b8817c8841f14f4c85ea9705003b74"
+          }
+        ],
+        "pointer": "/given/driver_state/provenance/0/content_origin",
+        "relation": "value"
+      },
+      "rule_id": "SEC-8",
+      "source_carrier": "security-002",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-009",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "8778fae2f6a9cf2e6bb3037286e817fc25fca09643f988dbd04f3a1886cdc3da"
+          },
+          {
+            "id": "security-109",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "8fec632f957f512eed2545b2c779fb8a73b8817c8841f14f4c85ea9705003b74"
+          }
+        ],
+        "pointer": "/given/driver_state/provenance/0/content_origin",
+        "relation": "value"
+      },
+      "rule_id": "SEC-9",
+      "source_carrier": "security-002",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-010",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "8778fae2f6a9cf2e6bb3037286e817fc25fca09643f988dbd04f3a1886cdc3da"
+          },
+          {
+            "id": "security-110",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "8fec632f957f512eed2545b2c779fb8a73b8817c8841f14f4c85ea9705003b74"
+          }
+        ],
+        "pointer": "/given/driver_state/provenance/0/content_origin",
+        "relation": "value"
+      },
+      "rule_id": "SEC-10",
+      "source_carrier": "security-002",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-011",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "present": false
+          },
+          {
+            "id": "security-111",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "present": true,
+            "value_hash": "bb9d95e7d52317c38ca93f81976474857b707dde0275bd01876e7a5bf94d9214"
+          }
+        ],
+        "pointer": "/given/tools/0/_meta/dev.agentools~1action/confirmation",
+        "relation": "presence"
+      },
+      "rule_id": "SEC-11",
+      "source_carrier": "security-002",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-012",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "8778fae2f6a9cf2e6bb3037286e817fc25fca09643f988dbd04f3a1886cdc3da"
+          },
+          {
+            "id": "security-112",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "8fec632f957f512eed2545b2c779fb8a73b8817c8841f14f4c85ea9705003b74"
+          }
+        ],
+        "pointer": "/given/driver_state/provenance/0/content_origin",
+        "relation": "value"
+      },
+      "rule_id": "SEC-12",
+      "source_carrier": "security-002",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-013",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "4167f8c58700b255cd162a53550e2c860800e11eb5691b8c94cfce4596e390cb"
+          },
+          {
+            "id": "security-113",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "be559d5b9816df40b35e7292aa062b89762902be32ed36d600f6b5505b606d1c"
+          }
+        ],
+        "pointer": "/given/driver_state/principals/agent/id",
+        "relation": "value"
+      },
+      "rule_id": "SEC-13",
+      "source_carrier": "security-003",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-014",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "4167f8c58700b255cd162a53550e2c860800e11eb5691b8c94cfce4596e390cb"
+          },
+          {
+            "id": "security-114",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "be559d5b9816df40b35e7292aa062b89762902be32ed36d600f6b5505b606d1c"
+          }
+        ],
+        "pointer": "/given/driver_state/principals/agent/id",
+        "relation": "value"
+      },
+      "rule_id": "SEC-14",
+      "source_carrier": "security-003",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-015",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "2f3bc98414cb95ec9f08b5877ac9ec9235e75d4c38e390d34378d72751bb8d3f"
+          },
+          {
+            "id": "security-115",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "4167f8c58700b255cd162a53550e2c860800e11eb5691b8c94cfce4596e390cb"
+          }
+        ],
+        "pointer": "/given/driver_state/principals/initiator/id",
+        "relation": "value"
+      },
+      "rule_id": "SEC-15",
+      "source_carrier": "security-003",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-016",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "0c33b77767e7acf636c41f41e64d91e01226cc3add7df4afca978932805840b8"
+          },
+          {
+            "id": "security-116",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "fe4237367f1e9445a27ecb173de9cf13428eb5a744db484a689ac541c8416507"
+          }
+        ],
+        "pointer": "/given/driver_state/authorization/resource",
+        "relation": "value"
+      },
+      "rule_id": "SEC-16",
+      "source_carrier": "security-003",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "diagnostic_substring": "security_authoring",
+            "linter": "reject"
+          },
+          "id": "securityauthoring-001",
+          "subject": {
+            "inline": "{\"schema\":{\"properties\":{\"delegation_claim\":{\"type\":\"object\"}}}}",
+            "kind": "security_authoring"
+          }
+        },
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "securityauthoring-002",
+          "subject": {
+            "inline": "{\"schema\":{\"properties\":{\"principal_id\":{\"type\":\"string\"}}}}",
+            "kind": "security_authoring"
+          }
+        }
+      ],
+      "rule_id": "SEC-17",
+      "source_carrier": "security-003",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-018",
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            },
+            "value_hash": "db5d54850276f4ff5e6ece489aec16696789352796b89ba1e79b54a038a6c3bc"
+          },
+          {
+            "id": "security-118",
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "584841acef87dbf44771bba25740aa778b6e67fc31b9cea65e806f1f41af041c"
+          }
+        ],
+        "pointer": "/given/driver_state/confirmation/token_id",
+        "relation": "value"
+      },
+      "rule_id": "SEC-18",
+      "source_carrier": "security-004",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F2",
+      "pair_evidence": {
+        "members": [
+          {
+            "id": "security-019",
+            "length": 0,
+            "oracle": {
+              "event_kinds": [
+                "action_failed"
+              ],
+              "final_state": "failed"
+            }
+          },
+          {
+            "id": "security-119",
+            "length": 1,
+            "oracle": {
+              "event_kinds": [
+                "action_completed"
+              ],
+              "final_state": "completed"
+            }
+          }
+        ],
+        "pointer": "/given/driver_state/authorization/permissions",
+        "relation": "length"
+      },
+      "rule_id": "SEC-19",
+      "source_carrier": "security-004",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F6",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "cfhbaseline-001",
+          "subject": {
+            "inline": "{\"known_failures\":[{\"scenario\":\"longop-002\",\"check\":\"notification-channel\",\"rule_id\":\"LOP-9\",\"issue\":\"https://tracker.example/LOP-9\"}],\"actual_failures\":[\"longop-002:notification-channel\"],\"reject_passing_entries\":true,\"grease_allowed\":false}",
+            "kind": "known_failures"
+          }
+        }
+      ],
+      "rule_id": "CFH-22",
+      "source_carrier": "cfhbaseline-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F6",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "cfhbaseline-001",
+          "subject": {
+            "inline": "{\"known_failures\":[{\"scenario\":\"longop-002\",\"check\":\"notification-channel\",\"rule_id\":\"LOP-9\",\"issue\":\"https://tracker.example/LOP-9\"}],\"actual_failures\":[\"longop-002:notification-channel\"],\"reject_passing_entries\":true,\"grease_allowed\":false}",
+            "kind": "known_failures"
+          }
+        }
+      ],
+      "rule_id": "CFH-23",
+      "source_carrier": "cfhbaseline-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F6",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "cfhbaseline-001",
+          "subject": {
+            "inline": "{\"known_failures\":[{\"scenario\":\"longop-002\",\"check\":\"notification-channel\",\"rule_id\":\"LOP-9\",\"issue\":\"https://tracker.example/LOP-9\"}],\"actual_failures\":[\"longop-002:notification-channel\"],\"reject_passing_entries\":true,\"grease_allowed\":false}",
+            "kind": "known_failures"
+          }
+        }
+      ],
+      "rule_id": "CFH-24",
+      "source_carrier": "cfhbaseline-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F6",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "cfhbaseline-001",
+          "subject": {
+            "inline": "{\"known_failures\":[{\"scenario\":\"longop-002\",\"check\":\"notification-channel\",\"rule_id\":\"LOP-9\",\"issue\":\"https://tracker.example/LOP-9\"}],\"actual_failures\":[\"longop-002:notification-channel\"],\"reject_passing_entries\":true,\"grease_allowed\":false}",
+            "kind": "known_failures"
+          }
+        },
+        {
+          "class": "artifact",
+          "expect": {
+            "diagnostic_substring": "issue-link",
+            "linter": "reject"
+          },
+          "id": "cfhbaseline-002",
+          "subject": {
+            "inline": "{\"known_failures\":[{\"scenario\":\"longop-002\",\"check\":\"notification-channel\",\"rule_id\":\"LOP-9\"}],\"actual_failures\":[\"longop-002:notification-channel\"],\"reject_passing_entries\":true,\"grease_allowed\":false}",
+            "kind": "known_failures"
+          }
+        }
+      ],
+      "rule_id": "CFH-25",
+      "source_carrier": "cfhbaseline-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F6",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "cfhbaseline-001",
+          "subject": {
+            "inline": "{\"known_failures\":[{\"scenario\":\"longop-002\",\"check\":\"notification-channel\",\"rule_id\":\"LOP-9\",\"issue\":\"https://tracker.example/LOP-9\"}],\"actual_failures\":[\"longop-002:notification-channel\"],\"reject_passing_entries\":true,\"grease_allowed\":false}",
+            "kind": "known_failures"
+          }
+        }
+      ],
+      "rule_id": "CFH-26",
+      "source_carrier": "cfhbaseline-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F6",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "cfhgrease-001",
+          "subject": {
+            "inline": "{\"vectors\":[{\"kind\":\"unknown_event\",\"value\":\"vendor.event\"},{\"kind\":\"unknown_error_category\",\"value\":\"vendor.error\"},{\"kind\":\"unknown_extension_key\",\"value\":\"dev.vendor/feature\"}]}",
+            "kind": "grease_registration"
+          }
+        },
+        {
+          "class": "artifact",
+          "expect": {
+            "diagnostic_substring": "три неизвестных",
+            "linter": "reject"
+          },
+          "id": "cfhgrease-002",
+          "subject": {
+            "inline": "{\"vectors\":[{\"kind\":\"unknown_event\",\"value\":\"vendor.event\"},{\"kind\":\"unknown_extension_key\",\"value\":\"dev.vendor/feature\"}]}",
+            "kind": "grease_registration"
+          }
+        }
+      ],
+      "rule_id": "CFH-50",
+      "source_carrier": "cfhgrease-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F6",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "cfhgrease-001",
+          "subject": {
+            "inline": "{\"vectors\":[{\"kind\":\"unknown_event\",\"value\":\"vendor.event\"},{\"kind\":\"unknown_error_category\",\"value\":\"vendor.error\"},{\"kind\":\"unknown_extension_key\",\"value\":\"dev.vendor/feature\"}]}",
+            "kind": "grease_registration"
+          }
+        }
+      ],
+      "rule_id": "CFH-51",
+      "source_carrier": "cfhgrease-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F6",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "cfhreport-001",
+          "subject": {
+            "inline": "{\"order\":\"vector_id\",\"declared_level\":\"L1\",\"failed\":[],\"warnings\":[],\"not_testable\":[{\"rule_id\":\"LOP-9\",\"reason\":\"capability unavailable\"}],\"submitted_vectors\":[\"alpha-001\",\"beta-001\"],\"vectors\":[{\"id\":\"alpha-001\",\"outcome\":\"completed\",\"rule_ids\":[\"CFH-52\"]},{\"id\":\"beta-001\",\"outcome\":\"not_testable\",\"rule_ids\":[\"CFH-53\"]}],\"level_summary\":{\"L1\":2},\"success\":true}",
+            "kind": "conformance_report"
+          }
+        },
+        {
+          "class": "artifact",
+          "expect": {
+            "diagnostic_substring": "per-vector records",
+            "linter": "reject"
+          },
+          "id": "cfhreport-002",
+          "subject": {
+            "inline": "{\"order\":\"vector_id\",\"submitted_vectors\":[],\"vectors\":[],\"level_summary\":{},\"success\":true}",
+            "kind": "conformance_report"
+          }
+        }
+      ],
+      "rule_id": "CFH-52",
+      "source_carrier": "cfhreport-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F6",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "cfhreport-001",
+          "subject": {
+            "inline": "{\"order\":\"vector_id\",\"declared_level\":\"L1\",\"failed\":[],\"warnings\":[],\"not_testable\":[{\"rule_id\":\"LOP-9\",\"reason\":\"capability unavailable\"}],\"submitted_vectors\":[\"alpha-001\",\"beta-001\"],\"vectors\":[{\"id\":\"alpha-001\",\"outcome\":\"completed\",\"rule_ids\":[\"CFH-52\"]},{\"id\":\"beta-001\",\"outcome\":\"not_testable\",\"rule_ids\":[\"CFH-53\"]}],\"level_summary\":{\"L1\":2},\"success\":true}",
+            "kind": "conformance_report"
+          }
+        }
+      ],
+      "rule_id": "CFH-53",
+      "source_carrier": "cfhreport-001",
+      "status": "replaced"
+    },
+    {
+      "finding": "FAIL F6",
+      "raw_evidence": [
+        {
+          "class": "artifact",
+          "expect": {
+            "linter": "accept"
+          },
+          "id": "cfhreport-001",
+          "subject": {
+            "inline": "{\"order\":\"vector_id\",\"declared_level\":\"L1\",\"failed\":[],\"warnings\":[],\"not_testable\":[{\"rule_id\":\"LOP-9\",\"reason\":\"capability unavailable\"}],\"submitted_vectors\":[\"alpha-001\",\"beta-001\"],\"vectors\":[{\"id\":\"alpha-001\",\"outcome\":\"completed\",\"rule_ids\":[\"CFH-52\"]},{\"id\":\"beta-001\",\"outcome\":\"not_testable\",\"rule_ids\":[\"CFH-53\"]}],\"level_summary\":{\"L1\":2},\"success\":true}",
+            "kind": "conformance_report"
+          }
+        }
+      ],
+      "rule_id": "CFH-54",
+      "source_carrier": "cfhreport-001",
+      "status": "replaced"
+    }
+  ],
+  "gaps": [],
+  "partitions": {
+    "behavior_rule_count": 65,
+    "cfh55_pair": {
+      "negative": "hmcpcodebad-001",
+      "positive": "hmcpcode-001"
+    },
+    "retained_carrier": {
+      "negative": "longop-002",
+      "positive": "longop-102",
+      "rule_ids": [
+        "LOP-6",
+        "LOP-7",
+        "LOP-8"
+      ]
+    },
+    "scenario_rule_count": 1,
+    "static_replacements": {
+      "AOB-26": "auditschema-001/002",
+      "SEC-17": "securityauthoring-001/002"
+    },
+    "static_rule_count": 50
+  },
+  "reported_carrier_count": 32,
+  "round1_fail_rules": [
+    "OVR-14",
+    "EXT-1",
+    "EXT-2",
+    "EXT-3",
+    "EXT-4",
+    "EXT-5",
+    "EXT-6",
+    "EXT-8",
+    "EXT-9",
+    "EXT-11",
+    "EXT-12",
+    "EXT-13",
+    "EXT-14",
+    "EXT-15",
+    "EXT-16",
+    "EXT-17",
+    "TLP-1",
+    "TLP-2",
+    "TLP-5",
+    "TLP-6",
+    "TLP-7",
+    "TLP-9",
+    "TLP-10",
+    "TLP-11",
+    "TLP-12",
+    "TLP-17",
+    "TLP-18",
+    "TLP-19",
+    "TLP-20",
+    "TLP-21",
+    "TLP-22",
+    "TLP-23",
+    "TLP-25",
+    "TLP-26",
+    "TLP-27",
+    "TLP-28",
+    "TLP-30",
+    "TLP-31",
+    "TLP-32",
+    "ALC-2",
+    "ALC-3",
+    "ALC-4",
+    "ALC-6",
+    "ALC-7",
+    "ALC-14",
+    "ALC-15",
+    "ALC-16",
+    "ALC-18",
+    "ALC-19",
+    "ALC-20",
+    "ALC-21",
+    "ALC-22",
+    "ALC-23",
+    "ALC-25",
+    "ALC-26",
+    "ALC-27",
+    "ALC-28",
+    "ALC-30",
+    "ALC-31",
+    "ALC-33",
+    "ALC-34",
+    "ALC-35",
+    "ALC-36",
+    "ALC-37",
+    "CNF-3",
+    "CNF-4",
+    "CNF-5",
+    "CNF-6",
+    "CNF-8",
+    "CNF-13",
+    "CNF-21",
+    "CNF-23",
+    "CNF-33",
+    "CNF-34",
+    "CNF-35",
+    "CNF-36",
+    "CNF-38",
+    "CLR-2",
+    "CLR-8",
+    "SCN-9",
+    "AOB-25",
+    "AOB-26",
+    "AOB-27",
+    "AOB-28",
+    "AOB-29",
+    "AOB-30",
+    "AOB-31",
+    "SEC-1",
+    "SEC-2",
+    "SEC-3",
+    "SEC-4",
+    "SEC-5",
+    "SEC-6",
+    "SEC-7",
+    "SEC-8",
+    "SEC-9",
+    "SEC-10",
+    "SEC-11",
+    "SEC-12",
+    "SEC-13",
+    "SEC-14",
+    "SEC-15",
+    "SEC-16",
+    "SEC-17",
+    "SEC-18",
+    "SEC-19",
+    "CFH-22",
+    "CFH-23",
+    "CFH-24",
+    "CFH-25",
+    "CFH-26",
+    "CFH-50",
+    "CFH-51",
+    "CFH-52",
+    "CFH-53",
+    "CFH-54"
+  ],
+  "round1_fixture_carriers": [
+    "audit-004",
+    "cfhbaseline-001",
+    "cfhgrease-001",
+    "cfhreport-001",
+    "clarificationstate-001",
+    "confdual-001",
+    "confpolicy-001",
+    "conftoken-001",
+    "extidentity-001",
+    "extnegotiation-001",
+    "lifecycleconcurrency-001",
+    "lifecyclefold-001",
+    "lifecycleindex-001",
+    "lifecycleintegrity-001",
+    "longop-002",
+    "ovrdev-001",
+    "profileuntrusted-001",
+    "scenario-004",
+    "scnnocode-003",
+    "scnorder-002",
+    "security-001",
+    "security-002",
+    "security-003",
+    "security-004",
+    "toolauthoring-001",
+    "toolcontract-001",
+    "tooldigest-001"
+  ],
+  "schema_version": 1
+}

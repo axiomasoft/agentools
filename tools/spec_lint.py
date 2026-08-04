@@ -11,6 +11,7 @@
     python3 tools/spec_lint.py --actionable-description-selftest <revision_dir>
     python3 tools/spec_lint.py --schema-values-selftest <revision_dir>
     python3 tools/spec_lint.py --driver-state-selftest <fixtures_root>
+    python3 tools/spec_lint.py --gate-b-remediation-write|--gate-b-remediation-check <fixtures_root>
 
 Ревизий в репозитории больше одной, и они живут по РАЗНЫМ конвенциям (`2026-07-draft`
 — история, `2026-08` — modern-only против MCP 2026-07-28), поэтому линтер параметризован
@@ -52,9 +53,11 @@
 разом; exit 1 при наличии хотя бы одной ошибки, иначе exit 0.
 """
 import json
+import hashlib
 import re
 import sys
 import tempfile
+from copy import deepcopy
 from pathlib import Path
 
 EXPECTED_SCHEMA_DIALECT = "https://json-schema.org/draft/2020-12/schema"
@@ -2157,6 +2160,360 @@ def collect_coverage_records(fixtures_root, errors):
     return records
 
 
+GATE_B_MANIFEST_VERSION = 1
+GATE_B_REPORTED_CARRIER_COUNT = 32
+GATE_B_CARRIERS = (
+    "audit-004", "cfhbaseline-001", "cfhgrease-001", "cfhreport-001",
+    "clarificationstate-001", "confdual-001", "confpolicy-001", "conftoken-001",
+    "extidentity-001", "extnegotiation-001", "lifecycleconcurrency-001",
+    "lifecyclefold-001", "lifecycleindex-001", "lifecycleintegrity-001", "longop-002",
+    "ovrdev-001", "profileuntrusted-001", "scenario-004", "scnnocode-003",
+    "scnorder-002", "security-001", "security-002", "security-003", "security-004",
+    "toolauthoring-001", "toolcontract-001", "tooldigest-001",
+)
+GATE_B_MATRIX_PATH = Path("plans/AGENTOOLS/artifacts/P5-gate-b.md")
+GATE_B_FINDING_RE = re.compile(r"FAIL F[1-6]")
+
+
+def _gate_b_matrix_rows(repo_root):
+    """Извлекает только historical FAIL F1–F6 rows из immutable round-1 matrix.
+
+    Matrix, а не headline «32», является единственным источником точного набора
+    правил; schema/checker subjects не являются fixture carriers и поэтому сюда не
+    попадают (D154)."""
+    path = repo_root / GATE_B_MATRIX_PATH
+    rows = []
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except OSError as exc:
+        return [], [f"gate-b remediation: не прочитана round-1 matrix {path}: {exc}"]
+    for line in lines:
+        cells = [cell.strip() for cell in line.split("|")]
+        if len(cells) < 6 or not re.fullmatch(
+            r"(?:OVR|EXT|TLP|ALC|CNF|CLR|SCN|LOP|AOB|IDE|SEC|CFH)-\d+", cells[1]
+        ):
+            continue
+        if not GATE_B_FINDING_RE.fullmatch(cells[5]):
+            continue
+        rows.append({"rule_id": cells[1], "source_carrier": cells[3], "finding": cells[5]})
+    errors = []
+    if len(rows) != 116 or len({row["rule_id"] for row in rows}) != 116:
+        errors.append(f"gate-b remediation: round-1 matrix должна дать exact 116 FAIL rule ids, получено {len(rows)}")
+    return rows, errors
+
+
+_MISSING = object()
+
+
+def _json_pointer_get(value, pointer):
+    """Возвращает наблюдаемое значение либо sentinel, не стирая absence в `null`."""
+    if pointer == "":
+        return value
+    if not isinstance(pointer, str) or not pointer.startswith("/"):
+        return _MISSING
+    current = value
+    for token in pointer[1:].split("/"):
+        token = token.replace("~1", "/").replace("~0", "~")
+        if isinstance(current, dict) and token in current:
+            current = current[token]
+        elif isinstance(current, list) and token.isdigit() and int(token) < len(current):
+            current = current[int(token)]
+        else:
+            return _MISSING
+    return current
+
+
+def _pointer_child(path, token):
+    return f"{path}/{str(token).replace('~', '~0').replace('/', '~1')}"
+
+
+def _input_counterfactuals(left, right, path=""):
+    """Находит input-only различия, сворачивая list-tail в длину контейнера.
+
+    `given` и `script` — единственный допустимый stimulus. Отсутствующий leaf и
+    разная длина списка не маскируются выдуманным индексом: это отдельные relation.
+    """
+    if type(left) is not type(right):
+        return [{"pointer": path, "relation": "value", "left": left, "right": right}]
+    if isinstance(left, dict):
+        differences = []
+        for key in sorted(set(left) | set(right)):
+            child = _pointer_child(path, key)
+            if key not in left or key not in right:
+                differences.append({
+                    "pointer": child,
+                    "relation": "presence",
+                    "left": left.get(key, _MISSING),
+                    "right": right.get(key, _MISSING),
+                })
+            else:
+                differences.extend(_input_counterfactuals(left[key], right[key], child))
+        return differences
+    if isinstance(left, list):
+        differences = []
+        for index, (left_item, right_item) in enumerate(zip(left, right)):
+            differences.extend(_input_counterfactuals(left_item, right_item, _pointer_child(path, index)))
+        if len(left) != len(right):
+            differences.append({"pointer": path, "relation": "length", "left": len(left), "right": len(right)})
+        return differences
+    return [] if left == right else [{"pointer": path, "relation": "value", "left": left, "right": right}]
+
+
+def _expectation_oracle(data):
+    expect = data.get("expect") if isinstance(data.get("expect"), dict) else {}
+    events = expect.get("events") if isinstance(expect.get("events"), list) else []
+    return {
+        "final_state": expect.get("final_state"),
+        "event_kinds": [event.get("kind") for event in events if isinstance(event, dict)],
+    }
+
+
+def _explicit_stimulus_pointers(data):
+    expect = data.get("expect") if isinstance(data.get("expect"), dict) else {}
+    events = expect.get("events") if isinstance(expect.get("events"), list) else []
+    pointers = []
+    for event in events:
+        payload = event.get("payload") if isinstance(event, dict) else None
+        pointer = payload.get("stimulus_pointer") if isinstance(payload, dict) else None
+        if isinstance(pointer, str):
+            pointers.append(pointer)
+    return sorted(set(pointers))
+
+
+def _pair_evidence(rule_id, records, errors):
+    """Строит единственное typed evidence-отношение для behavior rule-pair."""
+    members = sorted(records, key=lambda record: record["id"])
+    if len(members) != 2 or any(record["class"] != "behavior" for record in members):
+        errors.append(f"gate-b remediation: {rule_id} требует ровно 2 behavior member")
+        return None
+    left, right = members
+    left_input = {key: left["data"].get(key) for key in ("given", "script")}
+    right_input = {key: right["data"].get(key) for key in ("given", "script")}
+    differences = _input_counterfactuals(left_input, right_input)
+    if len(differences) != 1:
+        errors.append(
+            f"gate-b remediation: {rule_id} {left['id']}/{right['id']} должен иметь ровно один given/script counterfactual, получено {len(differences)}"
+        )
+        return None
+    difference = differences[0]
+    pointer = difference["pointer"]
+    relation = difference["relation"]
+    explicit = _explicit_stimulus_pointers(left["data"]) + _explicit_stimulus_pointers(right["data"])
+    if explicit and any(candidate != pointer for candidate in explicit):
+        errors.append(
+            f"gate-b remediation: {rule_id} explicit stimulus_pointer {sorted(set(explicit))} не совпадает с {pointer}"
+        )
+        return None
+
+    observations = []
+    for record in members:
+        value = _json_pointer_get({"given": record["data"].get("given"), "script": record["data"].get("script")}, pointer)
+        observation = {"id": record["id"], "oracle": _expectation_oracle(record["data"])}
+        if relation == "presence":
+            observation["present"] = value is not _MISSING
+            if value is not _MISSING:
+                observation["value_hash"] = hashlib.sha256(_canonical_json(value).encode("utf-8")).hexdigest()
+        elif relation == "length":
+            if not isinstance(value, list):
+                errors.append(f"gate-b remediation: {rule_id} {record['id']} length pointer {pointer} не указывает на общий list-container")
+                return None
+            observation["length"] = len(value)
+        else:
+            if value is _MISSING:
+                errors.append(f"gate-b remediation: {rule_id} {record['id']} value pointer {pointer} отсутствует")
+                return None
+            observation["value_hash"] = hashlib.sha256(_canonical_json(value).encode("utf-8")).hexdigest()
+        observations.append(observation)
+
+    if relation == "presence" and {item["present"] for item in observations} != {False, True}:
+        errors.append(f"gate-b remediation: {rule_id} presence relation не различает absent/present")
+        return None
+    if relation == "length" and observations[0]["length"] == observations[1]["length"]:
+        errors.append(f"gate-b remediation: {rule_id} length relation не различает длины")
+        return None
+    if relation == "value" and observations[0]["value_hash"] == observations[1]["value_hash"]:
+        errors.append(f"gate-b remediation: {rule_id} value relation не различает canonical values")
+        return None
+    return {"pointer": pointer, "relation": relation, "members": observations}
+
+
+def _gate_b_raw_evidence(record):
+    """P4.12 static/harness subjects остаются наблюдаемыми raw-contracts."""
+    data = record["data"]
+    if record["class"] == "artifact":
+        return {"class": "artifact", "id": record["id"], "subject": data.get("subject"), "expect": data.get("expect")}
+    if record["class"] == "harness":
+        return {"class": "harness", "id": record["id"], "mcp_errors": data.get("mcp_errors"), "expect": data.get("expect")}
+    return {"class": record["class"], "id": record["id"], "expect": data.get("expect")}
+
+
+def build_gate_b_remediation_manifest(fixtures_root):
+    """Строит canonical evidence-map P4.13 из matrix и наблюдаемого корпуса."""
+    repo_root = fixtures_root.resolve().parents[1]
+    errors = []
+    matrix_rows, matrix_errors = _gate_b_matrix_rows(repo_root)
+    errors.extend(matrix_errors)
+    records = collect_coverage_records(fixtures_root, errors)
+    by_rule = {}
+    for record in records:
+        for rule_id in record["data"].get("spec_rule_ids", []):
+            by_rule.setdefault(rule_id, []).append(record)
+
+    evidence = []
+    for row in matrix_rows:
+        replacements = sorted(by_rule.get(row["rule_id"], []), key=lambda item: (item["class"], item["id"]))
+        if not replacements:
+            errors.append(f"gate-b remediation: {row['rule_id']} не имеет replacement carrier")
+            continue
+        entry = {**row, "status": "replaced"}
+        is_behavior = row["finding"] in ("FAIL F1", "FAIL F2", "FAIL F4") and row["rule_id"] not in {"SEC-17", "AOB-26"}
+        if is_behavior:
+            pair = _pair_evidence(row["rule_id"], replacements, errors)
+            if pair is not None:
+                entry["pair_evidence"] = pair
+        else:
+            entry["raw_evidence"] = [_gate_b_raw_evidence(record) for record in replacements]
+        evidence.append(entry)
+
+    behavior = [row for row in evidence if "pair_evidence" in row]
+    static = [row for row in evidence if row["finding"] in ("FAIL F3", "FAIL F6") or row["rule_id"] in {"SEC-17", "AOB-26"}]
+    scenario = [row for row in evidence if row["finding"] == "FAIL F5"]
+    manifest = {
+        "schema_version": GATE_B_MANIFEST_VERSION,
+        "reported_carrier_count": GATE_B_REPORTED_CARRIER_COUNT,
+        "round1_fixture_carriers": list(GATE_B_CARRIERS),
+        "round1_fail_rules": [row["rule_id"] for row in matrix_rows],
+        "driver_schema_subject": "fixtures/2026-08/schema/vector.json",
+        "checker_subject": "tools/spec_lint.py",
+        "partitions": {
+            "behavior_rule_count": len(behavior),
+            "retained_carrier": {"negative": "longop-002", "positive": "longop-102", "rule_ids": ["LOP-6", "LOP-7", "LOP-8"]},
+            "scenario_rule_count": len(scenario),
+            "static_rule_count": len(static),
+            "static_replacements": {"SEC-17": "securityauthoring-001/002", "AOB-26": "auditschema-001/002"},
+            "cfh55_pair": {"positive": "hmcpcode-001", "negative": "hmcpcodebad-001"},
+        },
+        "evidence": evidence,
+        "gaps": [],
+    }
+    return manifest, errors
+
+
+def _canonical_json(value):
+    return json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+
+
+def _validate_gate_b_manifest(actual, expected):
+    """Pure validator: фактический manifest обязан быть exact projection corpus+matrix."""
+    if not isinstance(actual, dict):
+        return ["gate-b remediation: manifest должен быть JSON object"]
+    if _canonical_json(actual) != _canonical_json(expected):
+        return ["gate-b remediation: manifest не является exact deterministic projection corpus+matrix"]
+    return []
+
+
+def _gate_b_mutation_errors(manifest):
+    """Каждый мутант проходит тот же pure validator и обязан получить reject."""
+    errors = []
+    for finding, rule_id, mutation in (
+        ("F1", "SEC-1", ("pair_evidence.pointer", "/missing-predicate")),
+        ("F2", "SEC-7", ("pair_evidence.pointer", "/missing-predicate")),
+        ("F3", "EXT-1", ("raw_evidence.expect", {"mutated": True})),
+        ("F4", "CNF-3", ("pair_evidence.pointer", "/missing-predicate")),
+        ("F5", "SCN-9", ("raw_evidence.expect", {"mutated": True})),
+        ("F6", "OVR-14", ("raw_evidence.expect", {"mutated": True})),
+        ("ALC-35 presence", "ALC-35", ("pair_evidence.relation", "value")),
+        ("AOB-31 length", "AOB-31", ("pair_evidence.pointer", "/given/driver_state/baggage/0")),
+        ("SEC-11 explicit-pointer", "SEC-11", ("pair_evidence.pointer", "/given/tools/0")),
+    ):
+        mutant = deepcopy(manifest)
+        row = next((item for item in mutant["evidence"] if item["rule_id"] == rule_id), None)
+        if row is None:
+            errors.append(f"gate-b remediation mutation {finding}: отсутствует rule {rule_id}")
+            continue
+        target, value = mutation
+        if target == "pair_evidence.pointer" and "pair_evidence" in row:
+            row["pair_evidence"]["pointer"] = value
+        elif target == "pair_evidence.relation" and "pair_evidence" in row:
+            row["pair_evidence"]["relation"] = value
+        elif target == "raw_evidence.expect" and row.get("raw_evidence"):
+            row["raw_evidence"][0]["expect"] = value
+        else:
+            errors.append(f"gate-b remediation mutation {finding}: нет проверяемого evidence")
+            continue
+        rejected = _validate_gate_b_manifest(mutant, manifest)
+        if not rejected:
+            errors.append(f"gate-b remediation mutation {finding}: pure validator принял мутант")
+        else:
+            print(f"gate-b remediation mutation {finding}: expected reject ({rejected[0]})")
+    return errors
+
+
+def _cfh55_pair_is_distinguishing(positive, negative):
+    expected_names = {"MissingRequiredClientCapabilityError", "UnsupportedProtocolVersionError"}
+    positive_codes = {row.get("name"): row.get("code") for row in positive.get("mcp_errors", []) if isinstance(row, dict)}
+    negative_codes = {row.get("name"): row.get("code") for row in negative.get("mcp_errors", []) if isinstance(row, dict)}
+    return (
+        positive_codes == {"MissingRequiredClientCapabilityError": -32003, "UnsupportedProtocolVersionError": -32004}
+        and set(negative_codes) == expected_names
+        and sum(positive_codes[name] != negative_codes[name] for name in expected_names) == 1
+        and negative.get("expect") == {"outcome": "violation", "violated_rule": "CFH-55"}
+    )
+
+
+def run_gate_b_remediation_check(fixtures_root):
+    if not fixtures_root.is_dir():
+        print(f"Ошибка: {fixtures_root} не является директорией", file=sys.stderr)
+        return 2
+    manifest_path = fixtures_root / "gate-b-remediation.json"
+    manifest, errors = build_gate_b_remediation_manifest(fixtures_root)
+    if manifest["round1_fixture_carriers"] != sorted(manifest["round1_fixture_carriers"]):
+        errors.append("gate-b remediation: round1 fixture carriers должны быть отсортированным exact set")
+    if len(manifest["round1_fixture_carriers"]) != 27:
+        errors.append("gate-b remediation: ожидается exact 27 round-1 fixture carriers")
+    if len(manifest["round1_fail_rules"]) != 116:
+        errors.append("gate-b remediation: ожидается exact 116 round-1 FAIL rules")
+    if manifest["partitions"]["behavior_rule_count"] != 65:
+        errors.append("gate-b remediation: D156 требует exact 65 behavior rules")
+    if not manifest_path.is_file():
+        errors.append(f"gate-b remediation: отсутствует {manifest_path}")
+    else:
+        actual = load_json(manifest_path, errors)
+        errors.extend(_validate_gate_b_manifest(actual, manifest))
+    errors.extend(_gate_b_mutation_errors(manifest))
+    positive = load_json(fixtures_root / "harness" / "hmcpcode-001.json", errors)
+    negative = load_json(fixtures_root / "harness" / "hmcpcodebad-001.json", errors)
+    if not isinstance(positive, dict) or not isinstance(negative, dict) or not _cfh55_pair_is_distinguishing(positive, negative):
+        errors.append("gate-b remediation: CFH-55 exact/wrong-code pair не различается")
+    else:
+        mutant = deepcopy(positive)
+        mutant["mcp_errors"][0]["code"] = -32002
+        if _cfh55_pair_is_distinguishing(mutant, negative):
+            errors.append("gate-b remediation mutation CFH-55: wrong code не был обнаружен")
+        else:
+            print("gate-b remediation mutation CFH-55: expected reject")
+    return report(errors, "gate-b remediation: exact 27 carriers / 116 rules; 6 F-mutations + CFH-55 input checked")
+
+
+def run_gate_b_remediation_write(fixtures_root):
+    """Атомарно публикует единственный производный P4.13 manifest."""
+    if not fixtures_root.is_dir():
+        print(f"Ошибка: {fixtures_root} не является директорией", file=sys.stderr)
+        return 2
+    manifest, errors = build_gate_b_remediation_manifest(fixtures_root)
+    if manifest["partitions"]["behavior_rule_count"] != 65:
+        errors.append("gate-b remediation: D156 требует exact 65 behavior rules")
+    errors.extend(_gate_b_mutation_errors(manifest))
+    if errors:
+        return report(errors, "gate-b remediation: manifest не записан")
+    manifest_path = fixtures_root / "gate-b-remediation.json"
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=fixtures_root, delete=False) as stream:
+        stream.write(_canonical_json(manifest))
+        temporary_path = Path(stream.name)
+    temporary_path.replace(manifest_path)
+    return report([], f"gate-b remediation: wrote only {manifest_path}")
+
+
 def check_common_fragments(fixtures_root, errors):
     """Копия common-дескриптора с тем же name обязана быть каноничной побайтно по JSON."""
     common = {}
@@ -2672,7 +3029,8 @@ def usage():
         "  python3 spec_lint.py --namespace-inventory-selftest\n"
         "  python3 spec_lint.py --actionable-description-selftest <revision_dir>\n"
         "  python3 spec_lint.py --schema-values-selftest <revision_dir>\n"
-        "  python3 spec_lint.py --driver-state-selftest <fixtures_root>",
+        "  python3 spec_lint.py --driver-state-selftest <fixtures_root>\n"
+        "  python3 spec_lint.py --gate-b-remediation-write|--gate-b-remediation-check <fixtures_root>",
         file=sys.stderr,
     )
     return 2
@@ -2704,6 +3062,14 @@ def main():
         except IndexError:
             return usage()
         return run_driver_state_selftest(target)
+
+    if "--gate-b-remediation-write" in args or "--gate-b-remediation-check" in args:
+        mode = "--gate-b-remediation-write" if "--gate-b-remediation-write" in args else "--gate-b-remediation-check"
+        try:
+            target = Path(args[args.index(mode) + 1])
+        except IndexError:
+            return usage()
+        return run_gate_b_remediation_write(target) if mode.endswith("write") else run_gate_b_remediation_check(target)
 
     if "--namespace-inventory" in args:
         try:
