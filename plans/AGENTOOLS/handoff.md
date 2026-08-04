@@ -4,16 +4,16 @@
 
 | Параметр | Значение |
 |:--|:--|
-| Model | frontier |
-| Thinking | xhigh — independent semantic audit |
+| Model | implementation |
+| Thinking | high — typed boundary corrections |
 | Context | continue (reset the session context) — ручной item |
-| Суть | Выполнить owner-authorized P5.1 Gate B round 3 после фактической remediation. |
+| Суть | Исполнить P4.20; Gate B round 3 ещё не начат. |
 | Команда | — |
 
 ```
-select session model class frontier
-select session effort xhigh
-$ task:plan-run AGENTOOLS P5.1
+select session model class implementation
+select session effort high
+$ task:plan-run AGENTOOLS P4.20
 ```
 
 **Done:** P4.19 (`b29a023`) опубликовал semantic manifest v2 exact 51, gaps/shortcuts 0,
