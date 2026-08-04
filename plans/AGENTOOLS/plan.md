@@ -6,7 +6,7 @@
 |:--|:--|
 | Plan ID | AGENTOOLS |
 | Title | AgenTools: ревизия спеки `2026-08` (modern-only, MCP 2026-07-28) + conformance + PHP/Dart SDK + срезы CRM/ERP |
-| Version | 0.33.2 |
+| Version | 0.33.3 |
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
@@ -424,6 +424,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 
 | Дата | Кто (role/model) | Что |
 |:--|:--|:--|
+| 2026-08-04 | plan-design/frontier-high | P4.17 Files исправлен `l1/lifecycleintegrity` → фактический `l3/lifecycleintegrity`; scope exact 38 не менялся; 0.33.2 → 0.33.3. |
 | 2026-08-04 | plan-design/frontier-high | D166 дополнил P4.17 raw observation inputs (`args_subset`, baggage classification), чтобы F11/F13 не вернулись как magic carriers; 0.33.1 → 0.33.2. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.16 (`118c6ba`) closed: 5 closed harness observations, exact shortcut registry and schema-valid self-report mutation rejects; next P4.17. |
 | 2026-08-04 | plan-close/implementation-low | P3 повторно закрыта 🟠: 23 green, P3.24 deviation, P3.25 skipped D165; F17/Q-28 terminal D164/LOP-26, дальше P4.16. |
