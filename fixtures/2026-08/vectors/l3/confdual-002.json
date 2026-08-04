@@ -1,0 +1,88 @@
+{
+  "id": "confdual-002",
+  "title": "Разные роли с тем же id не удовлетворяют dual control",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CNF-34"
+  ],
+  "conformance_level": "L3",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Выполняет необратимое проверяемое действие.\nCall when: Нужно проверить dual control или изолированный маршрут.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"x\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "irreversible",
+            "confirmation": "double_confirm",
+            "permissions_hint": [
+              "demo.write"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "principals": {
+        "initiator": {
+          "id": "user-a"
+        },
+        "agent": {
+          "id": "agent-a"
+        },
+        "authorizer": {
+          "id": "user-a"
+        }
+      },
+      "authorization": {
+        "resource": "payment-1",
+        "tool": "demo_probe",
+        "permissions": [
+          "demo.write"
+        ]
+      }
+    }
+  },
+  "script": [
+    {
+      "user_input": "Отправь платёж"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "payment-1"
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_failed",
+        "payload": {
+          "reason": "dual_control_roles_not_principals",
+          "proposer_principal": "user-a",
+          "approver_principal": "user-a",
+          "roles_differ": true
+        }
+      }
+    ],
+    "final_state": "failed",
+    "tool_calls": []
+  }
+}

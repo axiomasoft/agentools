@@ -1,0 +1,131 @@
+{
+  "id": "conftoken-102",
+  "title": "Commit принимает токен покрытого principal",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CNF-21"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Записывает проверяемое значение.\nCall when: Нужно проверить подтверждённое изменение.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"x\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "write",
+            "confirmation": "confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "demo.write"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "principals": {
+        "initiator": {
+          "id": "user-b"
+        },
+        "agent": {
+          "id": "agent-a"
+        },
+        "authorizer": {
+          "id": "user-b"
+        }
+      },
+      "authorization": {
+        "resource": "record-1",
+        "tool": "demo_probe",
+        "permissions": [
+          "demo.write"
+        ]
+      },
+      "credentials": [
+        {
+          "kind": "confirmation_token",
+          "source": "trusted_credential",
+          "issuer": "agentools-runtime",
+          "audience": "agentools-runtime",
+          "integrity": "verified",
+          "principal_id": "user-a",
+          "scopes": [
+            "demo.write"
+          ]
+        }
+      ],
+      "confirmation": {
+        "proposal_id": "proposal-1",
+        "proposal_version": 1,
+        "token_id": "token-1",
+        "covered_principal_id": "user-b",
+        "prepared_descriptor_digest": "sha-256:descriptor-1",
+        "current_descriptor_digest": "sha-256:descriptor-1",
+        "prepared_args_fingerprint": "sha-256:args-1",
+        "commit_args_fingerprint": "sha-256:args-1"
+      }
+    },
+    "policy": {
+      "allowed_tools": [
+        "demo_probe"
+      ],
+      "rules": [
+        {
+          "scope": "tool",
+          "verdict": "ask"
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Измени запись"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "token"
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "confirmation_resolved",
+        "payload": {
+          "covered_principal_id": "user-b"
+        }
+      },
+      {
+        "kind": "action_completed"
+      }
+    ],
+    "final_state": "completed",
+    "tool_calls": [
+      {
+        "tool": "demo_probe",
+        "args_subset": {
+          "value": "token"
+        },
+        "phase": "commit"
+      }
+    ]
+  }
+}

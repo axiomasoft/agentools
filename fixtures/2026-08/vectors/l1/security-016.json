@@ -1,0 +1,87 @@
+{
+  "id": "security-016",
+  "title": "SEC-16: запрещённое состояние — session-wide scope вместо per-call scope",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SEC-16"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Security probe.\nCall when: verify a security rule.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"case\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "principals": {
+        "initiator": {
+          "id": "user-7"
+        },
+        "agent": {
+          "id": "agent-7"
+        },
+        "authorizer": {
+          "id": "approver-7"
+        }
+      },
+      "authorization": {
+        "resource": "session:agent-7",
+        "tool": "demo_probe",
+        "permissions": [
+          "demo.read"
+        ]
+      }
+    }
+  },
+  "script": [
+    {
+      "user_input": "Выполни security-проверку"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "sec-16"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_failed",
+        "payload": {
+          "reason": "scope_not_bound_to_tool_call",
+          "security_rule": "SEC-16",
+          "stimulus_pointer": "/given/driver_state/authorization/resource",
+          "!tool_effect": true
+        }
+      }
+    ],
+    "final_state": "failed",
+    "tool_calls": []
+  }
+}

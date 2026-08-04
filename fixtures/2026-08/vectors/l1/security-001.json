@@ -1,32 +1,31 @@
 {
   "id": "security-001",
-  "title": "Чужой, транзитный и извлечённый из данных токен отвергается permission-ошибкой без проброса",
+  "title": "SEC-1: запрещённое состояние — чужая аудитория access token",
   "vector_class": "behavior",
   "spec_rev": "2026-08",
   "spec_rule_ids": [
-    "SEC-1",
-    "SEC-2",
-    "SEC-3",
-    "SEC-4",
-    "SEC-5",
-    "SEC-6"
+    "SEC-1"
   ],
   "conformance_level": "L1",
   "given": {
     "tools": [
       {
         "name": "demo_probe",
-        "description": "Детерминированный пробный инструмент для проверки поведения рантайма.",
+        "description": "Purpose: Security probe.\nCall when: verify a security rule.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"case\"})",
         "inputSchema": {
           "type": "object",
           "properties": {
-            "value": {}
-          }
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ]
         },
         "_meta": {
           "dev.agentools/action": {
             "side_effect": "read",
-            "confirmation": "none",
             "permissions_hint": [
               "demo.read"
             ]
@@ -34,22 +33,32 @@
         }
       }
     ],
-    "policy": {
-      "allowed_tools": [
-        "demo_probe"
+    "driver_state": {
+      "credentials": [
+        {
+          "kind": "access_token",
+          "source": "trusted_credential",
+          "issuer": "issuer-trusted",
+          "audience": "downstream-api",
+          "integrity": "verified",
+          "principal_id": "user-7",
+          "scopes": [
+            "demo.read"
+          ]
+        }
       ]
     }
   },
   "script": [
     {
-      "user_input": "Чужой, транзитный и извлечённый из данных токен отвергается permission-ошибкой без проброса"
+      "user_input": "Выполни security-проверку"
     },
     {
       "llm_stub": {
         "toolCall": {
           "tool": "demo_probe",
           "args": {
-            "value": "Bearer downstream-api-token"
+            "value": "sec-1"
           }
         }
       }
@@ -60,15 +69,14 @@
       {
         "kind": "action_failed",
         "payload": {
-          "category": "permission",
-          "reason": "foreign_token",
-          "!forwarded_token": true
+          "reason": "foreign_access_token",
+          "security_rule": "SEC-1",
+          "stimulus_pointer": "/given/driver_state/credentials/0/audience",
+          "!tool_effect": true
         }
       }
     ],
     "final_state": "failed",
-    "error": {
-      "code": "agentools.permission.confirmation_principal_mismatch"
-    }
+    "tool_calls": []
   }
 }

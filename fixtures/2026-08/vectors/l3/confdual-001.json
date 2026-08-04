@@ -1,29 +1,87 @@
 {
   "id": "confdual-001",
-  "title": "Dual control требует разных идентифицированных субъектов, а не разные сессии одного субъекта",
+  "title": "Один и тот же principal не удовлетворяет dual control",
   "vector_class": "behavior",
   "spec_rev": "2026-08",
-  "spec_rule_ids": ["CNF-33", "CNF-34"],
+  "spec_rule_ids": [
+    "CNF-33"
+  ],
   "conformance_level": "L3",
   "given": {
-    "tools": [{
-      "name": "agentools_probe",
-      "title": "Необратимый проверочный инструмент",
-      "description": "Выполняет действие только после dual control.",
-      "inputSchema": {"type": "object", "properties": {"value": {"type": "string"}}, "required": ["value"]},
-      "outputSchema": {"type": "object", "properties": {"accepted": {"type": "boolean"}}},
-      "annotations": {"readOnlyHint": false, "destructiveHint": true, "idempotentHint": false, "openWorldHint": false},
-      "_meta": {"dev.agentools/action": {"side_effect": "irreversible", "confirmation": "double_confirm", "idempotent_commit": false, "permissions_hint": ["agentools.probe.irreversible"]}}
-    }]
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Выполняет необратимое проверяемое действие.\nCall when: Нужно проверить dual control или изолированный маршрут.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"x\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "irreversible",
+            "confirmation": "double_confirm",
+            "permissions_hint": [
+              "demo.write"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "principals": {
+        "initiator": {
+          "id": "user-a"
+        },
+        "agent": {
+          "id": "agent-a"
+        },
+        "authorizer": {
+          "id": "user-a"
+        }
+      },
+      "authorization": {
+        "resource": "payment-1",
+        "tool": "demo_probe",
+        "permissions": [
+          "demo.write"
+        ]
+      }
+    }
   },
   "script": [
-    {"user_input": "Выполни необратимое действие"},
-    {"llm_stub": {"toolCall": {"tool": "agentools_probe", "args": {"value": "dual"}}}},
-    {"approval": "approve"}
+    {
+      "user_input": "Отправь платёж"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "payment-1"
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    }
   ],
   "expect": {
-    "events": [{"kind": "confirmation_resolved", "payload": {"proposer_principal": "user-a", "approver_principal": "user-b", "principals_distinct": true, "session_difference_not_sufficient": true}}],
-    "final_state": "completed",
-    "tool_calls": [{"tool": "agentools_probe", "args_subset": {"value": "dual"}, "phase": "commit"}]
+    "events": [
+      {
+        "kind": "action_failed",
+        "payload": {
+          "reason": "dual_control_principal_match",
+          "proposer_principal": "user-a",
+          "approver_principal": "user-a"
+        }
+      }
+    ],
+    "final_state": "failed",
+    "tool_calls": []
   }
 }

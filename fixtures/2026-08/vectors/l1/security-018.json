@@ -1,0 +1,97 @@
+{
+  "id": "security-018",
+  "title": "SEC-18: запрещённое состояние — audit decision как второй носитель authorisation",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SEC-18"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Security probe.\nCall when: verify a security rule.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"case\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "principals": {
+        "initiator": {
+          "id": "user-7"
+        },
+        "agent": {
+          "id": "agent-7"
+        },
+        "authorizer": {
+          "id": "approver-7"
+        }
+      },
+      "authorization": {
+        "resource": "record-7",
+        "tool": "demo_probe",
+        "permissions": [
+          "demo.write"
+        ]
+      },
+      "confirmation": {
+        "proposal_id": "proposal-7",
+        "proposal_version": 1,
+        "token_id": "audit-record-7",
+        "covered_principal_id": "user-7",
+        "prepared_descriptor_digest": "descriptor-7",
+        "current_descriptor_digest": "descriptor-7",
+        "prepared_args_fingerprint": "args-7",
+        "commit_args_fingerprint": "args-7"
+      }
+    }
+  },
+  "script": [
+    {
+      "user_input": "Выполни security-проверку"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "sec-18"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_failed",
+        "payload": {
+          "reason": "duplicate_authorization_carrier",
+          "security_rule": "SEC-18",
+          "stimulus_pointer": "/given/driver_state/confirmation/token_id",
+          "!tool_effect": true
+        }
+      }
+    ],
+    "final_state": "failed",
+    "tool_calls": []
+  }
+}

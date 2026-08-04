@@ -1,46 +1,64 @@
 {
   "id": "security-004",
-  "title": "Запись решения не заменяет независимую авторизацию и не дублируется вторым носителем",
+  "title": "SEC-4: запрещённое состояние — сквозной токен нижнего API",
   "vector_class": "behavior",
   "spec_rev": "2026-08",
   "spec_rule_ids": [
-    "SEC-18",
-    "SEC-19"
+    "SEC-4"
   ],
   "conformance_level": "L1",
   "given": {
     "tools": [
       {
         "name": "demo_probe",
-        "description": "Детерминированный пробный инструмент для проверки поведения рантайма.",
+        "description": "Purpose: Security probe.\nCall when: verify a security rule.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"case\"})",
         "inputSchema": {
           "type": "object",
           "properties": {
-            "value": {}
-          }
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ]
         },
         "_meta": {
           "dev.agentools/action": {
             "side_effect": "read",
-            "confirmation": "none",
             "permissions_hint": [
               "demo.read"
             ]
           }
         }
       }
-    ]
+    ],
+    "driver_state": {
+      "credentials": [
+        {
+          "kind": "access_token",
+          "source": "trusted_credential",
+          "issuer": "issuer-trusted",
+          "audience": "downstream-api",
+          "integrity": "verified",
+          "principal_id": "user-7",
+          "scopes": [
+            "demo.read"
+          ]
+        }
+      ]
+    }
   },
   "script": [
     {
-      "user_input": "Запись решения не заменяет независимую авторизацию и не дублируется вторым носителем"
+      "user_input": "Выполни security-проверку"
     },
     {
       "llm_stub": {
         "toolCall": {
           "tool": "demo_probe",
           "args": {
-            "value": "reuse-old-decision"
+            "value": "sec-4"
           }
         }
       }
@@ -49,21 +67,16 @@
   "expect": {
     "events": [
       {
-        "kind": "confirmation_resolved",
-        "payload": {
-          "decision": "approve"
-        }
-      },
-      {
         "kind": "action_failed",
         "payload": {
-          "reason": "authorization_required"
+          "reason": "forwarded_access_token",
+          "security_rule": "SEC-4",
+          "stimulus_pointer": "/given/driver_state/credentials/0/audience",
+          "!tool_effect": true
         }
       }
     ],
     "final_state": "failed",
-    "error": {
-      "code": "agentools.permission.confirmation_principal_mismatch"
-    }
+    "tool_calls": []
   }
 }
