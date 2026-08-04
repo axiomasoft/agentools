@@ -10,7 +10,7 @@
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-04 (P3.18 closed: D145 + actionable-description profile.) |
+| Last Updated | 2026-08-04 (P3.19 closed: remediated A2 snapshot and evidence.) |
 | Repository | `~/projects/packages/agentools` (приватный, без remote) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
@@ -200,7 +200,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P0 | История: ревизия `2026-07-draft` (MCP 2025-11-25) — терминальна, не переоткрывается | 7/11 | 🟠 Done with deviations |
 | P1 | **A0** — ре-верификация финала MCP 2026-07-28 + пин коммита и `schema.json` | 3/3 | 🟢 Done |
 | P2 | **A1** — bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
-| P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 18/19 | 🟡 In progress |
+| P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 19/19 | 🟢 Done |
 | P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 8/13 | 🟡 In progress |
 | P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 0/3 | 🔴 Blocked |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
@@ -391,6 +391,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 ## 6. Update Log
 
 | Дата | Кто (role/model) | Что |
+| 2026-08-04 | plan-run/gpt-5-high | P3.19 закрыт: повторный A2 подтвердил согласованный snapshot P3 и не отменяет RED Gate B round 1 — детали см. phases/P3.md P3.19 Completion Notes. |
 | 2026-08-04 | plan-run/gpt-5-high | P3.18 закрыт: D145 вводит измеримый actionable-description без утверждения модельной эффективности — детали см. phases/P3.md P3.18 Completion Notes. |
 | 2026-08-03 | plan-run/gpt-5-high | P3.17 закрыт: D144 сохраняет namespace и закрепляет машинный inventory — детали см. phases/P3.md P3.17 Completion Notes. |
 | 2026-08-03 | plan-design/frontier-high | Gate B RED приземлён реопеном P3/P4: 9 remediation-items до DoR, D141–D143, research §12, workflow W2, roadmap/handoff; 0.20.0 → 0.21.0. |

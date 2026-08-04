@@ -1,38 +1,32 @@
-# HANDOFF — 2026-08-04 — after P3.18
+# HANDOFF — 2026-08-04 — after P3.19
 
-**Next:** ЗАПУСК ВРУЧНУЮ: implementation/high — исполнить повторный терминальный A2 после P3.16–P3.18.
+**Next:** /task:plan-close AGENTOOLS P3
 
 | Параметр | Значение |
 |:--|:--|
 | Model | implementation |
-| Thinking | high — инвариантность производных артефактов |
-| Context | continue (/clear) — ручной item |
-| Суть | Регенерировать rules.json, повторить полный гейт A2 и закрыть P3.19. |
-| Команда | — |
-
-```text
-$ task:plan-run AGENTOOLS P3.19
-```
+| Thinking | low — механическая сверка фазы |
+| Context | NEW SESSION — шаг-не-item |
+| Суть | Сверить P3 по git-фактам и закрыть Phase Handoff. |
+| Команда | `/task:plan-close AGENTOOLS P3` |
 
 **Done:**
-- P3.18 закрыт `🟢`: owner-решение D145 выбрало ветку `measurable`.
-- TLP-2 и обе tool-descriptor schemas требуют actionable-description из назначения, условий вызова, обязательных аргументов и примера.
-- Линтер сверяет published/authoring pattern и исполняет минимальную positive/negative пару; item-коммит `0075336`.
-- Q-27 переведён в `Resolved → D145`; brief refinement не выдаёт структуру за доказательство эффективности модели.
+- P3.19 закрыт `🟢`: rules index и 15 authoring schemas повторно выведены и проверены.
+- Актуальный A2 записан в `artifacts/P3-gate-a2.md`; 399 rules, owner inventory D144 согласован.
+- PASS ограничен формой P3 snapshot и не заявляет GREEN Gate B.
 
 **Remaining:**
-- P3.19 — регенерация производных артефактов и повторный терминальный A2.
-- Затем закрытие P3 и remediation P4 по `roadmap.md`.
+- Закрыть фазу P3 командой из Next.
+- Затем выполнить P4.9 и workflow W2 по `roadmap.md`.
 
 **Sources of truth:**
-- `plans/AGENTOOLS/plan.md` — D145, Routing и Status Board.
-- `plans/AGENTOOLS/phases/P3.md` — P3.18 Completion Notes и ТЗ P3.19.
-- `plans/AGENTOOLS/open-questions.md` — resolved Q-27.
-- `spec/revisions/2026-08/02_tool-contract-profile.md` и `tools/spec_lint.py` — actionable-description contract.
+- `plans/AGENTOOLS/plan.md` — D141–D145, Routing и Status Board.
+- `plans/AGENTOOLS/phases/P3.md` — P3.19 Completion Notes и актуальный статус фазы.
+- `plans/AGENTOOLS/artifacts/P3-gate-a2.md` — воспроизводимый A2 evidence.
 
 **Open risks:**
-- `rules.json` и повторный A2 намеренно принадлежат P3.19; до него remediation P4 не стартует.
-- Q-10/Q-30/Q-31 остаются последующими owner-gates перед freeze/release.
+- RED Gate B round 1 остаётся действующим: P4.9–P4.13 обязательны до нового P5.1.
+- Q-10/Q-30/Q-31 остаются owner-gates перед freeze/release.
 
 **Workarounds/Deferred/Open questions:**
 - workarounds: —
