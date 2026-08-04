@@ -806,3 +806,21 @@ implementation-срез; он обязан сделать заявленный o
 ограниченный W2-only `resume`. Resume восстанавливает author results read-only, затем сохраняет
 обычные review/fix/sequential-close гейты. Чужой dirty path, неполный scope либо красный joined
 gate блокирует запуск без destructive cleanup или неявного solo-fallback.
+
+---
+
+## 2026-08-04 — re-design item P4.10 по фактическому W2-candidate
+
+Владелец запустил `$ task:plan-design AGENTOOLS P4.10`. Заход сохраняет незакоммиченный
+candidate P4.10–P4.12 и не исполняет fixtures; его задача — сделать P4.10 проверяемым после
+того, как read-only сверка показала: structural green допускает broad pairs, фактически
+различающие одно правило при заявленных шести-восьми.
+
+Решение D156: 65 behavior FAIL rules F1/F2/F4 получают по одной single-rule negative/positive
+pair и exact `rule_evidence`; `longop-002/102` остаётся отдельным F2-retained carrier.
+`SEC-17`/`AOB-26` передаются P4.12 как static pairs, потому что runtime-event не доказывает
+запреты на содержимое source/schema ревизии. Exact source inventory D154 и resume D155
+сохраняются; W2 review/fix обязан нормализовать уже собранный candidate без reset/fresh restart.
+Чтобы одна итерация была исполнима, P4.10 author/resume/fix разделён на пять непересекающихся
+file/rule shards (`security`, `confirmation`, `lifecycle`, `audit`, `dialog`); только их полный
+детерминированный aggregate проходит единый cold-start review 65/65.

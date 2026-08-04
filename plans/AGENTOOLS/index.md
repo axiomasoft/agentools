@@ -3,7 +3,7 @@
 Карта файлов плана + провенанс «источник → фаза-потребитель». Не носитель статуса (это
 `plan.md` §4 и `phases/Pn.md`) и не носитель «куда дальше» (это `handoff.md`).
 
-**Обновлён:** 2026-08-04 (P4 W2 DoR-reconcile D154: research §16, exact 27/116, workflow/roadmap/handoff)
+**Обновлён:** 2026-08-04 (P4.15 D157: typed driver-only contract перед W2)
 
 ## Карта директорий
 
@@ -24,7 +24,7 @@
 | `root/contracts/` | долгоживущее (судьба — docs проекта): P5.3 создаёт `package-quality-baseline.md`; P9.2/P10.2 создают интеграционные контракты для чужих планов. Каталог создаётся при первом item'е-владельце |
 | `90_inbox/` | входные материалы 2026-07 (первичный анализ, заметка offline-разрыва) |
 | `00_MASTER_PLAN.md` | дизайн-документ 2026-07-07: миссия, решения D1–D14, архитектура, стек-пины |
-| `workflows/` | `wf-agentools-p4-vectors.js` — исторический W1, повторный запуск запрещён · `wf-agentools-p4-remediation.js` — W2 P4.10–P4.12 после terminal P3/P4.14/P4.9; parallel authoring + sequential high-route close (D143/D154) · `wf-agentools-drive.js` — **устарел** (D23) |
+| `workflows/` | `wf-agentools-p4-vectors.js` — исторический W1, повторный запуск запрещён · `wf-agentools-p4-remediation.js` — W2 P4.10–P4.12 после terminal P3/P4.14/P4.9/P4.15; P4.10 five-shard author/fix + единый exact rule-evidence review D156 + sequential high-route close · `wf-agentools-drive.js` — **устарел** (D23) |
 | `open-questions.md` | спорное/нерешённое с колонкой «Владелец-фаза» (включая Q-30 legal/publication identity и Q-31 authority DR-01 — оба обязательны для P5.3) |
 | `roadmap.md` | исполнительская карта, включая P5.3 и terminal P11. Не переопределяет §3 Routing и не назначает членство в группах — носитель членства колонка `Batch` §3 |
 
@@ -48,6 +48,8 @@
 | `findings/P3-jsonschema-oracle-2026-08.md` | findings | P3 | официальный API `Draft202012Validator`, локальная доступность oracle и вердикт dependency-explicit/fail-closed для schema-values selftest |
 | `research/14-p3-open-enum-fail-closed-2026-08.md` | research | P3, P4 | синтез второго RED-аудита P3: полный branch/keyword shape, Draft 2020-12 mutation-oracle, границы P3.24 и pre-mortem |
 | `research/16-p4-w2-dor-reconcile-2026-08.md` | research | P4, P5 | фактический precheck W2; reconcile headline 32 с exact 27 fixture carriers/116 rules; безопасная граница parallel authoring → sequential high-route close; pre-mortem D154 |
+| `research/17-p4.10-behavior-carrier-dor-2026-08.md` | research | P4.10, P4.12, P4.13 | exact 65 behavior FAIL rules, single-rule pair/id allocation, retained longop carrier, static-transfer SEC-17/AOB-26 и workflow evidence contract D156 |
+| `research/18-p4-driver-contract-remediation-2026-08.md` | research | P4.15, P4.10 | missing typed policy/confirmation/audit inputs, closed contract and W2 predecessor D157 |
 | `research/05-p6-conformance-harness-2026-08.md` | research | P6, P7, P8 | раскладка `conformance/**` и три «единственных носителя»; разбор пробелов скелета и дробление на 9 items; три ветки owner-gate `DR-02` §6 и найденный срок ответа; приземление Q-2/Q-7/Q-8; шесть обязательных отрицательных прогонов против «зелёного на пустом»; построчный разбор критерия оркестрации; pre-mortem фазы |
 | `findings/P6-conformance-recon-2026-07-27.md` | findings | P6, P7, P8 | наблюдаемое состояние репозитория артефактов на `4344265`: пустой `conformance/`, нет remote, нет тегов, пустые `php/`/`dart/`, правила игнорирования (`composer.lock`, `out/`), тулчейн исполнителя, что берётся из прежнего ТЗ раннера в git-истории |
 | `research/04-p5-audit-gate-2026-08.md` | research | P5, P6 | десять дыр, зелёных на машинном гейте A3 (предмет фазы); шесть линз аудита; таксономия находок и правило вердикта GREEN; носитель отчёта и почему это НЕ `plan-audit`; построчный разбор критерия оркестрации; жёсткий порядок шести шагов freeze; состав пакета owner-гейта Q-5/Q-10 |

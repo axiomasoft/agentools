@@ -1,6 +1,6 @@
 # Roadmap исполнения — AGENTOOLS
 
-**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.26.1 · **Следующий исполнимый участок:** resume workflow W2 (P4.10–P4.12). Brain — SSOT; эта копия синхронизирована для работы из репозитория.
+**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.28.0 · **Следующий исполнимый участок:** P4.15, затем resume workflow W2. Brain — SSOT; эта копия синхронизирована для работы из репозитория.
 
 Карта отвечает на «какую команду дальше?» без разбора всего плана. Она **не переопределяет**
 `plan.md` §3 Routing (модели и effort — оттуда), а только группирует запуски и называет гейты
@@ -69,10 +69,11 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | P4.5 | — | — | — | — | **закрыт исторически**; формальный A3 не равен Gate B GREEN |
 | P4.14 | — | — | — | — | **закрыт** `51fc06f`; exact registry/full-definition gate устранил AUDIT-CAP debt F1/F2 до P4.9 |
 | P4.9 | — | — | — | — | **закрыт** `ef80fcd`; driver-state и D145-valid real-byte offline control — общий input W2 |
-| P4.10 | W2 | workflow | implementation/high | — | F1/F2/F4 behavior carriers; scope независим от scenario/static после P4.9 |
+| P4.15 | solo | manual | implementation/high | — | D157: closed policy/confirmation/audit-export driver inputs и selftest; обязательный predecessor W2 |
+| P4.10 | W2 | workflow | implementation/high | — | D156: 65 single-rule behavior pairs + retained longop; пять file-disjoint author/fix shards → единый exact-evidence review |
 | P4.11 | W2 | workflow | implementation/high | — | F5 scenario carriers; отдельные ids/files |
-| P4.12 | W2 | workflow | implementation/high | — | F3/F6/F8 static/checker + CFH-55 test-only `mcp_errors` schema и distinguishing harness pair; потребляет terminal P3/P4.14/P4.9 |
-| P4.13 | solo | `plan-run` | implementation/high | — | terminal A3 + evidence-map exact 27 fixture carriers/116 rules; historical 32 хранится только как provenance D154; после W2, перед Gate B round 2 |
+| P4.12 | W2 | workflow | implementation/high | — | F3/F6/F8 static/checker + D156 static-transfer SEC-17/AOB-26 + CFH-55 distinguishing harness pair |
+| P4.13 | solo | `plan-run` | implementation/high | — | terminal A3 + evidence-map exact 27/116 и D156 partition 65+retained+2 static; historical 32 — provenance |
 | P5.1 | solo | `plan-run` | frontier/xhigh | — | адверсариальный гейт волны: вердикт обязан быть ОДНИМ и когерентным (D59/D61). **Команда — НЕ `task:plan-audit`**: её субъект — фазы плана, а здесь — артефакты ревизии |
 | P5.3 | solo | `plan-run` | frontier/high | ✅ **Q-30, Q-31** | package-quality baseline и reconciliation identity/authority. Выполняется после GREEN P5.1 и ДО freeze; без ответа владельца — `🔴 Blocked` |
 | — | — | — | — | ✅ **Q-5 (домен) + Q-10 (trademark)** | гейт СТОИТ МЕЖДУ items фазы (D64): нет ответа — P5.2 ждёт со строкой `Возобновление:`, ревизия остаётся `draft`; молчание ≠ «да» |
@@ -115,6 +116,18 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 
 ## Готовые launch-block'и групп
 
+### P4.15 — typed driver contract remediation
+
+**Next:** manual: implementation/high
+
+| Параметр | Значение |
+|:--|:--|
+| Model class | implementation |
+| Effort | high — общая schema boundary, от которой зависит весь W2 |
+| Context | cold-start — P4.15 перед сохранённым candidate |
+| Суть | Добавить only driver-only closed inputs policy/confirmation/audit-export и selftest, не меняя candidate. |
+| Команда | `task:plan-run AGENTOOLS P4.15` |
+
 ### W2 — Gate B carrier remediation (P4.10–P4.12)
 
 **Next:** manual: implementation/high
@@ -125,11 +138,11 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | Effort | high — различающая сила contract vectors |
 | Capabilities | `command.subagents`, `command.workflow-carrier` |
 | Context | cold-start — orchestration |
-| Суть | Возобновить W2 candidate: read-only reconstruction → review/fix → последовательное закрытие P4.12→P4.10→P4.11; на чистом дереве carrier сохраняет fresh-authoring. |
+| Суть | Возобновить W2 candidate по D156: пять shards P4.10 → 65 single-rule pairs, static SEC-17/AOB-26, единый exact-evidence review/fix → close P4.12→P4.10→P4.11. |
 | Команда | — |
 
 ```text
-# RESUME D155: dirty-set только P4.10–P4.12, plan files clean, joined fixtures/full lint green
+# RESUME D155/D156/D157: P4.15 terminal; candidate сохраняется; broad pairs нормализуются review/fix, plan files clean
 native orchestration carrier: plans/AGENTOOLS/workflows/wf-agentools-p4-remediation.js
 ```
 
