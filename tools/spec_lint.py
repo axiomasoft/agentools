@@ -597,37 +597,32 @@ def check_enum_single_defs(revision_dir, profile, errors):
             )
 
 
-def _matches_open_enum_branch(branch, value):
-    """Минимальный исполняемый срез формы open-enum.
+OPEN_ENUM_CORE_KEYS = frozenset(("const", "description"))
+OPEN_ENUM_FALLBACK_KEYS = frozenset(("type", "minLength", "pattern", "not", "description"))
+OPEN_ENUM_NOT_FORMS = (frozenset(("enum",)), frozenset(("pattern",)))
 
-    P3.20 намеренно не добавляет JSON Schema validator: для `oneOf`-словаря
-    достаточно проверить const, string, minLength, pattern и not. Если новая
-    ветвь выйдет за этот контракт, selftest откажет по форме, а не станет
-    молчаливо гадать о её семантике.
-    """
-    if not isinstance(branch, dict):
+
+def _matches_open_enum_branch(branch, value):
+    """Исполняет только уже проверенную каноническую форму open-enum ветви."""
+    if "const" in branch:
+        return value == branch["const"]
+    if not isinstance(value, str) or branch.get("type") != "string":
         return False
-    if "const" in branch and value != branch["const"]:
+    if "minLength" in branch and len(value) < branch["minLength"]:
         return False
-    if "enum" in branch and value not in branch["enum"]:
+    if "pattern" in branch and re.search(branch["pattern"], value) is None:
         return False
-    if branch.get("type") == "string" and not isinstance(value, str):
-        return False
-    if "minLength" in branch and (not isinstance(value, str) or len(value) < branch["minLength"]):
-        return False
-    if "pattern" in branch:
-        if not isinstance(value, str) or re.search(branch["pattern"], value) is None:
-            return False
-    if "not" in branch and _matches_open_enum_branch(branch["not"], value):
-        return False
-    return True
+    not_node = branch.get("not", {})
+    if "enum" in not_node:
+        return value not in not_node["enum"]
+    return "pattern" not in not_node or re.search(not_node["pattern"], value) is None
 
 
 def _open_string_definitions(revision_dir, errors):
-    """Возвращает расширяемые string `$defs` опубликованных схем.
+    """Возвращает кандидаты extensible string `$defs` с полным исходным `oneOf`.
 
-    Производные authoring-схемы не второй источник: P3.20 проверяет published
-    источник, а `close_schema.py --check` доказывает точное наследование.
+    Производные authoring-схемы не второй источник: published-схемы проверяет
+    этот gate, а `close_schema.py --check` доказывает точное наследование.
     """
     schema_dir = revision_dir / "schema"
     for schema_file in sorted(schema_dir.glob("*.json")):
@@ -636,71 +631,89 @@ def _open_string_definitions(revision_dir, errors):
             continue
         for path, definition in iter_schema_nodes(data):
             parts = path.split("/")
-            if len(parts) < 2 or parts[-2] != "$defs":
-                continue
-            name = parts[-1]
-            if not isinstance(definition, dict):
+            if len(parts) < 2 or parts[-2] != "$defs" or not isinstance(definition, dict):
                 continue
             variants = definition.get("oneOf")
             if not isinstance(variants, list):
                 continue
-            core = [branch for branch in variants if isinstance(branch, dict) and isinstance(branch.get("const"), str)]
-            fallback = [
-                branch for branch in variants
-                if isinstance(branch, dict) and branch.get("type") == "string" and "const" not in branch
-            ]
-            if core or fallback:
+            has_string_core = any(isinstance(branch, dict) and isinstance(branch.get("const"), str) for branch in variants)
+            has_string_fallback = any(
+                isinstance(branch, dict) and branch.get("type") == "string" and "const" not in branch
+                for branch in variants
+            )
+            if has_string_core or has_string_fallback:
                 pointer = "#" + path.removeprefix("<root>")
-                yield schema_file, pointer, name, core, fallback
+                yield schema_file, pointer, parts[-1], variants
 
 
-def _check_open_string_definition(schema_file, pointer, name, core_branches, fallbacks, errors):
+def _check_open_string_definition(schema_file, pointer, name, variants, errors):
+    """Fail-closed классифицирует каждую исходную ветвь канона D147."""
     location = f"{schema_file}{pointer}"
+    core_branches = []
+    fallbacks = []
+    for index, branch in enumerate(variants):
+        branch_location = f"{location}/oneOf/{index}"
+        if not isinstance(branch, dict):
+            errors.append(f"{branch_location}: branch обязан быть object, получено {type(branch).__name__}")
+            continue
+        if "const" in branch:
+            if not isinstance(branch["const"], str):
+                errors.append(f"{branch_location}: core const обязан быть string")
+                continue
+            unknown = sorted(set(branch) - OPEN_ENUM_CORE_KEYS)
+            if unknown:
+                errors.append(f"{branch_location}: core branch содержит неизвестные keywords: {', '.join(unknown)}")
+                continue
+            if not isinstance(branch.get("description"), str):
+                errors.append(f"{branch_location}: core branch обязан иметь string description")
+                continue
+            core_branches.append(branch)
+            continue
+
+        if branch.get("type") != "string":
+            errors.append(f"{branch_location}: non-string branch вне канонического open-enum shape")
+            continue
+        unknown = sorted(set(branch) - OPEN_ENUM_FALLBACK_KEYS)
+        if unknown:
+            errors.append(f"{branch_location}: fallback содержит неизвестные keywords: {', '.join(unknown)}")
+            continue
+        if not isinstance(branch.get("description"), str):
+            errors.append(f"{branch_location}: fallback обязан иметь string description")
+        if "minLength" in branch and (isinstance(branch["minLength"], bool) or not isinstance(branch["minLength"], int) or branch["minLength"] < 1):
+            errors.append(f"{branch_location}: fallback minLength обязан быть integer >= 1")
+        if "pattern" in branch and not isinstance(branch["pattern"], str):
+            errors.append(f"{branch_location}: fallback pattern обязан быть string")
+        if "not" in branch:
+            not_node = branch["not"]
+            if not isinstance(not_node, dict) or frozenset(not_node) not in OPEN_ENUM_NOT_FORMS:
+                errors.append(f"{branch_location}/not: разрешена только форма not.enum или not.pattern")
+            elif "enum" in not_node and (not isinstance(not_node["enum"], list) or not all(isinstance(value, str) for value in not_node["enum"])):
+                errors.append(f"{branch_location}/not/enum: обязан быть списком string core-значений")
+            elif "pattern" in not_node and not isinstance(not_node["pattern"], str):
+                errors.append(f"{branch_location}/not/pattern: обязан быть string")
+        if "pattern" not in branch and "not" not in branch:
+            errors.append(f"{branch_location}: fallback обязан ограничиваться pattern либо not.enum")
+        fallbacks.append(branch)
+
     core_values = [branch["const"] for branch in core_branches]
-    if not core_values or len(fallbacks) != 1:
-        errors.append(
-            f"{location}: extensible string $defs обязан иметь core const-ветви и ровно один string fallback"
-        )
-        return
-    if len(set(core_values)) != len(core_values):
+    if not core_values:
+        errors.append(f"{location}: extensible string $defs обязан иметь string core const-ветви")
+    elif len(set(core_values)) != len(core_values):
         errors.append(f"{location}: core const-значения повторяются: {core_values}")
-        return
+    if len(fallbacks) != 1:
+        errors.append(f"{location}: extensible string $defs обязан иметь ровно один string fallback, найдено {len(fallbacks)}")
+    elif core_values and isinstance(fallbacks[0].get("not"), dict) and "enum" in fallbacks[0]["not"]:
+        excluded = fallbacks[0]["not"]["enum"]
+        if excluded != core_values:
+            errors.append(f"{location}: fallback not.enum обязан в точности повторять core-набор в его порядке")
 
-    fallback = fallbacks[0]
-    # Свободная строковая ветвь пересекалась с каждым const до P3.20. Pattern-
-    # fallback'и сами исключают short core-слова, но свободный fallback обязан
-    # объявить точный запрет явно — это канон D147.
-    if "pattern" not in fallback:
-        excluded = fallback.get("not", {}).get("enum") if isinstance(fallback.get("not"), dict) else None
-        if not isinstance(excluded, list) or set(excluded) != set(core_values) or len(excluded) != len(core_values):
-            errors.append(
-                f"{location}: свободный string fallback обязан исключать точный core-набор через not.enum"
-            )
-
-    for value in core_values:
-        matches = [branch for branch in core_branches + [fallback] if _matches_open_enum_branch(branch, value)]
-        if len(matches) != 1:
-            errors.append(
-                f"{location}: core {value!r} проходит {len(matches)} ветви oneOf, ожидалась ровно одна"
-            )
-
-    vendor_candidates = ("crm.custom", "crm.custom.value", "vendor.extension", "vendor.extension.value")
-    vendor = next(
-        (candidate for candidate in vendor_candidates
-         if _matches_open_enum_branch(fallback, candidate)
-         and not any(_matches_open_enum_branch(branch, candidate) for branch in core_branches)),
-        None,
-    )
-    if vendor is None:
-        errors.append(f"{location}: fallback не принимает ни один канонический vendor probe")
-    if any(_matches_open_enum_branch(branch, "") for branch in core_branches + [fallback]):
-        errors.append(f"{location}: пустая строка не должна проходить ни одну ветвь oneOf")
+    return core_branches, fallbacks
 
 
 def check_open_enum_contracts(revision_dir, errors):
-    """Проверяет непересечение всех расширяемых string `$defs` ревизии."""
-    for schema_file, pointer, name, core_branches, fallbacks in _open_string_definitions(revision_dir, errors):
-        _check_open_string_definition(schema_file, pointer, name, core_branches, fallbacks, errors)
+    """Fail-closed проверяет полный shape каждого extensible string `$defs`."""
+    for schema_file, pointer, name, variants in _open_string_definitions(revision_dir, errors):
+        _check_open_string_definition(schema_file, pointer, name, variants, errors)
 
 
 LIFECYCLE_EVENT_LIST_PREFIX = "**Виды событий.** "
@@ -749,7 +762,11 @@ def event_kind_schema_names(definitions, errors):
     if len(entries) != 1:
         errors.append(f"schema-values: $defs.EventKind должен быть найден ровно в одной published schema, найдено {len(entries)}")
         return None
-    return {branch["const"] for branch in entries[0][3]}
+    return {
+        branch["const"]
+        for branch in entries[0][3]
+        if isinstance(branch, dict) and isinstance(branch.get("const"), str)
+    }
 
 
 def check_lifecycle_event_contract(revision_dir, errors, definitions=None):
@@ -770,7 +787,7 @@ def check_lifecycle_event_contract(revision_dir, errors, definitions=None):
 
 
 def run_schema_values_selftest(revision_dir):
-    """Адресный positive/negative selftest P3.20/P3.21 без внешних зависимостей."""
+    """Адресный Draft 2020-12 selftest P3.24 с явной test-зависимостью."""
     if not revision_dir.is_dir():
         print(f"Ошибка: {revision_dir} не является директорией", file=sys.stderr)
         return 2
@@ -779,44 +796,104 @@ def run_schema_values_selftest(revision_dir):
     except KeyError as exc:
         print(f"Ошибка: {exc}", file=sys.stderr)
         return 2
+    try:
+        from jsonschema import Draft202012Validator
+    except ImportError:
+        print("Ошибка: prerequisite python-jsonschema (Draft202012Validator) недоступен", file=sys.stderr)
+        return 2
 
     errors = []
     definitions = list(_open_string_definitions(revision_dir, errors))
-    for schema_file, pointer, name, core_branches, fallbacks in definitions:
-        _check_open_string_definition(schema_file, pointer, name, core_branches, fallbacks, errors)
+    checked = []
+    for schema_file, pointer, name, variants in definitions:
+        core_branches, fallbacks = _check_open_string_definition(schema_file, pointer, name, variants, errors)
+        checked.append((schema_file, pointer, name, variants, core_branches, fallbacks))
 
     required = {"ResultType", "StatusChannel", "TaskStatus"}
-    found = {name for _, _, name, _, _ in definitions}
+    found = {name for _, _, name, _ in definitions}
     missing = sorted(required - found)
     if missing:
         errors.append(f"schema-values selftest: отсутствуют regression $defs: {', '.join(missing)}")
 
     check_lifecycle_event_contract(revision_dir, errors, definitions)
 
-    # Отрицательная проба должна падать именно на прежнем классе дефекта: убираем
-    # not из копии fallback ResultType и ожидаем адресную диагностику oneOf.
-    result_type = next((entry for entry in definitions if entry[2] == "ResultType"), None)
-    if result_type is not None and len(result_type[4]) == 1:
-        schema_file, pointer, name, core_branches, fallbacks = result_type
-        broken_fallback = json.loads(json.dumps(fallbacks[0], ensure_ascii=False))
-        broken_fallback.pop("not", None)
-        negative_errors = []
-        _check_open_string_definition(schema_file, pointer, name, core_branches, [broken_fallback], negative_errors)
-        if not negative_errors:
-            errors.append("schema-values selftest: negative fallback probe не был отклонён")
+    for schema_file, pointer, name, variants, core_branches, fallbacks in checked:
+        if not core_branches or len(fallbacks) != 1:
+            continue
+        try:
+            Draft202012Validator.check_schema({"oneOf": variants})
+            validator = Draft202012Validator({"oneOf": variants})
+        except Exception as exc:
+            errors.append(f"{schema_file}{pointer}: Draft202012Validator не принял schema ({exc})")
+            continue
+        core_values = [branch["const"] for branch in core_branches]
+        if any(not validator.is_valid(value) for value in core_values):
+            errors.append(f"{schema_file}{pointer}: oracle отверг core probe")
+        vendor_candidates = ("crm.custom", "crm.custom.value", "vendor.extension", "vendor.extension.value")
+        vendor = next((candidate for candidate in vendor_candidates if validator.is_valid(candidate)), None)
+        if vendor is None:
+            errors.append(f"{schema_file}{pointer}: oracle не принял ни один vendor probe")
+        if validator.is_valid(""):
+            errors.append(f"{schema_file}{pointer}: oracle принял пустую строку")
+        if not errors:
+            print(f"schema values: {name}: core accepted, vendor accepted, empty rejected")
+
+    # Две мутации из F1 обязаны иметь независимые вердикты: Draft 2020-12
+    # показывает изменённую семантику, а structural gate отвергает сам shape.
+    result_type = next((entry for entry in checked if entry[2] == "ResultType"), None)
+    if result_type is None:
+        errors.append("schema-values selftest: не найден $defs.ResultType для mutation probes")
     else:
-        errors.append("schema-values selftest: не найден однозначный fallback ResultType для negative probe")
+        schema_file, pointer, name, variants, _, _ = result_type
+        max_length_variants = json.loads(json.dumps(variants, ensure_ascii=False))
+        max_length_fallback = next(
+            (branch for branch in max_length_variants if isinstance(branch, dict) and branch.get("type") == "string" and "const" not in branch),
+            None,
+        )
+        if max_length_fallback is None:
+            errors.append("schema-values selftest: не найден fallback ResultType для maxLength mutation")
+        else:
+            max_length_fallback["maxLength"] = 1
+            structural_errors = []
+            _check_open_string_definition(schema_file, pointer, name, max_length_variants, structural_errors)
+            oracle_rejects_vendor = not Draft202012Validator({"oneOf": max_length_variants}).is_valid("vendor.extension")
+            if not oracle_rejects_vendor:
+                errors.append("schema-values selftest: maxLength mutation oracle принял vendor.extension")
+            if not structural_errors:
+                errors.append("schema-values selftest: maxLength mutation structural gate не отклонил")
+            if oracle_rejects_vendor and structural_errors:
+                print("schema values mutation maxLength: oracle vendor reject; structural reject")
+
+        integer_variants = json.loads(json.dumps(variants, ensure_ascii=False))
+        integer_variants.append({"type": "integer"})
+        structural_errors = []
+        _check_open_string_definition(schema_file, pointer, name, integer_variants, structural_errors)
+        oracle_accepts_integer = Draft202012Validator({"oneOf": integer_variants}).is_valid(7)
+        if not oracle_accepts_integer:
+            errors.append("schema-values selftest: extra integer branch oracle отверг 7")
+        if not structural_errors:
+            errors.append("schema-values selftest: extra integer branch structural gate не отклонил")
+        if oracle_accepts_integer and structural_errors:
+            print("schema values mutation extra integer branch: oracle integer accept; structural reject")
 
     event_kind = next((entry for entry in definitions if entry[2] == "EventKind"), None)
     if event_kind is None:
         errors.append("schema-values selftest: не найден $defs.EventKind для negative probe")
     else:
-        schema_file, pointer, name, core_branches, fallbacks = event_kind
-        broken_core = [branch for branch in core_branches if branch.get("const") != "task_bound"]
+        schema_file, pointer, name, variants = event_kind
+        broken_core = [
+            branch for branch in variants
+            if not (isinstance(branch, dict) and branch.get("const") == "task_bound")
+        ]
         negative_errors = []
         markdown_names = lifecycle_markdown_event_names(revision_dir, negative_errors)
         if markdown_names is not None:
-            missing_in_schema = sorted(markdown_names - {branch["const"] for branch in broken_core})
+            missing_in_schema = sorted(
+                markdown_names - {
+                    branch["const"] for branch in broken_core
+                    if isinstance(branch, dict) and isinstance(branch.get("const"), str)
+                }
+            )
             if missing_in_schema:
                 negative_errors.append(
                     f"lifecycle EventKind missing_in_schema: {', '.join(missing_in_schema)}"
