@@ -26,12 +26,12 @@ const WAVE = [
   {
     id: 'P4.10',
     subject: 'F1/F2/F4 — security/lifecycle/confirmation/clarification/longop/audit behavior carriers',
-    files: 'fixtures/2026-08/vectors/{l1,l2,l3}/**',
+    files: 'fixtures/2026-08/vectors/l1/{security,confpolicy,conftoken,lifecycleconcurrency,lifecyclefold,profileuntrusted}-*.json · fixtures/2026-08/vectors/l2/{clarificationstate,longop}-*.json · fixtures/2026-08/vectors/l3/{audit,confdual,lifecycleintegrity}-*.json',
   },
   {
     id: 'P4.11',
     subject: 'F5 — parse/order/host-code/AST-limit scenario carriers',
-    files: 'fixtures/2026-08/vectors/l2/**',
+    files: 'fixtures/2026-08/vectors/l2/{scnorder-002,scnnocode-003,scenario-004,scnforward-013,scnhostcode-014,scnlimit-015}.json',
   },
   {
     id: 'P4.12',
