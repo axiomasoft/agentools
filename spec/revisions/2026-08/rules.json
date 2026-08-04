@@ -3193,6 +3193,14 @@
       "level": "L1",
       "not_testable": null,
       "text_digest": "88329164e5c5755d4658ebf6e948028649de5161a03cffa4832f5356d4b3b2a1"
+    },
+    {
+      "rule_id": "CFH-55",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "4b707d6d2a5a6d2a4c97c6599ffa53701ad9c559a712ff8c4b294b423e5c9eb3"
     }
   ]
 }
