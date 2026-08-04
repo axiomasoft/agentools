@@ -10,7 +10,7 @@
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-04 (P4.13 closed: relation-aware evidence-map and formal A3 reissued.) |
+| Last Updated | 2026-08-04 (P4 closed: 15/15 🟢; formal A3 reissued, semantic Gate B remains P5.1.) |
 | Repository | `~/projects/packages/agentools` (приватный, без remote) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
@@ -411,6 +411,8 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | D160 | 2026-08-04 | **AgenTools — greenfield-пакет: промежуточные draft-fixtures не являются legacy API. P4.10 снова реопенится и нормализует `audit-004/104` против текущей AOB-25: tool description одинакова, единственный input-counterfactual — independently versioned `audit_export.mapping_version`.** Supersedes D156 только в неявном требовании сохранять байты уже собранного candidate, когда они противоречат различающей силе pair; exact 65 single-rule pairs и D159 exact-one predicate сохраняются. **Consequences:** платим ещё одним узким source+bookkeeping циклом и откладываем P4.13; взамен не заводим legacy/migration слой в невыпущенном пакете и убираем ложную вторую причину исхода. | Директива владельца 2026-08-04 «пакет с нуля создаётся»; `research/21-p4.10-greenfield-aob25-repair-2026-08.md`; фактический diff `audit-004/104`; `08_audit-observability.md` AOB-25. `RAG:— (repo-grounded)` |
 
 ## 6. Update Log
+
+| 2026-08-04 | P4 закрыта: 15/15 🟢; P4.13 evidence-map подтвердил formal A3 (27 carriers/116 FAIL rules). Semantic Gate B остаётся предметом fresh P5.1 round 2. |
 
 | Дата | Кто (role/model) | Что |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.13 (`2ffff1c`) closed: relation-aware 27/116 evidence-map, real mutation rejects and formal A3; P4 is ready to close. |
