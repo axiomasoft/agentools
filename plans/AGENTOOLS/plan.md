@@ -210,7 +210,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P1 | **A0** — ре-верификация финала MCP 2026-07-28 + пин коммита и `schema.json` | 3/3 | 🟢 Done |
 | P2 | **A1** — bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
 | P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/25 | 🟠 Done with deviations |
-| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 16/19 | 🟡 In progress |
+| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 17/19 | 🟡 In progress |
 | P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 0/3 | 🔴 Blocked |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | 🟡 In progress |
@@ -424,6 +424,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 
 | Дата | Кто (role/model) | Что |
 |:--|:--|:--|
+| 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.17 (`8ca0a8e`) closed: exact 38 behavior pairs, 76 schema-valid members, 38/38 self-report mutants rejected, banned shortcuts 0. |
 | 2026-08-04 | plan-design/frontier-high | P4.17 Files исправлен `l1/lifecycleintegrity` → фактический `l3/lifecycleintegrity`; scope exact 38 не менялся; 0.33.2 → 0.33.3. |
 | 2026-08-04 | plan-design/frontier-high | D166 дополнил P4.17 raw observation inputs (`args_subset`, baggage classification), чтобы F11/F13 не вернулись как magic carriers; 0.33.1 → 0.33.2. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.16 (`118c6ba`) closed: 5 closed harness observations, exact shortcut registry and schema-valid self-report mutation rejects; next P4.17. |
