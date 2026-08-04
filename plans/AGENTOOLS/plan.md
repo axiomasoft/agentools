@@ -6,11 +6,11 @@
 |:--|:--|
 | Plan ID | AGENTOOLS |
 | Title | AgenTools: ревизия спеки `2026-08` (modern-only, MCP 2026-07-28) + conformance + PHP/Dart SDK + срезы CRM/ERP |
-| Version | 0.28.1 |
+| Version | 0.29.0 |
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-04 (P4.15 closed at 8919b92; W2 resume candidate is again the sole dirty scope.) |
+| Last Updated | 2026-08-04 (W2 closed P4.12/P4.10/P4.11 at e50bb5e/7a3840b/0581400; P4.13 is next.) |
 | Repository | `~/projects/packages/agentools` (приватный, без remote) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
@@ -207,7 +207,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P1 | **A0** — ре-верификация финала MCP 2026-07-28 + пин коммита и `schema.json` | 3/3 | 🟢 Done |
 | P2 | **A1** — bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
 | P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/24 | 🟠 Done with deviations |
-| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 11/15 | 🟡 In progress |
+| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 14/15 | 🟡 In progress |
 | P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 0/3 | 🔴 Blocked |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | ⬜ Not started |
@@ -409,6 +409,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 ## 6. Update Log
 
 | Дата | Кто (role/model) | Что |
+| 2026-08-04 | implementation/high | W2 closed P4.12 (`e50bb5e`), P4.10 (`7a3840b`) and P4.11 (`0581400`): full lint green, P4.10 exact 65/65; next solo P4.13. 0.28.1 → 0.29.0. |
 | 2026-08-04 | implementation/high | P4.15 (`8919b92`) closed: closed policy/confirmation/audit-export driver inputs and 12-section offline selftest; next resume W2. 0.28.0 → 0.28.1. |
 | 2026-08-04 | plan-design/frontier-high | D157 добавил P4.15: typed driver-only inputs становятся явным predecessor W2; 0.27.0 → 0.28.0. |
 | 2026-08-04 | plan-design/frontier-high | P4.10 доведён до DoR: D156 вводит 65 single-rule pairs/exact evidence и передаёт SEC-17/AOB-26 в P4.12; 0.26.1 → 0.27.0. |
