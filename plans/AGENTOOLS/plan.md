@@ -6,11 +6,11 @@
 |:--|:--|
 | Plan ID | AGENTOOLS |
 | Title | AgenTools: ревизия спеки `2026-08` (modern-only, MCP 2026-07-28) + conformance + PHP/Dart SDK + срезы CRM/ERP |
-| Version | 0.33.0 |
+| Version | 0.33.1 |
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-04 (owner выбрал observational remediation; P3/P4 адресно реопенены.) |
+| Last Updated | 2026-08-04 (P3.25 skip D165; исполнимая remediation продолжается P4.16.) |
 | Repository | `~/projects/packages/agentools` (приватный, без remote) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
@@ -209,7 +209,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P0 | История: ревизия `2026-07-draft` (MCP 2025-11-25) — терминальна, не переоткрывается | 7/11 | 🟠 Done with deviations |
 | P1 | **A0** — ре-верификация финала MCP 2026-07-28 + пин коммита и `schema.json` | 3/3 | 🟢 Done |
 | P2 | **A1** — bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
-| P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/25 | 🟡 In progress |
+| P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/25 | 🟠 Done with deviations |
 | P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 15/19 | 🟡 In progress |
 | P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 0/3 | 🔴 Blocked |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
@@ -415,6 +415,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | D162 | 2026-08-04 | **Observational evidence принадлежит harness, а не SUT event payload.** Разрешены пять закрытых классов: tool/credential boundary spy, journal projection, audit sink, task binding; artifact checker вычисляет verdict из raw candidate/reference. Поля `projection_source`, `write_back_upcast`, `source_of_truth`, `hash_input_includes_prev_hash`, `chain_valid`, SUT-payload `execution_route`, `reject_passing_entries`, `grease_allowed` и magic carrier/type strings запрещены exact gate'ом. **Consequences:** часть fixtures становится подробнее и P6 runner обязан реализовать harness-owned probes; взамен мутант не проходит, просто напечатав правильный payload. | Gate B F9–F15; `research/22-p5-round2-observational-remediation-2026-08.md` §2. `RAG:— (repo-grounded)` |
 | D163 | 2026-08-04 | **F16 синхронизируется без ложного terminal status:** P7.1–P7.10 переводятся `Not started` → `In progress` с anchors `b11cf41`…`e232fc5`; прежний route исполнителей неизвестен и не выдумывается, штатный terminal reconcile остаётся фазе P7.** На текущем дереве PHPUnit 65/65 и PHPStan 0 errors — evidence существования, не write-site closure. **Consequences:** Status Board всё ещё показывает 0 terminal items, но новый executor видит committed partial/implemented scope и не перезаписывает его; позднее потребуется честная реконсиляция каждого item'а. | Gate B F16; git history; `research/22-p5-round2-observational-remediation-2026-08.md` §4. `RAG:— (repo-grounded)` |
 | D164 | 2026-08-04 | **F17/Q-28 resolved: ревизия `2026-08` нормирует отмену только на уровне действия; scenario-run cancellation не нормируется и outcome `CANCELLED` не вводится.** Ратифицируется существующая норма LOP-26, normative bytes не меняются. **Consequences:** отменённый шаг не получает придуманного маршрута SCN-6; расширение возможно только новой датированной ревизией. | Owner decision 2026-08-04; `07_long-operations.md` LOP-26; `open-questions.md` Q-28. `RAG:— (owner decision + repo-grounded)` |
+| D165 | 2026-08-04 | **P3.25 пропущен по решению: Task Contract fail-closed вернул `LOOP_BUDGET_EXCEEDED`, а F17 уже полностью разрешён D164/Q-28 на неизменном LOP-26. Обход компилятора запрещён; исполнимая remediation остаётся P4.16–P4.19.** **Consequences:** отдельный evidence-файл P3.25 не создаётся, P3 сохраняет исторический `🟠`; source truth восстанавливается прямой трассировкой D164→Q-28→LOP-26. | Pre-mutation result P3.25 `block:LOOP_BUDGET_EXCEEDED`; owner directive не разрешает нарушать machine gate. `RAG:— (repo-grounded)` |
 
 ## 6. Update Log
 
@@ -422,6 +423,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 
 | Дата | Кто (role/model) | Что |
 |:--|:--|:--|
+| 2026-08-04 | plan-design/frontier-high | P3.25 ⛔ D165: compiler audit-cap не обходится; F17 остаётся resolved D164/Q-28 без normative diff, следующий исполнимый item P4.16; 0.33.0 → 0.33.1. |
 | 2026-08-04 | plan-design/frontier-high | Owner remediation D161–D164: P3/P4 реопенены для P3.25/P4.16–P4.19; exact 51 observational carriers, F16 truth-sync и F17/Q-28 resolution доведены до DoR; 0.32.0 → 0.33.0. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-xhigh | P5.1 round 2 (`633d2e8`) = RED: formal gates green, semantic 332/383 PASS и 51 FAIL; лимит аудита исчерпан, следующий шаг — owner-gate, не design. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.13 (`2ffff1c`) closed: relation-aware 27/116 evidence-map, real mutation rejects and formal A3; P4 is ready to close. |

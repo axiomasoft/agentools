@@ -1,6 +1,6 @@
 # Roadmap исполнения — AGENTOOLS
 
-**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.33.0 · **Следующий исполнимый участок:** solo P3.25 owner reconciliation D164. Репозиторная копия — исполнимый SSOT этой сессии.
+**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.33.1 · **Следующий исполнимый участок:** solo P4.16 observational contract. Репозиторная копия — исполнимый SSOT этой сессии.
 
 Карта отвечает на «какую команду дальше?» без разбора всего плана. Она **не переопределяет**
 `plan.md` §3 Routing (модели и effort — оттуда), а только группирует запуски и называет гейты
@@ -61,7 +61,7 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | P3.22 | solo | `plan-run` | implementation/high | — | source + `rules.json`: `CFH-55`, шесть терминов OVR-25, exact gap `[CFH-55 → P4.12]`; fixtures не трогает |
 | P3.23 | solo | `plan-run` | implementation/high | — | terminal authoring A2: schema-values evidence F1–F5 + честный coverage debt D149, без full-coverage claim |
 | P3.24 | solo | `plan-run` | implementation/high | — | fail-closed schema-values checker: полный shape + Draft 2020-12 oracle + две обязательные мутации; нормативные schemas не меняет |
-| P3.25 | solo | `plan-run` | frontier/high | ✅ D164 | immutable evidence: Q-28 resolved на существующей LOP-26 boundary, normative bytes не меняются |
+| P3.25 | — | — | — | D165 | ⛔ skipped: compiler `LOOP_BUDGET_EXCEEDED`; owner truth уже несут D164/Q-28/LOP-26 |
 | P4.1 | — | — | — | — | **закрыт**; формат корпуса уже заморожен |
 | P4.6 | — | — | — | — | **закрыт**; must-ignore калиброван фактом |
 | P4.2 | — | — | — | — | **закрыт**; повторный запуск W1 не должен перезаписывать его артефакты |
@@ -124,23 +124,23 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 
 ## Готовые launch-block'и групп
 
-### P3.25 — owner reconciliation D164/Q-28
+### P4.16 — observational contract D162
 
-**Next:** «ЗАПУСК ВРУЧНУЮ: `frontier/high`»
+**Next:** «ЗАПУСК ВРУЧНУЮ: `implementation/high`»
 
 | Параметр | Значение |
 |:--|:--|
-| Model class | frontier |
-| Effort | high — owner decision reconciliation |
+| Model class | implementation |
+| Effort | high — observational ownership gate |
 | Capabilities | — |
 | Context | continue (reset the session context) — ручной item |
-| Суть | Выпустить immutable evidence совпадения D164/Q-28 с LOP-26 без изменения normative bytes. |
+| Суть | Ввести harness-owned observation schema и anti-self-report mutation selftest. |
 | Команда | — |
 
 ```text
-# select the session model class frontier
+# select the session model class implementation
 # select the session effort high
-$ task:plan-run AGENTOOLS P3.25
+$ task:plan-run AGENTOOLS P4.16
 ```
 
 ### B1 — фаза P1 (A0): пин финала MCP, дельта-таблица, реконсиляция `DR-01`
