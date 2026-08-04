@@ -106,7 +106,7 @@ P3.14, `phases/P3.md`.
 
 ## Вердикт
 
-**ГЕЙТ A2: PASS**
+**ГЕЙТ A2 (исторический, P3.14): PASS**
 
 ## Амендмент P4.4 — 2026-08-03
 
@@ -122,5 +122,36 @@ P4.4 повторный прогон выполнен на item-коммите `
 | Целостность fixtures | `python3 tools/spec_lint.py --fixtures-check fixtures/2026-08` | `spec_lint: OK`, exit 0 | 🟢 |
 
 Числа на `4d86009`: всего 399 правил; L1/L2/L3 = 274/83/42; `MUST*` = 388. Профиль
-сохраняет **ГЕЙТ A2: PASS**; проверка и фактические приговоры новых artifact-векторов принадлежат
+сохраняет исторический PASS P3.14; проверка и фактические приговоры новых artifact-векторов принадлежат
 P4.5 и этим амендментом не заявляются.
+
+## P3.19 — повторный терминальный прогон после D141 (2026-08-04)
+
+P3 реопенена решением D141 после RED Gate B round 1. Этот раздел — актуальный A2: он
+проверяет форму и свежесть нормативного snapshot после P3.16–P3.18, но **не** утверждает
+содержательный GREEN Gate B; предметные remediation-векторы и новый A3 остаются за P4.9–P4.13.
+Якорь производного snapshot: item-коммит `6d790fa`
+(`chore(spec): regenerate P3 derived rules index (P3.19)`).
+
+| # | Условие | Команда | Результат | Статус |
+|:--|:--|:--|:--|:--|
+| 1 | Полный линтер ревизии без ослабляющих флагов | `python3 tools/spec_lint.py spec/revisions/2026-08` | `spec_lint: OK` (5 известных предупреждений о SHOULD-векторах) | 🟢 |
+| 2 | `rules.json` детерминирован и свеж | `python3 tools/rules_index.py --write spec/revisions/2026-08 && python3 tools/rules_index.py --check spec/revisions/2026-08` | `rules_index: OK, расхождений нет (399 правил)` | 🟢 |
+| 3 | Закрытые authoring schemas заново выведены и свежи | `python3 tools/close_schema.py --write spec/revisions/2026-08 && python3 tools/close_schema.py --check spec/revisions/2026-08` | `close_schema: OK (сверено схем: 15)` | 🟢 |
+| 4 | Уровни и идентификаторы индекса корректны | Python-проверка `level`/unique `rule_id` | 0 записей вне L1/L2/L3; 0 дубликатов | 🟢 |
+| 5 | Легаси-лексика остаётся огороженной | `python3 tools/spec_lint.py --legacy-check spec/revisions/2026-08` | `spec_lint: OK (--legacy-check, 2026-08)` | 🟢 |
+| 6 | Owner-ветка D144 воспроизводима | `python3 tools/spec_lint.py --namespace-inventory spec/revisions/2026-08` | `agentools.dev`: 32 файла; `dev.agentools`: 6; combined: 35, `matches_expected: true` | 🟢 |
+| 7 | Граница Gate B не подменена формальным PASS | сверка P3.19 Scope Excluded с D141/D143 и отчётом Gate B F1/F7/F8 | Gate B round 2 не запускался; P4 remediation остаётся prerequisite | 🟢 |
+
+Числа на `6d790fa`, полученные из `rules.json`: всего 399 правил; L1/L2/L3 =
+274/83/42; `MUST`/`MUST NOT`/`SHOULD`/`MAY` = 273/115/5/6; 6 правил имеют
+`not_testable` с причиной; документов — 12. Раскладка по документам: `00` 27 · `01` 17 ·
+`02` 34 · `03` 37 · `04` 41 · `05` 21 · `06` 30 · `07` 27 · `08` 44 · `09` 48 ·
+`10` 19 · `11` 54.
+
+## Вердикт P3.19
+
+**ГЕЙТ A2: PASS**
+
+PASS означает только согласованность и проверяемую форму snapshot P3. Он не отменяет RED
+Gate B round 1 и не разрешает P5.1 round 2 до завершения P4.9–P4.13.
