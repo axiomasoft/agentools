@@ -1,9 +1,29 @@
-# php/
+# AgenTools PHP SDK
 
-PHP SDK — пакет `agentools/sdk` (composer), namespace `AgenTools\`, PHP ≥8.3.
-Тонкая библиотека контрактов, FSM, confirmation-движка, scenario-runner'а,
-idempotency/audit — без привязки к Laravel; интеграция в `corex/ai` живёт в
-репозитории Flex, не здесь.
+`agentools/sdk` — Composer-пакет с namespace `AgenTools\` для реализации
+протокола AgenTools revision `2026-08`. Минимальная версия PHP — 8.3.
 
-Реализация — фаза P2 плана `plans/AGENTOOLS` в vault `academici/brain`.
-До фазы P2 этот README — placeholder.
+Это тонкая библиотека контрактов, валидаторов и детерминированных примитивов;
+она не является Laravel-интеграцией, вторым агентным runtime или эталонным
+conformance-адаптером. Интеграцию с `corex/ai` реализует потребляющий контур.
+
+## Зависимости и качество
+
+Пакет фиксирует lockfile в репозитории, чтобы локальные и CI-прогоны использовали
+одни и те же версии. Зависимости намеренно ограничены линиями, совместимыми с
+объявленным PHP 8.3: `opis/json-schema:^2.6`, `symfony/uid:^7.4` и
+`mmccook/php-json-canonicalization-scheme:^1.0`; QA использует
+`phpunit/phpunit:^12` и `phpstan/phpstan:^2.2`.
+
+Локальная версия PHP может быть новее 8.3, поэтому зелёный прогон сам по себе не
+является доказательством нижней границы. Это доказывается констрейнтами зависимостей
+и отсутствием в исходниках конструкций, требующих PHP 8.4.
+
+```bash
+composer install --working-dir=php
+composer test --working-dir=php
+composer analyse --working-dir=php
+```
+
+Conformance-адаптер будет жить в `php/conformance/`. Тесты пакета входят в слой 3
+CI только с P7.12; до этого они остаются локальной проверкой SDK.

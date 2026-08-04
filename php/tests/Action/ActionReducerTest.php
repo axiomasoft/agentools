@@ -9,6 +9,7 @@ use AgenTools\Action\ActionJournal;
 use AgenTools\Action\ActionReducer;
 use AgenTools\Action\ActionStatus;
 use AgenTools\Action\Actor;
+use AgenTools\Action\EffectRecord;
 use AgenTools\Action\LifecycleException;
 use AgenTools\Action\VersionConflict;
 use PHPUnit\Framework\TestCase;
@@ -32,7 +33,9 @@ final class ActionReducerTest extends TestCase
         $state = $journal->state();
         self::assertSame(ActionStatus::Completed, $state->status);
         self::assertSame(6, $state->seq);
-        self::assertSame('pay-9', $state->effects['payment-1']->externalRef);
+        $effect = $state->effects['payment-1'] ?? null;
+        self::assertInstanceOf(EffectRecord::class, $effect);
+        self::assertSame('pay-9', $effect->externalRef);
         self::assertTrue($state->status->isTerminal());
     }
 

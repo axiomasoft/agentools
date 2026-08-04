@@ -30,8 +30,9 @@ final class InMemoryDeduplicationStoreTest extends TestCase
         self::assertSame(DeduplicationState::New, $store->resolve($request, $now)->state);
         $inFlight = $store->resolve($request, $now);
         self::assertSame(DeduplicationState::ConcurrentInFlight, $inFlight->state);
-        self::assertSame(ToolErrorCode::IdempotencyInFlight->value, $inFlight->error?->code);
-        self::assertTrue($inFlight->error?->retryable);
+        self::assertNotNull($inFlight->error);
+        self::assertSame(ToolErrorCode::IdempotencyInFlight->value, $inFlight->error->code);
+        self::assertTrue($inFlight->error->retryable);
 
         $error = new ToolError('billing.validation.period_closed', ErrorCategory::VALIDATION, false, 'Period is closed');
         $store->complete($request, new StoredToolResult(error: $error), StoredResultDigest::fromJcs('{"error":"period_closed"}'));

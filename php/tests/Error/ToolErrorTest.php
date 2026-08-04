@@ -20,6 +20,6 @@ final class ToolErrorTest extends TestCase
     {
         $error = new ToolError('billing.validation.period_closed', ErrorCategory::VALIDATION, false, 'Period is closed', context: ['period' => '2026-08']);
 
-        self::assertSame('2026-08', $error->toArray()['context']['period']);
+        self::assertSame(['period' => '2026-08'], $error->context);
     }
 }

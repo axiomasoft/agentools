@@ -78,32 +78,34 @@ final class ActionReducer
         }
         if ($event->kind === 'effect_requested') {
             $effectId = $this->requiredString($event, 'effect_id');
+            $eventEpoch = $this->requiredEpoch($event);
             if (isset($effects[$effectId])) {
                 throw new LifecycleException('An effect can only be requested once.');
             }
             $effects[$effectId] = new EffectRecord(
                 effectId: $effectId,
                 status: EffectStatus::Requested,
-                epoch: $event->epoch,
+                epoch: $eventEpoch,
                 requestedSeq: $event->seq,
-                toolName: isset($event->payload['tool_name']) ? (string) $event->payload['tool_name'] : null,
-                idempotencyKey: isset($event->payload['idempotency_key']) ? (string) $event->payload['idempotency_key'] : null,
+                toolName: $this->optionalString($event, 'tool_name'),
+                idempotencyKey: $this->optionalString($event, 'idempotency_key'),
             );
         }
         if ($event->kind === 'effect_confirmed' || $event->kind === 'effect_failed') {
             $effectId = $this->requiredString($event, 'effect_id');
+            $eventEpoch = $this->requiredEpoch($event);
             $effect = $effects[$effectId] ?? null;
             if ($effect === null || $effect->status !== EffectStatus::Requested) {
                 throw new LifecycleException('An effect outcome requires one unresolved effect request.');
             }
-            if ($event->epoch !== $state->epoch) {
+            if ($eventEpoch !== $state->epoch) {
                 throw new LifecycleException('An effect outcome must be written by the current executor epoch.');
             }
             $effects[$effectId] = $effect->resolve(
                 $event->kind === 'effect_confirmed' ? EffectStatus::Confirmed : EffectStatus::Failed,
                 $event->seq,
-                $event->epoch,
-                isset($event->payload['external_ref']) ? (string) $event->payload['external_ref'] : null,
+                $eventEpoch,
+                $this->optionalString($event, 'external_ref'),
             );
         }
         if ($event->kind === 'cancellation_requested') {
@@ -205,5 +207,23 @@ final class ActionReducer
             throw new LifecycleException("Event {$event->kind} requires a non-empty {$field} payload field.");
         }
         return $value;
+    }
+
+    private function optionalString(ActionEvent $event, string $field): ?string
+    {
+        if (!array_key_exists($field, $event->payload)) {
+            return null;
+        }
+
+        return $this->requiredString($event, $field);
+    }
+
+    private function requiredEpoch(ActionEvent $event): int
+    {
+        if ($event->epoch === null) {
+            throw new LifecycleException("Event {$event->kind} requires an executor epoch.");
+        }
+
+        return $event->epoch;
     }
 }

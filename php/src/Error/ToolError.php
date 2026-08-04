@@ -7,7 +7,10 @@ namespace AgenTools\Error;
 /** A structured tool-execution error; protocol errors deliberately use another channel. */
 final readonly class ToolError
 {
-    /** @param array<string, mixed>|null $context @param array<string, mixed>|null $exampleOfValidCall */
+    /**
+     * @param array<string, mixed>|null $context
+     * @param array<string, mixed>|null $exampleOfValidCall
+     */
     public function __construct(
         public string $code,
         public string $category,
