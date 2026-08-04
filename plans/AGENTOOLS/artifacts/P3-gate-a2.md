@@ -155,3 +155,36 @@ P3 реопенена решением D141 после RED Gate B round 1. Эт�
 
 PASS означает только согласованность и проверяемую форму snapshot P3. Он не отменяет RED
 Gate B round 1 и не разрешает P5.1 round 2 до завершения P4.9–P4.13.
+
+## P3.23 — актуальный повторный A2 после RED-аудита (2026-08-04)
+
+**Якорь source snapshot:** `fd4a52c`
+(`feat(spec): address pinned MCP codes and glossary debt (P3.22)`). Перед всеми командами ниже
+проверено `git diff --quiet fd4a52c -- spec/revisions/2026-08`: source-набор ревизии до `HEAD`
+не менялся. Поэтому результаты воспроизводятся на одном source snapshot; сам этот раздел —
+evidence P3.23, а не переписывание исторических verdicts P3.14/P3.19.
+
+| Finding | Команда | Результат на `fd4a52c` | Статус |
+|:--|:--|:--|:--|
+| F1 — core/fallback `oneOf` | `python3 tools/spec_lint.py --schema-values-selftest spec/revisions/2026-08` | `ResultType`/`StatusChannel`/`TaskStatus`: каждый core принят ровно одной ветвью, vendor — только fallback, пустое и negative-probes отклонены | 🟢 |
+| F2 — `EventKind` ↔ lifecycle | `python3 tools/spec_lint.py --schema-values-selftest spec/revisions/2026-08` | `EventKind` содержит полный markdown-набор; lifecycle markdown = schema; `crm.custom` принят только fallback, missing-core negative-probe отклонён | 🟢 |
+| F3 — недостаточность прежней свежести A2 | `python3 tools/close_schema.py --write spec/revisions/2026-08 && python3 tools/close_schema.py --check spec/revisions/2026-08` · `python3 tools/rules_index.py --write spec/revisions/2026-08 && python3 tools/rules_index.py --check spec/revisions/2026-08` | authoring schemas: 15, свежи; `rules.json`: 400 правил, расхождений нет. Это дополняется F1/F2, а не подменяет их | 🟢 |
+| F4 — адрес числовых кодов | exact-set: `python3 tools/spec_lint.py spec/revisions/2026-08` с проверкой return code и полного списка ошибок | exit 1; единственная ошибка: `MUST-правило CFH-55 не имеет покрывающего вектора` | 🟢 |
+| F5 — долг `OVR-25` | Python-проверка шести точных терминов в `00_overview.md` | 6/6 определений присутствуют по одному разу: раннер, адаптер, контрольная пара, слой гейта, отчёт прогона, строгость отказа | 🟢 |
+
+### Дополнительные authoring/selftest-гейты
+
+- `python3 tools/spec_lint.py --legacy-check spec/revisions/2026-08` → `OK`.
+- `python3 tools/spec_lint.py --namespace-inventory spec/revisions/2026-08` → 32 domain /
+  6 vendor / 35 combined, `matches_expected: true`; `--namespace-inventory-selftest` → `OK`.
+- `python3 tools/spec_lint.py --actionable-description-selftest spec/revisions/2026-08` →
+  positive accepted, negative rejected.
+
+## Вердикт P3.23
+
+**ГЕЙТ A2: PASS**
+
+PASS относится к согласованному authoring/selftest snapshot P3 и доказанным F1–F5. Он **не**
+утверждает зелёный полный `spec_lint`: единственный coverage debt — `CFH-55 → P4.12`; P4.12
+создаёт различающую exact-code positive/negative pair, а P4.13 возвращает полный coverage в
+green. **Gate B round 1: RED.**
