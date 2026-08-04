@@ -70,23 +70,25 @@
     }
   ],
   "expect": {
-    "events": [
-      {
-        "kind": "action_completed",
-        "payload": {
-          "security_rule": "SEC-16",
-          "stimulus_pointer": "/given/driver_state/authorization/resource"
-        }
-      }
-    ],
+    "events": [],
     "final_state": "completed",
-    "tool_calls": [
+    "observations": [
       {
+        "kind": "tool_boundary",
+        "probe_id": "sec_16_tool_spy",
         "tool": "demo_probe",
+        "phase": "prepare",
+        "calls": 1,
+        "route": "default",
         "args_subset": {
           "value": "sec-16"
         },
-        "phase": "prepare"
+        "actor_ids": [
+          "user-7",
+          "agent-7",
+          "approver-7"
+        ],
+        "credential_ids": []
       }
     ]
   }

@@ -72,21 +72,35 @@
   "expect": {
     "events": [
       {
-        "kind": "action_completed",
+        "kind": "tool_invocation_recorded",
+        "actor": {
+          "type": "agent",
+          "id": "agent-7"
+        },
         "payload": {
-          "security_rule": "SEC-14",
-          "stimulus_pointer": "/given/driver_state/principals/agent/id"
+          "end_user_id": "user-7",
+          "authorization_scope": "report-7"
         }
       }
     ],
     "final_state": "completed",
-    "tool_calls": [
+    "observations": [
       {
+        "kind": "tool_boundary",
+        "probe_id": "sec_14_tool_spy",
         "tool": "demo_probe",
+        "phase": "prepare",
+        "calls": 1,
+        "route": "default",
         "args_subset": {
           "value": "sec-14"
         },
-        "phase": "prepare"
+        "actor_ids": [
+          "user-7",
+          "agent-7",
+          "approver-7"
+        ],
+        "credential_ids": []
       }
     ]
   }

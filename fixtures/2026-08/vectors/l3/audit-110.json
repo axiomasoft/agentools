@@ -1,1 +1,400 @@
-{"id":"audit-110","title":"64 baggage entries проходят лимит без усечения","vector_class":"behavior","spec_rev":"2026-08","spec_rule_ids":["AOB-31"],"conformance_level":"L3","given":{"tools":[{"name":"demo_probe","description":"Purpose: Экспортирует проверяемую запись аудита.\nCall when: Нужно проверить адресное поведение.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"audit\"})","inputSchema":{"type":"object","properties":{"value":{"type":"string"}}},"_meta":{"dev.agentools/action":{"side_effect":"read","permissions_hint":["demo.read"]}}}],"driver_state":{"baggage":[{"key":"k01","value":"opaque-01"},{"key":"k02","value":"opaque-02"},{"key":"k03","value":"opaque-03"},{"key":"k04","value":"opaque-04"},{"key":"k05","value":"opaque-05"},{"key":"k06","value":"opaque-06"},{"key":"k07","value":"opaque-07"},{"key":"k08","value":"opaque-08"},{"key":"k09","value":"opaque-09"},{"key":"k10","value":"opaque-10"},{"key":"k11","value":"opaque-11"},{"key":"k12","value":"opaque-12"},{"key":"k13","value":"opaque-13"},{"key":"k14","value":"opaque-14"},{"key":"k15","value":"opaque-15"},{"key":"k16","value":"opaque-16"},{"key":"k17","value":"opaque-17"},{"key":"k18","value":"opaque-18"},{"key":"k19","value":"opaque-19"},{"key":"k20","value":"opaque-20"},{"key":"k21","value":"opaque-21"},{"key":"k22","value":"opaque-22"},{"key":"k23","value":"opaque-23"},{"key":"k24","value":"opaque-24"},{"key":"k25","value":"opaque-25"},{"key":"k26","value":"opaque-26"},{"key":"k27","value":"opaque-27"},{"key":"k28","value":"opaque-28"},{"key":"k29","value":"opaque-29"},{"key":"k30","value":"opaque-30"},{"key":"k31","value":"opaque-31"},{"key":"k32","value":"opaque-32"},{"key":"k33","value":"opaque-33"},{"key":"k34","value":"opaque-34"},{"key":"k35","value":"opaque-35"},{"key":"k36","value":"opaque-36"},{"key":"k37","value":"opaque-37"},{"key":"k38","value":"opaque-38"},{"key":"k39","value":"opaque-39"},{"key":"k40","value":"opaque-40"},{"key":"k41","value":"opaque-41"},{"key":"k42","value":"opaque-42"},{"key":"k43","value":"opaque-43"},{"key":"k44","value":"opaque-44"},{"key":"k45","value":"opaque-45"},{"key":"k46","value":"opaque-46"},{"key":"k47","value":"opaque-47"},{"key":"k48","value":"opaque-48"},{"key":"k49","value":"opaque-49"},{"key":"k50","value":"opaque-50"},{"key":"k51","value":"opaque-51"},{"key":"k52","value":"opaque-52"},{"key":"k53","value":"opaque-53"},{"key":"k54","value":"opaque-54"},{"key":"k55","value":"opaque-55"},{"key":"k56","value":"opaque-56"},{"key":"k57","value":"opaque-57"},{"key":"k58","value":"opaque-58"},{"key":"k59","value":"opaque-59"},{"key":"k60","value":"opaque-60"},{"key":"k61","value":"opaque-61"},{"key":"k62","value":"opaque-62"},{"key":"k63","value":"opaque-63"},{"key":"k64","value":"opaque-64"}],"audit_export":{"adapter_id":"otel-audit-adapter","mapping_version":"otel-semconv-1.27","boundary":"external","attributes":["gen_ai.provider.name"],"audit_fields":["action_id"]}}},"script":[{"user_input":"Экспортируй аудит"},{"llm_stub":{"toolCall":{"tool":"demo_probe","args":{"value":"audit"}}}}],"expect":{"events":[{"kind":"action_completed","payload":{"baggage_items":64,"baggage_values":"opaque_only"}}],"final_state":"completed","tool_calls":[{"tool":"demo_probe","args_subset":{"value":"audit"},"phase":"prepare"}]}}
+{
+  "id": "audit-110",
+  "title": "64 baggage entries проходят лимит без усечения",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "AOB-31"
+  ],
+  "conformance_level": "L3",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Экспортирует проверяемую запись аудита.\nCall when: Нужно проверить адресное поведение.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"audit\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "baggage": [
+        {
+          "key": "k00",
+          "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k01",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k02",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k03",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k04",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k05",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k06",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k07",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k08",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k09",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k10",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k11",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k12",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k13",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k14",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k15",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k16",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k17",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k18",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k19",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k20",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k21",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k22",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k23",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k24",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k25",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k26",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k27",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k28",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k29",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k30",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k31",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k32",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k33",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k34",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k35",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k36",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k37",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k38",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k39",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k40",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k41",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k42",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k43",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k44",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k45",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k46",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k47",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k48",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k49",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k50",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k51",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k52",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k53",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k54",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k55",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k56",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k57",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k58",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k59",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k60",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k61",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k62",
+          "value": "",
+          "classification": "opaque_identifier"
+        },
+        {
+          "key": "k63",
+          "value": "",
+          "classification": "opaque_identifier"
+        }
+      ],
+      "audit_export": {
+        "adapter_id": "otel-audit-adapter",
+        "mapping_version": "otel-semconv-1.27",
+        "boundary": "external",
+        "attributes": [
+          "gen_ai.provider.name"
+        ],
+        "audit_fields": [
+          "action_id"
+        ]
+      }
+    }
+  },
+  "script": [
+    {
+      "user_input": "Экспортируй аудит"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "audit"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [],
+    "final_state": "completed",
+    "observations": [
+      {
+        "kind": "audit_sink",
+        "probe_id": "aob_31_external_sink",
+        "record_count": 1,
+        "attribute_names": [
+          "gen_ai.provider.name"
+        ],
+        "baggage_count": 64,
+        "baggage_bytes": 8192
+      }
+    ]
+  }
+}

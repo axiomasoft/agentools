@@ -1,1 +1,85 @@
-{"id":"audit-009","title":"Baggage с персональным значением отвергается","vector_class":"behavior","spec_rev":"2026-08","spec_rule_ids":["AOB-30"],"conformance_level":"L3","given":{"tools":[{"name":"demo_probe","description":"Purpose: Экспортирует проверяемую запись аудита.\nCall when: Нужно проверить baggage.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"audit\"})","inputSchema":{"type":"object","properties":{"value":{"type":"string"}}},"_meta":{"dev.agentools/action":{"side_effect":"read","permissions_hint":["demo.read"]}}}],"driver_state":{"baggage":[{"key":"tenant","value":"email=alice@example.test"}],"audit_export":{"adapter_id":"otel-audit-adapter","mapping_version":"otel-semconv-1.27","boundary":"external","attributes":["action_id"],"audit_fields":["action_id"]}}},"script":[{"user_input":"Экспортируй аудит"},{"llm_stub":{"toolCall":{"tool":"demo_probe","args":{"value":"audit"}}}}],"expect":{"events":[{"kind":"action_failed","payload":{"reason":"baggage_sensitive_value","key":"tenant"}}],"final_state":"failed","tool_calls":[]}}
+{
+  "id": "audit-009",
+  "title": "Baggage с персональным значением отвергается",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "AOB-30"
+  ],
+  "conformance_level": "L3",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Экспортирует проверяемую запись аудита.\nCall when: Нужно проверить baggage.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"audit\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "baggage": [
+        {
+          "key": "correlation",
+          "value": "subject-7",
+          "classification": "personal_data"
+        }
+      ],
+      "audit_export": {
+        "adapter_id": "otel-audit-adapter",
+        "mapping_version": "otel-semconv-1.27",
+        "boundary": "external",
+        "attributes": [
+          "action_id"
+        ],
+        "audit_fields": [
+          "action_id"
+        ]
+      }
+    }
+  },
+  "script": [
+    {
+      "user_input": "Экспортируй аудит"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "audit"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [],
+    "final_state": "failed",
+    "observations": [
+      {
+        "kind": "audit_sink",
+        "probe_id": "aob_30_external_sink",
+        "record_count": 0,
+        "attribute_names": [
+          "action_id"
+        ],
+        "baggage_count": 0,
+        "baggage_bytes": 0
+      }
+    ]
+  }
+}

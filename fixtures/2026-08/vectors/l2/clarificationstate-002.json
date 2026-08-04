@@ -1,1 +1,74 @@
-{"id":"clarificationstate-002","title":"Task payload — допустимая точка input_required, не второй примитив","vector_class":"behavior","spec_rev":"2026-08","spec_rule_ids":["CLR-8"],"conformance_level":"L2","given":{"tools":[{"name":"demo_probe","description":"Purpose: Выполняет детерминированную проверку.\nCall when: Нужно проверить поведение без побочного эффекта.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"x\"})","inputSchema":{"type":"object","properties":{"value":{"type":"string"}}},"_meta":{"dev.agentools/action":{"side_effect":"read","permissions_hint":["demo.read"]}}}]},"script":[{"user_input":"Запусти задачу"},{"llm_stub":{"toolCall":{"tool":"demo_probe","args":{"value":"task-1"}}}},{"task_message":{"task_id":"task-1","channel":"poll","status":"input_required","message":"Обновление статуса"}}],"expect":{"events":[{"kind":"input_recorded","payload":{"task_id":"task-1","result_type":"input_required","source":"task_payload","!second_input_primitive":true}}],"final_state":"running","tool_calls":[{"tool":"demo_probe","args_subset":{"value":"task-1"},"phase":"prepare"}]}}
+{
+  "id": "clarificationstate-002",
+  "title": "Task payload — допустимая точка input_required, не второй примитив",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CLR-8"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Выполняет детерминированную проверку.\nCall when: Нужно проверить поведение без побочного эффекта.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"x\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {}
+  },
+  "script": [
+    {
+      "user_input": "Запусти задачу"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "task-1"
+          }
+        }
+      }
+    },
+    {
+      "task_message": {
+        "task_id": "task-1",
+        "channel": "poll",
+        "status": "input_required",
+        "message": "Обновление статуса"
+      }
+    }
+  ],
+  "expect": {
+    "events": [],
+    "final_state": "running",
+    "observations": [
+      {
+        "kind": "task_binding",
+        "probe_id": "clr_8_task_channel",
+        "task_id": "task-1",
+        "binding_id": "binding:task-1",
+        "state": "input_required",
+        "input_required_points": [
+          "before_commit"
+        ]
+      }
+    ]
+  }
+}

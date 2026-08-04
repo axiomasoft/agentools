@@ -70,18 +70,25 @@
     }
   ],
   "expect": {
-    "events": [
-      {
-        "kind": "action_failed",
-        "payload": {
-          "reason": "agent_actor_carrier_missing",
-          "security_rule": "SEC-14",
-          "stimulus_pointer": "/given/driver_state/principals/agent/id",
-          "!tool_effect": true
-        }
-      }
-    ],
+    "events": [],
     "final_state": "failed",
-    "tool_calls": []
+    "observations": [
+      {
+        "kind": "tool_boundary",
+        "probe_id": "sec_14_tool_spy",
+        "tool": "demo_probe",
+        "phase": "prepare",
+        "calls": 0,
+        "route": "blocked",
+        "args_subset": {
+          "value": "sec-14"
+        },
+        "actor_ids": [
+          "user-7",
+          "approver-7"
+        ],
+        "credential_ids": []
+      }
+    ]
   }
 }

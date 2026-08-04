@@ -206,9 +206,32 @@
           "items": { "$ref": "#/$defs/DriverTaskMessage" }
         },
         "confirmation": { "$ref": "#/$defs/DriverConfirmation" },
-        "audit_export": { "$ref": "#/$defs/DriverAuditExport" }
+        "audit_export": { "$ref": "#/$defs/DriverAuditExport" },
+        "materialized_state": { "$ref": "#/$defs/DriverMaterializedState" },
+        "snapshot": { "$ref": "#/$defs/DriverSnapshot" }
         },
       "description": "Закрытая driver-only обёртка. Секции опциональны: вектор задаёт только нужный stimulus; свободный state и неописанные ключи запрещены."
+    },
+    "DriverMaterializedState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "seq"],
+      "properties": {
+        "state": { "$ref": "../../schema/2026-08/session-state.json#/$defs/ActionStatus" },
+        "seq": { "type": "integer", "minimum": 0 }
+      },
+      "description": "Сырая mutable projection рядом с journal; harness подаёт её для проверки направления зависимости ALC-4."
+    },
+    "DriverSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "seq", "spec_rev"],
+      "properties": {
+        "state": { "$ref": "../../schema/2026-08/session-state.json#/$defs/ActionStatus" },
+        "seq": { "type": "integer", "minimum": 0 },
+        "spec_rev": { "type": "string", "minLength": 1 }
+      },
+      "description": "Сырая snapshot projection до чтения journal; не источник истины и не SUT verdict."
     },
     "DriverPrincipal": {
       "type": "object",
@@ -271,7 +294,12 @@
       "required": ["key", "value"],
       "properties": {
         "key": { "type": "string", "minLength": 1 },
-        "value": { "type": "string" }
+        "value": { "type": "string" },
+        "classification": {
+          "type": "string",
+          "enum": ["opaque_identifier", "personal_data", "argument_value", "confirmation_token"],
+          "description": "Harness-owned классификация исходного значения до передачи SUT; не verdict экспорта."
+        }
       },
       "description": "Одна пара baggage для точной проверки count/bytes boundary."
     },
@@ -500,6 +528,7 @@
         "phase": { "type": "string", "enum": ["prepare", "commit"] },
         "calls": { "type": "integer", "minimum": 0 },
         "route": { "type": "string", "enum": ["default", "isolated", "blocked"] },
+        "args_subset": { "type": "object", "additionalProperties": true, "description": "Фактические аргументы, снятые adapter spy; сравниваются рекурсивно как подмножество." },
         "actor_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
         "credential_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
       }
@@ -514,7 +543,9 @@
         "state": { "$ref": "../../schema/2026-08/session-state.json#/$defs/ActionStatus" },
         "source_event_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
         "emitted_event_kinds": { "type": "array", "items": { "type": "string", "minLength": 1 } },
-        "source_unchanged": { "type": "boolean" }
+        "source_unchanged": { "type": "boolean" },
+        "journal_reads": { "type": "integer", "minimum": 0 },
+        "append_attempts": { "type": "integer", "minimum": 0 }
       }
     },
     "AuditSinkObservation": {

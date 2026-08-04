@@ -60,16 +60,27 @@
   "expect": {
     "events": [
       {
-        "kind": "action_failed",
+        "kind": "tool_invocation_recorded",
         "payload": {
-          "reason": "untrusted_provenance_not_recorded",
-          "security_rule": "SEC-12",
-          "stimulus_pointer": "/given/driver_state/provenance/0/content_origin",
-          "!tool_effect": true
+          "argument_provenance": "untrusted_external"
         }
       }
     ],
-    "final_state": "failed",
-    "tool_calls": []
+    "final_state": "completed",
+    "observations": [
+      {
+        "kind": "tool_boundary",
+        "probe_id": "sec_12_tool_spy",
+        "tool": "demo_probe",
+        "phase": "prepare",
+        "calls": 1,
+        "route": "isolated",
+        "args_subset": {
+          "value": "sec-12"
+        },
+        "actor_ids": [],
+        "credential_ids": []
+      }
+    ]
   }
 }

@@ -1,1 +1,91 @@
-{"id":"lifecycleintegrity-004","title":"Снапшот несёт seq и revision","vector_class":"behavior","spec_rev":"2026-08","spec_rule_ids":["ALC-33"],"conformance_level":"L3","given":{"tools":[{"name":"demo_probe","description":"Purpose: Проверяет lifecycle.\nCall when: нужен lifecycle check.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"x\"})","inputSchema":{"type":"object","properties":{"value":{"type":"string"}}},"_meta":{"dev.agentools/action":{"side_effect":"read","permissions_hint":["demo.read"]}}}],"driver_state":{"journal":[{"event_id":"ev-1","action_id":"act-1","seq":1,"expected_prev_seq":0,"ts":"2026-08-04T00:00:00Z","actor":{"type":"system","id":"runtime"},"kind":"action_created","event_version":1,"spec_rev":"2026-08","payload":{"snapshot":{"seq":1,"spec_rev":"2026-07"}}}]}},"script":[{"user_input":"Восстанови снапшот"},{"llm_stub":{"toolCall":{"tool":"demo_probe","args":{"value":"snapshot"}}}}],"expect":{"events":[{"kind":"action_failed","payload":{"reason":"snapshot_revision_mismatch","snapshot_spec_rev":"2026-07"}}],"final_state":"failed","tool_calls":[]}}
+{
+  "id": "lifecycleintegrity-004",
+  "title": "Снапшот несёт seq и revision",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "ALC-33"
+  ],
+  "conformance_level": "L3",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Проверяет lifecycle.\nCall when: нужен lifecycle check.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"x\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "journal": [
+        {
+          "event_id": "ev-1",
+          "action_id": "act-1",
+          "seq": 1,
+          "expected_prev_seq": 0,
+          "ts": "2026-08-04T00:00:00Z",
+          "actor": {
+            "type": "system",
+            "id": "runtime"
+          },
+          "kind": "action_created",
+          "event_version": 1,
+          "spec_rev": "2026-08",
+          "payload": {}
+        }
+      ],
+      "snapshot": {
+        "state": "created",
+        "seq": 1,
+        "spec_rev": "2026-07"
+      }
+    }
+  },
+  "script": [
+    {
+      "user_input": "Восстанови снапшот"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "snapshot"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [],
+    "final_state": "created",
+    "observations": [
+      {
+        "kind": "journal_projection",
+        "probe_id": "alc_33_journal_spy",
+        "state": "created",
+        "source_event_ids": [
+          "ev-1"
+        ],
+        "emitted_event_kinds": [],
+        "source_unchanged": true,
+        "journal_reads": 1,
+        "append_attempts": 0
+      }
+    ]
+  }
+}

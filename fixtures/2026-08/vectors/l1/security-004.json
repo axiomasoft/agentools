@@ -65,18 +65,20 @@
     }
   ],
   "expect": {
-    "events": [
+    "events": [],
+    "final_state": "completed",
+    "observations": [
       {
-        "kind": "action_failed",
-        "payload": {
-          "reason": "forwarded_access_token",
-          "security_rule": "SEC-4",
-          "stimulus_pointer": "/given/driver_state/credentials/0/audience",
-          "!tool_effect": true
-        }
+        "kind": "credential_boundary",
+        "probe_id": "sec_4_resource_spy",
+        "resource": "downstream-api",
+        "principal_ids": [
+          "user-7"
+        ],
+        "forwarded_credential_ids": [
+          "issuer-trusted|downstream-api|user-7"
+        ]
       }
-    ],
-    "final_state": "failed",
-    "tool_calls": []
+    ]
   }
 }

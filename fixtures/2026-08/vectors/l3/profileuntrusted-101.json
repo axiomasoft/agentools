@@ -1,1 +1,81 @@
-{"id":"profileuntrusted-101","title":"Доверенный аргумент проходит обычным маршрутом","vector_class":"behavior","spec_rev":"2026-08","spec_rule_ids":["TLP-25"],"conformance_level":"L3","given":{"tools":[{"name":"demo_probe","description":"Purpose: Записывает проверяемое значение.\nCall when: Нужно проверить подтверждённое изменение.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"x\"})","inputSchema":{"type":"object","properties":{"value":{"type":"string"}}},"_meta":{"dev.agentools/action":{"side_effect":"write","confirmation":"confirm","idempotent_commit":true,"permissions_hint":["demo.write"]}}}],"driver_state":{"provenance":[{"address":"args.value","content_origin":"trusted.local"}]}},"script":[{"user_input":"Запиши внешний аргумент"},{"llm_stub":{"toolCall":{"tool":"demo_probe","args":{"value":"external:unverified"}}}},{"approval":"approve"}],"expect":{"events":[{"kind":"confirmation_resolved","payload":{"decision":"approve"}},{"kind":"action_completed","payload":{"argument_origin":"trusted.local","execution_route":"default"}}],"final_state":"completed","tool_calls":[{"tool":"demo_probe","args_subset":{"value":"external:unverified"},"phase":"commit"}]}}
+{
+  "id": "profileuntrusted-101",
+  "title": "Доверенный аргумент проходит обычным маршрутом",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "TLP-25"
+  ],
+  "conformance_level": "L3",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Записывает проверяемое значение.\nCall when: Нужно проверить подтверждённое изменение.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"x\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "write",
+            "confirmation": "confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "demo.write"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "provenance": [
+        {
+          "address": "args.value",
+          "content_origin": "trusted.local"
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Запиши внешний аргумент"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "external:unverified"
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [],
+    "final_state": "completed",
+    "observations": [
+      {
+        "kind": "tool_boundary",
+        "probe_id": "tlp_25_tool_spy",
+        "tool": "demo_probe",
+        "phase": "prepare",
+        "calls": 1,
+        "route": "default",
+        "args_subset": {
+          "value": "external:unverified"
+        },
+        "actor_ids": [],
+        "credential_ids": []
+      }
+    ]
+  }
+}

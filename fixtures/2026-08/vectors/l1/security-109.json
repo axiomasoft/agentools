@@ -36,7 +36,7 @@
     "driver_state": {
       "provenance": [
         {
-          "address": "args.derived_value",
+          "address": "args.value",
           "content_origin": "trusted.local"
         }
       ]
@@ -58,23 +58,21 @@
     }
   ],
   "expect": {
-    "events": [
-      {
-        "kind": "action_completed",
-        "payload": {
-          "security_rule": "SEC-9",
-          "stimulus_pointer": "/given/driver_state/provenance/0/content_origin"
-        }
-      }
-    ],
+    "events": [],
     "final_state": "completed",
-    "tool_calls": [
+    "observations": [
       {
+        "kind": "tool_boundary",
+        "probe_id": "sec_9_tool_spy",
         "tool": "demo_probe",
+        "phase": "prepare",
+        "calls": 1,
+        "route": "default",
         "args_subset": {
           "value": "sec-9"
         },
-        "phase": "prepare"
+        "actor_ids": [],
+        "credential_ids": []
       }
     ]
   }

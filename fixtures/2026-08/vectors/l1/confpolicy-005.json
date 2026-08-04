@@ -83,17 +83,25 @@
     }
   ],
   "expect": {
-    "events": [
+    "events": [],
+    "final_state": "completed",
+    "observations": [
       {
-        "kind": "action_failed",
-        "payload": {
-          "reason": "policy_weakened_irreversible_gate",
-          "policy_verdict": "allow",
-          "side_effect": "irreversible"
-        }
+        "kind": "tool_boundary",
+        "probe_id": "cnf_6_tool_spy",
+        "tool": "demo_probe",
+        "phase": "commit",
+        "calls": 1,
+        "route": "default",
+        "args_subset": {
+          "value": "policy"
+        },
+        "actor_ids": [
+          "user-a",
+          "agent-a"
+        ],
+        "credential_ids": []
       }
-    ],
-    "final_state": "failed",
-    "tool_calls": []
+    ]
   }
 }

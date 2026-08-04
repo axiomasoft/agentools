@@ -81,17 +81,25 @@
     }
   ],
   "expect": {
-    "events": [
-      {
-        "kind": "action_failed",
-        "payload": {
-          "reason": "authorization_required_at_commit",
-          "gate_origin": "side_effect",
-          "annotation_confirmation": "confirm"
-        }
-      }
-    ],
+    "events": [],
     "final_state": "failed",
-    "tool_calls": []
+    "observations": [
+      {
+        "kind": "tool_boundary",
+        "probe_id": "tlp_11_tool_spy",
+        "tool": "demo_probe",
+        "phase": "commit",
+        "calls": 0,
+        "route": "blocked",
+        "args_subset": {
+          "value": "policy"
+        },
+        "actor_ids": [
+          "user-a",
+          "agent-a"
+        ],
+        "credential_ids": []
+      }
+    ]
   }
 }

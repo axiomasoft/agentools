@@ -36,7 +36,7 @@
     "driver_state": {
       "principals": {
         "initiator": {
-          "id": "runtime-daemon"
+          "id": "agent-7"
         },
         "agent": {
           "id": "agent-7"
@@ -70,18 +70,25 @@
     }
   ],
   "expect": {
-    "events": [
-      {
-        "kind": "action_failed",
-        "payload": {
-          "reason": "runtime_account_used_as_user",
-          "security_rule": "SEC-15",
-          "stimulus_pointer": "/given/driver_state/principals/initiator/id",
-          "!tool_effect": true
-        }
-      }
-    ],
+    "events": [],
     "final_state": "failed",
-    "tool_calls": []
+    "observations": [
+      {
+        "kind": "tool_boundary",
+        "probe_id": "sec_15_tool_spy",
+        "tool": "demo_probe",
+        "phase": "prepare",
+        "calls": 0,
+        "route": "blocked",
+        "args_subset": {
+          "value": "sec-15"
+        },
+        "actor_ids": [
+          "agent-7",
+          "approver-7"
+        ],
+        "credential_ids": []
+      }
+    ]
   }
 }

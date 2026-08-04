@@ -76,13 +76,15 @@ behavior-векторов. Оно не добавляет полей в MCP-пр
 | `authorization` | `resource`, `tool`, разрешённые `permissions` на момент шага | вход энфорсмента, не MCP authorization header |
 | `credentials[]` | `kind`, `source`, `issuer`, `audience`, `integrity`, `principal_id`, `scopes` | `source` различает `trusted_credential`, `argument`, `model_output`, `tool_result` |
 | `provenance[]` | `address` значения и `content_origin` | origin переиспользует published enum `tool-descriptor.json` |
-| `baggage[]` | точные пары `key`/`value` | носитель count/bytes boundary |
+| `baggage[]` | точные пары `key`/`value` и опциональная raw classification (`opaque_identifier`, `personal_data`, `argument_value`, `confirmation_token`) | носитель composition/count/bytes boundary; classification задаёт harness до SUT |
 | `journal[]` | предзаданные lifecycle events | каждый элемент — published `lifecycle-event.json` |
 | `effects[]` | предзаданные projections effect registry | каждый элемент — published `effect-registry.json` |
 | `tool_results[]` | `{tool, content, is_error}` | минимальный result driver-а, не MCP result envelope |
 | `task_channel[]` | `{task_id, channel, status, message}` | `channel`/`status` переиспользуют published `task-binding.json` |
 | `confirmation` | proposal/token id, principal, prepared/current descriptor digest и args fingerprints | typed binding prepare→commit, не token wire format |
 | `audit_export` | adapter id, mapping version, `external` boundary, attributes и audit fields | adapter-side вход, не поля audit schema |
+| `materialized_state` | mutable `{state, seq}` рядом с journal | competing projection input для ALC-4; journal остаётся источником истины |
+| `snapshot` | `{state, seq, spec_rev}` до восстановления | отдельная projection для ALC-33/34; не вкладывается в event payload |
 
 `given.policy.rules[]` задаёт только применимые `{scope, verdict}` с закрытыми enum
 `system|tenant|user|tool` и `deny|ask|allow`. Это вход Policy Layer для precedence, не
@@ -133,8 +135,8 @@ SUT. Он не является lifecycle/audit event и никогда не з�
 
 | `kind` | Кто снимает факт | Минимальный предмет |
 |:--|:--|:--|
-| `tool_boundary` | spy инструментального адаптера | фактические tool/phase/calls/route, actor и credential ids |
-| `journal_projection` | runner над поданными raw immutable events | state, source event ids, emitted kinds и отсутствие write-back |
+| `tool_boundary` | spy инструментального адаптера | фактические tool/phase/calls/route/args subset, actor и credential ids |
+| `journal_projection` | runner/storage spy над поданными raw immutable events | state, source event ids, emitted kinds, отсутствие write-back, опциональные read/append counts |
 | `audit_sink` | внешний telemetry/audit sink | число records, имена attributes, baggage count/bytes |
 | `task_binding` | task/MRTR channel adapter | opaque task/binding ids, state и фактические точки `input_required` |
 | `credential_boundary` | downstream resource adapter | resource, principals и реально пересланные credential ids |

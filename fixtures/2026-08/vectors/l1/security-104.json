@@ -65,23 +65,17 @@
     }
   ],
   "expect": {
-    "events": [
+    "events": [],
+    "final_state": "failed",
+    "observations": [
       {
-        "kind": "action_completed",
-        "payload": {
-          "security_rule": "SEC-4",
-          "stimulus_pointer": "/given/driver_state/credentials/0/audience"
-        }
-      }
-    ],
-    "final_state": "completed",
-    "tool_calls": [
-      {
-        "tool": "demo_probe",
-        "args_subset": {
-          "value": "sec-4"
-        },
-        "phase": "prepare"
+        "kind": "credential_boundary",
+        "probe_id": "sec_4_resource_spy",
+        "resource": "downstream-api",
+        "principal_ids": [
+          "user-7"
+        ],
+        "forwarded_credential_ids": []
       }
     ]
   }

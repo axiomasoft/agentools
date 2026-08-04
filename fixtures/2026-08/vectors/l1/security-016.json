@@ -46,8 +46,8 @@
         }
       },
       "authorization": {
-        "resource": "session:agent-7",
-        "tool": "demo_probe",
+        "resource": "report-7",
+        "tool": "other_probe",
         "permissions": [
           "demo.read"
         ]
@@ -70,18 +70,26 @@
     }
   ],
   "expect": {
-    "events": [
-      {
-        "kind": "action_failed",
-        "payload": {
-          "reason": "scope_not_bound_to_tool_call",
-          "security_rule": "SEC-16",
-          "stimulus_pointer": "/given/driver_state/authorization/resource",
-          "!tool_effect": true
-        }
-      }
-    ],
+    "events": [],
     "final_state": "failed",
-    "tool_calls": []
+    "observations": [
+      {
+        "kind": "tool_boundary",
+        "probe_id": "sec_16_tool_spy",
+        "tool": "demo_probe",
+        "phase": "prepare",
+        "calls": 0,
+        "route": "blocked",
+        "args_subset": {
+          "value": "sec-16"
+        },
+        "actor_ids": [
+          "user-7",
+          "agent-7",
+          "approver-7"
+        ],
+        "credential_ids": []
+      }
+    ]
   }
 }

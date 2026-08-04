@@ -58,18 +58,22 @@
     }
   ],
   "expect": {
-    "events": [
+    "events": [],
+    "final_state": "completed",
+    "observations": [
       {
-        "kind": "action_failed",
-        "payload": {
-          "reason": "provenance_cleared_by_validation",
-          "security_rule": "SEC-10",
-          "stimulus_pointer": "/given/driver_state/provenance/0/content_origin",
-          "!tool_effect": true
-        }
+        "kind": "tool_boundary",
+        "probe_id": "sec_10_tool_spy",
+        "tool": "demo_probe",
+        "phase": "prepare",
+        "calls": 1,
+        "route": "isolated",
+        "args_subset": {
+          "value": "sec-10"
+        },
+        "actor_ids": [],
+        "credential_ids": []
       }
-    ],
-    "final_state": "failed",
-    "tool_calls": []
+    ]
   }
 }

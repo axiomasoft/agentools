@@ -1,1 +1,72 @@
-{"id":"clarificationstate-101","title":"Task completed не создаёт состояние диалога","vector_class":"behavior","spec_rev":"2026-08","spec_rule_ids":["CLR-2"],"conformance_level":"L2","given":{"tools":[{"name":"demo_probe","description":"Purpose: Выполняет детерминированную проверку.\nCall when: Нужно проверить поведение без побочного эффекта.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"x\"})","inputSchema":{"type":"object","properties":{"value":{"type":"string"}}},"_meta":{"dev.agentools/action":{"side_effect":"read","permissions_hint":["demo.read"]}}}]},"script":[{"user_input":"Запусти задачу"},{"llm_stub":{"toolCall":{"tool":"demo_probe","args":{"value":"task-1"}}}},{"task_message":{"task_id":"task-1","channel":"poll","status":"completed","message":"Обновление статуса"}}],"expect":{"events":[{"kind":"task_status_observed","payload":{"task_id":"task-1","channel":"poll","status":"completed"}},{"kind":"action_completed"}],"final_state":"completed","tool_calls":[{"tool":"demo_probe","args_subset":{"value":"task-1"},"phase":"prepare"}]}}
+{
+  "id": "clarificationstate-101",
+  "title": "Task completed не создаёт состояние диалога",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CLR-2"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Выполняет детерминированную проверку.\nCall when: Нужно проверить поведение без побочного эффекта.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"x\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {}
+  },
+  "script": [
+    {
+      "user_input": "Запусти задачу"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "task-1"
+          }
+        }
+      }
+    },
+    {
+      "task_message": {
+        "task_id": "task-1",
+        "channel": "poll",
+        "status": "completed",
+        "message": "Обновление статуса"
+      }
+    }
+  ],
+  "expect": {
+    "events": [],
+    "final_state": "completed",
+    "observations": [
+      {
+        "kind": "task_binding",
+        "probe_id": "clr_2_task_channel",
+        "task_id": "task-1",
+        "binding_id": "binding:task-1",
+        "state": "completed",
+        "input_required_points": []
+      }
+    ]
+  }
+}

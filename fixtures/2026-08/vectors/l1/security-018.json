@@ -55,13 +55,32 @@
       "confirmation": {
         "proposal_id": "proposal-7",
         "proposal_version": 1,
-        "token_id": "audit-record-7",
+        "token_id": "confirmation-token-7",
         "covered_principal_id": "user-7",
         "prepared_descriptor_digest": "descriptor-7",
         "current_descriptor_digest": "descriptor-7",
         "prepared_args_fingerprint": "args-7",
         "commit_args_fingerprint": "args-7"
-      }
+      },
+      "journal": [
+        {
+          "event_id": "ev-auth-2",
+          "action_id": "act-7",
+          "seq": 1,
+          "expected_prev_seq": 0,
+          "ts": "2026-08-04T00:00:00Z",
+          "actor": {
+            "type": "system",
+            "id": "runtime"
+          },
+          "kind": "vendor.authorization_granted",
+          "event_version": 1,
+          "spec_rev": "2026-08",
+          "payload": {
+            "proposal_id": "proposal-7"
+          }
+        }
+      ]
     }
   },
   "script": [
@@ -80,18 +99,26 @@
     }
   ],
   "expect": {
-    "events": [
-      {
-        "kind": "action_failed",
-        "payload": {
-          "reason": "duplicate_authorization_carrier",
-          "security_rule": "SEC-18",
-          "stimulus_pointer": "/given/driver_state/confirmation/token_id",
-          "!tool_effect": true
-        }
-      }
-    ],
+    "events": [],
     "final_state": "failed",
-    "tool_calls": []
+    "observations": [
+      {
+        "kind": "tool_boundary",
+        "probe_id": "sec_18_tool_spy",
+        "tool": "demo_probe",
+        "phase": "prepare",
+        "calls": 0,
+        "route": "blocked",
+        "args_subset": {
+          "value": "sec-18"
+        },
+        "actor_ids": [
+          "user-7",
+          "agent-7",
+          "approver-7"
+        ],
+        "credential_ids": []
+      }
+    ]
   }
 }
