@@ -1,6 +1,6 @@
 # Roadmap исполнения — AGENTOOLS
 
-**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.28.0 · **Следующий исполнимый участок:** P4.15, затем resume workflow W2. Brain — SSOT; эта копия синхронизирована для работы из репозитория.
+**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.28.1 · **Следующий исполнимый участок:** resume workflow W2 (P4.10–P4.12). Brain — SSOT; эта копия синхронизирована для работы из репозитория.
 
 Карта отвечает на «какую команду дальше?» без разбора всего плана. Она **не переопределяет**
 `plan.md` §3 Routing (модели и effort — оттуда), а только группирует запуски и называет гейты
@@ -69,7 +69,7 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | P4.5 | — | — | — | — | **закрыт исторически**; формальный A3 не равен Gate B GREEN |
 | P4.14 | — | — | — | — | **закрыт** `51fc06f`; exact registry/full-definition gate устранил AUDIT-CAP debt F1/F2 до P4.9 |
 | P4.9 | — | — | — | — | **закрыт** `ef80fcd`; driver-state и D145-valid real-byte offline control — общий input W2 |
-| P4.15 | solo | manual | implementation/high | — | D157: closed policy/confirmation/audit-export driver inputs и selftest; обязательный predecessor W2 |
+| P4.15 | — | — | — | — | **закрыт** `8919b92`; closed policy/confirmation/audit-export inputs and selftest |
 | P4.10 | W2 | workflow | implementation/high | — | D156: 65 single-rule behavior pairs + retained longop; пять file-disjoint author/fix shards → единый exact-evidence review |
 | P4.11 | W2 | workflow | implementation/high | — | F5 scenario carriers; отдельные ids/files |
 | P4.12 | W2 | workflow | implementation/high | — | F3/F6/F8 static/checker + D156 static-transfer SEC-17/AOB-26 + CFH-55 distinguishing harness pair |

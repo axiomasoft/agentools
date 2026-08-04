@@ -1,18 +1,19 @@
-# HANDOFF — 2026-08-04 — after P4
+# HANDOFF — 2026-08-04 — after P4.15
 
-**Next:** manual: implementation/high
+**Next:** ЗАПУСК ВРУЧНУЮ: `implementation/high`
 
 | Параметр | Значение |
 |:--|:--|
-| Model class | implementation |
-| Effort | high |
+| Model | implementation |
+| Thinking | high — distinguishing carrier remediation |
 | Capabilities | `command.subagents`, `command.workflow-carrier` |
-| Context | cold-start — orchestration |
-| Суть | Выполнить P4.15: вернуть недостающие typed driver-only inputs; только затем запускать W2. |
-| Команда | `task:plan-run AGENTOOLS P4.15` |
+| Context | NEW SESSION — Workflow-оркестрован |
+| Суть | Resume W2 after terminal P4.15: normalise 65 behavior pairs and close P4.12→P4.10→P4.11. |
+| Команда | — |
 
 ```text
-# D157: сохранить W2 candidate, закрыть P4.15 source+bookkeeping; затем native carrier W2
+# D155/D156/D157: P4.15 terminal; resume candidate without cleanup
+native orchestration carrier: plans/AGENTOOLS/workflows/wf-agentools-p4-remediation.js
 ```
 
 **Done:** Re-design P4.10 закрыл semantic DoR: D156 фиксирует 65 single-rule behavior pairs,
@@ -20,8 +21,7 @@
 в P4.12. W2 carrier проверяет этот контракт до close. Текущий candidate сохранён; его
 `--fixtures-check`, полный spec lint и `git diff --check` зелёные, но broad pairs требуют fix.
 
-**Remaining:** P4.15 добавляет closed policy/confirmation/audit-export driver inputs и selftest.
-Только затем resume W2 проводит пятишардовую реконструкцию, exact evidence review,
+**Remaining:** P4.15 closed at `8919b92`; resume W2 проводит пятишардовую реконструкцию, exact evidence review,
 единственную пятишардовую fix-итерацию и последовательное закрытие P4.12→P4.10→P4.11;
 затем solo P4.13 выпускает A3/evidence-map,
 `plan-close AGENTOOLS P4` и cold-start Gate B round 2 P5.1.
@@ -31,8 +31,7 @@
 `plans/AGENTOOLS/research/16-p4-w2-dor-reconcile-2026-08.md` §5 · `plans/AGENTOOLS/roadmap.md` W2 ·
 `plans/AGENTOOLS/workflows/wf-agentools-p4-remediation.js`.
 
-**Open risks:** До P4.15 W2 fail-closed: policy/confirmation/audit stimuli нельзя прятать в
-payload. После P4.15 shard-boundary снижает размер одного контекста, но общий aggregate всё равно
+**Open risks:** P4.15 makes policy/confirmation/audit stimuli typed; shard-boundary снижает размер одного контекста, но общий aggregate всё равно
 обязан остановиться при неполном exact-set, пересечении write-set, чужом dirty path или
 Major/Blocker после единственной итерации — без частичного close. P4.13 не имеет права объявлять
 semantic Gate B GREEN.
