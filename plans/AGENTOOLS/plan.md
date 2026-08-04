@@ -10,14 +10,14 @@
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-04 (P4.10 greenfield AOB-25 repair closed; P4.13 resumed on its preserved candidate.) |
+| Last Updated | 2026-08-04 (P4.13 closed: relation-aware evidence-map and formal A3 reissued.) |
 | Repository | `~/projects/packages/agentools` (приватный, без remote) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
 | Target Operator Models | sonnet (exec) · haiku (LOW) · opus (нормативный авторинг/аудит) |
 | Approval Owner | Dmitry Vostrikov |
 | Home | brain |
-| Design Passes | 3/3 — кросс-репо и ядро экосистемы: три прохода авторинга завершены 2026-07-27, все фазы доведены до DoR, `finish`/`roadmap.md` и design-аудит выполнены. Поздние audit-driven реопены D141/D146/D150, item-reconcile D149, fix-forward D152, item re-design D153/D156/D158/D159/D160 и driver-contract remediation D157 не увеличивают авторский бюджет: это адресная ремедиация исполняемого плана. Следующий шаг — исполнить greenfield repair P4.10, возобновить P4.13, затем закрыть P4 и запустить новый P5.1 round 2. |
+| Design Passes | 3/3 — кросс-репо и ядро экосистемы: три прохода авторинга завершены 2026-07-27, все фазы доведены до DoR, `finish`/`roadmap.md` и design-аудит выполнены. Поздние audit-driven реопены D141/D146/D150, item-reconcile D149, fix-forward D152, item re-design D153/D156/D158/D159/D160 и driver-contract remediation D157 не увеличивают авторский бюджет: это адресная ремедиация исполняемого плана. Следующий шаг — закрыть P4, затем запустить новый P5.1 round 2 свежим контекстом. |
 
 ## 1. Context
 
@@ -208,7 +208,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P1 | **A0** — ре-верификация финала MCP 2026-07-28 + пин коммита и `schema.json` | 3/3 | 🟢 Done |
 | P2 | **A1** — bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
 | P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/24 | 🟠 Done with deviations |
-| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 14/15 | 🟡 In progress |
+| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 15/15 | 🟢 Done |
 | P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 0/3 | 🔴 Blocked |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | ⬜ Not started |
@@ -413,6 +413,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 ## 6. Update Log
 
 | Дата | Кто (role/model) | Что |
+| 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.13 (`2ffff1c`) closed: relation-aware 27/116 evidence-map, real mutation rejects and formal A3; P4 is ready to close. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.10 (`499fe1a`) closed: AOB-25 `audit-004/104` now has one mapping-version counterfactual; P4.13 resumes on its preserved candidate — details in phases/P4.md. |
 | 2026-08-04 | plan-design/frontier-high | P4.10 снова доведён до DoR по greenfield-инварианту D160: `audit-004/104` получает exact-one AOB-25 counterfactual; Done → In progress, 0.31.0 → 0.32.0. |
 | 2026-08-04 | plan-design/frontier-high | P4.13 доведён до DoR по D159: structured pair evidence + real mutation reject-path; Blocked → In progress, 0.30.0 → 0.31.0. |
