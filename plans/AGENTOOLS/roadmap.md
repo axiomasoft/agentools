@@ -1,6 +1,6 @@
 # Roadmap исполнения — AGENTOOLS
 
-**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.24.0 · **Следующий исполнимый участок:** close/audit P3, затем P4.9. Brain — SSOT; эта копия синхронизирована для работы из репозитория.
+**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.25.0 · **Следующий исполнимый участок:** immediate P4.14, затем P4.9. Brain — SSOT; эта копия синхронизирована для работы из репозитория.
 
 Карта отвечает на «какую команду дальше?» без разбора всего плана. Она **не переопределяет**
 `plan.md` §3 Routing (модели и effort — оттуда), а только группирует запуски и называет гейты
@@ -22,9 +22,9 @@ bookkeeping + handoff), батч закрытия не сливает. (2) `solo
 
 **Порядок фаз.** P1 и P2 независимы (D21) — P2 закрыта. Дальше строго последовательно:
 P3 гейтится P1, P4 гейтится P3, P5 гейтится P3+P4; P6–P11 — GREEN P5.1, baseline P5.3 и freeze P5.2.
-**Remediation-order после Gate B round 1 и двух RED-аудитов P3 (D141–D151):** P3.16 → owner-gates
-P3.17/P3.18 → P3.19/A2 → RED-аудит → P3.20 → P3.21 → P3.22 → P3.23/A2 → close/audit P3 → P3.24 → close/audit P3 →
-P4.9 → workflow W2 (P4.10/P4.11/P4.12, включая CFH-55 carrier D149) → P4.13/A3 → close P4 → P5.1 round 2. Старый W1 и
+**Remediation-order после Gate B round 1 и трёх RED-аудитов P3 (D141–D152):** P3.16 → owner-gates
+P3.17/P3.18 → P3.19/A2 → RED-аудит → P3.20 → P3.21 → P3.22 → P3.23/A2 → close/audit P3 → P3.24 → RED/AUDIT-CAP →
+P4.14 fix-forward → P4.9 → workflow W2 (P4.10/P4.11/P4.12, включая CFH-55 carrier D149) → P4.13/A3 → close P4 → P5.1 round 2. Старый W1 и
 P4.1–P4.8 терминальны и повторно не запускаются.
 
 ---
@@ -65,7 +65,8 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | P4.7 | — | — | — | — | **закрыт**; старый W1 повторно не запускается |
 | P4.8 | — | — | — | — | **закрыт**; старый W1 повторно не запускается |
 | P4.5 | — | — | — | — | **закрыт исторически**; формальный A3 не равен Gate B GREEN |
-| P4.9 | solo | `plan-run` | implementation/high | — | общий driver-state input W2; только после terminal P3.24 и повторного close/audit P3 без нового реопена |
+| P4.14 | solo | `plan-run` | implementation/high | — | immediate outer-shape/exact-inventory fix-forward D152; исполняется до P4.9 и пишет общий `tools/spec_lint.py` |
+| P4.9 | solo | `plan-run` | implementation/high | — | общий driver-state input W2; только после terminal P4.14 |
 | P4.10 | W2 | workflow | implementation/high | — | F1/F2/F4 behavior carriers; scope независим от scenario/static после P4.9 |
 | P4.11 | W2 | workflow | implementation/high | — | F5 scenario carriers; отдельные ids/files |
 | P4.12 | W2 | workflow | implementation/high | — | F3/F6/F8 static/checker + CFH-55 test-only `mcp_errors` schema и distinguishing harness pair; потребляет P3.23 |
@@ -103,35 +104,37 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | P11.3 | solo | `plan-run` | implementation/high | — | clean-checkout quality gate через единственный `tools/ci_gate.py` |
 | P11.4 | solo | `plan-run` | implementation/high | ✅ публикация только по owner decision | release candidate + независимый PHP/Dart consumer smoke |
 
-**Итого:** 99 items в фазах P1–P11. Точный живой счёт статусов — только `plan.md` §4; эта карта
+**Итого:** 100 items в фазах P1–P11. Точный живой счёт статусов — только `plan.md` §4; эта карта
 фиксирует порядок. Историческая раскладка: 7 групп `Batch` (16 items) и W1 (4 items).
-Текущая remediation добавляет 11 solo-items (P3.16–P3.24, P4.9, P4.13) и workflow W2
+Текущая remediation добавляет 12 solo-items (P3.16–P3.24, P4.14, P4.9, P4.13) и workflow W2
 (P4.10–P4.12). Owner-гейты Q-5/Q-27 закрыты P3.17/P3.18; второй реопен owner-гейтов не добавляет.
 
 ---
 
 ## Готовые launch-block'и групп
 
-### P3.24 закрыт — штатный close P3
+### P3 AUDIT-CAP — immediate P4.14
 
-**Next:** manual: implementation/low
+**Next:** ЗАПУСК ВРУЧНУЮ: implementation/high
 
 | Параметр | Значение |
 |:--|:--|
 | Model class | implementation |
-| Effort | low |
+| Effort | high |
 | Capabilities | — |
-| Context | NEW SESSION — phase close |
-| Суть | Сверить 24 terminal items P3 и подготовить независимый повторный audit. |
+| Context | continue (reset the session context) — ручной item |
+| Суть | Исправить outer `$defs` shape и exact inventory до запуска P4.9. |
 | Команда | — |
 
 ```text
-$ task:plan-close AGENTOOLS P3
+select the session model class implementation
+select the session effort high
+$ task:plan-run AGENTOOLS P4.14
 ```
 
 ### W2 — Gate B carrier remediation (P4.10–P4.12)
 
-**Next:** waiting: P3 терминальна и P4.9 терминальна → manual: implementation/high
+**Next:** waiting: P4.14 и P4.9 терминальны → manual: implementation/high
 
 | Параметр | Значение |
 |:--|:--|

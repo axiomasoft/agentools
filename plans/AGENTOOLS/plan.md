@@ -6,18 +6,18 @@
 |:--|:--|
 | Plan ID | AGENTOOLS |
 | Title | AgenTools: ревизия спеки `2026-08` (modern-only, MCP 2026-07-28) + conformance + PHP/Dart SDK + срезы CRM/ERP |
-| Version | 0.24.0 |
+| Version | 0.25.0 |
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-04 (P3 closed after P3.24; third independent audit awaits.) |
+| Last Updated | 2026-08-04 (owner выбрал fix-forward после P3 AUDIT-CAP; immediate P4.14.) |
 | Repository | `~/projects/packages/agentools` (приватный, без remote) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
 | Target Operator Models | sonnet (exec) · haiku (LOW) · opus (нормативный авторинг/аудит) |
 | Approval Owner | Dmitry Vostrikov |
 | Home | brain |
-| Design Passes | 3/3 — кросс-репо и ядро экосистемы: три прохода авторинга завершены 2026-07-27, все фазы доведены до DoR, `finish`/`roadmap.md` и design-аудит выполнены. Поздние audit-driven реопены D141/D146/D150 и item-reconcile D149 не увеличивают авторский бюджет: это адресная ремедиация исполняемого плана. Текущий следующий шаг — P3.24, затем повторный close/audit P3. |
+| Design Passes | 3/3 — кросс-репо и ядро экосистемы: три прохода авторинга завершены 2026-07-27, все фазы доведены до DoR, `finish`/`roadmap.md` и design-аудит выполнены. Поздние audit-driven реопены D141/D146/D150, item-reconcile D149 и fix-forward D152 не увеличивают авторский бюджет: это адресная ремедиация исполняемого плана. Текущий следующий шаг — P4.14, затем P4.9/W2. |
 
 ## 1. Context
 
@@ -133,6 +133,7 @@ solo, — D122.
 | — | P4.9 | implementation/high | manual | full | расширение driver-схемы корпуса против замороженного remediation-контракта D142; solo — общий вход W2 |
 | W2 | P4.10–P4.12 | implementation/high | manual | full | три независимых remediation-предмета после terminal P3/P4.9: behavior · scenario · static/checker; P4.12 также закрывает CFH-55 harness-парой D149; риск ложного semantic PASS, deterministic Validation, workflow D143 |
 | — | P4.13 | implementation/high | manual | full | терминальный A3 + deterministic evidence-map 32/116; solo, потому что потребляет весь W2 и формирует единственный вход Gate B round 2 |
+| — | P4.14 | implementation/high | manual | full | немедленный fix-forward P3 Audit F1/F2 после AUDIT-CAP: outer `$defs` shape + exact inventory; solo до P4.9, потому что пишет общий `tools/spec_lint.py` и восстанавливает честный A2 carrier |
 | — | P5.1 | frontier/xhigh | manual | full | гейт волны: содержательный адверсариальный аудит — открытые суждения (различает ли вектор своё правило, конфликт с ADR чужих контуров, no-op-нормы), цена ошибки необратима (GREEN размораживает P6–P10 и открывает freeze) — Tier policy §9. Носитель — голый промпт item'а либо `task:plan-run` из сессии `frontier/xhigh`; `task:plan-audit` НЕ подходит: его субъект — фазы плана, а не артефакты ревизии (D61) |
 | — | P5.3 | frontier/high | manual | full | quality baseline и reconciliation двух owner-решений: требуется суждение о публичной границе, но не новая семантика протокола; Chatom/AzGuard — evidence, не integration targets |
 | — | P5.2 | implementation/high | manual | full | freeze — необратимая публикация контракта (потребители пинят ревизию и тег), но открытых решений в item'е нет: механика предписана D19/D62, суждение вынесено владельцу гейтом Q-5/Q-10; effort high за инвариантность порядка шагов (прецедент P3.14/P4.5); поднято с черновой строки `implementation/medium`/`plan-exec` — D65 |
@@ -204,8 +205,8 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P0 | История: ревизия `2026-07-draft` (MCP 2025-11-25) — терминальна, не переоткрывается | 7/11 | 🟠 Done with deviations |
 | P1 | **A0** — ре-верификация финала MCP 2026-07-28 + пин коммита и `schema.json` | 3/3 | 🟢 Done |
 | P2 | **A1** — bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
-| P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 24/24 | 🟢 Done |
-| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 8/13 | 🟡 In progress |
+| P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/24 | 🟠 Done with deviations |
+| P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 8/14 | 🟡 In progress |
 | P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 0/3 | 🔴 Blocked |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | ⬜ Not started |
@@ -397,10 +398,12 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | D149 | 2026-08-04 | **Post-A3 source-amendment `CFH-55` закрывается фазово, без ложного carrier и без пересечения P3→fixtures.** P3.22 владеет `00`/`11` + производным `rules.json`; P3.23 выпускает authoring A2 через отдельные зелёные selftests и exact-set разбор единственной ошибки полного линтера `[CFH-55 → P4.12]`. P4.12 расширяет test-only `harness-case` входом `mcp_errors` и создаёт positive/negative пару exact-vs-wrong code; P6.6 исполняет её и wrong-code mutant. P4.13 возвращает полный `spec_lint` без `--allow-missing` в green до A3. Отклонено: добавить fixture в P3.22 (ломает phase-first), пометить `Not testable`/ослабить MUST (маскирует testable public contract), приписать CFH-55 существующему кейсу (ложный sole carrier), объявить красный полный линтер зелёным. **Consequences:** supersedes D146 только в части прежнего ожидания, что P3.23 завершится полным coverage-green; платим временным явно названным gap между A2 и A3 и расширением P4.12/P6.6, зато сохраняем границы фаз и различающую проверку. | `phases/P3.md` P3.22 escalation/P3.23; `phases/P4.md` P4.12/P4.13; `phases/P6.md` P6.6; `research/13-p3-red-audit-remediation-2026-08.md` §7. `RAG:— (repo-grounded)` |
 | D150 | 2026-08-04 | **P3 реопенена в третий раз после RED-аудита захода 2: terminal P3.1–P3.23 сохраняются, новый fail-closed ремонт живёт в P3.24.** Status Board переведён в `🟡`, версия 0.23.0 → 0.24.0, Phase Handoff инвалидирован. **Consequences:** supersedes D146 только в части утверждения, что P3-remediation исчерпывается P3.20–P3.23; платим ещё одним close/audit и задержкой P4.9, зато ложный GREEN checker'а не передаётся в P4/P6–P8. | `phases/P3.md` Audit P3 заход 2 F1; `research/14-p3-open-enum-fail-closed-2026-08.md`. `RAG:— (repo-grounded)` |
 | D151 | 2026-08-04 | **Schema-values gate двухслойный: обычный/full `spec_lint` остаётся stdlib-only и fail-closed отвергает любой branch/keyword вне канонического shape; специальный `--schema-values-selftest` обязан сверять probes и мутации через `jsonschema.Draft202012Validator`, а отсутствие oracle завершает команду exit 2.** Сетевой install из инструмента запрещён. Отклонено: расширять частичный интерпретатор по одному keyword и снова иметь молчаливую неполноту; отклонено: полный JSON Schema validator в обычном lint. **Consequences:** supersedes D14 только для адресного schema-values selftest; платим явной локальной test-зависимостью, зато отсутствие зависимости или новая форма не могут дать семантический PASS. | `findings/P3-jsonschema-oracle-2026-08.md`; `research/14-p3-open-enum-fail-closed-2026-08.md` §§1–2. `RAG:✅ 2026-08-04: официальная документация python-jsonschema, Draft202012Validator` |
+| D152 | 2026-08-04 | **Владелец выбрал fix-forward после RED/AUDIT-CAP P3: P3 сдаётся `🟠` с named debt F1/F2, а immediate P4.14 до P4.9 устраняет outer-shape fail-open.** Канон checker'а: exact registry 12 `(schema file, $defs name)`; definition keys ровно `description`/`oneOf`; structural gate получает полный definition, oracle валидирует его же без реконструкции; sibling `maxLength`, `oneOf→allOf` и исчезновение inventory — обязательные negative mutations. Отклонено: четвёртый P3-item (Task Contract даёт `LOOP_BUDGET_EXCEEDED`); эвристическое discovery только по текущему shape; принятие долга без кода. **Consequences:** P3 остаётся исторически `🟠`, P4 получает один solo-item и сдвигает P4.9/W2, зато fix исполним при зелёном Task Contract и не переписывает P3.1–P3.24. | Ответ владельца после Audit P3 захода 3: «надо фиксить»; `phases/P3.md` Audit F1/F2; `research/15-p4-open-enum-outer-fix-2026-08.md`. `RAG:— (owner decision + repo-grounded)` |
 
 ## 6. Update Log
 
 | Дата | Кто (role/model) | Что |
+| 2026-08-04 | plan-design/frontier-high | Owner fix-forward после P3 AUDIT-CAP: D152, P3 → 🟠 с debt F1/F2, immediate P4.14 доведён до DoR; 0.24.0 → 0.25.0. |
 | 2026-08-04 | plan-close/implementation-low | P3 закрыта: 24/24 🟢, P3.24 восстановил fail-closed A2 gate; следующий шаг — независимый audit P3, Docs-sync не требуется. |
 | 2026-08-04 | plan-run/gpt-5.6-high | P3.24 (`0279f59`) закрыт: open-enum checker fail-closed, Draft 2020-12 oracle ловит обе мутации; P3 ждёт close/audit — детали см. phases/P3.md P3.24 Completion Notes. |
 | 2026-08-04 | plan-design/frontier-high | RED-аудит P3 захода 2 приземлён реопеном: P3.24 доведён до DoR, D150–D151, research §14; бухгалтерия F2–F5 исправлена; 0.23.0 → 0.24.0. |

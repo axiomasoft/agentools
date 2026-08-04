@@ -765,3 +765,14 @@ DoR без ложного покрытия и без переноса fixtures �
 потерянное Known Deviation P3.21, item-хеши P3.20–P3.23 в Update Log и плавающий `HEAD`-якорь
 P3.23. Анти-скоуп аудита сохраняется: не менять нормативные source-схемы, `CFH-55`, глоссарий,
 F1–F6 первого аудита, P4/P6 fixtures, Gate B, `2026-07-draft` и owner-гейты Q-10/Q-30/Q-31.
+
+---
+
+## 2026-08-04 — owner fix-forward после P3 AUDIT-CAP
+
+После RED-аудита P3 захода 3 владелец дал прямую директиву: «надо фиксить». Исполняемый
+Task Contract запрещает четвёртый P3-item кодом `LOOP_BUDGET_EXCEEDED`, поэтому решение
+приземляется канонически: P3 сдаётся `🟠 Done with deviations` с named debt F1/F2, а новый
+P4.14 немедленно чинит outer `$defs` shape и exact inventory до P4.9. Директива не разрешает
+менять normative schemas, `CFH-55`, fixtures, P4.9–P4.13, Gate B или исторические Completion
+Notes P3.1–P3.24. Решение зарегистрировано как D152.
