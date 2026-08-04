@@ -1,24 +1,23 @@
-# HANDOFF — 2026-08-04 — after P5.2
+# HANDOFF — 2026-08-04 — after P5
 
-**Next:** `/task:plan-audit AGENTOOLS P5`
+**Next:** «ЗАПУСК ВРУЧНУЮ: `implementation/high`»
 
 | Параметр | Значение |
 |:--|:--|
-| Model | implementation, затем frontier |
-| Thinking | low close, затем xhigh audit |
+| Model | implementation |
+| Thinking | high |
 | Context | continue — ручной item |
-| Суть | Все 3 items зелёные; формально закрыть P5 и выполнить обязательный adversarial phase audit. |
+| Суть | P5 terminal/audit GREEN; начать P6.1 только по frozen tag `spec-2026-08` (`2333394`). |
 | Команда | — |
 
 ```
-$ task:plan-close AGENTOOLS P5
-$ task:plan-audit AGENTOOLS P5
+$ task:plan-run AGENTOOLS P6.1
 ```
 
-**Done:** P5.1 (`f810d62`) GREEN; P5.3 (`6ece4e7`) baseline; P5.2 (`84128d4`) frozen README и
-аннотированный локальный tag `spec-2026-08`. Q-30/Q-31/Q-10 resolved D174–D176.
+**Done:** P5.1 (`f810d62`) GREEN; P5.3 (`6ece4e7`) baseline; P5.2 frozen README. Audit P5
+закрыл F1/D178 и F2/D179; canonical annotated tag `spec-2026-08` → `2333394`.
 
-**Remaining:** close/audit P5; исправить все findings до terminal verdict.
+**Remaining:** P5 — нет. Следующий scope плана P6.
 
 **Sources of truth:** `research/22-p5-round2-observational-remediation-2026-08.md` ·
 `artifacts/P5-gate-b.md` F9–F17 · `plan.md` D161–D164 · `phases/P3.md` P3.25 ·
