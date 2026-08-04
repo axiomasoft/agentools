@@ -6,7 +6,7 @@
 |:--|:--|
 | Plan ID | AGENTOOLS |
 | Title | AgenTools: ревизия спеки `2026-08` (modern-only, MCP 2026-07-28) + conformance + PHP/Dart SDK + срезы CRM/ERP |
-| Version | 0.33.3 |
+| Version | 0.33.4 |
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
@@ -417,6 +417,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | D164 | 2026-08-04 | **F17/Q-28 resolved: ревизия `2026-08` нормирует отмену только на уровне действия; scenario-run cancellation не нормируется и outcome `CANCELLED` не вводится.** Ратифицируется существующая норма LOP-26, normative bytes не меняются. **Consequences:** отменённый шаг не получает придуманного маршрута SCN-6; расширение возможно только новой датированной ревизией. | Owner decision 2026-08-04; `07_long-operations.md` LOP-26; `open-questions.md` Q-28. `RAG:— (owner decision + repo-grounded)` |
 | D165 | 2026-08-04 | **P3.25 пропущен по решению: Task Contract fail-closed вернул `LOOP_BUDGET_EXCEEDED`, а F17 уже полностью разрешён D164/Q-28 на неизменном LOP-26. Обход компилятора запрещён; исполнимая remediation остаётся P4.16–P4.19.** **Consequences:** отдельный evidence-файл P3.25 не создаётся, P3 сохраняет исторический `🟠`; source truth восстанавливается прямой трассировкой D164→Q-28→LOP-26. | Pre-mutation result P3.25 `block:LOOP_BUDGET_EXCEEDED`; owner directive не разрешает нарушать machine gate. `RAG:— (repo-grounded)` |
 | D166 | 2026-08-04 | **P4.17 адресно дополняет закрытый P4.16 contract двумя сырыми harness facts: `tool_boundary.args_subset` и классификацией baggage `opaque_identifier|personal_data|argument_value|confirmation_token`.** Это не verdict: spy фиксирует реальные args, а classifier задаёт тип входного значения до SUT. **Consequences:** `schema/vector.json` и README добавлены в Files P4.17; ALC-2/18 и AOB-29/30 больше не зависят от magic value. | Первый pre-implementation срез P4.17; Gate B F11/F13; D162. `RAG:— (repo-grounded)` |
+| D168 | 2026-08-04 | **P4.18 сохраняет non-target coverage отдельными raw carriers и обновляет производный `coverage.md` в том же item, потому что target carriers становятся single-rule.** Совмещение target с прежними правилами отклонено: exact 13 checker не должен маскироваться агрегирующим positive. **Consequences:** `coverage.md` добавлен в Files P4.18; P4.19 всё равно переиздаёт финальный semantic manifest/A3. | Фактический traceability diff после single-rule rewrite; P4.18 Validation full coverage=0. `RAG:— (repo-grounded)` |
 
 ## 6. Update Log
 
@@ -424,6 +425,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 
 | Дата | Кто (role/model) | Что |
 |:--|:--|:--|
+| 2026-08-04 | plan-design/frontier-high | D168: P4.18 сохраняет 7 non-target rules отдельными raw carriers и владеет обновлением coverage; 0.33.3 → 0.33.4. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P4.17 (`8ca0a8e`) closed: exact 38 behavior pairs, 76 schema-valid members, 38/38 self-report mutants rejected, banned shortcuts 0. |
 | 2026-08-04 | plan-design/frontier-high | P4.17 Files исправлен `l1/lifecycleintegrity` → фактический `l3/lifecycleintegrity`; scope exact 38 не менялся; 0.33.2 → 0.33.3. |
 | 2026-08-04 | plan-design/frontier-high | D166 дополнил P4.17 raw observation inputs (`args_subset`, baggage classification), чтобы F11/F13 не вернулись как magic carriers; 0.33.1 → 0.33.2. |
