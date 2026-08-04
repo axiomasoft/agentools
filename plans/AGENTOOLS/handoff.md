@@ -1,34 +1,27 @@
-# HANDOFF — 2026-08-04 — after P3.22
+# HANDOFF — 2026-08-04 — after P3.23
 
-**Next:** ЗАПУСК ВРУЧНУЮ: implementation/high
+**Next:** `/task:plan-close AGENTOOLS P3`
 
 | Параметр | Значение |
 |:--|:--|
 | Model | implementation |
-| Thinking | high — terminal authoring A2 evidence |
-| Context | continue (/clear) — ручной item |
-| Суть | Исполнить P3.23: authoring/selftest A2 и честно зафиксировать единственный debt CFH-55. |
-| Команда | — |
+| Thinking | low — сверить терминальную фазу |
+| Context | NEW SESSION — шаг-не-item |
+| Суть | Закрыть P3 и сверить handoff перед повторным аудитом. |
+| Команда | `/task:plan-close AGENTOOLS P3` |
 
-```text
-$ task:plan-run AGENTOOLS P3.23
-```
+**Done:** P3.23 закрыт item-коммитом `86395cf`: переиздано A2 evidence с F1–F5, зелёными
+authoring/selftest-ами и точным sole debt `CFH-55 → P4.12`. Фаза P3 терминальна.
 
-**Done:** P3.22 закрыт item-коммитом `fd4a52c`: source `CFH-55`, шесть глоссарных определений и
-детерминированный `rules.json` опубликованы. Полный линтер ожидаемо красный только на
-`CFH-55`, carrier отложен D149 к P4.12, runtime-предикат — к P6.6.
+**Remaining:** После `plan-close` повторно аудировать P3. Полный coverage возвращает P4.12,
+затем P4.13; P6.6 исполняет runtime wrong-code mutant.
 
-**Remaining:** P3.23 выпускает authoring A2 с зелёными selftest-ами и exact-set единственной
-ошибки полного линтера `[CFH-55 → P4.12]`; затем закрыть и снова аудировать P3. P4.12 обязан
-вернуть полный coverage green до P4.13/A3.
-
-**Sources of truth:** `plans/AGENTOOLS/plan.md` D149/§3/§4 ·
-`plans/AGENTOOLS/phases/P3.md` P3.22/P3.23 · `plans/AGENTOOLS/phases/P4.md` P4.12/P4.13 ·
-`plans/AGENTOOLS/phases/P6.md` P6.6 ·
-`plans/AGENTOOLS/research/13-p3-red-audit-remediation-2026-08.md` §7.
+**Sources of truth:** `plans/AGENTOOLS/plan.md` D146–D149/§3/§4 ·
+`plans/AGENTOOLS/phases/P3.md` P3.23 · `plans/AGENTOOLS/artifacts/P3-gate-a2.md` P3.23 ·
+`plans/AGENTOOLS/phases/P4.md` P4.12/P4.13 · `plans/AGENTOOLS/phases/P6.md` P6.6.
 
 **Open risks:** До P4.12 полный `spec_lint` обязан оставаться красным ровно на `CFH-55`; любой
-второй gap/error — blocker P3.23. Gate B round 1 остаётся RED.
+иной gap/error блокирует дальнейшее продвижение. Gate B round 1 остаётся RED.
 
 **Workarounds/Deferred/Open questions:**
 
