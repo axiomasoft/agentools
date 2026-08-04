@@ -65,7 +65,7 @@
         "task_id": "task-1",
         "binding_id": "binding:task-1",
         "state": "completed",
-        "input_required_points": []
+        "input_required_operations": []
       }
     ]
   }

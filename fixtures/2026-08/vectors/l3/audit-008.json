@@ -74,9 +74,7 @@
         "kind": "audit_sink",
         "probe_id": "aob_29_external_sink",
         "record_count": 0,
-        "attribute_names": [
-          "action_id"
-        ],
+        "attribute_names": [],
         "baggage_count": 0,
         "baggage_bytes": 0
       }

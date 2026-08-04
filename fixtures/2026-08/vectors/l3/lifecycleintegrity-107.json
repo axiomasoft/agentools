@@ -62,6 +62,24 @@
           "spec_rev": "2026-08",
           "payload": {},
           "prev_hash": "sha-256:296e61177b2772410e56765268495ae7c9eb81d0cc7e02c6383dd3ce5d3c8a00"
+        },
+        {
+          "event_id": "ev-3",
+          "action_id": "act-1",
+          "seq": 3,
+          "expected_prev_seq": 2,
+          "ts": "2026-08-04T00:00:02Z",
+          "actor": {
+            "type": "system",
+            "id": "runtime"
+          },
+          "kind": "input_recorded",
+          "event_version": 1,
+          "spec_rev": "2026-08",
+          "payload": {
+            "input": "hash-probe"
+          },
+          "prev_hash": "sha-256:554735f2a8243fec58724f75d2231c45e3e98819329be333237ffff1feab89d4"
         }
       ]
     }
@@ -91,7 +109,8 @@
         "state": "running",
         "source_event_ids": [
           "ev-1",
-          "ev-2"
+          "ev-2",
+          "ev-3"
         ],
         "emitted_event_kinds": [],
         "source_unchanged": true,

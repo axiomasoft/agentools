@@ -185,6 +185,10 @@
           "type": "array",
           "items": { "$ref": "#/$defs/DriverProvenance" }
         },
+        "derivations": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/DriverDerivation" }
+        },
         "baggage": {
           "type": "array",
           "items": { "$ref": "#/$defs/DriverBaggageEntry" }
@@ -208,7 +212,8 @@
         "confirmation": { "$ref": "#/$defs/DriverConfirmation" },
         "audit_export": { "$ref": "#/$defs/DriverAuditExport" },
         "materialized_state": { "$ref": "#/$defs/DriverMaterializedState" },
-        "snapshot": { "$ref": "#/$defs/DriverSnapshot" }
+        "snapshot": { "$ref": "#/$defs/DriverSnapshot" },
+        "append_probe": { "$ref": "#/$defs/DriverAppendProbe" }
         },
       "description": "Закрытая driver-only обёртка. Секции опциональны: вектор задаёт только нужный stimulus; свободный state и неописанные ключи запрещены."
     },
@@ -259,6 +264,7 @@
       "properties": {
         "resource": { "type": "string", "minLength": 1 },
         "tool": { "type": "string", "minLength": 1 },
+        "call_id": { "type": "string", "minLength": 1 },
         "permissions": { "type": "array", "items": { "type": "string", "minLength": 1 } }
       },
       "description": "Разрешения на указанный resource/tool в момент шага; это driver input, а не MCP-wire authorization."
@@ -287,6 +293,27 @@
         "content_origin": { "$ref": "../../schema/2026-08/tool-descriptor.json#/$defs/ContentOrigin" }
       },
       "description": "Происхождение конкретного значения; enum берётся из опубликованной schema, а не дублируется."
+    },
+    "DriverDerivation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_address", "target_address", "operation"],
+      "properties": {
+        "source_address": { "type": "string", "minLength": 1 },
+        "target_address": { "type": "string", "minLength": 1 },
+        "operation": { "type": "string", "enum": ["substring", "parse", "transform", "compute"] }
+      },
+      "description": "Driver-owned линия происхождения производного значения; не verdict доверия."
+    },
+    "DriverAppendProbe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["storage_last_seq", "attempted_event"],
+      "properties": {
+        "storage_last_seq": { "type": "integer", "minimum": 0 },
+        "attempted_event": { "$ref": "../../schema/2026-08/lifecycle-event.json" }
+      },
+      "description": "Сырой stimulus append-adapter: фактическая голова хранилища и ещё не записанное событие."
     },
     "DriverBaggageEntry": {
       "type": "object",
@@ -359,6 +386,19 @@
       "properties": {
         "adapter_id": { "type": "string", "minLength": 1 },
         "mapping_version": { "type": "string", "minLength": 1 },
+        "registered_mappings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["version", "attributes"],
+            "properties": {
+              "version": { "type": "string", "minLength": 1 },
+              "attributes": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+            }
+          }
+        },
         "boundary": { "const": "external" },
         "attributes": { "type": "array", "items": { "type": "string", "minLength": 1 } },
         "audit_fields": { "type": "array", "items": { "type": "string", "minLength": 1 } }
@@ -419,6 +459,7 @@
           "required": ["tool", "args"],
           "properties": {
             "tool": { "type": "string", "description": "Имя вызываемого инструмента." },
+            "call_id": { "type": "string", "minLength": 1, "description": "Стабильный id конкретного вызова, назначенный driver до authorization check." },
             "args": { "type": "object", "additionalProperties": true, "description": "Доменные аргументы вызова, без confirmation_token — его подставляет рантайм на commit." },
             "meta": {
               "type": "object",
@@ -513,7 +554,8 @@
         { "$ref": "#/$defs/JournalProjectionObservation" },
         { "$ref": "#/$defs/AuditSinkObservation" },
         { "$ref": "#/$defs/TaskBindingObservation" },
-        { "$ref": "#/$defs/CredentialBoundaryObservation" }
+        { "$ref": "#/$defs/CredentialBoundaryObservation" },
+        { "$ref": "#/$defs/ConfirmationBoundaryObservation" }
       ],
       "description": "Закрытая сумма наблюдений, принадлежащих harness. Поле kind выбирает конкретную границу; generic/self-report observation отсутствует по конструкции."
     },
@@ -529,6 +571,7 @@
         "calls": { "type": "integer", "minimum": 0 },
         "route": { "type": "string", "enum": ["default", "isolated", "blocked"] },
         "args_subset": { "type": "object", "additionalProperties": true, "description": "Фактические аргументы, снятые adapter spy; сравниваются рекурсивно как подмножество." },
+        "call_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
         "actor_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
         "credential_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
       }
@@ -564,14 +607,14 @@
     "TaskBindingObservation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "probe_id", "task_id", "binding_id", "state", "input_required_points"],
+      "required": ["kind", "probe_id", "task_id", "binding_id", "state", "input_required_operations"],
       "properties": {
         "kind": { "const": "task_binding" },
         "probe_id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]+$" },
         "task_id": { "type": "string", "minLength": 1 },
         "binding_id": { "type": "string", "minLength": 1 },
         "state": { "type": "string", "enum": ["working", "input_required", "completed", "failed"] },
-        "input_required_points": { "type": "array", "uniqueItems": true, "items": { "type": "string", "enum": ["before_prepare", "before_commit", "between_steps", "after_tool_result"] } }
+        "input_required_operations": { "type": "array", "uniqueItems": true, "items": { "type": "string", "enum": ["prompts/get", "resources/read", "tools/call", "tasks/result"] } }
       }
     },
     "CredentialBoundaryObservation": {
@@ -585,6 +628,20 @@
         "principal_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
         "forwarded_credential_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
       }
+    },
+    "ConfirmationBoundaryObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "probe_id", "proposal_count", "token_issue_count", "token_consume_count", "decision_event_count"],
+      "properties": {
+        "kind": { "const": "confirmation_boundary" },
+        "probe_id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]+$" },
+        "proposal_count": { "type": "integer", "minimum": 0 },
+        "token_issue_count": { "type": "integer", "minimum": 0 },
+        "token_consume_count": { "type": "integer", "minimum": 0 },
+        "decision_event_count": { "type": "integer", "minimum": 0 }
+      },
+      "description": "Счётчики protocol-layer spy; фиксируют proposal/token/decision mechanics, не утверждают владельца механики."
     },
     "EventMatch": {
       "type": "object",

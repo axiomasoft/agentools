@@ -47,7 +47,8 @@
       },
       "authorization": {
         "resource": "report-7",
-        "tool": "demo_probe",
+      "tool": "demo_probe",
+      "call_id": "call-1",
         "permissions": [
           "demo.read"
         ]
@@ -62,6 +63,7 @@
       "llm_stub": {
         "toolCall": {
           "tool": "demo_probe",
+          "call_id": "call-1",
           "args": {
             "value": "sec-16"
           }
@@ -83,6 +85,9 @@
         "args_subset": {
           "value": "sec-16"
         },
+        "call_ids": [
+          "call-1"
+        ],
         "actor_ids": [
           "user-7",
           "agent-7",

@@ -207,6 +207,7 @@ OBSERVATIONAL_ARTIFACT_RULES = frozenset({
 })
 OBSERVATION_KINDS = frozenset({
     "tool_boundary", "journal_projection", "audit_sink", "task_binding", "credential_boundary",
+    "confirmation_boundary",
 })
 OBSERVATIONAL_BANNED_KEYS = frozenset({
     "projection_source", "write_back_upcast", "source_of_truth",
@@ -1797,8 +1798,10 @@ def validate_artifact_subject(subject, repo_root, source):
         ):
             errors.append(f"{source}: baseline обязан нести raw run outcomes PHP/Dart")
         else:
-            observed = {key: status for run in runs for key, status in run["outcomes"].items()}
-            if any(observed.get(key) != "failed" for key in known):
+            if any(
+                any(run["outcomes"].get(key) != "failed" for run in runs)
+                for key in known
+            ):
                 errors.append(f"{source}: healed baseline entry обязана быть ошибкой прогона")
     elif kind == "ci_pipeline":
         data = json.loads(inline)
@@ -2674,6 +2677,248 @@ def _spec_source_digest(repo_root):
     return digest.hexdigest()
 
 
+def _semantic_preflight_checks(by_rule, repo_root):
+    """P4.20: named sufficiency checks plus one schema-valid/raw mutant per gap class."""
+    errors = []
+    results = []
+
+    def bundle(*rule_ids):
+        return {
+            rule_id: [deepcopy(record["data"]) for record in sorted(by_rule.get(rule_id, []), key=lambda row: row["id"])[:2]]
+            for rule_id in rule_ids
+        }
+
+    def observations(data, kind):
+        return [row for row in data.get("expect", {}).get("observations", []) if row.get("kind") == kind]
+
+    def tool_call(data):
+        return next(step["llm_stub"]["toolCall"] for step in data["script"] if "llm_stub" in step)
+
+    def register(name, rule_ids, predicate, mutate):
+        source = bundle(*rule_ids)
+        canonical = False
+        mutant_rejected = False
+        try:
+            canonical = bool(predicate(source))
+        except (KeyError, IndexError, TypeError, ValueError, StopIteration, json.JSONDecodeError):
+            canonical = False
+        try:
+            mutant = deepcopy(source)
+            mutate(mutant)
+            mutant_rejected = not bool(predicate(mutant))
+        except (KeyError, IndexError, TypeError, ValueError, StopIteration, json.JSONDecodeError):
+            mutant_rejected = True
+        if not canonical:
+            errors.append(f"semantic preflight {name}: canonical carrier не доказывает invariant")
+        if canonical and not mutant_rejected:
+            errors.append(f"semantic preflight {name}: адресная мутация не отвергнута")
+        results.append({
+            "name": name,
+            "rule_ids": list(rule_ids),
+            "result": "passed" if canonical and mutant_rejected else "failed",
+            "mutant": "rejected" if mutant_rejected else "accepted",
+        })
+
+    confirmation_keys = ("proposal_count", "token_issue_count", "token_consume_count", "decision_event_count")
+
+    def confirmation_layer(source):
+        for rule_id in ("TLP-11", "CNF-6", "CNF-8"):
+            left, right = source[rule_id]
+            left_obs = observations(left, "confirmation_boundary")
+            right_obs = observations(right, "confirmation_boundary")
+            if len(left_obs) != 1 or left_obs != right_obs or any(left_obs[0].get(key) != 1 for key in confirmation_keys):
+                return False
+            if any(observations(data, "tool_boundary")[0].get("calls") != 1 for data in (left, right)):
+                return False
+        tlp_left, tlp_right = source["TLP-11"]
+        actions = [data["given"]["tools"][0]["_meta"]["dev.agentools/action"] for data in (tlp_left, tlp_right)]
+        cnf6 = [data["given"]["policy"]["rules"][0] for data in source["CNF-6"]]
+        cnf8 = [data["given"]["policy"]["rules"][0] for data in source["CNF-8"]]
+        return (
+            {row["side_effect"] for row in actions} == {"write"}
+            and {row["confirmation"] for row in actions} == {"none", "confirm"}
+            and {row["verdict"] for row in cnf6} == {"allow", "ask"}
+            and all(data["given"]["tools"][0]["_meta"]["dev.agentools/action"]["side_effect"] == "irreversible" for data in source["CNF-6"])
+            and len({row["scope"] for row in cnf8}) == 2
+            and {row["verdict"] for row in cnf8} == {"ask"}
+        )
+
+    def mutate_confirmation(source):
+        observations(source["TLP-11"][0], "confirmation_boundary")[0]["token_consume_count"] = 0
+
+    register("confirmation-layer-boundary", ("TLP-11", "CNF-6", "CNF-8"), confirmation_layer, mutate_confirmation)
+
+    allowed_operations = {"prompts/get", "resources/read", "tools/call", "tasks/result"}
+
+    def clarification_operations(source):
+        rows = source["CLR-8"]
+        operations = [observations(data, "task_binding")[0]["input_required_operations"] for data in rows]
+        return all(set(items) <= allowed_operations for items in operations) and {tuple(items) for items in operations} == {(), ("tasks/result",)}
+
+    register(
+        "clarification-protocol-operations", ("CLR-8",), clarification_operations,
+        lambda source: observations(source["CLR-8"][0], "task_binding")[0].update(input_required_operations=[]),
+    )
+
+    def mapping_registry(source):
+        rows = source["AOB-25"]
+        registered = [row["given"]["driver_state"]["audit_export"]["registered_mappings"] for row in rows]
+        selected = [row["given"]["driver_state"]["audit_export"]["mapping_version"] for row in rows]
+        membership = [value in {entry["version"] for entry in registry} for value, registry in zip(selected, registered)]
+        counts = [observations(row, "audit_sink")[0]["record_count"] for row in rows]
+        return registered[0] == registered[1] and membership == [False, True] and counts == [0, 1]
+
+    register(
+        "audit-independent-mapping-registry", ("AOB-25",), mapping_registry,
+        lambda source: source["AOB-25"][1]["given"]["driver_state"]["audit_export"].pop("registered_mappings"),
+    )
+
+    def wire_bytes(entries):
+        return len(",".join(f"{entry['key']}={entry['value']}" for entry in entries).encode("utf-8"))
+
+    def baggage_wire_limit(source):
+        rows = source["AOB-31"]
+        measures = [(len(row["given"]["driver_state"]["baggage"]), wire_bytes(row["given"]["driver_state"]["baggage"])) for row in rows]
+        sinks = [observations(row, "audit_sink")[0] for row in rows]
+        return (
+            measures == [(65, 8195), (64, 8192)]
+            and sinks[0]["record_count"] == 0 and sinks[0]["attribute_names"] == []
+            and sinks[1]["record_count"] == 1 and sinks[1]["baggage_bytes"] == 8192
+        )
+
+    register(
+        "baggage-wire-byte-boundary", ("AOB-31",), baggage_wire_limit,
+        lambda source: observations(source["AOB-31"][1], "audit_sink")[0].update(baggage_bytes=8191),
+    )
+
+    def derivation_lineage(source):
+        rows = source["SEC-9"]
+        origins = []
+        for row in rows:
+            provenance = row["given"]["driver_state"]["provenance"][0]
+            derivation = row["given"]["driver_state"]["derivations"][0]
+            args = tool_call(row)["args"]
+            if derivation["source_address"] != provenance["address"] or derivation["target_address"].split(".")[-1] not in args:
+                return False
+            origins.append(provenance["content_origin"])
+        return set(origins) == {"untrusted_external", "trusted.local"}
+
+    register(
+        "untrusted-derivation-lineage", ("SEC-9",), derivation_lineage,
+        lambda source: source["SEC-9"][0]["given"]["driver_state"].pop("derivations"),
+    )
+
+    def per_call_authorization(source):
+        rows = source["SEC-16"]
+        request_ids = [tool_call(row)["call_id"] for row in rows]
+        grants = [row["given"]["driver_state"]["authorization"] for row in rows]
+        spies = [observations(row, "tool_boundary")[0] for row in rows]
+        return (
+            request_ids == ["call-1", "call-1"]
+            and [grant["call_id"] == request for grant, request in zip(grants, request_ids)] == [False, True]
+            and [spy["call_ids"] for spy in spies] == [[], ["call-1"]]
+            and [spy["calls"] for spy in spies] == [0, 1]
+        )
+
+    register(
+        "authorization-per-call-binding", ("SEC-16",), per_call_authorization,
+        lambda source: tool_call(source["SEC-16"][1]).pop("call_id"),
+    )
+
+    def append_adapter(source):
+        for rule_id in ("ALC-20", "ALC-22", "ALC-23"):
+            rows = source[rule_id]
+            matches = []
+            for row in rows:
+                state = row["given"]["driver_state"]
+                if len(state["journal"]) != 1 or state["journal"][0]["seq"] != 1:
+                    return False
+                probe = state["append_probe"]
+                event = probe["attempted_event"]
+                matches.append(event["expected_prev_seq"] == probe["storage_last_seq"])
+                if event["seq"] != 2 or observations(row, "journal_projection")[0]["source_event_ids"] != ["ev-1"]:
+                    return False
+            if matches != [False, True]:
+                return False
+        return True
+
+    register(
+        "append-adapter-conflict-stimulus", ("ALC-20", "ALC-22", "ALC-23"), append_adapter,
+        lambda source: source["ALC-20"][0]["given"]["driver_state"].pop("append_probe"),
+    )
+
+    def event_hash(event, include_prev_hash=False):
+        value = event if include_prev_hash else {key: child for key, child in event.items() if key != "prev_hash"}
+        encoded = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        return "sha-256:" + hashlib.sha256(encoded).hexdigest()
+
+    def hash_composition(source):
+        negative, positive = source["ALC-36"]
+        for row in (negative, positive):
+            journal = row["given"]["driver_state"]["journal"]
+            if len(journal) != 3 or journal[1]["prev_hash"] != event_hash(journal[0]):
+                return False
+        neg_journal = negative["given"]["driver_state"]["journal"]
+        pos_journal = positive["given"]["driver_state"]["journal"]
+        return neg_journal[2]["prev_hash"] == event_hash(neg_journal[1], True) and pos_journal[2]["prev_hash"] == event_hash(pos_journal[1])
+
+    register(
+        "journal-hash-excludes-own-prev-hash", ("ALC-36",), hash_composition,
+        lambda source: source["ALC-36"][1]["given"]["driver_state"]["journal"].pop(),
+    )
+
+    def baseline_every_run(source):
+        negative, positive = source["CFH-24"]
+        neg_data = json.loads(negative["subject"]["inline"])
+        pos_data = json.loads(positive["subject"]["inline"])
+        key = "longop-002:notification-channel"
+        neg_statuses = [run["outcomes"].get(key) for run in neg_data["runs"]]
+        pos_statuses = [run["outcomes"].get(key) for run in pos_data["runs"]]
+        return (
+            "passed" in neg_statuses and "failed" in neg_statuses
+            and all(status == "failed" for status in pos_statuses)
+            and bool(validate_artifact_subject(negative["subject"], repo_root, negative["id"]))
+            and not validate_artifact_subject(positive["subject"], repo_root, positive["id"])
+        )
+
+    def mutate_baseline(source):
+        negative = source["CFH-24"][0]
+        data = json.loads(negative["subject"]["inline"])
+        for run in data["runs"]:
+            run["outcomes"]["longop-002:notification-channel"] = "failed"
+        negative["subject"]["inline"] = json.dumps(data, separators=(",", ":"))
+
+    register("known-failure-every-run", ("CFH-24",), baseline_every_run, mutate_baseline)
+
+    def append_attempt_accounting(source):
+        for rule_id in ("ALC-19", "ALC-26"):
+            for row in source[rule_id]:
+                observation = observations(row, "journal_projection")[0]
+                if not observation["emitted_event_kinds"] or observation["append_attempts"] < len(observation["emitted_event_kinds"]):
+                    return False
+        return True
+
+    register(
+        "journal-emission-append-accounting", ("ALC-19", "ALC-26"), append_attempt_accounting,
+        lambda source: observations(source["ALC-19"][0], "journal_projection")[0].update(append_attempts=0),
+    )
+
+    def empty_rejected_audit_sink(source):
+        for rule_id in ("AOB-25", "AOB-29", "AOB-30", "AOB-31"):
+            for row in source[rule_id]:
+                sink = observations(row, "audit_sink")[0]
+                if sink["record_count"] == 0 and sink["attribute_names"]:
+                    return False
+        return True
+
+    register(
+        "rejected-audit-sink-is-empty", ("AOB-25", "AOB-29", "AOB-30", "AOB-31"), empty_rejected_audit_sink,
+        lambda source: observations(source["AOB-25"][0], "audit_sink")[0].update(attribute_names=["gen_ai.provider.name"]),
+    )
+
+    return results, errors
+
+
 def build_gate_b_semantic_manifest(fixtures_root):
     """Build exact 51-rule observational projection and execute every mutant."""
     repo_root = fixtures_root.resolve().parents[1]
@@ -2762,6 +3007,8 @@ def build_gate_b_semantic_manifest(fixtures_root):
                 "mutant": {"id": f"raw-fact:{rule_id}", "result": "rejected", "diagnostic_count": len(negative_errors)},
             })
         evidence.append(row)
+    semantic_preflight, semantic_errors = _semantic_preflight_checks(by_rule, repo_root)
+    errors.extend(semantic_errors)
     present = {row["rule_id"] for row in evidence}
     gaps = sorted(set(target) - present)
     manifest = {
@@ -2774,6 +3021,11 @@ def build_gate_b_semantic_manifest(fixtures_root):
         "evidence": evidence,
         "gaps": gaps,
         "mutation_reject_count": sum(row.get("mutant", {}).get("result") == "rejected" for row in evidence),
+        "semantic_preflight": {
+            "checks": semantic_preflight,
+            "passed": sum(row["result"] == "passed" for row in semantic_preflight),
+            "mutation_reject_count": sum(row["mutant"] == "rejected" for row in semantic_preflight),
+        },
     }
     if len(evidence) != 51 or gaps:
         errors.append(f"gate-b semantic manifest: exact 51 нарушен (evidence={len(evidence)}, gaps={gaps})")
@@ -3415,11 +3667,16 @@ def run_observational_carriers_selftest(fixtures_root):
         "task_binding": {
             "kind": "task_binding", "probe_id": "task-channel", "task_id": "task-1",
             "binding_id": "binding-1", "state": "input_required",
-            "input_required_points": ["before_commit"],
+            "input_required_operations": ["tasks/result"],
         },
         "credential_boundary": {
             "kind": "credential_boundary", "probe_id": "resource-spy", "resource": "ledger",
             "principal_ids": ["user-1"], "forwarded_credential_ids": [],
+        },
+        "confirmation_boundary": {
+            "kind": "confirmation_boundary", "probe_id": "confirmation-spy",
+            "proposal_count": 1, "token_issue_count": 1, "token_consume_count": 1,
+            "decision_event_count": 1,
         },
     }
     errors = []
@@ -3451,7 +3708,7 @@ def run_observational_carriers_selftest(fixtures_root):
             )
         else:
             print(f"observation {kind}: schema-positive=0, schema-negative>0, self-report-reject>0")
-    return report(errors, "observational ownership: 5 kinds, positive + schema-invalid + self-report reject")
+    return report(errors, "observational ownership: 6 kinds, positive + schema-invalid + self-report reject")
 
 
 def run_keywords_check(schema_path, list_name):

@@ -156,14 +156,14 @@
           "classes": [
             "journal_projection"
           ],
-          "oracle_sha256": "d80c7545a5b40d4de1e758ceeb84f1792f9aecd4e1128bbd7ac91504a5e44d36"
+          "oracle_sha256": "c051a3f28b8e194ff9abfb8659e7eb3b469d8bdd554e710524e10ad0d41979ff"
         },
         {
           "carrier_id": "lifecycleconcurrency-101",
           "classes": [
             "journal_projection"
           ],
-          "oracle_sha256": "d80c7545a5b40d4de1e758ceeb84f1792f9aecd4e1128bbd7ac91504a5e44d36"
+          "oracle_sha256": "c051a3f28b8e194ff9abfb8659e7eb3b469d8bdd554e710524e10ad0d41979ff"
         }
       ],
       "rule_id": "ALC-19",
@@ -268,14 +268,14 @@
           "classes": [
             "journal_projection"
           ],
-          "oracle_sha256": "355e6a0e8f760bc14bc71dd6049690ca391f1d0e60e18146d7989afecb6da397"
+          "oracle_sha256": "5fb350584c34638f9fa37553087126d7f1e02d6b774759fb2768529d1b0e3db5"
         },
         {
           "carrier_id": "lifecycleconcurrency-102",
           "classes": [
             "journal_projection"
           ],
-          "oracle_sha256": "692957be243ca2dc72bf501b1d3026e69414ac94fea9f70e2f292bd4b3733df8"
+          "oracle_sha256": "a7430f2e133131d9b516756b66fb99ae316e3c629a8cec62129cfd03d55c76c2"
         }
       ],
       "rule_id": "ALC-20",
@@ -298,7 +298,7 @@
             "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
           }
         ],
-        "pointer": "/given/driver_state/journal/1/expected_prev_seq",
+        "pointer": "/given/driver_state/append_probe/attempted_event/expected_prev_seq",
         "relation": "value"
       }
     },
@@ -321,14 +321,14 @@
           "classes": [
             "journal_projection"
           ],
-          "oracle_sha256": "bae2758e65a6e5a40ca2a348a83cb80ee77266be1eb79f8241fc82951b1e02b6"
+          "oracle_sha256": "980c68c14bf19cf9b9748883d6b11d1502290614e48c39ca377cefb5ca51761f"
         },
         {
           "carrier_id": "lifecycleconcurrency-104",
           "classes": [
             "journal_projection"
           ],
-          "oracle_sha256": "298a54b3bde9e3f6378fad1bbeeaf4d21d42695ae5ab1702b7272df8cdca44bf"
+          "oracle_sha256": "5915913c68dfc4d9d099535707d8416a73541d4a965b1700e6b052df7d5a4d09"
         }
       ],
       "rule_id": "ALC-22",
@@ -351,7 +351,7 @@
             "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
           }
         ],
-        "pointer": "/given/driver_state/journal/1/expected_prev_seq",
+        "pointer": "/given/driver_state/append_probe/attempted_event/expected_prev_seq",
         "relation": "value"
       }
     },
@@ -374,14 +374,14 @@
           "classes": [
             "journal_projection"
           ],
-          "oracle_sha256": "cce5d52d2336c231f756ec2a65a029c6b80443848751137174acbb8f3fc504cf"
+          "oracle_sha256": "4ea6b9b001021983890b71616c172e189969bcdffa7b1bbd466b9e9538d68b32"
         },
         {
           "carrier_id": "lifecycleconcurrency-105",
           "classes": [
             "journal_projection"
           ],
-          "oracle_sha256": "12cb8548d77d211be78bdc6e0402ef5504af03f52a3b3d0ceef594f756ce285c"
+          "oracle_sha256": "0013311f9585dbb7722293fb75c4a9c77c8c2354d2a0926006d2002fe5567f6f"
         }
       ],
       "rule_id": "ALC-23",
@@ -404,7 +404,7 @@
             "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
           }
         ],
-        "pointer": "/given/driver_state/journal/1/expected_prev_seq",
+        "pointer": "/given/driver_state/append_probe/attempted_event/expected_prev_seq",
         "relation": "value"
       }
     },
@@ -427,14 +427,14 @@
           "classes": [
             "journal_projection"
           ],
-          "oracle_sha256": "d83bde47d203463d55d9fd4dda830a95f1ce5dfdfdb55ac9c4ca7d5f7654582f"
+          "oracle_sha256": "271c8a3539b41af50325c0f040058dd22192be8150460ce14220cbc1aeda482b"
         },
         {
           "carrier_id": "lifecycleconcurrency-107",
           "classes": [
             "journal_projection"
           ],
-          "oracle_sha256": "254df49a8529b5a21c7ee6499957c382ac305a7394ac319b3c746fef34315bf4"
+          "oracle_sha256": "69880008a14a21148a35ca587301fd46971c199884f56dbd6497b03f87feb9f7"
         }
       ],
       "rule_id": "ALC-26",
@@ -856,14 +856,14 @@
           "classes": [
             "journal_projection"
           ],
-          "oracle_sha256": "31d85550078cb4f6c71b8b139709200450a2d0e17165f753ee92c176e5ed771c"
+          "oracle_sha256": "4cf4903756ea067ced2a246b89e579094fe5b947c000c07422ec0f0faa812850"
         },
         {
           "carrier_id": "lifecycleintegrity-107",
           "classes": [
             "journal_projection"
           ],
-          "oracle_sha256": "335b7203d182ab4b9b97039069562391583ac1c21e085456c0e233d9be3c12a2"
+          "oracle_sha256": "6d92ba9f417800347aa4ce3bd8186a6c273bd44bc4c9b98465cd391c225dda89"
         }
       ],
       "rule_id": "ALC-36",
@@ -875,7 +875,7 @@
               "event_kinds": [],
               "final_state": "failed"
             },
-            "value_hash": "4852f888b84b1d4b96488d59837e33d47bb777effcd04626c01f48110a0bafe7"
+            "value_hash": "8cbb253bf1b20be0a507b6521cb472eccc6648b3f4ef278e49992e56046e47da"
           },
           {
             "id": "lifecycleintegrity-107",
@@ -883,10 +883,10 @@
               "event_kinds": [],
               "final_state": "running"
             },
-            "value_hash": "22991a1f4351ff736faa65ff4082d73e7eafe29fdf991f2cd3e8fb87b6b2eba5"
+            "value_hash": "74f276ca3f840c8d7c528abe4c42775cb1b1485a1ae58147a6f477802a17288c"
           }
         ],
-        "pointer": "/given/driver_state/journal/1/prev_hash",
+        "pointer": "/given/driver_state/journal/2/prev_hash",
         "relation": "value"
       }
     },
@@ -1015,7 +1015,7 @@
           "classes": [
             "audit_sink"
           ],
-          "oracle_sha256": "4d53e1b41d95e7ab90139f92e38e674f3ff12fa1e2b714e414f7ecbbd89cc6a9"
+          "oracle_sha256": "70daf2c2dcbab8d0d28bfb66121b96108136496f13b951eae93606e336e3c4e6"
         },
         {
           "carrier_id": "audit-104",
@@ -1068,7 +1068,7 @@
           "classes": [
             "audit_sink"
           ],
-          "oracle_sha256": "f6324c9095637f2b90a38435d18ed045cb6d6888913cd3cccb172e79fe868d09"
+          "oracle_sha256": "28705e0fa2ce008e5752ada3097e56e037b115662eaf7c99ea1b1b9bb0990714"
         },
         {
           "carrier_id": "audit-108",
@@ -1121,7 +1121,7 @@
           "classes": [
             "audit_sink"
           ],
-          "oracle_sha256": "1bc82868cd74861bbb1283f5c5cee1b1fe9ed5bea4125f2b218ac8e3bce9885c"
+          "oracle_sha256": "8cacb8eeb6694ebaf8136e8057a93e541094fc6df9e40d81265864398fdfdafe"
         },
         {
           "carrier_id": "audit-109",
@@ -1174,7 +1174,7 @@
           "classes": [
             "audit_sink"
           ],
-          "oracle_sha256": "211661314008b8f3b18e8ea5d2af5434cb2fbfe29c407fba6b1d8eb49f3c8eb7"
+          "oracle_sha256": "1ce25df536f64331b105fd948f24d6acf381253031a381b27ca45290ebcf4832"
         },
         {
           "carrier_id": "audit-110",
@@ -1232,7 +1232,7 @@
       ],
       "rule_id": "CFH-24",
       "stimulus": {
-        "negative_subject_sha256": "e42f81751d59c2cf8a4111b85270feb9368c2ab5a659b8ecc05ac9b511de9a3a",
+        "negative_subject_sha256": "764ec26cfbc21e12f7f073be3f684a479b183e33129d91bf3ea7ed49e5a84e88",
         "positive_subject_sha256": "4beaee0fb22d5cfb5a5ef1b06ae06bc6383fa36445fadcf2997283b045b0d0de"
       }
     },
@@ -1339,14 +1339,14 @@
           "classes": [
             "task_binding"
           ],
-          "oracle_sha256": "ab86618ba33fd21f55abbdbe7beab52a08b0dfb3b72e724c98f64c1332ac44f0"
+          "oracle_sha256": "40aded59eb10f2b08e3c704771f365068b600bdfaa00ac6d211d2d3c84ea115e"
         },
         {
           "carrier_id": "clarificationstate-101",
           "classes": [
             "task_binding"
           ],
-          "oracle_sha256": "5d2b15ddd8834fc6423ff669833864adf141a8f432f2ea5444436e8a6ecb9c63"
+          "oracle_sha256": "adac6ebdf7dceed81f44a029b4f63e7fbd19c236a98c3e1c11c6824256e9d957"
         }
       ],
       "rule_id": "CLR-2",
@@ -1392,14 +1392,14 @@
           "classes": [
             "task_binding"
           ],
-          "oracle_sha256": "ea69429bac8dcae764f380a5f05a555c0d4b7875ea8bd804cd0a96d2c1406a50"
+          "oracle_sha256": "707b13c9f2217d6449d22c89f1bbe74142f0f4d565f98bb759213e78375a017f"
         },
         {
           "carrier_id": "clarificationstate-102",
           "classes": [
             "task_binding"
           ],
-          "oracle_sha256": "08b7d7de553e832dcf27c37106a6ea51f8c178e4e7295dbb6d2e35c22be8466e"
+          "oracle_sha256": "ddd352551b9f431ee325b6a48f6e89e2c3a011566ea328053c734982e2875054"
         }
       ],
       "rule_id": "CLR-8",
@@ -1496,16 +1496,18 @@
         {
           "carrier_id": "confpolicy-005",
           "classes": [
+            "confirmation_boundary",
             "tool_boundary"
           ],
-          "oracle_sha256": "afb17bab2e346cfcc2205f91c190ca034b3f842faf8cdb363ed95e76502e510e"
+          "oracle_sha256": "559465596e674de4c55fc069549c5e5d4a2175b683fba473d6964b66c2da54a5"
         },
         {
           "carrier_id": "confpolicy-105",
           "classes": [
+            "confirmation_boundary",
             "tool_boundary"
           ],
-          "oracle_sha256": "afb17bab2e346cfcc2205f91c190ca034b3f842faf8cdb363ed95e76502e510e"
+          "oracle_sha256": "559465596e674de4c55fc069549c5e5d4a2175b683fba473d6964b66c2da54a5"
         }
       ],
       "rule_id": "CNF-6",
@@ -1549,16 +1551,18 @@
         {
           "carrier_id": "confpolicy-006",
           "classes": [
+            "confirmation_boundary",
             "tool_boundary"
           ],
-          "oracle_sha256": "7793c70b3c3b5b6dc5d8e891cfd74cd1218fd2058c50d7359799c76d7b9c4b05"
+          "oracle_sha256": "f02ad45452c272ef95ba8e5f8d97727ce7d5ecd78826bb27e40d9466ba8395b4"
         },
         {
           "carrier_id": "confpolicy-106",
           "classes": [
+            "confirmation_boundary",
             "tool_boundary"
           ],
-          "oracle_sha256": "7f6ed0306a49c483168bde130222acc1ddb6a2c808a34398ddc51d480141016d"
+          "oracle_sha256": "f02ad45452c272ef95ba8e5f8d97727ce7d5ecd78826bb27e40d9466ba8395b4"
         }
       ],
       "rule_id": "CNF-8",
@@ -1568,9 +1572,9 @@
             "id": "confpolicy-006",
             "oracle": {
               "event_kinds": [],
-              "final_state": "failed"
+              "final_state": "completed"
             },
-            "value_hash": "02f97a1800ef06704f994cae34328477c8ac48b002dc7cc67de1d1fe3bb336cf"
+            "value_hash": "9a7d469ee31c85617b47990418cdcf535c45728d90c73d4195d16cf3ec1d2b41"
           },
           {
             "id": "confpolicy-106",
@@ -1578,10 +1582,10 @@
               "event_kinds": [],
               "final_state": "completed"
             },
-            "value_hash": "398818caecab25590aa9e67481384e381f17a5946fc712ebcd168699a8ec9a88"
+            "value_hash": "284a0c1498048ff8a1f7afc5a03b443d11113ea5703baeee9dcb4429b610c684"
           }
         ],
-        "pointer": "/given/policy/rules/0/verdict",
+        "pointer": "/given/policy/rules/0/scope",
         "relation": "value"
       }
     },
@@ -1875,14 +1879,14 @@
           "classes": [
             "tool_boundary"
           ],
-          "oracle_sha256": "be6e462545a03b32e5d65467eb027735c9b181a7875c3fade930d133961a6ae4"
+          "oracle_sha256": "986e9a4094f44b30160e8fc0f67cd8904dd8fff8cd5992bc914b2dd792a47506"
         },
         {
           "carrier_id": "security-116",
           "classes": [
             "tool_boundary"
           ],
-          "oracle_sha256": "645fb8480e211b98f31d0cb1c6e880368b4272a85a4af8c5d39f220d0f4f991c"
+          "oracle_sha256": "ba00aeb7423a836ee0395b279e7effcc9b5231781a81631f1f7c7fdc3a5edcc5"
         }
       ],
       "rule_id": "SEC-16",
@@ -1894,7 +1898,7 @@
               "event_kinds": [],
               "final_state": "failed"
             },
-            "value_hash": "92cd7453715740283d928870739e359f1f7543be949beb2ff8b6779c78c67e79"
+            "value_hash": "0a3c3a706bb483edce77d28f2a975d54fe91ea1ffee6f1fb4e81a006a2f0e209"
           },
           {
             "id": "security-116",
@@ -1902,10 +1906,10 @@
               "event_kinds": [],
               "final_state": "completed"
             },
-            "value_hash": "f28286641e3e0907e8bba69f89111b762ad6fb919c301f76be86367bd12649c8"
+            "value_hash": "0c899945f18c32b2607d1b40ad2d45a7bb2a97a016ac95ee712ad7686ccb12bd"
           }
         ],
-        "pointer": "/given/driver_state/authorization/tool",
+        "pointer": "/given/driver_state/authorization/call_id",
         "relation": "value"
       }
     },
@@ -2037,14 +2041,14 @@
           "classes": [
             "tool_boundary"
           ],
-          "oracle_sha256": "34754581717b09fbf5c9aab8f264d34a5dd43bb9b91481966eca2cd8c03165c3"
+          "oracle_sha256": "8d84cb33a82b6523044c53efca33fe590e12e94002a82722bd369c6f9dbf6083"
         },
         {
           "carrier_id": "security-109",
           "classes": [
             "tool_boundary"
           ],
-          "oracle_sha256": "9cb1840e273c2874a577fe194effd5b16e1baa99d7632907feaeeb08966a35c1"
+          "oracle_sha256": "d89d50c176d0e8545c39663fa40694442cba39ff7e0c3f2c07809f603b0bd1fe"
         }
       ],
       "rule_id": "SEC-9",
@@ -2088,16 +2092,18 @@
         {
           "carrier_id": "confpolicy-001",
           "classes": [
+            "confirmation_boundary",
             "tool_boundary"
           ],
-          "oracle_sha256": "5915ef4394d0f582a3d6275fa98646539256c04edfaac9d4fa702d23c1b3085a"
+          "oracle_sha256": "9b46c420973653be60a7dd7d1489ad4960618db1c06fb6520e2a9f2e4e664c39"
         },
         {
           "carrier_id": "confpolicy-101",
           "classes": [
+            "confirmation_boundary",
             "tool_boundary"
           ],
-          "oracle_sha256": "5915ef4394d0f582a3d6275fa98646539256c04edfaac9d4fa702d23c1b3085a"
+          "oracle_sha256": "9b46c420973653be60a7dd7d1489ad4960618db1c06fb6520e2a9f2e4e664c39"
         }
       ],
       "rule_id": "TLP-11",
@@ -2107,7 +2113,7 @@
             "id": "confpolicy-001",
             "oracle": {
               "event_kinds": [],
-              "final_state": "failed"
+              "final_state": "completed"
             },
             "value_hash": "b9ca9244fa4639a7ad1b0be4d9ffbf905e7ddea75162e98611b5f0f6f1e168a8"
           },
@@ -2115,7 +2121,7 @@
             "id": "confpolicy-101",
             "oracle": {
               "event_kinds": [],
-              "final_state": "failed"
+              "final_state": "completed"
             },
             "value_hash": "2d84769f1ad1c5338ee25c427778a0a3767fcab45b2e81e8f11005b7454ab3b9"
           }
@@ -2412,5 +2418,107 @@
     "total": 51
   },
   "schema_version": 2,
+  "semantic_preflight": {
+    "checks": [
+      {
+        "mutant": "rejected",
+        "name": "confirmation-layer-boundary",
+        "result": "passed",
+        "rule_ids": [
+          "TLP-11",
+          "CNF-6",
+          "CNF-8"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "clarification-protocol-operations",
+        "result": "passed",
+        "rule_ids": [
+          "CLR-8"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "audit-independent-mapping-registry",
+        "result": "passed",
+        "rule_ids": [
+          "AOB-25"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "baggage-wire-byte-boundary",
+        "result": "passed",
+        "rule_ids": [
+          "AOB-31"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "untrusted-derivation-lineage",
+        "result": "passed",
+        "rule_ids": [
+          "SEC-9"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "authorization-per-call-binding",
+        "result": "passed",
+        "rule_ids": [
+          "SEC-16"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "append-adapter-conflict-stimulus",
+        "result": "passed",
+        "rule_ids": [
+          "ALC-20",
+          "ALC-22",
+          "ALC-23"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "journal-hash-excludes-own-prev-hash",
+        "result": "passed",
+        "rule_ids": [
+          "ALC-36"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "known-failure-every-run",
+        "result": "passed",
+        "rule_ids": [
+          "CFH-24"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "journal-emission-append-accounting",
+        "result": "passed",
+        "rule_ids": [
+          "ALC-19",
+          "ALC-26"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "rejected-audit-sink-is-empty",
+        "result": "passed",
+        "rule_ids": [
+          "AOB-25",
+          "AOB-29",
+          "AOB-30",
+          "AOB-31"
+        ]
+      }
+    ],
+    "mutation_reject_count": 11,
+    "passed": 11
+  },
   "source_tree_sha256": "24ce17d25a48427df7fc41cb326258e80b80a109ec64dd6186c01399ad300215"
 }

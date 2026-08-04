@@ -58,7 +58,9 @@
       "authorization": {
         "resource": "record-1",
         "tool": "demo_probe",
-        "permissions": []
+      "permissions": [
+        "demo.write"
+      ]
       }
     }
   },
@@ -82,15 +84,15 @@
   ],
   "expect": {
     "events": [],
-    "final_state": "failed",
+    "final_state": "completed",
     "observations": [
       {
         "kind": "tool_boundary",
         "probe_id": "tlp_11_tool_spy",
         "tool": "demo_probe",
         "phase": "commit",
-        "calls": 0,
-        "route": "blocked",
+        "calls": 1,
+        "route": "default",
         "args_subset": {
           "value": "policy"
         },
@@ -99,6 +101,14 @@
           "agent-a"
         ],
         "credential_ids": []
+      },
+      {
+        "kind": "confirmation_boundary",
+        "probe_id": "tlp_11_confirmation_spy",
+        "proposal_count": 1,
+        "token_issue_count": 1,
+        "token_consume_count": 1,
+        "decision_event_count": 1
       }
     ]
   }

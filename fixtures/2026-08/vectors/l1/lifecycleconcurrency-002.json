@@ -46,8 +46,11 @@
           "event_version": 1,
           "spec_rev": "2026-08",
           "payload": {}
-        },
-        {
+        }
+      ],
+      "append_probe": {
+        "storage_last_seq": 1,
+        "attempted_event": {
           "event_id": "ev-2",
           "action_id": "act-1",
           "seq": 2,
@@ -62,7 +65,7 @@
           "spec_rev": "2026-08",
           "payload": {}
         }
-      ]
+      }
     }
   },
   "script": [
@@ -89,8 +92,7 @@
         "probe_id": "alc_20_journal_spy",
         "state": "failed",
         "source_event_ids": [
-          "ev-1",
-          "ev-2"
+          "ev-1"
         ],
         "emitted_event_kinds": [],
         "source_unchanged": true,

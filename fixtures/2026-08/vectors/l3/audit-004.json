@@ -33,7 +33,15 @@
     "driver_state": {
       "audit_export": {
         "adapter_id": "otel-audit-adapter",
-        "mapping_version": "revision-2026-08",
+      "mapping_version": "revision-2026-08",
+      "registered_mappings": [
+        {
+          "version": "otel-semconv-1.27",
+          "attributes": [
+            "gen_ai.provider.name"
+          ]
+        }
+      ],
         "boundary": "external",
         "attributes": [
           "gen_ai.provider.name"
@@ -67,9 +75,7 @@
         "kind": "audit_sink",
         "probe_id": "aob_25_external_sink",
         "record_count": 0,
-        "attribute_names": [
-          "gen_ai.provider.name"
-        ],
+        "attribute_names": [],
         "baggage_count": 0,
         "baggage_bytes": 0
       }

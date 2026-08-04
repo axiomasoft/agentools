@@ -33,7 +33,15 @@
     "driver_state": {
       "audit_export": {
         "adapter_id": "otel-audit-adapter",
-        "mapping_version": "otel-semconv-1.27",
+      "mapping_version": "otel-semconv-1.27",
+      "registered_mappings": [
+        {
+          "version": "otel-semconv-1.27",
+          "attributes": [
+            "gen_ai.provider.name"
+          ]
+        }
+      ],
         "boundary": "external",
         "attributes": [
           "gen_ai.provider.name"

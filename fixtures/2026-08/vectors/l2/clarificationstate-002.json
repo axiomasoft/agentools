@@ -65,8 +65,8 @@
         "task_id": "task-1",
         "binding_id": "binding:task-1",
         "state": "input_required",
-        "input_required_points": [
-          "before_commit"
+        "input_required_operations": [
+          "tasks/result"
         ]
       }
     ]

@@ -35,11 +35,18 @@
     ],
     "driver_state": {
       "provenance": [
-        {
-          "address": "args.value",
-          "content_origin": "trusted.local"
-        }
-      ]
+      {
+        "address": "args.value",
+        "content_origin": "trusted.local"
+      }
+    ],
+    "derivations": [
+      {
+        "source_address": "args.value",
+        "target_address": "args.derived_value",
+        "operation": "transform"
+      }
+    ]
     }
   },
   "script": [
@@ -51,7 +58,7 @@
         "toolCall": {
           "tool": "demo_probe",
           "args": {
-            "value": "sec-9"
+            "derived_value": "sec-9"
           }
         }
       }
@@ -69,7 +76,7 @@
         "calls": 1,
         "route": "default",
         "args_subset": {
-          "value": "sec-9"
+          "derived_value": "sec-9"
         },
         "actor_ids": [],
         "credential_ids": []

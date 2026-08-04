@@ -101,6 +101,14 @@
           "agent-a"
         ],
         "credential_ids": []
+      },
+      {
+        "kind": "confirmation_boundary",
+        "probe_id": "cnf_6_confirmation_spy",
+        "proposal_count": 1,
+        "token_issue_count": 1,
+        "token_consume_count": 1,
+        "decision_event_count": 1
       }
     ]
   }

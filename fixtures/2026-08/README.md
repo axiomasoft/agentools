@@ -73,16 +73,18 @@ behavior-векторов. Оно не добавляет полей в MCP-пр
 | Секция | Содержимое | Граница |
 |:--|:--|:--|
 | `principals` | обязательные stable ids ролей `initiator`, `agent`, `authorizer` | ids driver-а, не wire identity |
-| `authorization` | `resource`, `tool`, разрешённые `permissions` на момент шага | вход энфорсмента, не MCP authorization header |
+| `authorization` | `resource`, `tool`, опциональный `call_id`, разрешённые `permissions` на момент шага | вход per-call энфорсмента, не MCP authorization header |
 | `credentials[]` | `kind`, `source`, `issuer`, `audience`, `integrity`, `principal_id`, `scopes` | `source` различает `trusted_credential`, `argument`, `model_output`, `tool_result` |
 | `provenance[]` | `address` значения и `content_origin` | origin переиспользует published enum `tool-descriptor.json` |
+| `derivations[]` | source/target address и операция `substring|parse|transform|compute` | raw lineage производного значения, не verdict доверия |
 | `baggage[]` | точные пары `key`/`value` и опциональная raw classification (`opaque_identifier`, `personal_data`, `argument_value`, `confirmation_token`) | носитель composition/count/bytes boundary; classification задаёт harness до SUT |
 | `journal[]` | предзаданные lifecycle events | каждый элемент — published `lifecycle-event.json` |
+| `append_probe` | `storage_last_seq` и ещё не записанное `attempted_event` | stimulus storage adapter для optimistic conflict; invalid event не подмешивается в журнал |
 | `effects[]` | предзаданные projections effect registry | каждый элемент — published `effect-registry.json` |
 | `tool_results[]` | `{tool, content, is_error}` | минимальный result driver-а, не MCP result envelope |
 | `task_channel[]` | `{task_id, channel, status, message}` | `channel`/`status` переиспользуют published `task-binding.json` |
 | `confirmation` | proposal/token id, principal, prepared/current descriptor digest и args fingerprints | typed binding prepare→commit, не token wire format |
-| `audit_export` | adapter id, mapping version, `external` boundary, attributes и audit fields | adapter-side вход, не поля audit schema |
+| `audit_export` | adapter id, selected mapping version, опциональный независимый registry mappings, `external` boundary, attributes и audit fields | adapter-side вход, не поля audit schema |
 | `materialized_state` | mutable `{state, seq}` рядом с journal | competing projection input для ALC-4; journal остаётся источником истины |
 | `snapshot` | `{state, seq, spec_rev}` до восстановления | отдельная projection для ALC-33/34; не вкладывается в event payload |
 
@@ -129,17 +131,21 @@ ActionStatus`, `03_action-lifecycle.md`), опционально `tool_calls` (`
 phase: prepare|commit}`) и `error` (`{code}`, код — `error.json#/$defs/ErrorCode`,
 `09_idempotency-errors.md`).
 
+`llm_stub.toolCall.call_id` — опциональный driver-owned id конкретного вызова; он позволяет
+проверять per-call authorization без вывода области из session/tool name.
+
 `expect.observations[]` — отдельный канал фактов, снятых самим harness после исполнения
 SUT. Он не является lifecycle/audit event и никогда не заполняется из payload, который
-вернула тестируемая реализация. Закрытая сумма содержит ровно пять границ:
+вернула тестируемая реализация. Закрытая сумма содержит ровно шесть границ:
 
 | `kind` | Кто снимает факт | Минимальный предмет |
 |:--|:--|:--|
-| `tool_boundary` | spy инструментального адаптера | фактические tool/phase/calls/route/args subset, actor и credential ids |
+| `tool_boundary` | spy инструментального адаптера | фактические tool/phase/calls/route/args subset, call/actor/credential ids |
 | `journal_projection` | runner/storage spy над поданными raw immutable events | state, source event ids, emitted kinds, отсутствие write-back, опциональные read/append counts |
 | `audit_sink` | внешний telemetry/audit sink | число records, имена attributes, baggage count/bytes |
-| `task_binding` | task/MRTR channel adapter | opaque task/binding ids, state и фактические точки `input_required` |
+| `task_binding` | task/MRTR channel adapter | opaque task/binding ids, state и protocol operations, на которых принят `input_required` |
 | `credential_boundary` | downstream resource adapter | resource, principals и реально пересланные credential ids |
+| `confirmation_boundary` | protocol-layer spy | число proposal, issued/consumed tokens и decision events |
 
 Каждое наблюдение закрыто `additionalProperties:false` и несёт `probe_id`, связывающий
 ожидание с harness-owned probe. Generic object намеренно отсутствует. Поля
@@ -147,7 +153,7 @@ SUT. Он не является lifecycle/audit event и никогда не з�
 `hash_input_includes_prev_hash`, `chain_valid`, `execution_route` в SUT event/payload,
 `reject_passing_entries`, `grease_allowed`, а также magic carrier/type strings не являются
 наблюдением. `--observational-carriers-check` проверяет это fail-closed;
-`--observational-carriers-selftest` доказывает для каждого из пяти типов schema-positive,
+`--observational-carriers-selftest` доказывает для каждого из шести типов schema-positive,
 schema-negative и schema-valid self-report mutant reject.
 
 `llm_stub` MUST присутствовать для каждого исполняемого шага, решение по которому
