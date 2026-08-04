@@ -26,7 +26,8 @@ P3 гейтится P1, P4 гейтится P3, P5 гейтится P3+P4; P6–
 **Remediation-order после Gate B round 1 и трёх RED-аудитов P3 (D141–D152):** P3.16 → owner-gates
 P3.17/P3.18 → P3.19/A2 → RED-аудит → P3.20 → P3.21 → P3.22 → P3.23/A2 → close/audit P3 → P3.24 → RED/AUDIT-CAP →
 P4.14 fix-forward (`51fc06f`, закрыт) → P4.9 (`ef80fcd`, закрыт) → workflow W2
-(P4.10/P4.11/P4.12, закрыт) → адресный re-open P4.10 D158 → re-design/resume P4.13/A3 →
+(P4.10/P4.11/P4.12, закрыт) → адресный re-open P4.10 D158 (`ea0a08f`, закрыт) →
+greenfield re-open P4.10 D160 → resume P4.13/A3 по D159 →
 close P4 → P5.1 round 2. Старый W1 и
 P4.1–P4.8 терминальны и повторно не запускаются.
 
@@ -71,10 +72,10 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | P4.14 | — | — | — | — | **закрыт** `51fc06f`; exact registry/full-definition gate устранил AUDIT-CAP debt F1/F2 до P4.9 |
 | P4.9 | — | — | — | — | **закрыт** `ef80fcd`; driver-state и D145-valid real-byte offline control — общий input W2 |
 | P4.15 | — | — | — | — | **закрыт** `8919b92`; closed policy/confirmation/audit-export inputs and selftest |
-| P4.10 | solo | `plan-run` | implementation/high | — | **реопенён D158**: typed confirmation для CNF-35/36 + factual SEC-11 address; dirty P4.13 diff не коммитить |
+| P4.10 | solo | `plan-run` | implementation/high | — | `🟡 In progress`, DoR D160: нормализовать только `audit-004/104`, оставив exact-one AOB-25 mapping-version counterfactual; dirty P4.13 diff не коммитить |
 | P4.11 | W2 | — | — | — | **закрыт** `0581400`; F5 scenario positive/negative pairs, исторический workflow повторно не запускается |
 | P4.12 | W2 | — | — | — | **закрыт** `e50bb5e`; static SEC-17/AOB-26 and CFH-55 pair, исторический workflow повторно не запускается |
-| P4.13 | solo | `plan-run` | implementation/high | — | `🔴 Blocked`: после P4.10 сначала re-design pair-level present/absent/length extraction, затем terminal A3 + evidence-map exact 27/116 |
+| P4.13 | solo | `plan-run` | implementation/high | — | `🔴 Blocked` до terminal P4.10 D160; затем возобновить сохранённый D159 candidate, terminal A3 + evidence-map exact 27/116 |
 | P5.1 | solo | `plan-run` | frontier/xhigh | — | адверсариальный гейт волны: вердикт обязан быть ОДНИМ и когерентным (D59/D61). **Команда — НЕ `task:plan-audit`**: её субъект — фазы плана, а здесь — артефакты ревизии |
 | P5.3 | solo | `plan-run` | frontier/high | ✅ **Q-30, Q-31** | package-quality baseline и reconciliation identity/authority. Выполняется после GREEN P5.1 и ДО freeze; без ответа владельца — `🔴 Blocked` |
 | — | — | — | — | ✅ **Q-5 (домен) + Q-10 (trademark)** | гейт СТОИТ МЕЖДУ items фазы (D64): нет ответа — P5.2 ждёт со строкой `Возобновление:`, ревизия остаётся `draft`; молчание ≠ «да» |
@@ -117,7 +118,7 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 
 ## Готовые launch-block'и групп
 
-### P4.10 — narrow counterfactual repair D158
+### P4.10 — greenfield AOB-25 repair D160
 
 **Next:** manual: implementation/high
 
@@ -127,7 +128,7 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | Effort | high — correctness-critical behavior fixtures against frozen normative rules |
 | Capabilities | — |
 | Context | same-session — item |
-| Суть | Исправить четыре CNF fixtures и два SEC-11 pointers, не меняя ALC/AOB и dirty P4.13 checker. |
+| Суть | Нормализовать только `audit-004/104`: одинаковая tool description, единственный input-diff — independently versioned mapping export-adapter. |
 | Команда | — |
 
 ```text

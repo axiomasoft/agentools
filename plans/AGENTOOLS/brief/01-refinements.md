@@ -839,3 +839,32 @@ snapshot terminal P4.15; SEC-11 ссылается на несуществующ
 `given.tools`. D158 реопенит P4.10 только для четырёх CNF и двух SEC fixtures. Pair-level
 checker present/absent/length остаётся долгом P4.13; подгонять ALC/AOB fixtures или добавлять
 self-asserted runtime payload ради зелёного checker'а запрещено.
+
+---
+
+## 2026-08-04 — возобновление P4.13 после terminal P4.10
+
+Владелец запустил `$ task:plan-design AGENTOOLS P4.13` и потребовал не задерживать переход
+от протокола к фактическому проектированию. Заход должен снять устаревший blocker P4.10,
+сохранить незакоммиченный candidate P4.13 и выдать исполнителю самодостаточный repair-контракт.
+
+Фактические пять residual pairs сведены к `presence`/`length`; обычный `value` остаётся третьим
+закрытым вариантом общего pair-level контракта. P4.13 не меняет закрытые carriers, а заменяет
+one-sided pointer-existence structured наблюдениями двух members и обязан доказать mutation
+reject реальным validator path, не сравнением двух JSON-строк. Детали и pre-mortem —
+`research/20-p4.13-pair-evidence-resume-2026-08.md`, решение — D159.
+
+---
+
+## 2026-08-04 — повторный re-design P4.10: пакет создаётся с нуля
+
+Владелец запустил `$ task:plan-design AGENTOOLS P4.10`, спросил, почему возникло столько
+ошибок, и уточнил определяющее ограничение: **«пакет с нуля создаётся»**.
+
+Следствие для item'а: промежуточные draft-fixtures и их байты не являются legacy API. Нельзя
+покупать их сохранность ценой ложного теста или заводить migration/backward-compat слой для
+невыпущенного пакета. Фактический blocker P4.13 локален: `audit-004/104` различается и по
+`audit_export.mapping_version`, и по видимой модели `tool.description`. D160 реопенит P4.10
+только для двух файлов и требует одну общую нейтральную description, оставляя единственным
+counterfactual норму AOB-25 — независимую версию mapping export-adapter. Подробный синтез —
+`research/21-p4.10-greenfield-aob25-repair-2026-08.md`.
