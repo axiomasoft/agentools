@@ -17,6 +17,7 @@ use AgenTools\Idempotency\IdempotencyScope;
 use AgenTools\Idempotency\InMemoryDeduplicationStore;
 use AgenTools\Idempotency\StoredResultDigest;
 use AgenTools\Idempotency\StoredToolResult;
+use AgenTools\Schema\Canonicalizer;
 use PHPUnit\Framework\TestCase;
 
 final class InMemoryDeduplicationStoreTest extends TestCase
@@ -81,6 +82,17 @@ final class InMemoryDeduplicationStoreTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         new DeduplicationPolicy(new \DateInterval('PT1S'), new \DateInterval('PT1S'), new \DateInterval('PT1S'));
+    }
+
+    /** IDE-3, IDE-7; argument order cannot create a different fingerprint outside JCS. */
+    public function testItComputesArgumentFingerprintsThroughTheJcsFacade(): void
+    {
+        $canonicalizer = new Canonicalizer();
+
+        self::assertSame(
+            ArgumentsFingerprint::fromArguments(['a' => 1, 'b' => 2], $canonicalizer)->value,
+            ArgumentsFingerprint::fromArguments(['b' => 2, 'a' => 1], $canonicalizer)->value,
+        );
     }
 
     private function policy(string $retention): DeduplicationPolicy

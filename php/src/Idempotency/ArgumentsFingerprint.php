@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace AgenTools\Idempotency;
 
+use AgenTools\Schema\Canonicalizer;
+
 /** SHA-256 fingerprint of JCS canonicalized domain arguments. */
 final readonly class ArgumentsFingerprint
 {
@@ -17,5 +19,11 @@ final readonly class ArgumentsFingerprint
     public static function fromJcs(string $canonicalArguments): self
     {
         return new self('sha-256:' . hash('sha256', $canonicalArguments));
+    }
+
+    /** The only SDK path from domain arguments to their idempotency fingerprint. */
+    public static function fromArguments(mixed $arguments, Canonicalizer $canonicalizer): self
+    {
+        return self::fromJcs($canonicalizer->canonicalize($arguments));
     }
 }
