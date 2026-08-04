@@ -1,6 +1,6 @@
 # Roadmap исполнения — AGENTOOLS
 
-**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.25.0 · **Следующий исполнимый участок:** P4.9. Brain — SSOT; эта копия синхронизирована для работы из репозитория.
+**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.25.1 · **Следующий исполнимый участок:** P4.9. Brain — SSOT; эта копия синхронизирована для работы из репозитория.
 
 Карта отвечает на «какую команду дальше?» без разбора всего плана. Она **не переопределяет**
 `plan.md` §3 Routing (модели и effort — оттуда), а только группирует запуски и называет гейты
@@ -66,7 +66,7 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | P4.8 | — | — | — | — | **закрыт**; старый W1 повторно не запускается |
 | P4.5 | — | — | — | — | **закрыт исторически**; формальный A3 не равен Gate B GREEN |
 | P4.14 | — | — | — | — | **закрыт** `51fc06f`; exact registry/full-definition gate устранил AUDIT-CAP debt F1/F2 до P4.9 |
-| P4.9 | solo | `plan-run` | implementation/high | — | общий driver-state input W2; только после terminal P4.14 |
+| P4.9 | solo | `plan-run` | implementation/high | — | общий driver-state input W2; D153 включает D145-valid common read-tool + 7 точных копий и запрещает in-memory normalization |
 | P4.10 | W2 | workflow | implementation/high | — | F1/F2/F4 behavior carriers; scope независим от scenario/static после P4.9 |
 | P4.11 | W2 | workflow | implementation/high | — | F5 scenario carriers; отдельные ids/files |
 | P4.12 | W2 | workflow | implementation/high | — | F3/F6/F8 static/checker + CFH-55 test-only `mcp_errors` schema и distinguishing harness pair; потребляет P3.23 |
@@ -134,7 +134,7 @@ $ task:plan-run AGENTOOLS P4.9
 
 ### W2 — Gate B carrier remediation (P4.10–P4.12)
 
-**Next:** waiting: P4.9 терминален → manual: implementation/high
+**Next:** manual: implementation/high (P4.9 terminal)
 
 | Параметр | Значение |
 |:--|:--|

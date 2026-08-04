@@ -1,38 +1,30 @@
-# HANDOFF — 2026-08-04 — after P4.14
+# HANDOFF — 2026-08-04 — after P4.9
 
 **Next:** ЗАПУСК ВРУЧНУЮ: implementation/high
 
 | Параметр | Значение |
 |:--|:--|
-| Model | implementation |
-| Thinking | high — fixture driver-state public test contract |
-| Context | continue (reset the session context) — ручной item |
-| Суть | Исполнить P4.9 formal driver state как общий вход W2. |
+| Model class | implementation |
+| Effort | high |
+| Capabilities | `command.subagents`, `command.workflow-carrier` |
+| Context | NEW SESSION — Workflow-оркестрован |
+| Суть | Параллельно выполнить P4.10–P4.12 remediation behavior/scenario/static carriers. |
 | Команда | — |
 
 ```text
-select the session model class implementation
-select the session effort high
-$ task:plan-run AGENTOOLS P4.9
+native orchestration carrier: plans/AGENTOOLS/workflows/wf-agentools-p4-remediation.js
 ```
 
-**Done:** P4.14 закрыт item-коммитом `51fc06f`: exact registry фиксирует 12 file/name
-carriers независимо от shape, structural gate и deep-copied Draft 2020-12 oracle получают
-полный definition. Пять mutation-regressions и внешние копии краснеют адресно; P3 Audit F1/F2
-устранены без переписывания исторического `🟠` P3.24/P3.
+**Done:** P4.9 (`ef80fcd`) закрыл driver-state: schema/README/selftest и два script-step; D145-valid common read-tool синхронизирован с семью копиями, реальный Dart offline-control = OK.
 
-**Remaining:** P4.9, затем W2 P4.10–P4.12; P4.13 повторяет A3 перед Gate B round 2.
+**Remaining:** Запустить W2 P4.10–P4.12; затем solo P4.13 и Gate B round 2 P5.1.
 
-**Sources of truth:** `plans/AGENTOOLS/phases/P4.md` P4.9/P4.14 ·
-`plans/AGENTOOLS/research/12-p3-p4-gate-b-remediation-2026-08.md` §2 ·
-`plans/AGENTOOLS/plan.md` D141–D152 · `tools/spec_lint.py` на `51fc06f`.
+**Sources of truth:** `plans/AGENTOOLS/phases/P4.md` P4.9 Completion Notes · `plans/AGENTOOLS/roadmap.md` W2 · `plans/AGENTOOLS/workflows/wf-agentools-p4-remediation.js`.
 
-**Open risks:** Полный spec-lint ожидаемо красный только по `CFH-55 → P4.12`; Gate B round 1
-остаётся RED. В дереве есть не относящийся к item пользовательский
-`tools/__pycache__/spec_lint.cpython-312.pyc`, он не включался ни в один коммит.
+**Open risks:** Полный `spec_lint` ожидаемо красный только на CFH-55 до различающей harness-пары P4.12; формальный A3 не является Gate B GREEN.
 
 **Workarounds/Deferred/Open questions:**
 
 - workarounds: —
-- deferred: CFH-55 fixture → P4.12; runtime wrong-code proof → P6.6.
-- open_questions: Q-10/Q-30/Q-31 — owner-gates P5.
+- deferred: P4.13 ждёт terminal W2.
+- open_questions: —

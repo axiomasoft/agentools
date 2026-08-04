@@ -100,3 +100,26 @@ P4.9 и P4.13 остаются solo.
 - Единственный содержательный вердикт после ремедиации — новый cold-start P5.1 round 2.
 - Любое изменение `DR-01`/`DR-02`, `2026-07-draft`, живых ADR либо P6–P11 запрещено.
 
+## 6. P4.9 — reconcile после исполнительской эскалации 2026-08-04
+
+Первый запуск P4.9 подготовил driver-state schema/README/selftest, но реальный Dart-validator
+отверг контрольный instance: `fixtures/2026-08/common/tool-read.json` сохранил старое
+одноабзацное `description`, тогда как D145/P3.18 уже заморозили четыре строки
+actionable-description. Это не дефект driver-state и не причина ослаблять validation.
+`RAG:— (repo-grounded: phases/P4.md P4.9 escalation; fixtures/2026-08/common/tool-read.json;
+spec/revisions/2026-08/schema/tool-descriptor.json:18-21)`.
+
+`common/tool-read.json` — канонический фрагмент, а README §6 требует дословной копии в каждом
+`given.tools` с тем же `name`. В корпусе семь таких копий: `lifecycle-001`,
+`clarification-005`, `scnfailure-004`, `scnshape-001`, `audit-001`, `audit-002`, `audit-004`.
+Поэтому исправление только common-файла создаст новый common-divergence, а исправление только
+контрольной пробы в памяти даст ложный green на байтах, которых нет в корпусе.
+`RAG:— (repo-grounded: fixtures/2026-08/README.md §6; rg по
+fixtures/2026-08/vectors/** → 7 carriers)`.
+
+Выбран узкий scope P4.9: привести `description` канонического read-tool к D145 и синхронно
+заменить только это поле в семи точных копиях. `name`, schemas, annotations, `_meta`, stimulus,
+expect и `spec_rule_ids` не меняются. Адресный selftest и Dart-control читают реальные
+committed bytes common-фрагмента без in-memory normalization. Отдельный item отклонён: у
+правки нет самостоятельного deliverable, она является прямым предусловием обязательного
+offline evidence P4.9; перенос в P4.12 отклонён, потому что W2 не стартует до terminal P4.9.
