@@ -127,6 +127,27 @@ ActionStatus`, `03_action-lifecycle.md`), опционально `tool_calls` (`
 phase: prepare|commit}`) и `error` (`{code}`, код — `error.json#/$defs/ErrorCode`,
 `09_idempotency-errors.md`).
 
+`expect.observations[]` — отдельный канал фактов, снятых самим harness после исполнения
+SUT. Он не является lifecycle/audit event и никогда не заполняется из payload, который
+вернула тестируемая реализация. Закрытая сумма содержит ровно пять границ:
+
+| `kind` | Кто снимает факт | Минимальный предмет |
+|:--|:--|:--|
+| `tool_boundary` | spy инструментального адаптера | фактические tool/phase/calls/route, actor и credential ids |
+| `journal_projection` | runner над поданными raw immutable events | state, source event ids, emitted kinds и отсутствие write-back |
+| `audit_sink` | внешний telemetry/audit sink | число records, имена attributes, baggage count/bytes |
+| `task_binding` | task/MRTR channel adapter | opaque task/binding ids, state и фактические точки `input_required` |
+| `credential_boundary` | downstream resource adapter | resource, principals и реально пересланные credential ids |
+
+Каждое наблюдение закрыто `additionalProperties:false` и несёт `probe_id`, связывающий
+ожидание с harness-owned probe. Generic object намеренно отсутствует. Поля
+`projection_source`, `write_back_upcast`, `source_of_truth`,
+`hash_input_includes_prev_hash`, `chain_valid`, `execution_route` в SUT event/payload,
+`reject_passing_entries`, `grease_allowed`, а также magic carrier/type strings не являются
+наблюдением. `--observational-carriers-check` проверяет это fail-closed;
+`--observational-carriers-selftest` доказывает для каждого из пяти типов schema-positive,
+schema-negative и schema-valid self-report mutant reject.
+
 `llm_stub` MUST присутствовать для каждого исполняемого шага, решение по которому
 принимает модель; шаги сценария, вызываемые рантаймом автоматически по отображению
 аргументов (`06_scenarios.md`), в `llm_stub` не нуждаются.

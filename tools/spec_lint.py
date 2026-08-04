@@ -11,6 +11,7 @@
     python3 tools/spec_lint.py --actionable-description-selftest <revision_dir>
     python3 tools/spec_lint.py --schema-values-selftest <revision_dir>
     python3 tools/spec_lint.py --driver-state-selftest <fixtures_root>
+    python3 tools/spec_lint.py --observational-carriers-check|--observational-carriers-selftest <fixtures_root>
     python3 tools/spec_lint.py --gate-b-remediation-write|--gate-b-remediation-check <fixtures_root>
 
 Ревизий в репозитории больше одной, и они живут по РАЗНЫМ конвенциям (`2026-07-draft`
@@ -189,6 +190,30 @@ FIXTURE_VECTOR_CLASSES = {
 }
 FIXTURE_COMMON_REQUIRED = ("id", "title", "vector_class", "spec_rev", "spec_rule_ids", "conformance_level")
 FIXTURE_ID_RE = re.compile(r"^[a-z][a-z0-9]*-[0-9]{3}$")
+
+# D162/P4.16: exact semantic debt from Gate B round 2. The target set is data,
+# not an id-specific branch: every listed rule must be backed by a harness-owned
+# boundary observation (behavior) or independently derived checker fact (artifact).
+OBSERVATIONAL_BEHAVIOR_RULES = frozenset({
+    "TLP-11", "TLP-25", "ALC-2", "ALC-3", "ALC-4", "ALC-15", "ALC-18", "ALC-19",
+    "ALC-20", "ALC-22", "ALC-23", "ALC-26", "ALC-28", "ALC-30", "ALC-31", "ALC-33",
+    "ALC-34", "ALC-35", "ALC-36", "ALC-37", "CNF-3", "CNF-6", "CNF-8", "CLR-2",
+    "CLR-8", "AOB-25", "AOB-29", "AOB-30", "AOB-31", "SEC-4", "SEC-9", "SEC-10",
+    "SEC-12", "SEC-13", "SEC-14", "SEC-15", "SEC-16", "SEC-18",
+})
+OBSERVATIONAL_ARTIFACT_RULES = frozenset({
+    "TLP-7", "TLP-12", "TLP-26", "TLP-27", "TLP-28", "TLP-30", "TLP-31", "TLP-32",
+    "ALC-14", "CFH-24", "CFH-26", "CFH-51", "CFH-53",
+})
+OBSERVATION_KINDS = frozenset({
+    "tool_boundary", "journal_projection", "audit_sink", "task_binding", "credential_boundary",
+})
+OBSERVATIONAL_BANNED_KEYS = frozenset({
+    "projection_source", "write_back_upcast", "source_of_truth",
+    "hash_input_includes_prev_hash", "chain_valid", "execution_route",
+    "reject_passing_entries", "grease_allowed",
+})
+OBSERVATIONAL_MAGIC_RE = re.compile(r"^(?:runtime-daemon|session:|audit-record-)")
 
 SCHEMA_MAP_KEYWORDS = ("$defs", "definitions", "properties", "patternProperties", "dependentSchemas")
 SCHEMA_ONE_KEYWORDS = (
@@ -2960,6 +2985,184 @@ def run_driver_state_selftest(fixtures_root):
     return report(errors, "driver-state: 12 sections + policy + 2 script steps; valid=0, invalid>0")
 
 
+def _fixture_vector_validator(fixtures_root):
+    """Build the committed offline Draft 2020-12 validator for behavior vectors."""
+    from jsonschema import Draft202012Validator, RefResolver
+
+    schema_path = fixtures_root / "schema" / "vector.json"
+    repo_root = fixtures_root.resolve().parents[1]
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    store = {}
+    for path in sorted((fixtures_root / "schema").glob("*.json")):
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(data.get("$id"), str):
+            store[data["$id"]] = data
+    for path in sorted((repo_root / "spec" / "revisions" / "2026-08" / "schema").glob("*.json")):
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(data.get("$id"), str):
+            store[data["$id"]] = data
+    Draft202012Validator.check_schema(schema)
+    return Draft202012Validator(
+        schema,
+        resolver=RefResolver(base_uri=schema["$id"], referrer=schema, store=store),
+    )
+
+
+def _walk_observational_shortcuts(value, path="$"):
+    """Yield exact self-report keys/magic carrier strings with their JSON paths."""
+    if isinstance(value, dict):
+        for key, child in value.items():
+            child_path = f"{path}.{key}"
+            if key in OBSERVATIONAL_BANNED_KEYS:
+                yield child_path
+            yield from _walk_observational_shortcuts(child, child_path)
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            yield from _walk_observational_shortcuts(child, f"{path}[{index}]")
+    elif isinstance(value, str) and OBSERVATIONAL_MAGIC_RE.match(value):
+        yield path
+
+
+def _check_behavior_observation_ownership(data, label, errors):
+    """Check ownership, independently of a SUT event/payload oracle."""
+    expect = data.get("expect") if isinstance(data.get("expect"), dict) else {}
+    observations = expect.get("observations")
+    if not isinstance(observations, list) or not observations:
+        errors.append(f"{label}: target behavior carrier не имеет expect.observations[]")
+        return
+    kinds = [row.get("kind") for row in observations if isinstance(row, dict)]
+    if len(kinds) != len(observations) or any(kind not in OBSERVATION_KINDS for kind in kinds):
+        errors.append(f"{label}: observation kind вне закрытого registry")
+    probe_ids = [row.get("probe_id") for row in observations if isinstance(row, dict)]
+    if len(set(probe_ids)) != len(probe_ids):
+        errors.append(f"{label}: probe_id в observations должны быть уникальны")
+    for shortcut in _walk_observational_shortcuts(data):
+        errors.append(f"{label}: запрещён self-report/magic shortcut {shortcut}")
+    for index, event in enumerate(expect.get("events", [])):
+        if isinstance(event, dict) and (
+            event.get("kind") in OBSERVATION_KINDS
+            or isinstance(event.get("observation"), dict)
+            or (isinstance(event.get("payload"), dict) and "observation" in event["payload"])
+        ):
+            errors.append(f"{label}: harness observation подменено SUT event expect.events[{index}]")
+
+
+def _observational_carrier_errors(fixtures_root, validator=None):
+    errors = []
+    seen_behavior = set()
+    seen_artifact = set()
+    validator = validator or _fixture_vector_validator(fixtures_root)
+    for path in sorted((fixtures_root / "vectors").rglob("*.json")):
+        data = load_json(path, errors)
+        if not isinstance(data, dict):
+            continue
+        target = set(data.get("spec_rule_ids", [])) & OBSERVATIONAL_BEHAVIOR_RULES
+        if not target:
+            continue
+        seen_behavior.update(target)
+        schema_errors = list(validator.iter_errors(data))
+        if schema_errors:
+            errors.append(f"{path}: behavior vector невалиден против schema/vector.json ({schema_errors[0].message})")
+        _check_behavior_observation_ownership(data, path, errors)
+    for path in sorted((fixtures_root / "static").rglob("*.json")):
+        data = load_json(path, errors)
+        if not isinstance(data, dict):
+            continue
+        target = set(data.get("spec_rule_ids", [])) & OBSERVATIONAL_ARTIFACT_RULES
+        if target:
+            seen_artifact.update(target)
+            # P4.18 replaces these carriers with checker-derived raw evidence.
+            # Until then the exact-set command remains intentionally RED.
+            if not data.get("observational_evidence"):
+                errors.append(f"{path}: target artifact carrier не имеет checker-derived observational_evidence")
+            for shortcut in _walk_observational_shortcuts(data):
+                errors.append(f"{path}: запрещён self-report/magic shortcut {shortcut}")
+    missing_behavior = sorted(OBSERVATIONAL_BEHAVIOR_RULES - seen_behavior)
+    missing_artifact = sorted(OBSERVATIONAL_ARTIFACT_RULES - seen_artifact)
+    if missing_behavior:
+        errors.append("observational target behavior rules отсутствуют: " + ", ".join(missing_behavior))
+    if missing_artifact:
+        errors.append("observational target artifact rules отсутствуют: " + ", ".join(missing_artifact))
+    return errors
+
+
+def run_observational_carriers_check(fixtures_root):
+    if not fixtures_root.is_dir():
+        print(f"Ошибка: {fixtures_root} не является директорией", file=sys.stderr)
+        return 2
+    try:
+        validator = _fixture_vector_validator(fixtures_root)
+    except (ImportError, Exception) as exc:
+        return report([f"observational carriers: offline validator недоступен ({exc})"])
+    return report(_observational_carrier_errors(fixtures_root, validator), "observational carriers: exact 51")
+
+
+def run_observational_carriers_selftest(fixtures_root):
+    """Prove schema closure and ownership rejection for every observation kind."""
+    if not fixtures_root.is_dir():
+        print(f"Ошибка: {fixtures_root} не является директорией", file=sys.stderr)
+        return 2
+    try:
+        validator = _fixture_vector_validator(fixtures_root)
+        tool = json.loads((fixtures_root / "common" / "tool-read.json").read_text(encoding="utf-8"))
+    except Exception as exc:
+        return report([f"observational selftest: offline validator недоступен ({exc})"])
+    observations = {
+        "tool_boundary": {
+            "kind": "tool_boundary", "probe_id": "tool-spy", "tool": "invoice_read",
+            "phase": "commit", "calls": 1, "route": "isolated", "actor_ids": ["agent-1"],
+            "credential_ids": [],
+        },
+        "journal_projection": {
+            "kind": "journal_projection", "probe_id": "journal-fold", "state": "completed",
+            "source_event_ids": ["event-1"], "emitted_event_kinds": [], "source_unchanged": True,
+        },
+        "audit_sink": {
+            "kind": "audit_sink", "probe_id": "otel-sink", "record_count": 1,
+            "attribute_names": ["action_id"], "baggage_count": 0, "baggage_bytes": 0,
+        },
+        "task_binding": {
+            "kind": "task_binding", "probe_id": "task-channel", "task_id": "task-1",
+            "binding_id": "binding-1", "state": "input_required",
+            "input_required_points": ["before_commit"],
+        },
+        "credential_boundary": {
+            "kind": "credential_boundary", "probe_id": "resource-spy", "resource": "ledger",
+            "principal_ids": ["user-1"], "forwarded_credential_ids": [],
+        },
+    }
+    errors = []
+    for kind, observation in observations.items():
+        base = {
+            "id": "observation-000", "title": "Контрольная observation probe",
+            "vector_class": "behavior", "spec_rev": "2026-08", "spec_rule_ids": ["TLP-11"],
+            "conformance_level": "L1", "given": {"tools": [tool]},
+            "script": [{"user_input": "probe"}],
+            "expect": {"events": [], "final_state": "completed", "observations": [observation]},
+        }
+        positive_errors = list(validator.iter_errors(base))
+        negative = deepcopy(base)
+        negative["expect"]["observations"][0]["unexpected"] = True
+        negative_errors = list(validator.iter_errors(negative))
+        ownership_errors = []
+        _check_behavior_observation_ownership(base, kind, ownership_errors)
+        mutant = deepcopy(base)
+        moved = mutant["expect"].pop("observations")[0]
+        mutant["expect"]["events"] = [{"kind": "action_progress", "payload": {"observation": moved}}]
+        mutant_schema_errors = list(validator.iter_errors(mutant))
+        mutant_ownership_errors = []
+        _check_behavior_observation_ownership(mutant, kind, mutant_ownership_errors)
+        if positive_errors or not negative_errors or ownership_errors or mutant_schema_errors or not mutant_ownership_errors:
+            errors.append(
+                f"observational selftest {kind}: schema-positive={len(positive_errors)}, "
+                f"schema-negative={len(negative_errors)}, ownership-positive={len(ownership_errors)}, "
+                f"mutant-schema={len(mutant_schema_errors)}, mutant-reject={len(mutant_ownership_errors)}"
+            )
+        else:
+            print(f"observation {kind}: schema-positive=0, schema-negative>0, self-report-reject>0")
+    return report(errors, "observational ownership: 5 kinds, positive + schema-invalid + self-report reject")
+
+
 def run_keywords_check(schema_path, list_name):
     """Точечный прогон одного файла схемы. Список берётся ЯВНО: по умолчанию B —
     `B = A ∪ {закрытие}`, то есть самый широкий список, применимый к файлу вне
@@ -3030,6 +3233,7 @@ def usage():
         "  python3 spec_lint.py --actionable-description-selftest <revision_dir>\n"
         "  python3 spec_lint.py --schema-values-selftest <revision_dir>\n"
         "  python3 spec_lint.py --driver-state-selftest <fixtures_root>\n"
+        "  python3 spec_lint.py --observational-carriers-check|--observational-carriers-selftest <fixtures_root>\n"
         "  python3 spec_lint.py --gate-b-remediation-write|--gate-b-remediation-check <fixtures_root>",
         file=sys.stderr,
     )
@@ -3062,6 +3266,14 @@ def main():
         except IndexError:
             return usage()
         return run_driver_state_selftest(target)
+
+    if "--observational-carriers-check" in args or "--observational-carriers-selftest" in args:
+        mode = "--observational-carriers-check" if "--observational-carriers-check" in args else "--observational-carriers-selftest"
+        try:
+            target = Path(args[args.index(mode) + 1])
+        except IndexError:
+            return usage()
+        return run_observational_carriers_check(target) if mode.endswith("check") else run_observational_carriers_selftest(target)
 
     if "--gate-b-remediation-write" in args or "--gate-b-remediation-check" in args:
         mode = "--gate-b-remediation-write" if "--gate-b-remediation-write" in args else "--gate-b-remediation-check"
