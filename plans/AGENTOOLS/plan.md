@@ -214,7 +214,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/25 | 🟠 Done with deviations |
 | P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 21/21 | 🟢 Done |
 | P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 3/3 | 🟢 Done |
-| P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 1/9 | 🟡 In progress |
+| P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 1/9 | 🔴 Blocked |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | 🟡 In progress |
 | P8 | Dart SDK `agentools` — зелёный на тех же векторах | 0/13 | ⬜ Not started |
 | P9 | Вертикальный срез в CRM (сквозной сценарий с записью в БД) | 0/7 | ⬜ Not started |
