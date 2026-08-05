@@ -1,4 +1,4 @@
-# HANDOFF — 2026-08-04 — after P5
+# HANDOFF — 2026-08-05 — after P6.1
 
 **Next:** «ЗАПУСК ВРУЧНУЮ: `implementation/high`»
 
@@ -7,29 +7,27 @@
 | Model | implementation |
 | Thinking | high |
 | Context | continue — ручной item |
-| Суть | P5 terminal/audit GREEN; начать P6.1 только по frozen tag `spec-2026-08` (`2333394`). |
+| Суть | Реализовать эталонный in-memory адаптер ядра `01`–`05` и `09` поверх готового раннера. |
 | Команда | — |
 
 ```
-$ task:plan-run AGENTOOLS P6.1
+$ task:plan-run AGENTOOLS P6.2
 ```
 
-**Done:** P5.1 (`f810d62`) GREEN; P5.3 (`6ece4e7`) baseline; P5.2 frozen README. Audit P5
-закрыл F1/D178 и F2/D179; canonical annotated tag `spec-2026-08` → `2333394`.
+**Done:** P6.1 закрыт item-коммитом `abf9150`: runner JSONL-протокола, детерминированный отчёт
+на весь behavior-корпус и отрицательные фикстуры. Матчер и гигиена Composer проверены.
 
-**Remaining:** P5 — нет. Следующий scope плана P6.
+**Remaining:** P6.2 → P6.9; после P6.6 требуется owner-gate `DR-02` §6 перед P6.7.
 
-**Sources of truth:** `research/22-p5-round2-observational-remediation-2026-08.md` ·
-`artifacts/P5-gate-b.md` F9–F17 · `plan.md` D161–D164 · `phases/P3.md` P3.25 ·
-`phases/P4.md` P4.16–P4.21 · `phases/P7.md` F16 anchors · D165 (P3.25 skip).
+**Sources of truth:** `phases/P6.md` P6.1 Completion Notes ·
+`spec/revisions/2026-08/11_conformance-harness.md` · `fixtures/2026-08/README.md`.
 
-**Open risks:** внешние планы Flex/Axioma не уведомлены и не помечены `Consumed` (Q-11); публичная
-публикация запрещена D174/D176. `origin` настроен, но visibility/CI/merge protection не
-верифицированы (D178); tag не pushed. PHP P7.1–P7.10 имеют код и зелёный current-tree QA, но
-terminal item reconciliation сознательно отложена до штатной фазы P7.
+**Open risks:** Публичная публикация запрещена D174/D176. Remote настроен, но
+visibility/CI/merge protection не верифицированы (D178); tag не pushed. P7.1–P7.10
+помечены активными до терминальной P6 и дают phase-first warning; нужна отдельная плановая реконсиляция.
 
 **Workarounds/Deferred/Open questions:**
 
 - workarounds: —
-- deferred: freeze/tag P5.2 до semantic GREEN и P5.3.
-- open_questions: Q-30/Q-31 разрешаются внутри P5.3; Q-5/Q-10 — внутри P5.2 по owner-autonomy.
+- deferred: severity/baseline, golden, selftest, CI и lockstep принадлежат последующим P6 items.
+- open_questions: owner-gate `DR-02` §6 — перед P6.7.

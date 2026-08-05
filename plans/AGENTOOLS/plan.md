@@ -6,11 +6,11 @@
 |:--|:--|
 | Plan ID | AGENTOOLS |
 | Title | AgenTools: ревизия спеки `2026-08` (modern-only, MCP 2026-07-28) + conformance + PHP/Dart SDK + срезы CRM/ERP |
-| Version | 0.38.0 |
+| Version | 0.38.1 |
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-04 (P5 audit GREEN after D178/D179 remediation.) |
+| Last Updated | 2026-08-05 (P6.1 conformance runner closed.) |
 | Repository | `~/projects/packages/agentools`; configured `origin=https://github.com/axiomasoft/agentools.git`; visibility и CI execution не верифицированы (D178) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
@@ -214,7 +214,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/25 | 🟠 Done with deviations |
 | P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 21/21 | 🟢 Done |
 | P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 3/3 | 🟢 Done |
-| P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 0/9 | ⬜ Not started |
+| P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 1/9 | 🟡 In progress |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | 🟡 In progress |
 | P8 | Dart SDK `agentools` — зелёный на тех же векторах | 0/13 | ⬜ Not started |
 | P9 | Вертикальный срез в CRM (сквозной сценарий с записью в БД) | 0/7 | ⬜ Not started |
@@ -438,6 +438,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 
 | Дата | Кто (role/model) | Что |
 |:--|:--|:--|
+| 2026-08-05 | plan-run/gpt-5-high | P6.1 закрыт: JSONL harness-runner, детерминированный отчёт и отрицательные фикстуры; детали см. phases/P6.md P6.1 Completion Notes; 0.38.0 → 0.38.1. |
 | 2026-08-04 | plan-audit/gpt-5.6-sol-xhigh | P5 audit GREEN after F1/D178 remote truth and F2/D179 frozen projection/tag correction (`2333394`); 0.37.1 → 0.38.0. |
 | 2026-08-04 | plan-audit/frontier-xhigh | P5 audit F1: configured origin опроверг stale Q-2 premise; D178 синхронизирует P6 CI boundary без push/network action; 0.37.0 → 0.37.1. |
 | 2026-08-04 | plan-run/gpt-5.6-sol-high | P5.2 (`84128d4`) closed: revision frozen, annotated local tag `spec-2026-08`, Q-10 safe boundary D176, lockstep D177; 0.36.0 → 0.37.0. |
