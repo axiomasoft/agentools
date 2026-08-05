@@ -1,32 +1,32 @@
-# HANDOFF — 2026-08-05 — after P6.7
+# HANDOFF — 2026-08-05 — after P6.8
 
 **Next:** ЗАПУСК ВРУЧНУЮ: implementation/high
 
 | Параметр | Значение |
 |:--|:--|
 | Model | implementation |
-| Thinking | high — lockstep, manifests, empty-set proof |
+| Thinking | high — phase gate, mutant, coverage report |
 | Context | continue (/clear) — ручной item |
-| Суть | Исполнить P6.8: lockstep раннера и реестр SDK без дублирования revision. |
+| Суть | Исполнить P6.9: фазовый gate с зелёным эталоном, красным мутантом и производным отчётом уровней. |
 | Команда | — |
 
 ```
 /model implementation
 /effort high
-/task:plan-run AGENTOOLS P6.8
+/task:plan-run AGENTOOLS P6.9
 ```
 
-**Done:** P6.7 source commit `3613ba7` adds the sole four-layer CI driver, workflow callers,
-branch (C) of the optional DR-02 §6 owner input, and local positive/negative proof.
+**Done:** P6.8 source commit `245612a` adds strict corpus↔annotated-tag↔SDK-manifest
+lockstep, an empty registry, fixture proof against empty-set green, and the first step of CI layer 4.
 
-**Remaining:** P6.8–P6.9: lockstep/SDK registry, then phase gate.
+**Remaining:** P6.9 — terminal phase gate.
 
-**Sources of truth:** `plan.md` D67/D68/D75/D178/D182 · `phases/P6.md` P6.7 Completion Notes ·
-`tools/ci_gate.py` · `conformance/adapters/reference/reports/full.json`.
+**Sources of truth:** `plan.md` D67/D70/D177 · `phases/P6.md` P6.8 Completion Notes ·
+`conformance/bin/lockstep` · `conformance/sdks.json` · `tools/ci_gate.py`.
 
-**Open risks:** `origin` is configured, but no external CI run or merge protection was observed;
-workflow syntax and the local gate are verified independently. Q-12 remains an owner decision;
-until then layer 2 correctly reports branch (C), not SDK DTO freshness.
+**Open risks:** Remote CI execution and merge protection remain unobserved; local gate is verified.
+Q-8 remains open: lockstep works for any release strategy, but release automation is intentionally
+not selected.
 
 **Workarounds/Deferred/Open questions:** workarounds —; deferred — external CI observation;
 open_questions — Q-12, Q-8.

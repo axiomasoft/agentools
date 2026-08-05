@@ -6,11 +6,11 @@
 |:--|:--|
 | Plan ID | AGENTOOLS |
 | Title | AgenTools: ревизия спеки `2026-08` (modern-only, MCP 2026-07-28) + conformance + PHP/Dart SDK + срезы CRM/ERP |
-| Version | 0.41.3 |
+| Version | 0.41.4 |
 | Status | 🟡 In progress |
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
-| Last Updated | 2026-08-05 (P6.7 closed: four-layer local CI gate uses owner-gate branch C.) |
+| Last Updated | 2026-08-05 (P6.8 closed: lockstep checks corpus, annotated tag, and SDK manifests.) |
 | Repository | `~/projects/packages/agentools`; configured `origin=https://github.com/axiomasoft/agentools.git`; visibility и CI execution не верифицированы (D178) |
 | Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
@@ -214,7 +214,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 | P3 | **A2** — авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/25 | 🟠 Done with deviations |
 | P4 | **A3** — тест-векторы под все правила + двунаправленный линтер traceability | 21/21 | 🟢 Done |
 | P5 | **B** — аудит согласования + package-quality baseline (гейт GREEN, блокирует реализацию) | 3/3 | 🟢 Done |
-| P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 7/9 | 🟡 In progress |
+| P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 8/9 | 🟡 In progress |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | 🟡 In progress |
 | P8 | Dart SDK `agentools` — зелёный на тех же векторах | 0/13 | ⬜ Not started |
 | P9 | Вертикальный срез в CRM (сквозной сценарий с записью в БД) | 0/7 | ⬜ Not started |
@@ -442,6 +442,7 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 
 | Дата | Кто (role/model) | Что |
 |:--|:--|:--|
+| 2026-08-05 | plan-run/gpt-5.6-high | P6.8 (`245612a`) закрыт: lockstep corpus↔tag↔manifest, пустой реестр и отрицательные фикстуры; детали см. phases/P6.md P6.8 Completion Notes; 0.41.3 → 0.41.4. |
 | 2026-08-05 | plan-run/gpt-5.6-high | P6.7 (`3613ba7`) закрыт: локальный четырёхслойный CI-gate зелёный; DR-02 §6 без ответа исполняет ветку C — детали см. phases/P6.md P6.7 Completion Notes; 0.41.2 → 0.41.3. |
 | 2026-08-05 | plan-run/gpt-5.6-high | P6.3 закрыт: reference adapter прошёл core 121, extension 92 и full 213; exact input P6.4 — `conformance/adapters/reference/reports/full.json`, детали см. phases/P6.md P6.3 Completion Notes; 0.41.1 → 0.41.2. |
 | 2026-08-05 | plan-run/gpt-5-high | P6.2 закрыт: tagged executable-admission bundle `121+92=213` (на `dc2a38a`) передан P6.3 — детали см. phases/P6.md P6.2 Completion Notes; 0.41.0 → 0.41.1. |
