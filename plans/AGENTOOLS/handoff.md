@@ -1,32 +1,32 @@
-# HANDOFF — 2026-08-05 — after P6.6
+# HANDOFF — 2026-08-05 — after P6.7
 
 **Next:** ЗАПУСК ВРУЧНУЮ: implementation/high
 
 | Параметр | Значение |
 |:--|:--|
 | Model | implementation |
-| Thinking | high — four-layer CI and owner-gate branch |
-| Context | continue (reset the session context) — ручной item |
-| Суть | Исполнить P6.7 CI-gate согласно owner-gate DR-02 §6. |
+| Thinking | high — lockstep, manifests, empty-set proof |
+| Context | continue (/clear) — ручной item |
+| Суть | Исполнить P6.8: lockstep раннера и реестр SDK без дублирования revision. |
 | Команда | — |
 
 ```
 /model implementation
 /effort high
-/task:plan-run AGENTOOLS P6.7
+/task:plan-run AGENTOOLS P6.8
 ```
 
-**Done:** P6.4 `a809072` adds severity/baseline; P6.5 `52637fc` adds 9 golden pair reports; P6.6
-`4910713`/`9d460d3` execute all 13 harness cases and distinguish the negative fixture.
+**Done:** P6.7 source commit `3613ba7` adds the sole four-layer CI driver, workflow callers,
+branch (C) of the optional DR-02 §6 owner input, and local positive/negative proof.
 
-**Remaining:** P6.7–P6.9: four-layer CI, lockstep, phase gate.
+**Remaining:** P6.8–P6.9: lockstep/SDK registry, then phase gate.
 
-**Sources of truth:** `plan.md` D183 · `phases/P6.md` P6.3 Completion Notes ·
-`conformance/adapters/reference/reports/full.json` · `conformance/reports/p6.2-admission.md` ·
-`findings/P6-ext-tasks-observation.md`.
+**Sources of truth:** `plan.md` D67/D68/D75/D178/D182 · `phases/P6.md` P6.7 Completion Notes ·
+`tools/ci_gate.py` · `conformance/adapters/reference/reports/full.json`.
 
-**Open risks:** P6.4 принимает только full report `213/213`, связанный с admission digest;
-изменение frozen corpus/spec остаётся вне scope и требует plan-design.
+**Open risks:** `origin` is configured, but no external CI run or merge protection was observed;
+workflow syntax and the local gate are verified independently. Q-12 remains an owner decision;
+until then layer 2 correctly reports branch (C), not SDK DTO freshness.
 
-**Workarounds/Deferred/Open questions:** workarounds —; deferred — Q-7 остаётся внешним
-наблюдением зрелости MCP Tasks, в P6 зафиксированы только оба in-memory пути; open_questions — Q-7.
+**Workarounds/Deferred/Open questions:** workarounds —; deferred — external CI observation;
+open_questions — Q-12, Q-8.
