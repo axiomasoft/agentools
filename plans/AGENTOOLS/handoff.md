@@ -1,37 +1,34 @@
-# HANDOFF — 2026-08-05 — after P6.2
+# HANDOFF — 2026-08-05 — after P6.3
 
 **Next:** ЗАПУСК ВРУЧНУЮ: implementation/high
 
 | Параметр | Значение |
 |:--|:--|
 | Model | implementation |
-| Thinking | high — full reference semantics on frozen input |
-| Context | continue (/clear) — ручной item |
-| Суть | Реализовать reference adapter по terminal bundle тремя гейтами: core 121 → extension 92 → full 213. |
+| Thinking | high — severity, baseline, golden bundle |
+| Context | continue (reset the session context) — ручной item |
+| Суть | Исполнить batch B7 P6.4–P6.6 от exact `full.json` 213/213. |
 | Команда | — |
 
 ```
 /model implementation
 /effort high
-/task:plan-run AGENTOOLS P6.3
+/task:plan-run AGENTOOLS P6.4-P6.6
 ```
 
-**Done:** P6.2 закрыт item-коммитом `dc2a38a`. Admission report PASS: corpus digest
-`ff797647…`, core `121`, extension `92`, full `213`, incompatible classes `0`; protocol `1.1`
-держит oracle-safe allowlist и runner-owned probes. Backup tag object `3ed21ca…` сохраняет old
-target `2333394`; candidate/canonical object `c267815…` указывает на `dc2a38a`. Frozen diff
-после CAS равен `0`; force/delete/push не выполнялись.
+**Done:** P6.3 закрыт item-коммитом `bdfd821`: независимый in-memory reference adapter прошёл
+core `121/121`, extension `92/92` и full `213/213`. Отчёты лежат в
+`conformance/adapters/reference/reports/`; manifest связывает их с P6.2 corpus SHA-256
+`ff797647…`. Frozen diff против `spec-2026-08` равен `0`; PHPUnit: `21` tests / `34` assertions.
 
-**Remaining:** P6.3 реализует весь in-memory reference adapter и пишет deterministic
-`core.json`, `extension.json`, `full.json`; затем B7 исполняет P6.4–P6.6.
+**Remaining:** B7 P6.4–P6.6 реализует severity/baseline, golden и harness-selftest; затем P6.7–P6.9.
 
-**Sources of truth:** `plan.md` D183 · `phases/P6.md` P6.2 Completion Notes и P6.3 ·
-`conformance/reports/p6.2-admission.md` · annotated `spec-2026-08` ·
-`research/25-p6-executable-admission-chain-2026-08.md`.
+**Sources of truth:** `plan.md` D183 · `phases/P6.md` P6.3 Completion Notes ·
+`conformance/adapters/reference/reports/full.json` · `conformance/reports/p6.2-admission.md` ·
+`findings/P6-ext-tasks-observation.md`.
 
-**Open risks:** P6.3 обязан fail-closed сверить canonical tag target, report counts/digest и
-frozen diff до adapter work; любое новое corpus-расхождение возвращается в plan-design, а не
-чинится адаптером.
+**Open risks:** P6.4 принимает только full report `213/213`, связанный с admission digest;
+изменение frozen corpus/spec остаётся вне scope и требует plan-design.
 
-**Workarounds/Deferred/Open questions:** workarounds —; deferred — product semantics целиком
-принадлежат P6.3; open_questions — Q-7 фиксируется только фактом двух long-operation paths.
+**Workarounds/Deferred/Open questions:** workarounds —; deferred — Q-7 остаётся внешним
+наблюдением зрелости MCP Tasks, в P6 зафиксированы только оба in-memory пути; open_questions — Q-7.
