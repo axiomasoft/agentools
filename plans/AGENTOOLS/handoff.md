@@ -1,27 +1,26 @@
-# HANDOFF — 2026-08-05 — after P6.3
+# HANDOFF — 2026-08-05 — after P6.4
 
 **Next:** ЗАПУСК ВРУЧНУЮ: implementation/high
 
 | Параметр | Значение |
 |:--|:--|
 | Model | implementation |
-| Thinking | high — severity, baseline, golden bundle |
+| Thinking | high — golden delivery and two-stage comparison |
 | Context | continue (reset the session context) — ручной item |
-| Суть | Исполнить batch B7 P6.4–P6.6 от exact `full.json` 213/213. |
+| Суть | Исполнить P6.5 golden-механику от exact `full.json` 213/213. |
 | Команда | — |
 
 ```
 /model implementation
 /effort high
-/task:plan-run AGENTOOLS P6.4-P6.6
+/task:plan-run AGENTOOLS P6.5
 ```
 
-**Done:** P6.3 закрыт item-коммитом `bdfd821`: независимый in-memory reference adapter прошёл
-core `121/121`, extension `92/92` и full `213/213`. Отчёты лежат в
-`conformance/adapters/reference/reports/`; manifest связывает их с P6.2 corpus SHA-256
-`ff797647…`. Frozen diff против `spec-2026-08` равен `0`; PHPUnit: `21` tests / `34` assertions.
+**Done:** P6.4 closed by `a809072`: severity comes only from `rules.json`, report statuses are a
+closed enum without `skip`, and baseline coverage/staleness are both enforced. PHPUnit: 21 tests /
+34 assertions; reference run: 213 pass / 0 fail.
 
-**Remaining:** B7 P6.4–P6.6 реализует severity/baseline, golden и harness-selftest; затем P6.7–P6.9.
+**Remaining:** P6.5 implements golden delivery/comparison; P6.6 executes harness selftests; затем P6.7–P6.9.
 
 **Sources of truth:** `plan.md` D183 · `phases/P6.md` P6.3 Completion Notes ·
 `conformance/adapters/reference/reports/full.json` · `conformance/reports/p6.2-admission.md` ·
