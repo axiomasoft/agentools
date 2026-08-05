@@ -1,0 +1,65 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use AgenTools\Conformance\Runner;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+const EXIT_OK = 0;
+const EXIT_SUT_FAILURE = 1;
+const EXIT_RUNNER_ERROR = 2;
+const EXIT_USAGE = 3;
+
+function usage(string $error): never {
+    fwrite(STDERR, $error . "\nИспользование: conformance/bin/run --adapter <команда> --vectors <корень> --spec-rev <ревизия> [--level L1|L2|L3] [--filter <id>] [--report <путь>] [--timeout <сек>]\n");
+    exit(EXIT_USAGE);
+}
+
+function commandParts(string $command): array {
+    $parts = str_getcsv($command, ' ', '"', '\\');
+    $parts = array_values(array_filter($parts, static fn(string $part): bool => $part !== ''));
+    if ($parts === []) {
+        usage('пустая команда адаптера');
+    }
+    return $parts;
+}
+
+try {
+    $raw = getopt('', ['adapter:', 'vectors:', 'spec-rev:', 'level:', 'filter:', 'baseline:', 'report:', 'timeout:']);
+    $known = ['adapter', 'vectors', 'spec-rev', 'level', 'filter', 'baseline', 'report', 'timeout'];
+    foreach ($argv as $arg) {
+        if (str_starts_with($arg, '--') && !in_array(strtok(substr($arg, 2), '='), $known, true)) {
+            usage("неизвестный флаг {$arg}");
+        }
+    }
+    foreach (['adapter', 'vectors', 'spec-rev'] as $required) {
+        if (!isset($raw[$required]) || $raw[$required] === '') {
+            usage("отсутствует --{$required}");
+        }
+    }
+    if (isset($raw['level']) && !in_array($raw['level'], ['L1', 'L2', 'L3'], true)) {
+        usage('--level должен быть L1, L2 или L3');
+    }
+    $timeout = isset($raw['timeout']) ? (float) $raw['timeout'] : 5.0;
+    if ($timeout <= 0) {
+        usage('--timeout должен быть положительным числом');
+    }
+    $reportPath = $raw['report'] ?? 'out/conformance-report.json';
+    $runner = new Runner();
+    $report = $runner->run([
+        'adapter' => commandParts($raw['adapter']), 'vectors' => $raw['vectors'], 'spec_rev' => $raw['spec-rev'],
+        'level' => $raw['level'] ?? null, 'filter' => $raw['filter'] ?? null, 'timeout' => $timeout,
+    ]);
+    $directory = dirname($reportPath);
+    if (!is_dir($directory) && !mkdir($directory, 0777, true) && !is_dir($directory)) {
+        throw new RuntimeException("не удалось создать каталог отчёта {$directory}");
+    }
+    file_put_contents($reportPath, json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . "\n");
+    printf("Conformance: %d pass, %d fail, %d total; report: %s\n", $report['summary']['pass'], $report['summary']['fail'], $report['summary']['total'], $reportPath);
+    exit($report['summary']['fail'] === 0 ? EXIT_OK : EXIT_SUT_FAILURE);
+} catch (Throwable $e) {
+    fwrite(STDERR, 'Ошибка раннера: ' . $e->getMessage() . "\n");
+    exit(EXIT_RUNNER_ERROR);
+}
