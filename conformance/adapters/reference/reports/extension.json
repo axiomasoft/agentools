@@ -1,0 +1,1070 @@
+{
+    "spec_rev": "2026-08",
+    "harness_protocol_version": "1.1",
+    "selection": {
+        "rules": [
+            "AOB-*",
+            "LOP-*",
+            "SCN-*",
+            "SEC-*"
+        ],
+        "selected_count": 92
+    },
+    "adapter": {
+        "type": "ready",
+        "sdk": "agentools/reference",
+        "spec_rev": "2026-08",
+        "declared_level": "L3"
+    },
+    "summary": {
+        "total": 92,
+        "pass": 92,
+        "fail": 0
+    },
+    "vectors": [
+        {
+            "id": "audit-001",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "AOB-1",
+                "AOB-2",
+                "AOB-3",
+                "AOB-4",
+                "AOB-5",
+                "AOB-6",
+                "AOB-7",
+                "AOB-8"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "audit-002",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "AOB-9",
+                "AOB-10",
+                "AOB-11",
+                "AOB-12",
+                "AOB-13",
+                "AOB-14",
+                "AOB-15",
+                "AOB-16"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "audit-003",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "AOB-18",
+                "AOB-19",
+                "AOB-20",
+                "AOB-21",
+                "AOB-22",
+                "AOB-23",
+                "AOB-24"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "audit-004",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "AOB-25"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "audit-006",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "AOB-27"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "audit-007",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "AOB-28"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "audit-008",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "AOB-29"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "audit-009",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "AOB-30"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "audit-010",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "AOB-31"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "audit-104",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "AOB-25"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "audit-106",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "AOB-27"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "audit-107",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "AOB-28"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "audit-108",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "AOB-29"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "audit-109",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "AOB-30"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "audit-110",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "AOB-31"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "longop-001",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "LOP-1",
+                "LOP-2",
+                "LOP-3",
+                "LOP-4",
+                "LOP-5"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "longop-002",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "LOP-6",
+                "LOP-7",
+                "LOP-8"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "longop-003",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "LOP-10",
+                "LOP-11",
+                "LOP-27"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "longop-004",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "LOP-12",
+                "LOP-13",
+                "LOP-14"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "longop-005",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "LOP-15",
+                "LOP-16",
+                "LOP-17",
+                "LOP-18",
+                "LOP-19"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "longop-006",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "LOP-20",
+                "LOP-21",
+                "LOP-22",
+                "LOP-23",
+                "LOP-24",
+                "LOP-25",
+                "LOP-26"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "longop-102",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "LOP-6",
+                "LOP-7",
+                "LOP-8"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lopbind-004",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "LOP-10",
+                "LOP-11",
+                "LOP-27"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lopbound-008",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "LOP-13",
+                "LOP-14",
+                "LOP-26"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lopcancel-006",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "LOP-20",
+                "LOP-21",
+                "LOP-22",
+                "LOP-23"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lopguard-007",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "LOP-12",
+                "LOP-24",
+                "LOP-25"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "loprecon-005",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "LOP-15",
+                "LOP-16",
+                "LOP-17",
+                "LOP-18",
+                "LOP-19"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lopsignal-003",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "LOP-6",
+                "LOP-7",
+                "LOP-8"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lopsync-002",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "LOP-1",
+                "LOP-2",
+                "LOP-3",
+                "LOP-4",
+                "LOP-5"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "loptask-001",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "LOP-1",
+                "LOP-2",
+                "LOP-3",
+                "LOP-4"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scenario-001",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-1",
+                "SCN-2",
+                "SCN-3",
+                "SCN-4",
+                "SCN-5"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scenario-002",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-6",
+                "SCN-7",
+                "SCN-8",
+                "SCN-9",
+                "SCN-10",
+                "SCN-11"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scenario-003",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-12",
+                "SCN-13",
+                "SCN-14",
+                "SCN-15"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scenario-004",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-16",
+                "SCN-21",
+                "SCN-22"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scenario-005",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-17",
+                "SCN-21",
+                "SCN-22"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scenario-006",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-18",
+                "SCN-21",
+                "SCN-22"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scenario-007",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-19",
+                "SCN-21",
+                "SCN-22"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scenario-008",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-20",
+                "SCN-21",
+                "SCN-22"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scenario-009",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-23",
+                "SCN-24",
+                "SCN-25",
+                "SCN-28"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scenario-010",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-26",
+                "SCN-27",
+                "SCN-28",
+                "SCN-29"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scenario-011",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-30"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scncomp-010",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-23",
+                "SCN-24",
+                "SCN-25",
+                "SCN-28"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scncomp-011",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-26",
+                "SCN-27"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scnfailure-004",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-6",
+                "SCN-7",
+                "SCN-8",
+                "SCN-10",
+                "SCN-11",
+                "SCN-12"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scnforward-013",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-3",
+                "SCN-9"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scnhostcode-014",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-4",
+                "SCN-13",
+                "SCN-14",
+                "SCN-15"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scnlimit-005",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-16",
+                "SCN-21",
+                "SCN-22"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scnlimit-006",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-17",
+                "SCN-21",
+                "SCN-22"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scnlimit-007",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-18",
+                "SCN-21",
+                "SCN-22"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scnlimit-008",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-19",
+                "SCN-21",
+                "SCN-22"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scnlimit-009",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-20",
+                "SCN-21",
+                "SCN-22"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scnlimit-015",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-16",
+                "SCN-21",
+                "SCN-22"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scnnocode-003",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-4",
+                "SCN-13",
+                "SCN-14",
+                "SCN-15"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scnorder-002",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-9"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scnoutcome-012",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-29",
+                "SCN-30"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "scnshape-001",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SCN-1",
+                "SCN-2",
+                "SCN-3",
+                "SCN-5"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-001",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-1"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-002",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-2"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-003",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-3"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-004",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-4"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-005",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-5"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-006",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-6"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-007",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-7"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-008",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-8"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-009",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-9"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-010",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-10"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-011",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-11"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-012",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-12"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-013",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-13"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-014",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-14"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-015",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-15"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-016",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-16"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-018",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-18"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-019",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-19"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-101",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-1"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-102",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-2"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-103",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-3"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-104",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-4"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-105",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-5"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-106",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-6"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-107",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-7"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-108",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-8"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-109",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-9"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-110",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-10"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-111",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-11"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-112",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-12"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-113",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-13"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-114",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-14"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-115",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-15"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-116",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-16"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-118",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-18"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "security-119",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "SEC-19"
+            ],
+            "status": "pass",
+            "mismatches": []
+        }
+    ]
+}

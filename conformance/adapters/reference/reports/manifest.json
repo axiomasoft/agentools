@@ -1,0 +1,11 @@
+{
+  "admission_commit": "dc2a38a795d7f45cbd24aefc1c8b232ac43382e4",
+  "admission_corpus_sha256": "ff7976475127ea584e4b5e7149b821e1a90a17d5839fbea155455d9ca5921cd1",
+  "harness_protocol_version": "1.1",
+  "spec_rev": "2026-08",
+  "reports": {
+    "core.json": {"selected": 121, "pass": 121, "fail": 0},
+    "extension.json": {"selected": 92, "pass": 92, "fail": 0},
+    "full.json": {"selected": 213, "pass": 213, "fail": 0}
+  }
+}
