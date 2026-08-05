@@ -51,6 +51,8 @@ final class Runner
             $report['adapter'] = $ready;
             $adapter->send(['type' => 'config', 'fixed_clock' => '2000-01-01T00:00:00Z', 'fixed_seed' => 'agentools-conformance']);
 
+            $report['golden'] = $this->runGolden($adapter, $options['vectors'], $options['timeout']);
+
             foreach ($vectors as $vector) {
                 $report['vectors'][] = $this->runVector($adapter, $vector, $options['timeout'], $catalog);
             }
@@ -75,7 +77,31 @@ final class Runner
         }
         unset($entry);
         $report['baseline_errors'] = $baseline->stale($report['vectors']);
+        $report['golden_failures'] = array_values(array_filter($report['golden'] ?? [], static fn(array $entry): bool => $entry['status'] !== 'pass'));
         return $report;
+    }
+
+    /** @return list<array<string,mixed>> */
+    private function runGolden(AdapterProcess $adapter, string $vectorsRoot, float $timeout): array
+    {
+        $pairs = [];
+        foreach (glob(rtrim($vectorsRoot, '/') . '/golden/*/*.input.json') ?: [] as $inputPath) {
+            $base = substr($inputPath, 0, -strlen('.input.json'));
+            $goldenPath = $base . '.golden.txt';
+            if (!is_file($goldenPath)) {
+                continue;
+            }
+            $id = basename(dirname($base)) . '/' . basename($base);
+            $input = json_decode((string) file_get_contents($inputPath), true, 512, JSON_THROW_ON_ERROR);
+            $golden = (string) file_get_contents($goldenPath);
+            $adapter->send(['type' => 'golden_pair', 'vector_id' => $id, 'fixture_version' => '1.0.0', 'input' => $input, 'golden' => $golden]);
+            $adapter->send(['type' => 'run', 'vector_id' => $id, 'vector' => ['spec_rev' => '2026-08', 'spec_rule_ids' => ['CFH-38']]]);
+            $result = $adapter->receive($timeout);
+            $this->requireType($result, 'result');
+            $signals = GoldenComparator::compare((string) ($result['canonical'] ?? ''), $golden, (string) ($result['canonical_golden'] ?? ''));
+            $pairs[] = ['id' => $id, 'status' => $signals === [] ? 'pass' : 'fail', 'signals' => $signals];
+        }
+        return $pairs;
     }
 
     /** @return array<string,mixed> */

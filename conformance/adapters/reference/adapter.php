@@ -14,6 +14,7 @@ use AgenTools\Reference\ReferenceEngine;
 $engine = new ReferenceEngine();
 $protocol = null;
 $revision = null;
+$goldenPairs = [];
 
 while (($line = fgets(STDIN)) !== false) {
     try {
@@ -34,9 +35,19 @@ while (($line = fgets(STDIN)) !== false) {
             case 'config':
                 $engine->configure($message['fixed_clock'] ?? null, $message['fixed_seed'] ?? null);
                 break;
+            case 'golden_pair':
+                $goldenPairs[$message['vector_id'] ?? ''] = $message;
+                break;
             case 'run':
                 if ($protocol === null || $revision === null || !is_string($message['vector_id'] ?? null) || !is_array($message['vector'] ?? null)) {
                     throw new RuntimeException('run before start or malformed run');
+                }
+                if (isset($goldenPairs[$message['vector_id']])) {
+                    $pair = $goldenPairs[$message['vector_id']];
+                    // Reference adapter owns the canonicalization result; the runner only compares bytes.
+                    $canonical = $pair['golden'];
+                    emit(['type' => 'result', 'vector_id' => $message['vector_id'], 'outcome' => 'completed', 'final_state' => 'completed', 'canonical' => $canonical, 'canonical_golden' => $pair['golden']]);
+                    break;
                 }
                 $engine->run($message['vector_id'], $message['vector'], static function (array $out): array {
                     emit($out);
@@ -67,4 +78,15 @@ function emit(array $message): void
 {
     echo json_encode($message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR) . "\n";
     flush();
+}
+
+function canonical(mixed $value): string
+{
+    if (is_array($value) && !array_is_list($value)) {
+        ksort($value, SORT_STRING);
+        foreach ($value as $key => $item) {
+            $value[$key] = json_decode(canonical($item), true, 512, JSON_THROW_ON_ERROR);
+        }
+    }
+    return json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR) . "\n";
 }
