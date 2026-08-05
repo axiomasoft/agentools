@@ -30,7 +30,7 @@ function violation(array $case): ?string
     $run = array_search('runner_to_adapter:run', $types, true);
     if ($config === false || $run === false || $run < $config) return 'CFH-3';
     $golden = array_search('runner_to_adapter:golden_pair', $types, true);
-    if ($golden !== false && $golden !== $run - 1) return 'CFH-38';
+    if ($golden !== false && ($golden !== $run - 1 || ($transcript[$golden]['message']['vector_id'] ?? null) !== ($transcript[$run]['message']['vector_id'] ?? null))) return 'CFH-38';
     $startRev = $start['spec_rev'] ?? null;
     foreach ($transcript as $row) {
         $message = $row['message'] ?? [];
