@@ -13,7 +13,14 @@ namespace AgenTools\Conformance;
 final class Matcher
 {
     /** @return list<string> */
-    public static function vector(array $expect, array $actualEvents, ?array $finalState, array $toolCalls, ?array $error): array
+    public static function vector(
+        array $expect,
+        array $actualEvents,
+        ?array $finalState,
+        array $toolCalls,
+        ?array $error,
+        array $observations = [],
+    ): array
     {
         $mismatches = self::events($expect['events'] ?? [], $actualEvents);
 
@@ -40,7 +47,31 @@ final class Matcher
             $mismatches[] = sprintf('error: ожидалось %s, получено %s', self::print($expect['error']), self::print($error));
         }
 
+        foreach ($expect['observations'] ?? [] as $index => $expected) {
+            $found = false;
+            foreach ($observations as $actual) {
+                if (self::observation($expected, $actual)) {
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $mismatches[] = sprintf('observations[%d]: ожидаемое наблюдение не снято harness: %s', $index, self::print($expected));
+            }
+        }
+
         return $mismatches;
+    }
+
+    private static function observation(array $expected, array $actual): bool
+    {
+        if (($expected['kind'] ?? null) === 'tool_boundary') {
+            $argsSubset = $expected['args_subset'] ?? null;
+            unset($expected['args_subset']);
+            return self::subset($expected, $actual)
+                && ($argsSubset === null || self::subset($argsSubset, $actual['args'] ?? []));
+        }
+        return self::subset($expected, $actual);
     }
 
     /**

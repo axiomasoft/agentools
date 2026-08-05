@@ -1,0 +1,35 @@
+{
+  "id": "probe-001",
+  "title": "Runner-owned probes не раскрывают oracle адаптеру",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": ["CFH-8"],
+  "conformance_level": "L1",
+  "given": {
+    "driver_state": {
+      "tool_results": [
+        {"tool": "demo_probe", "content": "{\"ok\":true}", "is_error": false}
+      ],
+      "journal": [{"kind": "action_completed"}],
+      "task_channel": [{"task_id": "task-1", "status": "completed"}],
+      "credentials": [{"principal_id": "user-a"}],
+      "confirmation": {"proposal_id": "proposal-1"}
+    }
+  },
+  "script": [{"user_input": "Проверь границы"}],
+  "expect": {
+    "events": [],
+    "final_state": "completed",
+    "tool_calls": [
+      {"tool": "demo_probe", "phase": "commit", "args_subset": {"value": "x"}}
+    ],
+    "observations": [
+      {"kind": "tool_boundary", "probe_id": "tool-spy", "tool": "demo_probe", "phase": "commit", "calls": 1, "route": "default", "args_subset": {"value": "x"}, "actor_ids": ["user-a"], "credential_ids": []},
+      {"kind": "journal_projection", "probe_id": "journal-spy", "state": "completed", "source_event_ids": ["event-1"], "emitted_event_kinds": ["action_completed"], "write_back_upcast": false},
+      {"kind": "audit_sink", "probe_id": "audit-spy", "record_count": 1, "attribute_names": ["action_id"], "baggage_count": 0, "baggage_bytes": 0},
+      {"kind": "task_binding", "probe_id": "task-spy", "task_id": "task-1", "binding_id": "binding:task-1", "state": "completed", "input_required_operations": []},
+      {"kind": "credential_boundary", "probe_id": "credential-spy", "resource": "record-1", "principal_ids": ["user-a"], "credential_ids": []},
+      {"kind": "confirmation_boundary", "probe_id": "confirmation-spy", "proposal_count": 1, "token_issue_count": 1, "token_consume_count": 1, "decision_event_count": 1}
+    ]
+  }
+}

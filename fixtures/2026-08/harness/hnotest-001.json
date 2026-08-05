@@ -12,7 +12,7 @@
       "direction": "runner_to_adapter",
       "message": {
         "type": "start",
-        "harness_protocol_version": "1.0",
+        "harness_protocol_version": "1.1",
         "spec_rev": "2026-08"
       }
     },
@@ -52,6 +52,7 @@
         "type": "result",
         "vector_id": "lop-task-poll",
         "outcome": "not_testable",
+        "final_state": "failed",
         "not_testable_reason": "контрагент не объявил возможность задач (07_long-operations.md)"
       }
     },

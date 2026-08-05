@@ -13,7 +13,7 @@ const EXIT_RUNNER_ERROR = 2;
 const EXIT_USAGE = 3;
 
 function usage(string $error): never {
-    fwrite(STDERR, $error . "\nИспользование: conformance/bin/run --adapter <команда> --vectors <корень> --spec-rev <ревизия> [--level L1|L2|L3] [--filter <id>] [--report <путь>] [--timeout <сек>]\n");
+    fwrite(STDERR, $error . "\nИспользование: conformance/bin/run --adapter <команда> --vectors <корень> --spec-rev <ревизия> [--level L1|L2|L3] [--filter <id>] [--rules <ID|PREFIX-*,...>] [--report <путь>] [--timeout <сек>]\n");
     exit(EXIT_USAGE);
 }
 
@@ -27,8 +27,8 @@ function commandParts(string $command): array {
 }
 
 try {
-    $raw = getopt('', ['adapter:', 'vectors:', 'spec-rev:', 'level:', 'filter:', 'baseline:', 'report:', 'timeout:']);
-    $known = ['adapter', 'vectors', 'spec-rev', 'level', 'filter', 'baseline', 'report', 'timeout'];
+    $raw = getopt('', ['adapter:', 'vectors:', 'spec-rev:', 'level:', 'filter:', 'rules:', 'baseline:', 'report:', 'timeout:']);
+    $known = ['adapter', 'vectors', 'spec-rev', 'level', 'filter', 'rules', 'baseline', 'report', 'timeout'];
     foreach ($argv as $arg) {
         if (str_starts_with($arg, '--') && !in_array(strtok(substr($arg, 2), '='), $known, true)) {
             usage("неизвестный флаг {$arg}");
@@ -42,6 +42,11 @@ try {
     if (isset($raw['level']) && !in_array($raw['level'], ['L1', 'L2', 'L3'], true)) {
         usage('--level должен быть L1, L2 или L3');
     }
+    try {
+        $rules = Runner::normalizeRuleSelectors($raw['rules'] ?? null);
+    } catch (InvalidArgumentException $e) {
+        usage($e->getMessage());
+    }
     $timeout = isset($raw['timeout']) ? (float) $raw['timeout'] : 5.0;
     if ($timeout <= 0) {
         usage('--timeout должен быть положительным числом');
@@ -50,7 +55,7 @@ try {
     $runner = new Runner();
     $report = $runner->run([
         'adapter' => commandParts($raw['adapter']), 'vectors' => $raw['vectors'], 'spec_rev' => $raw['spec-rev'],
-        'level' => $raw['level'] ?? null, 'filter' => $raw['filter'] ?? null, 'timeout' => $timeout,
+        'level' => $raw['level'] ?? null, 'filter' => $raw['filter'] ?? null, 'rules' => $rules, 'timeout' => $timeout,
     ]);
     $directory = dirname($reportPath);
     if (!is_dir($directory) && !mkdir($directory, 0777, true) && !is_dir($directory)) {

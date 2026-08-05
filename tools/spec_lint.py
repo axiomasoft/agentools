@@ -12,6 +12,7 @@
     python3 tools/spec_lint.py --schema-values-selftest <revision_dir>
     python3 tools/spec_lint.py --driver-state-selftest <fixtures_root>
     python3 tools/spec_lint.py --observational-carriers-check|--observational-carriers-selftest <fixtures_root>
+    python3 tools/spec_lint.py --behavior-executability-check <fixtures_root>
     python3 tools/spec_lint.py --gate-b-remediation-write|--gate-b-remediation-check <fixtures_root>
 
 Ревизий в репозитории больше одной, и они живут по РАЗНЫМ конвенциям (`2026-07-draft`
@@ -3114,6 +3115,106 @@ def check_common_fragments(fixtures_root, errors):
                 )
 
 
+BEHAVIOR_EXPECTATION_CARRIERS = {
+    "events": "event transcript + ordered partial matcher",
+    "final_state": "result.final_state + exact matcher",
+    "tool_calls": "runner-owned tool_boundary probe transcript",
+    "observations": "runner-owned probe transcript + independent partial matcher",
+    "error": "result.error + partial matcher",
+}
+
+
+def _behavior_projection(vector):
+    return {"given": vector.get("given"), "script": vector.get("script")}
+
+
+def _partial_constraints_compatible(left, right):
+    """Можно ли построить одно actual value, удовлетворяющее двум partial matches."""
+    if type(left) is not type(right):
+        return False
+    if isinstance(left, dict):
+        for key in set(left) & set(right):
+            if not _partial_constraints_compatible(left[key], right[key]):
+                return False
+        return True
+    if isinstance(left, list):
+        return len(left) == len(right) and all(
+            _partial_constraints_compatible(a, b) for a, b in zip(left, right)
+        )
+    return left == right
+
+
+def run_behavior_executability_check(fixtures_root):
+    """Fail-closed admission корпуса до написания SUT (D183/P6.2)."""
+    errors = []
+    vector_root = fixtures_root / "vectors"
+    if not vector_root.is_dir():
+        print(f"Ошибка: {vector_root} не является директорией", file=sys.stderr)
+        return 2
+
+    vectors = []
+    groups = {}
+    for path in sorted(vector_root.glob("l[123]/*.json")):
+        vector = load_json(path, errors)
+        if not isinstance(vector, dict) or vector.get("vector_class") != "behavior":
+            continue
+        expect = vector.get("expect")
+        if not isinstance(expect, dict):
+            errors.append(f"behavior executability: {path} не содержит expect object")
+            continue
+        unknown = sorted(set(expect) - set(BEHAVIOR_EXPECTATION_CARRIERS))
+        if unknown:
+            errors.append(f"behavior executability: {vector.get('id')} expectation без matcher/carrier: {unknown}")
+        projection = _behavior_projection(vector)
+        projection_bytes = json.dumps(
+            projection, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+        projection_hash = hashlib.sha256(projection_bytes).hexdigest()
+        row = {"id": vector.get("id"), "path": path, "expect": expect, "data": vector}
+        vectors.append(row)
+        groups.setdefault(projection_hash, []).append(row)
+
+    duplicate_groups = []
+    incompatible = 0
+    for projection_hash, members in sorted(groups.items()):
+        if len(members) < 2:
+            continue
+        ids = sorted(member["id"] for member in members)
+        group_errors = []
+        final_states = {member["expect"].get("final_state") for member in members}
+        if len(final_states) != 1:
+            group_errors.append(f"exact final_state conflict {sorted(final_states, key=str)}")
+        error_constraints = [member["expect"]["error"] for member in members if "error" in member["expect"]]
+        for index, left in enumerate(error_constraints):
+            for right in error_constraints[index + 1:]:
+                if not _partial_constraints_compatible(left, right):
+                    group_errors.append("single error object has incompatible partial constraints")
+                    break
+            if group_errors:
+                break
+        status = "incompatible" if group_errors else "compatible"
+        print(f"behavior executability class {projection_hash}: {','.join(ids)} [{status}]")
+        duplicate_groups.append({"sha256": projection_hash, "ids": ids, "status": status})
+        if group_errors:
+            incompatible += 1
+            errors.append(
+                f"behavior executability: class {projection_hash} ({','.join(ids)}): {'; '.join(group_errors)}"
+            )
+
+    corpus_projection = [
+        {"id": row["id"], "vector": row["data"]}
+        for row in sorted(vectors, key=lambda item: item["id"])
+    ]
+    corpus_digest = hashlib.sha256(
+        json.dumps(corpus_projection, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    suffix = (
+        f"behavior executability: total {len(vectors)}; duplicate classes {len(duplicate_groups)}; "
+        f"incompatible classes {incompatible}; corpus sha256 {corpus_digest}"
+    )
+    return report(errors, suffix)
+
+
 def check_traceability(revision_dir, profile, errors, warnings):
     repo_root = revision_dir.resolve().parents[2]
     fixtures_root = repo_root / profile["fixtures_root"]
@@ -3791,6 +3892,7 @@ def usage():
         "  python3 spec_lint.py --schema-values-selftest <revision_dir>\n"
         "  python3 spec_lint.py --driver-state-selftest <fixtures_root>\n"
         "  python3 spec_lint.py --observational-carriers-check|--observational-carriers-selftest <fixtures_root>\n"
+        "  python3 spec_lint.py --behavior-executability-check <fixtures_root>\n"
         "  python3 spec_lint.py --gate-b-remediation-write|--gate-b-remediation-check <fixtures_root>",
         file=sys.stderr,
     )
@@ -3831,6 +3933,13 @@ def main():
         except IndexError:
             return usage()
         return run_observational_carriers_check(target) if mode.endswith("check") else run_observational_carriers_selftest(target)
+
+    if "--behavior-executability-check" in args:
+        try:
+            target = Path(args[args.index("--behavior-executability-check") + 1])
+        except IndexError:
+            return usage()
+        return run_behavior_executability_check(target)
 
     if "--gate-b-remediation-write" in args or "--gate-b-remediation-check" in args:
         mode = "--gate-b-remediation-write" if "--gate-b-remediation-write" in args else "--gate-b-remediation-check"

@@ -371,6 +371,15 @@ RAG:— (repo-grounded: `plans/AGENTOOLS/findings/P1-mcp-final-delta.md` пун�
 структурно по корню (`OVR-18`). Схема опубликованная и открытая; производный закрытый вариант
 живёт в `schema/authoring/` и порождается `tools/close_schema.py`.
 
+Corrective carrier protocol `1.1` выражает runner-owned dependencies закрытой парой
+`probe_call`/`probe_result`, не добавляя продуктовых правил. Тело `run.vector` содержит только
+`spec_rev`, `spec_rule_ids`, `conformance_level`, `given`, `script`; `id`, `title`,
+`vector_class` и `expect` остаются в раннере. `probe_call` несёт `vector_id`, уникальный внутри
+вектора `probe_id`, один из шести видов `HarnessObservation` и фактическую boundary-operation;
+`probe_result` возвращает fixture-owned ответ. Раннер строит `tool_calls`/`observations` только
+из probe transcript, поэтому одноимённые поля в `result` являются нарушением протокола;
+`result.final_state` обязателен и нормализован схемой состояния действия.
+
 Нормативный пример — сообщение доставки golden-пары (`CFH-38`, `CFH-39`, `CFH-44`): эталон
 доставлен строкой байт, версия фикстуры продублирована полем сообщения для сверки раннером,
 ожидаемого исхода сравнения сообщение не несёт.
@@ -396,12 +405,14 @@ RAG:— (repo-grounded: `plans/AGENTOOLS/findings/P1-mcp-final-delta.md` пун�
 
 ```text
 // обмен по schema/harness-protocol.json: по одному сообщению в строке, → раннер, ← адаптер
-→ {"type":"start","harness_protocol_version":"1.0","spec_rev":"2026-08"}
+→ {"type":"start","harness_protocol_version":"1.1","spec_rev":"2026-08"}
 ← {"type":"ready","sdk":"agentools-php/0.1.0","spec_rev":"2026-08","declared_level":"L1"}
 → {"type":"config","fixed_clock":"2026-08-01T00:00:00Z","fixed_seed":"harness-0001"}
 → {"type":"run","vector_id":"cnf-token-single-use","vector":{"spec_rule_ids":["CNF-16","CNF-20"],"spec_rev":"2026-08"}}
 ← {"type":"event","vector_id":"cnf-token-single-use","kind":"confirmation_resolved","payload":{"decision":"approve"}}
-← {"type":"result","vector_id":"cnf-token-single-use","outcome":"completed"}
+← {"type":"probe_call","vector_id":"cnf-token-single-use","probe_id":"tool-spy","probe_kind":"tool_boundary","operation":{"tool":"demo_probe","phase":"commit","args":{"value":"x"}}}
+→ {"type":"probe_result","vector_id":"cnf-token-single-use","probe_id":"tool-spy","probe_result":{"tool_result":null}}
+← {"type":"result","vector_id":"cnf-token-single-use","outcome":"completed","final_state":"completed"}
 → {"type":"stop"}
 ```
 
@@ -413,12 +424,12 @@ RAG:— (repo-grounded: `plans/AGENTOOLS/findings/P1-mcp-final-delta.md` пун�
 
 ```text
 // обмен по schema/harness-protocol.json: по одному сообщению в строке, → раннер, ← адаптер
-→ {"type":"start","harness_protocol_version":"1.0","spec_rev":"2026-08"}
+→ {"type":"start","harness_protocol_version":"1.1","spec_rev":"2026-08"}
 ← {"type":"ready","sdk":"agentools-dart/0.1.0","spec_rev":"2026-08","declared_level":"L1"}
 → {"type":"config","fixed_clock":"2026-08-01T00:00:00Z","fixed_seed":"harness-0001"}
 → {"type":"golden_pair","vector_id":"jcs-number-forms","fixture_version":"1.0.0","input":{"n":1e2},"golden":"{\"n\":100}\n"}
 → {"type":"run","vector_id":"jcs-number-forms","vector":{"spec_rule_ids":["AOB-38","AOB-44","CFH-36"],"spec_rev":"2026-08"}}
-← {"type":"result","vector_id":"jcs-number-forms","outcome":"completed","canonical":"{\"n\":100}\n","canonical_golden":"{\"n\":100}\n"}
+← {"type":"result","vector_id":"jcs-number-forms","outcome":"completed","final_state":"completed","canonical":"{\"n\":100}\n","canonical_golden":"{\"n\":100}\n"}
 → {"type":"stop"}
 ```
 

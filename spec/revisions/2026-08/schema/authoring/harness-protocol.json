@@ -52,6 +52,48 @@
         "not_testable"
       ]
     },
+    "ProbeCallMessage": {
+      "description": "Адаптер → раннер. Вызывает runner-owned dependency и одновременно предъявляет раннеру фактическую boundary-операцию для независимого observation.",
+      "properties": {
+        "type": {
+          "const": "probe_call"
+        }
+      },
+      "required": [
+        "type",
+        "vector_id",
+        "probe_id",
+        "probe_kind",
+        "operation"
+      ],
+      "type": "object"
+    },
+    "ProbeKind": {
+      "description": "Закрытый перечень границ, наблюдаемых runner-owned probes. Новый вид меняет версию harness-протокола.",
+      "enum": [
+        "tool_boundary",
+        "journal_projection",
+        "audit_sink",
+        "task_binding",
+        "credential_boundary",
+        "confirmation_boundary"
+      ]
+    },
+    "ProbeResultMessage": {
+      "description": "Раннер → адаптер. Возвращает результат fixture-owned dependency на соответствующий probe_call.",
+      "properties": {
+        "type": {
+          "const": "probe_result"
+        }
+      },
+      "required": [
+        "type",
+        "vector_id",
+        "probe_id",
+        "probe_result"
+      ],
+      "type": "object"
+    },
     "ReadyMessage": {
       "description": "Адаптер → раннер. Единственный ответ на start: имя SDK, ревизия его манифеста и заявленный уровень соответствия.",
       "properties": {
@@ -77,7 +119,8 @@
       "required": [
         "type",
         "vector_id",
-        "outcome"
+        "outcome",
+        "final_state"
       ],
       "type": "object"
     },
@@ -169,6 +212,12 @@
       "$ref": "#/$defs/EventMessage"
     },
     {
+      "$ref": "#/$defs/ProbeCallMessage"
+    },
+    {
+      "$ref": "#/$defs/ProbeResultMessage"
+    },
+    {
       "$ref": "#/$defs/ResultMessage"
     },
     {
@@ -191,6 +240,10 @@
     },
     "error": {
       "$ref": "error.json"
+    },
+    "final_state": {
+      "$ref": "session-state.json#/$defs/ActionStatus",
+      "description": "Нормализованное фактическое состояние действия после script. Поле обязательно в result и сравнивается раннером с expect.final_state."
     },
     "fixed_clock": {
       "description": "Момент времени, которым адаптер замещает системные часы на весь прогон, в форме RFC 3339.",
@@ -229,11 +282,27 @@
       "minLength": 1,
       "type": "string"
     },
+    "operation": {
+      "description": "Фактическая boundary-операция адаптера. Раннер исполняет её на fixture-owned dependency и строит observation из принятого сообщения, а не из result адаптера.",
+      "type": "object"
+    },
     "outcome": {
       "$ref": "#/$defs/Outcome"
     },
     "payload": {
       "description": "Тело наблюдаемого события как его наблюдал адаптер. Состав задаёт документ-владелец вида события, а не настоящая схема.",
+      "type": "object"
+    },
+    "probe_id": {
+      "description": "Корреляционный идентификатор одного runner-owned probe внутри vector_id; повторное использование в одном прогоне вектора запрещено.",
+      "minLength": 1,
+      "type": "string"
+    },
+    "probe_kind": {
+      "$ref": "#/$defs/ProbeKind"
+    },
+    "probe_result": {
+      "description": "Ответ runner-owned dependency на probe_call. Его состав определяется видом границы и входом driver_state, а не ожиданием вектора.",
       "type": "object"
     },
     "sdk": {

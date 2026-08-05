@@ -48,6 +48,22 @@
     "vector": {
       "$ref": "#/$defs/Vector"
     },
+    "probe_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Корреляционный идентификатор одного runner-owned probe внутри vector_id; повторное использование в одном прогоне вектора запрещено."
+    },
+    "probe_kind": {
+      "$ref": "#/$defs/ProbeKind"
+    },
+    "operation": {
+      "type": "object",
+      "description": "Фактическая boundary-операция адаптера. Раннер исполняет её на fixture-owned dependency и строит observation из принятого сообщения, а не из result адаптера."
+    },
+    "probe_result": {
+      "type": "object",
+      "description": "Ответ runner-owned dependency на probe_call. Его состав определяется видом границы и входом driver_state, а не ожиданием вектора."
+    },
     "fixture_version": {
       "type": "string",
       "minLength": 1,
@@ -71,6 +87,10 @@
     },
     "outcome": {
       "$ref": "#/$defs/Outcome"
+    },
+    "final_state": {
+      "$ref": "session-state.json#/$defs/ActionStatus",
+      "description": "Нормализованное фактическое состояние действия после script. Поле обязательно в result и сравнивается раннером с expect.final_state."
     },
     "not_testable_reason": {
       "type": "string",
@@ -112,6 +132,12 @@
       "$ref": "#/$defs/EventMessage"
     },
     {
+      "$ref": "#/$defs/ProbeCallMessage"
+    },
+    {
+      "$ref": "#/$defs/ProbeResultMessage"
+    },
+    {
       "$ref": "#/$defs/ResultMessage"
     },
     {
@@ -149,6 +175,17 @@
         "completed",
         "failed",
         "not_testable"
+      ]
+    },
+    "ProbeKind": {
+      "description": "Закрытый перечень границ, наблюдаемых runner-owned probes. Новый вид меняет версию harness-протокола.",
+      "enum": [
+        "tool_boundary",
+        "journal_projection",
+        "audit_sink",
+        "task_binding",
+        "credential_boundary",
+        "confirmation_boundary"
       ]
     },
     "StartMessage": {
@@ -238,6 +275,37 @@
         "kind"
       ]
     },
+    "ProbeCallMessage": {
+      "type": "object",
+      "description": "Адаптер → раннер. Вызывает runner-owned dependency и одновременно предъявляет раннеру фактическую boundary-операцию для независимого observation.",
+      "properties": {
+        "type": {
+          "const": "probe_call"
+        }
+      },
+      "required": [
+        "type",
+        "vector_id",
+        "probe_id",
+        "probe_kind",
+        "operation"
+      ]
+    },
+    "ProbeResultMessage": {
+      "type": "object",
+      "description": "Раннер → адаптер. Возвращает результат fixture-owned dependency на соответствующий probe_call.",
+      "properties": {
+        "type": {
+          "const": "probe_result"
+        }
+      },
+      "required": [
+        "type",
+        "vector_id",
+        "probe_id",
+        "probe_result"
+      ]
+    },
     "ResultMessage": {
       "type": "object",
       "description": "Адаптер → раннер. Единственный итог одного вектора: наблюдаемый исход, причина недоступности возможности, канонические формы входа и эталона, объект ошибки.",
@@ -249,7 +317,8 @@
       "required": [
         "type",
         "vector_id",
-        "outcome"
+        "outcome",
+        "final_state"
       ]
     },
     "StopMessage": {

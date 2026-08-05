@@ -9,8 +9,17 @@
 
 ```sh
 composer install --working-dir=conformance
-php conformance/bin/run --adapter 'php conformance/tests/fixtures/adapters/echo-ok.php' --vectors fixtures/2026-08 --spec-rev 2026-08 --report out/conformance-report.json
+php conformance/bin/run --adapter 'php conformance/tests/fixtures/adapters/probe.php' --vectors conformance/tests/fixtures/probe-corpus --spec-rev 2026-08 --report out/conformance-report.json
 ```
+
+Опциональный `--rules` выбирает срез по `spec_rule_ids`: точные идентификаторы и шаблоны
+пространства `PREFIX-*` перечисляются через запятую. Список нормализуется в отчёте;
+невалидный selector и selector с нулевым результатом завершают прогон ошибкой.
+
+Harness protocol `1.1` не передаёт адаптеру `expect`, `id`, `title` или `vector_class`:
+`run.vector` содержит только `spec_rev`, `spec_rule_ids`, `conformance_level`, `given`, `script`.
+Фактические вызовы границ идут парой `probe_call`/`probe_result`; `tool_calls` и
+`observations` раннер строит из этого transcript и отвергает их в итоговом `result` адаптера.
 
 Коды возврата: `0` — все проверки прошли; `1` — наблюдается отказ SUT, включая тайм-аут или
 завершение адаптера; `2` — ошибка протокола или самого раннера; `3` — неверный вызов CLI.

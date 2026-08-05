@@ -53,4 +53,38 @@ final class MatcherTest extends TestCase
             null,
         ));
     }
+
+    public function testObservationsAreMatchedIndependentlyAndPartially(): void
+    {
+        self::assertSame([], Matcher::vector(
+            ['observations' => [[
+                'kind' => 'tool_boundary',
+                'probe_id' => 'tool-spy',
+                'args_subset' => ['value' => 'x'],
+            ]]],
+            [],
+            null,
+            [],
+            null,
+            [[
+                'kind' => 'tool_boundary',
+                'probe_id' => 'tool-spy',
+                'tool' => 'demo_probe',
+                'args' => ['value' => 'x', 'extra' => true],
+            ]],
+        ));
+    }
+
+    public function testMissingObservationIsRed(): void
+    {
+        $mismatches = Matcher::vector(
+            ['observations' => [['kind' => 'audit_sink', 'probe_id' => 'audit-spy']]],
+            [],
+            null,
+            [],
+            null,
+            [],
+        );
+        self::assertStringContainsString('не снято harness', $mismatches[0]);
+    }
 }

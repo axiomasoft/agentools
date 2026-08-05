@@ -7,6 +7,14 @@
 item-коммит `f810d62`. Любая содержательная правка frozen-ревизии выпускается только как новая
 датированная ревизия; каталог `2026-08` не переименовывается.
 
+Исключение D183 разрешает P6.2 corrective re-freeze закрытого executable-admission delta:
+driver-owned stimulus `clarification-004`, удаление неисполнимого self-report carrier
+`conftoken-001`, harness protocol `1.1` для runner-owned probes и их производные
+manifest/coverage. Документы `00`–`10`, `rules.json`, ожидания оставшихся векторов,
+`spec_rule_ids` и идентификатор ревизии не меняются. Старый annotated tag object сохраняется
+локальным backup-ref, а новый canonical target устанавливается compare-and-swap только после
+полного admission/formal/semantic gate, без force и push. Reference adapter принадлежит P6.3.
+
 Lockstep-якорь: идентификатор ревизии `2026-08` = имя каталога `spec/revisions/2026-08` = имя
 аннотированного тега `spec-2026-08`. Манифест каждого SDK обязан объявлять `2026-08`; машинную
 сверку выполняет фаза P6.

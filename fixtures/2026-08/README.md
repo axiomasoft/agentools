@@ -149,6 +149,12 @@ SUT. Он не является lifecycle/audit event и никогда не з�
 | `credential_boundary` | downstream resource adapter | resource, principals и реально пересланные credential ids |
 | `confirmation_boundary` | protocol-layer spy | число proposal, issued/consumed tokens и decision events |
 
+Harness protocol `1.1` переносит эти границы между отдельным adapter process и раннером
+закрытой парой `probe_call`/`probe_result`. Адаптер предъявляет фактическую boundary-operation,
+раннер исполняет fixture-owned dependency и строит observation из probe transcript; поля
+`result.tool_calls` и `result.observations` запрещены. `probe_id` — только корреляция внутри
+protocol shell и не доставляет реализации `expect` либо id вектора в `run.vector`.
+
 Каждое наблюдение закрыто `additionalProperties:false` и несёт `probe_id`, связывающий
 ожидание с harness-owned probe. Generic object намеренно отсутствует. Поля
 `projection_source`, `write_back_upcast`, `source_of_truth`,
@@ -157,6 +163,10 @@ SUT. Он не является lifecycle/audit event и никогда не з�
 наблюдением. `--observational-carriers-check` проверяет это fail-closed;
 `--observational-carriers-selftest` доказывает для каждого из шести типов schema-positive,
 schema-negative и schema-valid self-report mutant reject.
+
+Admission P6.2 дополнительно запускает `--behavior-executability-check`: semantic projection
+`{given,script}` группируется детерминированно, несовместимые exact `final_state`/единый
+`error` запрещены, а каждый ключ `expect` обязан иметь matcher и независимый carrier.
 
 `llm_stub` MUST присутствовать для каждого исполняемого шага, решение по которому
 принимает модель; шаги сценария, вызываемые рантаймом автоматически по отображению

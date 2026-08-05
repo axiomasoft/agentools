@@ -23,7 +23,7 @@
 
 | Класс | Носителей | Ссылок на правила |
 |:--|--:|--:|
-| behavior | 214 | 425 |
+| behavior | 213 | 424 |
 | artifact | 89 | 142 |
 | harness | 13 | 30 |
 | golden | 10 | 53 |
@@ -159,7 +159,7 @@
 | CNF-10 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-001 |
 | CNF-11 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-001 |
 | CNF-12 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-001 |
-| CNF-13 | 04_confirmation.md | MUST NOT | L1 | behavior | behavior:conftoken-001, behavior:conftoken-101 |
+| CNF-13 | 04_confirmation.md | MUST NOT | L1 | behavior | behavior:conftoken-101 |
 | CNF-14 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-002 |
 | CNF-15 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-002 |
 | CNF-16 | 04_confirmation.md | MUST | L1 | behavior | behavior:confirmation-003 |

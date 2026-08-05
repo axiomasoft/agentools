@@ -8,15 +8,28 @@ use RuntimeException;
 
 final class Runner
 {
-    public const PROTOCOL_VERSION = '1.0';
+    public const PROTOCOL_VERSION = '1.1';
+    private const VECTOR_FIELDS = ['spec_rev', 'spec_rule_ids', 'conformance_level', 'given', 'script'];
+    private const PROBE_KINDS = [
+        'tool_boundary',
+        'journal_projection',
+        'audit_sink',
+        'task_binding',
+        'credential_boundary',
+        'confirmation_boundary',
+    ];
 
     /** @param array<string,mixed> $options */
     public function run(array $options): array
     {
-        $vectors = $this->loadVectors($options['vectors'], $options['level'], $options['filter']);
+        $vectors = $this->loadVectors($options['vectors'], $options['level'], $options['filter'], $options['rules'] ?? null);
         $report = [
             'spec_rev' => $options['spec_rev'],
             'harness_protocol_version' => self::PROTOCOL_VERSION,
+            'selection' => [
+                'rules' => $options['rules'] ?? null,
+                'selected_count' => count($vectors),
+            ],
             'adapter' => null,
             'summary' => ['total' => count($vectors), 'pass' => 0, 'fail' => 0],
             'vectors' => [],
@@ -59,8 +72,14 @@ final class Runner
     /** @return array<string,mixed> */
     private function runVector(AdapterProcess $adapter, array $vector, float $timeout): array
     {
-        $adapter->send(['type' => 'run', 'vector_id' => $vector['id'], 'vector' => $vector]);
+        $adapter->send([
+            'type' => 'run',
+            'vector_id' => $vector['id'],
+            'vector' => array_intersect_key($vector, array_flip(self::VECTOR_FIELDS)),
+        ]);
         $events = [];
+        $observations = [];
+        $seenProbeIds = [];
         while (true) {
             $message = $adapter->receive($timeout);
             if (($message['type'] ?? null) === 'event') {
@@ -71,9 +90,21 @@ final class Runner
                 $events[] = $message;
                 continue;
             }
+            if (($message['type'] ?? null) === 'probe_call') {
+                $this->handleProbeCall($adapter, $vector, $message, $observations, $seenProbeIds);
+                continue;
+            }
             $this->requireType($message, 'result');
             if (($message['vector_id'] ?? null) !== $vector['id']) {
                 throw new ProtocolViolation('result относится к другому vector_id');
+            }
+            foreach (['tool_calls', 'observations'] as $forbidden) {
+                if (array_key_exists($forbidden, $message)) {
+                    throw new ProtocolViolation("result адаптера не может содержать {$forbidden}: факты принадлежат runner-owned probes");
+                }
+            }
+            if (!is_string($message['final_state'] ?? null) || $message['final_state'] === '') {
+                throw new ProtocolViolation('result адаптера не содержит нормализованный final_state');
             }
             if (($message['outcome'] ?? null) !== 'completed') {
                 return $this->failure($vector, 'адаптер вернул outcome ' . ($message['outcome'] ?? 'отсутствует'));
@@ -82,15 +113,97 @@ final class Runner
                 $vector['expect'],
                 $events,
                 ['final_state' => $message['final_state'] ?? null],
-                $message['tool_calls'] ?? [],
+                $this->toolCallsFromObservations($observations),
                 $message['error'] ?? null,
+                $observations,
             );
             return $this->entry($vector, $mismatches);
         }
     }
 
+    /** @param list<array<string,mixed>> $observations @param array<string,true> $seenProbeIds */
+    private function handleProbeCall(
+        AdapterProcess $adapter,
+        array $vector,
+        array $message,
+        array &$observations,
+        array &$seenProbeIds,
+    ): void {
+        if (($message['vector_id'] ?? null) !== $vector['id']) {
+            throw new ProtocolViolation('probe_call относится к другому vector_id');
+        }
+        $probeId = $message['probe_id'] ?? null;
+        $kind = $message['probe_kind'] ?? null;
+        $operation = $message['operation'] ?? null;
+        if (!is_string($probeId) || $probeId === '') {
+            throw new ProtocolViolation('probe_call не содержит probe_id');
+        }
+        if (isset($seenProbeIds[$probeId])) {
+            throw new ProtocolViolation("повторный probe_id {$probeId}");
+        }
+        if (!is_string($kind) || !in_array($kind, self::PROBE_KINDS, true)) {
+            throw new ProtocolViolation('probe_call содержит неизвестный probe_kind');
+        }
+        if (!is_array($operation) || array_is_list($operation)) {
+            throw new ProtocolViolation('probe_call.operation должен быть JSON object');
+        }
+        $seenProbeIds[$probeId] = true;
+        $observations[] = ['kind' => $kind, 'probe_id' => $probeId] + $operation;
+        $adapter->send([
+            'type' => 'probe_result',
+            'vector_id' => $vector['id'],
+            'probe_id' => $probeId,
+            'probe_result' => $this->probeResult($kind, $operation, $vector),
+        ]);
+    }
+
+    /** @return array<string,mixed> */
+    private function probeResult(string $kind, array $operation, array $vector): array
+    {
+        $driverState = is_array($vector['given']['driver_state'] ?? null) ? $vector['given']['driver_state'] : [];
+        if ($kind === 'tool_boundary') {
+            $tool = $operation['tool'] ?? null;
+            $results = is_array($driverState['tool_results'] ?? null) ? $driverState['tool_results'] : [];
+            foreach ($vector['script'] ?? [] as $step) {
+                if (is_array($step) && is_array($step['tool_result'] ?? null)) {
+                    $results[] = $step['tool_result'];
+                }
+            }
+            foreach ($results as $result) {
+                if (is_array($result) && ($result['tool'] ?? null) === $tool) {
+                    return ['tool_result' => $result];
+                }
+            }
+            return ['tool_result' => null];
+        }
+
+        return match ($kind) {
+            'journal_projection' => ['journal' => $driverState['journal'] ?? []],
+            'task_binding' => ['task_channel' => $driverState['task_channel'] ?? []],
+            'credential_boundary' => ['credentials' => $driverState['credentials'] ?? []],
+            'confirmation_boundary' => ['confirmation' => $driverState['confirmation'] ?? null],
+            default => ['accepted' => true],
+        };
+    }
+
+    /** @param list<array<string,mixed>> $observations @return list<array<string,mixed>> */
+    private function toolCallsFromObservations(array $observations): array
+    {
+        $calls = [];
+        foreach ($observations as $observation) {
+            if (($observation['kind'] ?? null) !== 'tool_boundary') {
+                continue;
+            }
+            $call = array_intersect_key($observation, array_flip(['tool', 'phase', 'args']));
+            if (isset($call['tool'], $call['phase'])) {
+                $calls[] = $call;
+            }
+        }
+        return $calls;
+    }
+
     /** @return list<array<string,mixed>> */
-    private function loadVectors(string $root, ?string $level, ?string $filter): array
+    private function loadVectors(string $root, ?string $level, ?string $filter, ?array $rules): array
     {
         $base = rtrim($root, '/') . '/vectors';
         if (!is_dir($base)) {
@@ -111,13 +224,58 @@ final class Runner
                 throw new RuntimeException("структурно неожиданный behavior-вектор {$file}");
             }
             if (($level !== null && ($vector['conformance_level'] ?? null) !== $level)
-                || ($filter !== null && !str_starts_with($vector['id'], $filter))) {
+                || ($filter !== null && !str_starts_with($vector['id'], $filter))
+                || ($rules !== null && !self::matchesRuleSelectors($vector['spec_rule_ids'] ?? null, $rules))) {
                 continue;
             }
             $vectors[] = $vector;
         }
+        if ($rules !== null && $vectors === []) {
+            throw new RuntimeException('селектор --rules не выбрал ни одного behavior-вектора');
+        }
         usort($vectors, static fn(array $a, array $b): int => $a['id'] <=> $b['id']);
         return $vectors;
+    }
+
+    /** @return null|list<string> */
+    public static function normalizeRuleSelectors(?string $raw): ?array
+    {
+        if ($raw === null) {
+            return null;
+        }
+        $selectors = array_map('trim', explode(',', $raw));
+        if ($selectors === [] || in_array('', $selectors, true)) {
+            throw new \InvalidArgumentException('--rules содержит пустой selector');
+        }
+        foreach ($selectors as $selector) {
+            if (preg_match('/^[A-Z][A-Z0-9]*-(?:\*|[1-9][0-9]*)$/D', $selector) !== 1) {
+                throw new \InvalidArgumentException("невалидный selector --rules: {$selector}");
+            }
+        }
+        $selectors = array_values(array_unique($selectors));
+        sort($selectors, SORT_STRING);
+        return $selectors;
+    }
+
+    /** @param mixed $ruleIds @param list<string> $selectors */
+    public static function matchesRuleSelectors(mixed $ruleIds, array $selectors): bool
+    {
+        if (!is_array($ruleIds) || $ruleIds === []) {
+            throw new RuntimeException('behavior-вектор не содержит непустой spec_rule_ids');
+        }
+        foreach ($selectors as $selector) {
+            $prefix = str_ends_with($selector, '*') ? substr($selector, 0, -1) : null;
+            foreach ($ruleIds as $ruleId) {
+                if (!is_string($ruleId)) {
+                    throw new RuntimeException('behavior-вектор содержит нестроковый spec_rule_id');
+                }
+                if (($prefix === null && $ruleId === $selector)
+                    || ($prefix !== null && str_starts_with($ruleId, $prefix))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /** @return array<string,mixed> */
