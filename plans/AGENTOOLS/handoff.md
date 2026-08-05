@@ -1,26 +1,25 @@
-# HANDOFF — 2026-08-05 — after P6.4
+# HANDOFF — 2026-08-05 — after P6.6
 
 **Next:** ЗАПУСК ВРУЧНУЮ: implementation/high
 
 | Параметр | Значение |
 |:--|:--|
 | Model | implementation |
-| Thinking | high — golden delivery and two-stage comparison |
+| Thinking | high — four-layer CI and owner-gate branch |
 | Context | continue (reset the session context) — ручной item |
-| Суть | Исполнить P6.5 golden-механику от exact `full.json` 213/213. |
+| Суть | Исполнить P6.7 CI-gate согласно owner-gate DR-02 §6. |
 | Команда | — |
 
 ```
 /model implementation
 /effort high
-/task:plan-run AGENTOOLS P6.5
+/task:plan-run AGENTOOLS P6.7
 ```
 
-**Done:** P6.4 closed by `a809072`: severity comes only from `rules.json`, report statuses are a
-closed enum without `skip`, and baseline coverage/staleness are both enforced. PHPUnit: 21 tests /
-34 assertions; reference run: 213 pass / 0 fail.
+**Done:** P6.4 `a809072` adds severity/baseline; P6.5 `52637fc` adds 9 golden pair reports; P6.6
+`4910713`/`9d460d3` execute all 13 harness cases and distinguish the negative fixture.
 
-**Remaining:** P6.5 implements golden delivery/comparison; P6.6 executes harness selftests; затем P6.7–P6.9.
+**Remaining:** P6.7–P6.9: four-layer CI, lockstep, phase gate.
 
 **Sources of truth:** `plan.md` D183 · `phases/P6.md` P6.3 Completion Notes ·
 `conformance/adapters/reference/reports/full.json` · `conformance/reports/p6.2-admission.md` ·
