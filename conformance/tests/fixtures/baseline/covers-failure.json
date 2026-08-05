@@ -1,0 +1,1280 @@
+{
+  "audit-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "audit-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "audit-003": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "audit-004": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "audit-006": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "audit-007": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "audit-008": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "audit-009": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "audit-010": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "audit-104": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "audit-106": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "audit-107": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "audit-108": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "audit-109": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "audit-110": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "clarification-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "clarification-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "clarification-003": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "clarification-004": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "clarification-005": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "clarification-006": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "clarification-007": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "clarification-008": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "clarification-009": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "clarification-010": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "clarification-011": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "clarificationstate-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "clarificationstate-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "clarificationstate-101": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "clarificationstate-102": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confdual-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confdual-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confdual-101": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confdual-102": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confirmation-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confirmation-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confirmation-003": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confirmation-004": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confirmation-005": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confirmation-006": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confirmation-007": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confirmation-008": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confirmation-009": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confpolicy-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confpolicy-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confpolicy-003": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confpolicy-004": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confpolicy-005": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confpolicy-006": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confpolicy-007": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confpolicy-008": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confpolicy-101": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confpolicy-102": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confpolicy-103": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confpolicy-104": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confpolicy-105": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confpolicy-106": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confpolicy-107": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "confpolicy-108": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "conftoken-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "conftoken-003": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "conftoken-004": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "conftoken-101": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "conftoken-102": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "conftoken-103": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "conftoken-104": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "errors-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "extension-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "grease-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "grease-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "grease-003": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "grease-004": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "idempotency-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "idempotency-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "idempotency-003": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "idempotency-004": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "idempotency-005": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "idempotency-006": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "idempotency-007": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "idempotency-008": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycle-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycle-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycle-003": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleconcurrency-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleconcurrency-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleconcurrency-003": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleconcurrency-004": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleconcurrency-005": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleconcurrency-006": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleconcurrency-007": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleconcurrency-008": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleconcurrency-101": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleconcurrency-102": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleconcurrency-103": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleconcurrency-104": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleconcurrency-105": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleconcurrency-106": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleconcurrency-107": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleconcurrency-108": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecyclefold-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecyclefold-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecyclefold-003": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecyclefold-004": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecyclefold-005": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecyclefold-006": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecyclefold-007": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecyclefold-008": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecyclefold-101": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecyclefold-102": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecyclefold-103": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecyclefold-104": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecyclefold-105": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecyclefold-106": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecyclefold-107": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecyclefold-108": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleintegrity-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleintegrity-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleintegrity-003": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleintegrity-004": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleintegrity-005": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleintegrity-006": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleintegrity-007": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleintegrity-008": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleintegrity-101": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleintegrity-102": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleintegrity-103": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleintegrity-104": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleintegrity-105": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleintegrity-106": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleintegrity-107": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lifecycleintegrity-108": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "longop-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "longop-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "longop-003": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "longop-004": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "longop-005": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "longop-006": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "longop-102": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lopbind-004": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lopbound-008": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lopcancel-006": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lopguard-007": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "loprecon-005": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lopsignal-003": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "lopsync-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "loptask-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "mustignore-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "mustignore-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "profile-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "profileuntrusted-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "profileuntrusted-101": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scenario-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scenario-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scenario-003": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scenario-004": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scenario-005": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scenario-006": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scenario-007": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scenario-008": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scenario-009": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scenario-010": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scenario-011": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scncomp-010": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scncomp-011": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scnfailure-004": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scnforward-013": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scnhostcode-014": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scnlimit-005": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scnlimit-006": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scnlimit-007": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scnlimit-008": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scnlimit-009": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scnlimit-015": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scnnocode-003": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scnorder-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scnoutcome-012": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "scnshape-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-001": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-002": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-003": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-004": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-005": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-006": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-007": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-008": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-009": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-010": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-011": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-012": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-013": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-014": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-015": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-016": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-018": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-019": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-101": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-102": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-103": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-104": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-105": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-106": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-107": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-108": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-109": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-110": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-111": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-112": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-113": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-114": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-115": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-116": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-118": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  },
+  "security-119": {
+    "reason": "fixture failure",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  }
+}

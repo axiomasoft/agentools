@@ -16,7 +16,7 @@ final class RunnerProtocolTest extends TestCase
         $report = (new Runner())->run($this->options('probe.php'));
 
         self::assertSame('1.1', $report['harness_protocol_version']);
-        self::assertSame(['total' => 1, 'pass' => 1, 'fail' => 0], $report['summary']);
+        self::assertSame(['total' => 1, 'pass' => 1, 'fail' => 0, 'warn' => 0, 'not-testable' => 0, 'baseline-expected' => 0], $report['summary']);
         self::assertSame([], $report['vectors'][0]['mismatches']);
     }
 

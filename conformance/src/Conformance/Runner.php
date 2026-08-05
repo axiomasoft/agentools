@@ -23,6 +23,8 @@ final class Runner
     public function run(array $options): array
     {
         $vectors = $this->loadVectors($options['vectors'], $options['level'], $options['filter'], $options['rules'] ?? null);
+        $catalog = RuleCatalog::fromFile($options['rules_index'] ?? 'spec/revisions/' . $options['spec_rev'] . '/rules.json');
+        $baseline = Baseline::fromFile($options['baseline'] ?? null);
         $report = [
             'spec_rev' => $options['spec_rev'],
             'harness_protocol_version' => self::PROTOCOL_VERSION,
@@ -31,7 +33,8 @@ final class Runner
                 'selected_count' => count($vectors),
             ],
             'adapter' => null,
-            'summary' => ['total' => count($vectors), 'pass' => 0, 'fail' => 0],
+            'summary' => ['total' => count($vectors), 'pass' => 0, 'fail' => 0, 'warn' => 0, 'not-testable' => 0, 'baseline-expected' => 0],
+            'baseline_errors' => [],
             'vectors' => [],
         ];
 
@@ -49,7 +52,7 @@ final class Runner
             $adapter->send(['type' => 'config', 'fixed_clock' => '2000-01-01T00:00:00Z', 'fixed_seed' => 'agentools-conformance']);
 
             foreach ($vectors as $vector) {
-                $report['vectors'][] = $this->runVector($adapter, $vector, $options['timeout']);
+                $report['vectors'][] = $this->runVector($adapter, $vector, $options['timeout'], $catalog);
             }
             $adapter->send(['type' => 'stop']);
             $adapter->stop();
@@ -57,20 +60,26 @@ final class Runner
             $detail = 'отказ SUT: ' . $e->getMessage();
             foreach ($vectors as $vector) {
                 if (!array_filter($report['vectors'], static fn(array $entry): bool => $entry['id'] === $vector['id'])) {
-                    $report['vectors'][] = $this->failure($vector, $detail);
+                    $report['vectors'][] = $this->failure($vector, $detail, $catalog);
                 }
             }
         }
 
         usort($report['vectors'], static fn(array $a, array $b): int => $a['id'] <=> $b['id']);
-        foreach ($report['vectors'] as $entry) {
+        foreach ($report['vectors'] as &$entry) {
+            if (in_array($entry['status'], [Status::Fail->value, Status::Warn->value], true)
+                && $baseline->matches($entry['id'], $entry['mismatches'])) {
+                $entry['status'] = Status::BaselineExpected->value;
+            }
             $report['summary'][$entry['status']]++;
         }
+        unset($entry);
+        $report['baseline_errors'] = $baseline->stale($report['vectors']);
         return $report;
     }
 
     /** @return array<string,mixed> */
-    private function runVector(AdapterProcess $adapter, array $vector, float $timeout): array
+    private function runVector(AdapterProcess $adapter, array $vector, float $timeout, RuleCatalog $catalog): array
     {
         $adapter->send([
             'type' => 'run',
@@ -107,7 +116,14 @@ final class Runner
                 throw new ProtocolViolation('result адаптера не содержит нормализованный final_state');
             }
             if (($message['outcome'] ?? null) !== 'completed') {
-                return $this->failure($vector, 'адаптер вернул outcome ' . ($message['outcome'] ?? 'отсутствует'));
+                if (($message['outcome'] ?? null) === 'not_testable') {
+                    $reason = $catalog->notTestableReason($vector['spec_rule_ids']);
+                    if ($reason === null || ($message['not_testable_reason'] ?? null) !== $reason) {
+                        return $this->failure($vector, 'Not testable должен нести дословную причину rules.json', $catalog);
+                    }
+                    return $this->entry($vector, [], Status::NotTestable, $reason);
+                }
+                return $this->failure($vector, 'адаптер вернул outcome ' . ($message['outcome'] ?? 'отсутствует'), $catalog);
             }
             $mismatches = Matcher::vector(
                 $vector['expect'],
@@ -117,7 +133,7 @@ final class Runner
                 $message['error'] ?? null,
                 $observations,
             );
-            return $this->entry($vector, $mismatches);
+            return $this->entry($vector, $mismatches, $mismatches === [] ? Status::Pass : $catalog->statusForFailure($vector['spec_rule_ids']));
         }
     }
 
@@ -279,22 +295,22 @@ final class Runner
     }
 
     /** @return array<string,mixed> */
-    private function entry(array $vector, array $mismatches): array
+    private function entry(array $vector, array $mismatches, Status $status, ?string $reason = null): array
     {
         return [
             'id' => $vector['id'],
             'level' => $vector['conformance_level'],
             'vector_class' => $vector['vector_class'],
             'spec_rule_ids' => $vector['spec_rule_ids'],
-            'status' => $mismatches === [] ? 'pass' : 'fail',
+            'status' => $status->value,
             'mismatches' => $mismatches,
-        ];
+        ] + ($reason === null ? [] : ['not_testable_reason' => $reason]);
     }
 
     /** @return array<string,mixed> */
-    private function failure(array $vector, string $message): array
+    private function failure(array $vector, string $message, RuleCatalog $catalog): array
     {
-        return $this->entry($vector, [$message]);
+        return $this->entry($vector, [$message], $catalog->statusForFailure($vector['spec_rule_ids']));
     }
 
     private function requireType(array $message, string $expected): void
