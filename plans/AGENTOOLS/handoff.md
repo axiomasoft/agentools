@@ -1,34 +1,37 @@
 # HANDOFF — 2026-08-05 — after P6.2
 
-**Next:** `/task:plan-design AGENTOOLS P6.2`
+**Next:** ЗАПУСК ВРУЧНУЮ: implementation/high
 
 | Параметр | Значение |
 |:--|:--|
-| Model | frontier |
-| Thinking | high — reconcile frozen contradiction |
-| Context | NEW SESSION — шаг-не-item |
-| Суть | Разрешить несовместимые acceptance замороженного corpus для clarification-004/007. |
-| Команда | `/task:plan-design AGENTOOLS P6.2` |
+| Model | implementation |
+| Thinking | high — full reference semantics on frozen input |
+| Context | continue (/clear) — ручной item |
+| Суть | Реализовать reference adapter по terminal bundle тремя гейтами: core 121 → extension 92 → full 213. |
+| Команда | — |
 
 ```
-$ task:plan-design AGENTOOLS P6.2
+/model implementation
+/effort high
+/task:plan-run AGENTOOLS P6.3
 ```
 
-**Done:** P6.1 закрыт item-коммитом `abf9150`; commit `8ffc6c2` исправляет обнаруженный P6.2
-matcher regression `args_subset → args` и добавляет PHPUnit-доказательство.
+**Done:** P6.2 закрыт item-коммитом `dc2a38a`. Admission report PASS: corpus digest
+`ff797647…`, core `121`, extension `92`, full `213`, incompatible classes `0`; protocol `1.1`
+держит oracle-safe allowlist и runner-owned probes. Backup tag object `3ed21ca…` сохраняет old
+target `2333394`; candidate/canonical object `c267815…` указывает на `dc2a38a`. Frozen diff
+после CAS равен `0`; force/delete/push не выполнялись.
 
-**Remaining:** P6.2 заблокирован до plan-design; после его разрешения — P6.2 → P6.9, owner-gate
-`DR-02` §6 перед P6.7.
+**Remaining:** P6.3 реализует весь in-memory reference adapter и пишет deterministic
+`core.json`, `extension.json`, `full.json`; затем B7 исполняет P6.4–P6.6.
 
-**Sources of truth:** `phases/P6.md` P6.1 Completion Notes ·
-`spec/revisions/2026-08/11_conformance-harness.md` · `fixtures/2026-08/README.md`.
+**Sources of truth:** `plan.md` D183 · `phases/P6.md` P6.2 Completion Notes и P6.3 ·
+`conformance/reports/p6.2-admission.md` · annotated `spec-2026-08` ·
+`research/25-p6-executable-admission-chain-2026-08.md`.
 
-**Open risks:** `clarification-004` и `clarification-007` одинаковы по stimulus, но требуют
-несовместимые результаты; исправление после freeze стоит новой датированной ревизии. Публичная
-публикация запрещена D174/D176; remote/CI/merge protection не верифицированы (D178).
+**Open risks:** P6.3 обязан fail-closed сверить canonical tag target, report counts/digest и
+frozen diff до adapter work; любое новое corpus-расхождение возвращается в plan-design, а не
+чинится адаптером.
 
-**Workarounds/Deferred/Open questions:**
-
-- workarounds: нет — ветвление reference adapter по id вектора запрещено.
-- deferred: severity/baseline, golden, selftest, CI и lockstep принадлежат последующим P6 items.
-- open_questions: owner-gate `DR-02` §6 — перед P6.7.
+**Workarounds/Deferred/Open questions:** workarounds —; deferred — product semantics целиком
+принадлежат P6.3; open_questions — Q-7 фиксируется только фактом двух long-operation paths.

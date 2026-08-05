@@ -1,6 +1,6 @@
 # Roadmap исполнения — AGENTOOLS
 
-**Обновлён:** 2026-08-04 · **Соответствует plan.md:** v0.38.0 · **Следующий исполнимый участок:** P6.1 после terminal P5 audit GREEN. Репозиторная копия — исполнимый SSOT этой сессии.
+**Обновлён:** 2026-08-05 · **Соответствует plan.md:** v0.41.1 · **Следующий шаг:** `task:plan-run AGENTOOLS P6.3` — реализовать reference adapter stages core 121 → extension 92 → full 213 на terminal admission bundle. Репозиторная копия — исполнимый SSOT этой сессии.
 
 Карта отвечает на «какую команду дальше?» без разбора всего плана. Она **не переопределяет**
 `plan.md` §3 Routing (модели и effort — оттуда), а только группирует запуски и называет гейты
@@ -86,10 +86,10 @@ P4.1–P4.8 терминальны и повторно не запускаютс
 | — | — | — | — | ✅ **Q-5 (домен) + Q-10 (trademark)** | гейт СТОИТ МЕЖДУ items фазы (D64): нет ответа — P5.2 ждёт со строкой `Возобновление:`, ревизия остаётся `draft`; молчание ≠ «да» |
 | P5.2 | solo | `plan-run` | implementation/high | ↑ | freeze — необратимая публикация: жёсткий порядок шести шагов (D62), перестановка замораживает расхождение молча |
 | P6.1 | solo | `plan-run` | implementation/high | — | раннер — предмет, от которого зависят все восемь остальных items фазы; инвариант матчера и различение «отказ SUT ↔ отказ раннера» |
-| P6.2 | solo | `plan-run` | implementation/high | — | эталонный адаптер, ядро действия: исполняемое прочтение замороженной семантики `01`–`05`/`09`; расхождение с вектором разбирается тремя гипотезами, а не подгоняется |
-| P6.3 | solo | `plan-run` | implementation/high | — | вторая половина эталона (`06`–`08`, `10`) + приземление Q-7; отдельная сессия — другой предмет и другой набор отрицательных прогонов |
+| P6.2 | solo | `plan-run` | frontier/high | — | admission only: exact corpus correction + oracle-safe runner + protocol 1.1 runner-owned probes + selector partition 121+92=213 + re-freeze/tag; adapter запрещён (D183) |
+| P6.3 | solo | `plan-run` | implementation/high | — | потребляет только terminal P6.2 bundle; полный reference adapter stages core 121 → extension 92 → full 213; frozen input не меняет; full report передаёт P6.4 (D183) |
 | P6.4, P6.5, P6.6 | B7 | `plan-run` серия | implementation/high | — | три механики одного модуля: severity/baseline → golden → harness-selftest; P6.6 исполняет CFH-55 exact/wrong-code pair D149. Батч легален по D122, терминальный P6.9 перепроверяет весь предмет; `Review=full` не подавляется. |
-| P6.7 | solo | `plan-run` | implementation/high | ✅ **исход `DR-02` §6 (Q-12)** | исполняет ФАКТИЧЕСКИЙ исход owner-gate тремя ветками (D68); ветка (B) обязывает item встать `🔴` — сессия обязана быть отдельной, чтобы блок не утащил соседей |
+| P6.7 | solo | `plan-run` | implementation/high | optional input Q-12; нет ответа → (C), без паузы | исполняет три ветки D68/D182; только ЯВНО выбранная (B) блокирует из-за новой dated revision — молчание владельца не останавливает item |
 | P6.8 | solo | `plan-run` | implementation/high | — | lockstep при НУЛЕ существующих SDK доказывается отрицательными прогонами на фикстурах; здесь же фиксируется форма объявления ревизии, которую читают P7.1 и P8.1 (D81/D89) |
 | P6.9 | solo | `plan-run` | implementation/high | — | гейт-item фазы: пара прогонов (зелёный + мутант) + отчёт по уровням с обязательным `--out` (D118); запускается ПОСЛЕДНИМ |
 | P7.1 | solo | reconciliation pending | implementation/medium | — | `🟡` F16 anchor `b11cf41`; повторная реализация запрещена, terminal closure после восстановления provenance/validation |
