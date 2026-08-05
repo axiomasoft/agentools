@@ -111,8 +111,10 @@ def layer_three() -> int:
 
 
 def layer_four() -> int:
-    # Эталон и selftest дают непустой кросс-языковой предмет до появления SDK.
+    # Lockstep идёт первым: без общего якоря ревизии последующие прогоны SDK
+    # не доказывают, что исполняют тот же замороженный корпус.
     checks = [
+        ("lockstep ревизии и манифестов SDK", command("php", "conformance/bin/lockstep")),
         ("эталонный адаптер и golden-пары", command(
             "php", "conformance/bin/run", "--adapter", REFERENCE_ADAPTER,
             "--vectors", FIXTURES, "--spec-rev", "2026-08",

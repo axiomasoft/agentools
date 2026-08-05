@@ -23,6 +23,16 @@ final class Runner
     public function run(array $options): array
     {
         $vectors = $this->loadVectors($options['vectors'], $options['level'], $options['filter'], $options['rules'] ?? null);
+        foreach ($vectors as $vector) {
+            if (($vector['spec_rev'] ?? null) !== $options['spec_rev']) {
+                throw new RuntimeException(sprintf(
+                    'ревизия прогона %s не совпадает с ревизией вектора %s (%s)',
+                    $options['spec_rev'],
+                    $vector['spec_rev'] ?? 'не объявлена',
+                    $vector['id'] ?? 'без id',
+                ));
+            }
+        }
         $catalog = RuleCatalog::fromFile($options['rules_index'] ?? 'spec/revisions/' . $options['spec_rev'] . '/rules.json');
         $baseline = Baseline::fromFile($options['baseline'] ?? null);
         $report = [
@@ -47,6 +57,13 @@ final class Runner
                 if (!isset($ready[$field])) {
                     throw new ProtocolViolation("ready адаптера не содержит {$field}");
                 }
+            }
+            if ($ready['spec_rev'] !== $options['spec_rev']) {
+                throw new ProtocolViolation(sprintf(
+                    'ready адаптера объявляет ревизию %s, а прогон запрошен для %s',
+                    $ready['spec_rev'],
+                    $options['spec_rev'],
+                ));
             }
             $report['adapter'] = $ready;
             $adapter->send(['type' => 'config', 'fixed_clock' => '2000-01-01T00:00:00Z', 'fixed_seed' => 'agentools-conformance']);

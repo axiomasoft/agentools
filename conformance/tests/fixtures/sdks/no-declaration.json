@@ -1,0 +1,11 @@
+{
+  "sdks": [
+    {
+      "id": "fixture/php-no-declaration",
+      "language": "php",
+      "manifest_path": "manifests/no-declaration-composer.json",
+      "adapter_command": "php fixture-adapter.php",
+      "test_command": "php fixture-tests.php"
+    }
+  ]
+}

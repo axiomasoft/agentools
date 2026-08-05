@@ -1,0 +1,11 @@
+{
+  "sdks": [
+    {
+      "id": "fixture/php-match",
+      "language": "php",
+      "manifest_path": "manifests/match-composer.json",
+      "adapter_command": "php fixture-adapter.php",
+      "test_command": "php fixture-tests.php"
+    }
+  ]
+}
