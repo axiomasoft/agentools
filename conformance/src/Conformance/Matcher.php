@@ -26,7 +26,7 @@ final class Matcher
         foreach ($expect['tool_calls'] ?? [] as $index => $expected) {
             $found = false;
             foreach ($toolCalls as $actual) {
-                if (self::subset($expected, $actual)) {
+                if (self::toolCall($expected, $actual)) {
                     $found = true;
                     break;
                 }
@@ -41,6 +41,18 @@ final class Matcher
         }
 
         return $mismatches;
+    }
+
+    /**
+     * `args_subset` — язык ожидания корпуса, а фактический вызов несёт полные
+     * `args`: иначе matcher требовал бы от SUT дублировать тестовый DSL.
+     */
+    private static function toolCall(array $expected, array $actual): bool
+    {
+        $argsSubset = $expected['args_subset'] ?? null;
+        unset($expected['args_subset']);
+        return self::subset($expected, $actual)
+            && ($argsSubset === null || self::subset($argsSubset, $actual['args'] ?? []));
     }
 
     /** @return list<string> */

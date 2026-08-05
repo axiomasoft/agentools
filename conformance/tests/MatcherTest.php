@@ -38,4 +38,19 @@ final class MatcherTest extends TestCase
     {
         self::assertNotSame([], Matcher::events([['kind' => 'needed']], [['kind' => 'extra']]));
     }
+
+    public function testToolCallMatchesFixtureArgsSubsetAgainstActualArgs(): void
+    {
+        self::assertSame([], Matcher::vector(
+            ['tool_calls' => [[
+                'tool' => 'demo_probe',
+                'phase' => 'commit',
+                'args_subset' => ['value' => 'x'],
+            ]]],
+            [],
+            null,
+            [['tool' => 'demo_probe', 'phase' => 'commit', 'args' => ['value' => 'x', 'token' => 't']]],
+            null,
+        ));
+    }
 }
