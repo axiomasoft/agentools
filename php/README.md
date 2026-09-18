@@ -25,5 +25,10 @@ composer test --working-dir=php
 composer analyse --working-dir=php
 ```
 
-Conformance-адаптер будет жить в `php/conformance/`. Тесты пакета входят в слой 3
-CI только с P7.12; до этого они остаются локальной проверкой SDK.
+Conformance-адаптер живёт в `php/conformance/adapter.php`. Тесты пакета входят в слой 3
+CI с регистрацией SDK в `conformance/sdks.json` (item P7.12).
+
+**Owner-gate `DR-02` §6 — ветка (C):** решения владельца по SDK-части слоя 2 нет.
+`tools/ci_gate.py` печатает «SDK-часть слоя 2 — без предмета…»; чекер структурной
+сверки «поле схемы ↔ поле типа SDK» **не пишется** (это решило бы owner-gate за владельца).
+Открытый вопрос: Q-12.

@@ -6,6 +6,7 @@ namespace AgenTools\Tool;
 
 use AgenTools\Identity\ExtensionIdentity;
 use AgenTools\Schema\Canonicalizer;
+use AgenTools\Schema\RawDocument;
 
 /** Manual DTO for the published tool-descriptor schema. */
 final readonly class ToolDescriptor
@@ -14,6 +15,7 @@ final readonly class ToolDescriptor
      * @param array<string, mixed> $inputSchema
      * @param array<string, mixed>|null $outputSchema
      * @param array<string, mixed> $otherMeta
+     * @param array<string, mixed> $extraMembers
      */
     public function __construct(
         public string $name,
@@ -24,6 +26,8 @@ final readonly class ToolDescriptor
         public ?string $title = null,
         public ?array $outputSchema = null,
         public array $otherMeta = [],
+        public array $extraMembers = [],
+        private ?RawDocument $rawDocument = null,
     ) {
         if (preg_match('/^[a-z][a-z0-9]*(_[a-z0-9]+)+$/', $name) !== 1 || strlen($name) > 64) {
             throw new \InvalidArgumentException('Tool name must use the published AgenTools grammar.');
@@ -34,12 +38,20 @@ final readonly class ToolDescriptor
         $this->assertAnnotationsMatchEffect();
     }
 
-    /** @param array<string, mixed> $document */
-    public static function fromArray(array $document): self
+    public static function fromJson(string $json): self
     {
-        foreach ($document as $key => $_) {
+        $document = RawDocument::fromJson($json)->toArray();
+
+        return self::fromArray($document, RawDocument::fromJson($json));
+    }
+
+    /** @param array<string, mixed> $document */
+    public static function fromArray(array $document, ?RawDocument $rawDocument = null): self
+    {
+        $extraMembers = [];
+        foreach ($document as $key => $value) {
             if (!in_array($key, ['name', 'title', 'description', 'inputSchema', 'outputSchema', 'annotations', '_meta'], true)) {
-                throw new \InvalidArgumentException(sprintf('Unexpected descriptor member %s.', $key));
+                $extraMembers[$key] = $value;
             }
         }
         $meta = $document['_meta'] ?? null;
@@ -47,6 +59,7 @@ final readonly class ToolDescriptor
         if (!is_array($profile)) {
             throw new \InvalidArgumentException('A descriptor must carry _meta["dev.agentools/action"].');
         }
+        /** @var array<string, mixed> $profile */
         $annotations = $document['annotations'] ?? null;
         if (!is_array($annotations) || array_keys($annotations) !== ['readOnlyHint', 'destructiveHint', 'idempotentHint', 'openWorldHint']) {
             throw new \InvalidArgumentException('All four MCP annotation hints must be explicit.');
@@ -56,9 +69,10 @@ final readonly class ToolDescriptor
                 throw new \InvalidArgumentException('Tool annotations must be boolean.');
             }
         }
-        foreach ($profile as $key => $_) {
+        $extensionMembers = [];
+        foreach ($profile as $key => $value) {
             if (!in_array($key, ['side_effect', 'confirmation', 'idempotent_commit', 'permissions_hint', 'content_origin'], true)) {
-                throw new \InvalidArgumentException(sprintf('Unexpected action profile member %s.', $key));
+                $extensionMembers[$key] = $value;
             }
         }
         if (!isset($profile['side_effect']) || !is_string($profile['side_effect'])) {
@@ -85,11 +99,14 @@ final readonly class ToolDescriptor
                 self::optionalBool($profile, 'idempotent_commit'),
                 $permissions,
                 self::optionalString($profile, 'content_origin'),
+                $extensionMembers,
             ),
             new ToolAnnotations($annotations['readOnlyHint'], $annotations['destructiveHint'], $annotations['idempotentHint'], $annotations['openWorldHint']),
             self::optionalString($document, 'title'),
             self::optionalArray($document, 'outputSchema'),
             $otherMeta,
+            $extraMembers,
+            $rawDocument,
         );
     }
 
@@ -118,20 +135,36 @@ final readonly class ToolDescriptor
         }
     }
 
+    public function toJson(): string
+    {
+        if ($this->rawDocument !== null) {
+            return $this->rawDocument->toJson();
+        }
+
+        return json_encode(
+            $this->toArray(),
+            JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR,
+        );
+    }
+
     /** @return array<string, mixed> */
     public function toArray(): array
     {
         $meta = $this->otherMeta;
         $meta[ExtensionIdentity::DATA_KEY] = $this->actionProfile->toArray();
-        return array_filter([
-            'name' => $this->name,
-            'title' => $this->title,
-            'description' => $this->description,
-            'inputSchema' => $this->inputSchema,
-            'outputSchema' => $this->outputSchema,
-            'annotations' => $this->annotations->toArray(),
-            '_meta' => $meta,
-        ], static fn (mixed $value): bool => $value !== null);
+
+        return array_filter(
+            array_merge($this->extraMembers, [
+                'name' => $this->name,
+                'title' => $this->title,
+                'description' => $this->description,
+                'inputSchema' => $this->inputSchema,
+                'outputSchema' => $this->outputSchema,
+                'annotations' => $this->annotations->toArray(),
+                '_meta' => $meta,
+            ]),
+            static fn (mixed $value): bool => $value !== null,
+        );
     }
 
     private function assertAnnotationsMatchEffect(): void

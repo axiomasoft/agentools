@@ -19,10 +19,13 @@ final class ConfirmationProtocol
     {
     }
 
-    public function prepare(Proposal $proposal): ConfirmationToken
+    public function prepare(Proposal $proposal, \DateTimeImmutable $now): ConfirmationToken
     {
         if ($proposal->state !== ProposalState::Pending) {
             throw new \InvalidArgumentException('Only a pending proposal can receive a token.');
+        }
+        if ($proposal->expiresAt <= $now) {
+            throw new \InvalidArgumentException('A proposal requires a future expires_at deadline.');
         }
         return ConfirmationToken::issue($proposal, $this->signer);
     }
@@ -36,7 +39,11 @@ final class ConfirmationProtocol
         CommitAuthorizer $authorizer,
         ?string $proposerId = null,
         bool $dualControl = false,
+        ?DecisionAudit $decision = null,
     ): ConfirmationToken {
+        if ($decision !== null) {
+            $decision->assertAllowsCommit($actualArguments);
+        }
         $parsed = ConfirmationToken::parse($token, $this->signer);
         if ($parsed->argsFingerprint->value !== $actualArguments->value) {
             throw ConfirmationFailure::argsMismatch();

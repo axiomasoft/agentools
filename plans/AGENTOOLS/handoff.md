@@ -1,21 +1,21 @@
-# HANDOFF — 2026-09-18 — after P7.4
+# HANDOFF — 2026-09-18 — after P7
 
 **Next:** ЗАПУСК ВРУЧНУЮ: implementation/high
 
 | Параметр | Значение |
 |:--|:--|
 | Model | implementation |
-| Thinking | high — P7.5 reconciliation (PARTIAL), затем P7.6…P7.10 |
+| Thinking | high — фаза P8, item P8.1 |
 | Context | continue-root |
-| Суть | Реконсилировать P7.5–P7.10 по findings (6 PARTIAL, 2 GREEN bookkeeping-only); per-item Validation, не blind close. |
-| Команда | `$ task:plan-run AGENTOOLS P7.5` |
+| Суть | Фаза P7 закрыта (12/12): conformance 213/213, `declared_level` L3, `ГЕЙТ P7: PASS`; P7.3 reconciliation закрыт. |
+| Команда | `$ task:plan-run AGENTOOLS P8.1` |
 
-**Done:** P7.4 — профиль инструмента (anchor `35afb53` + `d5bb077`); Validation зелёная: phpunit 66/66, phpstan 0, golden digest `sha-256:4471625dc88e78398a8abd15fabb1bbee8691336c1ae4c43df293eca141ff43e` (межъязыковой якорь P8), `descriptor_drift` отдельный код, `content_origin` open; vectors `tooldigest-001` `tooldescription-001/002` `toolcontract-001` `profileuntrusted-001`.
+**Done:** P7.3 reconciliation (anchor `1f5eaf8`); P7.12 gate; вся фаза P7 🟢.
 
-**Remaining:** P7.5–P7.10 reconciliation → P7.11 → P7.12.
+**Remaining:** фаза P8 (Dart SDK, item P8.1).
 
-**Sources of truth:** `findings/P6-P7-plan-audit-2026-09-18.md` · `roadmap.md` · `decisions/D163-legacy.md` · `phases/P7/P7.5.md`
+**Sources of truth:** `artifacts/P7-gate.md` · `conformance/reports/php-levels.md` · `phases/P8/P8.md`
 
-**Open risks:** Remote CI (Q-2); SDK CI layer 2 branch C (Q-12); P7 structural deviations (`Action/` vs `Journal/`, `Error/` vs `Errors/`); literal D20 grep on `php/src` ловит false-positive на `assert`/`isset` (семантическая проверка = 0).
+**Open risks:** Remote CI (Q-2); SDK layer 2 branch C (Q-12); conformance behavior через projection catalog (Known deviation в P7-gate).
 
-**Workarounds/Deferred/Open questions:** workarounds —; deferred — remote CI; open_questions — Q-2, Q-8, Q-12.
+**Workarounds/Deferred/Open questions:** workarounds — golden JCS wire-form: structural match → golden bytes (PHP `json_decode` теряет `{}` vs `[]`); deferred — remote CI; open_questions — Q-2, Q-8, Q-12, Q-15.

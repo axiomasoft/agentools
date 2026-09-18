@@ -25,6 +25,18 @@ final readonly class DecisionAudit
         }
     }
 
+    public function assertAllowsCommit(ArgumentsFingerprint $actualArguments): void
+    {
+        if ($this->decision !== 'approve') {
+            throw new \InvalidArgumentException('Only an approval decision can authorize commit.');
+        }
+        if ($this->argsHashAtCommit === null
+            || $this->argsHashAtDecision->value !== $this->argsHashAtCommit->value
+            || $this->argsHashAtCommit->value !== $actualArguments->value) {
+            throw ConfirmationFailure::argsMismatch();
+        }
+    }
+
     /** @return array<string, mixed> */
     public function toPayload(): array
     {

@@ -7,6 +7,7 @@ namespace AgenTools\Tests\Action;
 use AgenTools\Action\ActionEvent;
 use AgenTools\Action\ActionJournal;
 use AgenTools\Action\ActionReducer;
+use AgenTools\Action\FoldedAction;
 use AgenTools\Action\ActionSnapshot;
 use AgenTools\Action\ActionStatus;
 use AgenTools\Action\Actor;
@@ -17,6 +18,7 @@ use AgenTools\Action\JournalHashChain;
 use AgenTools\Action\JournalIntegrityException;
 use AgenTools\Action\LifecycleException;
 use AgenTools\Action\VersionConflict;
+use AgenTools\Error\ToolErrorCode;
 use AgenTools\Schema\Canonicalizer;
 use PHPUnit\Framework\TestCase;
 
@@ -58,14 +60,48 @@ final class ActionReducerTest extends TestCase
         self::assertSame(['future_member' => ['deep' => true]], $this->event(2, 1, 'vendor.future_event', ['future_member' => ['deep' => true]])->toArray()['payload']);
     }
 
+    /** ALC-21; a stale expected_prev_seq is a typed version conflict, not a transition error. */
     public function testGuardOrderReportsVersionConflictBeforeInvalidTransition(): void
     {
-        $this->expectException(VersionConflict::class);
+        try {
+            (new ActionReducer())->fold([
+                $this->event(1, 0, 'action_created'),
+                $this->event(2, 0, 'action_completed'),
+            ]);
+            self::fail('Expected a version conflict.');
+        } catch (VersionConflict $exception) {
+            self::assertSame(ToolErrorCode::VersionConflict->value, $exception->error->code);
+            self::assertSame(['expected_prev_seq' => 0, 'actual_prev_seq' => 1], $exception->error->context);
+        }
+    }
 
-        (new ActionReducer())->fold([
+    /** ALC-31; recorded events are immutable value objects, not mutable envelopes. */
+    public function testRecordedEventsCannotBeMutatedInPlace(): void
+    {
+        $event = $this->event(1, 0, 'action_created');
+        $reflection = new \ReflectionClass($event);
+
+        self::assertTrue($reflection->isReadOnly());
+        self::assertNotSame($event, $event->withPreviousHash('sha-256:' . str_repeat('a', 64)));
+        self::assertNull($event->previousHash);
+    }
+
+    /** ALC-3; folding the same journal twice yields a byte-identical projection payload. */
+    public function testFoldIsDeterministicAcrossRuns(): void
+    {
+        $events = [
             $this->event(1, 0, 'action_created'),
-            $this->event(2, 0, 'action_completed'),
-        ]);
+            $this->event(2, 1, 'epoch_started', [], 1),
+            $this->event(3, 2, 'action_started'),
+            $this->event(4, 3, 'input_recorded', ['name' => 'prompt', 'value' => 'hello']),
+            $this->event(5, 4, 'action_completed'),
+        ];
+        $reducer = new ActionReducer();
+
+        $first = $this->serializeFoldedState($reducer->fold($events));
+        $second = $this->serializeFoldedState($reducer->fold($events));
+
+        self::assertSame($first, $second);
     }
 
     public function testItRejectsEventAfterTerminalAction(): void
@@ -127,6 +163,34 @@ final class ActionReducerTest extends TestCase
             $reducer->fold([...$firstTwo, ...$tail])->status,
             ActionJournal::restore($snapshot, $tail, $reducer)->status,
         );
+    }
+
+    private function serializeFoldedState(FoldedAction $state): string
+    {
+        $effects = [];
+        foreach ($state->effects as $effectId => $effect) {
+            $effects[$effectId] = [
+                'effect_id' => $effect->effectId,
+                'status' => $effect->status->value,
+                'epoch' => $effect->epoch,
+                'requested_seq' => $effect->requestedSeq,
+                'tool_name' => $effect->toolName,
+                'idempotency_key' => $effect->idempotencyKey,
+                'external_ref' => $effect->externalRef,
+            ];
+        }
+        ksort($effects);
+
+        return json_encode([
+            'action_id' => $state->actionId,
+            'status' => $state->status?->value,
+            'seq' => $state->seq,
+            'epoch' => $state->epoch,
+            'inputs' => $state->inputs,
+            'effects' => $effects,
+            'cancellation_requested' => $state->cancellationRequested,
+            'previous_hash' => $state->previousHash,
+        ], JSON_THROW_ON_ERROR);
     }
 
     /** @param array<string, mixed> $payload */

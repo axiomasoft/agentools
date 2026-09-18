@@ -7,13 +7,17 @@ namespace AgenTools\Tool;
 /** The data carried exclusively in _meta["dev.agentools/action"]. */
 final readonly class ActionProfile
 {
-    /** @param array<int, mixed>|null $permissionsHint */
+    /**
+     * @param array<int, mixed>|null $permissionsHint
+     * @param array<string, mixed> $extensionMembers
+     */
     public function __construct(
         public string $sideEffect,
         public ?string $confirmation = null,
         public ?bool $idempotentCommit = null,
         public ?array $permissionsHint = null,
         public ?string $contentOrigin = null,
+        public array $extensionMembers = [],
     ) {
         if (!self::isOpenValue($sideEffect)) {
             throw new \InvalidArgumentException('side_effect must be a core or product extension value.');
@@ -38,19 +42,26 @@ final readonly class ActionProfile
 
     public function requiresConfirmation(): bool
     {
-        return $this->baseRequiresConfirmation() || ($this->confirmation !== null && $this->confirmation !== 'none');
+        if ($this->baseRequiresConfirmation()) {
+            return true;
+        }
+
+        return in_array($this->confirmation, ['confirm', 'double_confirm'], true);
     }
 
     /** @return array<string, mixed> */
     public function toArray(): array
     {
-        return array_filter([
-            'side_effect' => $this->sideEffect,
-            'confirmation' => $this->confirmation,
-            'idempotent_commit' => $this->idempotentCommit,
-            'permissions_hint' => $this->permissionsHint,
-            'content_origin' => $this->contentOrigin,
-        ], static fn (mixed $value): bool => $value !== null);
+        return array_filter(
+            array_merge($this->extensionMembers, [
+                'side_effect' => $this->sideEffect,
+                'confirmation' => $this->confirmation,
+                'idempotent_commit' => $this->idempotentCommit,
+                'permissions_hint' => $this->permissionsHint,
+                'content_origin' => $this->contentOrigin,
+            ]),
+            static fn (mixed $value): bool => $value !== null,
+        );
     }
 
     private function baseRequiresConfirmation(): bool

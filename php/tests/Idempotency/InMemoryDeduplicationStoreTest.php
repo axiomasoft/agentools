@@ -22,6 +22,13 @@ use PHPUnit\Framework\TestCase;
 
 final class InMemoryDeduplicationStoreTest extends TestCase
 {
+    /** IDE-10; the deduplication state enum is closed to exactly three values. */
+    public function testDeduplicationStateHasExactlyThreeValues(): void
+    {
+        self::assertCount(3, DeduplicationState::cases());
+    }
+
+    /** IDE-10, IDE-12, IDE-13, IDE-14, IDE-15, IDE-23; duplicate_completed returns stored errors as-is. */
     public function testItCreatesThenReturnsTheOriginalCompletedError(): void
     {
         $store = new InMemoryDeduplicationStore($this->policy('P1D'));
@@ -43,6 +50,7 @@ final class InMemoryDeduplicationStoreTest extends TestCase
         self::assertSame($error, $duplicate->storedResult?->error);
     }
 
+    /** IDE-16; the same key with a different args_fingerprint is a caller error. */
     public function testItRejectsAKeyReusedForDifferentArguments(): void
     {
         $store = new InMemoryDeduplicationStore($this->policy('P1D'));
@@ -57,6 +65,7 @@ final class InMemoryDeduplicationStoreTest extends TestCase
         }
     }
 
+    /** IDE-9; idempotent_commit without a client key is rejected. */
     public function testARequiredIdempotencyKeyProducesTheSpecifiedToolError(): void
     {
         try {
@@ -68,6 +77,7 @@ final class InMemoryDeduplicationStoreTest extends TestCase
         }
     }
 
+    /** IDE-21; an expired retention window allows a fresh new resolution. */
     public function testExpiredRecordsBecomeNewIntent(): void
     {
         $store = new InMemoryDeduplicationStore($this->policy('PT1S'));
@@ -78,6 +88,7 @@ final class InMemoryDeduplicationStoreTest extends TestCase
         self::assertSame(DeduplicationState::New, $store->resolve($request, $now->modify('+2 seconds'))->state);
     }
 
+    /** IDE-18, IDE-19; retention must cover confirmation lifetime plus the client retry window. */
     public function testRetentionMustCoverTheOtherIndependentTimers(): void
     {
         $this->expectException(\InvalidArgumentException::class);

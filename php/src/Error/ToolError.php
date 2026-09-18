@@ -29,6 +29,62 @@ final readonly class ToolError
         }
     }
 
+    /** @param array<string, mixed> $payload */
+    public static function fromArray(array $payload): self
+    {
+        foreach (['code', 'category', 'title'] as $required) {
+            if (!isset($payload[$required]) || !is_string($payload[$required])) {
+                throw new \InvalidArgumentException(sprintf('%s must be a string.', $required));
+            }
+        }
+        if (!isset($payload['retryable']) || !is_bool($payload['retryable'])) {
+            throw new \InvalidArgumentException('retryable must be a boolean.');
+        }
+        $detail = null;
+        if (array_key_exists('detail', $payload)) {
+            if (!is_string($payload['detail'])) {
+                throw new \InvalidArgumentException('detail must be a string.');
+            }
+            $detail = $payload['detail'];
+        }
+        $context = self::optionalObject($payload, 'context');
+        $example = self::optionalObject($payload, 'example_of_valid_call');
+        ErrorCategoryOpenEnum::parse($payload['category']);
+
+        return new self(
+            $payload['code'],
+            $payload['category'],
+            $payload['retryable'],
+            $payload['title'],
+            $detail,
+            $context,
+            $example,
+        );
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     * @return array<string, mixed>|null
+     */
+    private static function optionalObject(array $payload, string $key): ?array
+    {
+        if (!array_key_exists($key, $payload)) {
+            return null;
+        }
+        if (!is_array($payload[$key]) || array_is_list($payload[$key])) {
+            throw new \InvalidArgumentException(sprintf('%s must be an object.', $key));
+        }
+        $object = [];
+        foreach ($payload[$key] as $member => $value) {
+            if (!is_string($member)) {
+                throw new \InvalidArgumentException(sprintf('%s must be an object.', $key));
+            }
+            $object[$member] = $value;
+        }
+
+        return $object;
+    }
+
     /** @return array<string, mixed> */
     public function toArray(): array
     {

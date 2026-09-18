@@ -1,3 +1,11 @@
 {
-  "sdks": []
+  "sdks": [
+    {
+      "id": "php",
+      "language": "php",
+      "manifest_path": "../php/composer.json",
+      "adapter_command": "php php/conformance/adapter.php",
+      "test_command": "php php/vendor/bin/phpunit -c php/phpunit.xml"
+    }
+  ]
 }

@@ -32,7 +32,8 @@
   },
   "extra": {
     "agentools": {
-      "spec_rev": "2026-08"
+      "spec_rev": "2026-08",
+      "declared_level": "L3"
     }
   },
   "minimum-stability": "stable"

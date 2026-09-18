@@ -1,0 +1,183 @@
+# Runbook: закрытие P6 и переход к P7 (адаптация для Cursor)
+
+**Статус:** исполняемый план-продолжение (план скорректирован audit 2026-09-18; код не трогали)  
+**Дата:** 2026-09-18  
+**Исполнитель:** новая сессия Cursor  
+**Маршрут:** `implementation/high` · `manual` · `Review=full`
+
+## 0. Снимок состояния (прочитать первым)
+
+| Факт | Источник | Значение |
+|:--|:--|:--|
+| Следующий блокер | `artifacts/P6-gate.md` | `ГЕЙТ P6: BLOCKED` — нет `byte-drift.php` и `struct-drift.php` |
+| Дерево артефактов | `git rev-parse --short HEAD` | `5cc5288` (на момент audit) |
+| P6.5 | journal v1 + audit | **ложно Done** в migration views; формально **reopen** |
+| P6.9 | `phases/P6/P6.9.md` | Blocked; 5/6 условий гейта PASS на HEAD |
+| P7.1–P7.10 | D163 + `roadmap.md` | Код в `b11cf41`…`e232fc5`; **reconciliation pending** (3 GREEN, 7 PARTIAL) |
+| Плановый аудит | `findings/P6-P7-plan-audit-2026-09-18.md` | Полная карта gaps и порядок доверия |
+| Handoff | `handoff.md` | `task:plan-design AGENTOOLS P6.5` |
+
+**Порядок доверия:** git + живые прогоны + `migration-source-v1/` + findings > `status.md` после migration (см. findings §1).
+
+**Инвариант:** `spec/revisions/2026-08/**` и `fixtures/2026-08/**` не трогать (D72).
+
+---
+
+## 1. Цепочка исполнения
+
+```text
+[A] P6.5 REOPEN (plan-design) ──► [B] P6.9 gate close ──► [C] P7.1…P7.10 reconciliation
+         ▲                                    │
+         └── единственный hard blocker P6 ────┘
+                                              └──► [D] P7.11 ──► [E] P7.12
+```
+
+После `[B]` фазы P7 и P8 разблокированы (`phases/P6/P6.md` Phase Context).
+
+---
+
+## 2. Шаг A — P6.5 reopen (golden-negative adapters)
+
+### A.0 Intent
+
+Доставить два обязательных fixture-адаптера из Validation P6.5, не закоммиченные в `52637fc`. Это **формальный reopen** item'а (`task:plan-design AGENTOOLS P6.5`), зафиксированный эскалацией P6.9 (`migration-source-v1/journal.jsonl` 2026-08-05).
+
+### A.1 Материалы
+
+| # | Файл | Зачем |
+|:--|:--|:--|
+| 1 | `phases/P6/P6.5.md` | Validation — точные команды |
+| 2 | `phases/P6/P6.9.md` | Шесть отрицательных прогонов |
+| 3 | `artifacts/P6-gate.md` | Вердикт BLOCKED + audit supplement |
+| 4 | `findings/P6-P7-plan-audit-2026-09-18.md` | §2 — живые прогоны на HEAD |
+| 5 | `conformance/src/Conformance/GoldenComparator.php` | Два сигнала сравнения |
+| 6 | `conformance/src/Conformance/Runner.php` L102–121 | Протокол `golden_pair` |
+| 7 | `conformance/tests/fixtures/adapters/echo-ok.php` | Шаблон адаптера |
+| 8 | `artifacts/migration-source-v1/phases/P6.md` | Истинные Completion Notes P6.5 |
+
+### A.2 Файлы (write-site)
+
+| Путь | Назначение |
+|:--|:--|
+| `conformance/tests/fixtures/adapters/byte-drift.php` | Структурно равен golden, байты отличаются |
+| `conformance/tests/fixtures/adapters/struct-drift.php` | Структурное расхождение → exit ≠ 0 |
+
+### A.3 Контракт адаптеров
+
+Stdin/stdout JSONL, как `echo-ok.php`: `start` → `ready` → `golden_pair` → `run` → `stop`.
+
+- **byte-drift:** `json_decode(canonical) === json_decode(golden)`, но `canonical !== golden` → сигнал «дрейф сериализации»
+- **struct-drift:** `json_decode(canonical) !== json_decode(golden)` → exit 1
+
+### A.4 Validation
+
+```bash
+cd ~/projects/packages/agentools
+
+php conformance/bin/run \
+  --adapter 'php conformance/tests/fixtures/adapters/byte-drift.php' \
+  --vectors fixtures/2026-08 --spec-rev 2026-08 --report out/drift.json
+
+php conformance/bin/run \
+  --adapter 'php conformance/tests/fixtures/adapters/struct-drift.php' \
+  --vectors fixtures/2026-08 --spec-rev 2026-08
+
+test -f conformance/tests/fixtures/adapters/byte-drift.php
+test -f conformance/tests/fixtures/adapters/struct-drift.php
+
+conformance/vendor/bin/phpunit -c conformance/phpunit.xml
+```
+
+### A.5 Закрытие
+
+1. Item-коммит в `agentools` (только пути A.2)
+2. Bookkeeping: journal, handoff → шаг B, plan-lint K=0
+
+---
+
+## 3. Шаг B — P6.9 gate close
+
+Полный Validation из `phases/P6/P6.9.md`. Перезаписать `artifacts/P6-gate.md` → `ГЕЙТ P6: PASS`.
+
+Ключевые команды — в findings §2 и прежней версии этого runbook §B.2 (без изменений).
+
+**Deliverables:** `artifacts/P6-gate.md` PASS · `conformance/reports/reference-levels.md` · handoff → P7.1 reconciliation.
+
+---
+
+## 4. Шаг C — P7 reconciliation (не fresh implementation)
+
+### C.0 Правила
+
+- D163: route прежних исполнителей не выдумывать
+- PHPUnit 65/65 на HEAD — evidence, не closure
+- Каждый item: прогнать Validation из `phases/P7/P7.N.md`; зелёный → terminal close, красный → Pending Work с точным gap
+- **Не** массовый rename `Action/`→`Journal/` без D-record
+
+### C.1 Per-item карта (audit 2026-09-18)
+
+| Item | Anchor | Аудит | Минимальная работа reconciliation |
+|:--|:--|:--|:--|
+| P7.1 | `b11cf41` | PARTIAL | `extra.agentools.spec_rev` в `composer.json`; `lockstep` зелёный |
+| P7.2 | `c690a67` | PARTIAL | Rule-ID docblocks в тестах Identity |
+| P7.3 | `1f5eaf8` | GREEN | Bookkeeping only |
+| P7.4 | `35afb53` | GREEN | Bookkeeping only |
+| P7.5 | `62e31c3` | PARTIAL | Порты EventLog/SessionStore/Clock + negative tests |
+| P7.6 | `db8f6d1` | GREEN | Bookkeeping only |
+| P7.7 | `23be310` | PARTIAL | TTL-on-prepare, hash-mismatch-at-commit tests |
+| P7.8 | `f8419f2` | PARTIAL | Contracts placement или Known Deviation + enum test |
+| P7.9 | `6e1ec1d` | PARTIAL | GREASE tests, lifecycle tests, rule IDs |
+| P7.10 | `e232fc5` | PARTIAL | 3 недостающих limit-red tests (length, collection, visited-nodes) |
+
+Детали: `findings/P6-P7-plan-audit-2026-09-18.md` §3.
+
+### C.2 Алгоритм одного item
+
+1. `git show <anchor> --stat`
+2. Прочитать `phases/P7/P7.N.md` Validation
+3. Прогнать Validation на текущем дереве
+4. Закрыть или записать Pending Work — без silent rewrite
+
+### C.3 P7.11 / P7.12 (после C)
+
+| Item | Статус | Гейт |
+|:--|:--|:--|
+| P7.11 | NOT STARTED | `php/src/Ops/**` по `research/06-p7-php-sdk-2026-08.md` |
+| P7.12 | NOT STARTED | `php/conformance/adapter.php`, `sdks.json`, `artifacts/P7-gate.md`, Q-12 |
+
+---
+
+## 5. Команды запуска (новая сессия)
+
+```text
+# Шаг A
+task:plan-design AGENTOOLS P6.5
+
+# Шаг B
+task:plan-run AGENTOOLS P6.9
+
+# Шаг C — по одному item, в порядке roadmap
+task:plan-run AGENTOOLS P7.1
+# … P7.10
+```
+
+---
+
+## 6. Риски
+
+| Риск | Действие |
+|:--|:--|
+| Remote CI (Q-2) | «что НЕ проверялось» в P6-gate |
+| SDK layer 2 branch C (Q-12) | Документировать; не блокирует P6.7 |
+| Migration views устарели | Journal sync + `plan-views` |
+| P7 partial ≠ Not started | Опираться на findings + D163 |
+
+---
+
+## 7. Definition of Done (вся цепочка)
+
+- [ ] `byte-drift.php` и `struct-drift.php` + Validation A.4
+- [ ] `artifacts/P6-gate.md` → `ГЕЙТ P6: PASS`
+- [ ] P7.1–P7.10: каждый `🟢 Done` с write-site или `🔴 Blocked` с Pending Work
+- [ ] P7.11, P7.12 исполнены
+- [ ] plan-lint: K=0 на bookkeeping

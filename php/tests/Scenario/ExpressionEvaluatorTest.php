@@ -6,6 +6,7 @@ namespace AgenTools\Tests\Scenario;
 
 use AgenTools\Scenario\ExpressionEvaluator;
 use AgenTools\Scenario\ExpressionException;
+use AgenTools\Scenario\ExpressionLimits;
 use PHPUnit\Framework\TestCase;
 
 final class ExpressionEvaluatorTest extends TestCase
@@ -31,7 +32,7 @@ final class ExpressionEvaluatorTest extends TestCase
         (new ExpressionEvaluator())->evaluate('$ctx.today == exec("id")', ['today' => '2026-08-03']);
     }
 
-    /** SCN-16 through SCN-19: every limit reports its named boundary. */
+    /** SCN-16: parse depth above the published limit reports expression.max_depth. */
     public function testItNamesTheExceededDepthLimit(): void
     {
         try {
@@ -39,6 +40,43 @@ final class ExpressionEvaluatorTest extends TestCase
             self::fail('Expected depth limit failure.');
         } catch (ExpressionException $error) {
             self::assertSame('expression.max_depth', $error->limitName);
+        }
+    }
+
+    /** SCN-17: expression length above the published limit reports expression.max_length. */
+    public function testItNamesTheExceededLengthLimit(): void
+    {
+        $evaluator = new ExpressionEvaluator(new ExpressionLimits(maxLength: 10));
+        try {
+            $evaluator->evaluate('$ctx.flag == "'.str_repeat('A', 11).'"', ['flag' => true]);
+            self::fail('Expected length limit failure.');
+        } catch (ExpressionException $error) {
+            self::assertSame('expression.max_length', $error->limitName);
+        }
+    }
+
+    /** SCN-18: projected collection size above the published limit reports expression.max_collection_size. */
+    public function testItNamesTheExceededCollectionLimit(): void
+    {
+        $evaluator = new ExpressionEvaluator(new ExpressionLimits(maxCollectionSize: 3));
+        $context = ['items' => [0, 1, 2, 3]];
+        try {
+            $evaluator->evaluate('$ctx.items == null', $context);
+            self::fail('Expected collection limit failure.');
+        } catch (ExpressionException $error) {
+            self::assertSame('expression.max_collection_size', $error->limitName);
+        }
+    }
+
+    /** SCN-19: visited AST nodes above the published limit reports expression.max_visited_nodes. */
+    public function testItNamesTheExceededVisitedNodesLimit(): void
+    {
+        $evaluator = new ExpressionEvaluator(new ExpressionLimits(maxVisitedNodes: 3));
+        try {
+            $evaluator->evaluate('(true && true && true && true)', []);
+            self::fail('Expected visited-node limit failure.');
+        } catch (ExpressionException $error) {
+            self::assertSame('expression.max_visited_nodes', $error->limitName);
         }
     }
 }

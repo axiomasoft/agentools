@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace AgenTools\Idempotency;
 
+use AgenTools\Contracts\IdempotencyStore;
 use AgenTools\Error\ErrorCategory;
 use AgenTools\Error\ToolError;
 use AgenTools\Error\ToolErrorCode;
 
-/**
- * Process-local reference implementation. Production stores must make resolve's
- * unique-key insert atomic (tenant, tool_name, key).
- */
-final class InMemoryDeduplicationStore implements DeduplicationStore
+/** Process-local reference implementation. */
+final class InMemoryDeduplicationStore implements IdempotencyStore
 {
     /** @var array<string, array{fingerprint: ArgumentsFingerprint, expiresAt: \DateTimeImmutable, result: ?StoredToolResult, digest: ?StoredResultDigest}> */
     private array $records = [];

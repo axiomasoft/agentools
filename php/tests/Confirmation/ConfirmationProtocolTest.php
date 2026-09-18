@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AgenTools\Tests\Confirmation;
 
 use AgenTools\Confirmation\ConfirmationFailure;
+use AgenTools\Confirmation\ConfirmationJournalSupport;
 use AgenTools\Confirmation\ConfirmationProtocol;
 use AgenTools\Confirmation\DecisionAudit;
 use AgenTools\Confirmation\HmacTokenSigner;
@@ -20,7 +21,7 @@ final class ConfirmationProtocolTest extends TestCase
     public function testItRejectsChangedArguments(): void
     {
         $protocol = $this->protocol();
-        $token = $protocol->prepare($this->proposal());
+        $token = $protocol->prepare($this->proposal(), $this->now());
 
         $this->assertFailure('agentools.precondition.confirmation_args_mismatch', fn (): \AgenTools\Confirmation\ConfirmationToken => $protocol->commit($token->value, $this->fingerprint('changed'), $this->digest(), 'approver-1', $this->now(), $this->authorized()));
     }
@@ -29,16 +30,16 @@ final class ConfirmationProtocolTest extends TestCase
     public function testItRejectsExpiredTokens(): void
     {
         $protocol = $this->protocol();
-        $token = $protocol->prepare($this->proposal('-1 minute'));
+        $token = $protocol->prepare($this->proposal('+1 hour'), $this->now());
 
-        $this->assertFailure('agentools.precondition.confirmation_expired', fn (): \AgenTools\Confirmation\ConfirmationToken => $protocol->commit($token->value, $this->fingerprint('prepared'), $this->digest(), 'approver-1', $this->now(), $this->authorized()));
+        $this->assertFailure('agentools.precondition.confirmation_expired', fn (): \AgenTools\Confirmation\ConfirmationToken => $protocol->commit($token->value, $this->fingerprint('prepared'), $this->digest(), 'approver-1', $this->now()->modify('+2 hours'), $this->authorized()));
     }
 
     /** CNF-20; the same token cannot execute the action twice. */
     public function testItRejectsAPresentedToken(): void
     {
         $protocol = $this->protocol();
-        $token = $protocol->prepare($this->proposal());
+        $token = $protocol->prepare($this->proposal(), $this->now());
         $protocol->commit($token->value, $this->fingerprint('prepared'), $this->digest(), 'approver-1', $this->now(), $this->authorized());
 
         $this->assertFailure('agentools.precondition.confirmation_token_spent', fn (): \AgenTools\Confirmation\ConfirmationToken => $protocol->commit($token->value, $this->fingerprint('prepared'), $this->digest(), 'approver-1', $this->now(), $this->authorized()));
@@ -48,7 +49,7 @@ final class ConfirmationProtocolTest extends TestCase
     public function testItRejectsAForeignPrincipal(): void
     {
         $protocol = $this->protocol();
-        $token = $protocol->prepare($this->proposal());
+        $token = $protocol->prepare($this->proposal(), $this->now());
 
         $this->assertFailure('agentools.permission.confirmation_principal_mismatch', fn (): \AgenTools\Confirmation\ConfirmationToken => $protocol->commit($token->value, $this->fingerprint('prepared'), $this->digest(), 'other-user', $this->now(), $this->authorized()));
     }
@@ -58,7 +59,7 @@ final class ConfirmationProtocolTest extends TestCase
     {
         $protocol = $this->protocol();
         $proposal = $this->proposal(principal: 'proposer-1', proposerId: 'proposer-1');
-        $token = $protocol->prepare($proposal);
+        $token = $protocol->prepare($proposal, $this->now());
 
         $this->expectException(\LogicException::class);
         $protocol->commit($token->value, $this->fingerprint('prepared'), $this->digest(), 'proposer-1', $this->now(), $this->authorized(), 'proposer-1', true);
@@ -68,7 +69,7 @@ final class ConfirmationProtocolTest extends TestCase
     public function testItReauthorizesAtCommit(): void
     {
         $protocol = $this->protocol();
-        $token = $protocol->prepare($this->proposal());
+        $token = $protocol->prepare($this->proposal(), $this->now());
         $denied = new class implements CommitAuthorizer {
             public function isAllowed(string $principal, string $toolName): bool
             {
@@ -80,15 +81,29 @@ final class ConfirmationProtocolTest extends TestCase
         $protocol->commit($token->value, $this->fingerprint('prepared'), $this->digest(), 'approver-1', $this->now(), $denied);
     }
 
+    /** CNF-29; a proposal without a future expires_at deadline cannot receive a token. */
+    public function testItRejectsProposalWithoutValidTtlOnPrepare(): void
+    {
+        $protocol = $this->protocol();
+
+        $this->expectException(\InvalidArgumentException::class);
+        $protocol->prepare($this->proposal('-1 minute'), $this->now());
+    }
+
     /** CNF-26, CNF-28; an edit supersedes the immutable proposal instead of changing it. */
     public function testAnEditSupersedesThePriorProposal(): void
     {
         $original = $this->proposal();
-        $superseded = $original->supersede('prop-2');
+        $successor = $this->editedProposal();
+        $payloads = ConfirmationJournalSupport::editJournalPayloads($original, $successor);
+        $token = $this->protocol()->prepare($successor, $this->now());
 
-        self::assertSame('pending', $original->state->value);
-        self::assertSame('superseded', $superseded->state->value);
-        self::assertSame('prop-2', $superseded->supersededBy);
+        self::assertSame('pending', $payloads[0]['state']);
+        self::assertSame('superseded', $payloads[1]['state']);
+        self::assertSame('prop-2', $payloads[1]['superseded_by']);
+        self::assertSame(2, $payloads[2]['proposal_version']);
+        self::assertNotSame($payloads[0]['proposal_id'], $payloads[2]['proposal_id']);
+        self::assertNotEmpty($token->value);
     }
 
     /** CNF-37, CNF-38, CNF-39; audit payload carries the same fingerprint at decision and commit. */
@@ -99,6 +114,18 @@ final class ConfirmationProtocolTest extends TestCase
 
         self::assertSame($fingerprint->value, $audit->toPayload()['args_hash_at_decision']);
         self::assertSame($fingerprint->value, $audit->toPayload()['args_hash_at_commit']);
+    }
+
+    /** CNF-38; mismatched decision and commit hashes deny commit even when the token matches. */
+    public function testItRejectsCommitWhenDecisionAuditHashesMismatch(): void
+    {
+        $protocol = $this->protocol();
+        $token = $protocol->prepare($this->proposal(), $this->now());
+        $decisionHash = $this->fingerprint('prepared');
+        $commitHash = $this->fingerprint('changed');
+        $audit = new DecisionAudit('prop-1', $token->value, 'approve', 'approver-1', 'finance_approver', $this->now(), '', $decisionHash, $commitHash);
+
+        $this->assertFailure('agentools.precondition.confirmation_args_mismatch', fn (): \AgenTools\Confirmation\ConfirmationToken => $protocol->commit($token->value, $this->fingerprint('prepared'), $this->digest(), 'approver-1', $this->now(), $this->authorized(), null, false, $audit));
     }
 
     /** @param \Closure(): \AgenTools\Confirmation\ConfirmationToken $operation */
@@ -120,6 +147,11 @@ final class ConfirmationProtocolTest extends TestCase
     private function proposal(string $expiry = '+1 hour', string $principal = 'approver-1', string $proposerId = 'proposer-1'): Proposal
     {
         return new Proposal('prop-1', 1, 'action-1', 'fina_payment_send', $proposerId, $principal, $this->fingerprint('prepared'), $this->digest(), $this->now()->modify($expiry), ['summary' => 'Payment', 'changes' => []]);
+    }
+
+    private function editedProposal(): Proposal
+    {
+        return new Proposal('prop-2', 2, 'action-1', 'fina_payment_send', 'proposer-1', 'approver-1', $this->fingerprint('edited'), $this->digest(), $this->now()->modify('+1 hour'), ['summary' => 'Payment edited', 'changes' => []]);
     }
 
     private function fingerprint(string $value): ArgumentsFingerprint

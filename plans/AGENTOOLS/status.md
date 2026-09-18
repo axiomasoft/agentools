@@ -3,7 +3,7 @@ projection: status-view
 projection_version: v1
 source_scope: plan core + phases + journal
 through: 2026-09-18
-inputs_sha256: b3b5888bdc6395bee5bf32131fe3ffd16af2d49ba0e8138f1ed980b8186191f0
+inputs_sha256: 61a2d30620ae6c5afeed9dcc9c291fe0450587b15e40403699bb88ff1e695618
 generated_by: task plan-views status
 -->
 
@@ -32,7 +32,7 @@ generated_by: task plan-views status
 | P4 | A3: тест-векторы под все правила + двунаправленный линтер traceability | 21/21 | 🟢 Done |
 | P5 | B: аудит согласования (гейт GREEN, блокирует реализацию) | 3/3 | 🟢 Done |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 9/9 | 🟢 Done |
-| P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 3/12 | 🟡 In progress |
+| P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 12/12 | 🟢 Done |
 | P8 | Dart SDK `agentools` — зелёный на тех же векторах | 0/13 | ⬜ Not started |
 | P9 | Вертикальный срез в CRM: сквозной сценарий с записью в БД | 0/7 | ⬜ Not started |
 
@@ -174,16 +174,16 @@ generated_by: task plan-views status
 |:--|:--|:--|:--|
 | P7.1 | Скелет пакета: манифест, ре-верифицированные пины, QA-тулинг, политика lock | 🟢 Done | 2026-09-18 |
 | P7.2 | Идентичность расширения и negotiation (документ `01`) | 🟢 Done | 2026-09-18 |
-| P7.3 | Value objects, валидация против опубликованных схем, JCS, raw-preserving | ⬜ Not started | — |
+| P7.3 | Value objects, валидация против опубликованных схем, JCS, raw-preserving | 🟢 Done | 2026-09-18 |
 | P7.4 | Профиль инструмента: дескриптор, `descriptor_digest`, `descriptor_drift`, `content_origin` | 🟢 Done | 2026-09-18 |
-| P7.5 | Журнал действия + контракты персистентности (§C1–§C3, §C5–§C7, D13) | ⬜ Not started | — |
-| P7.6 | Реестр эффектов + fencing-эпоха исполнителя (§C4) | ⬜ Not started | — |
-| P7.7 | Подтверждение: Policy/Protocol Layer, подписанный токен, TTL, dual control, событие решения | ⬜ Not started | — |
-| P7.8 | Идемпотентность: ключ + `args_fingerprint`, три состояния, два таймера (§D1–§D3) | ⬜ Not started | — |
-| P7.9 | Ошибки и расширяемость: строковые коды, открытые перечисления, must-ignore (§E1–§E3, §E7) | ⬜ Not started | — |
-| P7.10 | Сценарии и уточнения: AST-вычислитель с лимитами, saga + `COMPENSATION_FAILED`, MRTR | ⬜ Not started | — |
-| P7.11 | Длинные операции, аудит и наблюдаемость, безопасность (документы `07`, `08`, `10`) | ⬜ Not started | — |
-| P7.12 | Conformance-адаптер PHP, регистрация SDK, вычисленный уровень — гейт фазы | ⬜ Not started | — |
+| P7.5 | Журнал действия + контракты персистентности (§C1–§C3, §C5–§C7, D13) | 🟢 Done | 2026-09-18 |
+| P7.6 | Реестр эффектов + fencing-эпоха исполнителя (§C4) | 🟢 Done | 2026-09-18 |
+| P7.7 | Подтверждение: Policy/Protocol Layer, подписанный токен, TTL, dual control, событие решения | 🟢 Done | 2026-09-18 |
+| P7.8 | Идемпотентность: ключ + `args_fingerprint`, три состояния, два таймера (§D1–§D3) | 🟢 Done | 2026-09-18 |
+| P7.9 | Ошибки и расширяемость: строковые коды, открытые перечисления, must-ignore (§E1–§E3, §E7) | 🟢 Done | 2026-09-18 |
+| P7.10 | Сценарии и уточнения: AST-вычислитель с лимитами, saga + `COMPENSATION_FAILED`, MRTR | 🟢 Done | 2026-09-18 |
+| P7.11 | Длинные операции, аудит и наблюдаемость, безопасность (документы `07`, `08`, `10`) | 🟢 Done | 2026-09-18 |
+| P7.12 | Conformance-адаптер PHP, регистрация SDK, вычисленный уровень — гейт фазы | 🟢 Done | 2026-09-18 |
 
 ## Phase P8
 
@@ -315,6 +315,33 @@ generated_by: task plan-views status
 | 2026-09-18 | implementation/high | plan-exec · in-progress · P7.4 reconciliation: per-item Validation on HEAD, anchor 35afb53 |
 | 2026-09-18 | implementation/high | plan-exec · closed-green · Reconciliation anchor 35afb53+d5bb077: ToolDescriptor/digest/drift/content_origin; golden sha-256:4471625dc88e78398a8abd15fabb1bbee8691336c1ae4c43df293eca141ff43e; vectors tooldigest-001 tooldescription-001/002 toolcontract-001 profileuntrusted-001; phpunit 66/66 |
 | 2026-09-18 | implementation/high | plan-exec · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-18 | implementation/high | plan-run · in-progress · P7.5 reconciliation: per-item Validation on HEAD, anchor 62e31c3 |
+| 2026-09-18 | implementation/high | plan-run · closed-green · Reconciliation anchor 62e31c3: EventLog/SessionStore/Clock ports + in-memory refs; negative ALC-21/ALC-31/ALC-3; Known Deviation Action/ not Journal/; phpunit 73/73 |
+| 2026-09-18 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-18 | implementation/high | plan-run · in-progress · P7.6 reconciliation: per-item Validation on HEAD, anchor db8f6d1 |
+| 2026-09-18 | implementation/high | plan-run · closed-green · Reconciliation anchor db8f6d1: Effects/ epoch fencing; ALC-24..27; zombie StaleExecutorEpoch; commit registry-first; phpunit 73/73 |
+| 2026-09-18 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-18 | implementation/high | plan-run · in-progress · P7.7 reconciliation: per-item Validation on HEAD, anchor 23be310+working-tree |
+| 2026-09-18 | implementation/high | plan-run · closed-green · Reconciliation anchor 23be310: Confirmation Policy/Protocol; CNF-18..22/29/38; journal supersede; phpunit 75/75 |
+| 2026-09-18 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-18 | implementation/high | plan-run · in-progress · P7.8 reconciliation: per-item Validation on HEAD, anchor f8419f2 |
+| 2026-09-18 | implementation/high | plan-run · closed-green · Reconciliation anchor f8419f2: Contracts/IdempotencyStore + in-memory ref; IDE-3/6/7/9/10/12..16/18/19/21/23; enum-count test; phpunit 76/76 |
+| 2026-09-18 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-18 | implementation/high | plan-run · in-progress · P7.9 reconciliation: per-item Validation on HEAD, anchor 6e1ec1d+working-tree |
+| 2026-09-18 | implementation/high | plan-run · closed-green · Reconciliation anchor 6e1ec1d+working-tree: Error/ not Errors/; OpenEnum/MustIgnoreEnvelope/ValueLifecycle; GREASE grease-001..004 unit replay; IDE-22..29/39..43/45..47; phpunit 92/92 |
+| 2026-09-18 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-18 | implementation/high | plan-run · in-progress · P7.10 reconciliation: per-item Validation on HEAD, anchor e232fc5+working-tree |
+| 2026-09-18 | implementation/high | plan-run · closed-green · Reconciliation anchor e232fc5+working-tree: AST/MRTR/saga; SCN-16..19 limit-red tests; LlmPort/ToolPort; phpunit 95/95 |
+| 2026-09-18 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-18 | implementation/high | plan-run · in-progress · P7.11 implementation: php/src/Ops/**, AuditSink, LOP/AOB/SEC tests |
+| 2026-09-18 | implementation/high | plan-run · closed-green · Ops/Audit/Security: LongOperationCoordinator, AuditEventFactory, CredentialGuard, PrincipalTriple; phpunit 123/123; vectors LOP-1..27,AOB-1..16,SEC-1..16 |
+| 2026-09-18 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-18 | implementation/high | plan-run · in-progress · Scaffold: php/conformance adapter+engine, sdks.json; L1 2/126; GATE BLOCKED |
+| 2026-09-18 | implementation/high | plan-run · closed-green · Conformance 213/213; declared_level L3; owner-gate branch C; ГЕЙТ P7 PASS; projection-catalog deviation documented |
+| 2026-09-18 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-18 | implementation/high | plan-run · in-progress · P7.3 reconciliation: per-item Validation on HEAD, anchor 1f5eaf8 |
+| 2026-09-18 | implementation/high | plan-run · closed-green · Reconciliation anchor 1f5eaf8: Schema/Canonicalizer+RawDocument+PublishedSchemaValidator; RFC8785 vectors×3; AOB-32..37 IDE-41; self-hosted JCS (no mmccook bypass); phpunit Schema 12/12 |
+| 2026-09-18 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
 
 ## Owner Gates
 
