@@ -2,8 +2,8 @@
 projection: status-view
 projection_version: v1
 source_scope: plan core + phases + journal
-through: 1970-01-01
-inputs_sha256: b9343db2c14dca50b39b7d2de3885080af5ddda40a75302ca59e5adbcfda7c63
+through: 2026-09-18
+inputs_sha256: a1c05ff93e547de483e3f97abf58b80b5a6ab7d0c1d9fab047206ba4123a9407
 generated_by: task plan-views status
 -->
 
@@ -16,8 +16,8 @@ generated_by: task plan-views status
 | Поле | Значение |
 |:--|:--|
 | Version | 0.41.4 |
-| Status | 🔴 Blocked |
-| Last Updated | 1970-01-01 |
+| Status | 🟡 In progress |
+| Last Updated | 2026-09-18 |
 
 ## 4. Phase Index & Status Board
 
@@ -31,7 +31,7 @@ generated_by: task plan-views status
 | P3 | A2: авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/25 | 🟠 Done with deviations |
 | P4 | A3: тест-векторы под все правила + двунаправленный линтер traceability | 21/21 | 🟢 Done |
 | P5 | B: аудит согласования (гейт GREEN, блокирует реализацию) | 3/3 | 🟢 Done |
-| P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 8/9 | 🔴 Blocked |
+| P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 9/9 | 🟢 Done |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | ⬜ Not started |
 | P8 | Dart SDK `agentools` — зелёный на тех же векторах | 0/13 | ⬜ Not started |
 | P9 | Вертикальный срез в CRM: сквозной сценарий с записью в БД | 0/7 | ⬜ Not started |
@@ -162,11 +162,11 @@ generated_by: task plan-views status
 | P6.2 | Executable admission: corpus, oracle isolation, runner-owned probes, corrective re-freeze | 🟢 Done | 1970-01-01 |
 | P6.3 | Полный эталонный адаптер: core 121 → extension 92 → full 213 | 🟢 Done | 1970-01-01 |
 | P6.4 | Severity из нормативного слова + «Not testable» + baseline с анти-эрозией | 🟢 Done | 1970-01-01 |
-| P6.5 | Golden-механика: канонический вид + двухступенчатое сравнение | 🟢 Done | 1970-01-01 |
+| P6.5 | Golden-механика: канонический вид + двухступенчатое сравнение | 🟢 Done | 2026-09-18 |
 | P6.6 | Самотест harness-протокола: исполнение класса `harness` | 🟢 Done | 1970-01-01 |
 | P6.7 | Четырёхслойный CI одним носителем + optional owner input `DR-02` §6 | 🟢 Done | 1970-01-01 |
 | P6.8 | Lockstep: флаг ревизии раннера + сверка манифестов SDK + реестр `sdks.json` | 🟢 Done | 1970-01-01 |
-| P6.9 | Гейт фазы: зелёный прогон + заведомо красный мутант + отчёт покрытия по уровням | 🔴 Blocked | 1970-01-01 |
+| P6.9 | Гейт фазы: зелёный прогон + заведомо красный мутант + отчёт покрытия по уровням | 🟢 Done | 2026-09-18 |
 
 ## Phase P7
 
@@ -297,6 +297,12 @@ generated_by: task plan-views status
 | 1970-01-01 | migration/current-state-v1 | plan-run · closed-green · Layout v2 current-state import from legacy status 🟢 Done; chronology: artifacts/migration-source-v1/journal.jsonl |
 | 1970-01-01 | migration/current-state-v1 | plan-run · blocked · Layout v2 current-state import from legacy status 🔴 Blocked; chronology: artifacts/migration-source-v1/journal.jsonl |
 | 1970-01-01 | migration/v2 | plan-design · in-progress · Layout v2 migration activation; source tree archived in artifacts/migration-source-v1. |
+| 2026-09-18 | implementation/high | plan-run · in-progress · P6.5 formal reopen: deliver golden-negative adapters byte-drift.php and struct-drift.php |
+| 2026-09-18 | implementation/high | plan-run · closed-green · Reopen closure: byte-drift.php + struct-drift.php; golden 9/9 ref; byte/struct negative proofs. |
+| 2026-09-18 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-18 | implementation/high | plan-run · in-progress · P6.9 gate close: rerun Validation after P6.5 reopen adapters |
+| 2026-09-18 | implementation/high | plan-run · closed-green · ГЕЙТ P6: PASS; item 80cac19; 213/213 ref, 6/6 negative proofs, levels report deterministic |
+| 2026-09-18 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
 
 ## Owner Gates
 
@@ -308,4 +314,3 @@ generated_by: task plan-views status
 - P2.5: known deviation
 - P3.24: known deviation
 - P3.25: known deviation
-- P6.9: escalation
