@@ -16,6 +16,7 @@ __pycache__/
 # Machine-specific ecosystem (mAInd / swissknifeman) — do not commit
 .cursor/mcp.json
 .cursor/mcp.json.bak
+.cursor/memory.env.ini
 .cursor/state/
 .cursor/logs/
 .cursor/runs/

@@ -1,6 +1,11 @@
 {
   "version": 1,
   "hooks": {
+    "sessionStart": [
+      {
+        "command": "python3 \"${CURSOR_PROJECT_DIR:-.}/.cursor/hooks/lifecycle.py\" --surface lifecycle.memory"
+      }
+    ],
     "afterShellExecution": [
       {
         "command": "python3 \"${CURSOR_PROJECT_DIR:-.}/.cursor/hooks/lifecycle.py\" --surface lifecycle.command-log"
