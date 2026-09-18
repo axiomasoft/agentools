@@ -1,0 +1,17 @@
+{
+  "id": "lifecycleindex-002",
+  "title": "Candidate совпадает с canonical ALC table",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "ALC-14"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "lifecycle_index",
+    "inline": "{\"transition_id\":\"ALC-T9\",\"from\":\"running\",\"event\":\"action_completed\",\"to\":\"completed\"}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

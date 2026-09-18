@@ -1,0 +1,18 @@
+{
+  "id": "dosdepth-001",
+  "title": "Авторинг отклоняет схему с физической глубиной 17",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "TLP-33"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "schema",
+    "inline": "{\"properties\":{\"n1\":{\"properties\":{\"n2\":{\"properties\":{\"n3\":{\"properties\":{\"n4\":{\"properties\":{\"n5\":{\"properties\":{\"n6\":{\"properties\":{\"n7\":{\"properties\":{\"n8\":{\"properties\":{\"n9\":{\"properties\":{\"n10\":{\"properties\":{\"n11\":{\"properties\":{\"n12\":{\"properties\":{\"n13\":{\"properties\":{\"n14\":{\"properties\":{\"n15\":{\"properties\":{\"n16\":{\"properties\":{\"n17\":{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}"
+  },
+  "expect": {
+    "linter": "reject",
+    "diagnostic_substring": "глубина схемы 17 превышает максимум 16"
+  }
+}

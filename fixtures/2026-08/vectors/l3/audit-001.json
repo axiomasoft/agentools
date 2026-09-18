@@ -1,0 +1,92 @@
+{
+  "id": "audit-001",
+  "title": "Аудит записывается в журнал действия открытым видом с названным производителем",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "AOB-1",
+    "AOB-2",
+    "AOB-3",
+    "AOB-4",
+    "AOB-5",
+    "AOB-6",
+    "AOB-7",
+    "AOB-8"
+  ],
+  "conformance_level": "L3",
+  "given": {
+    "tools": [
+      {
+        "name": "crm_report_list",
+        "title": "Список отчётов о работе",
+        "description": "Purpose: Возвращает страницу отчётов сотрудника за период.\nCall when: Пользователю нужен список отчётов без изменения данных.\nRequired arguments: period\nExample: crm_report_list({\"period\":\"2026-07\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "period": {
+              "type": "string"
+            },
+            "cursor": {
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "items": {
+              "type": "array"
+            },
+            "next_cursor": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "crm.report.read"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "crm_report_list",
+          "args": {
+            "period": "2026-08"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "audit.policy_evaluated",
+        "payload": {
+          "tool_name": "crm_report_list",
+          "side_effect": "read"
+        }
+      }
+    ],
+    "final_state": "completed",
+    "tool_calls": [
+      {
+        "tool": "crm_report_list",
+        "phase": "prepare"
+      }
+    ]
+  }
+}

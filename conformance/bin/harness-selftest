@@ -1,0 +1,46 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+$raw = getopt('', ['cases:']);
+if (!is_string($raw['cases'] ?? null) || !is_dir($raw['cases'])) {
+    fwrite(STDERR, "Использование: harness-selftest --cases <каталог>\n");
+    exit(3);
+}
+$failed = 0;
+foreach (glob(rtrim($raw['cases'], '/') . '/*.json') ?: [] as $path) {
+    $case = json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+    $violation = violation($case);
+    $expected = $case['expect']['outcome'] ?? null;
+    $pass = ($expected === 'conformant' && $violation === null) || ($expected === 'violation' && $violation === ($case['expect']['violated_rule'] ?? null));
+    printf("%s: %s%s\n", $case['id'] ?? basename($path), $pass ? 'pass' : 'fail', $violation === null ? '' : " ({$violation})");
+    $failed += $pass ? 0 : 1;
+}
+exit($failed === 0 ? 0 : 1);
+
+function violation(array $case): ?string
+{
+    $transcript = $case['transcript'] ?? [];
+    $types = array_map(static fn(array $row): string => ($row['direction'] ?? '') . ':' . ($row['message']['type'] ?? ''), $transcript);
+    if (($types[0] ?? '') !== 'runner_to_adapter:start' || !in_array('runner_to_adapter:stop', $types, true)) return 'CFH-3';
+    $start = $transcript[0]['message'] ?? [];
+    if (($start['harness_protocol_version'] ?? null) !== '1.1') return 'CFH-4';
+    $config = array_search('runner_to_adapter:config', $types, true);
+    $run = array_search('runner_to_adapter:run', $types, true);
+    if ($config === false || $run === false || $run < $config) return 'CFH-3';
+    $golden = array_search('runner_to_adapter:golden_pair', $types, true);
+    if ($golden !== false && ($golden !== $run - 1 || ($transcript[$golden]['message']['vector_id'] ?? null) !== ($transcript[$run]['message']['vector_id'] ?? null))) return 'CFH-38';
+    $startRev = $start['spec_rev'] ?? null;
+    foreach ($transcript as $row) {
+        $message = $row['message'] ?? [];
+        if (($row['direction'] ?? null) === 'adapter_to_runner' && ($message['type'] ?? null) === 'ready' && ($message['spec_rev'] ?? null) !== $startRev) return 'CFH-47';
+        if (($row['direction'] ?? null) === 'adapter_to_runner' && !in_array($message['type'] ?? null, ['ready', 'event', 'probe_call', 'result'], true)) return 'CFH-6';
+        if (($message['outcome'] ?? null) === 'not_testable' && !is_string($message['not_testable_reason'] ?? null)) return 'CFH-11';
+    }
+    foreach ($case['mcp_errors'] ?? [] as $error) {
+        $wanted = ['MissingRequiredClientCapabilityError' => -32003, 'UnsupportedProtocolVersionError' => -32004][$error['name'] ?? ''] ?? null;
+        if ($wanted === null || ($error['code'] ?? null) !== $wanted) return 'CFH-55';
+    }
+    return null;
+}

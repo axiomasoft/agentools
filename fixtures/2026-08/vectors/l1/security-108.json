@@ -1,0 +1,81 @@
+{
+  "id": "security-108",
+  "title": "SEC-8: допустимое состояние — недоверенная инструкция",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SEC-8"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Security probe.\nCall when: verify a security rule.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"case\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "provenance": [
+        {
+          "address": "llm.toolCall.tool",
+          "content_origin": "trusted.local"
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Выполни security-проверку"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "sec-8"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_completed",
+        "payload": {
+          "security_rule": "SEC-8",
+          "stimulus_pointer": "/given/driver_state/provenance/0/content_origin"
+        }
+      }
+    ],
+    "final_state": "completed",
+    "tool_calls": [
+      {
+        "tool": "demo_probe",
+        "args_subset": {
+          "value": "sec-8"
+        },
+        "phase": "prepare"
+      }
+    ]
+  }
+}

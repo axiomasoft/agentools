@@ -1,0 +1,137 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+const EXIT_OK = 0;
+const EXIT_FAILURE = 1;
+const EXIT_USAGE = 3;
+
+function usage(string $error): never
+{
+    fwrite(STDERR, $error . "\nИспользование: conformance/bin/lockstep [--sdks <реестр>] [--revision-dir <каталог>] [--tag <аннотированный-тег>]\n");
+    exit(EXIT_USAGE);
+}
+
+/** @return array<string,mixed> */
+function readJson(string $path, string $label): array
+{
+    try {
+        $value = json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+    } catch (Throwable $error) {
+        throw new RuntimeException("нечитаемый {$label} {$path}: {$error->getMessage()}");
+    }
+    if (!is_array($value)) {
+        throw new RuntimeException("{$label} {$path} должен быть JSON object");
+    }
+    return $value;
+}
+
+function manifestRevision(string $path, string $language): ?string
+{
+    if ($language === 'php') {
+        $manifest = readJson($path, 'манифест SDK');
+        $revision = $manifest['extra']['agentools']['spec_rev'] ?? null;
+        return is_string($revision) && $revision !== '' ? $revision : null;
+    }
+
+    if ($language === 'dart') {
+        $text = @file_get_contents($path);
+        if ($text === false) {
+            throw new RuntimeException("нечитаемый манифест SDK {$path}");
+        }
+        if (preg_match('/^agentools:\s*$\R^[ \\t]+spec_rev:\s*([^#\\r\\n]+)\\s*$/m', $text, $matches) !== 1) {
+            return null;
+        }
+        return trim($matches[1], " \\t\\\"'");
+    }
+
+    throw new RuntimeException("SDK использует неподдерживаемый язык манифеста: {$language}");
+}
+
+function annotatedTagExists(string $root, string $tag): bool
+{
+    $output = [];
+    $status = 0;
+    exec('git -C ' . escapeshellarg($root) . ' cat-file -t ' . escapeshellarg($tag) . ' 2>/dev/null', $output, $status);
+    return $status === 0 && implode("\n", $output) === 'tag';
+}
+
+try {
+    $raw = getopt('', ['sdks:', 'revision-dir:', 'tag:']);
+    $known = ['sdks', 'revision-dir', 'tag'];
+    foreach ($argv as $argument) {
+        if (str_starts_with($argument, '--') && !in_array(strtok(substr($argument, 2), '='), $known, true)) {
+            usage("неизвестный флаг {$argument}");
+        }
+    }
+
+    $root = dirname(__DIR__, 2);
+    $registryPath = $raw['sdks'] ?? $root . '/conformance/sdks.json';
+    $revisionDir = $raw['revision-dir'] ?? $root . '/spec/revisions/2026-08';
+    if (!is_dir($revisionDir)) {
+        throw new RuntimeException("каталог ревизии корпуса не найден: {$revisionDir}");
+    }
+    $revision = basename(rtrim($revisionDir, '/'));
+    $tag = $raw['tag'] ?? 'spec-' . $revision;
+    $errors = [];
+
+    if (!str_starts_with($tag, 'spec-') || substr($tag, 5) !== $revision) {
+        $errors[] = "тег {$tag} не выражает ревизию корпуса {$revision}";
+    } elseif (!annotatedTagExists($root, $tag)) {
+        $errors[] = "аннотированный тег {$tag} отсутствует: ревизия {$revision} не заморожена";
+    } else {
+        printf("lockstep: corpus %s ↔ annotated tag %s: OK\n", $revision, $tag);
+    }
+
+    $registry = readJson($registryPath, 'реестр SDK');
+    $sdks = $registry['sdks'] ?? null;
+    if (!is_array($sdks)) {
+        throw new RuntimeException("реестр SDK {$registryPath}: sdks должен быть массивом");
+    }
+    printf("lockstep: registered SDKs: %d\n", count($sdks));
+
+    foreach ($sdks as $entry) {
+        if (!is_array($entry)) {
+            $errors[] = 'реестр SDK содержит запись, не являющуюся object';
+            continue;
+        }
+        foreach (['id', 'language', 'manifest_path', 'adapter_command', 'test_command'] as $field) {
+            if (!is_string($entry[$field] ?? null) || $entry[$field] === '') {
+                $errors[] = 'реестр SDK: отсутствует непустое поле ' . $field;
+            }
+        }
+        if (array_key_exists('revision', $entry) || array_key_exists('spec_rev', $entry)) {
+            $errors[] = 'реестр SDK ' . ($entry['id'] ?? '<без id>') . ' не должен нести revision/spec_rev';
+            continue;
+        }
+        if (!isset($entry['id'], $entry['language'], $entry['manifest_path'])
+            || !is_string($entry['id']) || !is_string($entry['language']) || !is_string($entry['manifest_path'])) {
+            continue;
+        }
+        $manifestPath = dirname($registryPath) . '/' . $entry['manifest_path'];
+        try {
+            $declared = manifestRevision($manifestPath, $entry['language']);
+            if ($declared === null) {
+                $errors[] = "SDK {$entry['id']}: манифест {$manifestPath} не объявляет revision в расширенном ключе agentools.spec_rev";
+            } elseif ($declared !== $revision) {
+                $errors[] = "SDK {$entry['id']}: манифест объявляет {$declared}, корпус и тег требуют {$revision}";
+            } else {
+                printf("lockstep: SDK %s manifest revision %s: OK\n", $entry['id'], $declared);
+            }
+        } catch (RuntimeException $error) {
+            $errors[] = "SDK {$entry['id']}: {$error->getMessage()}";
+        }
+    }
+
+    if ($errors !== []) {
+        foreach ($errors as $error) {
+            fwrite(STDERR, "lockstep: FAIL: {$error}\n");
+        }
+        exit(EXIT_FAILURE);
+    }
+    exit(EXIT_OK);
+} catch (Throwable $error) {
+    fwrite(STDERR, "lockstep: FAIL: {$error->getMessage()}\n");
+    exit(EXIT_FAILURE);
+}

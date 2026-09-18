@@ -1,103 +1,20 @@
-# HANDOFF — 2026-07-28 — after P3
+# HANDOFF — migration preview — after P0.0
 
-**Next:** ЗАПУСК ВРУЧНУЮ: sonnet/high — резюме Workflow-волны W1 (P4.3/P4.4/P4.7/P4.8), см. code-block ниже (`resumeFromRunId` переиспользует уже выполненные вызовы `agent()`, включая закрытый P4.2)
-
-> **РЕЖИМ:** возобновление workflow-оркестрованной волны W1 (P4.3, P4.4, P4.7, P4.8) —
-> НЕ новый заход `plan-design`, эскалация P4.3 уже разрешена (D136, см. plan.md §5).
-> **ВХОД:** `phases/P4.md` P4.3 — ToR переписан (Scope/Files/Validation/Implementation Rules
-> учитывают амендмент D136), эскалация помечена RESOLVED, `Escalation Needed: no`.
-> **СКОУП:** дописать P4.3 (векторы IDE-/AOB-, golden-пары JCS+idempotency каждая с
-> `.meta.json`-компаньоном — конвенция новая, README.md §7), затем P4.4/P4.7/P4.8 — как
-> было спроектировано волной; последовательное закрытие продолжает порядок Phase Context.
-> **НЕ ТРОГАТЬ:** `DR-01`/`DR-02` по существу; `IDE-5` (Q-29, отдельный владельческий вопрос,
-> НЕ блокирует остальной Scope P4.3 — оставить в Pending Work с адресом).
-
-Фаза **P4** (**A3** — тест-векторы + двунаправленный линтер traceability) — **3/8**:
-**P4.1**, **P4.2**, **P4.6** закрыты 🟢. **P4.3 был `🔴 Blocked` (эскалация), теперь
-`⬜ Not started`** — три пункта эскалации разобраны владельцем (D136, `AskUserQuestion`
-2026-07-28): два оказались реальными дырами (закрыты реопеном P4.1/P3.11/P3.14 + правкой
-Phase-Context COV-скрипта), один (L3/Files) — ложной тревогой, один (`IDE-5`) вынесен в
-`open-questions.md` Q-29 как отдельный владельческий вопрос, не блокирующий P4.3.
-
-**Важное открытие этой сессии:** рабочее дерево `~/projects/packages/agentools` несёт
-**большой пласт незакоммиченных файлов** от параллельной волны авторинга — не только 3
-файла P4.2's item-коммита (`480511b`), а десятки файлов под `fixtures/2026-08/{vectors,
-golden,static,harness}/**`, судя по всему написанные параллельными агентами волны W1 для
-P4.3/P4.4/P4.7/P4.8 ДО того, как последовательное закрытие остановилось на эскалации P4.3.
-**Ничего не потеряно и не закоммичено этим заходом** (design-сессия не коммитит item-
-deliverables) — но исполнителю, продолжающему волну, важно знать: golden-пары P4.3
-(`golden/jcs/*`, `golden/idempotency/*`) уже частично написаны, но НИ ОДНА ещё не несёт
-обязательный `.meta.json`-компаньон (новая конвенция D136) — `python3 tools/spec_lint.py
---fixtures-check fixtures/2026-08` на момент этого handoff даёт 9 ошибок ровно по этой
-причине (ожидаемо, не регрессия).
+**Next:** /task:plan-exec AGENTOOLS P10.1
 
 | Параметр | Значение |
 |:--|:--|
-| Model class | implementation (`sonnet`) |
-| Effort | high — авторинг данных контракта против замороженных правил; ложная ссылка на правило проходит машинный гейт |
-| Capabilities | `command.subagents`, `command.workflow-carrier` |
-| Context | NEW SESSION — Workflow-оркестрован, резюме прежнего run'а (кэш переиспользует уже выполненные вызовы agent()) |
-| Суть | Остаток волны авторинга корпуса тест-векторов (P4.3 идемпотентность/ошибки/канонизация — включая `.meta.json` для уже написанных golden-пар, P4.4 GREASE+DoS+вектор двух схем, P4.7 сценарии/длинные операции/безопасность, P4.8 артефактные векторы `00`+harness `11`) |
+| Model | implementation |
+| Thinking | high — verify migrated current state |
+| Context | fresh session |
+| Суть | Продолжить первый нетерминальный item P10.1. |
 
+```text
+/task:plan-exec AGENTOOLS P10.1
 ```
-Workflow({scriptPath: "05-Projects/03-Packages/AgenTools/plans/AGENTOOLS/workflows/wf-agentools-p4-vectors.js", resumeFromRunId: "wf_df86ccfd-f53"})
-```
 
-**Done:**
-
-- Эскалация P4.3 разобрана по трём пунктам (см. `phases/P4.md` P4.3 — блок RESOLVED, и
-  `plan.md` §5 D136 для полного разбора).
-- Реопен **P4.1** (`fixtures/2026-08/schema/vector.json`, был 🟢 Done): добавлены
-  `LlmStub.toolCall.meta.idempotency_key` и `preseed.idempotency[].{key,args_fingerprint}` —
-  оба опциональны, существующий корпус (P4.2/P4.6 + незакоммиченная волна) остаётся валиден,
-  анти-регрессия №6 переподтверждена эмпирически (`bakeoff/dart`).
-- Реопен **P3.11/P3.14** (были 🟢 Done, фаза P3 терминальна — Phase Handoff инвалидирован
-  маркером «УСТАРЕЛ — реопенена D136»): `09_idempotency-errors.md` `IDE-44..48` получили
-  `Not testable` (ревизия `2026-08` не вводит депрекированных core-значений), `rules.json`
-  перегенерирован (397 правил, `not_testable` 1→6), `ГЕЙТ A2: PASS` устоял.
-- Phase-Context COV-скрипт (`phases/P4.md`) сужен: исключение `/golden/` → исключение
-  только payload-файлов пары; новая конвенция `<имя>.meta.json` (README.md §7, `agentools`)
-  + проверка `check_golden_meta` в `tools/spec_lint.py` (позитив/2 негатива подтверждены).
-- P4.3 ToR переписан целиком (Scope/Files/Inputs/Implementation Rules/Validation) под новую
-  реальность; статус `⬜ Not started`, `Escalation Needed: no`.
-- Попутно: Validation-команда №6 P4.1 (грамматически самопротиворечивая `grep -c`) исправлена
-  на `-n` — была названа в Pending Work P4.1 как рекомендация для `plan-design`.
-- `IDE-5` вынесен в `open-questions.md` Q-29 (НЕ решён — потребовал бы моделирования
-  multi-tenant/multi-session, решение большего масштаба, чем два точечных поля).
-
-**Remaining:**
-
-- Фаза **P4 — 3/8**: волна **W1** (P4.3, P4.4, P4.7, P4.8) — резюмировать оркестрованным
-  workflow'ом (см. Next выше) → **P4.5** (гейт-item, `ГЕЙТ A3`).
-- P4.3 при авторинге: golden-пары (уже частично написаны, незакоммичены) требуют
-  `.meta.json`-компаньон на КАЖДУЮ пару — без него `--fixtures-check` красный (9 ошибок на
-  момент этого handoff, все — «нет компаньона»).
-- Далее по порядку: P4 → **P5** (GREEN → P5.3 quality baseline/owner gates → freeze) →
-P6 → P7 → P8 → P9 → P10 → P11 (release & hygiene).
-- Pending Work P4.2 (нерешаемо без дальнейших P4.1-расширений формата — отдельный владельческий
-  вопрос, НЕ этот заход): dual control CNF-32..36 (формат вектора не несёт полей идентичности
-  принципала proposer/approver) — не входил в скоуп D136, не тронут.
-- `IDE-5` (Q-29) — отдельный владельческий вопрос, P4.3 им не блокируется.
-- Отложенный чекпоинт `DR-01` §A3 addendum остаётся ОТКРЫТ (без изменений).
-- Owner-gate `DR-02` §6 остаётся без ответа владельца; адресат — фаза **P6**.
-
-**Sources of truth:**
-
-- `plan.md` — §0 Meta (D136 сводка), §5 Decision Log (D136), §6 Update Log.
-- `phases/P4.md` — P4.1 Completion Notes (амендмент), P4.3 (ToR переписан, эскалация RESOLVED).
-- `phases/P3.md` — P3.11/P3.14 Completion Notes (амендмент), Phase Handoff (инвалидирован).
-- `open-questions.md` — Q-29 (`IDE-5`).
-- `fixtures/2026-08/README.md` §2/§7/§8 (`agentools`) — новые поля схемы, конвенция
-  golden-компаньона.
-- `tools/spec_lint.py` (`agentools`) — `check_golden_meta`.
-
-**Open risks:** без изменений с P4.1/P4.2/P4.6 (см. `phases/P3.md` Open risks унаследованный
-список) плюс: dual control CNF-32..36 (P4.2 Pending Work, не решено); `IDE-5`/Q-29 (не
-решено, не блокирует); большой пласт незакоммиченных файлов в рабочем дереве `agentools` —
-не потерян, но исполнителю нужно проверить их СОДЕРЖАТЕЛЬНОЕ качество (напр. golden-пары
-JCS — действительно ли официальные RFC 8785 векторы дословно, а не пересчитаны) при
-продолжении P4.3, это design-сессия НЕ аудировала по существу (вне скоупа трёх решений).
-
-**Workarounds/Deferred/Open questions:** без изменений с P4.1/P4.2. `Q-28` владелец-фаза
-P4/P5; `Q-5` — оговорка `EXT-11`; `Q-7` — владелец-фаза P6; `Q-12`/`DR-02` §6 — владелец-фаза
-P6; **новый Q-29** (`IDE-5`) — владелец-фаза P4, не блокирует.
+**Done:** Layout v2 preview построен из frozen migration policy.
+**Remaining:** Определяется generated current-state carriers.
+**Sources of truth:** `plan.md` · `artifacts/p2-migration-inventory.json` · `artifacts/migration-source-v1/manifest.json`
+**Open risks:** Source archive и policy preimage обязательны до controlled apply.
+**Workarounds/Deferred/Open questions:** workarounds — none; deferred — none; open_questions — none.

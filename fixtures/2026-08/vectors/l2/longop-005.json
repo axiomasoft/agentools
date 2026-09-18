@@ -1,0 +1,75 @@
+{
+  "id": "longop-005",
+  "title": "Утрата task-binding с неизвестным эффектом требует сверки без автоматического повтора",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "LOP-15",
+    "LOP-16",
+    "LOP-17",
+    "LOP-18",
+    "LOP-19"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Детерминированный пробный инструмент для проверки поведения рантайма.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {}
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "confirmation": "none",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "user_input": "Утрата task-binding с неизвестным эффектом требует сверки без автоматического повтора"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "longop-005"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "effect_requested",
+        "payload": {
+          "effect_id": "effect-005"
+        }
+      },
+      {
+        "kind": "task_binding_lost",
+        "payload": {
+          "reason": "unknown"
+        }
+      },
+      {
+        "kind": "effect_confirmed",
+        "payload": {
+          "effect_id": "effect-005"
+        }
+      }
+    ],
+    "final_state": "running"
+  }
+}

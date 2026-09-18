@@ -1,0 +1,88 @@
+{
+  "id": "lifecyclefold-106",
+  "title": "Неизвестный event сохраняется целиком без перехода",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "ALC-15"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Проверяет lifecycle.\nCall when: нужен lifecycle check.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"x\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "journal": [
+        {
+          "event_id": "ev-1",
+          "action_id": "act-1",
+          "seq": 1,
+          "expected_prev_seq": 0,
+          "ts": "2026-08-04T00:00:00Z",
+          "actor": {
+            "type": "system",
+            "id": "runtime"
+          },
+          "kind": "vendor.known",
+          "event_version": 1,
+          "spec_rev": "2026-08",
+          "payload": {
+            "opaque": "preserve"
+          }
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Восстанови журнал"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "unknown"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [],
+    "final_state": "created",
+    "observations": [
+      {
+        "kind": "journal_projection",
+        "probe_id": "alc_15_journal_spy",
+        "state": "created",
+        "source_event_ids": [
+          "ev-1"
+        ],
+        "emitted_event_kinds": [],
+        "source_unchanged": true,
+        "journal_reads": 1,
+        "append_attempts": 0
+      }
+    ]
+  }
+}

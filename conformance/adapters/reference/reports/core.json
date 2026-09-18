@@ -1,0 +1,1327 @@
+{
+    "spec_rev": "2026-08",
+    "harness_protocol_version": "1.1",
+    "selection": {
+        "rules": [
+            "ALC-*",
+            "CFH-48",
+            "CFH-49",
+            "CLR-*",
+            "CNF-*",
+            "EXT-*",
+            "IDE-*",
+            "TLP-*"
+        ],
+        "selected_count": 121
+    },
+    "adapter": {
+        "type": "ready",
+        "sdk": "agentools/reference",
+        "spec_rev": "2026-08",
+        "declared_level": "L3"
+    },
+    "summary": {
+        "total": 121,
+        "pass": 121,
+        "fail": 0
+    },
+    "vectors": [
+        {
+            "id": "clarification-001",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CLR-1",
+                "CLR-4",
+                "CLR-6",
+                "CLR-7",
+                "CLR-14",
+                "CLR-15"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "clarification-002",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CLR-6",
+                "CLR-10",
+                "CLR-11"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "clarification-003",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CLR-11"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "clarification-004",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CLR-18"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "clarification-005",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CLR-19"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "clarification-006",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CLR-9"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "clarification-007",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CLR-5"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "clarification-008",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CLR-16",
+                "CLR-17"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "clarification-009",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CLR-12"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "clarification-010",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CLR-1",
+                "CLR-4",
+                "CLR-20",
+                "CLR-21",
+                "CNF-1"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "clarification-011",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CLR-3"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "clarificationstate-001",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CLR-2"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "clarificationstate-002",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CLR-8"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "clarificationstate-101",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CLR-2"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "clarificationstate-102",
+            "level": "L2",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CLR-8"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confdual-001",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-33"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confdual-002",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-34"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confdual-101",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-33"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confdual-102",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-34"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confirmation-001",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-2",
+                "CNF-9",
+                "CNF-10",
+                "CNF-11",
+                "CNF-12",
+                "ALC-8",
+                "ALC-17",
+                "ALC-24"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confirmation-002",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-14",
+                "CNF-15",
+                "CNF-17"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confirmation-003",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-16",
+                "CNF-20",
+                "CNF-22"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confirmation-004",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-18",
+                "CNF-22"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confirmation-005",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-19",
+                "CNF-29",
+                "CNF-30",
+                "CNF-31"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confirmation-006",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-24",
+                "CNF-25",
+                "CNF-39"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confirmation-007",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-25"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confirmation-008",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-24",
+                "CNF-26",
+                "CNF-27",
+                "CNF-28"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confirmation-009",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-37",
+                "CNF-40",
+                "CNF-41"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confpolicy-001",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "TLP-11"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confpolicy-002",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-3"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confpolicy-003",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-4"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confpolicy-004",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-5"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confpolicy-005",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-6"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confpolicy-006",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-8"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confpolicy-007",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-35"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confpolicy-008",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-36"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confpolicy-101",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "TLP-11"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confpolicy-102",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-3"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confpolicy-103",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-4"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confpolicy-104",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-5"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confpolicy-105",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-6"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confpolicy-106",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-8"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confpolicy-107",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-35"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "confpolicy-108",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-36"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "conftoken-002",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-21"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "conftoken-003",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-23"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "conftoken-004",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-38"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "conftoken-101",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-13"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "conftoken-102",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-21"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "conftoken-103",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-23"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "conftoken-104",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CNF-38"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "errors-001",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "IDE-22",
+                "IDE-23",
+                "IDE-24",
+                "IDE-25",
+                "IDE-26",
+                "IDE-27",
+                "IDE-28",
+                "IDE-29"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "extension-001",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "EXT-7",
+                "EXT-10"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "grease-001",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "OVR-19",
+                "TLP-13",
+                "IDE-38",
+                "IDE-39",
+                "IDE-43"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "grease-002",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "IDE-39",
+                "IDE-40"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "grease-003",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "CFH-48",
+                "CFH-49"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "grease-004",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "OVR-20",
+                "TLP-14",
+                "IDE-39"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "idempotency-001",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "IDE-1",
+                "IDE-2",
+                "IDE-3",
+                "IDE-4",
+                "IDE-9",
+                "IDE-10",
+                "IDE-11"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "idempotency-002",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "IDE-10",
+                "IDE-12",
+                "IDE-13"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "idempotency-003",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "IDE-10",
+                "IDE-14",
+                "IDE-15",
+                "IDE-31",
+                "IDE-33"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "idempotency-004",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "IDE-16",
+                "IDE-17",
+                "IDE-18",
+                "IDE-19",
+                "IDE-20",
+                "IDE-21"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "idempotency-005",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "IDE-30",
+                "IDE-32",
+                "IDE-34",
+                "IDE-35",
+                "IDE-36",
+                "IDE-37"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "idempotency-006",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "IDE-38",
+                "IDE-39",
+                "IDE-40",
+                "IDE-41",
+                "IDE-42",
+                "IDE-43"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "idempotency-007",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "IDE-5"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "idempotency-008",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "IDE-5"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycle-001",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-1",
+                "ALC-5",
+                "ALC-9",
+                "ALC-10",
+                "ALC-29"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycle-002",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-11",
+                "ALC-13"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycle-003",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-11",
+                "ALC-12",
+                "ALC-13"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleconcurrency-001",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-19"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleconcurrency-002",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-20"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleconcurrency-003",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-21"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleconcurrency-004",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-22"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleconcurrency-005",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-23"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleconcurrency-006",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-25"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleconcurrency-007",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-26"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleconcurrency-008",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-27"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleconcurrency-101",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-19"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleconcurrency-102",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-20"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleconcurrency-103",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-21"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleconcurrency-104",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-22"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleconcurrency-105",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-23"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleconcurrency-106",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-25"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleconcurrency-107",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-26"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleconcurrency-108",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-27"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecyclefold-001",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-2"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecyclefold-002",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-3"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecyclefold-003",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-4"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecyclefold-004",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-6"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecyclefold-005",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-7"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecyclefold-006",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-15"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecyclefold-007",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-16"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecyclefold-008",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-18"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecyclefold-101",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-2"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecyclefold-102",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-3"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecyclefold-103",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-4"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecyclefold-104",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-6"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecyclefold-105",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-7"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecyclefold-106",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-15"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecyclefold-107",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-16"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecyclefold-108",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-18"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleintegrity-001",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-28"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleintegrity-002",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-30"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleintegrity-003",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-31"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleintegrity-004",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-33"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleintegrity-005",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-34"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleintegrity-006",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-35"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleintegrity-007",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-36"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleintegrity-008",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-37"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleintegrity-101",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-28"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleintegrity-102",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-30"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleintegrity-103",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-31"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleintegrity-104",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-33"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleintegrity-105",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-34"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleintegrity-106",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-35"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleintegrity-107",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-36"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "lifecycleintegrity-108",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "ALC-37"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "mustignore-001",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "IDE-39",
+                "IDE-40"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "mustignore-002",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "IDE-43"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "profile-001",
+            "level": "L1",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "TLP-13",
+                "CNF-2",
+                "CNF-7"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "profileuntrusted-001",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "TLP-25"
+            ],
+            "status": "pass",
+            "mismatches": []
+        },
+        {
+            "id": "profileuntrusted-101",
+            "level": "L3",
+            "vector_class": "behavior",
+            "spec_rule_ids": [
+                "TLP-25"
+            ],
+            "status": "pass",
+            "mismatches": []
+        }
+    ]
+}

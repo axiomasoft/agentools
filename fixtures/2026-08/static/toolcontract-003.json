@@ -1,0 +1,1 @@
+{"id":"toolcontract-003","title":"Структурированный результат содержит обязательное поле outputSchema","vector_class":"artifact","spec_rev":"2026-08","spec_rule_ids":["TLP-5"],"conformance_level":"L1","subject":{"kind":"tool_result_case","inline":"{\"outputSchema\":{\"required\":[\"task_id\"]},\"result\":{\"task_id\":\"t-1\"}}"},"expect":{"linter":"accept"}}

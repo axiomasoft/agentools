@@ -1,216 +1,111 @@
 <!-- Generated Codex runtime projection; do not edit as source.
 Canonical source: packages/task/commands/plan-audit.md
-Canonical SHA-256: sha256:7d7d987630ab91b064f5979ed8fc8493cb6a20730ec8e098687748b3746d2afa
-Adapter: task.codex-command/1.0.4
+Canonical SHA-256: sha256:08477e5dd99ae24350e8489c70d85028ee97d3d4c0560a8425318a40d853e77d
+Adapter: task.codex-command/1.0.15
 -->
-Это ADVERSARIAL-АУДИТ закрытой фазы мастер-плана (plan-протокол). Ввод пользователя: «$ARGUMENTS».
-Модель/effort запинены (frontier/xhigh) — не переключай вручную. Items НЕ трогай, код НЕ меняй.
+## Native Codex launch-block — required only at a real user-facing boundary
 
-**Compiler (P2.7/P2.11).** `task:plan-exec`'s Pre-mutation (шаг 2) И Pre-final (шаг 7, штатный
-путь самозакрытия) — а для item'ов, закрытых реконсиляцией, `task:plan-close`'s Pre-final (шаг
-4) — ИСПОЛНЯЕМЫЕ write-site (не проза): каждый закрытый item обязан нести в Completion Notes
-напечатанные результаты ОБЕИХ границ (`pre_mutation` И `pre_final` коды) — читай ИХ как источник
-истины предиката, не пересчитывай вручную вторым способом. Гейт закрытия бинарен
-(`pre_mutation == "allow" and pre_final == "allow"`, D76): `n/a` НЕ зелёное — item со статусом
-`🟢`/`🟠`, чьи напечатанные коды не оба `allow`, = находка Major (status-rule обманут). `pre_final`
-утверждает свойство ФОРМЫ спеки, не качество исполнения (D77) — не путай это со status-rule
-material/process ниже. `plan_lint.py`'s tiered-portability находки — та же дисциплина
-(`plan-portability-v1.md`, D47).
+This generated runtime is the Codex provider projection. Render only the Codex-native launch;
+never copy Claude Code slash syntax as the executable invocation and never print both providers.
+`$ task:…` is an invocation inside the **current** Codex session, not a fresh launch.
+When the typed Context is `continue-root`, keep executing the compatible ready successor within
+the owner-authorized scope in this root. If that scope is complete, report the exact successor as a
+recommendation for this chat; a final answer does not require a new `codex` process. A command, phase, directory, local repair, or ordinary test failure is not a session
+boundary.
 
-`plan-audit` — профиль **«ревью плана»** таксономии `quality/artifact-review`: конституция соответствия
-= схема plan-protocol (канон 2.5+) + DoR; измерения (RAG-groundedness несущих, структурная полнота,
-непротиворечивость D-лога, вынос Open Questions, гейты) — в чеклисте. Профили doc/code — `task:review`.
+At a fresh-session boundary, keep Batch/Model/Thinking/Context/Суть in the metadata table,
+but never put the command in a table
+cell or column. Immediately after the table print `**Native Codex command:**` and a fenced `bash`
+block which explicitly pins the repository cwd, mapped model, reasoning effort, approval policy,
+and sandbox:
 
-**Режим `<PLAN-ID> design` — pre-exec ревью ВСЕГО плана (финальный гейт утверждения).**
-Запускается ДО старта исполнения (аналог task:review для плана): git/код не сверяется —
-проверяется сам план. Чеклист режима (вердикт GREEN/ATTENTION/RED + список находок):
-1. **Покрытие брифа:** каждая мысль `brief/00-brief.md` (+refinements) покрыта фазой/item'ом
-   или явно отклонена D-записью — таблица «мысль → носитель» с дырами; непокрытая мысль = Major.
-2. **Слепые/серые зоны:** adversarial-проход «что НЕ покрыто ни одной фазой, но нужно для цели
-   плана» (интеграции, миграции данных, регрессы, обратная совместимость, деплой, доки).
-3. **Слои знаний связны (SKILL §16):** brief/ есть и непуст (гейт линтера); несущие факты имеют
-   RAG-маркеры и живут в findings/, синтез — в research/, D-записи ссылаются на слои; несущий
-   факт только в чате = Major.
-4. **Контракты фаз согласованы:** «Потребляет» каждой фазы производится предыдущими; coupling-
-   поверхность из D-лога не противоречит фазам; Routing покрывает все items.
-5. **plan-lint зелёный** + DoR детализированных фаз; **дизайн-бюджет исполнен**: Meta
-   `Design Passes: k/N` — k≥N по Update Log-строкам «Design pass …» (недобор без D-записи
-   владельца = Major).
-6. **Roadmap исполним (SKILL §8):** `roadmap.md` есть (план детализирован — иначе ERROR линтера),
-   покрывает ВСЕ items без дыр, батчи обоснованы (сцепленный scope + одна модель), у каждого
-   solo — причина «почему нельзя объединить», у batch/workflow-групп — готовые launch-block'и,
-   гейты владельца — только там, где решение реально его; roadmap не противоречит §3 Routing.
-7. **D-лог: `Consequences` у отменяющих/заменяющих записей (SKILL §6).** Каждая D-запись,
-   объявляющая `supersedes D#`/отмену/замену ранее принятого решения, несёт инлайн-подполе
-   `**Consequences:**` внутри ячейки `Решение` — независимо от того, включён ли `Closure
-   Protocol` (машинный `plan_lint.py`-гейт покрывает только подкласс при включённом протоколе
-   и дате ≥ cutoff, SKILL §6); отсутствие — Minor находка design-ревью (дисциплина, не только
-   машинный гейт).
-Находки НЕ чинишь — отчёт владельцу; после фиксов design-ревью повторяется до GREEN.
-Остальные пункты ниже (git-сверка, no-op, Completion Notes) относятся к режиму `Pn` — в
-`design` их пропусти.
-
-1. **Две ступени — дешёвая ПЕРЕД дорогой.** **ПЕРВЫЙ вход ступени 1** (режим `Pn`, если план
-   несёт `## 0. Meta` → `Closure Protocol | v1`) — отчёт закрытия `plans/<PLAN-ID>/closure/<Pn>.json`
-   (P8.1/D42, схема — `snippets/closure-template.md` канона): читаешь его ДО грепов и чтения прозы.
-   Что он даёт: (а) `evidence`/`evidence_class` каждого item'а и гейта — команды перепрогоняются
-   ТОБОЙ на `git.head_sha` отчёта, расхождение с заявленным классом (`real` там, где прогон не
-   воспроизводится, либо `synthetic`, выданный за результат) = находка **Major**; (б)
-   `inputs_sha256["phases/<Pn>.md"]` ≠ фактическому хешу файла сейчас ⇒ **ТЗ фазы правился после
-   закрытия** — проверь, не съехал ли scope (`git log -p` по файлу фазы после `closed_at`); (в)
-   `limitations[]`/`external_side_effects[]` — заявленные границы сдачи, сверяются с Completion
-   Notes. Отчёта нет при включённом протоколе — это ERROR линтера, не твоя находка; протокол не
-   включён — пункт пропускается, ступень 1 идёт как ниже. Затем — **конфликт-скан** (детерминированный),
-   ПЕРВОЙ, самой дешёвой командой — **`plan-lint.py --conflicts`** (без аргумента-плана, roadmap
-   `plan-audit-loop.md` §A.1, 2026.07.31-SKM-LEAN P5.9): сверяет реестры-константы `plan_lint.py`
-   (шесть статусов, 16 полей item'а, закрытый enum форм `Next`, три значения `Context`, литералы
-   `i18n-keep`, регекс-носители формы launch-block'а) с их объявлениями в `SKILL.ru.md` — тот же класс
-   «канон ↔ EN-копия ↔ `plan_lint.py`», что дал БОЛЬШИНСТВО окупающихся находок трёх RED-раундов
-   `plan-audit-loop.md` (слип перевода `Items 🟢/всего` → `Items 🟢/total`), ловится за секунды. Следом —
-   остальные ступени скана: `validate.sh` затронутых пакетов · тесты линтера · `check-translations.sh`
-   (фаза правила скилл — свежесть перевода и присутствие литералов, `--conflicts` их НЕ дублирует) ·
-   `plan-lint plans/<PLAN-ID> --baseline <sha до фазы>`. Затем — adversarial-чтение **свежим
-   контекстом**: Completion Notes писал исполнитель сам себе — суди по git/коду (`git log`/`git diff` по
-   `Files` каждого item'а: slice, не файлы целиком).
-
-2. **Правила остановки.** Гейт не имеет права стоить дороже дефекта, который ловит.
-   - **Scope-граница.** Мандат — «выполнены ли **Deliverables фазы** по её `Scope Included`», а НЕ
-     «найди всё плохое в артефакте». Находка вне scope фазы законна, но идёт Minor/Nit и вердикт НЕ красит.
-   - **Порог severity: severity НАХОДКИ ≠ вердикт ФАЗЫ.** `RED` — только когда сломан ПРОДУКТ фазы:
-     правило/код, ломающие потребителей; no-op под 🟢; невоспроизводимая Validation; ложное утверждение о
-     факте. Дефект бухгалтерии плана (число, устаревший блок, формулировка, проза) → `ATTENTION` + строка
-     в Pending Work, НЕ реопен. «При сомнении ставь ВЫШЕ» (п. 4) — про severity НАХОДКИ, не про ВЕРДИКТ.
-   - **Потолок раундов — два аудита на фазу.** Номер захода = число блоков `## Audit Pn` в
-     `phases/Pn.md` + 1 (греп; печатается ВСЕГДА). Третий и далее → строка
-     `AUDIT-CAP: Pn — <N>-й заход, решение за владельцем`: реопен ты не назначаешь, варианты владельцу
-     — сдать фазу `🟠 Done with deviations` с НАЗВАННЫМ долгом либо убить фазу.
-   - **Дефолт ремедиации — follow-up items в СЛЕДУЮЩЕЙ фазе** (или отдельной фазе ремедиации). Реопен
-     закрытой фазы (канон §3, 4 шага) — ТОЛЬКО если дефект в самом Deliverable этой фазы: каждый
-     реопен растит число ручных отчётов, а с ним — поверхность следующего аудита.
-
-3. **Чеклист** (по каждому пункту — вердикт с доказательством: `file:line` + прогон):
-   - каждая `🟢`/`🟠` сверяется с git/кодом: правки реально существуют и делают заявленное
-     (**no-op detection** — статус закрыт, а содержательного диффа нет);
-   - **committed vs working-tree**: `🟢` при некоммиченных `Files` = находка (рабочее дерево ≠ история:
-     cold-start по `git log` «закрытую» работу не увидит);
-   - **scope drift**: диффы вне `Files`/`Scope Included` items фазы (сделано то, чего план не просил);
-   - дублирующиеся шаги между items (одно «сделано» дважды — признак слепого исполнения);
-   - **Validation реально прогнана**: КАЖДЫЙ пункт поля `Validation` закрытого item'а прогоняешь сам НА
-     ЗАКОММИЧЕННОМ дереве item'а (`git show <ref>:<файл>`), а не на веру и не на дереве момента аудита;
-     расхождение с заявленным = находка; item, закрытый `🟢` БЕЗ отчёта по своей Validation, = находка;
-   - **write-site реально исполнен (P2.7/P2.11, F1-дисциплина)**: item, закрытый ПОСЛЕ P2.7
-     (командные тела несут исполняемый Pre-mutation/Pre-final), без напечатанных `pre_mutation`
-     И `pre_final` кодов ОБЕИХ границ в Completion Notes = находка (общая фраза «контракт
-     скомпилирован» без результата — ссылка на модуль, не доказательство, ровно F1); проверь код
-     сам на закоммиченном item'е тем же вызовом, что несёт `plan-exec.md`/`plan-close.md`, с
-     маршрутом ИСПОЛНИТЕЛЯ (D75), не своим пином `frontier/xhigh`; **item `🟢`/`🟠` с напечатанным
-     кодом ≠ `allow` на любой из границ (включая `pre_final: n/a`) = находка Major** (D76: `n/a` не
-     зелёное, закрытие на нём — рецидив F1);
-   - **status-rule** (§6): item `🟢` с непустыми Known Deviations — сверь по предикату **material** (Scope
-     выполнен не полностью/иначе · Validation осталась красной · затронут public contract / SemVer сверх
-     ТЗ · acceptance не выполнен · workaround ЖИВЁТ В КОДЕ · item-коммит несёт дифф вне `Files`): material
-     под `🟢` = находка Major; `🟠` без единого material-триггера = находка (обесценивание статуса);
-   - **топология и гигиена коммита** (§6/§8): `git show --stat <item-коммит>` — файлы вне `Files` item'а →
-     находка Major + статус обязан быть `🟠` (carve-out: `plans/<PLAN-ID>/**` и `plans/ACTIVE.md` посторонним
-     диффом НЕ считаются); item-коммит несёт ФЛИП СТАТУСА/бухгалтерию плана = бандл шагов 1 и 6 —
-     process-отклонение, и БЕЗ записи в Known Deviations это находка («тихое умолчание»); плейсхолдер вместо
-     реального хеша item-коммита в `handoff.md` либо строка item'а в `## 6. Update Log` без этого хеша =
-     находка (карта «коммит → item» рвётся);
-   - **честность lint-отчёта** (§8; гейт закрытия = `K = 0`, а не `N = 0`): перепрогони `plan-lint
-     plans/<PLAN-ID> --baseline <sha bookkeeping-коммита item'а>` и сверь с опубликованным счётом
-     `N ERROR / M WARN — новых …: K`; расхождение = находка Major (прецедент: заявлено 78 при факте 79);
-   - **якорь дерева** (§8): КАЖДОЕ число в Completion Notes / Validation / Known Deviations / Update Log
-     перепрогоняется ЕГО ЖЕ командой на закоммиченном дереве item'а; число без якоря
-     `<число> (на <git-ref>)` либо невоспроизводимое = **ложное утверждение**, находка;
-   - **протухший `## Phase Handoff`** (§3): фаза `🟡`/`⬜`/`🔴`, блок утверждает закрытие и не несёт
-     первой строкой `> УСТАРЕЛ — фаза реопенена <D#>` = находка (линтер даёт WARNING; ты проверяешь
-     СОДЕРЖАНИЕ: блок описывает фактическое состояние фазы или прошлое);
-   - **`Last Updated`** (§8, шаг 2): поле `## 0. Meta` старше даты последней строки `## 6. Update Log`
-     = находка (машинного гейта нет by design);
-   - **развилки** (§3/§4): развилка `## Обсуждение` без строки `**Статус:**` = находка; статус
-     ≠ `Resolved → D#` без записи в `open-questions.md` = находка;
-   - **cross-plan notification** (§11): item бампнул замороженный контракт (semver) — обновлены ли строка
-     `Exported` донора и `Consumed` КАЖДОГО потребителя в том же корне `plans/`; нет = находка;
-   - **RAG-маркеры несущих** (§7 — enum ТРЁХ значений): каждый load-bearing факт/вердикт в Intent/Why/
-     Implementation Rules items и в D-логе несёт РОВНО один — `RAG:✅ <дата/суть>` · `RAG:—` (repo-grounded
-     факт / внутреннее правило) · `[UNVERIFIED]`. Несущий пункт БЕЗ маркера = находка; `RAG:—` на ВНЕШНЕМ
-     факте (версия/API библиотеки, «ещё актуально», рынок, чужой сервис/MCP) = та же находка;
-   - workarounds из `.claude/runs/*.json` (телеметрия devloop: `devloop{workarounds,deferred,
-     open_questions}`) отражены в Pending Work/Known Deviations items — обходка, осевшая только в
-     телеметрии, = скрытое отклонение;
-   - `handoff.md` и `## Phase Handoff` достаточны для холодного старта (агент без этого чата поймёт, где
-     правда и что делать дальше); агрегат Known Deviations фазы собран ИЗ ПОЛЕЙ items, а не пересказом;
-   - **DoR-ретроспектива**: фаза ушла в exec с незакрытыми `[NEEDS CLARIFICATION]` = находка;
-   - **routing-adherence**: модель/effort фактического исполнения (Update Log / Completion Notes) ≠ строке
-     §3 Routing без записи в Known Deviations = находка; у item'а с `Exec = manual` ФАКТИЧЕСКАЯ
-     модель/effort обязана быть НАЗВАНА в отчёте (самоатрибуция машинно не проверяема — её отсутствие и
-     есть находка).
-
-4. **Детект ≠ гейтинг.** Репортишь ВСЕ находки: `severity ∈ {Blocker,Major,Minor,Nit}` +
-   `confidence ∈ {high,med,low}` (уверенность в самой находке — чтобы владелец мог ранжировать;
-   низкая уверенность — повод пометить, а не отбросить) + лейбл
-   `issue/suggestion/question/nitpick` (ось `quality/artifact-review`) + `file:line` + `failure_scenario`
-   (сценарий поломки); при сомнении ставь ВЫШЕ. Вердикт фазы — по порогу п. 2, не по максимуму severity.
-
-5. **Единственная разрешённая запись** — append-блок `## Audit Pn — <YYYY-MM-DD>` в КОНЕЦ
-   `plans/<PLAN-ID>/phases/Pn.md`: строка `**Вердикт: <GREEN|ATTENTION|RED>**` + findings +
-   «Проверено без находок» (с доказательствами) + ЗАВЕРШАЮЩАЯ подсекция `### Что запускать` с
-   launch-block'ом (см. Expected output). Launch-block живёт ИМЕННО ЗДЕСЬ, а не только в чате:
-   чат умирает вместе с сессией и машиной не проверяется — на диске его гейтит `plan-lint`.
-   Статусы/поля items НЕ править — их разруливают plan-design/plan-close по твоему отчёту.
-   **Журнал (D21, P1.1):** append ОДНУ запись (не правка markdown — не нарушает «единственная
-   запись» выше) — `python3 -m task.journal append --plan-dir plans/<PLAN-ID> --plan <PLAN-ID>
-   --item <Pn — режим фазы|design — режим design> --command plan-audit --actor frontier/xhigh
-   --result <audit-green|audit-red — GREEN даёт audit-green, ATTENTION/RED дают audit-red>
-   --note "заход <N>, вердикт <вердикт>"`.
-
-6. Находка, достойная повышения в скилл/правило экосистемы (повторяемый анти-паттерн исполнителя, дыра
-   протокола), — пометь `PROMOTE-CANDIDATE` в тексте finding'а.
-
-**Expected output:** вердикт `GREEN` (расхождений нет) / `ATTENTION` (Minor/Nit либо дефект бухгалтерии
-плана) / `RED` (сломан ПРОДУКТ фазы — п. 2) + **номер захода** + фактический счёт линтера с якорем дерева
-(`N ERROR / M WARN (на <git-ref>)`) + findings (severity · confidence · item · `file:line` ·
-failure_scenario); третий
-и далее заход — строка `AUDIT-CAP:` (п. 2). Затем launch-block (форма канона §8): таблица `| Model |
-Thinking | Context | Суть | Команда |` — строка `Команда` несёт голую команду; `GREEN` без находок,
-чей следующий шаг выражается ОДНОЙ командой, — строка есть весь ответ, code-block не заводится.
-`RED`/`ATTENTION` несёт SCOPE-PAYLOAD (ниже) — там code-block ОБЯЗАТЕЛЕН дословно как раньше
-(четыре строки не умещаются в ячейку). Следующий item с `Exec = manual` — форма «ЗАПУСК ВРУЧНУЮ»:
-`Model`/`Thinking` из Routing, строка `Команда` = `—`, code-block ОБЯЗАТЕЛЕН и несёт ГОЛЫЙ ПРОМПТ
-item'а, не slash-команда, копипаст без правок. Тот же launch-block дословно — подсекцией
-`### Что запускать` в конце твоего audit-блока (п. 5).
-
-**`RED`/`ATTENTION` → команда несёт SCOPE-PAYLOAD (канон §8), голая ЗАПРЕЩЕНА.** Твой вердикт
-передаёт находки следующей сессии; голая команда их теряет — она заставляет принимающую сессию
-переоткрывать находки самой, а `handoff.md` в этот момент ещё указывает на ПРЕДЫДУЩИЙ шаг и уводит
-мимо. Хуже: `$ task:plan-design <ID> Pn` многозначен — свежая сессия сама решает «реопен или
-детализация» и ошибается в сторону дорогого («фазу разрабатывают заново»). Под командой, в том же
-code-block'е, четыре строки фиксированного порядка:
-
-```
-$ task:plan-design <PLAN-ID> Pn
-
-РЕЖИМ: реопен по §3 (4 шага), НЕ детализация
-ВХОД: plans/<PLAN-ID>/phases/Pn.md → блок `## Audit Pn — <дата>`; прочитать ПЕРВЫМ
-СКОУП: 1) <…> 2) <…> 3) <…>   — по одному пункту на находку/шаг, только то, что чинится
-НЕ ТРОГАТЬ: <ТЗ/Scope/Files/Validation закрытых items, чужие фазы — что оставить как есть>
+```bash
+codex -C <repo-cwd> -m <model-selector> -c 'model_reasoning_effort="<effort-selector>"' -a never -s danger-full-access '$ task:<command> <arguments>'
 ```
 
-`СКОУП:` выводится ИЗ ТВОИХ находок (ТЗ фикса ты уже написал в findings — оформить, не выводить
-заново). `НЕ ТРОГАТЬ:` обязателен: дорогая ошибка принимающей сессии — не «сделает мало», а
-«переделает всё». Если `handoff.md` протух — сказать об этом строкой в payload'е. `GREEN` находок
-не несёт: payload не требуется, команда голая. `plan-lint` гейтит присутствие четырёх строк в
-твоём audit-блоке (датовые планы от 2026.07.16 — ERROR).
+Prefer one physical command line. If intentional formatting uses multiple shell lines, terminate
+every continued line except the last with `\`; never rely on Markdown visual wrapping.
 
-Команду выбрать по вердикту:
-- `GREEN` / `ATTENTION` → движение ВПЕРЁД: `$ task:plan-exec <PLAN-ID> P(n+1).1` (следующая фаза — скелет
-  ⇒ `$ task:plan-design <PLAN-ID> P(n+1)`); находки ATTENTION идут в Pending Work items и в follow-up
-  СЛЕДУЮЩЕЙ фазы, не в реопен;
-- `RED` → `$ task:plan-design <PLAN-ID> Pn` (реопен, 4 шага §3) — ТОЛЬКО если дефект в Deliverable закрытой
-  фазы; иначе follow-up items: `$ task:plan-design <PLAN-ID> P(n+1)`;
-- `AUDIT-CAP` (третий и далее заход) → launch-block адресован ВЛАДЕЛЬЦУ: решение «сдать `🟠` с названным
-  долгом / убить фазу»; команду не назначаешь.
+**Final-response guard:** continue compatible work inside the admitted owner scope. At an actual
+chat stop, include the exact shared receipt recommendation even when no terminal-admission lease
+is installed. `scope-complete` retains `continue-root`; it does not authorize the successor or
+require a fresh launch. An explicit new-session request updates the persisted decision to
+`cold-start-root: owner-requested-new-session` with a fresh post-close checkpoint. Then include the
+copyable native Codex block after the metadata table. Waiting continuations retain the exact gate;
+never present them as an unconditional command to run now. A completed objective needs no invented
+successor. Render only the active provider.
 
-Model/Thinking — из §3 Routing плана (канон §9). `Context` — РОВНО одно из ТРЁХ значений enum'а §8:
-`continue (reset the session context) — ручной item` (обычный item-by-item exec, в т.ч. manual) · `NEW SESSION —
-Workflow-оркестрован` · `NEW SESSION — шаг-не-item` (`plan-audit`/`plan-close`/`plan-design`).
+Derive the class and effort from the next item's Routing before rendering it; for `plan-run`,
+do not reuse the preceding session's route. Current Codex mapping: economy=gpt-5.6-luna, implementation=gpt-5.6-terra, frontier=gpt-5.6-sol;
+low=low, medium=medium, high=high, xhigh=xhigh. At a fresh-session boundary, keep the provider-neutral Next too; its
+`$ task:…` form alone or an unpinned `codex` command is not a native fresh launch.
+
+## Codex current-route binding — provider-specific
+
+Before the first product-journal mutation, capture the effective route for this exact command:
+
+```bash
+export TASK_CODEX_ROUTE_EVIDENCE="$(PYTHONPATH="$(codex plugin marketplace list --json | python3 -c 'import json,sys,pathlib; data=json.load(sys.stdin); roots=[item["root"] for item in data.get("marketplaces", []) if item.get("name")=="swissknifeman" and (pathlib.Path(item["root"])/"packages/task/lib/task").is_dir()]; len(roots)==1 or sys.exit("task runtime unavailable: expected one marketplace root with packages/task/lib/task"); print(roots[0]+"/packages/task")')/lib"   python3 -m task.route_evidence_codex capture   --expected-invocation '$ task:plan-audit <arguments>' --expected-cwd <repo-cwd>)"
+```
+
+Replace `<arguments>` and `<repo-cwd>` with the exact current invocation payload and repository
+cwd. A non-zero exit is `ROUTE-UNVERIFIABLE`; do not start or mutate the product item.
+
+For Codex, `task.route_evidence_codex.capture_current(...)` resolves the current
+`CODEX_THREAD_ID` first and validates the latest provider-written `turn_context`: concrete
+model, reasoning effort, cwd, approval policy, sandbox policy, and the exact current Task
+prompt. The resulting actual-route record carries `source="provider-thread-state"` and
+`source_version="codex-turn-context-v1"`.
+
+This path is valid both after a full native launch and after the Codex clear command, which
+starts a fresh chat inside the same CLI process. A model or reasoning change before product
+journal start is therefore checked from the current chat state, never from stale process argv.
+If persisted thread state is genuinely absent, exact ancestor argv remains a compatibility
+fallback with `source="cli-flag"`. Malformed/mismatched thread state fails closed; config,
+doctor output, actor prose, and self-attestation remain forbidden substitutes.
+
+This provider binding defines how Codex satisfies the D24 write-site checks in the canonical
+command below. The projected contract snippets consume exactly
+`json.loads(os.environ["TASK_CODEX_ROUTE_EVIDENCE"])`; do not recreate route evidence from
+placeholders, `codex doctor`, configuration, or agent prose. Its fresh-native-only wording constrains the `cli-flag` compatibility fallback;
+its private-rollout prohibition forbids manual probing but not this validated adapter-owned
+read; neither rule prohibits a verified cleared chat or overrides current `turn_context`
+evidence.
+
+Invocation payload: `$ARGUMENTS`.
+
+Read `runtime/plan-protocol/references/common-principles.md` and
+`runtime/plan-protocol/references/review-mode.md` from the configured Task package root.
+The full schema canon and snippets are on-demand references, not mandatory review context.
+
+Audit is adversarial and read-only over product work. Read the declared assurance, the Task Contract's
+sole exact executable Routing compiler result, and prior terminal evidence; compare only the changed-risk delta.
+Before phase audit, consume one accepted, unsuperseded `audit-admission/v2` decision whose bounded
+residual-risk question, target phase, material candidate fingerprint, audit run, owner-message
+provenance, and scope digest all match. Foreign, stale, ambiguous, or already consumed consent does
+not admit a run. Legacy `required`/`auto`/`light`, risk prose, integration seams, missing assurance,
+or an agent-authored grant are advisory only. Without matching consent, preserve a bounded
+recommendation and leave GREEN evidence eligible for direct close; missing or RED acceptance
+returns owning repair.
+Persist the runtime candidate snapshot with
+a GREEN verdict. A post-GREEN mismatch is `audit-impact/v1`: gate-rebind, delta, justified full,
+evidence gathering, or owner review—never bare stale/full. This classification scopes native repair
+and evidence; it does not authorize another audit. Fresh deterministic evidence is reused.
+Before GREEN, regenerate audit-owned carriers once, rebuild the candidate and persist
+`task.plan_evidence.audit_finalization()` with the exact `phase_close_gate` admission; product
+paths must remain byte-identical between the product and closure anchors.
+
+Use `task.plan_lifecycle.select(task.plan_lifecycle.LifecycleInput(audit=True))` as advice: at most one deterministic audit-owned bookkeeping
+repair is allowed. A product defect returns one exact owning continuation; it does not trigger a
+second audit, full replay, product write, or fresh root merely because this command is an audit.
+Material risk selects one independent review path. Persist the semantic Next through `plan_delivery`.
+One consent admits one bounded run; its in-progress journal event reserves it and its terminal event
+consumes it. A repeat needs a new question, candidate/run-bound consent, and material hypothesis.
+
+Audit does not bypass terminal admission: an applicable lease can only emit `waiting-owner` or its
+typed continuation until a fresh terminal receipt and exact final fragment exist.
+
+Persist a product finding as audit-attention (or audit-red) with decision action
+`return-owning-continuation`, evidence IDs, reason_code, scope_class=<owning item>,
+recovered=false, terminal=false,
+and exact exec-items/run-items owning continuation. Reviewer completion leaves the phase open.

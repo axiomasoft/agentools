@@ -676,3 +676,246 @@ release candidate. Raw evidence: `findings/R-12-package-quality-reference-2026-0
    `notifications/tasks` + `subscriptions/listen` (дельта P1 №13) обходят требование
    журналировать идентификатор задачи. Адрес: `phases/P3.md` P3.9 `Scope Included` (а);
    `research/10-…` §5.
+
+---
+
+## 2026-08-03 — заход `plan-design AGENTOOLS P4.4` (ре-дизайн после эскалации)
+
+Владелец запустил ре-дизайн заблокированного P4.4. Заход обязан устранить три адресованные
+handoff'ом причины: привести artifact-поле к канону `diagnostic_substring`; сделать DoS-пробы
+глубины/числа подсхем детерминированными без выдумывания порогов исполнителем; определить
+владельца самих проверок и реконсилировать импортированные `grease-*` файлы.
+
+Решение — D139. SEP-2106 не содержит чисел; AgenTools принимает локальные authoring-bounds
+`depth ≤ 16`, `subschemas ≤ 256` с точной семантикой физического обхода и измеренным запасом
+от текущих максимумов 4/49. P4.4 пишет нормативные правила и входные векторы, P4.5 реализует и
+исполняет проверки. P4.4 выводится из W1 из-за общей записи `02_tool-contract-profile.md`/
+`rules.json`; после его закрытия остаток W1 может исполнять P4.7/P4.8.
+
+---
+
+## 2026-08-03 — уточнение ре-дизайна P4.4: ids DoS-проб
+
+Повторная эскалация P4.4 оказалась конфликтом именования, а не границы или числа: три уже
+подготовленные artifact-вектора применили составную область с несколькими дефисами, хотя
+замороженный P4.1 допускает только `<область>-<NNN>`. Решение D140 не переоткрывает формат:
+канонические ids и имена файлов — `dosdepth-001`, `dossubschemas-001`, `dosnetwork-001`.
+P4.4 переименовывает только свои три незакрытые файла, P4.5 читает новые имена; формулировка
+метрик D139, нормативные правила и остальные классы фикстур не меняются.
+
+## 2026-08-03 — Gate B round 1 RED: директива ремедиации P3/P4
+
+Владелец запустил `$ task:plan-design AGENTOOLS P4` из cold-start handoff после RED item P5.1.
+Входом являются `artifacts/P5-gate-b.md` и `findings/P5-adr-contours.md`; обязательный scope —
+спроектировать remediation закрытых P3/P4 по F1–F8, не менять `DR-01`/`DR-02`, историческую
+ревизию `2026-07-draft`, живые ADR контуров и фазы P6–P11; P5.2 freeze остаётся запрещён до
+GREEN повторного P5.1. Уточнение, выведенное из scope-payload: старые terminal-items сохраняют
+провенанс, а незакрытая работа получает новые remediation-items; P3 и P4 реопенятся по четырём
+шагам протокола, потому что исправление формата P4 зависит от нормативных/owner-входов P3.
+
+---
+
+## 2026-08-04 — Q-27: измеримая форма описаний инструментов
+
+Владелец выбрал ветку `measurable`: ревизия `2026-08` требует actionable-description из четырёх
+структурно проверяемых компонентов — назначения, условий вызова, обязательных аргументов и примера.
+Это решение не объявляет описание достаточным для конкретной малой модели и не вводит скоринг по
+длине или текстовой эвристике. Фактическая эффективность остаётся предметом P10.6; P4.12 получает
+минимальную positive/negative пару формы. Решение зарегистрировано как D145.
+
+---
+
+## 2026-08-04 — RED-аудит P3: повторный реопен
+
+Владелец запустил `$ task:plan-design AGENTOOLS P3` из scope-payload блока
+`phases/P3.md` → `## Audit P3 — 2026-08-04`. Тем самым разрешён повторный реопен P3 по четырём
+шагам протокола и детализация только шести находок F1–F6: непересекающиеся открытые
+перечисления, полный `EventKind`, адресный schema-value selftest, нормативный адрес фактических
+кодов MCP `-32003`/`-32004`, закрытие долга `OVR-25` и superseding-запись для D5.
+
+Анти-скоуп из аудита сохраняется: не переписывать Scope/Files/Validation/Completion Notes
+P3.1–P3.19; не менять D141–D145, P4/Gate B, `2026-07-draft`, `DR-01`/`DR-02` и owner-gates
+Q-10/Q-30/Q-31. Результат дизайна — P3.20–P3.23 и синтез
+`research/13-p3-red-audit-remediation-2026-08.md`.
+
+---
+
+## 2026-08-04 — ре-дизайн item P3.22 после эскалации
+
+Владелец запустил `$ task:plan-design AGENTOOLS P3.22` после того, как исполнение обнаружило
+двойной конфликт: обязательная регенерация `rules.json` была вне `Files`, а новый testable MUST
+`CFH-55` делал полный `spec_lint` красным до появления P4-carrier. Заход обязан вернуть item к
+DoR без ложного покрытия и без переноса fixtures в фазу P3.
+
+Решение D149: P3.22 владеет source + `rules.json`; P3.23 честно фиксирует единственный debt
+`[CFH-55 → P4.12]`; P4.12 создаёт различающую exact/wrong-code harness-пару; P6.6 исполняет её.
+Ослабление MUST/`Not testable`, приписка id существующему кейсу и заявление полного зелёного A2
+при красном coverage отклонены.
+
+---
+
+## 2026-08-04 — второй RED-аудит P3: fail-closed schema-values gate
+
+Владелец повторно запустил `$ task:plan-design AGENTOOLS P3` из scope-payload второго блока
+`phases/P3.md` → `## Audit P3 — 2026-08-04` (заход 2). Разрешён узкий реопен по четырём шагам:
+новый item обязан сделать open-enum checker fail-closed по полному shape/keyword/ветвям и
+закрепить мутации `maxLength` и extra non-string branch настоящей Draft 2020-12 семантикой.
+
+В этом же design-заходе исправляется только бухгалтерия F2–F5: протухший launch-block roadmap,
+потерянное Known Deviation P3.21, item-хеши P3.20–P3.23 в Update Log и плавающий `HEAD`-якорь
+P3.23. Анти-скоуп аудита сохраняется: не менять нормативные source-схемы, `CFH-55`, глоссарий,
+F1–F6 первого аудита, P4/P6 fixtures, Gate B, `2026-07-draft` и owner-гейты Q-10/Q-30/Q-31.
+
+---
+
+## 2026-08-04 — owner fix-forward после P3 AUDIT-CAP
+
+После RED-аудита P3 захода 3 владелец дал прямую директиву: «надо фиксить». Исполняемый
+Task Contract запрещает четвёртый P3-item кодом `LOOP_BUDGET_EXCEEDED`, поэтому решение
+приземляется канонически: P3 сдаётся `🟠 Done with deviations` с named debt F1/F2, а новый
+P4.14 немедленно чинит outer `$defs` shape и exact inventory до P4.9. Директива не разрешает
+менять normative schemas, `CFH-55`, fixtures, P4.9–P4.13, Gate B или исторические Completion
+Notes P3.1–P3.24. Решение зарегистрировано как D152.
+
+---
+
+## 2026-08-04 — повторный design P4 перед запуском W2
+
+Владелец повторно запустил `$ task:plan-design AGENTOOLS P4` после terminal P4.9 и двух
+локальных правок workflow. Заход не реопенит фазу заново: P4 уже `🟡`, закрытые P4.1–P4.9/P4.14
+и их Completion Notes не меняются. Scope — довести оставшиеся P4.10–P4.13 и W2 до исполнимого
+DoR по фактическому terminal P3/P4.14/P4.9.
+
+Reconcile приземлён D154: exact acceptance использует 27 поимённых round-1 fixture carriers и
+116 FAIL rules; headline `32` из Gate B остаётся provenance, а не дополняется выдуманными
+строками. W2 разрешает P4.12 писать CFH-55 schema/harness pair; параллелен только authoring,
+после join review/gates/close идут последовательно под `implementation/high`. Адреса:
+`research/16-p4-w2-dor-reconcile-2026-08.md`, `phases/P4.md` P4.10–P4.13,
+`workflows/wf-agentools-p4-remediation.js`, `roadmap.md` W2 и `handoff.md`.
+
+---
+
+## 2026-08-04 — повторный design P4 после прерванного W2 authoring
+
+Владелец снова запустил `$ task:plan-design AGENTOOLS P4`, когда в рабочем дереве уже находился
+незакоммиченный candidate P4.10–P4.12. Заход не удаляет, не stash'ит и не переписывает этот
+implementation-срез; он обязан сделать заявленный orchestration carrier возобновляемым и
+синхронизировать живые статусы items.
+
+Решение D155: P4.10–P4.12 имеют `🟡 In progress`; workflow различает clean `fresh` и строго
+ограниченный W2-only `resume`. Resume восстанавливает author results read-only, затем сохраняет
+обычные review/fix/sequential-close гейты. Чужой dirty path, неполный scope либо красный joined
+gate блокирует запуск без destructive cleanup или неявного solo-fallback.
+
+---
+
+## 2026-08-04 — re-design item P4.10 по фактическому W2-candidate
+
+Владелец запустил `$ task:plan-design AGENTOOLS P4.10`. Заход сохраняет незакоммиченный
+candidate P4.10–P4.12 и не исполняет fixtures; его задача — сделать P4.10 проверяемым после
+того, как read-only сверка показала: structural green допускает broad pairs, фактически
+различающие одно правило при заявленных шести-восьми.
+
+Решение D156: 65 behavior FAIL rules F1/F2/F4 получают по одной single-rule negative/positive
+pair и exact `rule_evidence`; `longop-002/102` остаётся отдельным F2-retained carrier.
+`SEC-17`/`AOB-26` передаются P4.12 как static pairs, потому что runtime-event не доказывает
+запреты на содержимое source/schema ревизии. Exact source inventory D154 и resume D155
+сохраняются; W2 review/fix обязан нормализовать уже собранный candidate без reset/fresh restart.
+Чтобы одна итерация была исполнима, P4.10 author/resume/fix разделён на пять непересекающихся
+file/rule shards (`security`, `confirmation`, `lifecycle`, `audit`, `dialog`); только их полный
+детерминированный aggregate проходит единый cold-start review 65/65.
+
+---
+
+## 2026-08-04 — реопен P4.10 после блокировки P4.13
+
+Владелец снова запустил `$ task:plan-design AGENTOOLS P4.10` после того, как P4.13 добавил
+`--gate-b-remediation-check` и остановился на пяти rule-pairs. Заход обязан сохранить текущий
+незакоммиченный продуктовый diff P4.13 и не присваивать его P4.10.
+
+Read-only проверка уточнила вход: ALC-35 и AOB-31 уже имеют нормативные presence/length
+counterfactuals; CNF-35/CNF-36 имеют permissions-delta, но не используют typed confirmation
+snapshot terminal P4.15; SEC-11 ссылается на несуществующий `driver_state/tools` вместо
+`given.tools`. D158 реопенит P4.10 только для четырёх CNF и двух SEC fixtures. Pair-level
+checker present/absent/length остаётся долгом P4.13; подгонять ALC/AOB fixtures или добавлять
+self-asserted runtime payload ради зелёного checker'а запрещено.
+
+---
+
+## 2026-08-04 — возобновление P4.13 после terminal P4.10
+
+Владелец запустил `$ task:plan-design AGENTOOLS P4.13` и потребовал не задерживать переход
+от протокола к фактическому проектированию. Заход должен снять устаревший blocker P4.10,
+сохранить незакоммиченный candidate P4.13 и выдать исполнителю самодостаточный repair-контракт.
+
+Фактические пять residual pairs сведены к `presence`/`length`; обычный `value` остаётся третьим
+закрытым вариантом общего pair-level контракта. P4.13 не меняет закрытые carriers, а заменяет
+one-sided pointer-existence structured наблюдениями двух members и обязан доказать mutation
+reject реальным validator path, не сравнением двух JSON-строк. Детали и pre-mortem —
+`research/20-p4.13-pair-evidence-resume-2026-08.md`, решение — D159.
+
+---
+
+## 2026-08-04 — повторный re-design P4.10: пакет создаётся с нуля
+
+Владелец запустил `$ task:plan-design AGENTOOLS P4.10`, спросил, почему возникло столько
+ошибок, и уточнил определяющее ограничение: **«пакет с нуля создаётся»**.
+
+Следствие для item'а: промежуточные draft-fixtures и их байты не являются legacy API. Нельзя
+покупать их сохранность ценой ложного теста или заводить migration/backward-compat слой для
+невыпущенного пакета. Фактический blocker P4.13 локален: `audit-004/104` различается и по
+`audit_export.mapping_version`, и по видимой модели `tool.description`. D160 реопенит P4.10
+только для двух файлов и требует одну общую нейтральную description, оставляя единственным
+counterfactual норму AOB-25 — независимую версию mapping export-adapter. Подробный синтез —
+`research/21-p4.10-greenfield-aob25-repair-2026-08.md`.
+## 2026-08-05 — plan-design P6.2 после runtime-эскалации
+
+**Вход владельца дословно по смыслу:** выполнить `$ task:plan-design AGENTOOLS P6.2`.
+
+**Установленный контекст:** P6.2 уже был `🔴 Blocked`: `clarification-004` и
+`clarification-007` имеют одинаковый stimulus, но несовместимые ожидания. Пользователь просит
+не реализовать адаптер, а разрешить эскалацию на уровне исполняемого плана.
+
+**Уточнение владельца:** новый план не разрешён. Команда относится только к существующему
+`AGENTOOLS P6.2`; продолжение должно остаться в фазе P6 и завершать уже наполовину исполненный
+мастер-план, а не перехватывать `ACTIVE` и не создавать successor `2026-09`.
+
+**Решение захода:** D180 оставляет recovery внутри P6.2 как узкий corrective re-freeze той же
+ревизии `2026-08`, после которого item продолжает reference adapter. Отдельный recovery-план,
+`ACTIVE`-переключение и successor revision удалены. Трассировка:
+`research/23-p6.2-frozen-corpus-contradiction-2026-08.md` → D180 → P6.2/handoff.
+
+---
+
+## 2026-08-05 — требование убрать серийные ложные эскалации
+
+**Вход владельца:** несмотря на множество аудитов, исполнение снова останавливается новой
+эскалацией почти на каждом пункте; требуется выстроить нормальный план, в котором такие конфликты
+снимаются заранее, а не перекладываются на владельца во время исполнения.
+
+**Разбор факта:** последняя остановка P6.2 вызвана внутренним противоречием самого ТЗ: scope
+ограничен core-документами, а Validation требовал full-corpus до P6.3. Это routine design defect,
+не owner-gate. Предыдущая escalation-запись сохраняется в append-only journal как история сбоя,
+но активный blocker отзывается.
+
+**Принятое уточнение:** harness получает детерминированный rule-selector; P6.2 и P6.3 получают
+непересекающиеся acceptance-срезы, а полный корпус остаётся обязательным в P6.3 и P6.9. Все counts,
+partition и fail-closed случаи проверяются тестом. Трассировка:
+`research/24-p6-phased-corpus-execution-2026-08.md` → D181 → P6.2/P6.3/roadmap/handoff.
+
+---
+
+## 2026-08-05 — требование жёсткой связи «выход предыдущего → вход следующего»
+
+**Вход владельца дословно по смыслу:** план не должен обнаруживать новый corpus/harness conflict
+посреди реализации; следующий пункт обязан иметь однозначный вход, произведённый предыдущим.
+
+**Разбор факта:** D181 снял только конфликт scope/full-run, но оставил в P6.2 три разных
+результата. Полный inventory `{given,script}` нашёл 12 duplicate classes и несовместимый
+`conftoken-001`; отдельно P6.1 доставлял адаптеру `expect` вопреки CFH-8 и не исполнял 76
+`expect.observations`. Значит adapter implementation начинался до admission самого входа.
+
+**Решение:** D183 делает P6.2 отдельным executable-admission gate и переносит весь reference
+adapter в P6.3. P6.2 выдаёт tag + report/digest + protocol 1.1 probes + partition 121+92=213;
+P6.3 принимает только этот bundle и выдаёт full 213/213; P6.4 принимает только связанный full
+report. Exact design evidence: `research/25-p6-executable-admission-chain-2026-08.md`.

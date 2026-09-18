@@ -1,0 +1,16 @@
+---
+id: D85
+date: 2026-07-27
+status: accepted
+item: ''
+items: []
+supersedes: []
+superseded_by: null
+---
+## Решение
+
+**§3 Routing фазы P7 переразбит на 12 построчных строк; черновая строка `P7.1–P7.9` / `implementation/medium` / `plan-exec` снята.** P7.1 остаётся `implementation/medium` с `Exec = plan-exec` (семантики ревизии не реализует, констрейнты предписаны D77 — побочный выигрыш: item проходит ЖЁСТКИЙ routing-гейт `plan-exec`, а не мягкий inherited-plan; прецедент D31); P7.2–P7.12 подняты до `implementation/high` / `manual` — effort high за межъязыковые инварианты (канонизация, digest, хеш-цепочка, состав покрытия токена) и за то, что запреты выражаются КОДОМ, а не дисциплиной. Тир НЕ поднят до frontier ни на одном item'е: семантика предписана замороженной ревизией и `DR-01`, а форма пакета закрыта решениями D79–D83 этого захода — открытых решений в фазе не осталось (Tier policy: «prescribed implementation against already-pinned canons → implementation/high»; effort high+ обязателен для инвариантов, но тир не поднимает). Диапазонная строка была неоднородна по `plan-protocol` §9 «Гранулярность»: сборка манифеста и реализация подписанного токена — разные риск-классы
+
+## Почему
+
+`plan-protocol` §9 Tier policy + деривация `Exec` (effort > medium ⇒ `manual`) + «Гранулярность»; прецеденты строк P3.14/P4.5/P6.9 (гейт-item: детерминированная работа, effort high за инвариантность) и D31 (понижение подготовительного item'а ради жёсткого гейта). `RAG:— (repo-grounded: plan.md §3 строки P7.1–P7.12 после переразбивки; phases/P7.md — двенадцать items, ни одного с открытым решением; research/06-p7-php-sdk-2026-08.md §4)`

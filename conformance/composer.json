@@ -1,0 +1,22 @@
+{
+  "name": "agentools/conformance",
+  "description": "Детерминированный раннер корпуса AgenTools.",
+  "type": "project",
+  "require": {},
+  "require-dev": {
+    "phpunit/phpunit": "^11.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "AgenTools\\Conformance\\": "src/Conformance/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AgenTools\\Conformance\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  }
+}

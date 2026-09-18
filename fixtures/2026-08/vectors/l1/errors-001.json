@@ -4,8 +4,14 @@
   "vector_class": "behavior",
   "spec_rev": "2026-08",
   "spec_rule_ids": [
+    "IDE-22",
+    "IDE-23",
+    "IDE-24",
+    "IDE-25",
     "IDE-26",
-    "IDE-35"
+    "IDE-27",
+    "IDE-28",
+    "IDE-29"
   ],
   "conformance_level": "L1",
   "given": {

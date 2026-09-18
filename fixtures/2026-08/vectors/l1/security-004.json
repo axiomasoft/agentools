@@ -1,0 +1,84 @@
+{
+  "id": "security-004",
+  "title": "SEC-4: запрещённое состояние — сквозной токен нижнего API",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SEC-4"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Security probe.\nCall when: verify a security rule.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"case\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "credentials": [
+        {
+          "kind": "access_token",
+          "source": "trusted_credential",
+          "issuer": "issuer-trusted",
+          "audience": "downstream-api",
+          "integrity": "verified",
+          "principal_id": "user-7",
+          "scopes": [
+            "demo.read"
+          ]
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Выполни security-проверку"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "sec-4"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [],
+    "final_state": "completed",
+    "observations": [
+      {
+        "kind": "credential_boundary",
+        "probe_id": "sec_4_resource_spy",
+        "resource": "downstream-api",
+        "principal_ids": [
+          "user-7"
+        ],
+        "forwarded_credential_ids": [
+          "issuer-trusted|downstream-api|user-7"
+        ]
+      }
+    ]
+  }
+}

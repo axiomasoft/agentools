@@ -1,0 +1,11 @@
+{
+  "sdks": [
+    {
+      "id": "fixture/php-mismatch",
+      "language": "php",
+      "manifest_path": "manifests/mismatch-composer.json",
+      "adapter_command": "php fixture-adapter.php",
+      "test_command": "php fixture-tests.php"
+    }
+  ]
+}

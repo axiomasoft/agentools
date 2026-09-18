@@ -1,0 +1,82 @@
+{
+  "id": "security-006",
+  "title": "SEC-6: запрещённое состояние — confirmation token в роли access token",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SEC-6"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Security probe.\nCall when: verify a security rule.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"case\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "credentials": [
+        {
+          "kind": "confirmation_token",
+          "source": "trusted_credential",
+          "issuer": "issuer-trusted",
+          "audience": "agentools-runtime",
+          "integrity": "verified",
+          "principal_id": "user-7",
+          "scopes": [
+            "demo.read"
+          ]
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Выполни security-проверку"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "sec-6"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_failed",
+        "payload": {
+          "reason": "credential_role_confusion",
+          "security_rule": "SEC-6",
+          "stimulus_pointer": "/given/driver_state/credentials/0/kind",
+          "!tool_effect": true
+        }
+      }
+    ],
+    "final_state": "failed",
+    "tool_calls": []
+  }
+}

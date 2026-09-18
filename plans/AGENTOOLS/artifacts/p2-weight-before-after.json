@@ -1,0 +1,612 @@
+{
+  "items": [
+    {
+      "after": 18224,
+      "before": 169548,
+      "item": "P0.1"
+    },
+    {
+      "after": 18068,
+      "before": 169548,
+      "item": "P0.2"
+    },
+    {
+      "after": 18554,
+      "before": 169548,
+      "item": "P0.3"
+    },
+    {
+      "after": 18284,
+      "before": 169548,
+      "item": "P0.4"
+    },
+    {
+      "after": 18580,
+      "before": 169548,
+      "item": "P0.5"
+    },
+    {
+      "after": 18251,
+      "before": 169548,
+      "item": "P0.6"
+    },
+    {
+      "after": 18126,
+      "before": 169548,
+      "item": "P0.7"
+    },
+    {
+      "after": 18116,
+      "before": 169548,
+      "item": "P0.8"
+    },
+    {
+      "after": 18309,
+      "before": 169548,
+      "item": "P0.9"
+    },
+    {
+      "after": 18144,
+      "before": 169548,
+      "item": "P0.10"
+    },
+    {
+      "after": 17754,
+      "before": 169548,
+      "item": "P0.11"
+    },
+    {
+      "after": 20206,
+      "before": 152249,
+      "item": "P1.1"
+    },
+    {
+      "after": 19530,
+      "before": 152249,
+      "item": "P1.2"
+    },
+    {
+      "after": 19070,
+      "before": 152249,
+      "item": "P1.3"
+    },
+    {
+      "after": 27187,
+      "before": 186764,
+      "item": "P10.1"
+    },
+    {
+      "after": 30907,
+      "before": 186764,
+      "item": "P10.2"
+    },
+    {
+      "after": 26460,
+      "before": 186764,
+      "item": "P10.3"
+    },
+    {
+      "after": 26643,
+      "before": 186764,
+      "item": "P10.4"
+    },
+    {
+      "after": 26804,
+      "before": 186764,
+      "item": "P10.5"
+    },
+    {
+      "after": 30476,
+      "before": 186764,
+      "item": "P10.6"
+    },
+    {
+      "after": 19899,
+      "before": 158659,
+      "item": "P11.1"
+    },
+    {
+      "after": 17825,
+      "before": 143737,
+      "item": "P11.2"
+    },
+    {
+      "after": 17754,
+      "before": 143737,
+      "item": "P11.3"
+    },
+    {
+      "after": 17795,
+      "before": 143737,
+      "item": "P11.4"
+    },
+    {
+      "after": 21363,
+      "before": 173423,
+      "item": "P2.1"
+    },
+    {
+      "after": 21570,
+      "before": 173423,
+      "item": "P2.2"
+    },
+    {
+      "after": 20874,
+      "before": 173423,
+      "item": "P2.3"
+    },
+    {
+      "after": 21120,
+      "before": 173423,
+      "item": "P2.4"
+    },
+    {
+      "after": 21966,
+      "before": 173423,
+      "item": "P2.5"
+    },
+    {
+      "after": 24668,
+      "before": 273098,
+      "item": "P3.1"
+    },
+    {
+      "after": 24869,
+      "before": 273098,
+      "item": "P3.2"
+    },
+    {
+      "after": 23763,
+      "before": 273098,
+      "item": "P3.3"
+    },
+    {
+      "after": 24497,
+      "before": 273098,
+      "item": "P3.4"
+    },
+    {
+      "after": 23998,
+      "before": 273098,
+      "item": "P3.5"
+    },
+    {
+      "after": 24476,
+      "before": 273098,
+      "item": "P3.6"
+    },
+    {
+      "after": 23088,
+      "before": 273098,
+      "item": "P3.7"
+    },
+    {
+      "after": 23718,
+      "before": 273098,
+      "item": "P3.8"
+    },
+    {
+      "after": 27195,
+      "before": 273098,
+      "item": "P3.9"
+    },
+    {
+      "after": 23525,
+      "before": 273098,
+      "item": "P3.10"
+    },
+    {
+      "after": 24018,
+      "before": 273098,
+      "item": "P3.11"
+    },
+    {
+      "after": 23204,
+      "before": 273098,
+      "item": "P3.12"
+    },
+    {
+      "after": 26477,
+      "before": 273098,
+      "item": "P3.13"
+    },
+    {
+      "after": 24062,
+      "before": 273098,
+      "item": "P3.14"
+    },
+    {
+      "after": 24519,
+      "before": 273098,
+      "item": "P3.15"
+    },
+    {
+      "after": 22145,
+      "before": 273098,
+      "item": "P3.16"
+    },
+    {
+      "after": 21993,
+      "before": 273098,
+      "item": "P3.17"
+    },
+    {
+      "after": 22151,
+      "before": 273098,
+      "item": "P3.18"
+    },
+    {
+      "after": 58847,
+      "before": 310050,
+      "item": "P3.19"
+    },
+    {
+      "after": 22218,
+      "before": 273098,
+      "item": "P3.20"
+    },
+    {
+      "after": 22363,
+      "before": 273098,
+      "item": "P3.21"
+    },
+    {
+      "after": 22687,
+      "before": 386201,
+      "item": "P3.22"
+    },
+    {
+      "after": 22473,
+      "before": 273098,
+      "item": "P3.23"
+    },
+    {
+      "after": 22594,
+      "before": 273098,
+      "item": "P3.24"
+    },
+    {
+      "after": 21780,
+      "before": 273098,
+      "item": "P3.25"
+    },
+    {
+      "after": 26418,
+      "before": 210079,
+      "item": "P4.1"
+    },
+    {
+      "after": 25081,
+      "before": 210079,
+      "item": "P4.2"
+    },
+    {
+      "after": 25628,
+      "before": 210079,
+      "item": "P4.3"
+    },
+    {
+      "after": 25509,
+      "before": 210079,
+      "item": "P4.4"
+    },
+    {
+      "after": 26246,
+      "before": 210079,
+      "item": "P4.5"
+    },
+    {
+      "after": 25231,
+      "before": 210079,
+      "item": "P4.6"
+    },
+    {
+      "after": 25018,
+      "before": 210079,
+      "item": "P4.7"
+    },
+    {
+      "after": 25130,
+      "before": 210079,
+      "item": "P4.8"
+    },
+    {
+      "after": 23894,
+      "before": 210079,
+      "item": "P4.9"
+    },
+    {
+      "after": 23336,
+      "before": 210079,
+      "item": "P4.10"
+    },
+    {
+      "after": 56634,
+      "before": 243895,
+      "item": "P4.11"
+    },
+    {
+      "after": 60656,
+      "before": 288493,
+      "item": "P4.12"
+    },
+    {
+      "after": 62734,
+      "before": 249023,
+      "item": "P4.13"
+    },
+    {
+      "after": 22850,
+      "before": 210079,
+      "item": "P4.14"
+    },
+    {
+      "after": 26892,
+      "before": 214296,
+      "item": "P4.15"
+    },
+    {
+      "after": 52478,
+      "before": 239885,
+      "item": "P4.16"
+    },
+    {
+      "after": 52775,
+      "before": 239885,
+      "item": "P4.17"
+    },
+    {
+      "after": 22514,
+      "before": 210079,
+      "item": "P4.18"
+    },
+    {
+      "after": 23875,
+      "before": 211444,
+      "item": "P4.19"
+    },
+    {
+      "after": 22785,
+      "before": 210079,
+      "item": "P4.20"
+    },
+    {
+      "after": 22605,
+      "before": 210079,
+      "item": "P4.21"
+    },
+    {
+      "after": 47650,
+      "before": 240960,
+      "item": "P5.1"
+    },
+    {
+      "after": 23160,
+      "before": 158146,
+      "item": "P5.2"
+    },
+    {
+      "after": 41134,
+      "before": 320264,
+      "item": "P5.3"
+    },
+    {
+      "after": 24219,
+      "before": 180316,
+      "item": "P6.1"
+    },
+    {
+      "after": 25167,
+      "before": 183770,
+      "item": "P6.2"
+    },
+    {
+      "after": 31378,
+      "before": 190145,
+      "item": "P6.3"
+    },
+    {
+      "after": 23529,
+      "before": 180316,
+      "item": "P6.4"
+    },
+    {
+      "after": 22106,
+      "before": 180316,
+      "item": "P6.5"
+    },
+    {
+      "after": 21816,
+      "before": 251749,
+      "item": "P6.6"
+    },
+    {
+      "after": 24119,
+      "before": 180316,
+      "item": "P6.7"
+    },
+    {
+      "after": 22700,
+      "before": 180316,
+      "item": "P6.8"
+    },
+    {
+      "after": 23277,
+      "before": 180316,
+      "item": "P6.9"
+    },
+    {
+      "after": 24988,
+      "before": 194853,
+      "item": "P7.1"
+    },
+    {
+      "after": 23616,
+      "before": 194853,
+      "item": "P7.2"
+    },
+    {
+      "after": 24912,
+      "before": 194853,
+      "item": "P7.3"
+    },
+    {
+      "after": 23648,
+      "before": 194853,
+      "item": "P7.4"
+    },
+    {
+      "after": 24461,
+      "before": 194853,
+      "item": "P7.5"
+    },
+    {
+      "after": 22936,
+      "before": 194853,
+      "item": "P7.6"
+    },
+    {
+      "after": 24743,
+      "before": 194853,
+      "item": "P7.7"
+    },
+    {
+      "after": 23411,
+      "before": 194853,
+      "item": "P7.8"
+    },
+    {
+      "after": 24301,
+      "before": 194853,
+      "item": "P7.9"
+    },
+    {
+      "after": 24085,
+      "before": 194853,
+      "item": "P7.10"
+    },
+    {
+      "after": 25396,
+      "before": 194853,
+      "item": "P7.11"
+    },
+    {
+      "after": 26720,
+      "before": 194853,
+      "item": "P7.12"
+    },
+    {
+      "after": 26426,
+      "before": 210388,
+      "item": "P8.1"
+    },
+    {
+      "after": 24685,
+      "before": 210388,
+      "item": "P8.2"
+    },
+    {
+      "after": 27082,
+      "before": 210388,
+      "item": "P8.3"
+    },
+    {
+      "after": 25486,
+      "before": 210388,
+      "item": "P8.4"
+    },
+    {
+      "after": 25765,
+      "before": 210388,
+      "item": "P8.5"
+    },
+    {
+      "after": 23649,
+      "before": 210388,
+      "item": "P8.6"
+    },
+    {
+      "after": 26275,
+      "before": 210388,
+      "item": "P8.7"
+    },
+    {
+      "after": 24695,
+      "before": 210388,
+      "item": "P8.8"
+    },
+    {
+      "after": 25306,
+      "before": 210388,
+      "item": "P8.9"
+    },
+    {
+      "after": 25139,
+      "before": 210388,
+      "item": "P8.10"
+    },
+    {
+      "after": 26401,
+      "before": 210388,
+      "item": "P8.11"
+    },
+    {
+      "after": 26808,
+      "before": 210388,
+      "item": "P8.12"
+    },
+    {
+      "after": 28730,
+      "before": 210388,
+      "item": "P8.13"
+    },
+    {
+      "after": 25276,
+      "before": 177277,
+      "item": "P9.1"
+    },
+    {
+      "after": 27479,
+      "before": 177277,
+      "item": "P9.2"
+    },
+    {
+      "after": 24079,
+      "before": 177277,
+      "item": "P9.3"
+    },
+    {
+      "after": 24923,
+      "before": 177277,
+      "item": "P9.4"
+    },
+    {
+      "after": 24828,
+      "before": 177277,
+      "item": "P9.5"
+    },
+    {
+      "after": 23500,
+      "before": 177277,
+      "item": "P9.6"
+    },
+    {
+      "after": 25370,
+      "before": 177277,
+      "item": "P9.7"
+    }
+  ],
+  "schema": "p2-weight-before-after-v1",
+  "summary": {
+    "aggregate_after": 3046850,
+    "aggregate_before": 25246025,
+    "median_after": 24079,
+    "median_before": 210079
+  },
+  "threshold": 100000,
+  "unit": {
+    "id": "token-estimate-calibration",
+    "model_id": null,
+    "version": "2.0.0"
+  }
+}

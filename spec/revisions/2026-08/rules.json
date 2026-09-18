@@ -368,7 +368,7 @@
       "normative_word": "MUST",
       "level": "L1",
       "not_testable": null,
-      "text_digest": "d6cf824445bc1cc67d1f8c24720f70190f5b8e185c83bc659eb5adffe2ddb03f"
+      "text_digest": "d472e80e09afc5be17d5e46f96d3a4bf31cb5c6a67d915eabe5b428afd3b6d35"
     },
     {
       "rule_id": "TLP-3",
@@ -609,6 +609,22 @@
       "level": "L1",
       "not_testable": null,
       "text_digest": "4e68e4310e38b2703db6007c5832ad29471a6195ba87d9a90be25f8745390c01"
+    },
+    {
+      "rule_id": "TLP-33",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "e56ca792c9d4c24302d1a955c8a151eac773879bda707875283bee915b9f60be"
+    },
+    {
+      "rule_id": "TLP-34",
+      "doc": "02_tool-contract-profile.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "0491f991ec3caa81b5e50d14bb4b1ca8f26792e98df62a265c34f5e543ac835b"
     },
     {
       "rule_id": "ALC-1",
@@ -2464,7 +2480,7 @@
       "normative_word": "MUST NOT",
       "level": "L1",
       "not_testable": null,
-      "text_digest": "37218864467c2a81886980b0f147bee25df0c1eb85b054486bfb561b5b05e937"
+      "text_digest": "220d16cf5cd623bfa491bfce4c6eec7ed670ec1919cdbcbfcc06f12a4560aead"
     },
     {
       "rule_id": "IDE-33",
@@ -3177,6 +3193,14 @@
       "level": "L1",
       "not_testable": null,
       "text_digest": "88329164e5c5755d4658ebf6e948028649de5161a03cffa4832f5356d4b3b2a1"
+    },
+    {
+      "rule_id": "CFH-55",
+      "doc": "11_conformance-harness.md",
+      "normative_word": "MUST",
+      "level": "L1",
+      "not_testable": null,
+      "text_digest": "4b707d6d2a5a6d2a4c97c6599ffa53701ad9c559a712ff8c4b294b423e5c9eb3"
     }
   ]
 }

@@ -46,6 +46,13 @@
       "items": { "$ref": "#/$defs/TranscriptEntry" },
       "description": "Упорядоченный обмен по последовательности фаз start → config → (golden_pair)? → run × N → stop (CFH-3); ровно одно сообщение на строку в реальном обмене (CFH-1), здесь — один элемент массива на сообщение."
     },
+    "mcp_errors": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "$ref": "#/$defs/McpError" },
+      "description": "Test-only вход simulated MCP peer для CFH-55: два фактических core error name/code. Это не сообщение harness-протокола и не поле MCP-провода."
+    },
     "expect": {
       "$ref": "#/$defs/Expect",
       "description": "Ожидаемый вывод самотеста раннера над этим транскриптом."
@@ -68,6 +75,15 @@
         }
       },
       "description": "Один элемент обмена: кто говорит и что именно."
+    },
+    "McpError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "code"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "code": { "type": "integer" }
+      }
     },
     "Expect": {
       "type": "object",

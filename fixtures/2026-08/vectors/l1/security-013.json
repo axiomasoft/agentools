@@ -1,0 +1,94 @@
+{
+  "id": "security-013",
+  "title": "SEC-13: запрещённое состояние — слияние user и agent principal",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SEC-13"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Security probe.\nCall when: verify a security rule.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"case\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "principals": {
+        "initiator": {
+          "id": "user-7"
+        },
+        "agent": {
+          "id": "user-7"
+        },
+        "authorizer": {
+          "id": "approver-7"
+        }
+      },
+      "authorization": {
+        "resource": "report-7",
+        "tool": "demo_probe",
+        "permissions": [
+          "demo.read"
+        ]
+      }
+    }
+  },
+  "script": [
+    {
+      "user_input": "Выполни security-проверку"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "sec-13"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [],
+    "final_state": "failed",
+    "observations": [
+      {
+        "kind": "tool_boundary",
+        "probe_id": "sec_13_tool_spy",
+        "tool": "demo_probe",
+        "phase": "prepare",
+        "calls": 0,
+        "route": "blocked",
+        "args_subset": {
+          "value": "sec-13"
+        },
+        "actor_ids": [
+          "user-7",
+          "approver-7"
+        ],
+        "credential_ids": []
+      }
+    ]
+  }
+}

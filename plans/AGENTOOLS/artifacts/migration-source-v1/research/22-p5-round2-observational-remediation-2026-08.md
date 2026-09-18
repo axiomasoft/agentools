@@ -1,0 +1,73 @@
+# P5 Gate B round 2 — observational remediation
+
+Дата: 2026-08-04
+
+## 1. Owner decision и граница
+
+После `artifacts/P5-gate-b.md` round 2 владелец выбрал адресный реопен P3/P4, а не новую
+ревизию тестируемости. Лимит двух аудитов не отменяет найденные F9–F17 и не разрешает
+формальный третий прогон без ремонта; он снимается явным owner-решением только для одного
+post-remediation Gate B. История двух RED-раундов append-only и не переписывается.
+
+`RAG:— (owner decision 2026-08-04; repo-grounded: artifacts/P5-gate-b.md F9–F17)`.
+
+## 2. Что считается observational carrier
+
+Carrier годен, только если ожидаемый verdict выводится из входа, которым реально владеет
+harness, и из наблюдения на границе SUT. Поля события/payload, которыми SUT может просто
+сообщить «я сделал правильно», доказательством не являются.
+
+Допустимые классы наблюдений:
+
+1. реальный вызов инструментального адаптера: route, args, credential set, actor и число вызовов
+   записывает harness-owned spy;
+2. journal projection: runner подаёт raw immutable events, а затем сравнивает свёрнутый state,
+   emitted events и отсутствие write-back исходных событий;
+3. внешняя audit/telemetry boundary: harness-owned sink фиксирует фактические attributes и bytes;
+4. task/MRTR boundary: harness-owned task channel фиксирует opaque binding и разрешённые точки
+   `input_required`;
+5. artifact checker получает реальный candidate и независимый нормативный reference, а не
+   `matrix_rows`, `reject_passing_entries`, `grease_allowed` или иной self-report verdict.
+
+Запрещённые shortcuts: `projection_source`, `write_back_upcast`, `source_of_truth`,
+`hash_input_includes_prev_hash`, `chain_valid`, `execution_route` как SUT payload,
+`reject_passing_entries`, `grease_allowed`, магические строки carrier/type и любой флаг,
+название которого непосредственно кодирует ожидаемый verdict.
+
+## 3. Декомпозиция F9–F15
+
+- P4.16 вводит закрытый driver-only контракт harness-owned observations и mutation checker.
+- P4.17 заменяет exact 38 behavior rules из F9/F11–F14 реальными boundary observations.
+- P4.18 заменяет exact 13 artifact rules из F9/F10/F15 и усиливает checker branches.
+- P4.19 строит exact 51-rule semantic manifest, прогоняет anti-self-report mutations и
+  переиздаёт A3 как вход единственного owner-authorized Gate B round 3.
+
+Приёмка P4.19 требует не только зелёных `fixtures-check`/coverage, но и exact-set:
+`51 = 38 behavior + 13 artifact`, ноль запрещённых shortcut-полей в этих carriers и адресный
+reject каждого mutant, который заменяет наблюдение self-report полем.
+
+## 4. F16 — честная plan truth P7
+
+Коммиты `b11cf41`, `c690a67`, `1f5eaf8`, `35afb53`, `62e31c3`, `db8f6d1`, `23be310`,
+`f8419f2`, `6e1ec1d`, `e232fc5` соответствуют P7.1–P7.10. На HEAD `e232fc5` PHPUnit даёт
+`65/65`, PHPStan — 0 ошибок. Неизвестный фактический route прежних исполнителей запрещено
+выдумывать, поэтому design-reconcile переводит items из `Not started` в `In progress`,
+прикрепляет commit anchors и оставляет terminal reconciliation до штатной фазы P7.
+
+Это предотвращает повтор/перезапись кода и не создаёт ложные `Done`/write-site claims.
+
+## 5. F17 / Q-28
+
+Принимается уже сформулированная норма `LOP-26`: отмена в `2026-08` нормируется на уровне
+действия; взаимодействие отмены с прогоном сценария не нормируется, новый outcome
+`CANCELLED` для сценария не вводится. Это сохраняет закрытый `SCN-28`, не изобретает
+семантику отменённого шага и оставляет расширение новой датированной ревизии.
+
+Q-28 переводится в `Resolved` этой owner-записью; normative bytes менять не требуется.
+
+## 6. Порядок и terminal criteria
+
+P3.25 (decision reconciliation) → P4.16 → P4.17 → P4.18 → P4.19 → Gate B round 3.
+Только содержательный GREEN разблокирует P5.3. После P5.3 принимаются обратимые owner-gates,
+затем P5.2 выполняет freeze/tag. Закрытая P5 обязательно проходит отдельный audit; findings
+исправляются до терминального результата.

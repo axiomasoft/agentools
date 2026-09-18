@@ -1,0 +1,17 @@
+{
+  "id": "cfhbaseline-101",
+  "title": "Still-failing baseline подтверждён raw outcomes",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CFH-24"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "known_failures",
+    "inline": "{\"known_failures\":[{\"scenario\":\"longop-002\",\"check\":\"notification-channel\",\"rule_id\":\"LOP-9\",\"issue\":\"https://tracker.example/LOP-9\"}],\"runs\":[{\"run_id\":\"php-1\",\"implementation\":\"php\",\"outcomes\":{\"longop-002:notification-channel\":\"failed\"}},{\"run_id\":\"dart-1\",\"implementation\":\"dart\",\"outcomes\":{\"longop-002:notification-channel\":\"failed\"}}]}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

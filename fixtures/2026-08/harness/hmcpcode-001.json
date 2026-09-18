@@ -1,0 +1,21 @@
+{
+  "id": "hmcpcode-001",
+  "title": "CFH-55: раннер получает точные core-коды MCP pin",
+  "vector_class": "harness",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": ["CFH-55"],
+  "conformance_level": "L1",
+  "transcript": [
+    {"direction":"runner_to_adapter","message":{"type":"start","harness_protocol_version":"1.1","spec_rev":"2026-08"}},
+    {"direction":"adapter_to_runner","message":{"type":"ready","sdk":"agentools-dart/0.1.0","spec_rev":"2026-08","declared_level":"L1"}},
+    {"direction":"runner_to_adapter","message":{"type":"config","fixed_clock":"2026-08-01T00:00:00Z","fixed_seed":"mcp-codes-001"}},
+    {"direction":"runner_to_adapter","message":{"type":"run","vector_id":"mcp-pin-errors","vector":{"spec_rule_ids":["CFH-55"],"spec_rev":"2026-08"}}},
+    {"direction":"adapter_to_runner","message":{"type":"result","vector_id":"mcp-pin-errors","outcome":"completed","final_state":"completed"}},
+    {"direction":"runner_to_adapter","message":{"type":"stop"}}
+  ],
+  "mcp_errors": [
+    {"name":"MissingRequiredClientCapabilityError","code":-32003},
+    {"name":"UnsupportedProtocolVersionError","code":-32004}
+  ],
+  "expect": {"outcome":"conformant"}
+}

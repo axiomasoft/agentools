@@ -83,6 +83,11 @@
               "type": "array",
               "items": { "type": "string" },
               "description": "Closed-world allowlist инструментов сессии — понятие драйвера харнесса, векторов permission-отказа (10_security.md); собственного носителя в схемах провода не имеет."
+            },
+            "rules": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/DriverPolicyRule" },
+              "description": "Применимые правила Policy Layer: closed verdict и scope, подаваемые драйвером до prepare; не MCP wire и не ожидаемый verdict."
             }
           },
           "description": "Опциональные policy-ограничения сессии, проверяемые до показа превью."
@@ -91,6 +96,24 @@
           "type": "string",
           "format": "date-time",
           "description": "Опциональный фиксированный момент 'сейчас' (RFC 3339, UTC) для детерминированных проверок TTL/expires_at."
+        },
+        "identity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tenant_id", "session_id"],
+          "properties": {
+            "tenant_id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Тенант текущего предъявления вызова. Для дедупликации входит в область ключа вместе с именем инструмента и ключом (IDE-5)."
+            },
+            "session_id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Сессия текущего предъявления вызова. В область дедупликации не входит: повтор из новой сессии того же тенанта обязан увидеть ту же запись (IDE-5)."
+            }
+          },
+          "description": "Идентичность вызова, доступная драйверу только для векторов, проверяющих область дедупликации. Не является полем MCP-провода."
         },
         "preseed": {
           "type": "object",
@@ -112,6 +135,16 @@
                     "$ref": "../../schema/2026-08/idempotency.json#/$defs/DedupState",
                     "description": "Состояние записи ДО начала script (09_idempotency-errors.md)."
                   },
+                  "tenant_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Тенант, которому принадлежит предзаданная запись дедупликации. Сравнивается с given.identity.tenant_id для IDE-5."
+                  },
+                  "session_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Сессия первого предъявления записи; сохраняется как контекст вектора, но не участвует в ключе дедупликации (IDE-5)."
+                  },
                   "key": {
                     "$ref": "../../schema/2026-08/idempotency.json#/$defs/IdempotencyKey",
                     "description": "Ключ преcидируемой записи (09_idempotency-errors.md IDE-4/IDE-5) — точка сравнения с _meta.idempotency_key, предъявляемым script'ом того же вектора."
@@ -131,15 +164,254 @@
             }
           },
           "description": "Опциональное предзаданное состояние хранилищ рантайма перед началом script."
+        },
+        "driver_state": {
+          "$ref": "#/$defs/DriverState",
+          "description": "Закрытое предзаданное состояние harness-драйвера для behavior-вектора. Это НЕ поле MCP-провода: оно делает stimulus provenance, principals, authorization, baggage, journal/effects, tool results и task channel явным до начала script (README.md §2)."
         }
       }
+    },
+    "DriverState": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "principals": { "$ref": "#/$defs/DriverPrincipals" },
+        "authorization": { "$ref": "#/$defs/DriverAuthorization" },
+        "credentials": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/DriverCredential" }
+        },
+        "provenance": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/DriverProvenance" }
+        },
+        "derivations": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/DriverDerivation" }
+        },
+        "baggage": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/DriverBaggageEntry" }
+        },
+        "journal": {
+          "type": "array",
+          "items": { "$ref": "../../schema/2026-08/lifecycle-event.json" }
+        },
+        "effects": {
+          "type": "array",
+          "items": { "$ref": "../../schema/2026-08/effect-registry.json" }
+        },
+        "tool_results": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/DriverToolResult" }
+        },
+        "task_channel": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/DriverTaskMessage" }
+        },
+        "confirmation": { "$ref": "#/$defs/DriverConfirmation" },
+        "audit_export": { "$ref": "#/$defs/DriverAuditExport" },
+        "materialized_state": { "$ref": "#/$defs/DriverMaterializedState" },
+        "snapshot": { "$ref": "#/$defs/DriverSnapshot" },
+        "append_probe": { "$ref": "#/$defs/DriverAppendProbe" }
+        },
+      "description": "Закрытая driver-only обёртка. Секции опциональны: вектор задаёт только нужный stimulus; свободный state и неописанные ключи запрещены."
+    },
+    "DriverMaterializedState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "seq"],
+      "properties": {
+        "state": { "$ref": "../../schema/2026-08/session-state.json#/$defs/ActionStatus" },
+        "seq": { "type": "integer", "minimum": 0 }
+      },
+      "description": "Сырая mutable projection рядом с journal; harness подаёт её для проверки направления зависимости ALC-4."
+    },
+    "DriverSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "seq", "spec_rev"],
+      "properties": {
+        "state": { "$ref": "../../schema/2026-08/session-state.json#/$defs/ActionStatus" },
+        "seq": { "type": "integer", "minimum": 0 },
+        "spec_rev": { "type": "string", "minLength": 1 }
+      },
+      "description": "Сырая snapshot projection до чтения journal; не источник истины и не SUT verdict."
+    },
+    "DriverPrincipal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "description": "Стабильный id принципала в пределах вектора." }
+      }
+    },
+    "DriverPrincipals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["initiator", "agent", "authorizer"],
+      "properties": {
+        "initiator": { "$ref": "#/$defs/DriverPrincipal" },
+        "agent": { "$ref": "#/$defs/DriverPrincipal" },
+        "authorizer": { "$ref": "#/$defs/DriverPrincipal" }
+      },
+      "description": "Три формальные роли с устойчивыми ids: инициатор, агент и авторизатор."
+    },
+    "DriverAuthorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["resource", "tool", "permissions"],
+      "properties": {
+        "resource": { "type": "string", "minLength": 1 },
+        "tool": { "type": "string", "minLength": 1 },
+        "call_id": { "type": "string", "minLength": 1 },
+        "permissions": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      },
+      "description": "Разрешения на указанный resource/tool в момент шага; это driver input, а не MCP-wire authorization."
+    },
+    "DriverCredential": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "source", "issuer", "audience", "integrity", "principal_id", "scopes"],
+      "properties": {
+        "kind": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "enum": ["trusted_credential", "argument", "model_output", "tool_result"] },
+        "issuer": { "type": "string", "minLength": 1 },
+        "audience": { "type": "string", "minLength": 1 },
+        "integrity": { "type": "string", "minLength": 1 },
+        "principal_id": { "type": "string", "minLength": 1 },
+        "scopes": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      },
+      "description": "Credential с явным источником, чтобы trusted credential, argument, model output и tool result не сливались в скрытый stub."
+    },
+    "DriverProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["address", "content_origin"],
+      "properties": {
+        "address": { "type": "string", "minLength": 1, "description": "Адрес значения в driver input или подготовленном вызове." },
+        "content_origin": { "$ref": "../../schema/2026-08/tool-descriptor.json#/$defs/ContentOrigin" }
+      },
+      "description": "Происхождение конкретного значения; enum берётся из опубликованной schema, а не дублируется."
+    },
+    "DriverDerivation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_address", "target_address", "operation"],
+      "properties": {
+        "source_address": { "type": "string", "minLength": 1 },
+        "target_address": { "type": "string", "minLength": 1 },
+        "operation": { "type": "string", "enum": ["substring", "parse", "transform", "compute"] }
+      },
+      "description": "Driver-owned линия происхождения производного значения; не verdict доверия."
+    },
+    "DriverAppendProbe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["storage_last_seq", "attempted_event"],
+      "properties": {
+        "storage_last_seq": { "type": "integer", "minimum": 0 },
+        "attempted_event": { "$ref": "../../schema/2026-08/lifecycle-event.json" }
+      },
+      "description": "Сырой stimulus append-adapter: фактическая голова хранилища и ещё не записанное событие."
+    },
+    "DriverBaggageEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "value"],
+      "properties": {
+        "key": { "type": "string", "minLength": 1 },
+        "value": { "type": "string" },
+        "classification": {
+          "type": "string",
+          "enum": ["opaque_identifier", "personal_data", "argument_value", "confirmation_token"],
+          "description": "Harness-owned классификация исходного значения до передачи SUT; не verdict экспорта."
+        }
+      },
+      "description": "Одна пара baggage для точной проверки count/bytes boundary."
+    },
+    "DriverToolResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool", "content", "is_error"],
+      "properties": {
+        "tool": { "type": "string", "minLength": 1 },
+        "content": { "type": "string" },
+        "is_error": { "type": "boolean" }
+      },
+      "description": "Минимальный driver-only результат инструмента: текстовое содержимое и факт ошибки; это не MCP result envelope."
+    },
+    "DriverTaskMessage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "channel", "status", "message"],
+      "properties": {
+        "task_id": { "type": "string", "minLength": 1 },
+        "operation": { "type": "string", "enum": ["GetPromptRequest", "ReadResourceRequest", "CallToolRequest", "GetTaskPayloadRequest", "ListResourcesRequest"] },
+        "channel": { "$ref": "../../schema/2026-08/task-binding.json#/$defs/StatusChannel" },
+        "status": { "$ref": "../../schema/2026-08/task-binding.json#/$defs/TaskStatus" },
+        "message": { "type": "string" }
+      },
+      "description": "Предзаданное сообщение канала долгой задачи; channel/status используют опубликованные перечисления task-binding."
+    },
+    "DriverPolicyRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "verdict"],
+      "properties": {
+        "scope": { "type": "string", "enum": ["system", "tenant", "user", "tool"] },
+        "verdict": { "type": "string", "enum": ["deny", "ask", "allow"] }
+      },
+      "description": "Одно применимое правило Policy Layer; порядок массива и специфичность не являются входом precedence CNF-4."
+    },
+    "DriverConfirmation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["proposal_id", "proposal_version", "token_id", "covered_principal_id", "prepared_descriptor_digest", "current_descriptor_digest", "prepared_args_fingerprint", "commit_args_fingerprint"],
+      "properties": {
+        "proposal_id": { "type": "string", "minLength": 1 },
+        "proposal_version": { "type": "integer", "minimum": 1 },
+        "token_id": { "type": "string", "minLength": 1 },
+        "covered_principal_id": { "type": "string", "minLength": 1 },
+        "prepared_descriptor_digest": { "type": "string", "minLength": 1 },
+        "current_descriptor_digest": { "type": "string", "minLength": 1 },
+        "prepared_args_fingerprint": { "type": "string", "minLength": 1 },
+        "commit_args_fingerprint": { "type": "string", "minLength": 1 }
+      },
+      "description": "Закрытый driver-only снимок proposal/token binding между prepare и commit; digest/fingerprint сопоставляются реализацией, не self-asserted verdict."
+    },
+    "DriverAuditExport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapter_id", "mapping_version", "boundary", "attributes", "audit_fields"],
+      "properties": {
+        "adapter_id": { "type": "string", "minLength": 1 },
+        "mapping_version": { "type": "string", "minLength": 1 },
+        "registered_mappings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["version", "attributes"],
+            "properties": {
+              "version": { "type": "string", "minLength": 1 },
+              "attributes": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+            }
+          }
+        },
+        "boundary": { "const": "external" },
+        "attributes": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "audit_fields": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      },
+      "description": "Вход adapter-side export: versioned mapping, external boundary и наблюдаемые имена; не поле audit schema и не claim conformance."
     },
     "ScriptStep": {
       "type": "object",
       "minProperties": 1,
       "maxProperties": 1,
       "additionalProperties": false,
-      "description": "Один шаг драйвера — ровно одно из пяти событий, подаваемых SUT (форма 'oneOf по ключу').",
+      "description": "Один шаг драйвера — ровно одно из семи событий, подаваемых SUT (форма 'oneOf по ключу').",
       "properties": {
         "user_input": {
           "type": "string",
@@ -165,6 +437,14 @@
           "type": "integer",
           "minimum": 1,
           "description": "Продвинуть виртуальные часы харнесса на N секунд — единственный способ детерминированно достичь TTL/expires_at без реального ожидания."
+        },
+        "tool_result": {
+          "$ref": "#/$defs/DriverToolResult",
+          "description": "Результат инструмента, подаваемый драйвером в момент script; форма driver-only, не MCP-wire message."
+        },
+        "task_message": {
+          "$ref": "#/$defs/DriverTaskMessage",
+          "description": "Сообщение канала долгой задачи, подаваемое драйвером в момент script; форма driver-only, не MCP-wire message."
         }
       }
     },
@@ -180,6 +460,7 @@
           "required": ["tool", "args"],
           "properties": {
             "tool": { "type": "string", "description": "Имя вызываемого инструмента." },
+            "call_id": { "type": "string", "minLength": 1, "description": "Стабильный id конкретного вызова, назначенный driver до authorization check." },
             "args": { "type": "object", "additionalProperties": true, "description": "Доменные аргументы вызова, без confirmation_token — его подставляет рантайм на commit." },
             "meta": {
               "type": "object",
@@ -248,6 +529,12 @@
           "items": { "$ref": "#/$defs/ToolCallMatch" },
           "description": "Опциональный список ожидаемых вызовов инструмента — независимая от events проверка на уровне границы инструмента."
         },
+        "observations": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/HarnessObservation" },
+          "description": "Факты, которые снимает harness-owned adapter/sink после исполнения SUT. Эти записи не являются SUT event/payload и не могут синтезироваться самой реализацией."
+        },
         "error": {
           "type": "object",
           "additionalProperties": false,
@@ -261,6 +548,101 @@
           "description": "Опциональная ожидаемая ошибка, если сценарий вектора заканчивается отказом инструмента/policy."
         }
       }
+    },
+    "HarnessObservation": {
+      "oneOf": [
+        { "$ref": "#/$defs/ToolBoundaryObservation" },
+        { "$ref": "#/$defs/JournalProjectionObservation" },
+        { "$ref": "#/$defs/AuditSinkObservation" },
+        { "$ref": "#/$defs/TaskBindingObservation" },
+        { "$ref": "#/$defs/CredentialBoundaryObservation" },
+        { "$ref": "#/$defs/ConfirmationBoundaryObservation" }
+      ],
+      "description": "Закрытая сумма наблюдений, принадлежащих harness. Поле kind выбирает конкретную границу; generic/self-report observation отсутствует по конструкции."
+    },
+    "ToolBoundaryObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "probe_id", "tool", "phase", "calls", "route", "actor_ids", "credential_ids"],
+      "properties": {
+        "kind": { "const": "tool_boundary" },
+        "probe_id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]+$" },
+        "tool": { "type": "string", "minLength": 1 },
+        "phase": { "type": "string", "enum": ["prepare", "commit"] },
+        "calls": { "type": "integer", "minimum": 0 },
+        "route": { "type": "string", "enum": ["default", "isolated", "blocked"] },
+        "args_subset": { "type": "object", "additionalProperties": true, "description": "Фактические аргументы, снятые adapter spy; сравниваются рекурсивно как подмножество." },
+        "call_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "actor_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "credential_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "JournalProjectionObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "probe_id", "state", "source_event_ids", "emitted_event_kinds", "source_unchanged"],
+      "properties": {
+        "kind": { "const": "journal_projection" },
+        "probe_id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]+$" },
+        "state": { "$ref": "../../schema/2026-08/session-state.json#/$defs/ActionStatus" },
+        "source_event_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "emitted_event_kinds": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "source_unchanged": { "type": "boolean" },
+        "journal_reads": { "type": "integer", "minimum": 0 },
+        "append_attempts": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "AuditSinkObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "probe_id", "record_count", "attribute_names", "baggage_count", "baggage_bytes"],
+      "properties": {
+        "kind": { "const": "audit_sink" },
+        "probe_id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]+$" },
+        "record_count": { "type": "integer", "minimum": 0 },
+        "attribute_names": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "baggage_count": { "type": "integer", "minimum": 0 },
+        "baggage_bytes": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "TaskBindingObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "probe_id", "task_id", "binding_id", "state", "input_required_operations"],
+      "properties": {
+        "kind": { "const": "task_binding" },
+        "probe_id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]+$" },
+        "task_id": { "type": "string", "minLength": 1 },
+        "binding_id": { "type": "string", "minLength": 1 },
+        "state": { "type": "string", "enum": ["working", "input_required", "completed", "failed"] },
+        "input_required_operations": { "type": "array", "uniqueItems": true, "items": { "type": "string", "enum": ["GetPromptRequest", "ReadResourceRequest", "CallToolRequest", "GetTaskPayloadRequest"] } }
+      }
+    },
+    "CredentialBoundaryObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "probe_id", "resource", "principal_ids", "forwarded_credential_ids"],
+      "properties": {
+        "kind": { "const": "credential_boundary" },
+        "probe_id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]+$" },
+        "resource": { "type": "string", "minLength": 1 },
+        "principal_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "forwarded_credential_ids": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "ConfirmationBoundaryObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "probe_id", "proposal_count", "token_issue_count", "token_consume_count", "decision_event_count"],
+      "properties": {
+        "kind": { "const": "confirmation_boundary" },
+        "probe_id": { "type": "string", "pattern": "^[a-z][a-z0-9_-]+$" },
+        "proposal_count": { "type": "integer", "minimum": 0 },
+        "token_issue_count": { "type": "integer", "minimum": 0 },
+        "token_consume_count": { "type": "integer", "minimum": 0 },
+        "decision_event_count": { "type": "integer", "minimum": 0 }
+      },
+      "description": "Счётчики protocol-layer spy; фиксируют proposal/token/decision mechanics, не утверждают владельца механики."
     },
     "EventMatch": {
       "type": "object",

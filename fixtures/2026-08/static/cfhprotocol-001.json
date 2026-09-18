@@ -1,0 +1,19 @@
+{
+  "id": "cfhprotocol-001",
+  "title": "Harness использует закрытые type-теги, чистый stdout и отдельный процесс адаптера",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CFH-2",
+    "CFH-5",
+    "CFH-10"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "harness_boundary",
+    "inline": "{\"transport\":\"jsonl-stdio\",\"stdout\":\"protocol-only\",\"stderr\":\"diagnostics\",\"adapter_process\":\"separate\",\"message_type_schema\":\"closed-const-tags\"}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

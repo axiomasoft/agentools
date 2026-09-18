@@ -1,0 +1,70 @@
+# P4 — итоговый гейт A3 после CLR-8 admission fix P4.21
+
+**Дата:** 2026-08-04
+
+**Якорь дерева:** item-коммит P4.21 `a12db23`. Детерминированный
+якорь содержимого manifest: SHA-256
+`fedaa391cd5608751f9ab784b93bf59574b05052446040cfc104eeed2a1b92ab`.
+
+Исторические A3 P4.13 и Gate B round 1/2 не переписываются: их факты сохранены в git и в
+`P5-gate-b.md`. Этот отчёт supersedes только утверждение прежнего A3 о достаточности
+relation/ownership-only evidence (D161/D162/D169).
+
+## Команды гейта
+
+```text
+python3 tools/spec_lint.py --observational-carriers-selftest fixtures/2026-08
+python3 tools/spec_lint.py --observational-carriers-check fixtures/2026-08
+python3 tools/spec_lint.py --gate-b-remediation-write fixtures/2026-08
+python3 tools/spec_lint.py --gate-b-remediation-check fixtures/2026-08
+python3 tools/spec_lint.py --fixtures-check fixtures/2026-08
+python3 tools/spec_lint.py spec/revisions/2026-08 --coverage --check
+python3 tools/rules_index.py --check spec/revisions/2026-08
+python3 tools/close_schema.py --check spec/revisions/2026-08
+git diff --exit-code 80c25a6 -- spec/revisions/2026-08
+git diff --check
+```
+
+## Условия гейта
+
+| Условие | Наблюдаемый факт | Вердикт |
+|:--|:--|:--|
+| Exact remediation | manifest v2 содержит 51 строку: 38 behavior + 13 artifact, `gaps=[]` | PASS |
+| Harness ownership | шесть закрытых observation types; schema-positive/schema-invalid/self-report selftest 6/6 | PASS |
+| Behavior carriers | 76 schema-valid members; каждый из 38 rules имеет exact pair и harness-owned observation | PASS |
+| Artifact carriers | 13 raw negative/positive pairs; checker выводит verdict из candidate/reference/run outcomes | PASS |
+| Semantic sufficiency | 11/11 named preflight checks; CLR-8 теперь имеет raw `ListResourcesRequest` ↔ `GetTaskPayloadRequest`, одинаковый `input_required` и failed ↔ running oracle | PASS |
+| Shortcut registry | `projection_source`, `write_back_upcast`, `source_of_truth`, hash/route verdict flags, baseline booleans и magic carriers — 0 | PASS |
+| Mutation strength | 51/51 addressable self-report/raw-fact mutants, 51/51 pure manifest mutations и 11/11 semantic preflight mutations отвергнуты | PASS |
+| Byte stability | write → check не меняет bytes; manifest SHA-256 `fedaa391…b92ab` | PASS |
+| Формат корпуса | `--fixtures-check` = 0 | PASS |
+| Coverage | 400 rules; 394 testable; MUST/MUST NOT 383/383; пять исторических SHOULD warnings | PASS с предупреждениями |
+| Индекс и closure | `rules_index --check`: 400; `close_schema --check`: 15 | PASS |
+| P3 source snapshot | diff от remediation-base `80c25a6` по `spec/revisions/2026-08` пуст; manifest source digest `24ce17d2…300215` | PASS |
+| Чистота diff | `git diff --check` = 0 | PASS |
+
+## Счёт корпуса
+
+`coverage.md` свеж: 214 behavior, 89 artifact, 13 harness и 10 golden carriers. Семь
+non-target rules, ранее агрегированных с негодными target carriers, сохранены отдельными raw
+carriers D168; покрытие 383/383 не достигнуто ложным multi-rule positive.
+
+## Граница вердикта
+
+**ГЕЙТ A3: PASS.** В отличие от прежнего formal A3, этот PASS включает ownership, адресные
+semantic invariants и реальные mutation rejects exact 51 F9–F15. Он всё ещё не является Gate B: независимый cold-start
+аудит P5.1 round 3 обязан заново сверить нормативную строку, raw stimulus, boundary observation
+и mutant каждого правила. Только его semantic GREEN разблокирует P5.3 и freeze/tag P5.2.
+
+## Freeze projection addendum — 2026-08-04
+
+Обязательный audit P5 обнаружил, что флип единственного status-carrier в README после prefreeze
+изменил source-tree digest manifest. Semantic payload не изменился: единственный diff
+`gate-b-remediation.json` — `source_tree_sha256` с `24ce17d2…300215` на frozen-tree digest
+`be19c372…8e97f`; exact 51, partitions 38+13, gaps/shortcuts 0, 51 addressable и 11 semantic
+mutation rejects прежние. Пересобранный manifest SHA-256 —
+`2dd789dd88bd030859840305217090459a45242ed7db6dc347fda3f657fc8249`.
+
+Этот addendum не меняет исторический P4.21 verdict и фиксирует post-freeze deterministic
+projection. Канонический freeze tag переиздаётся audit-remediation только после полного повторного
+прогона гейтов; старый непубликованный target сохраняется отдельным audit-backup tag.

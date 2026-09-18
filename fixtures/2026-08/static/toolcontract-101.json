@@ -1,0 +1,17 @@
+{
+  "id": "toolcontract-101",
+  "title": "Имена raw tool catalog уникальны",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "TLP-7"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "tool_catalog",
+    "inline": "{\"tools\":[{\"name\":\"crm_read\"},{\"name\":\"crm_write\"}]}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

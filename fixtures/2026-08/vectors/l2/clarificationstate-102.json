@@ -1,0 +1,75 @@
+{
+  "id": "clarificationstate-102",
+  "title": "Обычный Task status не создаёт input_required",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CLR-8"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Выполняет детерминированную проверку.\nCall when: Нужно проверить поведение без побочного эффекта.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"x\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {}
+  },
+  "script": [
+    {
+      "user_input": "Запусти задачу"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "task-1"
+          }
+        }
+      }
+    },
+    {
+      "task_message": {
+        "task_id": "task-1",
+        "operation": "GetTaskPayloadRequest",
+        "channel": "poll",
+        "status": "input_required",
+        "message": "Обновление статуса"
+      }
+    }
+  ],
+  "expect": {
+    "events": [],
+    "final_state": "running",
+    "observations": [
+      {
+        "kind": "task_binding",
+        "probe_id": "clr_8_task_channel",
+        "task_id": "task-1",
+        "binding_id": "binding:task-1",
+        "state": "input_required",
+        "input_required_operations": [
+          "GetTaskPayloadRequest"
+        ]
+      }
+    ]
+  }
+}

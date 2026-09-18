@@ -1,10 +1,12 @@
 {
   "id": "hgolden-001",
-  "title": "Golden-пара доставлена сообщением golden_pair непосредственно перед run того же вектора",
+  "title": "Golden-пара доставлена перед run; сравнение структурное, затем байтовое, без канонизации входа раннером",
   "vector_class": "harness",
   "spec_rev": "2026-08",
   "spec_rule_ids": [
     "CFH-35",
+    "CFH-36",
+    "CFH-37",
     "CFH-38",
     "CFH-39",
     "CFH-42",
@@ -17,7 +19,7 @@
       "direction": "runner_to_adapter",
       "message": {
         "type": "start",
-        "harness_protocol_version": "1.0",
+        "harness_protocol_version": "1.1",
         "spec_rev": "2026-08"
       }
     },
@@ -71,6 +73,7 @@
         "type": "result",
         "vector_id": "jcs-number-forms",
         "outcome": "completed",
+        "final_state": "completed",
         "canonical": "{\"n\":100}\n",
         "canonical_golden": "{\"n\":100}\n"
       }

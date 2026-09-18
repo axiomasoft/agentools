@@ -1,7 +1,7 @@
 {
   "name": "crm_report_list",
   "title": "Список отчётов о работе",
-  "description": "Возвращает страницу отчётов сотрудника за период. Только чтение.",
+  "description": "Purpose: Возвращает страницу отчётов сотрудника за период.\nCall when: Пользователю нужен список отчётов без изменения данных.\nRequired arguments: period\nExample: crm_report_list({\"period\":\"2026-07\"})",
   "inputSchema": {
     "type": "object",
     "properties": {

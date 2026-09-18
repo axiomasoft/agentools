@@ -1,0 +1,124 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+const DEFAULT_OUTPUT = 'conformance/reports/reference-levels.md';
+const LEVELS = ['L1', 'L2', 'L3'];
+const STATUSES = ['pass', 'fail', 'warn', 'not-testable', 'baseline-expected'];
+
+function usage(string $error): never
+{
+    fwrite(STDERR, $error . "\nИспользование: conformance/bin/levels <report.json> [--out <путь>] (--write|--check)\n");
+    exit(3);
+}
+
+try {
+    $reportPath = null;
+    $outputPath = DEFAULT_OUTPUT;
+    $write = false;
+    $check = false;
+    for ($index = 1; $index < count($argv); $index++) {
+        $argument = $argv[$index];
+        if ($argument === '--write') {
+            $write = true;
+        } elseif ($argument === '--check') {
+            $check = true;
+        } elseif ($argument === '--out') {
+            $outputPath = $argv[++$index] ?? usage('--out требует путь');
+        } elseif (str_starts_with($argument, '--')) {
+            usage("неизвестный флаг {$argument}");
+        } elseif ($reportPath === null) {
+            $reportPath = $argument;
+        } else {
+            usage("лишний аргумент {$argument}");
+        }
+    }
+    if ($reportPath === null) {
+        usage('отсутствует путь к машинному отчёту');
+    }
+    if (!$write && !$check) {
+        usage('нужен хотя бы один режим: --write или --check');
+    }
+    $report = json_decode((string) file_get_contents($reportPath), true, 512, JSON_THROW_ON_ERROR);
+    $content = renderReport($report);
+
+    if ($write) {
+        $directory = dirname($outputPath);
+        if (!is_dir($directory) && !mkdir($directory, 0777, true) && !is_dir($directory)) {
+            throw new RuntimeException("не удалось создать каталог отчёта {$directory}");
+        }
+        file_put_contents($outputPath, $content);
+        printf("Отчёт по уровням записан: %s\n", $outputPath);
+    }
+    if ($check) {
+        $actual = is_file($outputPath) ? file_get_contents($outputPath) : false;
+        if ($actual !== $content) {
+            fwrite(STDERR, "Отчёт по уровням не соответствует {$reportPath}: {$outputPath}\n");
+            exit(1);
+        }
+        printf("Отчёт по уровням детерминирован: %s\n", $outputPath);
+    }
+} catch (Throwable $error) {
+    fwrite(STDERR, 'Ошибка отчёта по уровням: ' . $error->getMessage() . "\n");
+    exit(2);
+}
+
+/** @param array<string,mixed> $report */
+function renderReport(array $report): string
+{
+    if (($report['spec_rev'] ?? null) !== '2026-08' || !is_array($report['vectors'] ?? null)) {
+        throw new RuntimeException('ожидается conformance-отчёт ревизии 2026-08 со списком vectors');
+    }
+    $buckets = array_fill_keys(LEVELS, null);
+    foreach (LEVELS as $level) {
+        $buckets[$level] = array_fill_keys(STATUSES, 0);
+        $buckets[$level]['total'] = 0;
+        $buckets[$level]['not-testable-vectors'] = [];
+    }
+    foreach ($report['vectors'] as $entry) {
+        if (!is_array($entry) || !in_array($entry['level'] ?? null, LEVELS, true) || !in_array($entry['status'] ?? null, STATUSES, true)) {
+            throw new RuntimeException('отчёт содержит вектор с неизвестным уровнем или статусом');
+        }
+        $level = $entry['level'];
+        $status = $entry['status'];
+        $buckets[$level]['total']++;
+        $buckets[$level][$status]++;
+        if ($status === 'not-testable') {
+            $reason = $entry['not_testable_reason'] ?? null;
+            if (!is_string($reason) || $reason === '') {
+                throw new RuntimeException("Not testable вектор {$entry['id']} не содержит причину");
+            }
+            $buckets[$level]['not-testable-vectors'][] = [$entry['id'] ?? 'без id', $reason];
+        }
+    }
+
+    $lines = [
+        '# Отчёт conformance по уровням — эталонный адаптер',
+        '',
+        '> Производный артефакт: результат прогона `conformance/bin/run`, ручная правка запрещена. '
+        . 'Это не `fixtures/2026-08/coverage.md`: тот файл отражает связь «правило ↔ вектор», '
+        . 'а этот — статусы фактического прогона векторов.',
+        '',
+        '| Уровень | Векторов | pass | fail | warn | not-testable | baseline-expected |',
+        '|:--|--:|--:|--:|--:|--:|--:|',
+    ];
+    foreach (LEVELS as $level) {
+        $row = $buckets[$level];
+        $lines[] = sprintf('| %s | %d | %d | %d | %d | %d | %d |', $level, $row['total'], $row['pass'], $row['fail'], $row['warn'], $row['not-testable'], $row['baseline-expected']);
+    }
+    $lines[] = '';
+    $lines[] = '## Not testable';
+    $lines[] = '';
+    $hasNotTestable = false;
+    foreach (LEVELS as $level) {
+        foreach ($buckets[$level]['not-testable-vectors'] as [$id, $reason]) {
+            $lines[] = sprintf('- `%s` (%s): %s', $id, $level, $reason);
+            $hasNotTestable = true;
+        }
+    }
+    if (!$hasNotTestable) {
+        $lines[] = '—';
+    }
+    return implode("\n", $lines) . "\n";
+}

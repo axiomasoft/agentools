@@ -1,0 +1,82 @@
+{
+  "id": "security-003",
+  "title": "SEC-3: запрещённое состояние — чужой токен получает отдельный permission-отказ",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SEC-3"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Security probe.\nCall when: verify a security rule.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"case\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "credentials": [
+        {
+          "kind": "access_token",
+          "source": "trusted_credential",
+          "issuer": "issuer-trusted",
+          "audience": "downstream-api",
+          "integrity": "verified",
+          "principal_id": "user-7",
+          "scopes": [
+            "demo.read"
+          ]
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Выполни security-проверку"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "sec-3"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_failed",
+        "payload": {
+          "reason": "foreign_access_token",
+          "security_rule": "SEC-3",
+          "stimulus_pointer": "/given/driver_state/credentials/0/audience",
+          "!tool_effect": true
+        }
+      }
+    ],
+    "final_state": "failed",
+    "tool_calls": []
+  }
+}

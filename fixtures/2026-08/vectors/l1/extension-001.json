@@ -11,7 +11,7 @@
   "given": {
     "tools": [
       {
-        "name": "crm_task_update",
+        "name": "crm_task_update_foreignmeta",
         "title": "Обновить задачу",
         "description": "Изменяет статус либо поля задачи CRM. Обратимая операционная запись: изменение устранимо повторным вызовом с прежними значениями.",
         "inputSchema": {
@@ -72,7 +72,7 @@
     {
       "llm_stub": {
         "toolCall": {
-          "tool": "crm_task_update",
+          "tool": "crm_task_update_foreignmeta",
           "args": {
             "task_id": "T-700",
             "status": "done"
@@ -108,7 +108,7 @@
     "final_state": "completed",
     "tool_calls": [
       {
-        "tool": "crm_task_update",
+        "tool": "crm_task_update_foreignmeta",
         "args_subset": {
           "task_id": "T-700",
           "status": "done"
@@ -116,7 +116,7 @@
         "phase": "prepare"
       },
       {
-        "tool": "crm_task_update",
+        "tool": "crm_task_update_foreignmeta",
         "phase": "commit"
       }
     ]

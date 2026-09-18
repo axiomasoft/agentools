@@ -1,0 +1,17 @@
+{
+  "id": "cfhreport-003",
+  "title": "Неуспешный submitted vector не объявляется success",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CFH-54"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "conformance_report",
+    "inline": "{\"declared_level\":\"L1\",\"submitted_vectors\":[\"alpha-001\"],\"vectors\":[{\"id\":\"alpha-001\",\"level\":\"L1\",\"outcome\":\"failed\",\"rule_ids\":[\"CFH-54\"]}],\"failed_l3\":[],\"failed\":[\"alpha-001\"],\"warnings\":[],\"not_testable\":[],\"success\":false}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

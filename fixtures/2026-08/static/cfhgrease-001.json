@@ -1,0 +1,18 @@
+{
+  "id": "cfhgrease-001",
+  "title": "Пропущенный GREASE в одном raw run отклоняется",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CFH-51"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "grease_registration",
+    "inline": "{\"vectors\":[{\"id\":\"grease-event\",\"kind\":\"unknown_event\",\"value\":\"vendor.event\"},{\"id\":\"grease-error\",\"kind\":\"unknown_error_category\",\"value\":\"vendor.error\"},{\"id\":\"grease-extension\",\"kind\":\"unknown_extension_key\",\"value\":\"dev.vendor/feature\"}],\"runs\":[{\"run_id\":\"php-1\",\"implementation\":\"php\",\"executed_vectors\":[\"grease-event\",\"grease-error\",\"grease-extension\"]},{\"run_id\":\"dart-1\",\"implementation\":\"dart\",\"executed_vectors\":[\"grease-event\",\"grease-error\"]}]}"
+  },
+  "expect": {
+    "linter": "reject",
+    "diagnostic_substring": "каждом raw PHP/Dart run"
+  }
+}

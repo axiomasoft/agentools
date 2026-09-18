@@ -1,0 +1,79 @@
+{
+  "id": "security-110",
+  "title": "SEC-10: допустимое состояние — схемно валидный, но недоверенный аргумент",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SEC-10"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Security probe.\nCall when: verify a security rule.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"case\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "provenance": [
+        {
+          "address": "args.value",
+          "content_origin": "trusted.local"
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Выполни security-проверку"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "sec-10"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [],
+    "final_state": "completed",
+    "observations": [
+      {
+        "kind": "tool_boundary",
+        "probe_id": "sec_10_tool_spy",
+        "tool": "demo_probe",
+        "phase": "prepare",
+        "calls": 1,
+        "route": "default",
+        "args_subset": {
+          "value": "sec-10"
+        },
+        "actor_ids": [],
+        "credential_ids": []
+      }
+    ]
+  }
+}

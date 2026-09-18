@@ -1,0 +1,8 @@
+{
+  "security-001": {
+    "reason": "fixture stale baseline",
+    "owner": "P6.4",
+    "since": "2026-08-05",
+    "issue": "P6.4"
+  }
+}

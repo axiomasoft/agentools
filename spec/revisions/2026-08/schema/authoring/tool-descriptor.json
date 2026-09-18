@@ -83,6 +83,7 @@
     },
     "description": {
       "description": "Описание инструмента для модели и каталога.",
+      "pattern": "^Purpose: [^\\r\\n]+\\nCall when: [^\\r\\n]+\\nRequired arguments: [^\\r\\n]+\\nExample: [^\\r\\n]+$",
       "type": "string"
     },
     "inputSchema": {

@@ -1,0 +1,85 @@
+{
+  "id": "security-111",
+  "title": "SEC-11: допустимое состояние — irreversible вызов без confirmation gate",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SEC-11"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Security probe.\nCall when: verify a security rule.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"case\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "irreversible",
+            "permissions_hint": [
+              "demo.write"
+            ],
+            "confirmation": "double_confirm"
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "provenance": [
+        {
+          "address": "args.value",
+          "content_origin": "untrusted_external"
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Выполни security-проверку"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "sec-11"
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_completed",
+        "payload": {
+          "security_rule": "SEC-11",
+          "stimulus_pointer": "/given/tools/0/_meta/dev.agentools~1action/confirmation"
+        }
+      }
+    ],
+    "final_state": "completed",
+    "tool_calls": [
+      {
+        "tool": "demo_probe",
+        "args_subset": {
+          "value": "sec-11"
+        },
+        "phase": "commit"
+      }
+    ]
+  }
+}

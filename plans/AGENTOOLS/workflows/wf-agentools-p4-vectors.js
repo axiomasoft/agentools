@@ -1,23 +1,23 @@
 // Оркестрация волны авторинга фазы P4 (A3) плана AGENTOOLS.
 //
-// Критерий plan-protocol §7 сработал на пяти items с независимым scope и детерминированной
-// Validation (P4.2, P4.3, P4.4, P4.7, P4.8) — обоснование построчно: research/03-p4-vector-corpus-2026-08.md §9,
-// решение — plan.md §5 D55.
+// Критерий plan-protocol §7 сработал на четырёх items с независимым scope и детерминированной
+// Validation (P4.2, P4.3, P4.7, P4.8) — обоснование построчно: research/03-p4-vector-corpus-2026-08.md §9,
+// решение — plan.md §5 D55, уточнённое D139.
 //
 // ПРЕДУСЛОВИЯ (скрипт проверяет их сам и останавливается, если не выполнены):
 //   • фаза P3 закрыта, вердикт `ГЕЙТ A2: PASS`, существует spec/revisions/2026-08/rules.json;
-//   • item P4.1 закрыт (формат вектора заморожен) — на нём стоят все пять авторов;
-//   • item P4.6 закрыт (ре-замер must-ignore) — на нём стоит P4.4.
-// Скрипт НЕ исполняет P4.1, P4.5 и P4.6: они solo (см. roadmap/Routing §3).
+//   • item P4.1 закрыт (формат вектора заморожен) — на нём стоят все четыре автора;
+//   • items P4.6 и P4.4 закрыты: P4.4 solo обновляет общий вход `02`/`rules.json` по D139.
+// Скрипт НЕ исполняет P4.1, P4.4, P4.5 и P4.6: они solo (см. roadmap/Routing §3).
 //
 // Запуск (новая сессия): Workflow({scriptPath: "05-Projects/03-Packages/AgenTools/plans/AGENTOOLS/workflows/wf-agentools-p4-vectors.js"})
 // Резюм: Workflow({scriptPath: <тот же>, resumeFromRunId: "wf_…"})
 export const meta = {
   name: 'agentools-p4-vectors',
-  description: 'Волна авторинга тест-векторов ревизии 2026-08 (AGENTOOLS P4.2/P4.3/P4.4/P4.7/P4.8): параллельный авторинг по замороженному формату + ревью + последовательное закрытие по plan-protocol §8',
-  whenToUse: 'Фаза P4 плана AGENTOOLS, после закрытия P4.1 и P4.6. Запуск — только по «Запускай» владельца',
+  description: 'Волна авторинга тест-векторов ревизии 2026-08 (AGENTOOLS P4.2/P4.3/P4.7/P4.8): параллельный авторинг по замороженному формату и D139 + ревью + последовательное закрытие по plan-protocol §8',
+  whenToUse: 'Фаза P4 плана AGENTOOLS, после закрытия P4.1, P4.6 и solo-item P4.4. Запуск — только по «Запускай» владельца',
   phases: [
-    { title: 'Precheck', detail: 'предусловия: ГЕЙТ A2, rules.json, P4.1 и P4.6 закрыты' },
+    { title: 'Precheck', detail: 'предусловия: ГЕЙТ A2, rules.json, P4.1, P4.6 и P4.4 закрыты' },
     { title: 'Author', detail: 'параллельный авторинг векторов по своим документам' },
     { title: 'Review', detail: 'ревью по линзам + адверсариальная верификация Major+' },
     { title: 'Fix', detail: 'фиксы подтверждённых находок' },
@@ -42,7 +42,6 @@ const ROUTE_CLOSE = { model: 'sonnet', effort: 'low' }
 const WAVE = [
   { id: 'P4.2', docs: '01_extension-identity.md, 02_tool-contract-profile.md, 03_action-lifecycle.md, 04_confirmation.md, 05_clarification-mrtr.md', dirs: 'fixtures/2026-08/vectors/l1|l2|l3' },
   { id: 'P4.3', docs: '08_audit-observability.md, 09_idempotency-errors.md + golden JCS/идемпотентности', dirs: 'fixtures/2026-08/vectors/l1|l2, fixtures/2026-08/golden' },
-  { id: 'P4.4', docs: 'синтетика §E4/§E5/§J9', dirs: 'fixtures/2026-08/vectors/l1 (grease-*), fixtures/2026-08/static' },
   { id: 'P4.7', docs: '06_scenarios.md + schema/expression.md, 07_long-operations.md, 10_security.md', dirs: 'fixtures/2026-08/vectors/l1|l2|l3' },
   { id: 'P4.8', docs: '00_overview.md (artifact), 11_conformance-harness.md (harness)', dirs: 'fixtures/2026-08/static, fixtures/2026-08/harness' },
 ]
@@ -130,7 +129,7 @@ const COMMON = `Дом кода: ${REPO} (git-репо пакета AgenTools). 
 const precheckPrompt = () => `Read-only проверка предусловий волны авторинга фазы P4 плана AGENTOOLS.
 Проверь и верни структурированный ответ:
 1) ${PLAN}/phases/P4.md — фактические статусы ВСЕХ items фазы (поле «**Status:**», байт-в-байт).
-2) P4.1 и P4.6 обязаны быть терминальными (🟢 Done либо 🟠 Done with deviations) — иначе ok:false с причиной.
+2) P4.1, P4.6 и P4.4 обязаны быть терминальными (🟢 Done либо 🟠 Done with deviations) — иначе ok:false с причиной.
 3) В ${REPO} обязаны существовать: spec/revisions/2026-08/rules.json (непустой список rules), fixtures/2026-08/schema/vector.json, fixtures/2026-08/schema/static-check.json, fixtures/2026-08/schema/harness-case.json, fixtures/2026-08/README.md.
 4) \`cd ${REPO} && python3 tools/spec_lint.py spec/revisions/2026-08 --allow-missing\` → exit 0; \`python3 tools/spec_lint.py --fixtures-check fixtures/2026-08\` → exit 0.
 5) \`cd ${REPO} && git status --short\` — рабочее дерево обязано быть чистым (волна пишет в общее дерево; посторонний дифф сделал бы закрытие items неразличимым) → иначе ok:false.
@@ -143,11 +142,11 @@ const authorPrompt = (it) => `${COMMON}
 Порядок чтения (ровно такой): 1) ${PLAN}/plan.md — §2 Execution Rules, §5 Decision Log; 2) ${PLAN}/phases/P4.md — Phase Context ЦЕЛИКОМ (там же команда локального покрытия COV) + item ${it.id} ЦЕЛИКОМ; 3) файлы из Required Reads item'а в указанном порядке. Сверх этого не читать.
 Твои документы: ${it.docs}. Твои каталоги: ${it.dirs}.
 
-ВАЖНО — ты работаешь В ОБЩЕМ рабочем дереве параллельно с четырьмя другими авторами:
+ВАЖНО — ты работаешь В ОБЩЕМ рабочем дереве параллельно максимум с тремя другими авторами:
 - пиши ТОЛЬКО в файлы своих каталогов; ни одного файла вне поля Files своего item'а;
 - НЕ делай git-операций вообще (ни add, ни commit, ни stash): коммитит отдельная последовательная стадия;
 - НЕ трогай файлы плана в vault (статусы, Update Log, handoff, journal) — их пишет close-агент;
-- не суди о своей работе по \`git status\`/\`git diff\`: дифф дерева смешан из пяти items.
+- не суди о своей работе по \`git status\`/\`git diff\`: дифф дерева может быть смешан из четырёх items.
 
 Выполни работу item'а по его ТЗ (Scope Included / Implementation Rules / Code Guidance — жёсткие рамки), затем прогони КАЖДУЮ команду из поля Validation (кроме планового линтера — его гоняет close-агент) и зафиксируй результат дословно.
 Ответ строго по схеме: status done|blocked · summary (факты для Completion Notes) · files · covered (покрытые маркеры правил) · validation (cmd → passed/failed + суть) · escalation (null | {reason, trigger}) · pending.`
@@ -155,7 +154,7 @@ const authorPrompt = (it) => `${COMMON}
 const reviewPrompt = (it, lens) => `${COMMON}
 
 Ты — адверсариальный ревьюер item ${it.id} плана AGENTOOLS, линза: **${lens}**.
-Прочитай ТЗ item'а (${PLAN}/phases/P4.md, item ${it.id}) и созданные им файлы — по путям из поля Files item'а (НЕ по \`git diff\`: рабочее дерево содержит работу пяти items сразу). Read-only: ничего не менять, git не трогать.
+Прочитай ТЗ item'а (${PLAN}/phases/P4.md, item ${it.id}) и созданные им файлы — по путям из поля Files item'а (НЕ по \`git diff\`: рабочее дерево может содержать работу четырёх items сразу). Read-only: ничего не менять, git не трогать.
 Ищи ТОЛЬКО реальные дефекты по своей линзе. Severity: Blocker (вектор не различает то, что заявляет / ссылка на несуществующее правило) / Major (расхождение с ТЗ, форматом или правилом ревизии) / Minor / Nit.
 Ответ по схеме findings; пустой список — легитимный результат.`
 

@@ -1,0 +1,67 @@
+{
+  "id": "scenario-006",
+  "title": "Коллекция из 1001 элемента превышает предел 1000",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "SCN-18",
+    "SCN-21",
+    "SCN-22"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Детерминированный пробный инструмент для проверки поведения рантайма.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {}
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "confirmation": "none",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "user_input": "Коллекция из 1001 элемента превышает предел 1000"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "observed": 1001,
+            "limit": 1000
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "step_failed",
+        "payload": {
+          "failure_class": "technical",
+          "limit": 1000,
+          "observed": 1001
+        }
+      }
+    ],
+    "final_state": "failed",
+    "error": {
+      "code": "agentools.budget.limit_exceeded"
+    }
+  }
+}

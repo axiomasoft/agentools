@@ -1,0 +1,120 @@
+{
+  "id": "idempotency-008",
+  "title": "Тот же ключ другого тенанта не подавляет новое выполнение текущего тенанта",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "IDE-5"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "identity": {
+      "tenant_id": "tenant-acme",
+      "session_id": "session-first"
+    },
+    "tools": [
+      {
+        "name": "crm_task_update",
+        "title": "Обновить задачу",
+        "description": "Изменяет статус либо поля задачи CRM. Обратимая операционная запись: изменение устранимо повторным вызовом с прежними значениями.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "task_id": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "assignee_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "task_id"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "task_id": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "write",
+            "confirmation": "confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "crm.task.write"
+            ]
+          }
+        }
+      }
+    ],
+    "preseed": {
+      "idempotency": [
+        {
+          "tenant_id": "tenant-other",
+          "session_id": "session-other",
+          "tool_name": "crm_task_update",
+          "state": "duplicate_completed",
+          "key": "at1:tenantkey_501",
+          "args_fingerprint": "sha-256:7b9ec6f8b5c6b935a014261c0c6c2b302caf75a7fdfc94c4a3ad8e5d1d10bd66",
+          "stored_result": {
+            "task_id": "tsk-501"
+          }
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "crm_task_update",
+          "args": {
+            "task_id": "tsk-501"
+          },
+          "meta": {
+            "idempotency_key": "at1:tenantkey_501"
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "confirmation_requested"
+      },
+      {
+        "kind": "confirmation_resolved"
+      },
+      {
+        "kind": "action_completed"
+      }
+    ],
+    "final_state": "completed",
+    "tool_calls": [
+      {
+        "tool": "crm_task_update",
+        "phase": "commit"
+      }
+    ]
+  }
+}

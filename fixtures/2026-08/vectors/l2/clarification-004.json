@@ -73,6 +73,13 @@
           }
         }
       }
+    },
+    {
+      "tool_result": {
+        "tool": "fina_payment_send",
+        "content": "{\"resultType\":\"future_partial\",\"opaque\":{\"keep\":\"verbatim\"}}",
+        "is_error": false
+      }
     }
   ],
   "expect": {

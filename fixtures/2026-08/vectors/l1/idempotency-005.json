@@ -1,0 +1,11 @@
+{
+  "id": "idempotency-005",
+  "title": "Коды и категории ошибок остаются типизированными и открытыми для продукта",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": ["IDE-30", "IDE-32", "IDE-34", "IDE-35", "IDE-36", "IDE-37"],
+  "conformance_level": "L1",
+  "given": {"tools":[{"name":"fina_ledger_post","title":"Провести запись","description":"Идемпотентная проводка.","inputSchema":{"type":"object","properties":{"entry":{"type":"string"}},"required":["entry"]},"outputSchema":{"type":"object","properties":{"entry_id":{"type":"string"}}},"annotations":{"readOnlyHint":false,"destructiveHint":false,"idempotentHint":true,"openWorldHint":false},"_meta":{"dev.agentools/action":{"side_effect":"write","confirmation":"confirm","idempotent_commit":true,"permissions_hint":["fina.ledger.write"]}}}]},
+  "script":[{"llm_stub":{"toolCall":{"tool":"fina_ledger_post","args":{"entry":"e-501"},"meta":{"idempotency_key":"at1:producterr_501"}}}},{"approval":"approve"}],
+  "expect":{"events":[{"kind":"confirmation_requested"},{"kind":"action_failed"}],"final_state":"failed","error":{"code":"fina.validation.period_closed"}}
+}

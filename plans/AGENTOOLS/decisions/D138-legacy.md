@@ -1,0 +1,16 @@
+---
+id: D138
+date: 2026-08-03
+status: accepted
+item: ''
+items: []
+supersedes: []
+superseded_by: null
+---
+## Решение
+
+**Владелец разрешил устранить оставшиеся выразительные дыры P4.3 реопеном P4.1.** Вектор получил identity `{tenant_id,session_id}` и identity preseed-записи: область dedupe проверяется как tenant + tool + key, session в неё не входит (`IDE-5`). Golden получил отрицательный raw-JSON результат `.error.json` с единственным кодом canonicalization failure; это сохраняет дублирующий ключ до канонизатора (`AOB-37`). P4.3 затем закрыл оба правила и полный COV документов `08`/`09`.
+
+## Почему
+
+Прямая команда владельца «разруливай» после отчёта о блокировке 2026-08-03; `fixtures/2026-08/{README.md,schema/vector.json}`, `tools/spec_lint.py`; item-коммиты `e4d7c6a`/`a7b463d`.

@@ -8,10 +8,12 @@
 Формат нормируется тремя схемами `schema/{vector,static-check,harness-case}.json`
 (JSON Schema 2020-12, диалект вектора формата — Список B `DR-02` §3: схемы формата
 описывают НАШИ векторы, а не провод, и закрываются `additionalProperties: false`).
-Целостность корпуса (каждый вектор структурно валиден против схемы своего класса,
-`spec_rule_ids` существуют в `rules.json`, `spec_rev` совпадает с именем ревизии,
-каталог совпадает с классом) проверяет `python3 tools/spec_lint.py --fixtures-check
-fixtures/2026-08`.
+Структуру корпуса и фактические приговоры класса `artifact` проверяет
+`python3 tools/spec_lint.py --fixtures-check fixtures/2026-08`. Полный проход ревизии
+`python3 tools/spec_lint.py spec/revisions/2026-08` дополнительно проверяет
+двунаправленную traceability по `rules.json`, уровни, `common/` и храповик числа векторов.
+Производный отчёт `coverage.md` обновляется только режимом `--coverage --write`, а его
+свежесть проверяется `--coverage --check`.
 
 ---
 
@@ -57,6 +59,46 @@ profile.md`; инлайнятся целиком — канонические ф
 (`IDE-4`/`IDE-5`/`IDE-16`/`IDE-17`), опциональны — не каждый преcидированный вектор их
 проверяет.
 
+Для проверки области ключа `given.identity` задаёт `{tenant_id, session_id}` текущего
+предъявления. В предзаданной записи те же необязательные поля описывают исходное
+предъявление. Драйвер сопоставляет запись по тройке `tenant_id`, `tool_name`, `key`;
+`session_id` намеренно не участвует в сопоставлении. Поля существуют только в корпусе
+векторов и не являются полями MCP-провода.
+
+`given.driver_state` — закрытое, целиком driver-only предзаданное состояние для
+behavior-векторов. Оно не добавляет полей в MCP-провод и существует, чтобы ожидаемый
+результат нельзя было получить из скрытого stub реализации. Каждая секция опциональна:
+вектор объявляет только stimulus, нужный его правилу; неизвестные ключи запрещены.
+
+| Секция | Содержимое | Граница |
+|:--|:--|:--|
+| `principals` | обязательные stable ids ролей `initiator`, `agent`, `authorizer` | ids driver-а, не wire identity |
+| `authorization` | `resource`, `tool`, опциональный `call_id`, разрешённые `permissions` на момент шага | вход per-call энфорсмента, не MCP authorization header |
+| `credentials[]` | `kind`, `source`, `issuer`, `audience`, `integrity`, `principal_id`, `scopes` | `source` различает `trusted_credential`, `argument`, `model_output`, `tool_result` |
+| `provenance[]` | `address` значения и `content_origin` | origin переиспользует published enum `tool-descriptor.json` |
+| `derivations[]` | source/target address и операция `substring|parse|transform|compute` | raw lineage производного значения, не verdict доверия |
+| `baggage[]` | точные пары `key`/`value` и опциональная raw classification (`opaque_identifier`, `personal_data`, `argument_value`, `confirmation_token`) | носитель composition/count/bytes boundary; classification задаёт harness до SUT |
+| `journal[]` | предзаданные lifecycle events | каждый элемент — published `lifecycle-event.json` |
+| `append_probe` | `storage_last_seq` и ещё не записанное `attempted_event` | stimulus storage adapter для optimistic conflict; invalid event не подмешивается в журнал |
+| `effects[]` | предзаданные projections effect registry | каждый элемент — published `effect-registry.json` |
+| `tool_results[]` | `{tool, content, is_error}` | минимальный result driver-а, не MCP result envelope |
+| `task_channel[]` | `{task_id, channel, status, message}` | `channel`/`status` переиспользуют published `task-binding.json` |
+| `confirmation` | proposal/token id, principal, prepared/current descriptor digest и args fingerprints | typed binding prepare→commit, не token wire format |
+| `audit_export` | adapter id, selected mapping version, опциональный независимый registry mappings, `external` boundary, attributes и audit fields | adapter-side вход, не поля audit schema |
+| `materialized_state` | mutable `{state, seq}` рядом с journal | competing projection input для ALC-4; journal остаётся источником истины |
+| `snapshot` | `{state, seq, spec_rev}` до восстановления | отдельная projection для ALC-33/34; не вкладывается в event payload |
+
+`given.policy.rules[]` задаёт только применимые `{scope, verdict}` с закрытыми enum
+`system|tenant|user|tool` и `deny|ask|allow`. Это вход Policy Layer для precedence, не
+ожидаемый результат и не wire policy. `confirmation` и `audit_export` столь же driver-only:
+они делают проверяемыми bindings/token-drift и границу export, но не разрешают помещать
+внешние telemetry-имена в схему ревизии.
+
+Внутри `driver_state` нет свободного `state` и нет `additionalProperties: true`.
+Предметный payload либо ссылается на опубликованную схему, либо остаётся минимальным
+закрытым driver-only контрактом, прямо отмеченным в схеме. Так P4.9 не создаёт новую
+нормативную семантику и не подменяет её удобным тестовым объектом.
+
 `llm_stub.toolCall` несёт опциональный `meta.idempotency_key` — носитель
 `_meta["dev.agentools/action"].idempotency_key`, ключ идемпотентности, который
 предъявляет ВЫЗЫВАЮЩИЙ (`IDE-1`…`IDE-4`): поле отдельно от `args` (ключ MUST NOT
@@ -76,11 +118,55 @@ profile.md`; инлайнятся целиком — канонические ф
 (продвинуть виртуальные часы харнесса — единственный способ детерминированно достичь
 TTL/`expires_at` без реального ожидания).
 
+Два дополнительных взаимоисключающих шага также принадлежат driver-у, а не MCP-проводу:
+`tool_result` подаёт закрытый `{tool, content, is_error}`, `task_message` — закрытый
+`{task_id, operation?, channel, status, message}`. `operation` называет raw request type
+driver-а; допустимые для `input_required` четыре типа фиксирует task-binding observation.
+Они могут следовать за начальным состоянием из
+`given.driver_state` и тем самым различают результат/сообщение, появившееся во время
+script, от уже предзаданного. Как и у остальных шагов, `maxProperties: 1` запрещает
+объединять два стимула в один шаг.
+
 `expect` — ожидаемое поведение: `events` (упорядоченный список частичных матчей, алгоритм —
 §3), `final_state` (одно из десяти состояний действия, `session-state.json#/$defs/
 ActionStatus`, `03_action-lifecycle.md`), опционально `tool_calls` (`{tool, args_subset?,
 phase: prepare|commit}`) и `error` (`{code}`, код — `error.json#/$defs/ErrorCode`,
 `09_idempotency-errors.md`).
+
+`llm_stub.toolCall.call_id` — опциональный driver-owned id конкретного вызова; он позволяет
+проверять per-call authorization без вывода области из session/tool name.
+
+`expect.observations[]` — отдельный канал фактов, снятых самим harness после исполнения
+SUT. Он не является lifecycle/audit event и никогда не заполняется из payload, который
+вернула тестируемая реализация. Закрытая сумма содержит ровно шесть границ:
+
+| `kind` | Кто снимает факт | Минимальный предмет |
+|:--|:--|:--|
+| `tool_boundary` | spy инструментального адаптера | фактические tool/phase/calls/route/args subset, call/actor/credential ids |
+| `journal_projection` | runner/storage spy над поданными raw immutable events | state, source event ids, emitted kinds, отсутствие write-back, опциональные read/append counts |
+| `audit_sink` | внешний telemetry/audit sink | число records, имена attributes, baggage count/bytes |
+| `task_binding` | task/MRTR channel adapter | opaque task/binding ids, state и protocol operations, на которых принят `input_required` |
+| `credential_boundary` | downstream resource adapter | resource, principals и реально пересланные credential ids |
+| `confirmation_boundary` | protocol-layer spy | число proposal, issued/consumed tokens и decision events |
+
+Harness protocol `1.1` переносит эти границы между отдельным adapter process и раннером
+закрытой парой `probe_call`/`probe_result`. Адаптер предъявляет фактическую boundary-operation,
+раннер исполняет fixture-owned dependency и строит observation из probe transcript; поля
+`result.tool_calls` и `result.observations` запрещены. `probe_id` — только корреляция внутри
+protocol shell и не доставляет реализации `expect` либо id вектора в `run.vector`.
+
+Каждое наблюдение закрыто `additionalProperties:false` и несёт `probe_id`, связывающий
+ожидание с harness-owned probe. Generic object намеренно отсутствует. Поля
+`projection_source`, `write_back_upcast`, `source_of_truth`,
+`hash_input_includes_prev_hash`, `chain_valid`, `execution_route` в SUT event/payload,
+`reject_passing_entries`, `grease_allowed`, а также magic carrier/type strings не являются
+наблюдением. `--observational-carriers-check` проверяет это fail-closed;
+`--observational-carriers-selftest` доказывает для каждого из шести типов schema-positive,
+schema-negative и schema-valid self-report mutant reject.
+
+Admission P6.2 дополнительно запускает `--behavior-executability-check`: semantic projection
+`{given,script}` группируется детерминированно, несовместимые exact `final_state`/единый
+`error` запрещены, а каждый ключ `expect` обязан иметь matcher и независимый carrier.
 
 `llm_stub` MUST присутствовать для каждого исполняемого шага, решение по которому
 принимает модель; шаги сценария, вызываемые рантаймом автоматически по отображению
@@ -159,13 +245,21 @@ RFC 8785 (JCS), нормативный источник — `08_audit-observabil
 содержимое — UTF-8 без BOM, **ровно один** завершающий перевод строки (LF). Сравнение —
 структурное, затем байтовое (`CFH-36`).
 
+Успешная golden-пара несёт `<имя>.input.json` + `<имя>.golden.txt`: чистый RFC 8785
+вход и эталон. Отрицательный канонизационный кейс вместо эталона несёт
+`<имя>.input.json` + `<имя>.error.json`, где второй файл — строго
+`{"code":"agentools.validation.canonicalization_failed"}`. Его `input` читается
+как сырой UTF-8-текст: это позволяет сохранить дублирующиеся имена объекта, которые
+обычный JSON-декодер потерял бы до передачи канонизатору. Раннер обязан передать сырые
+байты канонизатору и ожидать указанный код, а не пытаться сравнивать их с `golden.txt`.
+
 `golden/**/*.input.json`/`*.golden.txt` несут ТОЛЬКО чистый RFC 8785 вход/эталон —
 `spec_rule_ids` в них не добавляется: это исказило бы официальный тест-вектор. Покрытие
 регистрируется третьим файлом-компаньоном `<имя>.meta.json` рядом с парой —
 `{"spec_rule_ids": [...], "conformance_level": "L1"}` (только эти два поля; `id`/
 `vector_class`/`spec_rev` не несёт — это не вектор ни одного из трёх классов §1, а
-регистрационная запись покрытия). `<имя>.meta.json` MUST существовать для каждой
-`<имя>.input.json`/`<имя>.golden.txt` пары ровно один раз, иначе `--fixtures-check`
+регистрационная запись покрытия). `<имя>.meta.json` MUST существовать для каждой пары
+результата (`.golden.txt` ИЛИ `.error.json`) ровно один раз, иначе `--fixtures-check`
 считает пару непокрытой. `COV(<документы>)` (`phases/P4.md` Phase Context) сканит
 `golden/**/*.meta.json` наравне с `vectors/`/`static/`/`harness/` — исключены из скана
 только сами платежные файлы пары (`*.input.json`, `*.golden.txt`), не каталог `golden/`
@@ -184,9 +278,10 @@ RFC 8785 (JCS), нормативный источник — `08_audit-observabil
 пределах ОДНОГО каталога (`vectors/l{1,2,3}/`, `static/`, `harness/` — три независимых
 пространства имён, а не одно на весь корпус).
 
-Golden-пара — отдельная конвенция, вне пространства имён `id` вектора: `<имя>.input.json`
-+ `<имя>.golden.txt` + `<имя>.meta.json` (§7), общий `<имя>` — это идентификатор пары, а
-не поле `id` (компаньон не вектор, `id` не несёт).
+Golden-кейс — отдельная конвенция, вне пространства имён `id` вектора:
+`<имя>.input.json` + ОДИН из `<имя>.golden.txt` / `<имя>.error.json` +
+`<имя>.meta.json` (§7), общий `<имя>` — идентификатор кейса, а не поле `id`
+(компаньон не вектор, `id` не несёт).
 
 ## 9. Правило самодостаточности
 
@@ -196,15 +291,13 @@ Golden-пара — отдельная конвенция, вне простра
 (офлайн-резолв кросс-файловых `$ref`, `--fixtures-check` §10 плюс эмпирический прогон
 `bakeoff/results/layer1-fixtures-refs.log`).
 
-## 10. Классы `artifact`/`harness` в фазе P4 — данные, а не декларация
+## 10. Классы `artifact`/`harness` на гейте P4
 
-`static/` (класс `artifact`) — исключение из оговорки честности §1: `tools/spec_lint.py`
-уже существует, но в фазе P4 (`--fixtures-check`) он проверяет только СТРУКТУРУ каждого
-вектора корпуса (обязательные поля, потолок `spec_rule_ids`, соответствие каталога
-классу) — не исполняет `subject` над `expect.linter`. Исполнение `artifact`-векторов
-линтером как гейта (сверка фактического приговора с `expect.linter`/
-`expect.diagnostic_substring`) — Scope Included item `P4.5` этого же плана, отдельным
-шагом после того, как корпус написан.
+`static/` (класс `artifact`) — исключение из оговорки честности §1: начиная с P4.5
+`--fixtures-check` исполняет каждый `subject` и сверяет фактический приговор с
+`expect.linter`/`expect.diagnostic_substring`. Численные schema-пробы используют тот же
+физический walker D139, что и реальные authoring-схемы: root depth=0, закрытый список
+schema-bearing keywords, без разыменования `$ref`.
 
 `harness/` (класс `harness`) MUST NOT считаться исполненным в фазе P4: раннера
 conformance ещё нет, самотест, который читает `transcript` и выносит `expect.outcome`,
@@ -214,5 +307,5 @@ conformance ещё нет, самотест, который читает `transc
 «покрытие на бумаге» — это честная граница фазы (`research/03-p4-vector-corpus-2026-08.md`
 §3, `D26`): вектор `harness`-класса, написанный сейчас, — воспроизводимая данная
 спецификация ожидания, а его реальное исполнение отложено до самотеста раннера. Оба
-класса не исполняются полностью до своих исполнителей: `artifact` — до `P4.5`,
-`harness` — до `P6`.
+Класс `artifact` исполняется гейтом P4.5; `harness` остаётся структурной спецификацией
+ожидания до P6.

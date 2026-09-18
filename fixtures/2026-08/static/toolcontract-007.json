@@ -1,0 +1,20 @@
+{
+  "id": "toolcontract-007",
+  "title": "Сохранение non-target tool-profile coverage",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "TLP-1",
+    "TLP-6",
+    "TLP-9",
+    "TLP-10"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "tool_contract_case",
+    "inline": "{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a CRM task.\\nCall when: a task status changes.\\nRequired arguments: task_id, status.\\nExample: crm_task_update(task_id=\\\"t-1\\\", status=\\\"done\\\")\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{\"readOnlyHint\":false,\"destructiveHint\":false,\"idempotentHint\":true,\"openWorldHint\":false},\"_meta\":{\"dev.agentools/action\":{\"side_effect\":\"write\",\"confirmation\":true}}}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

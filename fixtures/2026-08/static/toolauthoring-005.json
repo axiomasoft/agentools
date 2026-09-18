@@ -1,0 +1,18 @@
+{
+  "id": "toolauthoring-005",
+  "title": "TLP-31: one-fault raw schema отклоняется",
+  "vector_class": "artifact",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "TLP-31"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "authoring_schema_profile",
+    "inline": "{\"published\":{\"type\":\"array\",\"items\":[{\"type\":\"string\"},{\"type\":\"integer\"}]},\"authoring\":{\"type\":\"array\",\"items\":[{\"type\":\"string\"},{\"type\":\"integer\"}]}}"
+  },
+  "expect": {
+    "linter": "reject",
+    "diagnostic_substring": "tuple обязан"
+  }
+}

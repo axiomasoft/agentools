@@ -1,0 +1,38 @@
+{
+  "id": "scenario-004",
+  "title": "Глубина AST 33 превышает опубликованный предел 32",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": ["SCN-16", "SCN-21", "SCN-22"],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Проверяет детерминированный сценарный вызов без побочного эффекта.\nCall when: Нужен безопасный probe для проверки исполнения сценария.\nRequired arguments: value\nExample: demo_probe({\"value\":\"probe\"})",
+        "inputSchema": {"type": "object", "properties": {"value": {}}},
+        "outputSchema": {"type": "object", "properties": {"value": {}}},
+        "annotations": {"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true, "openWorldHint": false},
+        "_meta": {"dev.agentools/action": {"side_effect": "read", "confirmation": "none", "permissions_hint": ["demo.read"]}}
+      }
+    ],
+    "scenario": {
+      "scenario_id": "ast_depth_33",
+      "title": "Условие с 33 вложенными уровнями",
+      "spec_rev": "2026-08",
+      "steps": [
+        {"id": "probe", "tool": "demo_probe", "when": "(((((((((((((((((((((((((((((((((true)))))))))))))))))))))))))))))))))", "input_map": {"value": "boundary"}, "on_technical_fail": {"action": "abort"}}
+      ]
+    }
+  },
+  "script": [{"user_input": "Выполни шаг с выражением глубины 33."}],
+  "expect": {
+    "events": [
+      {"kind": "audit.limit_exceeded", "payload": {"limit_name": "expression.max_depth", "limit_value": 32, "observed": 33}},
+      {"kind": "step_failed", "payload": {"scenario_id": "ast_depth_33", "step_id": "probe", "failure_class": "technical", "reason": "limit_exceeded"}},
+      {"kind": "audit.scenario_run_finished", "payload": {"scenario_id": "ast_depth_33", "outcome": "FAILED"}}
+    ],
+    "final_state": "failed",
+    "error": {"code": "agentools.budget.limit_exceeded"}
+  }
+}

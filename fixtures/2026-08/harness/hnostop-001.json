@@ -12,7 +12,7 @@
       "direction": "runner_to_adapter",
       "message": {
         "type": "start",
-        "harness_protocol_version": "1.0",
+        "harness_protocol_version": "1.1",
         "spec_rev": "2026-08"
       }
     },
@@ -51,7 +51,8 @@
       "message": {
         "type": "result",
         "vector_id": "cnf-token-single-use",
-        "outcome": "completed"
+        "outcome": "completed",
+        "final_state": "completed"
       }
     }
   ],
