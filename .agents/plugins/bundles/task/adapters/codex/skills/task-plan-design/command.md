@@ -1,294 +1,106 @@
 <!-- Generated Codex runtime projection; do not edit as source.
 Canonical source: packages/task/commands/plan-design.md
-Canonical SHA-256: sha256:bf844e475b3cf55ec4ac4ce715a15692ac53b21f315c585ff9696f30aa3cddf2
-Adapter: task.codex-command/1.0.4
+Canonical SHA-256: sha256:d5d75c7d162f7221c1057b2970b1e4e4026cd06e8f835a9f580479ecd788fc9c
+Adapter: task.codex-command/1.0.15
 -->
-Это ПРОЕКТИРОВАНИЕ мастер-плана (plan-протокол). Ввод пользователя: «$ARGUMENTS».
-Модель/effort запинены (frontier/high) — не переключай вручную. SSOT протокола — скилл
-`plan-protocol` (general): схемы, статусы, эскалация, routing-матрица, refine-цикл (§7);
-шаблоны — его `snippets/{plan,phase,handoff,launch-block}-template.md`. Ты пишешь план,
-который дешёвая модель исполнит БЕЗ доступа к этому чату.
+## Native Codex launch-block — required only at a real user-facing boundary
 
-## Режимы (по $ARGUMENTS)
+This generated runtime is the Codex provider projection. Render only the Codex-native launch;
+never copy Claude Code slash syntax as the executable invocation and never print both providers.
+`$ task:…` is an invocation inside the **current** Codex session, not a fresh launch.
+When the typed Context is `continue-root`, keep executing the compatible ready successor within
+the owner-authorized scope in this root. If that scope is complete, report the exact successor as a
+recommendation for this chat; a final answer does not require a new `codex` process. A command, phase, directory, local repair, or ordinary test failure is not a session
+boundary.
 
-1. **`new <название>`** — новый план: после анализа брифа оцени объём и объяви дизайн-бюджет
-   в `## 0. Meta`: `Design Passes: 1/N — <обоснование>` (SKILL §5: ≤3 фаз/≤10 items → 1;
-   4–7 фаз/15–35 items → 2; кросс-репо/ядро экосистемы/высокая неопределённость → 3);
-   каждый следующий прогон — НОВАЯ сессия, финал прогона: k++ в Meta + Update Log-строка
-   «что сделано / куда не дотянулись / фокус следующего» + handoff.Next с этим фокусом.
-   Выбери `PLAN-ID` по датовому канону (SKILL D16):
-   `<ГГГГ>.<ММ>.<ДД>-<КОДОВОЕ-ИМЯ>`, напр. `2026.07.10-SETTINGS-DOCTOR` (legacy
-   `[A-Z][A-Z0-9-]+` — только back-compat уже существующих планов, для новых НЕ использовать),
-   создай `plans/<ID>/brief/00-brief.md` — исходное сообщение владельца, переформулированное
-   БЕЗ потери мыслей (слой 0, ОБЯЗАТЕЛЕН — без него `plan-lint` ERROR и план не проходит
-   утверждение; всё выясняемое дальше дописывай датированными блоками в
-   `brief/01-refinements.md`), затем `plans/<ID>/plan.md` по шаблону (секции 0–6 +
-   опциональные `## 7. Contracts`/
-   `## Обсуждение` — заводи, только если план их несёт), скелеты фаз `plans/<ID>/phases/Pn.md`
-   (Phase Context со скелет-маркером — фиксированная строка
-   `> СКЕЛЕТ — не детализирован, разворачивается $ task:plan-design <ID> Pn` —
-   + Phase Status + items-скелеты; каждый item несёт ВСЕ 16 полей строками (при маркере
-   пустые поля легальны, включая Code Guidance = «—», но САМИ ПОЛЯ обязаны быть — иначе
-   ERROR `plan-lint`)) и `handoff.md` (Next: первый item;
-   заголовок стартового handoff — `# HANDOFF — <дата> — after P0.0`: bootstrap-канон,
-   закрытых items ещё нет, а линт требует строго `after Pn.m`).
-   **Полная детализация — дефолт, конвейер ПОФАЗНЫЙ (SKILL §5):** скелеты `new` —
-   промежуточное состояние авторинга; до первого exec ВСЕ фазы доводятся до DoR.
-   Штатный конвейер: `new` (вид сверху: скелеты+контракты — здесь задаются вопросы,
-   выравнивающие ВСЁ) → `<PLAN-ID> P0` … `<PLAN-ID> Pn` — каждая фаза ОТДЕЛЬНОЙ
-   командой/сессией: фазы слабо связаны, вопросы и утверждение владельцем происходят
-   ВНУТРИ захода фазы; проектировать 5+ фаз одним потоком — риск ошибок и смешанных
-   согласований (допустимо только для малых планов ≤3 фаз или по явному выбору владельца)
-   → финал `<PLAN-ID> finish` (режим 5: закрытие дыр; roadmap — его последний шаг) →
-   `$ task:plan-audit <ID> design` → exec. Exec по живым скелетам — только по явной
-   D-записи (волатильная фаза).
-   **Contract-first (опционально, скилл `plan-protocol` §5):** можно запечатать ВСЕ фазы
-   скелет-маркерами и вписать в каждый `Phase Context` контракт-блок
-   `> **Контракт фазы (contract-first).** Потребляет: … · Производит: … · Границы: …`
-   (что фаза берёт от предыдущих / отдаёт следующим / сознательно не трогает); детали items —
-   just-in-time при `<PLAN-ID> Pn`. Плюс перечисли coupling-поверхность (файлы/канон, трогаемые
-   ≥2 фазами) в `## 5. Decision Log`. Контракт-блок опционален (отсутствие ≠ дефект).
-   **Constitution-гейт (план нового Axioma-проекта/пакета):** ДО фиксации стека и несущих
-   архитектурных решений в плане прогони `axioma-doctrine` → `ecosystem-reuse-gate`
-   (аналог constitution-check spec-kit, RAG:✅ P5.1 §1); reuse-вердикт зафиксируй в
-   `## 5. Decision Log`.
-   Затем создай/обнови `plans/ACTIVE.md` (в корне `plans/`, НЕ внутри `plans/<ID>/`) —
-   канонический формат 4 строки: `# ACTIVE`, пустая строка, `**Active:** <PLAN-ID>`,
-   `**Updated:** <YYYY-MM-DD>` (файла нет — создай; есть — перезапиши по канону, указав
-   новый `PLAN-ID`). Если ACTIVE указывал на другой незакрытый план — допиши ЕМУ в
-   `## 0. Meta` поле `Paused By: <новый PLAN-ID>, <YYYY-MM-DD>` (+строка в его Update Log):
-   перехват ACTIVE не бывает молчаливым. Смену Active зафиксируй строкой в
-   `## 6. Update Log` нового плана.
-2. **`<PLAN-ID> Pn`** — спроектировать фазу: заполнить `## Phase Context` (5–10 строк,
-   самодостаточно — фаза исполнима без чтения других фаз; скелет-маркер убрать) и разложить
-   на items `### Pn.m — Title` со всеми полями; синхронизировать Status Board в plan.md.
-   Финал режима — обязательный refine-цикл + DoR-чеклист (ниже).
-   **Журнал (D21, P1.1):** append ОДНУ запись (item_id = `Pn` — фаза, не item; design-сессия
-   не закрывает item'ы, `result` честно отражает это) — `python3 -m task.journal append
-   --plan-dir plans/<PLAN-ID> --plan <PLAN-ID> --item Pn --command plan-design --actor
-   frontier/high --result in-progress --note "фаза детализирована до DoR"`.
-   **Reconcile контракт-блока (contract-first, скилл `plan-protocol` §5):** если фаза несёт
-   контракт-блок `> **Контракт фазы (contract-first).**`, при детализации сверь его `Потребляет`
-   с `Производит` уже закрытых фаз; расхождение → обнови блок + D# (`supersedes D#` при отмене
-   раннего решения). Дёшево — скелет не терминален.
-   **Реопен фазы** (Pn уже терминальна 🟢/🟠) — четыре шага обязательны (пропуск = находка
-   аудита): (1) Status фазы → `🟡` синхронно в Status Board `plan.md` и `## Phase Status`;
-   (2) version bump плана; (3) D-запись о причине реопена; (4) `## Phase Handoff` реопененной
-   фазы ИНВАЛИДИРУЕТСЯ — блок не удаляется, его первой непустой строкой ставится маркер
-   ДОСЛОВНО `> УСТАРЕЛ — фаза реопенена <D#>` (снимает его только `plan-close` при следующем
-   закрытии фазы). `handoff.md` в этом случае пишется с заголовком `after Pn` (не `Pn.m`).
-3. **`<PLAN-ID> Pn.m`** — довести один item до исполняемого ТЗ: дозаполнить все поля
-   до уровня «implementation исполнит без вопросов». Финал режима — refine-цикл + DoR-чеклист (ниже).
-   **Журнал (D21, P1.1):** append ОДНУ запись — `python3 -m task.journal append --plan-dir
-   plans/<PLAN-ID> --plan <PLAN-ID> --item <Pn.m> --command plan-design --actor frontier/high
-   --result in-progress --note "ТЗ item'а доведено до DoR"`.
-   **Историческое исключение (D51):** schema-invalid существующую journal-строку нельзя
-   переписывать или компенсировать event'ом. Только explicit Owner D# может дописать
-   `journal-exceptions.jsonl` через `python3 -m task.journal exception --plan-dir
-   plans/<PLAN-ID> --target-line N --invalid-fields friction --owner-decision D# --actor
-   <actor> --reason "..."`; writer и linter fail closed на любом неexact target/hash/field.
-4. **`from-draft <файл>`** — мост встроенного plan mode Claude Code → протокол (событие
-   ExitPlanMode не существует — авто-хука нет, мост ручной, но одношаговый). `<файл>` —
-   плоский одобренный черновик `plans/<slug>.md` (конвенция: плоский `.md` в `plans/`, кроме
-   `ACTIVE.md`/`README.md`, — черновик plan mode; `plan-lint` их видит и подсказывает этот
-   режим WARNING'ом). Прочитай черновик целиком, предложи `PLAN-ID` по датовому канону из
-   даты конвертации + slug'а (upper-kebab; напр. `plans/pilot-azg.md` →
-   `2026.07.16-PILOT-AZG`) — **финальный ID подтверждает
-   человек** перед созданием файлов. Затем разверни черновик в `plans/<ID>/` по тем же
-   шаблонам скилла `plan-protocol`, что и режим `new` (`plan.md` все секции 0–6, скелеты
-   `phases/Pn.md` со скелет-маркером, `handoff.md`): черновик НЕ переносится как есть —
-   транскрибируется (все 16 полей каждого item'а, **Code Guidance обязателен**, как в режиме
-   `new`). В `## 5. Decision Log` нового плана зафиксируй происхождение отдельной строкой:
-   `D1 | <YYYY-MM-DD> | Источник — черновик plans/<slug>.md | bootstrap-транскрипция
-   одобренного черновика plan mode`. После записи файлов **удали черновик** `plans/<slug>.md`
-   (история — в git, дублей не держим). Финал — как у `new`: создай/обнови `plans/ACTIVE.md`
-   в корне `plans/` по канону 4 строки (`**Active:** <новый PLAN-ID>`,
-   `**Updated:** <YYYY-MM-DD>`), допиши `Paused By` предыдущему активному плану
-   + строка в `## 6. Update Log` нового плана.
-5. **`<PLAN-ID> finish`** — финальное закрытие дыр после детализации ПОСЛЕДНЕЙ фазы
-   (вывод «конфликты устранены» делается, только когда видны ВСЕ подробности).
-   Шаги: (0) гейт дизайн-бюджета — `Meta Design Passes: k/N`: при k<N остановись и предложи
-   следующий прогон (finish при недоборе прогонов — только по явной D-записи владельца);
-   (1) гейт — скелет-маркеров нет ни в одной фазе (есть → назови фазы и остановись:
-   сначала `<PLAN-ID> Pn`); (2) **сквозной reconcile**: контракт-блок каждой фазы —
-   `Потребляет` производится предыдущими; coupling-hotspot'ы D-лога против фаз; артефакты
-   design-items (матрицы/спеки/ADR) — каждый производитель существует до потребителя;
-   Required Reads указывают на существующие файлы; расхождение → правка фаз + D#
-   (`supersedes` при отмене раннего решения); (3) DoR-свип всех фаз (чеклист ниже, включая
-   бриф-трассировку по research/00-user-intent); (4) ТОЛЬКО когда дыры закрыты — последним
-   шагом собрать `roadmap.md` (механика режима 6); (5) version bump + Update Log +
-   `plan-lint`. Historical schema-invalid journal row не «гасится» compensating event:
-   append-only сохраняется через owner D# + `task.journal exception` sidecar по канону
-   plan-protocol §2, затем lint обязан быть перепроверен. Финал сообщения — launch-block на
-   `$ task:plan-audit <PLAN-ID> design`
-   (frontier/xhigh, NEW SESSION). Найдены дыры, которые не закрыть этим заходом, → отчёт
-   владельцу + launch-block на `<PLAN-ID> Pn` проблемной фазы, roadmap НЕ собирается.
-6. **`<PLAN-ID> roadmap`** — лёгкая пересборка ТОЛЬКО исполнительской карты (без
-   полного свипа): после изменения/добавления/закрытия фаз, смены Routing или re-design'а.
-   Шаги: гейт на скелеты (как в finish) → перечитать Status Board + Phase Status всех фаз →
-   пересобрать `roadmap.md` по `snippets/roadmap-template.md` (закрытые items пометить,
-   батчи/workflow/solo с обоснованиями, гейты владельца, launch-block'и групп; roadmap не
-   переопределяет Routing §3) → строка Update Log. Если с последнего `finish`/`audit design`
-   менялись КОНТРАКТЫ фаз (не только статусы) — предупреди владельца, что нужен новый
-   `finish`, а не только пересборка карты.
+At a fresh-session boundary, keep Batch/Model/Thinking/Context/Суть in the metadata table,
+but never put the command in a table
+cell or column. Immediately after the table print `**Native Codex command:**` and a fenced `bash`
+block which explicitly pins the repository cwd, mapped model, reasoning effort, approval policy,
+and sandbox:
 
-**Compiler (P2.2).** `§3 Routing`, портируемость (D26/D47) и precedence/conflict-разрешение
-компилируются одним модулем — `packages/task/lib/task/task_contract.py`
-(`root/contracts/task-contract-v1.md`, `root/contracts/plan-portability-v1.md`). Пишешь
-здесь Routing/tier-признаки item'а — не пересказывай сами предикаты второй прозой; их
-владелец компилятор, эта команда только производит вход для него.
+```bash
+codex -C <repo-cwd> -m <model-selector> -c 'model_reasoning_effort="<effort-selector>"' -a never -s danger-full-access '$ task:<command> <arguments>'
+```
 
-## Схема (компактная выжимка — на случай отсутствия скилла)
+Prefer one physical command line. If intentional formatting uses multiple shell lines, terminate
+every continued line except the last with `\`; never rely on Markdown visual wrapping.
 
-- `plan.md`: `## 0. Meta` (таблица: Plan ID / Title / Version / Status / Document Type /
-  Authoring Model / Last Updated / Repository / Related Packages / Execution Mode /
-  Target Operator Models / Approval Owner; необязательные: `Home` — `brain`|`repo:<путь>`,
-  `Paused By` — кто перехватил ACTIVE и когда) · `## 1. Context` (5–15 строк, самодостаточно) ·
-  `## 2. Execution Rules` (выжимка ≤20 строк) · `## 3. Routing` — канон-таблица
-  `| Items | Model/effort | Exec | Почему |` (SKILL §9; опц. колонки `Batch` — id группы подфаз
-  одной сессии — и `Review` — глубина ревью `full`|`light`|`none` — для батчинга подфаз,
-  легаси-форма без них валидна); колонка **Exec** — enum `plan-exec` |
-  `manual` | `plan-design`; пустая ячейка = дефолт-деривация (`model ≤ implementation` И `effort ≤
-  medium` → `plan-exec`, иначе `manual`); design/contract-item'ы получают `Exec = manual`
-  явно; пустая секция = дефолты SSOT-матрицы ·
-  `## 4. Phase Index & Status Board` (`Phase | Title | Items 🟢/всего | Status`) ·
-  `## 5. Decision Log` (`D# | Дата | Решение | Почему`) · `## 6. Update Log` (append-only:
-  `Дата | Кто | Что`; «Что» ≤ 2 строк, канон
-  `<item> закрыт: <1 строка сути> — детали см. phases/Pn.md <item> Completion Notes`,
-  пересказ Completion Notes запрещён) · `## 7. Contracts` (ОПЦИОНАЛЬНАЯ — только у планов,
-  экспортирующих/потребляющих замороженные контракты; линтер опознаёт секцию по ЗАГОЛОВКУ,
-  не по номеру — занят 7, ставь под свободным) · `## Обсуждение` (ОПЦИОНАЛЬНАЯ, БЕЗ номера,
-  последней секцией: каждая развилка несёт `**Статус:** Resolved → D# | Decision pending |
-  Exploration`; всё, что ≠ `Resolved` — запись в `open-questions.md`).
-- `phases/Pn.md`: `# Pn — Title` → `## Phase Context` (скелет-маркер, если фаза не
-  детализирована) → `## Phase Status` (`ID | Title | Status | Updated`) → items →
-  `## Phase Handoff`.
-- Item: заголовок СТРОГО `### Pn.m — Title`; поля СТРОГО строками `**Поле:** значение`,
-  в этом порядке: Status, Intent, Why, Scope Included, Scope Excluded, Inputs, Files,
-  Required Reads, Implementation Rules, Code Guidance, Validation, Deliverables,
-  Completion Notes, Pending Work, Known Deviations, Escalation Needed.
-  Пустое значение — канонический символ «—» (не пустая строка, не «N/A»);
-  у `Escalation Needed` — и ТОЛЬКО у него — маркер `no` равноправен «—».
-- Статусы — РОВНО 6 канонических строк, байт-в-байт:
-  `⬜ Not started` · `🟡 In progress` · `🟢 Done` · `🟠 Done with deviations` ·
-  `🔴 Blocked` · `⛔ Skipped by decision`. Гейты статусов: коммит-гейт закрытия +
-  DoR-гейт перевода фазы в исполнение (SKILL §6).
-- `handoff.md`: заголовок — две формы (SKILL §8): `# HANDOFF — <ISO-дата> — after Pn.m`
-  (закрыт item) либо `# HANDOFF — <ISO-дата> — after Pn` (закрыта/проаудирована/
-  ре-дизайнена/реопенена ФАЗА) + Next / Done / Remaining / Sources of truth / Open risks /
-  Workarounds-Deferred-Open questions; перезаписывается целиком. Next — в форме
-  launch-block, самодостаточный из холодной сессии (SKILL §8).
-- Раскладка 2.0: обязательны `plan.md`/`phases/`/`handoff.md`; опционально `findings/`,
-  `research/`, `artifacts/` (судьба — архив), `root/` (судьба — docs проекта),
-  `open-questions.md` (протокол спорного — SKILL §3).
+**Final-response guard:** continue compatible work inside the admitted owner scope. At an actual
+chat stop, include the exact shared receipt recommendation even when no terminal-admission lease
+is installed. `scope-complete` retains `continue-root`; it does not authorize the successor or
+require a fresh launch. An explicit new-session request updates the persisted decision to
+`cold-start-root: owner-requested-new-session` with a fresh post-close checkpoint. Then include the
+copyable native Codex block after the metadata table. Waiting continuations retain the exact gate;
+never present them as an unconditional command to run now. A completed objective needs no invented
+successor. Render only the active provider.
 
-## Требования к качеству
+Derive the class and effort from the next item's Routing before rendering it; for `plan-run`,
+do not reuse the preceding session's route. Current Codex mapping: economy=gpt-5.6-luna, implementation=gpt-5.6-terra, frontier=gpt-5.6-sol;
+low=low, medium=medium, high=high, xhigh=xhigh. At a fresh-session boundary, keep the provider-neutral Next too; its
+`$ task:…` form alone or an unpinned `codex` command is not a native fresh launch.
 
-- **Каждый item исполним implementation'ом без доп. контекста**: Required Reads конечны и
-  упорядочены (не «посмотри по репо»), **Code Guidance обязателен** (стиль решения,
-  запреты, обязательные тесты, запрещённые shortcuts — то, что дешёвая модель не выведет
-  сама; формулировки бери из `snippets/code-guidance-patterns.md` — анти-подгонка,
-  анти-самообман, if-then эскалация к D# — не изобретай заново), Validation — конкретные
-  команды (что прогнать и что считается зелёным).
-- **Никаких самовольных допущений.** Спорное/неоднозначное место — либо маркер
-  `[NEEDS CLARIFICATION: <вопрос>]` прямо в тексте, либо вопрос владельцу; молча принятое
-  допущение — дефект. Принятые решения фиксируй в `## 5. Decision Log`; правку плана
-  отметь строкой в `## 6. Update Log`; долгоживущее спорное — в `open-questions.md`
-  по протоколу SKILL §3.
-- **D-запись, отменяющая/заменяющая ранее принятое решение** (`supersedes D#`, «отменяет
-  D#», «отменён»/«отменена»/… — форма роли, а не буквальная строка), несёт инлайн-подполе
-  `**Consequences:**` внутри той же ячейки `Решение` — чем платим за отмену/замену (SKILL
-  §6). Пятая колонка D-лога не заводится (шапка — литерал реестра, правка означала бы
-  переписывание шапки во всех планах флота). При `Closure Protocol | v1` и дате записи ≥
-  канонической cutoff-дате правила (SKILL §6) — машинный ERROR (`plan_lint.py`), но
-  дисциплина обязательна независимо от того, включён ли Closure Protocol на этом плане.
-- **RAG-маркеры на несущих — enum ТРЁХ значений (SKILL §7).** Каждый load-bearing
-  факт/вердикт в Intent/Why/Implementation Rules и в D-логе несёт РОВНО один: `RAG:✅
-  <дата/суть запроса>` (внешний факт верифицирован RAG-лестницей context7 → perplexity →
-  WebSearch); `RAG:— (repo-grounded: <файл:строка>)` (repo-grounded/внутреннее правило —
-  внешней верификации не требует; НЕ годится ни для одного внешнего факта); `[UNVERIFIED]`
-  (не проверено, риск принят явно). Несущий пункт без маркера = дефект схемы, находка аудита.
-- **Слои знаний обязательны (SKILL §16): ничего несущего не остаётся только в чате.**
-  Во ВСЕХ режимах (включая `new`): (0) слой 0 — бриф владельца в `plans/<PLAN-ID>/brief/`
-  (00-brief.md — переформулировка входа без потери мыслей; уточнения/решения по ходу —
-  датированными блоками в 01-refinements.md; гейт plan-lint); (1) слой 1 — всё внешнее (RAG-выжимки с источником-URL
-  + датой + вердиктом, recon-отчёты субагентов, выжимки исходных документов и их вложения) —
-  в `plans/<PLAN-ID>/findings/` В ТОМ ЖЕ ходе, когда получено; (2) слой 2 — твой авторский
-  синтез (анализы, целевые структуры, доменные модели, тест-стратегии, user-intent выжимка
-  требований владельца с трассировкой «мысль → куда ушла») — в `plans/<PLAN-ID>/research/`,
-  каждый синтез ссылается на файлы слоя 1; (3) слой 3 — D-записи ссылаются на файлы слоёв
-  1–2. Items указывают файлы слоёв в `Inputs`/`Required Reads`; при детализации фазы её
-  research-файлы читаются первыми. Цепочка «сырьё → синтез → решение» обязана
-  восстанавливаться из файлов плана без этой сессии; несущий факт только в чате — дефект.
-- **Кап делегирования.** Субагент-разведчик заводится только под крупный, реально независимый
-  и параллелимый трек разведки (широкое многофайловое чтение репо, отдельная грань внешнего
-  поиска). Что доделаешь сам за несколько тул-вызовов — не делегируй; хватает одного
-  разведчика — запускай одного, а не нескольких; число спавнов держи низким. Субагент
-  «перепроверь мою же работу» запрещён — DoR-чеклист и refine-цикл ниже ведёшь сам.
-  RAG-ступень (`context7`/`perplexity-web`) капом НЕ ограничена: это инструмент, а не субагент.
-- Phase-first: items не прыгают между фазами; фазы закрываются последовательно.
-- **Тайм-гейтовый Deliverable — отдельный item.** Если часть Deliverables требует
-  календарного окна (накопить данные, дождаться прод-недели) И от неё зависит Inputs
-  более позднего item'а — выдели её в собственный follow-up item (доска честно покажет
-  его открытым), а не оставляй хвост в Pending Work: downstream-исполнитель читает
-  Status Board, а не прозу закрытого item'а.
+## Codex current-route binding — provider-specific
 
-## Refine-цикл и DoR (обязательный финал режимов `Pn`/`Pn.m`)
+Before the first product-journal mutation, capture the effective route for this exact command:
 
-Канонический контур (SKILL §7): design → self-audit по DoR-чеклисту → правка → повтор
-до 0 маркеров `[NEEDS CLARIFICATION]`.
+```bash
+export TASK_CODEX_ROUTE_EVIDENCE="$(PYTHONPATH="$(codex plugin marketplace list --json | python3 -c 'import json,sys,pathlib; data=json.load(sys.stdin); roots=[item["root"] for item in data.get("marketplaces", []) if item.get("name")=="swissknifeman" and (pathlib.Path(item["root"])/"packages/task/lib/task").is_dir()]; len(roots)==1 or sys.exit("task runtime unavailable: expected one marketplace root with packages/task/lib/task"); print(roots[0]+"/packages/task")')/lib"   python3 -m task.route_evidence_codex capture   --expected-invocation '$ task:plan-design <arguments>' --expected-cwd <repo-cwd>)"
+```
 
-**Клинч рефайна** (фикс одной фазы/item'а рябит в другую) — не гоняй per-change (thrash)
-и не копи до big-bang: рефайни **средним батчем вокруг ОДНОГО coupling-hotspot'а**,
-интеграционная валидация DoR ПОСЛЕ КАЖДОГО батча, финальная консолидация одним проходом;
-пустой feasible-set → удали вариант (SBD, не патчь), стратегия декомпозиции → эскалация к
-Perplexity. Полный канон RECOVERY-дисциплины + критерий остановки — **SKILL §7 «RECOVERY
-при клинче»** (носители — контракт-блок §5 / батчинг §9, не дублируй).
+Replace `<arguments>` and `<repo-cwd>` with the exact current invocation payload and repository
+cwd. A non-zero exit is `ROUTE-UNVERIFIABLE`; do not start or mutate the product item.
 
-Перед выдачей «фаза готова» прогони DoR-чеклист:
-маркеры сняты; Scope Included/Excluded фазы заполнены; Alternatives несущих решений —
-в D-логе; Open Questions разнесены по статусам; несущие факты несут RAG-маркеры;
-внешние факт-классы фазы перечислены, у каждого — источник;
-**§3 Routing покрывает каждый item фазы ПОСТРОЧНО** (или явно сказано — действуют дефолты §9);
-тир модели — по Tier policy §9 (верхний тир ТОЛЬКО при открытых design-решениях/необратимой
-цене ошибки; «effort high+» тир НЕ поднимает); диапазон-строка легальна лишь для однородных
-items (один риск-класс, одна фраза «почему» истинна для каждого — SKILL §9 «Гранулярность»),
-design/contract-item'ы несут `Exec = manual`; **план экспортирует/потребляет
-замороженные контракты → `## 7. Contracts` заполнена**; **каждая развилка
-`## Обсуждение` несёт `**Статус:**`**, всё, что ≠ `Resolved` — в `open-questions.md`;
-**скелет-items несут все 16 полей**; **бриф синхронизирован** — слой 0 (`brief/`) дополнен
-выясненным в этом заходе, каждая мысль брифа, относящаяся к фазе, покрыта item'ом или
-D-записью; **roadmap.md собран/обновлён**, если этот заход завершил детализацию всех фаз
-(гейт plan-lint: детализирован без roadmap = ERROR). Фаза, ушедшая в exec без DoR, =
-находка plan-audit.
-Финальный гейт перед стартом исполнения ВСЕГО плана — `$ task:plan-audit <PLAN-ID> design`
-(pre-exec ревью: полнота покрытия брифа, слепые зоны, связность слоёв знаний).
+For Codex, `task.route_evidence_codex.capture_current(...)` resolves the current
+`CODEX_THREAD_ID` first and validates the latest provider-written `turn_context`: concrete
+model, reasoning effort, cwd, approval policy, sandbox policy, and the exact current Task
+prompt. The resulting actual-route record carries `source="provider-thread-state"` and
+`source_version="codex-turn-context-v1"`.
 
-**Pre-mortem для high-stakes** (фискалка/платежи/tenant-isolation/ядро экосистемы):
-перед закрытием фазы дизайна — раунд по протоколу Klein: «план провалился через
-6–12 мес — почему»; независимая запись причин → кластеризация → mitigations с owner
-в Risks/D-лог.
+This path is valid both after a full native launch and after the Codex clear command, which
+starts a fresh chat inside the same CLI process. A model or reasoning change before product
+journal start is therefore checked from the current chat state, never from stale process argv.
+If persisted thread state is genuinely absent, exact ancestor argv remains a compatibility
+fallback with `source="cli-flag"`. Malformed/mismatched thread state fails closed; config,
+doctor output, actor prose, and self-attestation remain forbidden substitutes.
 
-## Финал
+This provider binding defines how Codex satisfies the D24 write-site checks in the canonical
+command below. The projected contract snippets consume exactly
+`json.loads(os.environ["TASK_CODEX_ROUTE_EVIDENCE"])`; do not recreate route evidence from
+placeholders, `codex doctor`, configuration, or agent prose. Its fresh-native-only wording constrains the `cli-flag` compatibility fallback;
+its private-rollout prohibition forbids manual probing but not this validated adapter-owned
+read; neither rule prohibits a verified cleared chat or overrides current `turn_context`
+evidence.
 
-Прогони линтер: `python3 "$(codex plugin list --json | python3 -c 'import json,sys; data=json.load(sys.stdin); roots=[item["source"]["path"] for item in data.get("installed", []) if item.get("pluginId")=="task@swissknifeman" and item.get("enabled")]; len(roots)==1 or sys.exit("task runtime unavailable: expected one enabled task@swissknifeman plugin"); print(roots[0])')/scripts/plan-lint.py" plans/<ID>`
-(переменная не задана или скрипта нет — предупреди и пропусти, не блокер).
-Красное линтера почини в созданных файлах.
+Invocation payload: `$ARGUMENTS`.
 
-**Expected output:** список созданных/изменённых файлов + число items + вердикт
-DoR-чеклиста (режимы `Pn`/`Pn.m`) + **финал сообщения — ПОЛНЫЙ launch-block следующего
-шага** (SKILL §8, форма `snippets/launch-block-template.md`): таблица
-`| Параметр | Значение |` с рядом строк `Model / Thinking / Context / Суть /` `| Команда |`
-(последней) — строка `| Команда |` несёт голую команду и, когда она выражает следующий шаг
-целиком, является всем ответом;
-отдельный code-block ОПЦИОНАЛЕН (появляется, когда шаг реально отличается от строки —
-напр. Workflow-оркестрация ниже с NEW SESSION). Строка «Готово к: …» без таблицы и
-(строки `Команда` либо code-block'а) = дефект (владелец не должен переспрашивать
-модель/настройки). Какая команда в блоке —
-зависит от DoR-пункта «заявленная оркестрация» (SKILL §7 критерий: N≥3 items с
-независимым scope и детерминированной Validation, либо длинная автономная цепочка с
-внешним состоянием): фаза БЕЗ оркестрации → `$ task:plan-exec <ID> Pn.m` (Model/Thinking —
-из §3 Routing, дефолт implementation/medium); фаза С заявленной оркестрацией (workflow-скрипт
-готов в `plans/<ID>/workflows/`) → `native orchestration carrier for the referenced plan-owned workflow script`
-с пометкой NEW SESSION (session-restart discipline, SKILL §8), не `plan-exec`;
-режим `new` (все фазы — скелеты) → `$ task:plan-design <ID> P0` (frontier/high).
+Read `runtime/plan-protocol/references/common-principles.md` and
+`runtime/plan-protocol/references/design-mode.md` from the configured Task package root.
+The full schema canon and snippets are on-demand references, not mandatory execution context.
+
+Design creates a v2 plan contract, not a second execution protocol. Read repository evidence,
+declare `Phase Assurance | v1` in every new phase (impact, named seams, live/irreversible,
+audit intent, rationale), Routing Batch/Review, Required Reads, Files, Validation and Deliverables, then generate
+owned views. Use `task.plan_lifecycle.select(task.plan_lifecycle.LifecycleInput())` as the normal-path vocabulary: focused validation,
+selective projections, one semantic Next, and a measured context boundary.
+
+For an existing phase, inspect its item carriers and state before designing. If its items are already
+detailed and an unfinished item is execution-ready, return `task:plan-exec` for that item rather
+than redrafting the phase. “Next/new phase”, item count, local repair, or an ordinary failed check
+does not justify design; only new/from-draft scope or a concrete `design-required` contract decision
+does.
+
+Назначай Short ID и оформляй ссылки по `runtime/plan-protocol/references/work-references.md`
+из установленного пакета Task (`PLAN1.D35`, `PLAN1.P2.3`; legacy: `<PLAN-ID> <local-ID>`).
+
+Design completion records exactly one semantic Next. A bounded remediation does not manufacture a
+fresh audit/root; only a concrete context-budget, capability, owner-pause, independent review,
+public/authority, or material-risk boundary does. `DESIGN-ROOT-TERMINAL` remains a design-result
+handoff boundary: it must not execute or spawn a successor in the same design invocation.
+
+An applicable terminal-admission lease is a provider adapter concern: design supplies only typed
+continuity and delivery carriers, never free-prose terminal authorization.
+
+For new ordinary Routing groups, start Почему with `recommended:`; ready subsets may execute.
+Use `required:` for an explicit atomic/owner-mandated group. Historical unmarked groups stay
+exact until changed through their existing decision carrier.

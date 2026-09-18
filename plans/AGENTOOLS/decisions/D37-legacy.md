@@ -1,0 +1,16 @@
+---
+id: D37
+date: 2026-07-27
+status: accepted
+item: ''
+items: []
+supersedes: []
+superseded_by: null
+---
+## Решение
+
+**Списки A/B ключевых слов JSON Schema 2020-12 зафиксированы** (`10_decisions/DR-02_keywords-codegen-dart-transport.md` §2–§3). Список A (опубликованные схемы, открытый провод): разрешены `oneOf`+`const`+`pattern` (обязательная форма расширяемых словарей), `allOf`, `$defs`/`$ref` внутри файла и относительный на соседний файл, `if`/`then`/`else`, `dependentSchemas`, `patternProperties` (только для открытых map-объектов), `additionalProperties` со схемой, однородный `items`/`minItems`/`maxItems`, `integer`/`number` с правилом точности, `enum` для действительно закрытых множеств; **запрещены** `additionalProperties: false`, `unevaluatedProperties`, `$dynamicRef`/`$dynamicAnchor`, `prefixItems`(+`items:false`), сетевой `$ref`. Список B (схемы авторинга, только линтер) = A ∪ {`unevaluatedProperties: false` на внешнем уровне композиции}; неизвестный ключ документа и незарегистрированное вендорное ключевое слово — ошибка линтера. Каждое исключение несёт либо строку матрицы прогонов, либо явно помеченную норму `DR-01`
+
+## Почему
+
+`RAG:— (repo-grounded: bakeoff/results/php.md и bakeoff/results/dart.md — матрицы 10 проб × 4 кандидата на item-коммитах `b803d53`/`b3f164f`; `DR-01` §E3/§E5/§E6/§J9)`; запрет `prefixItems` — три из трёх таргетов теряют позиционную семантику (p07: `crash` wol-soft, `field-lost` quicktype-php, `ignored-gracefully` quicktype-dart); запрет `$dynamicRef` — оба генератора теряют рекурсивную типизацию (p04) + §E6 «нет потребителя»
