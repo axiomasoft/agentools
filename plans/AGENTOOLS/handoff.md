@@ -1,21 +1,21 @@
-# HANDOFF — 2026-09-18 — after P7
+# HANDOFF — 2026-09-18 — after P8.1
 
 **Next:** ЗАПУСК ВРУЧНУЮ: implementation/high
 
 | Параметр | Значение |
 |:--|:--|
 | Model | implementation |
-| Thinking | high — фаза P8, item P8.1 |
+| Thinking | high — фаза P8, item P8.2 |
 | Context | continue-root |
-| Суть | Фаза P7 закрыта (12/12): conformance 213/213, `declared_level` L3, `ГЕЙТ P7: PASS`; P7.3 reconciliation закрыт. |
-| Команда | `$ task:plan-run AGENTOOLS P8.1` |
+| Суть | P8.1 закрыт: скелет `dart/agentools/` (pub-пакет, пины, lock, smoke-тест, `spec_rev: 2026-08`). |
+| Команда | `$ task:plan-run AGENTOOLS P8.2` |
 
-**Done:** P7.3 reconciliation (anchor `1f5eaf8`); P7.12 gate; вся фаза P7 🟢.
+**Done:** P8.1 scaffold (item `b3d9760`): `dart/agentools` + `dart/.gitignore` + переписанный `dart/README.md`.
 
-**Remaining:** фаза P8 (Dart SDK, item P8.1).
+**Remaining:** P8.2–P8.13 (семантика ядра, транспорт, conformance-гейт).
 
-**Sources of truth:** `artifacts/P7-gate.md` · `conformance/reports/php-levels.md` · `phases/P8/P8.md`
+**Sources of truth:** `phases/P8/P8.md` · `research/07-p8-dart-sdk-2026-08.md` · `artifacts/P7-gate.md`
 
-**Open risks:** Remote CI (Q-2); SDK layer 2 branch C (Q-12); conformance behavior через projection catalog (Known deviation в P7-gate).
+**Open risks:** Remote CI (Q-2); `dart test --directory` не поддерживается на Dart 3.12.2 (тесты гоняются из `dart/agentools/`); ulid latest 2.2.0 при пине `^2.0.1`.
 
-**Workarounds/Deferred/Open questions:** workarounds — golden JCS wire-form: structural match → golden bytes (PHP `json_decode` теряет `{}` vs `[]`); deferred — remote CI; open_questions — Q-2, Q-8, Q-12, Q-15.
+**Workarounds/Deferred/Open questions:** workarounds — SDK порог ^3.11.0 (не локальный 3.12.2); deferred — remote CI; open_questions — Q-2, Q-8, Q-12.

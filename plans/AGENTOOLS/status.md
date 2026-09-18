@@ -3,7 +3,7 @@ projection: status-view
 projection_version: v1
 source_scope: plan core + phases + journal
 through: 2026-09-18
-inputs_sha256: 61a2d30620ae6c5afeed9dcc9c291fe0450587b15e40403699bb88ff1e695618
+inputs_sha256: 6faaee21ef9a4f9f7adad03ab8b99a4affaadb122050caa61a3acb766782d4f1
 generated_by: task plan-views status
 -->
 
@@ -33,7 +33,7 @@ generated_by: task plan-views status
 | P5 | B: аудит согласования (гейт GREEN, блокирует реализацию) | 3/3 | 🟢 Done |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 9/9 | 🟢 Done |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 12/12 | 🟢 Done |
-| P8 | Dart SDK `agentools` — зелёный на тех же векторах | 0/13 | ⬜ Not started |
+| P8 | Dart SDK `agentools` — зелёный на тех же векторах | 1/13 | 🟡 In progress |
 | P9 | Вертикальный срез в CRM: сквозной сценарий с записью в БД | 0/7 | ⬜ Not started |
 
 ## Phase P0
@@ -189,7 +189,7 @@ generated_by: task plan-views status
 
 | ID | Title | Status | Updated |
 |:--|:--|:--|:--|
-| P8.1 | Скелет ядра: `dart/agentools/`, ре-верифицированные пины, QA-тулинг, механика lock и игнорирования | ⬜ Not started | — |
+| P8.1 | Скелет ядра: `dart/agentools/`, ре-верифицированные пины, QA-тулинг, механика lock и игнорирования | 🟢 Done | 2026-09-18 |
 | P8.2 | Идентичность расширения и negotiation в Dart (документ `01`) | ⬜ Not started | — |
 | P8.3 | Value objects, валидация против опубликованных схем, СОБСТВЕННАЯ JCS, raw-preserving | ⬜ Not started | — |
 | P8.4 | Профиль инструмента: `descriptor_digest`, `descriptor_drift`, `content_origin` + межъязыковой якорь | ⬜ Not started | — |
@@ -342,6 +342,9 @@ generated_by: task plan-views status
 | 2026-09-18 | implementation/high | plan-run · in-progress · P7.3 reconciliation: per-item Validation on HEAD, anchor 1f5eaf8 |
 | 2026-09-18 | implementation/high | plan-run · closed-green · Reconciliation anchor 1f5eaf8: Schema/Canonicalizer+RawDocument+PublishedSchemaValidator; RFC8785 vectors×3; AOB-32..37 IDE-41; self-hosted JCS (no mmccook bypass); phpunit Schema 12/12 |
 | 2026-09-18 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-18 | implementation/medium | plan-run · in-progress · P8.1: scaffold dart/agentools core package |
+| 2026-09-18 | implementation/medium | plan-run · closed-green · spec_rev 2026-08; pins re-verified 2026-09-18; item b3d9760; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-18 | implementation/medium | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
 
 ## Owner Gates
 
@@ -353,3 +356,4 @@ generated_by: task plan-views status
 - P2.5: known deviation
 - P3.24: known deviation
 - P3.25: known deviation
+- P7.12: known deviation
