@@ -8,6 +8,9 @@
     failOnWarning="true"
 >
     <testsuites>
+        <testsuite name="default">
+            <directory>tests</directory>
+        </testsuite>
         <testsuite name="AgenTools SDK">
             <directory>tests</directory>
         </testsuite>
