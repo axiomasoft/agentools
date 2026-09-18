@@ -3,7 +3,7 @@ projection: status-view
 projection_version: v1
 source_scope: plan core + phases + journal
 through: 2026-09-18
-inputs_sha256: 6faaee21ef9a4f9f7adad03ab8b99a4affaadb122050caa61a3acb766782d4f1
+inputs_sha256: ca4b99a94396e77696d305939abc4778fc40e46da8092123c37df824bd4755d8
 generated_by: task plan-views status
 -->
 
@@ -33,7 +33,7 @@ generated_by: task plan-views status
 | P5 | B: аудит согласования (гейт GREEN, блокирует реализацию) | 3/3 | 🟢 Done |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 9/9 | 🟢 Done |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 12/12 | 🟢 Done |
-| P8 | Dart SDK `agentools` — зелёный на тех же векторах | 1/13 | 🟡 In progress |
+| P8 | Dart SDK `agentools` — зелёный на тех же векторах | 2/13 | 🟡 In progress |
 | P9 | Вертикальный срез в CRM: сквозной сценарий с записью в БД | 0/7 | ⬜ Not started |
 
 ## Phase P0
@@ -190,7 +190,7 @@ generated_by: task plan-views status
 | ID | Title | Status | Updated |
 |:--|:--|:--|:--|
 | P8.1 | Скелет ядра: `dart/agentools/`, ре-верифицированные пины, QA-тулинг, механика lock и игнорирования | 🟢 Done | 2026-09-18 |
-| P8.2 | Идентичность расширения и negotiation в Dart (документ `01`) | ⬜ Not started | — |
+| P8.2 | Идентичность расширения и negotiation в Dart (документ `01`) | 🟢 Done | 2026-09-18 |
 | P8.3 | Value objects, валидация против опубликованных схем, СОБСТВЕННАЯ JCS, raw-preserving | ⬜ Not started | — |
 | P8.4 | Профиль инструмента: `descriptor_digest`, `descriptor_drift`, `content_origin` + межъязыковой якорь | ⬜ Not started | — |
 | P8.5 | Журнал действия + контракты персистентности в Dart (§C1–§C3, §C5–§C7, D13) | ⬜ Not started | — |
@@ -345,6 +345,9 @@ generated_by: task plan-views status
 | 2026-09-18 | implementation/medium | plan-run · in-progress · P8.1: scaffold dart/agentools core package |
 | 2026-09-18 | implementation/medium | plan-run · closed-green · spec_rev 2026-08; pins re-verified 2026-09-18; item b3d9760; write-site: pre_mutation: allow · pre_final: allow |
 | 2026-09-18 | implementation/medium | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-18 | implementation/high | plan-run · in-progress · P8.2: Dart extension identity and negotiation |
+| 2026-09-18 | implementation/high | plan-run · closed-green · vectors extension-001 extidentity-001/002 extnegotiation-001/002; PHP reconciliation aligned; item dc534dd; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-18 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
 
 ## Owner Gates
 
