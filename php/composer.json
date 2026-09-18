@@ -30,5 +30,10 @@
   "config": {
     "sort-packages": true
   },
+  "extra": {
+    "agentools": {
+      "spec_rev": "2026-08"
+    }
+  },
   "minimum-stability": "stable"
 }

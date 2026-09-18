@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5610ff75081397f481d796bbe1290a50",
+    "content-hash": "2befaea7bbe7b2b5a1af2ae7c05079e2",
     "packages": [
         {
             "name": "mmccook/php-json-canonicalization-scheme",
