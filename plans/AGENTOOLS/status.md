@@ -3,7 +3,7 @@ projection: status-view
 projection_version: v1
 source_scope: plan core + phases + journal
 through: 2026-09-18
-inputs_sha256: a1c05ff93e547de483e3f97abf58b80b5a6ab7d0c1d9fab047206ba4123a9407
+inputs_sha256: 35ea3db5f3f32ade841090f1fc4a36738b36b77d402a87ac9ec04d77e504a485
 generated_by: task plan-views status
 -->
 
@@ -15,7 +15,7 @@ generated_by: task plan-views status
 
 | Поле | Значение |
 |:--|:--|
-| Version | 0.41.4 |
+| Version | 0.41.5 |
 | Status | 🟡 In progress |
 | Last Updated | 2026-09-18 |
 
@@ -32,7 +32,7 @@ generated_by: task plan-views status
 | P4 | A3: тест-векторы под все правила + двунаправленный линтер traceability | 21/21 | 🟢 Done |
 | P5 | B: аудит согласования (гейт GREEN, блокирует реализацию) | 3/3 | 🟢 Done |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 9/9 | 🟢 Done |
-| P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 0/12 | ⬜ Not started |
+| P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 1/12 | 🟡 In progress |
 | P8 | Dart SDK `agentools` — зелёный на тех же векторах | 0/13 | ⬜ Not started |
 | P9 | Вертикальный срез в CRM: сквозной сценарий с записью в БД | 0/7 | ⬜ Not started |
 
@@ -172,7 +172,7 @@ generated_by: task plan-views status
 
 | ID | Title | Status | Updated |
 |:--|:--|:--|:--|
-| P7.1 | Скелет пакета: манифест, ре-верифицированные пины, QA-тулинг, политика lock | ⬜ Not started | — |
+| P7.1 | Скелет пакета: манифест, ре-верифицированные пины, QA-тулинг, политика lock | 🟢 Done | 2026-09-18 |
 | P7.2 | Идентичность расширения и negotiation (документ `01`) | ⬜ Not started | — |
 | P7.3 | Value objects, валидация против опубликованных схем, JCS, raw-preserving | ⬜ Not started | — |
 | P7.4 | Профиль инструмента: дескриптор, `descriptor_digest`, `descriptor_drift`, `content_origin` | ⬜ Not started | — |
@@ -303,6 +303,12 @@ generated_by: task plan-views status
 | 2026-09-18 | implementation/high | plan-run · in-progress · P6.9 gate close: rerun Validation after P6.5 reopen adapters |
 | 2026-09-18 | implementation/high | plan-run · closed-green · ГЕЙТ P6: PASS; item 80cac19; 213/213 ref, 6/6 negative proofs, levels report deterministic |
 | 2026-09-18 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-18 | implementation/medium | plan-run · in-progress · P7.1 reconciliation: restore extra.agentools.spec_rev and re-verify pins |
+| 2026-09-18 | implementation/medium | plan-run · closed-green · Reconciliation: spec_rev 2026-08; pins re-verified 2026-09-18; item 7282fbd |
+| 2026-09-18 | implementation/medium | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-18 | implementation/medium | plan-run · in-progress · P7.1 attempt 2: durable run_id for terminal close |
+| 2026-09-18 | implementation/medium | plan-run · closed-green · Reconciliation: spec_rev 2026-08; pins re-verified 2026-09-18; item 7282fbd |
+| 2026-09-18 | implementation/medium | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
 
 ## Owner Gates
 

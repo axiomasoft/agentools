@@ -16,7 +16,7 @@
 | Home | brain |
 | Design Passes | 3/3 — кросс-репо и ядро экосистемы: три прохода авторинга завершены 2026-07-27. Поздние audit-driven реопены не увеличивают авторский бюджет: это адресная ремедиация исполняемого плана. D183 переводит P6.2 в executable-admission gate; reference adapter начинается только в P6.3 от терминального admission bundle. |
 | Layout | v2 |
-<!-- migration-version: 0.41.4 -->
+<!-- migration-version: 0.41.5 -->
 
 ## 1. Context
 
