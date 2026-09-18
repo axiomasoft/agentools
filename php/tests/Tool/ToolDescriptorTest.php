@@ -12,10 +12,24 @@ use PHPUnit\Framework\TestCase;
 
 final class ToolDescriptorTest extends TestCase
 {
-    /** TLP-18, TLP-19, TLP-20, TLP-21; cross-language descriptor digest anchor. */
+    /** TLP-18, TLP-19, TLP-20, TLP-21; межъязыковой якорь, фаза P8 обязана совпасть побайтно. */
     public function testItCalculatesTheGoldenDescriptorDigest(): void
     {
         self::assertSame('sha-256:4471625dc88e78398a8abd15fabb1bbee8691336c1ae4c43df293eca141ff43e', $this->descriptor()->digest(new Canonicalizer())->value);
+    }
+
+    /** TLP-19, TLP-22; a protected description change alters the digest. */
+    public function testChangingDescriptionChangesTheDigest(): void
+    {
+        $canonicalizer = new Canonicalizer();
+        $original = $this->descriptor()->digest($canonicalizer);
+        $changed = $this->document();
+        $changed['description'] = str_replace('платёж', 'перевод', $changed['description']);
+
+        self::assertNotSame(
+            $original->value,
+            ToolDescriptor::fromArray($changed)->digest($canonicalizer)->value,
+        );
     }
 
     /** TLP-19, TLP-22, TLP-23; presentation changes in the protected description are drift. */
