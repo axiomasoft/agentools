@@ -2,8 +2,8 @@
 projection: status-view
 projection_version: v1
 source_scope: plan core + phases + journal
-through: 2026-09-18
-inputs_sha256: ca4b99a94396e77696d305939abc4778fc40e46da8092123c37df824bd4755d8
+through: 2026-09-19
+inputs_sha256: f22d6377cb50d5e83b1e428cfaafc0159cc5cdeb409896e20db80b27c1dc971c
 generated_by: task plan-views status
 -->
 
@@ -17,7 +17,7 @@ generated_by: task plan-views status
 |:--|:--|
 | Version | 0.41.5 |
 | Status | 🟡 In progress |
-| Last Updated | 2026-09-18 |
+| Last Updated | 2026-09-19 |
 
 ## 4. Phase Index & Status Board
 
@@ -33,8 +33,8 @@ generated_by: task plan-views status
 | P5 | B: аудит согласования (гейт GREEN, блокирует реализацию) | 3/3 | 🟢 Done |
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 9/9 | 🟢 Done |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 12/12 | 🟢 Done |
-| P8 | Dart SDK `agentools` — зелёный на тех же векторах | 2/13 | 🟡 In progress |
-| P9 | Вертикальный срез в CRM: сквозной сценарий с записью в БД | 0/7 | ⬜ Not started |
+| P8 | Dart SDK `agentools` — зелёный на тех же векторах | 13/13 | 🟢 Done |
+| P9 | Референсный вертикальный срез: сквозной сценарий с записью (автономный контур) | 6/7 | 🟡 In progress |
 
 ## Phase P0
 
@@ -191,29 +191,29 @@ generated_by: task plan-views status
 |:--|:--|:--|:--|
 | P8.1 | Скелет ядра: `dart/agentools/`, ре-верифицированные пины, QA-тулинг, механика lock и игнорирования | 🟢 Done | 2026-09-18 |
 | P8.2 | Идентичность расширения и negotiation в Dart (документ `01`) | 🟢 Done | 2026-09-18 |
-| P8.3 | Value objects, валидация против опубликованных схем, СОБСТВЕННАЯ JCS, raw-preserving | ⬜ Not started | — |
-| P8.4 | Профиль инструмента: `descriptor_digest`, `descriptor_drift`, `content_origin` + межъязыковой якорь | ⬜ Not started | — |
-| P8.5 | Журнал действия + контракты персистентности в Dart (§C1–§C3, §C5–§C7, D13) | ⬜ Not started | — |
-| P8.6 | Реестр эффектов + fencing-эпоха исполнителя в Dart (§C4) | ⬜ Not started | — |
-| P8.7 | Подтверждение в Dart: Policy/Protocol Layer, подписанный токен, TTL, dual control, событие решения | ⬜ Not started | — |
-| P8.8 | Идемпотентность в Dart: ключ + `args_fingerprint`, три состояния, два таймера (§D1–§D3) | ⬜ Not started | — |
-| P8.9 | Ошибки и расширяемость в Dart: строковые коды, открытые перечисления, must-ignore (§E1–§E3, §E7) | ⬜ Not started | — |
-| P8.10 | Сценарии и уточнения в Dart: AST-вычислитель с лимитами, saga + `COMPENSATION_FAILED`, MRTR | ⬜ Not started | — |
-| P8.11 | Длинные операции, аудит и наблюдаемость, безопасность в Dart (документы `07`, `08`, `10`) | ⬜ Not started | — |
-| P8.12 | Транспорт: порт `McpTransport` + пакет-спутник `agentools_mcp_dart`, триггер T-1, находка F7 | ⬜ Not started | — |
-| P8.13 | Conformance-адаптер Dart, регистрация SDK, вычисленный уровень — гейт фазы | ⬜ Not started | — |
+| P8.3 | Value objects, валидация против опубликованных схем, СОБСТВЕННАЯ JCS, raw-preserving | 🟢 Done | 2026-09-19 |
+| P8.4 | Профиль инструмента: `descriptor_digest`, `descriptor_drift`, `content_origin` + межъязыковой якорь | 🟢 Done | 2026-09-19 |
+| P8.5 | Журнал действия + контракты персистентности в Dart (§C1–§C3, §C5–§C7, D13) | 🟢 Done | 2026-09-19 |
+| P8.6 | Реестр эффектов + fencing-эпоха исполнителя в Dart (§C4) | 🟢 Done | 2026-09-19 |
+| P8.7 | Подтверждение в Dart: Policy/Protocol Layer, подписанный токен, TTL, dual control, событие решения | 🟢 Done | 2026-09-19 |
+| P8.8 | Идемпотентность в Dart: ключ + `args_fingerprint`, три состояния, два таймера (§D1–§D3) | 🟢 Done | 2026-09-19 |
+| P8.9 | Ошибки и расширяемость в Dart: строковые коды, открытые перечисления, must-ignore (§E1–§E3, §E7) | 🟢 Done | 2026-09-19 |
+| P8.10 | Сценарии и уточнения в Dart: AST-вычислитель с лимитами, saga + `COMPENSATION_FAILED`, MRTR | 🟢 Done | 2026-09-19 |
+| P8.11 | Длинные операции, аудит и наблюдаемость, безопасность в Dart (документы `07`, `08`, `10`) | 🟢 Done | 2026-09-19 |
+| P8.12 | Транспорт: порт `McpTransport` + пакет-спутник `agentools_mcp_dart`, триггер T-1, находка F7 | 🟢 Done | 2026-09-19 |
+| P8.13 | Conformance-адаптер Dart, регистрация SDK, вычисленный уровень — гейт фазы | 🟢 Done | 2026-09-19 |
 
 ## Phase P9
 
 | ID | Title | Status | Updated |
 |:--|:--|:--|:--|
-| P9.1 | Сверка живого состояния контура Flex на дату исполнения + пакет решения владельцу | ⬜ Not started | — |
-| P9.2 | Интеграционный контракт INT-001: карта портов, развод трёх гейтов, реанкор `B-32` П1–П7 | ⬜ Not started | — |
-| P9.3 | Адаптеры поведения: `LlmPort` поверх AiGateway, `ToolPort` поверх ToolRegistry, доставка протокольных объектов | ⬜ Not started | — |
-| P9.4 | Тенантские сторы персистентности поверх БД + прогон векторов ядра на БД-реализациях | ⬜ Not started | — |
-| P9.5 | Доменные инструменты + сценарий среза + продуктовые векторы | ⬜ Not started | — |
-| P9.6 | UI-цикл: команда, уточнения, превью, подтверждение | ⬜ Not started | — |
-| P9.7 | E2E на dev-стенде + отчёт среза — гейт фазы | ⬜ Not started | — |
+| P9.1 | Сверка живого состояния контура Flex на дату исполнения + пакет решения владельцу | 🟢 Done | 2026-09-19 |
+| P9.2 | Интеграционный контракт INT-001: карта портов, развод трёх гейтов, реанкор `B-32` П1–П7 | 🟢 Done | 2026-09-19 |
+| P9.3 | Референсные адаптеры поведения: `ScriptedLlmPort`, `RegistryToolPort`, доставка протокольных объектов | 🟢 Done | 2026-09-19 |
+| P9.4 | SQLite-сторы персистентности + прогон векторов ядра на БД-реализациях | 🟢 Done | 2026-09-19 |
+| P9.5 | Референсные доменные инструменты + сценарий + продуктовые векторы | 🟢 Done | 2026-09-19 |
+| P9.6 | CLI-цикл: потребитель доставляемых протокольных объектов | 🟢 Done | 2026-09-19 |
+| P9.7 | Отчёт референсного среза — гейт фазы | ⬜ Not started | — |
 
 ## 6. Update Log
 
@@ -348,6 +348,68 @@ generated_by: task plan-views status
 | 2026-09-18 | implementation/high | plan-run · in-progress · P8.2: Dart extension identity and negotiation |
 | 2026-09-18 | implementation/high | plan-run · closed-green · vectors extension-001 extidentity-001/002 extnegotiation-001/002; PHP reconciliation aligned; item dc534dd; write-site: pre_mutation: allow · pre_final: allow |
 | 2026-09-18 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P8.3: schema module — JCS, RawDocument, PublishedSchemaValidator, ToolDescriptor/ToolError DTOs |
+| 2026-09-19 | implementation/high | plan-run · closed-green · RFC8785×5; BMP anchor; self-hosted Canonicalizer; PublishedSchemaValidator draft2020_12; vectors AOB-32..37 IDE-41; item pending-commit; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P8.4: tool profile module — descriptor_digest, descriptor_drift, content_origin + PHP anchor |
+| 2026-09-19 | implementation/high | plan-run · closed-green · golden sha-256:4471625dc88e78398a8abd15fabb1bbee8691336c1ae4c43df293eca141ff43e; vectors tooldigest-001 tooldescription-001/002 toolcontract-001 profileuntrusted-001; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P8.5: action journal + persistence ports — fold, hash chain, PHP anchor |
+| 2026-09-19 | implementation/high | plan-run · closed-green · hash-chain sha-256:e1a9de57217a9919206628b0a4e1afd3a009f17b7c667afc98061d9e0936dfd0 + sha-256:ef22613a6bf20d817d3a3d9e37484a1796673e75c8d8b1e4d11a9c7119ae8d07; ALC-3/7/21/31/32/33/36; 55 tests; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P8.6: effects registry + executor epoch fencing in Dart |
+| 2026-09-19 | implementation/high | plan-run · closed-green · ALC-24..27; zombie StaleExecutorEpoch; commit registry-first; 58 tests; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P8.7: confirmation Policy/Protocol layers + signed token in Dart |
+| 2026-09-19 | implementation/high | plan-run · closed-green · CNF-2..39; Policy/Protocol split; HMAC via TokenSigner port (package:crypto, pre-pinned D91); token coverage 8 fields match PHP; 71 tests; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P8.8: idempotency dedup store + two timers in Dart |
+| 2026-09-19 | implementation/high | plan-run · closed-green · IDE-3/6/7/9/10/12..16/18/19/21/23; Contracts/IdempotencyStore + in-memory ref; three states no-wait; two error codes; two timers; PHP fingerprint anchor; 79 tests; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P8.9: errors + open enums + must-ignore in Dart |
+| 2026-09-19 | implementation/high | plan-run · closed-green · IDE-22..29/35..47/39..43; errors module: OpenEnum sealed+unknown, ToolExecutionResult/ProtocolException, MustIgnoreEnvelope; GREASE grease-001..004 unit replay; 99 tests; enum grep=1 ValueLifecycle closed only; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P8.10: scenarios AST evaluator saga MRTR in Dart |
+| 2026-09-19 | implementation/high | plan-run · closed-green · note сокращена; полный текст: journal.jsonl:152 |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P8.11: long operations, audit/observability, security in Dart |
+| 2026-09-19 | implementation/high | plan-run · closed-green · LOP-1..27/AOB-1..31/SEC-1..16; ops module: LongOperationCoordinator task+sync paths, AuditEventFactory+AuditSink, CredentialGuard, PrincipalTriple, CostRecorder, TraceCorrelation, BaggageRefs, TaskPort; 136 tests; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P8.12: McpTransport + agentools_mcp_dart satellite |
+| 2026-09-19 | implementation/high | plan-run · closed-green · P8.12: McpTransport port + agentools_mcp_dart on mcp_dart 2.4.2 stable; T-1 branch (a) D39 prerelease risk lifted; F7 evidence committed; 3 satellite + 136 core tests; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P8.13: Dart conformance adapter + SDK registration + phase gate |
+| 2026-09-19 | implementation/high | plan-run · closed-green · Conformance 213/213; declared_level L3; owner-gate branch C; ГЕЙТ P8 PASS; projection-catalog deviation documented; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P9.1: Flex/CoreX recon + owner decision package (document-only) |
+| 2026-09-19 | implementation/high | plan-run · closed-green · findings/P9-flex-state-2026-09-19.md; пересечение пусто; рекомендация code-home (C2); Q-15/Q-18 обновлены; owner gate code-home A/B/C
+write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | owner | owner-gate · closed-green · Q-18 code-home branch (C2): thin bridge over corex/core+flex/crm+app; D184; P9.2 unblocked |
+| 2026-09-19 | frontier/high | plan-run · in-progress · P9.2: INT-001 integration contract (document-only) |
+| 2026-09-19 | frontier/high | plan-run · closed-green · INT-001 published; 8-port map; 3-gate table; B-32 P1-P7 reanchor; journal branch (a); D185; Q-19/Q-11; Exported SS7
+write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P9.3: behavior adapters (LlmPort/ToolPort/Delivery/Clock) in flexcrm C2 bridge |
+| 2026-09-19 | implementation/high | plan-run · blocked · 🔴 Blocked: AiGateway facade absent; findings/P9.3-blocker-aigateway-2026-09-19.md; Возобновление: owner + FLEX-2 P6.15 corex/ai AiGateway (ADR-020); own gateway forbidden
+write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P9.3 attempt 2: re-verify AiGateway blocker before adapter scaffold |
+| 2026-09-19 | implementation/high | plan-run · blocked · 🔴 Blocked: AiGateway facade absent (attempt 2 re-confirmed); findings/P9.3-blocker-aigateway-2026-09-19.md; Возобновление: owner + FLEX-2 P6.15 |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P9.3 attempt 3: re-verify AiGateway blocker before adapter scaffold |
+| 2026-09-19 | implementation/high | plan-run · blocked · 🔴 Blocked: AiGateway facade absent (attempt 3 re-confirmed); findings/P9.3-blocker-aigateway-2026-09-19.md; Возобновление: owner + FLEX-2 P6.15 |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | owner | owner-gate · closed-green · D186: Agentools decoupled from CoreX/Flex; INT-001 deferred; INT-002 active; P9.3-P9.7 rebaselined to standalone reference slice in agentools repo |
+| 2026-09-19 | owner | plan-design · in-progress · D186 rebaseline: P9.3 spec rewritten (INT-002); prior AiGateway blocked attempts superseded; item reopened |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P9.3 attempt 4: INT-002 reference behavior adapters in php/reference |
+| 2026-09-19 | implementation/high | plan-run · closed-green · note сокращена; полный текст: journal.jsonl:178 |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P9.4 attempt 1: INT-002 SQLite persistence ports in php/reference |
+| 2026-09-19 | implementation/high | plan-run · closed-green · INT-002 §4: SqliteEventLog, SqliteSessionStore, SqliteIdempotencyStore, TenantHmacTokenSigner, CollectingAuditSink; adapter php/reference/conformance/adapter.php; L1 126/126; 4 invariants green; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P9.5 attempt 1: reference domain tools, day-end scenario, product-slice vectors |
+| 2026-09-19 | implementation/high | plan-run · closed-green · note сокращена; полный текст: journal.jsonl:184 |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P9.6 attempt 1: reference-slice CLI consumer over DeliveryCollector |
+| 2026-09-19 | implementation/high | plan-run · closed-green · INT-002 §6: php/bin/reference-slice-demo + php/reference/Cli consumer; confirm/edit/reject via coordinator without gate policy in CLI; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
 
 ## Owner Gates
 
