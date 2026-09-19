@@ -38,5 +38,8 @@ __pycache__/
 *.bak
 *.last
 
+# Erroneous vault mirror — must never be committed (see Brain finding P10-agentools-vault-symlink)
+/05-Projects
+
 
 .phpunit.result.cache

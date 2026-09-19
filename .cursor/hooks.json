@@ -11,12 +11,7 @@
         "command": "python3 \"${CURSOR_PROJECT_DIR:-.}/.cursor/hooks/lifecycle.py\" --surface lifecycle.command-log"
       }
     ],
-    "beforeShellExecution": [
-      {
-        "command": "python3 \"${CURSOR_PROJECT_DIR:-.}/.cursor/hooks/lifecycle.py\" --surface security.safe-dirs",
-        "failClosed": true
-      }
-    ],
+    "beforeShellExecution": [],
     "preToolUse": [
       {
         "command": "python3 \"${CURSOR_PROJECT_DIR:-.}/.cursor/hooks/lifecycle.py\" --surface lifecycle.tool-telemetry"

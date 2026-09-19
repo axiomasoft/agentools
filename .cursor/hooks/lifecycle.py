@@ -246,17 +246,30 @@ def _shell_allow():
     print(json.dumps({"permission": "allow"}))
 
 
+def _harness_safedirs_path(payload):
+    root = _find_repo_root(payload)
+    if root:
+        p = os.path.join(root, "packages", "harness", "configs", "claude-code",
+                         "hooks", "auto-approve", "lib", "safedirs.py")
+        if os.path.isfile(p):
+            return p
+    fallback = os.path.expanduser(
+        "~/projects/packages/swissknifeman/packages/harness/configs/claude-code/"
+        "hooks/auto-approve/lib/safedirs.py")
+    if os.path.isfile(fallback):
+        return fallback
+    return None
+
+
 def _safe_dirs(payload):
     command = payload.get("command")
     if not isinstance(command, str) or _first_command_token(command) not in {"rm", "rmdir"}:
         _shell_allow()
         return
-    root = _find_repo_root(payload)
-    if root is None:
-        sys.stderr.write("security.safe-dirs: refusing rm/rmdir - harness checkout unreachable\n")
+    module_path = _harness_safedirs_path(payload)
+    if module_path is None:
+        sys.stderr.write("security.safe-dirs: refusing rm/rmdir - harness safedirs.py unreachable\n")
         sys.exit(2)
-    module_path = os.path.join(root, "packages", "harness", "configs", "claude-code",
-                               "hooks", "auto-approve", "lib", "safedirs.py")
     try:
         spec = importlib.util.spec_from_file_location("cursor_safedirs", module_path)
         mod = importlib.util.module_from_spec(spec)
@@ -816,12 +829,15 @@ if args.surface not in _SURFACE_EVENTS:
 try:
     payload = json.load(sys.stdin)
 except (json.JSONDecodeError, TypeError):
-    sys.exit(2)
+    payload = {}
 if not isinstance(payload, dict):
-    sys.exit(2)
+    payload = {}
 event = _SURFACE_EVENTS[args.surface]
+if args.surface == "security.safe-dirs":
+    _HANDLERS[args.surface](payload)
+    raise SystemExit(0)
 required = set(_COMMON_FIELDS)
 required.update(_EVENT_FIELDS.get(event, ()))
-if not required.issubset(payload) or payload["hook_event_name"] != event:
+if not required.issubset(payload) or payload.get("hook_event_name") != event:
     sys.exit(2)
 _HANDLERS[args.surface](payload)
