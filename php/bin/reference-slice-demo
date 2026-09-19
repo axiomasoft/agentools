@@ -1,0 +1,66 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use AgenTools\Reference\Cli\ConfirmationChoice;
+use AgenTools\Reference\Cli\ReferenceSliceSession;
+use AgenTools\Reference\Support\InjectableClock;
+use AgenTools\Reference\Support\JsonGuard;
+use AgenTools\Reference\Tools\DayReportStore;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$mode = $argv[1] ?? 'demo';
+$session = new ReferenceSliceSession();
+
+if ($mode === 'negative-tenant') {
+    fwrite(STDOUT, $session->demonstrateWrongTenant());
+    exit(0);
+}
+
+if ($mode === 'negative-ttl') {
+    $clock = new InjectableClock(new \DateTimeImmutable('2026-09-19T10:00:00+00:00'));
+    fwrite(STDOUT, $session->demonstrateExpiredPreview($clock));
+    exit(0);
+}
+
+if ($mode === 'negative-superseded') {
+    fwrite(STDOUT, $session->demonstrateSupersededEdit());
+    exit(0);
+}
+
+$vectorPath = dirname(__DIR__, 2) . '/fixtures/product-slice/vectors/l2/product-slice-001.json';
+$loaded = $session->loadProductVector($vectorPath);
+$identity = is_array($loaded['given']['identity'] ?? null) ? JsonGuard::stringKeyedMap($loaded['given']['identity']) : [];
+$tenantId = JsonGuard::string($identity['tenant_id'] ?? null, 'tenant-a');
+$store = new DayReportStore();
+$seed = $loaded['given']['product_slice_seed'] ?? null;
+if (is_array($seed)) {
+    $seedMap = JsonGuard::stringKeyedMap($seed);
+    $date = JsonGuard::string($seedMap['date'] ?? null, '2026-09-19');
+    $store->seedActivities($tenantId, $date, JsonGuard::listOfMaps($seedMap['activities'] ?? null));
+}
+
+$script = array_values(array_filter(
+    $loaded['script'],
+    static fn (array $step): bool => !isset($step['approval']),
+));
+
+$result = $session->run(
+    $script,
+    'cli-demo',
+    $tenantId,
+    new InjectableClock(new \DateTimeImmutable('2026-09-19T10:00:00+00:00')),
+    $store,
+    [new ConfirmationChoice('approve', [])],
+);
+
+fwrite(STDOUT, $result['output']);
+fwrite(STDOUT, sprintf(
+    "final_state=%s report_id=%s\n",
+    $result['outcome']['final_state'],
+    $result['outcome']['report_id'] ?? 'null',
+));
+
+exit($result['outcome']['final_state'] === 'completed' ? 0 : 1);

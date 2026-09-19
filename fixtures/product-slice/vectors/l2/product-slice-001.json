@@ -1,0 +1,102 @@
+{
+  "id": "product-slice-001",
+  "title": "Сквозной срез: итог дня с одним подтверждением записи",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CNF-1",
+    "SCN-1",
+    "CLR-6"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "identity": {
+      "tenant_id": "tenant-a"
+    },
+    "product_slice_seed": {
+      "date": "2026-09-19",
+      "activities": [
+        {
+          "id": "act-1",
+          "summary": "Созвон с клиентом"
+        }
+      ]
+    },
+    "tools": []
+  },
+  "script": [
+    {
+      "user_input": "Подведи итог дня и запиши отчёт"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "slice_read_day_activities",
+          "args": {
+            "date": "2026-09-19"
+          }
+        }
+      }
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "slice_draft_day_report",
+          "args": {
+            "date": "2026-09-19",
+            "summary": "Итог дня",
+            "body": "Созвон с клиентом"
+          }
+        }
+      }
+    },
+    {
+      "clarification": {
+        "call_id": "clr-call-1",
+        "request_state": "opaque-state-1",
+        "requests": {
+          "client_name": {
+            "prompt": "Как зовут клиента?"
+          }
+        },
+        "answer_call_id": "clr-call-2",
+        "answers": {
+          "client_name": "ООО Ромашка"
+        }
+      }
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "slice_write_day_report",
+          "args": {
+            "report_id": "r-day-001",
+            "date": "2026-09-19",
+            "body": "Итог: созвон с ООО Ромашка"
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_completed"
+      }
+    ],
+    "final_state": "completed",
+    "observations": [
+      {
+        "kind": "confirmation_boundary",
+        "probe_id": "product_slice_confirmation",
+        "proposal_count": 1,
+        "token_issue_count": 1,
+        "token_consume_count": 1,
+        "decision_event_count": 1
+      }
+    ]
+  }
+}

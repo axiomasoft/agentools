@@ -1,0 +1,8 @@
+{
+  "toolCall": {
+    "name": "demo_read_note",
+    "arguments": {
+      "note_id": "note-1"
+    }
+  }
+}

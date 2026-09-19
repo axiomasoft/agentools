@@ -1,0 +1,32 @@
+{
+  "scenario_id": "day_end_report",
+  "title": "Итог дня → черновик → уточнения → превью → запись",
+  "spec_rev": "2026-08",
+  "steps": [
+    {
+      "id": "read",
+      "tool": "slice_read_day_activities",
+      "input_map": {
+        "date": "$ctx.date"
+      }
+    },
+    {
+      "id": "draft",
+      "tool": "slice_draft_day_report",
+      "input_map": {
+        "date": "$ctx.date",
+        "summary": "$ctx.summary",
+        "body": "$steps.read.activities"
+      }
+    },
+    {
+      "id": "write",
+      "tool": "slice_write_day_report",
+      "input_map": {
+        "report_id": "$ctx.report_id",
+        "date": "$ctx.date",
+        "body": "$ctx.body"
+      }
+    }
+  ]
+}
