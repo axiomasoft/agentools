@@ -7,6 +7,7 @@ environment:
   sdk: ^3.11.0
 
 dependencies:
+  crypto: ^3.0.6
   json_schema: ^5.2.2
   ulid: ^2.0.1
 
@@ -16,3 +17,4 @@ dev_dependencies:
 
 agentools:
   spec_rev: 2026-08
+  declared_level: L3

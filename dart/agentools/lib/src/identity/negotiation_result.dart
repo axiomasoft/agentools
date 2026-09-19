@@ -12,5 +12,5 @@ final class NegotiationResult {
   }
 
   final NegotiationMode mode;
-  final ToolError? error;
+  final NegotiationToolError? error;
 }

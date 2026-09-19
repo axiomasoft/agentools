@@ -1,21 +1,23 @@
-# HANDOFF — 2026-09-19 — after P9.6
+# HANDOFF — 2026-09-19 — after P10.6
 
-**Next:** run-items: task:plan-run AGENTOOLS P9.7
+**Next:** `plan-design AGENTOOLS finish` (design-only reconciliation) · затем исполнение **P11.1** (`task:plan-run AGENTOOLS P11.1`)
 
 | Параметр | Значение |
 |:--|:--|
-| Model | implementation |
-| Thinking | high — фаза P9, item P9.7 (P9 gate report) |
+| Model | frontier |
+| Thinking | high — plan closure / finish mode |
 | Context | continue-root |
-| Суть | D186 standalone reference slice. P9.6 🟢 Done — CLI consumer `reference-slice-demo` over DeliveryCollector; confirm/edit/reject without gate policy in CLI. Next: `ГЕЙТ P9` report (P9.7). |
-| Команда | `run-items: task:plan-run AGENTOOLS P9.7` |
+| Суть | P10.6 🟢 — `artifacts/P10-applicability-report.md` **`ГЕЙТ P10: PASS`**; RAG `findings/P10-offline-rag-2026-09-19.md`; D190 исходы Q-*; план готов к finish. |
+| Команда | `plan-design AGENTOOLS finish` |
 
-**Done:** P9.1–P9.6; `php/bin/reference-slice-demo`, `php/reference/Cli/**`, CLI tests (wrong tenant, TTL, SUPERSEDED); SliceToolCoordinator edit/reject/supersede paths.
+**Done:** P10.1–P10.6; INT-002; erp-sdk `agentools_bridge` demo @ `43500e8`; product-erp L2 vector.
 
-**Remaining:** P9.7 only. Интеграция с Flex/CoreX — **вне плана** до отдельного решения.
+**Remaining:** optional `finish` (карта/виды плана, не код); фаза **P11** (release/hygiene); owner Q-22; Q-23; Q-1. Протокольный **аудит всего плана** — после терминальности волны (типично P11 или `plan-close archive`), не обязательный `plan-audit … P10`.
 
-**Sources of truth:** `decisions/D186-legacy.md` · `root/contracts/INT-002_standalone-reference-slice.md` · `findings/P9-decouple-corex-2026-09-19.md`
+**Sources of truth:** `artifacts/P10-applicability-report.md` · `root/contracts/INT-002_axioma-erp-integration.md` · `~/projects/packages/erp-sdk/packages/agentools_bridge/`
 
-**Open risks:** Remote CI (Q-2).
+**Open risks:** Remote CI / merge protection (Q-2); plan-lint baseline K≠0; working tree dirty on frozen conformance paths (pre-P10); Tier-3 §I4 negative proof not empirically run (named in report).
 
-**Workarounds/Deferred/Open questions:** INT-001/Flex integration deferred (D186); open_questions — Q-2, Q-8, Q-12, Q-17.
+**Workarounds/Deferred:** L1 on-device deferred (ADR-072); real ADR-007 sync queue still substitute; open-questions.md — projection v2 (Q-* outcomes in D190 + report §Q table).
+
+<!-- Q-24: enum Next не покрывает `design-finish` — команда выше в code-block, копипаст as-is -->

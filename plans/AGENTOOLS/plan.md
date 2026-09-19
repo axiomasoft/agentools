@@ -9,7 +9,7 @@
 | Document Type | Executable Master Plan |
 | Authoring Model | frontier (design/спека), исполнение по §3 Routing |
 | Repository | `~/projects/packages/agentools`; configured `origin=https://github.com/axiomasoft/agentools.git`; visibility и CI execution не верифицированы (D178) |
-| Related Packages | corex/ai (Flex, потребитель PHP SDK) · axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) |
+| Related Packages | axioma_assistant/axioma_mcp (Axioma, потребитель Dart SDK) · corex/ai (Flex) — **вне scope P9** (D186, связь позже) |
 | Execution Mode | phase-first (исключение — D21: P1 и P2 независимы) |
 | Target Operator Models | sonnet (exec) · haiku (LOW) · opus (нормативный авторинг/аудит) |
 | Approval Owner | Dmitry Vostrikov |
@@ -179,7 +179,7 @@ solo, — D122.
 | — | P8.13 | implementation/high | manual | full | гейт-item фазы: прогон против замороженного корпуса, ПЯТЬ межъязыковых якорей, ВОСЕМЬ отрицательных доказательств, приземление исхода owner-gate, вычисление уровня по порогам D7; прецедент строк P3.14/P4.5/P6.9/P7.12 — детерминированная работа, effort high за инвариантность |
 | — | P9.1 | implementation/high | manual | full | датированное измерение чужого контура (код, версии, канон, чужой план) + вычисление пересечения «правила среза × красные векторы»: интерпретация «канон разошёлся» — не механика; открытых решений нет — ветку дома кода выбирает владелец гейтом, item собирает пакет (D99) |
 | — | P9.2 | frontier/high | manual | full | ЕДИНСТВЕННЫЙ item фазы с открытыми решениями и необратимой ценой: развод ТРЁХ гейтов подтверждения в один механизм, реанкор `B-32` §3.8 (П1–П7) на ревизию `2026-08`, размещение журнала относительно канонных `ai_*`, предложения дельт ЧУЖОГО канона — два носителя факта о согласии пользователя расходятся молча (D100, D101) |
-| — | P9.3 | implementation/high | manual | full | адаптеры по утверждённому контракту: семантика предписана, но цена ошибки специфична — обход порядка middleware AiGateway отправляет ПДн в лог провайдера, односторонний permission-гейт пропускает внешний вызов; чужая кодовая база ⇒ `Review=full`, минимум `plan-exec` недостаточен |
+| — | P9.3 | implementation/high | manual | full | референсные адаптеры INT-002 в `php/reference/`: permission-гейт на двух уровнях, scripted LLM, доставка без интерпретации; дом agentools (D186), без CoreX/Flex |
 | — | P9.4 | implementation/high | manual | full | порты D13 поверх БД: `expected_prev_seq` на массиве в памяти не проверяется вовсе, а на БД он и есть предмет; тенантная изоляция и хеш-цепочка — класс `Review=full`; effort high за доказательство эквивалентности прогоном векторов, а не feature-тестами |
 | — | P9.5 | implementation/high | manual | full | инструменты, сценарий и продуктовые векторы против замороженного корпуса: соблазн собственного гейта в доменном коде и набора из одних `read`-инструментов; effort high за счётчик «ровно одно подтверждение» и четыре отрицательных прогона |
 | — | P9.6 | implementation/high | manual | full | UI — последнее место, где теряется защита трёх предыдущих items (правило гейта во втором носителе, кэш prepare как разрешение, `edit` как мутация); подписка на тенантный канал = ПДн чужого тенанта при ошибке ⇒ `Review=full` |
@@ -216,6 +216,9 @@ D76/D85, черновая строка `P8.1–P8.9` / `implementation/medium` /
 |:--|:--|:--|:--|:--|
 | `spec/revisions/2026-08/` (нормативная ревизия + схемы + `rules.json`) | 2026-08 | frozen · tag `spec-2026-08` · lockstep D177 | AGENTOOLS (P6–P10) · будущие: план-контур Flex (corex/ai, P9) · план-контур Axioma (axioma_assistant, P10) · ВТОРАЯ ОЧЕРЕДЬ: FlexStore, FlexCMS — наследуют SDK через `corex/ai`, собственных фаз в плане нет (D126) | 2026-08-04: внутренние P6–P10; внешние — не уведомлены |
 | `fixtures/2026-08/` (тест-векторы трёх классов + golden + `coverage.md`) | 2026-08 | frozen · tag `spec-2026-08` · lockstep D177 | AGENTOOLS (P6–P8) | 2026-08-04: внутренние P6–P8 |
+| `root/contracts/INT-001_corex-ai-integration.md` (интеграция Flex/CoreX CRM) | 1.0.0 | deferred · D186 | будущая интеграция (вне P9) | — |
+| `root/contracts/INT-002_standalone-reference-slice.md` (автономный референсный срез) | 1.0.0 | draft · D186 | AGENTOOLS P9.3–P9.7 | — |
+| `root/contracts/INT-002_axioma-erp-integration.md` (интеграция ERP Axioma / Dart) | 1.0.0 | draft · D189 | AGENTOOLS P10.3–P10.5 · планы `erp` / `ERP-IMPL` / `AIRESTO` (уведомление — Exported, не Consumed) | — |
 
 **Границы столбца `Потребители`** (D63, D108, D126). Строка перечисляет ЗАЯВЛЕННЫХ потребителей,
 а не уведомлённых — колонка `Уведомлены` = «—» честно говорит, что кросс-план-линт чужие корни

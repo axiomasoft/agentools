@@ -1,0 +1,7 @@
+{
+  "resultType": "complete",
+  "content": [
+    {"type": "text", "text": "agentools_mcp_dart smoke: tools/call ok"}
+  ],
+  "isError": false
+}

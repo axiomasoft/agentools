@@ -3,7 +3,7 @@ projection: status-view
 projection_version: v1
 source_scope: plan core + phases + journal
 through: 2026-09-19
-inputs_sha256: f22d6377cb50d5e83b1e428cfaafc0159cc5cdeb409896e20db80b27c1dc971c
+inputs_sha256: 5fd808648c3f2d8df22e25cfdda7b25f6c51852768bb139b5e746680eb9e6548
 generated_by: task plan-views status
 -->
 
@@ -25,7 +25,7 @@ generated_by: task plan-views status
 |:--|:--|:--|:--|
 | P0 | Спека v0.1-draft: монорепо, нормативные документы, JSON Schema, fixtures | 7/11 | 🟠 Done with deviations |
 | P1 | A0: ре-верификация финала MCP 2026-07-28 + пин коммита и `schema.json` | 3/3 | 🟢 Done |
-| P10 | Перенос в ERP-контур + анализ offline-разрыва (отчёт применимости) | 0/6 | ⬜ Not started |
+| P10 | Перенос в ERP-контур + анализ offline-разрыва (отчёт применимости) | 4/6 | 🟠 Done with deviations |
 | P11 | Release & Hygiene: чистый публичный пакет и воспроизводимый кандидат | 0/4 | ⬜ Not started |
 | P2 | A1: bakeoff генераторов (терпимость к незнакомым ключевым словам) + транспорт Dart | 3/5 | 🟠 Done with deviations |
 | P3 | A2: авторинг ревизии `2026-08` (modern-only, идентификаторы правил) | 23/25 | 🟠 Done with deviations |
@@ -34,7 +34,7 @@ generated_by: task plan-views status
 | P6 | Conformance: harness-протокол, раннер, baseline, четырёхслойный CI | 9/9 | 🟢 Done |
 | P7 | PHP SDK `agentools/sdk` — зелёный на векторах уровня ядра | 12/12 | 🟢 Done |
 | P8 | Dart SDK `agentools` — зелёный на тех же векторах | 13/13 | 🟢 Done |
-| P9 | Референсный вертикальный срез: сквозной сценарий с записью (автономный контур) | 6/7 | 🟡 In progress |
+| P9 | Референсный вертикальный срез: сквозной сценарий с записью (автономный контур) | 7/7 | 🟢 Done |
 
 ## Phase P0
 
@@ -64,12 +64,12 @@ generated_by: task plan-views status
 
 | ID | Title | Status | Updated |
 |:--|:--|:--|:--|
-| P10.1 | Re-сверка живого состояния ERP-контура + Q-17 предметно + пакет решения владельцу | ⬜ Not started | — |
-| P10.2 | Интеграционный контракт INT-002: cross-plan gate-таблица, карта портов, реконсиляция канонов R1–R10 | ⬜ Not started | — |
-| P10.3 | Адаптеры поведения в доме переноса: `LlmPort`, `ToolPort` с tier-политикой, доставка, `Clock` | ⬜ Not started | — |
-| P10.4 | Сторы персистентности поверх хранилища контура + прогон эквивалентности векторов ядра | ⬜ Not started | — |
-| P10.5 | Сценарии из канона продукта + продуктовые векторы + доказательство поведения через разрыв связи | ⬜ Not started | — |
-| P10.6 | Анализ offline-разрыва + отчёт применимости — гейт фазы и выход плана | ⬜ Not started | — |
+| P10.1 | Re-сверка живого состояния ERP-контура + Q-17 предметно + пакет решения владельцу | 🟢 Done | 2026-09-19 |
+| P10.2 | Интеграционный контракт INT-002: cross-plan gate-таблица, карта портов, реконсиляция канонов R1–R10 | 🟢 Done | 2026-09-19 |
+| P10.3 | Адаптеры поведения в доме переноса: `LlmPort`, `ToolPort` с tier-политикой, доставка, `Clock` | 🟢 Done | 2026-09-19 |
+| P10.4 | Сторы персистентности поверх хранилища контура + прогон эквивалентности векторов ядра | 🟠 Done with deviations | 2026-09-19 |
+| P10.5 | Сценарии из канона продукта + продуктовые векторы + доказательство поведения через разрыв связи | 🟢 Done | 2026-09-19 |
+| P10.6 | Анализ offline-разрыва + отчёт применимости — гейт фазы и выход плана | 🟠 Done with deviations | 2026-09-19 |
 
 ## Phase P11
 
@@ -213,7 +213,7 @@ generated_by: task plan-views status
 | P9.4 | SQLite-сторы персистентности + прогон векторов ядра на БД-реализациях | 🟢 Done | 2026-09-19 |
 | P9.5 | Референсные доменные инструменты + сценарий + продуктовые векторы | 🟢 Done | 2026-09-19 |
 | P9.6 | CLI-цикл: потребитель доставляемых протокольных объектов | 🟢 Done | 2026-09-19 |
-| P9.7 | Отчёт референсного среза — гейт фазы | ⬜ Not started | — |
+| P9.7 | Отчёт референсного среза — гейт фазы | 🟢 Done | 2026-09-19 |
 
 ## 6. Update Log
 
@@ -410,6 +410,23 @@ write-site: pre_mutation: allow · pre_final: allow |
 | 2026-09-19 | implementation/high | plan-run · in-progress · P9.6 attempt 1: reference-slice CLI consumer over DeliveryCollector |
 | 2026-09-19 | implementation/high | plan-run · closed-green · INT-002 §6: php/bin/reference-slice-demo + php/reference/Cli consumer; confirm/edit/reject via coordinator without gate policy in CLI; write-site: pre_mutation: allow · pre_final: allow |
 | 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P9.7 attempt 1: P9 slice gate report + validation reruns |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · closed-green · ГЕЙТ P9: PASS — artifacts/P9-slice-report.md; SQLite report_id=r-day-001; Q-15=measured P7 levels + empty intersection (P9.1); write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-close · closed-green · Phase P9 closed after P9.7 ГЕЙТ P9: PASS (artifacts/P9-slice-report.md) |
+| 2026-09-19 | implementation/high | plan-run · closed-green · P10.1 closed: findings/P10-erp-state-2026-09-19.md; Q-17 intersection empty (D187); Q-20 owner package (D188) |
+| 2026-09-19 | frontier/high | plan-run · closed-green · P10.2 closed: INT-002_axioma-erp-integration; D189; Q-21 branch (a); Q-22/Q-23 owner packages; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · no-op · write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P10.3 attempt 1: agentools_bridge adapters |
+| 2026-09-19 | implementation/high | plan-run · closed-green · P10.3 closed: erp-sdk/packages/agentools_bridge; Q-23(3) no McpTransport; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P10.4 attempt 1: bridge persistence stores + L1 conformance |
+| 2026-09-19 | implementation/high | plan-run · closed-deviations · P10.4 closed: erp-sdk agentools_bridge persistence; L1 126/126; SyncDeliverySubstitute for ADR-007 gap; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P10.5 attempt 1: ERP product scenarios + vectors + gap proof |
+| 2026-09-19 | implementation/high | plan-run · closed-green · P10.5 closed: erp-sdk agentools_bridge VoiceOrderOrchestrator (get_menu+create_order AiResto canon); fixtures/product-erp; gap=coordinator.dropPendingForConnectivityGap; Q-1 HR scenario unexpressible; write-site: pre_mutation: allow · pre_final: allow |
+| 2026-09-19 | implementation/high | plan-run · in-progress · P10.6 attempt 1: applicability report + ГЕЙТ P10 |
+| 2026-09-19 | implementation/high | plan-run · closed-deviations · note сокращена; полный текст: journal.jsonl:205 |
 
 ## Owner Gates
 
@@ -417,6 +434,8 @@ write-site: pre_mutation: allow · pre_final: allow |
 - P0.4: known deviation
 - P0.7: known deviation
 - P0.8: known deviation
+- P10.4: known deviation
+- P10.6: known deviation
 - P2.4: known deviation
 - P2.5: known deviation
 - P3.24: known deviation

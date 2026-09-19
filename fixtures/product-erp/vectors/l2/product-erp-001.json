@@ -1,0 +1,97 @@
+{
+  "id": "product-erp-001",
+  "title": "AiResto: меню → уточнение стола → заказ с одним подтверждением",
+  "vector_class": "behavior",
+  "spec_rev": "2026-08",
+  "spec_rule_ids": [
+    "CNF-1",
+    "SCN-1",
+    "CLR-6"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "identity": {
+      "tenant_id": "tenant-resto-a"
+    },
+    "product_erp_seed": {
+      "menu_categories": [
+        {
+          "name": "Напитки",
+          "items": [
+            {
+              "sku": "latte",
+              "title": "Латте"
+            }
+          ]
+        }
+      ]
+    },
+    "tools": []
+  },
+  "script": [
+    {
+      "user_input": "Примi заказ на латte для стола 5"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "get_menu",
+          "args": {}
+        }
+      }
+    },
+    {
+      "clarification": {
+        "call_id": "clr-call-1",
+        "request_state": "opaque-state-1",
+        "requests": {
+          "table_id": {
+            "prompt": "Какой стол?"
+          }
+        },
+        "answer_call_id": "clr-call-2",
+        "answers": {
+          "table_id": "5"
+        }
+      }
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "create_order",
+          "args": {
+            "order_id": "ord-001",
+            "table_id": "5",
+            "items": [
+              {
+                "sku": "latte",
+                "qty": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_completed"
+      }
+    ],
+    "final_state": "completed",
+    "observations": [
+      {
+        "kind": "confirmation_boundary",
+        "probe_id": "product_erp_confirmation",
+        "proposal_count": 1,
+        "token_issue_count": 1,
+        "token_consume_count": 1,
+        "decision_event_count": 1
+      }
+    ]
+  }
+}

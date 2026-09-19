@@ -6,6 +6,13 @@
       "manifest_path": "../php/composer.json",
       "adapter_command": "php php/conformance/adapter.php",
       "test_command": "php php/vendor/bin/phpunit -c php/phpunit.xml"
+    },
+    {
+      "id": "dart",
+      "language": "dart",
+      "manifest_path": "../dart/agentools/pubspec.yaml",
+      "adapter_command": "dart run dart/agentools/conformance/adapter.dart",
+      "test_command": "bash -c 'cd dart/agentools && dart test'"
     }
   ]
 }

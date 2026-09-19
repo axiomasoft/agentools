@@ -16,6 +16,7 @@ final class AuditEventFactoryTest extends TestCase
     /** AOB-1, AOB-2, AOB-9; audit events live in the action journal with audit.* kinds. */
     public function testItBuildsPolicyEvaluatedAuditEvent(): void
     {
+        /** @var list<array<string, mixed>> $exported */
         $exported = [];
         $sink = new class($exported) implements AuditSink {
             /** @param list<array<string, mixed>> $exported */

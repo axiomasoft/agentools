@@ -1,6 +1,6 @@
 /// Минимальная типизированная ошибка инструмента для negotiation (EXT-15).
-final class ToolError {
-  ToolError({
+final class NegotiationToolError {
+  NegotiationToolError({
     required this.code,
     required this.category,
     required this.retryable,

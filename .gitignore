@@ -1,5 +1,7 @@
 /php/vendor/
 /php/composer.lock
+/php/var/*.sqlite
+/php/var/*.sqlite-*
 /dart/.dart_tool/
 /dart/.packages
 /dart/pubspec.lock

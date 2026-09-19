@@ -1,0 +1,17 @@
+{
+  "resultType": "complete",
+  "ttlMs": 60000,
+  "cacheScope": "public",
+  "tools": [
+    {
+      "name": "agentools.smoke",
+      "description": "P8.12 transport smoke tool",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "probe": {"type": "string"}
+        }
+      }
+    }
+  ]
+}

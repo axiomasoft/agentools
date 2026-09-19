@@ -2,4 +2,7 @@ parameters:
     level: max
     paths:
         - src
+        - reference
         - tests
+    excludePaths:
+        - reference/conformance/adapter.php

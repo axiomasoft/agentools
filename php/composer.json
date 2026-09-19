@@ -15,7 +15,8 @@
   },
   "autoload": {
     "psr-4": {
-      "AgenTools\\": "src/"
+      "AgenTools\\": "src/",
+      "AgenTools\\Reference\\": "reference/"
     }
   },
   "autoload-dev": {

@@ -24,7 +24,7 @@ final class ExtensionNegotiator {
 
     return NegotiationResult(
       NegotiationMode.rejected,
-      error: ToolError(
+      error: NegotiationToolError(
         code: ToolErrorCodes.extensionUnsupported,
         category: 'precondition',
         retryable: false,

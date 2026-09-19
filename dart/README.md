@@ -5,7 +5,7 @@
 | Пакет | Путь | Назначение |
 |:--|:--|:--|
 | `agentools` | `dart/agentools/` | Ядро: контракты, валидация, детерминированные примитивы (pure Dart) |
-| `agentools_mcp_dart` | `dart/agentools_mcp_dart/` | Спутник: реализация порта `McpTransport` на `mcp_dart` (item P8.12) |
+| `agentools_mcp_dart` | `dart/agentools_mcp_dart/` | Спутник: реализация порта `McpTransport` на `mcp_dart` **2.4.2** stable (T-1 ветка a, 2026-09-19) |
 
 Транспорт намеренно вынесен из ядра (D86): `dart/agentools/pubspec.yaml` не содержит
 `mcp_dart`, и гейт фазы P8 не проверяет сетевой транспорт.
@@ -29,11 +29,20 @@ Runtime-пины ядра: `json_schema:^5.2.2`, `ulid:^2.0.1`. JCS реализ
 Conformance-адаптер Dart — `dart/agentools/conformance/adapter.dart` (item P8.13).
 Регистрация SDK в `conformance/sdks.json` — тоже P8.13.
 
+## Owner-gate `DR-02` §6
+
+Фактический исход на дату P8.13 — **ветка (C)**: слой 2 CI проверяет только свежесть
+производных артефактов ревизии; SDK-часть структурной сверки «поле схемы ↔ поле типа»
+**без предмета** (открытый вопрос Q-12 у владельца). Чекер структурной сверки не писался.
+
 ## Границы CI
 
-- Тесты ядра входят в **слой 3** CI только после регистрации Dart SDK (item **P8.13**).
+- Тесты ядра входят в **слой 3** CI после регистрации Dart SDK (item **P8.13**).
 - Пакет-спутник **`agentools_mcp_dart` в `conformance/sdks.json` не попадает** — у него
   нет адаптера и векторов; его тесты остаются вне четырёхслойного гейта.
+- Пин транспорта: **`mcp_dart` ^2.4.0** (resolved **2.4.2**). Риск prerelease D39 снят:
+  stable содержит `McpProtocol.require2026` и энфорсмент `resultType`
+  (`protocol.dart:790`). Свидетельство F7: `dart/agentools_mcp_dart/evidence/resulttype-negative.log`.
 
 ## Чем пакет не является
 
