@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json.schemastore.org/infection.json",
+  "source": {
+    "directories": [
+      "src/Confirmation",
+      "src/Schema",
+      "src/Ops",
+      "src/Scenario",
+      "src/Idempotency"
+    ],
+    "excludes": [
+      "LongOperationCoordinator.php"
+    ]
+  },
+  "timeout": 10,
+  "timeoutsAsEscaped": true,
+  "minMsi": 70,
+  "minCoveredMsi": 70,
+  "logs": {
+    "text": "infection.log",
+    "json": "infection.json"
+  },
+  "tmpDir": "tmp/infection"
+}

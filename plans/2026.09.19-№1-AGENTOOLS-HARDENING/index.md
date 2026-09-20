@@ -11,7 +11,7 @@
 | `phases/<Pn>/<Pn>.md` | P1–P10 detailed; item specs are the stable execution contracts |
 | `bundles/` | digest-qualified executor inputs; P0.1 и первый ready product item P1.1 материализованы, predecessor-dependent bundles отложены до появления producer artifacts |
 | `decisions/` | append-only decisions и generated current/archive/index views |
-| `handoff.md` | rolling runnable Next; сейчас independent whole-plan design audit |
+| `handoff.md` | rolling runnable Next; сейчас P0.1 whole-plan design audit после закрытия P1 |
 | `roadmap.md` | dependency graph, design routes и owner gates |
 | `journal.jsonl` | append-only история task-plan запусков |
 | `brief/00-brief.md` | owner request, boundaries и success criteria |
@@ -51,8 +51,9 @@
 
 ## Ключевые артефакты `root/`
 
-P1.2–P1.5 создадут `threat-model-v1`, `compatibility-support-v1`,
-`hardening-guarantees-v1` и `resource-envelope-v1`; P2.1 создаст
+P1 опубликовал `threat-model-v1`, `compatibility-support-v1`,
+`hardening-guarantees-v1`, `resource-envelope-v1` и `findings/P1-contract-coverage.md`;
+P2.1 создаст
 `confirmation-security-v1`; P3.1 создаст `token-replay-v1`; P4.1 создаст
 `idempotency-lease-v1`; P5.1 создаст `event-store-v1`. До их execution это
 declared draft outputs, а не доказанные product guarantees. P7.1 создаст

@@ -6,10 +6,16 @@
     failOnNotice="true"
     failOnRisky="true"
     failOnWarning="true"
+    executionOrder="default"
 >
     <testsuites>
         <testsuite name="default">
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+    <source>
+        <include>
+            <directory>src</directory>
+        </include>
+    </source>
 </phpunit>

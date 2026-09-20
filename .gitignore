@@ -43,3 +43,6 @@ __pycache__/
 
 
 .phpunit.result.cache
+/php/tmp/
+/php/infection.json
+/php/infection.html

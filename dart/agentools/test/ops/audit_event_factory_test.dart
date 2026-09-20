@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:agentools/agentools.dart';
+import 'package:agentools/agentools_testkit.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -75,13 +76,10 @@ void main() {
     final factory = AuditEventFactory(
       clock: FixedClock(DateTime.parse('2026-08-05T12:00:00Z')),
     );
-    final payload = CostRecorder().costPayload(
-      100,
-      50,
-      'USD',
-      'pt-2026-08',
-      {'input_minor': 2, 'output_minor': 3},
-    );
+    final payload = CostRecorder().costPayload(100, 50, 'USD', 'pt-2026-08', {
+      'input_minor': 2,
+      'output_minor': 3,
+    });
     final event = factory.costRecorded(
       actionId: 'act-1',
       seq: 3,
@@ -94,6 +92,22 @@ void main() {
     expect(event.payload['amount_minor'], 350);
     expect(event.payload['currency'], 'USD');
   });
+
+  test('rejects forbidden payload fields', () {
+    final factory = AuditEventFactory(
+      clock: FixedClock(DateTime.parse('2026-08-05T12:00:00Z')),
+    );
+    expect(
+      () => factory.costRecorded(
+        actionId: 'act-1',
+        seq: 3,
+        expectedPrevSeq: 2,
+        actor: Actor(type: 'agent', id: 'a1'),
+        costPayload: {'token': 'secret'},
+      ),
+      throwsA(isA<EventStoreFailure>()),
+    );
+  });
 }
 
 String _repoSchemaDirectory() {
@@ -103,10 +117,7 @@ String _repoSchemaDirectory() {
   ];
   if (Platform.script.isScheme('file')) {
     final testDir = File(Platform.script.toFilePath()).parent.path;
-    candidates.insert(
-      0,
-      '$testDir/../../../../spec/revisions/2026-08/schema',
-    );
+    candidates.insert(0, '$testDir/../../../../spec/revisions/2026-08/schema');
   }
   for (final candidate in candidates) {
     if (Directory(candidate).existsSync()) {

@@ -6,8 +6,9 @@ namespace AgenTools\Tests\Ops;
 
 use AgenTools\Action\Actor;
 use AgenTools\Contracts\AuditSink;
+use AgenTools\Error\EventStoreFailure;
 use AgenTools\Ops\AuditEventFactory;
-use AgenTools\Persistence\FixedClock;
+use AgenTools\TestKit\FixedClock;
 use AgenTools\Schema\PublishedSchemaValidator;
 use PHPUnit\Framework\TestCase;
 
@@ -82,5 +83,13 @@ final class AuditEventFactoryTest extends TestCase
         self::assertSame('audit.cost_recorded', $event->kind);
         self::assertSame(350, $event->payload['amount_minor']);
         self::assertSame('USD', $event->payload['currency']);
+    }
+
+    public function testItRejectsForbiddenPayloadFields(): void
+    {
+        $factory = new AuditEventFactory(new FixedClock(new \DateTimeImmutable('2026-08-05T12:00:00+00:00')));
+
+        $this->expectException(EventStoreFailure::class);
+        $factory->costRecorded('act-1', 3, 2, new Actor('agent', 'a1'), ['token' => 'secret']);
     }
 }
