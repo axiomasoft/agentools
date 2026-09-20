@@ -12,8 +12,8 @@
 | Authoring Model | gpt-5.6-sol/high (Codex, provider-attested, 2026-09-19) |
 | Repository | `/home/vostrikov/projects/packages/agentools` |
 | Related Packages | `php/` · `dart/agentools/` · `dart/agentools_mcp_dart/` · `spec/` · `fixtures/` · `conformance/` |
-| Execution Mode | phase-first: P1–P6 detailed + P7–P10 skeletons; каждая фаза детализируется отдельным `task:plan-design` |
-| Target Operator Classes | frontier/high (Sol или Grok 4.6 для детализации/аудита) · implementation/high (исполнение security/public-contract items) |
+| Execution Mode | phase-first: P1–P10 detailed; после детализации обязателен independent whole-plan design audit |
+| Target Operator Classes | frontier/high для design/audit · implementation/high для product execution; D16 фиксирует один Cursor launch model на batch из `Composer 2.5` / `Grok 4.6` |
 | Approval Owner | Dmitry Vostrikov |
 | Home | repo:agentools |
 | visibility | private; release candidate обязателен, внешняя публикация только по G-RELEASE |
@@ -83,9 +83,9 @@ checksums и provenance. Публикация в registry/tag остаётся �
 
 ## 3. Routing
 
-На стадии 1 исполнимы не items, а отдельные design-проходы фаз. Каждый проход
-обязан превратить скелет в item-спеки и добавить их построчно в каноническую
-таблицу Routing. Выбор Sol/Grok ниже — часть контракта верхнего слоя.
+Стадия детализации завершена. Каноническая таблица ниже маршрутизирует
+административный P0.1 и все будущие product items; concrete single-model launch
+assignment и exact grouped commands зафиксированы в §3.1 и D16.
 
 | Batch | Items | Model class/effort | Exec | Review | Почему |
 |:--|:--|:--|:--|:--|:--|
@@ -95,29 +95,82 @@ checksums и provenance. Публикация в registry/tag остаётся �
 | foundation | P1.3 | implementation/high | plan-exec | full | recommended: compatibility/migration inventory переиспользует тот же baseline/manifests и может идти после P1.1 в dependency-safe order |
 | contracts | P1.4 | implementation/high | plan-exec | full | recommended: guarantee catalog сводит threat и compatibility contracts; неверное обещание меняет downstream acceptance |
 | contracts | P1.5 | implementation/high | plan-exec | full | recommended: resource envelope и coverage gate переиспользуют все P1 contracts; full проверяет нормативный вход P2–P10 |
-| confirmation-contract | P2.1 | implementation/high | plan-exec | full | recommended: P1 trust/compatibility/guarantee contracts превращаются в один binding/error/case owner до изменения SDK |
-| confirmation-contract | P2.2 | implementation/high | plan-exec | full | recommended: PHP/Dart typed model и ports переиспользуют contract/case manifest P2.1 и требуют cross-language security review |
-| confirmation-service | P2.3 | implementation/high | plan-exec | full | recommended: оба SDK реализуют один safe facade и общий adversarial corpus; full защищает authorization/public-contract semantics |
-| confirmation-service | P2.4 | implementation/high | plan-exec | full | recommended: consumer migration, bypass scan и full package regression переиспользуют P2.3 service/test context |
-| token-envelope | P3.1 | implementation/high | plan-exec | full | recommended: P2 binding и P1 guarantees превращаются в один envelope/consume/key owner до codec и SQL |
-| token-envelope | P3.2 | implementation/high | plan-exec | full | recommended: PHP/Dart parser и key provider реализуют P3.1 без PostgreSQL; full из-за crypto/parser mutants |
-| durable-replay | P3.3 | implementation/high | plan-exec | full | recommended: atomic consume и cleanup переиспользуют frozen contract; concurrent PG evidence обязательна |
-| durable-replay | P3.4 | implementation/high | plan-exec | full | recommended: wiring в P2 service/protocol и restart gate переиспользуют store/codec; full защищает CNF-20 |
-| lease-contract | P4.1 | implementation/high | plan-exec | full | recommended: P1 guarantees превращаются в один lease/fence/capability owner до смены store API |
-| lease-contract | P4.2 | implementation/high | plan-exec | full | recommended: PHP/Dart acquire/heartbeat/CAS и in-memory adapter реализуют P4.1 без PostgreSQL; full из-за fencing mutants |
-| lease-durable | P4.3 | implementation/high | plan-exec | full | recommended: durable adapter и takeover SQL переиспользуют frozen contract; concurrent PG evidence обязательна |
-| lease-durable | P4.4 | implementation/high | plan-exec | full | recommended: coordinator, capability policy и crash/fencing gate переиспользуют store; full защищает F04 |
-| event-contract | P5.1 | implementation/high | plan-exec | full | recommended: P1 guarantees превращаются в один EventStore/audit/observability owner до смены journal API |
-| event-contract | P5.2 | implementation/high | plan-exec | full | recommended: PHP/Dart UncommittedEvent/append/load и in-memory adapter реализуют P5.1 без PostgreSQL; full из-за collision mutants |
-| event-durable | P5.3 | implementation/high | plan-exec | full | recommended: durable adapter, IDENTITY position и keyset load переиспользуют frozen contract; concurrent PG evidence обязательна |
-| event-durable | P5.4 | implementation/high | plan-exec | full | recommended: journal/audit wiring, redaction/cardinality и collision gate переиспользуют store; full защищает F05 |
+| confirmation | P2.1 | implementation/high | plan-exec | full | recommended: P1 contracts превращаются в один binding/error/case owner; линейный P2 batch сохраняет его в контексте до consumer gate |
+| confirmation | P2.2 | implementation/high | plan-exec | full | recommended: PHP/Dart typed model и ports сразу реализуют frozen P2.1 vocabulary и требуют одной cross-language security review |
+| confirmation | P2.3 | implementation/high | plan-exec | full | recommended: safe facade и общий adversarial corpus продолжают тот же security context без повторного cold start |
+| confirmation | P2.4 | implementation/high | plan-exec | full | recommended: consumer migration, bypass scan и full regression замыкают P2 в той же session после terminal P2.3 |
+| token-replay | P3.1 | implementation/high | plan-exec | full | recommended: envelope/consume/key contract остаётся загруженным для codec, durable store и supported-path gate |
+| token-replay | P3.2 | implementation/high | plan-exec | full | recommended: PHP/Dart parser и key provider реализуют P3.1 до подключения PostgreSQL; full из-за crypto/parser mutants |
+| token-replay | P3.3 | implementation/high | plan-exec | full | recommended: atomic consume и cleanup переиспользуют тот же frozen contract; concurrent PG evidence обязательна |
+| token-replay | P3.4 | implementation/high | plan-exec | full | recommended: wiring в P2 service/protocol и restart gate замыкают store/codec без нового cold start; full защищает CNF-20 |
+| lease-fencing | P4.1 | implementation/high | plan-exec | full | recommended: lease/fence/capability contract остаётся загруженным до API, durable adapter и coordinator gate |
+| lease-fencing | P4.2 | implementation/high | plan-exec | full | recommended: PHP/Dart acquire/heartbeat/CAS и in-memory adapter реализуют P4.1 до PostgreSQL; full из-за fencing mutants |
+| lease-fencing | P4.3 | implementation/high | plan-exec | full | recommended: durable adapter и takeover SQL переиспользуют тот же frozen contract; concurrent PG evidence обязательна |
+| lease-fencing | P4.4 | implementation/high | plan-exec | full | recommended: coordinator, capability policy и crash/fencing gate замыкают store context без нового cold start; full защищает F04 |
+| event-store | P5.1 | implementation/high | plan-exec | full | recommended: EventStore/audit/observability contract остаётся загруженным до API, durable adapter и integration gate |
+| event-store | P5.2 | implementation/high | plan-exec | full | recommended: PHP/Dart UncommittedEvent/append/load и in-memory adapter реализуют P5.1 до PostgreSQL; full из-за collision mutants |
+| event-store | P5.3 | implementation/high | plan-exec | full | recommended: durable adapter, IDENTITY position и keyset load переиспользуют тот же frozen contract; concurrent PG evidence обязательна |
+| event-store | P5.4 | implementation/high | plan-exec | full | recommended: journal/audit wiring, redaction/cardinality и collision gate замыкают store context без нового cold start; full защищает F05 |
 | semantic-core | P6.1 | implementation/high | plan-exec | full | recommended: successor revision сводит executed P2–P5 contracts в один normative owner до SDK drift gates |
 | semantic-core | P6.2 | implementation/high | plan-exec | full | recommended: generated semantic profile и PHP/Dart exporters переиспользуют successor schemas/cases; full защищает public semantic contract |
 | semantic-core | P6.3 | implementation/high | plan-exec | full | recommended: JCS oracle переиспользует successor corpus и проверяет оба SDK одними independent bytes |
 | conformance-evidence | P6.4 | implementation/high | plan-exec | full | recommended: official MCP pin, applicability и Dart wrapper driver образуют один отдельный evidence contour |
 | conformance-evidence | P6.5 | implementation/high | plan-exec | full | recommended: successor adapters, candidate lock и integrated receipt переиспользуют P6.2–P6.4 reports; full проверяет cross-language gate |
+| api-boundaries | P7.1 | implementation/high | plan-exec | full | recommended: shared target roster и inventory owner нужен до обоих ecosystem moves; full защищает public-contract classification |
+| api-boundaries | P7.2 | implementation/high | plan-exec | full | recommended: PHP autoload/testkit/archive delta переиспользует P7.1 inventory и compatibility map; full ловит silent FQN breaks |
+| api-boundaries | P7.3 | implementation/high | plan-exec | full | recommended: Dart core/testkit/MCP exports переиспользуют тот же target roster; full ловит transitive export/import drift |
+| solo | P7.4 | implementation/high | plan-exec | full | recommended: clean built-artifact consumers намеренно изолированы от source-tree context; reuse небезопасен для archive proof |
+| adversarial-core | P8.1 | implementation/high | plan-exec | full | recommended: exact risk/proof manifest создаёт одного владельца доказательств до generators и mutants; full защищает coverage всех P1–P7 guarantees |
+| adversarial-core | P8.2 | implementation/high | plan-exec | full | recommended: deterministic corpus, shrink/promotion и оба SDK переиспользуют P8.1 manifest/P6 oracle; full ловит общий semantic defect |
+| adversarial-core | P8.3 | implementation/high | plan-exec | full | recommended: mutation оценивает уже стабильную P8.2 ordinary suite и тот же critical fault catalog; full обязателен для survivor/exclusion triage |
+| solo | P8.4 | implementation/high | plan-exec | full | recommended: isolated PostgreSQL processes, destructive test-only fault injection и namespace cleanup образуют отдельную safety boundary |
+| solo | P8.5 | implementation/high | plan-exec | full | recommended: calibration ждёт immutable P8.2–P8.4 receipts и matching host fingerprint; объединение с moving child evidence дало бы stale baseline |
+| ci-hardening | P9.1 | implementation/high | plan-exec | full | recommended: trust-plane contract, immutable tool lock и live capability inventory создают одного security owner до workflow permissions |
+| ci-hardening | P9.2 | implementation/high | plan-exec | full | recommended: workflows и support/lowest/latest/P8 tier mapping переиспользуют P9.1 policy; full ловит privilege и false-coverage drift |
+| rc-evidence | P9.3 | implementation/high | plan-exec | full | recommended: exact normalized subjects и clean rebuild стабилизируют bytes до SBOM/provenance binding |
+| rc-evidence | P9.4 | implementation/high | plan-exec | full | recommended: SPDX/provenance/conditional attestation переиспользуют immutable P9.3 digests, но сохраняют отдельную capability boundary |
+| solo | P9.5 | implementation/high | plan-exec | full | recommended: aggregate private RC ждёт immutable P8/P9 child receipts и выполняет independent download/re-hash; reuse до стабилизации небезопасен |
+| release-truth | P10.1 | implementation/high | plan-exec | full | recommended: exact claim/evidence contract создаёт одного владельца acceptance vocabulary до изменения public docs; full ловит false-green aggregation |
+| release-truth | P10.2 | implementation/high | plan-exec | full | recommended: docs/support/migrations переиспользуют P10.1 claim graph и требуют cross-package public-contract review |
+| acceptance-evidence | P10.3 | implementation/high | plan-exec | full | recommended: artifact-only consumers и migration/recovery drills переиспользуют exact P9 subjects и P10.2 snippets |
+| acceptance-evidence | P10.4 | implementation/high | plan-exec | full | recommended: dossier exact-joins immutable consumer/upstream evidence, но сохраняет judgement отдельно от product execution |
+| solo | P10.5 | implementation/high | plan-exec | full | recommended: private acceptance и G-RELEASE request ждут immutable dossier; раннее переиспользование допустило бы stale digests или implicit authority |
 
-### 3.1 Стадия 1 — детализация фаз
+### 3.1 Launch-модель execution batches
+
+Каждая строка ниже — одна планируемая Cursor-сессия `task:plan-run`; внутри batch модель
+не меняется. Канонический route items остаётся provider-neutral `implementation/high`.
+`Composer 2.5` назначен synthesis/API/package/release batches, `Grok 4.6` — crypto,
+concurrency, persistence и adversarial verification. Итого 19 execution-сессий вместо 23.
+
+| Batch | Items | Launch model | Почему |
+|:--|:--|:--|:--|
+| foundation | P1.1–P1.3 | Cursor `Composer 2.5/high` | Baseline, threat и compatibility требуют общего repository inventory. |
+| contracts | P1.4–P1.5 | Cursor `Composer 2.5/high` | Guarantee/resource synthesis и cross-contract coverage. |
+| confirmation | P2.1–P2.4 | Cursor `Composer 2.5/high` | Один security/public-API контур от contract до bypass gate. |
+| token-replay | P3.1–P3.4 | Cursor `Grok 4.6/high` | Parser/crypto, atomic consume и restart/concurrency failure modes. |
+| lease-fencing | P4.1–P4.4 | Cursor `Grok 4.6/high` | Fencing, takeover и ambiguous-effect crash windows. |
+| event-store | P5.1–P5.4 | Cursor `Grok 4.6/high` | Ordering/collision/keyset/atomic persistence и audit failure modes. |
+| semantic-core | P6.1–P6.3 | Cursor `Composer 2.5/high` | Shared normative semantics, generated parity и JCS integration. |
+| conformance-evidence | P6.4–P6.5 | Cursor `Composer 2.5/high` | Official applicability и integrated conformance receipt. |
+| api-boundaries | P7.1–P7.3 | Cursor `Composer 2.5/high` | Cross-ecosystem API/package compatibility и migration synthesis. |
+| solo | P7.4 | Cursor `Composer 2.5/high` | Clean built-artifact consumer must stay source-context isolated. |
+| adversarial-core | P8.1–P8.3 | Cursor `Grok 4.6/high` | Risk manifest, fuzz/property corpus и mutation triage. |
+| solo | P8.4 | Cursor `Grok 4.6/high` | Isolated PostgreSQL processes and destructive test-only faults. |
+| solo | P8.5 | Cursor `Grok 4.6/high` | Resource calibration consumes immutable adversarial receipts. |
+| ci-hardening | P9.1–P9.2 | Cursor `Composer 2.5/high` | Trust-plane policy and CI matrix synthesis. |
+| rc-evidence | P9.3–P9.4 | Cursor `Composer 2.5/high` | Deterministic subjects, SBOM and provenance binding. |
+| solo | P9.5 | Cursor `Composer 2.5/high` | Independent aggregate download/re-hash after child stabilization. |
+| release-truth | P10.1–P10.2 | Cursor `Composer 2.5/high` | Claim graph and public documentation truth. |
+| acceptance-evidence | P10.3–P10.4 | Cursor `Composer 2.5/high` | Artifact-only consumers and exact evidence dossier. |
+| solo | P10.5 | Cursor `Composer 2.5/high` | Private acceptance and non-authorizing owner packet. |
+
+Grok-batches не получают выдуманный native selector: текущий Task route-catalog подтверждает
+`composer-2.5`, но ещё не регистрирует Grok 4.6. Перед первым Grok launch нужен проверенный
+package-owner mapping точного selector в `implementation` либо новая route decision на
+`Composer 2.5`; `auto` не является допустимой заменой.
+
+### 3.2 Стадия 1 — детализация фаз (история, завершено)
 
 | Фаза | Модель | Review | Почему |
 |:--|:--|:--|:--|
@@ -132,14 +185,14 @@ checksums и provenance. Публикация в registry/tag остаётся �
 | P9 | Codex `gpt-5.6-sol/high` | full | CI, archive, dependency matrices, SBOM/provenance и permissions образуют один supply-chain контракт. |
 | P10 | Codex `gpt-5.6-sol/high` | full | Приёмка guarantees, docs, clean consumers и release decision должна связать все receipts без добавления функций. |
 
-### 3.2 Стадия 2 — общий аудит дизайна
+### 3.3 Стадия 2 — общий аудит дизайна
 
-`task:plan-audit 2026.09.19-№1-AGENTOOLS-HARDENING design` — Codex `gpt-5.6-sol/high`,
+`task:plan-audit 2026.09.19-№1-AGENTOOLS-HARDENING design` — Codex `gpt-5.6-sol/xhigh`,
 `cold-start-root: whole-plan-independent-audit`. Проверяются сквозные инварианты,
 миграции, непересекающееся владение артефактами, полнота `findings/audit-verdicts.md`
 и доказуемость каждого release-гейта.
 
-### 3.3 Объявленный route будущих items
+### 3.4 Объявленный route будущих items
 
 | Фаза | Model class/effort | Exec | Review | Почему |
 |:--|:--|:--|:--|:--|
@@ -152,7 +205,7 @@ checksums и provenance. Публикация в registry/tag остаётся �
 | P7 | implementation/high | plan-exec | full | Public API/package compatibility и migrations. |
 | P8 | implementation/high | plan-exec | full | Адверсариальные test gates; отдельные benchmark plumbing items могут быть light. |
 | P9 | implementation/high | plan-exec | full | Supply-chain/release automation и permission boundaries. |
-| P10 | implementation/high | plan-exec | full | 1.0 acceptance; publication action дополнительно защищен G-RELEASE. |
+| P10 | implementation/high | plan-exec | full | Private-RC acceptance; future public execution is separate exact scope protected by G-RELEASE. |
 
 ## Audit-to-phase coverage
 
@@ -195,3 +248,8 @@ checksums и provenance. Публикация в registry/tag остаётся �
 | `root/contracts/idempotency-lease-v1.md` | v1 draft | создаётся P4.1 | P4.2–P10 | — |
 | `root/contracts/event-store-v1.md` | v1 draft | создаётся P5.1 | P5.2–P10 | — |
 | `spec/revisions/2026-09/semantic-manifest.json` | semantic-profile/v1 | generated candidate; создаётся P6.2 | PHP, Dart, conformance, P7–P10 | — |
+| `root/contracts/package-boundary-v1.md` + `api/package-surface-v1.json` | package-boundary/v1 | contract + exact target; создаются P7.1 | P7.2–P10 | — |
+| `root/contracts/adversarial-verification-v1.md` + `fixtures/hardening/adversarial/manifest.v1.json` | adversarial-verification/v1 | contract + exact proof roster; создаются P8.1 | P8.2–P10 | — |
+| `root/contracts/ci-supply-chain-v1.md` + `.ci/supply-chain-lock.json` | ci-supply-chain/v1 | contract + immutable tool/action roster; создаются P9.1 | P9.2–P10 | — |
+| `root/contracts/release-candidate-v1.md` + `root/contracts/release-candidate-v1.schema.json` | release-candidate/v1 | exact subject/receipt contract; создаются P9.3 | P9.4–P10 | — |
+| `root/contracts/release-acceptance-v1.md` + `root/contracts/release-acceptance-v1.schema.json` | release-acceptance/v1 | exact claim/evidence and private/public verdict contract; создаются P10.1 | P10.2–P10.5, owner G-RELEASE decision | — |

@@ -139,8 +139,10 @@ P1.2/P1.4/P1.5 -> P5.1 -> P5.2
                          -> P5.3 -> P5.4
 ```
 
-`event-contract` groups P5.1–P5.2 because the in-memory adapter implements the frozen write DTO.  
-`event-durable` groups P5.3–P5.4 because adapter, IDENTITY/lock SQL and consumer wiring share the store and PostgreSQL evidence. Both groups are `recommended:`; dependency-safe subsets remain executable after D2's whole-plan design gate opens.
+`event-store` groups P5.1–P5.4 because the contract, in-memory API, durable adapter and audit wiring
+form one linear persistence boundary and reuse the same collision/pagination corpus. The group is
+`recommended:`; every item still closes independently and a dependency-safe prefix remains
+executable after D2's whole-plan design gate opens.
 
 ## Stable error intent
 

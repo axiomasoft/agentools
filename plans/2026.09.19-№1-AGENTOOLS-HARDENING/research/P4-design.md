@@ -126,9 +126,10 @@ P1.4/P1.5 -> P4.1 -> P4.2
                    -> P4.3 -> P4.4
 ```
 
-`lease-contract` groups P4.1–P4.2 because the in-memory port implements the frozen API.
-`lease-durable` groups P4.3–P4.4 because adapter, coordinator and PostgreSQL evidence share the row.
-Both groups are `recommended:`; dependency-safe subsets remain executable after D2's whole-plan design gate opens.
+`lease-fencing` groups P4.1–P4.4 because the contract, in-memory API, durable row and coordinator
+form one linear fencing boundary and reuse the same capability/crash corpus. The group is
+`recommended:`; every item still closes independently and a dependency-safe prefix remains
+executable after D2's whole-plan design gate opens.
 
 ## Stable error intent
 

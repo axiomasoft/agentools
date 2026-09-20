@@ -1,0 +1,29 @@
+# P7 design RAG — Composer and Dart package boundaries
+
+**Verified:** 2026-09-19  
+**Boundary:** External sources constrain package-manager and language/library behavior. The exact
+Agentools symbol roster, tier classification, migration and no-split decision are repository-owned
+(`RAG:—`). Perplexity was not exposed to this Codex turn; no Perplexity result is claimed.
+
+| Evidence | Verified claim | P7 consequence |
+|:--|:--|:--|
+| RAG:✅ [Composer schema — autoload-dev and archive](https://getcomposer.org/doc/04-schema.md), accessed 2026-09-19 | `autoload-dev` is root-only and is intended for development/test classes that should not pollute production consumers. `archive.exclude` uses gitignore-like patterns for package archives. | PHP reference/testkit mappings move out of production `autoload`; P7 validates actual archive exclusions rather than assuming source placement is enough. |
+| RAG:✅ [Composer CLI](https://getcomposer.org/doc/03-cli.md), accessed 2026-09-19 | `--no-dev` disables development dependencies/autoload behavior for production installation. | The clean PHP consumer installs the staged artifact with `--no-dev` and proves reference/testkit FQNs are unavailable. |
+| RAG:✅ [Dart package layout](https://dart.dev/tools/pub/package-layout), accessed 2026-09-19 | Top-level libraries under `lib` are consumer entrypoints; `lib/src` is the implementation convention and should not be imported from another package. Examples should use package imports like external consumers. | P7 defines `agentools.dart` and `agentools_testkit.dart` deliberately, treats `src` as unsupported, and validates examples/consumers through package imports. |
+| RAG:✅ [Effective Dart: Usage](https://dart.dev/effective-dart/usage), accessed 2026-09-19 | Importing another package’s `lib/src` violates the implementation-import convention and can break on otherwise non-breaking releases. | Analyzer/consumer fixtures reject external implementation imports; direct `src` reachability is never called stable API. |
+| RAG:✅ [Dart libraries and imports](https://dart.dev/language/libraries), accessed 2026-09-19 | Libraries are the unit of privacy and exports determine the namespace exposed by a public library. | Exact transitive export closure, including `show`/`hide`, is the Dart API gate; file placement alone is insufficient. |
+| RAG:✅ [Effective Dart: Design](https://dart.dev/effective-dart/design), accessed 2026-09-19 | Public declarations signal support commitments; narrow interfaces and class modifiers communicate intended extension/implementation. | P7 keeps the supported surface narrow and may add modifiers only after compatibility evidence, never as an unreviewed breaking cleanup. |
+| RAG:✅ [Publishing Dart packages](https://dart.dev/tools/pub/publishing), accessed 2026-09-19 | Published contents are determined from the package root plus ignore rules; `dart pub publish --dry-run` validates layout and displays intended files. Published versions are durable consumer contracts. | P7 records the native publication preview/file list and cancels on forbidden files; actual upload stays outside P7 and behind G-RELEASE. |
+| RAG:✅ [Dart package dependencies](https://dart.dev/tools/pub/dependencies), accessed 2026-09-19 | Path dependencies are for local development and cannot be uploaded to pub.dev; dev dependencies of dependencies are ignored by consumers. | `agentools_mcp_dart` can be tested as a paired private artifact, but its current path dependency remains an explicit P9/P10 public-release blocker. |
+
+## Facts intentionally not promoted
+
+- Composer archive cleanliness does not prove Packagist publication, legal identity or dependency
+  support matrices.
+- `lib/src` is not a security boundary and does not technically prevent imports; policy, analyzer
+  and consumer evidence define the supported Dart API.
+- A separate Dart testkit library inside the same package is an API boundary, not proof that testkit
+  bytes are absent from the archive.
+- A local paired MCP artifact is not evidence that pub.dev can resolve the package.
+- Package-manager conventions do not decide which Agentools symbols deserve `stable`; P1/P6 evidence
+  and actual consumers do.

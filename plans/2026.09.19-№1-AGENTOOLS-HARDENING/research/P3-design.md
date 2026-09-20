@@ -123,9 +123,9 @@ P1.2/P1.4/P1.5 + P2.1 -> P3.1 -> P3.2
 P2.3 -------------------------------/
 ```
 
-`token-envelope` groups P3.1–P3.2 because the codec implements the frozen envelope.
-`durable-replay` groups P3.3–P3.4 because adapter, cleanup and service wiring share the store
-and PostgreSQL evidence. Both groups are `recommended:`; dependency-safe subsets remain
+`token-replay` groups P3.1–P3.4 because contract, codec, durable consume and service wiring form
+one linear replay boundary and reuse the same envelope/store/adversarial corpus. The group is
+`recommended:`; every item still closes independently and a dependency-safe prefix remains
 executable after D2's whole-plan design gate opens.
 
 ## Stable error intent

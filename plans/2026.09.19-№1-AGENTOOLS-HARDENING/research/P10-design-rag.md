@@ -1,0 +1,31 @@
+# P10 design RAG — publication permanence, identity and release channels
+
+**Verified:** 2026-09-20  
+**Retrieval:** The web browser service failed twice at the connection layer. The fallback fetched
+the official primary-source pages and their public source Markdown directly over HTTPS; no
+secondary synthesis or Perplexity result is claimed.
+
+| Evidence | Verified claim | P10 consequence |
+|:--|:--|:--|
+| RAG:✅ [Dart publishing](https://dart.dev/tools/pub/publishing), accessed 2026-09-20 | pub.dev describes publishing as durable: old versions remain available; retraction within seven days is not deletion. A package must include a license, and `dart pub publish --dry-run` validates and lists intended files. | P10 treats upload as irreversible owner scope, keeps dry-run as a content check, and records response/retraction rather than promising deletion rollback. |
+| RAG:✅ [Dart dependencies — path packages](https://dart.dev/tools/pub/dependencies#path-packages), accessed 2026-09-20 | A package with a path dependency cannot be uploaded to pub.dev; the dependency normally must be published first and the dependent package switched to a hosted version. | `agentools_mcp_dart` remains paired-private and public-release-blocked; P10 cannot relabel P9 private evidence as pub.dev readiness. |
+| RAG:✅ [Dart pubspec — version and publish_to](https://dart.dev/tools/pub/pubspec), accessed 2026-09-20 | `publish_to: none` prevents publication. A published version is sealed and changes require a new version. | Current manifests are a deliberate public block. Removing `publish_to: none` and choosing versions require an exact owner-authorized release branch. |
+| RAG:✅ [Composer schema](https://getcomposer.org/doc/04-schema.md), accessed 2026-09-20 | Published libraries require a vendor/package name and description; Packagist should infer versions from VCS tags, so a hard-coded `version` field is normally omitted. `proprietary` is a recognized closed-source license identifier and support metadata has explicit fields. | P10 validates current private metadata and keeps proposed public name/tag/support values in the G-RELEASE packet; it does not add a Composer version literal or infer an OSS license. |
+| RAG:✅ [Composer CLI — validate](https://getcomposer.org/doc/03-cli.md#validate), accessed 2026-09-20 | Composer recommends validation before tagging a release; strict validation and publish-suitability checks are available. | P10 includes strict manifest validation in docs/consumer acceptance, but a clean validate result is not publication authority. |
+| RAG:✅ [Packagist About](https://packagist.org/about), accessed 2026-09-20 | Packagist.org aggregates public packages, accepts a public repository URL, protects vendor names, and derives new versions from VCS tags. Private Packagist is the distinct private distribution product. | Exact public vs private Composer channel, vendor ownership, repository visibility and tag are owner decisions; P10 does not assume Packagist.org from the existing package name. |
+| RAG:✅ [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html), accessed 2026-09-20 | SemVer requires a declared public API; released version contents must not be modified, and incompatible public API changes require a major increment after 1.0. | P10 binds release notes/version proposals to the P7 API manifest and treats a published version as immutable; it does not infer that “production-grade” means version `1.0.0`. |
+| RAG:✅ [GitHub releases](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases), accessed 2026-09-20 | A GitHub release is based on a Git tag and exposes downloadable source archives/assets; write permission manages releases. | Tag and GitHub release creation are explicit external actions in a future G-RELEASE branch, not a local evidence step. |
+| RAG:✅ [Managing GitHub releases](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository), accessed 2026-09-20 | Releases can normally be edited/deleted; if repository immutable releases are enabled, published assets and the tag cannot be replaced/deleted while the release exists. Draft-first is recommended for immutable releases. | P10 records the observed repository capability/state and exact asset digests in the packet. It never assumes immutability or uses GitHub-generated source archives as P9 subject identity. |
+
+## Facts intentionally not promoted
+
+- A license file is required by pub.dev, but the source does not decide which license Agentools
+  should use; current proprietary identity remains an owner decision for any public channel.
+- `composer validate --strict` and `dart pub publish --dry-run` prove metadata/package checks, not
+  legal authority, registry-name ownership, support readiness or deterministic hosted bytes.
+- SemVer does not require the first production-quality internal candidate to be `1.0.0`; the
+  release version follows the declared API and owner-approved channel strategy.
+- A GitHub release deletion capability is not a rollback guarantee for already downloaded assets or
+  registry versions. Immutable-release availability is observed, never assumed.
+- Packagist.org and pub.dev have different identity/dependency rules; a common source commit does
+  not imply one atomic cross-registry release transaction.

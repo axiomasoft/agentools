@@ -1,6 +1,6 @@
 # Индекс плана — `2026.09.19-№1-AGENTOOLS-HARDENING`
 
-**Обновлён:** 2026-09-19
+**Обновлён:** 2026-09-20
 
 ## Карта директорий
 
@@ -8,10 +8,10 @@
 |:--|:--|
 | `plan.md` | stable core: Meta, Context, Execution Rules, Routing и Contracts |
 | `status.md` | generated status projection |
-| `phases/<Pn>/<Pn>.md` | P1–P5 detailed; P6–P10 skeletons до своих design-сессий |
-| `bundles/` | digest-qualified executor inputs; product-item bundles отложены до producer artifacts/execution stage D2 |
+| `phases/<Pn>/<Pn>.md` | P1–P10 detailed; item specs are the stable execution contracts |
+| `bundles/` | digest-qualified executor inputs; P0.1 и первый ready product item P1.1 материализованы, predecessor-dependent bundles отложены до появления producer artifacts |
 | `decisions/` | append-only decisions и generated current/archive/index views |
-| `handoff.md` | rolling runnable Next; сейчас отдельная детализация P6 |
+| `handoff.md` | rolling runnable Next; сейчас independent whole-plan design audit |
 | `roadmap.md` | dependency graph, design routes и owner gates |
 | `journal.jsonl` | append-only история task-plan запусков |
 | `brief/00-brief.md` | owner request, boundaries и success criteria |
@@ -27,6 +27,16 @@
 | `research/P4-design-rag.md` | P4 Perplexity + primary-source Powertools/Kleppmann/PostgreSQL/IETF evidence |
 | `research/P5-design.md` | P5 repository recon, EventStore/collision/pagination boundary и item decomposition |
 | `research/P5-design-rag.md` | P5 Perplexity + primary-source Kurrent/PostgreSQL/RFC 8785/Prometheus/OTel evidence |
+| `research/P6-design.md` | P6 successor semantics, exact-set profile, JCS oracle и MCP applicability |
+| `research/P6-design-rag.md` | P6 primary-source RFC/JCS/official MCP evidence |
+| `research/P7-design.md` | P7 package/API inventory, boundary decision, alternatives и item decomposition |
+| `research/P7-design-rag.md` | P7 official Composer/Dart package and archive rules |
+| `research/P8-design.md` | P8 risk/proof manifest, deterministic corpus, mutation/storage/resource boundaries |
+| `research/P8-design-rag.md` | P8 Perplexity synthesis + primary-source Infection/Dart/PostgreSQL/benchmark evidence |
+| `research/P9-design.md` | P9 trust planes, CI tier mapping, exact private subjects и capability model |
+| `research/P9-design-rag.md` | P9 maximum Perplexity retrieval + primary-source GitHub/Composer/Dart/SPDX/SLSA evidence |
+| `research/P10-design.md` | P10 exact acceptance graph, docs/consumer/dossier boundaries and private/public verdict split |
+| `research/P10-design-rag.md` | P10 official Composer/Dart/Packagist/SemVer/GitHub publication constraints |
 | `open-questions.md` | generated proposed decisions; сейчас publication/legal identity |
 
 ## Провенанс
@@ -45,4 +55,8 @@ P1.2–P1.5 создадут `threat-model-v1`, `compatibility-support-v1`,
 `hardening-guarantees-v1` и `resource-envelope-v1`; P2.1 создаст
 `confirmation-security-v1`; P3.1 создаст `token-replay-v1`; P4.1 создаст
 `idempotency-lease-v1`; P5.1 создаст `event-store-v1`. До их execution это
-declared draft outputs, а не доказанные product guarantees.
+declared draft outputs, а не доказанные product guarantees. P7.1 создаст
+`package-boundary-v1`; P8.1 — `adversarial-verification-v1` и exact proof manifest.
+P9.1 создаст `ci-supply-chain-v1` и immutable tool/action lock; P9.3 —
+`release-candidate-v1` с exact subject/receipt schema. P10.1 создаст
+`release-acceptance-v1` с exact claim/evidence and private/public verdict schema.

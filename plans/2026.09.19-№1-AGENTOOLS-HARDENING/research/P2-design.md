@@ -104,10 +104,10 @@ migration impossible to review independently from cross-process replay and event
 P1.2/P1.3/P1.4 -> P2.1 -> P2.2 -> P2.3 -> P2.4
 ```
 
-`confirmation-contract` groups P2.1–P2.2 because both consume P1 contracts and define the shared
-vocabulary. `confirmation-service` groups P2.3–P2.4 because implementation, consumer migration and
-full regression reuse the same service/test context. Both groups are `recommended:`; dependency-safe
-subsets remain executable after D2's whole-plan design gate opens.
+`confirmation` groups P2.1–P2.4 because the contract, typed ports, service, consumer migration and
+bypass regression form one linear security contour and reuse the same P1/P2 vocabulary. The group
+is `recommended:`; `plan-run` still closes every item independently and a dependency-safe prefix
+remains executable after D2's whole-plan design gate opens.
 
 ## Stable error intent
 
