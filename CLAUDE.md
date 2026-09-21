@@ -1,38 +1,16 @@
-<!-- maind:healthcheck hash=17e957dc8eed (managed by maind — не редактировать вручную) -->
-## ⚠ ПРИОРИТЕТ №1 — связь с mAInd (общая память + граф)
+<!-- generated from .ai/guidelines/agent-entrypoint.md by scripts/build-agent-docs.sh -->
 
-Перед началом работы убедись, что проект подключён к хабу **mAInd**. Это критично:
-без связи изменения этой сессии **не попадут** в общую память и граф — в истории
-разработки появятся невосстановимые пробелы, и дальнейшие связи будет не вывести.
+# AgenTools
 
-1. Проверь связь: `maind health --cwd`
-2. Если статус `partial` / `standalone` — почини: `maind health --cwd --fix`
-   (поднимет демон памяти и допишет MCP-серверы хаба в этот проект).
-3. Приступай к задаче только при статусе `connected`.
-
-Память **общая** (демон mAInd), scope этого проекта — `project:agentools`; факты всей экосистемы — в
-scope `global`. Связи проекта с остальными: `maind graph --project agentools`.
-<!-- /maind:healthcheck -->
-
-<!-- swissknifeman:hub:start -->
-# Swissknifeman: хаб скиллов
-
-<!-- Сгенерировано scripts/generate-hub.sh из реестра swissknifeman. -->
-<!-- НЕ редактируйте вручную: перегенерация затрёт правки. -->
-<!-- swissknifeman:registry sha=a2500e95a167 skills=232 -->
-
-## Приоритет источников правил
-
-1. Проектные правила и скиллы (`.ai/guidelines/`, `.ai/skills/`, корневые инструкции проекта) задают локальные соглашения.
-2. Скиллы swissknifeman (нативный листинг скиллов клиента) — архитектура, структура, практики, процессы. Если в проект добавят Laravel Boost, его версионно-специфичные скиллы приоритетнее пересекающихся.
-
-Скиллы дополняют инструкции среды и запрос владельца; внутри совместимых правил выбирай более специфичный источник (проект > Boost > реестр swissknifeman).
-
-## Как найти нужный скилл
-
-1. Скиллы swissknifeman уже перечислены НАТИВНЫМ листингом клиента (имя + описание каждого доступного скилла резидентны с начала сессии) — ищи по нему; здесь индекс не дублируется.
-2. Выбери скилл по описанию; внутри скилла открывай сниппеты только по его таблице «когда какой сниппет открывать» — не загружай всё подряд.
-3. Открывай архитектурные скиллы при изменении соответствующих контрактов; обычная правка следует существующей структуре проекта.
-4. Устройство системы скиллов в проекте (источник истины, симлинки, gitignore) — скилл `skills-ssot`.
-5. Полный индекс с описаниями (если нужен человеку): `skiller status` в проекте либо `generate-hub.sh --target <проект> --full-index --dry-run`.
-<!-- swissknifeman:hub:end -->
+- Edit this context only in `.ai/guidelines/agent-entrypoint.md`, then run
+  `bash scripts/build-agent-docs.sh`.
+- This is a protocol-first repository. Keep `spec/`, shared `fixtures/`,
+  `conformance/`, and the PHP and Dart SDKs semantically aligned.
+- The current revision and repository map are in `README.md`; API surfaces are
+  documented in `php/API.md` and `dart/*/API.md`.
+- The repository is private. Do not publish packages or claim public readiness
+  without the recorded owner release gate.
+- For plan work, use the matching `plans/*/status.md` and `plan.md`; open only
+  the current phase and its declared contracts.
+- Preserve unrelated worktree changes. Run the language-specific tests plus the
+  affected conformance and validation gates.
