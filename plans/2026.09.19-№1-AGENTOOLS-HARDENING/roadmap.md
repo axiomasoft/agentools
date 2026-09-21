@@ -1,13 +1,13 @@
 # Roadmap исполнения — 2026.09.19-№1-AGENTOOLS-HARDENING
 
-**Обновлён:** 2026-09-20 · **Состояние дизайна:** P1–P10 detailed; whole-plan design audit pending
+**Обновлён:** 2026-09-21 · **Текущее состояние:** P1–P10 execution complete; private acceptance GREEN; repeat whole-plan design audit GREEN; P0.1 reconciliation active
 
 ## Правило текущей стадии
 
-Это карта design-проходов, а не второй план. P1 детализирована в пять items, P2–P5 —
-в четыре, P6 — в пять, P7 — в четыре, P8–P10 — в пять; каждая detailed фаза имеет recommended batches.
-Детализация P1–P10 завершена. Следующий проход — независимый whole-plan design audit; только его GREEN receipt
-открывает execution roadmap (D2).
+Это карта lifecycle, а не второй план. Детализация и execution P1–P10
+завершены; исходное нарушение D2 сохранено как WPA-01, а не переписано.
+D17 мигрировал exact historical journal defects с preimage/manifest/receipt. Повторный
+независимый whole-plan design audit GREEN; текущий шаг — terminal reconciliation P0.1.
 
 ## Граф фаз
 
@@ -36,17 +36,13 @@ P10 принимает весь результат P1–P9.
 | P9 | ci-hardening/rc-evidence/solo aggregate | plan-design | Codex gpt-5.6-sol/high | —; только local/private RC, publish запрещён | ✅ detailed: P9.1–P9.5 |
 | P10 | release-truth/acceptance-evidence/solo | plan-design | Codex gpt-5.6-sol/high | P10 только готовит request; G-RELEASE нужен отдельному public scope | ✅ detailed: P10.1–P10.5 |
 
-После P10: `audit-design: task:plan-audit 2026.09.19-№1-AGENTOOLS-HARDENING design`
-на Codex `gpt-5.6-sol/xhigh`; design handoff использует `cold-start-root: design-root-terminal`,
-а сам audit сохраняет independent-review boundary.
+После remediation P10 независимый repeat audit выполнен на `gpt-5.6-sol/xhigh`;
+GREEN evidence записан в `findings/audit-verdicts.md`. Independent-review boundary сохранена.
 
-## Карта будущего исполнения
+## Карта исполнения (история, завершено)
 
-P1–P10 execution batches уже объявлены в `plan.md`; они остаются неисполнимыми до GREEN
-whole-plan design audit.
-После объединения линейных P2–P5 карта содержит 19 запусков вместо 23. Внутри одного запуска
-модель не меняется; команды перечисляют весь adjacent batch, а `plan-run` закрывает items
-последовательно и сохраняет lifecycle каждого item.
+Ниже сохранена исходная карта 19 execution batches как forensic/handoff evidence.
+Все P1–P10 items имеют terminal GREEN state; таблица больше не является launch queue.
 
 | # | Batch | Модель запуска | Provider-neutral команда |
 |--:|:--|:--|:--|
@@ -70,9 +66,8 @@ whole-plan design audit.
 | 18 | acceptance-evidence | `Composer 2.5/high` | `task:plan-run 2026.09.19-№1-AGENTOOLS-HARDENING P10.3-P10.4` |
 | 19 | solo:P10.5 | `Composer 2.5/high` | `task:plan-run 2026.09.19-№1-AGENTOOLS-HARDENING P10.5` |
 
-Для `Composer 2.5` текущий Cursor Task mapping уже подтверждён. Для `Grok 4.6` здесь намеренно
-не выдуман CLI selector: до запуска #4 нужен verified mapping точного selector в Task
-route-catalog либо D16-compatible перевод batch на `Composer 2.5`; `auto` запрещён.
+Исторически `Composer 2.5` и `Grok 4.6` использовались через зафиксированные
+D16 routes; эта таблица не даёт новых launch instructions и не разрешает `auto`.
 
 Все batches обязаны соблюдать зависимости:
 

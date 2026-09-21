@@ -1,0 +1,171 @@
+{
+  "id": "scnfailure-004",
+  "title": "Маршруты отказа шага: закрытый перечень, retry с конечным числом попыток, исчерпание = abort, continue сохраняет результат отсутствующим",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "SCN-6",
+    "SCN-7",
+    "SCN-8",
+    "SCN-10",
+    "SCN-11",
+    "SCN-12"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "crm_report_list",
+        "title": "Список отчётов о работе",
+        "description": "Purpose: Возвращает страницу отчётов сотрудника за период.\nCall when: Пользователю нужен список отчётов без изменения данных.\nRequired arguments: period\nExample: crm_report_list({\"period\":\"2026-07\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "period": {
+              "type": "string"
+            },
+            "cursor": {
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "items": {
+              "type": "array"
+            },
+            "next_cursor": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "crm.report.read"
+            ]
+          }
+        }
+      },
+      {
+        "name": "crm_task_update",
+        "title": "Обновить задачу",
+        "description": "Изменяет статус либо поля задачи CRM. Обратимая операционная запись: изменение устранимо повторным вызовом с прежними значениями.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "task_id": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "assignee_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "task_id"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "task_id": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "write",
+            "confirmation": "confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "crm.task.write"
+            ]
+          }
+        }
+      }
+    ],
+    "scenario": {
+      "scenario_id": "failure_route_matrix",
+      "title": "retry с исчерпанием попыток (abort), continue над техническим отказом, чтение результата продолженного шага",
+      "spec_rev": "2026-09",
+      "steps": [
+        {
+          "id": "b",
+          "tool": "crm_task_update",
+          "input_map": {
+            "task_id": "$ctx.absent_branch.deep_field"
+          },
+          "on_technical_fail": {
+            "action": "retry",
+            "attempts": 2
+          }
+        },
+        {
+          "id": "c",
+          "tool": "crm_task_update",
+          "input_map": {
+            "task_id": "$ctx.another_absent_branch.deep_field"
+          },
+          "on_technical_fail": {
+            "action": "continue"
+          }
+        },
+        {
+          "id": "d",
+          "tool": "crm_report_list",
+          "when": "missing($steps.c.status)",
+          "input_map": {
+            "period": "$ctx.period"
+          }
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Обнови задачи по сценарию и покажи список отчётов, если предыдущий шаг ничего не вернул."
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_failed"
+      },
+      {
+        "kind": "action_created",
+        "payload": {}
+      },
+      {
+        "kind": "action_completed"
+      }
+    ],
+    "final_state": "completed",
+    "tool_calls": [
+      {
+        "tool": "crm_report_list",
+        "phase": "commit"
+      }
+    ]
+  }
+}

@@ -16,8 +16,8 @@ final class ActionReducer {
     this.specRevision = '2026-08',
     JournalHashChain? hashChain,
     EventUpcasterChain? upcasters,
-  })  : _hashChain = hashChain,
-        _upcasters = upcasters ?? EventUpcasterChain();
+  }) : _hashChain = hashChain,
+       _upcasters = upcasters ?? EventUpcasterChain();
 
   static const _knownKinds = <String>{
     'action_created',
@@ -51,16 +51,15 @@ final class ActionReducer {
 
   FoldedAction apply(FoldedAction state, ActionEvent event) {
     if (state.status?.isTerminal() ?? false) {
-      throw LifecycleException('A terminal action cannot accept another event.');
+      throw LifecycleException(
+        'A terminal action cannot accept another event.',
+      );
     }
     if (event.seq != state.seq + 1) {
       throw LifecycleException('Action journal sequence has a gap.');
     }
     if (event.expectedPrevSeq != state.seq) {
-      throw VersionConflict(
-        expected: event.expectedPrevSeq,
-        actual: state.seq,
-      );
+      throw VersionConflict(expected: event.expectedPrevSeq, actual: state.seq);
     }
     if (event.specRevision != specRevision) {
       throw LifecycleException(
@@ -106,15 +105,14 @@ final class ActionReducer {
 
     if (event.kind == 'epoch_started') {
       if (event.epoch == null || event.epoch! <= state.epoch) {
-        throw LifecycleException(
-          'Executor epoch must increase monotonically.',
-        );
+        throw LifecycleException('Executor epoch must increase monotonically.');
       }
       epoch = event.epoch!;
     }
     if (event.kind == 'input_recorded') {
       final name = _requiredString(event, 'name');
-      inputs = Map<String, dynamic>.from(inputs)..[name] = event.payload['value'];
+      inputs = Map<String, dynamic>.from(inputs)
+        ..[name] = event.payload['value'];
     }
     if (event.kind == 'effect_requested') {
       final effectId = _requiredString(event, 'effect_id');
@@ -190,8 +188,7 @@ final class ActionReducer {
         return switch (kind) {
           'input_recorded' ||
           'epoch_started' ||
-          'cancellation_requested' =>
-            from,
+          'cancellation_requested' => from,
           'action_started' => ActionStatus.running,
           'action_cancelled' => _cancel(state),
           _ => _invalidTransition(from, kind),
@@ -202,8 +199,7 @@ final class ActionReducer {
           'epoch_started' ||
           'task_bound' ||
           'task_binding_lost' ||
-          'cancellation_requested' =>
-            from,
+          'cancellation_requested' => from,
           'confirmation_requested' => _confirmationRequested(event),
           'effect_requested' => ActionStatus.applying,
           'action_completed' => ActionStatus.completed,
@@ -215,8 +211,7 @@ final class ActionReducer {
         return switch (kind) {
           'confirmation_requested' ||
           'epoch_started' ||
-          'cancellation_requested' =>
-            from,
+          'cancellation_requested' => from,
           'confirmation_resolved' => _confirmationResolved(event),
           'action_failed' => ActionStatus.failed,
           'action_cancelled' => _cancel(state),
@@ -228,11 +223,11 @@ final class ActionReducer {
           'effect_requested' ||
           'epoch_started' ||
           'task_bound' ||
-          'cancellation_requested' =>
-            from,
-          'task_binding_lost' => state.hasUnresolvedEffect()
-              ? ActionStatus.reconciliationRequired
-              : _invalidTransition(from, kind),
+          'cancellation_requested' => from,
+          'task_binding_lost' =>
+            state.hasUnresolvedEffect()
+                ? ActionStatus.reconciliationRequired
+                : _invalidTransition(from, kind),
           'action_failed' => ActionStatus.failed,
           _ => _invalidTransition(from, kind),
         };
@@ -259,8 +254,8 @@ final class ActionReducer {
       'reject' || 'revoke' => ActionStatus.rejected,
       'expire' => ActionStatus.expired,
       _ => throw LifecycleException(
-          'The confirmation decision is not in the transition table.',
-        ),
+        'The confirmation decision is not in the transition table.',
+      ),
     };
   }
 

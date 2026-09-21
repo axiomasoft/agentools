@@ -1,0 +1,18 @@
+{
+  "id": "dosnetwork-001",
+  "title": "Авторинг отклоняет сетевой $ref без автоматического разыменования",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "TLP-29"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "schema",
+    "inline": "{\"properties\":{\"remote\":{\"$ref\":\"https://example.invalid/schema.json\"}}}"
+  },
+  "expect": {
+    "linter": "reject",
+    "diagnostic_substring": "сетевой $ref"
+  }
+}

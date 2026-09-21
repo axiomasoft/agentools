@@ -8,17 +8,20 @@ void main() {
 
   group('Canonicalizer', () {
     test('runs official RFC 8785 vectors', () {
-      final inputs = vectorDir
-          .listSync()
-          .whereType<File>()
-          .where((file) => file.path.endsWith('.input.json'))
-          .toList()
-        ..sort((a, b) => a.path.compareTo(b.path));
+      final inputs =
+          vectorDir
+              .listSync()
+              .whereType<File>()
+              .where((file) => file.path.endsWith('.input.json'))
+              .toList()
+            ..sort((a, b) => a.path.compareTo(b.path));
 
       expect(inputs, isNotEmpty);
       for (final inputFile in inputs) {
-        final baseName = inputFile.uri.pathSegments.last
-            .replaceFirst('.input.json', '');
+        final baseName = inputFile.uri.pathSegments.last.replaceFirst(
+          '.input.json',
+          '',
+        );
         final goldenFile = File('${vectorDir.path}/$baseName.golden.txt');
         final input = inputFile.readAsStringSync();
         final expected = goldenFile.readAsStringSync().replaceAll('\n', '');
@@ -31,9 +34,12 @@ void main() {
     });
 
     test('matches PHP golden output for BMP keys', () {
-      final input = File('test/schema/data/bmp-weird.input.json').readAsStringSync();
-      final expected =
-          File('test/schema/data/bmp-weird.golden.txt').readAsStringSync().replaceAll('\n', '');
+      final input = File(
+        'test/schema/data/bmp-weird.input.json',
+      ).readAsStringSync();
+      final expected = File(
+        'test/schema/data/bmp-weird.golden.txt',
+      ).readAsStringSync().replaceAll('\n', '');
       expect(canonicalizer.canonicalizeJson(input), expected);
     });
 
@@ -85,10 +91,7 @@ void main() {
       final output = canonicalizer.canonicalize(input);
       expect(output, contains(decomposed));
       expect(output, isNot(contains('é')));
-      expect(
-        decomposed.runes.toList(),
-        [0x65, 0x0301],
-      );
+      expect(decomposed.runes.toList(), [0x65, 0x0301]);
     });
   });
 }

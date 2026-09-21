@@ -1,0 +1,18 @@
+{
+  "id": "ovrdup-002",
+  "title": "Тот же текст с уникальными маркерами OVR-91 и OVR-92",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "OVR-10",
+    "OVR-11"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "rule_line",
+    "inline": "**OVR-91 (MUST, L1).** Первое объявление маркера.\n**OVR-92 (MUST, L1).** Второе правило с другим маркером — дубля нет."
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

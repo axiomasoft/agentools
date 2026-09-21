@@ -1,0 +1,21 @@
+{
+  "name": "agentools/consumer-release-php",
+  "description": "P10.3 clean consumer: production install from exact RC subject only.",
+  "type": "project",
+  "license": "proprietary",
+  "require": {
+    "php": ">=8.3",
+    "agentools/sdk": "@dev"
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "PACKAGE_PATH",
+      "options": {
+        "symlink": false
+      }
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

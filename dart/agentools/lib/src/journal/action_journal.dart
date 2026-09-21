@@ -6,7 +6,7 @@ import 'folded_action.dart';
 /// Append-only action journal. Its state is always derived by [ActionReducer].
 final class ActionJournal {
   ActionJournal([List<ActionEvent> events = const []])
-      : _events = List.unmodifiable(events);
+    : _events = List.unmodifiable(events);
 
   final List<ActionEvent> _events;
 
@@ -27,7 +27,8 @@ final class ActionJournal {
     List<ActionEvent> tail, [
     ActionReducer? reducer,
   ]) {
-    final resolvedReducer = reducer ?? ActionReducer(specRevision: snapshot.specRevision);
+    final resolvedReducer =
+        reducer ?? ActionReducer(specRevision: snapshot.specRevision);
     var state = snapshot.state;
     for (final event in tail) {
       state = resolvedReducer.apply(state, event);

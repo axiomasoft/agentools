@@ -1,0 +1,103 @@
+{
+  "id": "scenario-001",
+  "title": "Сценарий остаётся упорядоченными данными: шаги имеют собственную идентичность и ревизию",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "SCN-1",
+    "SCN-2",
+    "SCN-3",
+    "SCN-4",
+    "SCN-5"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Детерминированный пробный инструмент для проверки поведения рантайма.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {}
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "confirmation": "none",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "scenario": {
+      "scenario_id": "ordered_data",
+      "title": "Сценарий ordered_data",
+      "spec_rev": "2026-09",
+      "steps": [
+        {
+          "id": "first",
+          "tool": "demo_probe",
+          "input_map": {
+            "value": "$ctx.value"
+          }
+        },
+        {
+          "id": "second",
+          "tool": "demo_probe",
+          "when": "$steps.first.ok == true",
+          "input_map": {
+            "value": "$steps.first.value"
+          }
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Сценарий остаётся упорядоченными данными: шаги имеют собственную идентичность и ревизию"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "scenario-001"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "scenario_started",
+        "payload": {
+          "scenario_id": "ordered_data"
+        }
+      },
+      {
+        "kind": "step_started",
+        "payload": {
+          "step_id": "first"
+        }
+      },
+      {
+        "kind": "step_started",
+        "payload": {
+          "step_id": "second"
+        }
+      },
+      {
+        "kind": "scenario_completed",
+        "payload": {
+          "outcome": "COMPLETED"
+        }
+      }
+    ],
+    "final_state": "completed"
+  }
+}

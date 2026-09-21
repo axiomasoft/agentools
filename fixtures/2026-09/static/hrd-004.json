@@ -1,0 +1,15 @@
+{
+  "id": "hrd-004",
+  "title": "Hardening semantics P5 EventStore (HRD-21..HRD-25, HRD-28)",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": ["HRD-21", "HRD-22", "HRD-23", "HRD-24", "HRD-25", "HRD-28"],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "conformance_report",
+    "inline": "{\"rule_id\":\"HRD-21\",\"normative_word\":\"MUST\",\"outcome\":\"completed\",\"counts_toward_level\":true}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

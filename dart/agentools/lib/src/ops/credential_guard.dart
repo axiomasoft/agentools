@@ -35,9 +35,7 @@ final class CredentialGuard {
   }
 
   /// SEC-5; tokens embedded in tool arguments are never accepted.
-  ToolExecutionResult? rejectTokensInArguments(
-    Map<String, dynamic> arguments,
-  ) {
+  ToolExecutionResult? rejectTokensInArguments(Map<String, dynamic> arguments) {
     for (final value in arguments.values) {
       if (value is Map && value['kind'] == 'access_token') {
         return _foreignTokenFailure('token_in_argument');

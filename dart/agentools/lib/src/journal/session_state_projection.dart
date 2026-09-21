@@ -10,10 +10,10 @@ final class SessionStateProjection {
     required this.specRevision,
     this.epoch = 0,
     this.projectedAt,
-  })  : assert(actionId.isNotEmpty),
-        assert(specRevision.isNotEmpty),
-        assert(seq >= 1),
-        assert(epoch >= 0);
+  }) : assert(actionId.isNotEmpty),
+       assert(specRevision.isNotEmpty),
+       assert(seq >= 1),
+       assert(epoch >= 0);
 
   final String actionId;
   final ActionStatus status;

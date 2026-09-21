@@ -1,0 +1,105 @@
+{
+  "id": "confirmation-005",
+  "title": "Истечение срока ожидания решения переводит действие в expired, решение записано как expire",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "CNF-19",
+    "CNF-29",
+    "CNF-30",
+    "CNF-31"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "crm_task_update",
+        "title": "Обновить задачу",
+        "description": "Изменяет статус либо поля задачи CRM. Обратимая операционная запись: изменение устранимо повторным вызовом с прежними значениями.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "task_id": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "assignee_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "task_id"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "task_id": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "write",
+            "confirmation": "confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "crm.task.write"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "user_input": "Переведи задачу T-103 в статус done"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "crm_task_update",
+          "args": {
+            "task_id": "T-103",
+            "status": "done"
+          }
+        }
+      }
+    },
+    {
+      "tick_seconds": 172800
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "confirmation_requested"
+      },
+      {
+        "kind": "confirmation_resolved",
+        "payload": {
+          "decision": "expire"
+        }
+      }
+    ],
+    "final_state": "expired",
+    "error": {
+      "code": "agentools.precondition.confirmation_expired"
+    }
+  }
+}

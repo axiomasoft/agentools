@@ -1,0 +1,65 @@
+name: extended
+
+on:
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: extended-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  supply-chain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - run: python3 tools/ci_policy.py check-workflows
+      - run: python3 tools/ci_matrix.py validate
+
+  extended-evidence:
+    name: P8 extended tier
+    needs: supply-chain
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: "8.4"
+          coverage: pcov
+          tools: pcov
+      - uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1
+        with:
+          sdk: "3.13.4"
+      - name: Install dependencies
+        run: |
+          composer install --working-dir=php --no-interaction --prefer-dist
+          composer install --working-dir=conformance --no-interaction --prefer-dist
+          cd dart/agentools && dart pub get
+          cd ../agentools_mcp_dart && dart pub get
+      - name: Bounded baseline before extended proofs
+        run: |
+          python3 tools/ci_gate.py --all
+          conformance/bin/semantic-parity
+      - name: Extended adversarial workloads
+        run: |
+          python3 tools/adversarial_corpus.py run
+          python3 tools/mutation_gate.py run
+      - name: Resource envelopes (timing gated by fingerprint)
+        run: python3 tools/resource_gate.py run
+      - name: Emit CI map receipt
+        run: |
+          python3 tools/ci_matrix.py emit
+          python3 tools/ci_matrix.py write-finding

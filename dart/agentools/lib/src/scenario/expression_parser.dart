@@ -6,7 +6,8 @@ import 'expression_limits.dart';
 
 /// SCN-13–SCN-15. Parses expressions into an AST; it never turns them into closures.
 final class ExpressionParser {
-  ExpressionParser({ExpressionLimits? limits}) : _limits = limits ?? ExpressionLimits();
+  ExpressionParser({ExpressionLimits? limits})
+    : _limits = limits ?? ExpressionLimits();
 
   final ExpressionLimits _limits;
   late List<_Token> _tokens;
@@ -34,11 +35,7 @@ final class ExpressionParser {
   ExpressionNode _orExpression() {
     var node = _andExpression();
     while (_take('||')) {
-      node = BinaryNode(
-        operator: '||',
-        left: node,
-        right: _andExpression(),
-      );
+      node = BinaryNode(operator: '||', left: node, right: _andExpression());
     }
     return node;
   }
@@ -46,11 +43,7 @@ final class ExpressionParser {
   ExpressionNode _andExpression() {
     var node = _notExpression();
     while (_take('&&')) {
-      node = BinaryNode(
-        operator: '&&',
-        left: node,
-        right: _notExpression(),
-      );
+      node = BinaryNode(operator: '&&', left: node, right: _notExpression());
     }
     return node;
   }
@@ -108,13 +101,11 @@ final class ExpressionParser {
             token.value == 'false' ||
             token.value == 'null') {
           _position++;
-          return LiteralNode(
-            switch (token.value) {
-              'true' => true,
-              'false' => false,
-              _ => null,
-            },
-          );
+          return LiteralNode(switch (token.value) {
+            'true' => true,
+            'false' => false,
+            _ => null,
+          });
         }
         throw ExpressionException(null, 'Expected a primary expression.');
       case _TokenType.string:
@@ -162,9 +153,7 @@ final class ExpressionParser {
         offset += reference.end;
         continue;
       }
-      final string = RegExp(
-        r'^"(?:[^"\\]|\\["\\/ntr])*"',
-      ).matchAsPrefix(slice);
+      final string = RegExp(r'^"(?:[^"\\]|\\["\\/ntr])*"').matchAsPrefix(slice);
       if (string != null) {
         tokens.add(_Token(_TokenType.string, string.group(0)!));
         offset += string.end;
@@ -176,7 +165,9 @@ final class ExpressionParser {
         offset += number.end;
         continue;
       }
-      final word = RegExp(r'^(?:true|false|null|missing)\b').matchAsPrefix(slice);
+      final word = RegExp(
+        r'^(?:true|false|null|missing)\b',
+      ).matchAsPrefix(slice);
       if (word != null) {
         tokens.add(_Token(_TokenType.word, word.group(0)!));
         offset += word.end;

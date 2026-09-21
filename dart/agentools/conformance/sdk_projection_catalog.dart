@@ -14,10 +14,11 @@ final class SdkProjectionCatalog {
     List<dynamic> script,
   ) {
     _cases ??= _loadCases();
-    final key = sha256.convert(utf8.encode(_canonicalJson({
-      'given': given,
-      'script': script,
-    }))).toString();
+    final key = sha256
+        .convert(
+          utf8.encode(_canonicalJson({'given': given, 'script': script})),
+        )
+        .toString();
     final hit = _cases![key];
     if (hit is Map<String, dynamic>) {
       return hit;
@@ -33,10 +34,8 @@ final class SdkProjectionCatalog {
       throw StateError('SDK projection catalog is unreadable');
     }
     return raw.map(
-      (key, value) => MapEntry(
-        key.toString(),
-        Map<String, dynamic>.from(value as Map),
-      ),
+      (key, value) =>
+          MapEntry(key.toString(), Map<String, dynamic>.from(value as Map)),
     );
   }
 

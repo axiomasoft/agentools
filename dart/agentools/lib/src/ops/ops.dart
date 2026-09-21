@@ -1,4 +1,5 @@
 export 'audit_event_factory.dart';
+export 'audit_redaction.dart';
 export 'baggage_refs.dart';
 export 'cooperative_cancellation.dart';
 export 'cost_recorder.dart';

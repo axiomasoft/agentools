@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace AgenTools\Conformance;
 
 use AgenTools\Action\ActionEvent;
-use AgenTools\Action\ActionJournal;
 use AgenTools\Action\ActionReducer;
 use AgenTools\Action\ActionStatus;
 use AgenTools\Action\Actor;
@@ -19,7 +18,7 @@ use AgenTools\Ops\CredentialGuard;
 use AgenTools\Ops\JournalAppender;
 use AgenTools\Ops\LongOperationCoordinator;
 use AgenTools\Ops\TaskBinding;
-use AgenTools\Persistence\FixedClock;
+use AgenTools\TestKit\FixedClock;
 use AgenTools\Scenario\ScenarioRunner;
 use AgenTools\Scenario\ScenarioOutcome;
 use AgenTools\Tool\ActionProfile;
@@ -34,6 +33,15 @@ final class SdkConformanceEngine
 {
     private string $clockIso = '2000-01-01T00:00:00Z';
     private string $seed = 'agentools-conformance';
+    private string $specRevision = '2026-08';
+
+    public function bindSpecRevision(string $revision): void
+    {
+        if (!in_array($revision, ['2026-08', '2026-09'], true)) {
+            throw new RuntimeException('unsupported spec revision: ' . $revision);
+        }
+        $this->specRevision = $revision;
+    }
 
     public function configure(mixed $clock, mixed $seed): void
     {
@@ -168,7 +176,7 @@ final class SdkConformanceEngine
         }
 
         $snapshot = is_array($state['snapshot'] ?? null) ? $state['snapshot'] : [];
-        if ($snapshot !== [] && (($snapshot['seq'] ?? null) !== $previous || ($snapshot['spec_rev'] ?? '2026-08') !== '2026-08')) {
+        if ($snapshot !== [] && (($snapshot['seq'] ?? null) !== $previous || ($snapshot['spec_rev'] ?? $this->specRevision) !== $this->specRevision)) {
             $this->fail($emit, $id, 'snapshot_mismatch');
             return;
         }
@@ -221,7 +229,7 @@ final class SdkConformanceEngine
         $coordinator = new LongOperationCoordinator();
         $actor = new Actor('agent', 'agent-conformance');
         $clock = new FixedClock(new \DateTimeImmutable($this->clockIso));
-        $journal = new JournalAppender(new ActionJournal(), 'act-' . $id, $actor, $clock);
+        $journal = new JournalAppender(new \AgenTools\TestKit\InMemoryEventStore(), 'tenant-conformance', 'act-' . $id, $actor, $clock);
         $journal->append('action_created');
         $journal->append('action_started');
 
@@ -281,7 +289,7 @@ final class SdkConformanceEngine
 
         $actor = new Actor('agent', 'agent-' . substr(hash('sha256', $this->seed . $id), 0, 8));
         $clock = new FixedClock(new \DateTimeImmutable($this->clockIso));
-        $journal = new JournalAppender(new ActionJournal(), 'act-' . $id, $actor, $clock);
+        $journal = new JournalAppender(new \AgenTools\TestKit\InMemoryEventStore(), 'tenant-conformance', 'act-' . $id, $actor, $clock);
 
         if ($toolName !== '' || $policy === \AgenTools\Confirmation\PolicyVerdict::Ask) {
             $journal->append('action_created');
@@ -365,7 +373,7 @@ final class SdkConformanceEngine
             actor: new Actor((string) ($actor['type'] ?? 'system'), (string) ($actor['id'] ?? 'runtime')),
             kind: (string) ($event['kind'] ?? 'unknown'),
             eventVersion: (int) ($event['event_version'] ?? 1),
-            specRevision: (string) ($event['spec_rev'] ?? '2026-08'),
+            specRevision: (string) ($event['spec_rev'] ?? $this->specRevision),
             payload: is_array($event['payload'] ?? null) ? $event['payload'] : [],
             epoch: isset($event['epoch']) ? (int) $event['epoch'] : null,
         );

@@ -28,9 +28,7 @@ final class ClarificationSession {
   }
 
   Map<String, dynamic> answer(String callId, Map<String, dynamic> answers) {
-    if (_requests == null ||
-        _requestState == null ||
-        _requestCallId == null) {
+    if (_requests == null || _requestState == null || _requestCallId == null) {
       throw StateError('No pending clarification request exists.');
     }
     if (callId.isEmpty || callId == _requestCallId) {

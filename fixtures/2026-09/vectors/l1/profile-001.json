@@ -1,0 +1,84 @@
+{
+  "id": "profile-001",
+  "title": "Неизвестное значение side_effect трактуется как требующее гейта, а не как более слабый класс",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "TLP-13",
+    "CNF-2",
+    "CNF-7"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "sec_incident_escalate",
+        "title": "Эскалировать инцидент безопасности",
+        "description": "Поднимает инцидент безопасности до следующего уровня реагирования. Класс эффекта расширен продуктовым контуром за пределы базового перечисления.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "incident_id": {
+              "type": "string"
+            },
+            "level": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "incident_id"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "incident_id": {
+              "type": "string"
+            },
+            "level": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "sec.incident_escalation",
+            "permissions_hint": [
+              "sec.incident.escalate"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "user_input": "Эскалируй инцидент INC-9 до уровня critical"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "sec_incident_escalate",
+          "args": {
+            "incident_id": "INC-9",
+            "level": "critical"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "confirmation_requested"
+      }
+    ],
+    "final_state": "awaiting_confirmation"
+  }
+}

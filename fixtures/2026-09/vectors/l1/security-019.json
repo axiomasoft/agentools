@@ -1,0 +1,98 @@
+{
+  "id": "security-019",
+  "title": "SEC-19: запрещённое состояние — audit decision без текущего права",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "SEC-19"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Security probe.\nCall when: verify a security rule.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"case\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "principals": {
+        "initiator": {
+          "id": "user-7"
+        },
+        "agent": {
+          "id": "agent-7"
+        },
+        "authorizer": {
+          "id": "approver-7"
+        }
+      },
+      "authorization": {
+        "resource": "record-7",
+        "tool": "demo_probe",
+        "permissions": []
+      },
+      "confirmation": {
+        "proposal_id": "proposal-7",
+        "proposal_version": 1,
+        "token_id": "confirmation-token-7",
+        "covered_principal_id": "user-7",
+        "prepared_descriptor_digest": "descriptor-7",
+        "current_descriptor_digest": "descriptor-7",
+        "prepared_args_fingerprint": "args-7",
+        "commit_args_fingerprint": "args-7"
+      }
+    }
+  },
+  "script": [
+    {
+      "user_input": "Выполни security-проверку"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "sec-19"
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_failed",
+        "payload": {
+          "reason": "decision_audit_is_not_authorization",
+          "security_rule": "SEC-19",
+          "stimulus_pointer": "/given/driver_state/authorization/permissions",
+          "!tool_effect": true
+        }
+      }
+    ],
+    "final_state": "failed",
+    "tool_calls": []
+  }
+}

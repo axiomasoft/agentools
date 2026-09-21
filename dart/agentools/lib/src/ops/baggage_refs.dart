@@ -7,7 +7,8 @@ final class BaggageRefs {
   static const _maxItems = 64;
   static const _maxBytes = 8192;
 
-  BaggageRefs([List<String>? refs]) : _refs = List.unmodifiable(refs ?? const []);
+  BaggageRefs([List<String>? refs])
+    : _refs = List.unmodifiable(refs ?? const []);
 
   final List<String> _refs;
 

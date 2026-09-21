@@ -14,3 +14,8 @@ analyzer:
     unused_field: error
     unused_import: error
     unused_local_variable: error
+    implementation_imports: error
+
+linter:
+  rules:
+    implementation_imports: true

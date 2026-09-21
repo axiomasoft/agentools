@@ -1,26 +1,28 @@
 # agentools_mcp_dart
 
-Satellite package implementing core [`McpTransport`](../agentools/lib/src/contracts/mcp_transport.dart)
-on top of [`mcp_dart`](https://pub.dev/packages/mcp_dart).
+MCP transport companion for the Dart core SDK. Depends on `agentools` via
+`path: ../agentools` and is distributed only as a **private-paired** RC subject.
 
-## Version risk
-
-Pinned to **stable `mcp_dart` ^2.4.0** (resolved **2.4.2** on 2026-09-19). Trigger **T-1** closed
-on branch **(a)**: stable source contains both `McpProtocol.require2026` and `resultType`
-enforcement (`lib/src/shared/protocol.dart:790`). The prerelease risk accepted under **D39**
-(2026-07-27) is lifted for this pin.
-
-## CI boundary
-
-This package is **outside** the four-layer conformance CI gate: it has no adapter, no vectors, and
-is not registered in `conformance/sdks.json` (D86). Run its tests locally:
+## Install and test
 
 ```bash
 dart pub get
-dart analyze
+dart analyze --fatal-infos
 dart test
 ```
 
-## Evidence (F7)
+## Boundary
 
-Committed negative-run log for missing `resultType` lives in [`evidence/`](evidence/).
+- Implements the core `McpTransport` port; does not replace core confirmation,
+  idempotency, or event-store semantics.
+- Official MCP **scenario compatibility** evidence is recorded separately in
+  conformance reports; this package does not claim upstream MCP certification.
+- Not registered in the main four-layer SDK conformance registry; validate via
+  this package's tests and the MCP applicability summary.
+
+## Publication
+
+`publish_to: none` until owner `[OWNER-GATE:G-RELEASE]`. Requires matching
+`dart-core` subject digest from the private RC aggregate.
+
+See [API.md](API.md).

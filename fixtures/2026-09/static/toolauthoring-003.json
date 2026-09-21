@@ -1,0 +1,18 @@
+{
+  "id": "toolauthoring-003",
+  "title": "TLP-28: one-fault raw schema отклоняется",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "TLP-28"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "authoring_schema_profile",
+    "inline": "{\"published\":{\"type\":\"object\",\"properties\":{\"amount_minor\":{\"type\":\"integer\"},\"mode\":{\"type\":\"string\",\"enum\":[\"core\"]}}},\"authoring\":{\"type\":\"object\",\"properties\":{\"amount_minor\":{\"type\":\"integer\"},\"mode\":{\"type\":\"string\",\"enum\":[\"core\"]}},\"additionalProperties\":false}}"
+  },
+  "expect": {
+    "linter": "reject",
+    "diagnostic_substring": "голым enum"
+  }
+}

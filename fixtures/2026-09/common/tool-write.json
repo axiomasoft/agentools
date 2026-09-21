@@ -1,0 +1,35 @@
+{
+  "name": "crm_task_update",
+  "title": "Обновить задачу",
+  "description": "Изменяет статус либо поля задачи CRM. Обратимая операционная запись: изменение устранимо повторным вызовом с прежними значениями.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "task_id": { "type": "string" },
+      "status": { "type": "string" },
+      "assignee_id": { "type": "string" }
+    },
+    "required": ["task_id"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "task_id": { "type": "string" },
+      "status": { "type": "string" }
+    }
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+  },
+  "_meta": {
+    "dev.agentools/action": {
+      "side_effect": "write",
+      "confirmation": "confirm",
+      "idempotent_commit": true,
+      "permissions_hint": ["crm.task.write"]
+    }
+  }
+}

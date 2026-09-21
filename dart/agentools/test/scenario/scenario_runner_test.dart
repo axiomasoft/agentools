@@ -13,19 +13,13 @@ void main() {
           'id': 'one',
           'tool': 'one',
           'input_map': <String, dynamic>{},
-          'compensate': {
-            'tool': 'undo-one',
-            'input_map': <String, dynamic>{},
-          },
+          'compensate': {'tool': 'undo-one', 'input_map': <String, dynamic>{}},
         },
         {
           'id': 'two',
           'tool': 'two',
           'input_map': <String, dynamic>{},
-          'compensate': {
-            'tool': 'undo-two',
-            'input_map': <String, dynamic>{},
-          },
+          'compensate': {'tool': 'undo-two', 'input_map': <String, dynamic>{}},
         },
         {
           'id': 'send',
@@ -39,10 +33,7 @@ void main() {
     final result = ScenarioRunner().run(scenario, {}, port);
 
     expect(result.outcome, ScenarioOutcome.compensated);
-    expect(
-      port.calls,
-      ['one', 'two', 'fail', 'undo-two', 'undo-one'],
-    );
+    expect(port.calls, ['one', 'two', 'fail', 'undo-two', 'undo-one']);
   });
 
   // SCN-26, SCN-27: a failed compensation stops rollback and stays distinct from FAILED.
@@ -56,25 +47,15 @@ void main() {
           'id': 'one',
           'tool': 'one',
           'input_map': <String, dynamic>{},
-          'compensate': {
-            'tool': 'undo-one',
-            'input_map': <String, dynamic>{},
-          },
+          'compensate': {'tool': 'undo-one', 'input_map': <String, dynamic>{}},
         },
         {
           'id': 'two',
           'tool': 'two',
           'input_map': <String, dynamic>{},
-          'compensate': {
-            'tool': 'undo-two',
-            'input_map': <String, dynamic>{},
-          },
+          'compensate': {'tool': 'undo-two', 'input_map': <String, dynamic>{}},
         },
-        {
-          'id': 'send',
-          'tool': 'fail',
-          'input_map': <String, dynamic>{},
-        },
+        {'id': 'send', 'tool': 'fail', 'input_map': <String, dynamic>{}},
       ],
     };
 
@@ -100,11 +81,7 @@ void main() {
           'input_map': <String, dynamic>{},
           'on_semantic_fail': {'action': 'continue'},
         },
-        {
-          'id': 'next',
-          'tool': 'next',
-          'input_map': <String, dynamic>{},
-        },
+        {'id': 'next', 'tool': 'next', 'input_map': <String, dynamic>{}},
       ],
     };
 

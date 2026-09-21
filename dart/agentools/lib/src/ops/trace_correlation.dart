@@ -26,8 +26,8 @@ final class TraceCorrelation {
     final trace = Map<String, dynamic>.from(_toTraceBlock());
     if (linkedTraceId != null) {
       trace['link'] = <String, String>{
-        if (linkedTraceId != null) 'trace_id': linkedTraceId!,
-        if (linkedSpanId != null) 'span_id': linkedSpanId!,
+        'trace_id': ?linkedTraceId,
+        'span_id': ?linkedSpanId,
       };
     }
     return {'trace': trace};
@@ -37,9 +37,6 @@ final class TraceCorrelation {
   bool mustNotBeActionIdentifier() => true;
 
   Map<String, String> _toTraceBlock() {
-    return {
-      if (traceId.isNotEmpty) 'trace_id': traceId,
-      if (spanId != null) 'span_id': spanId!,
-    };
+    return {'trace_id': traceId, 'span_id': ?spanId};
   }
 }

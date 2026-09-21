@@ -1,0 +1,369 @@
+{
+  "schema_version": "confirmation-security-cases/v1",
+  "cases": [
+    {
+      "id": "CNF-SAFE-001",
+      "phase": "prepare",
+      "scenario": "caller_actor_injection_absent",
+      "result": "allow",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "trust_seam": "authenticated_actor_provider",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-002",
+      "phase": "prepare",
+      "scenario": "caller_clock_injection_absent",
+      "result": "allow",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "trust_seam": "clock",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-003",
+      "phase": "prepare",
+      "scenario": "caller_descriptor_injection_absent",
+      "result": "allow",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "trust_seam": "tool_descriptor_registry",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-004",
+      "phase": "commit",
+      "scenario": "caller_authorizer_injection_absent",
+      "result": "allow",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "trust_seam": "confirmation_authorizer",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-005",
+      "phase": "commit",
+      "scenario": "caller_policy_injection_absent",
+      "result": "allow",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "trust_seam": "confirmation_policy_resolver",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-006",
+      "phase": "commit",
+      "scenario": "caller_approval_injection_absent",
+      "result": "allow",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "trust_seam": "approval_evidence_reader",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-007",
+      "phase": "commit",
+      "scenario": "caller_dual_control_override_absent",
+      "result": "allow",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "trust_seam": "resolved_policy",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-008",
+      "phase": "commit",
+      "scenario": "null_proposer",
+      "result": "deny",
+      "semantic_code": "agentools.permission.confirmation_context_mismatch",
+      "category": "permission",
+      "retryable": false,
+      "trust_seam": "confirmation_record_store",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-009",
+      "phase": "commit",
+      "scenario": "same_proposer",
+      "result": "deny",
+      "semantic_code": "agentools.permission.confirmation_separation_violation",
+      "category": "permission",
+      "retryable": false,
+      "trust_seam": "approval_evidence_reader",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-010",
+      "phase": "commit",
+      "scenario": "cross_tenant_resource",
+      "result": "deny",
+      "semantic_code": "agentools.permission.confirmation_context_mismatch",
+      "category": "permission",
+      "retryable": false,
+      "trust_seam": "authenticated_actor_provider",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-011",
+      "phase": "commit",
+      "scenario": "policy_missing",
+      "result": "deny",
+      "semantic_code": "agentools.permission.confirmation_policy_denied",
+      "category": "permission",
+      "retryable": false,
+      "trust_seam": "confirmation_policy_resolver",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-012",
+      "phase": "commit",
+      "scenario": "policy_downgraded",
+      "result": "deny",
+      "semantic_code": "agentools.precondition.confirmation_policy_changed",
+      "category": "precondition",
+      "retryable": false,
+      "trust_seam": "confirmation_policy_resolver",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-013",
+      "phase": "commit",
+      "scenario": "policy_changed",
+      "result": "deny",
+      "semantic_code": "agentools.precondition.confirmation_policy_changed",
+      "category": "precondition",
+      "retryable": false,
+      "trust_seam": "confirmation_policy_resolver",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-014",
+      "phase": "commit",
+      "scenario": "approval_wrong_proposal",
+      "result": "deny",
+      "semantic_code": "agentools.precondition.confirmation_approval_mismatch",
+      "category": "precondition",
+      "retryable": false,
+      "trust_seam": "approval_evidence_reader",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-015",
+      "phase": "commit",
+      "scenario": "approval_wrong_version",
+      "result": "deny",
+      "semantic_code": "agentools.precondition.confirmation_approval_mismatch",
+      "category": "precondition",
+      "retryable": false,
+      "trust_seam": "approval_evidence_reader",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-016",
+      "phase": "commit",
+      "scenario": "approval_wrong_args",
+      "result": "deny",
+      "semantic_code": "agentools.precondition.confirmation_approval_mismatch",
+      "category": "precondition",
+      "retryable": false,
+      "trust_seam": "approval_evidence_reader",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-017",
+      "phase": "commit",
+      "scenario": "approval_wrong_descriptor",
+      "result": "deny",
+      "semantic_code": "agentools.precondition.confirmation_approval_mismatch",
+      "category": "precondition",
+      "retryable": false,
+      "trust_seam": "approval_evidence_reader",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-018",
+      "phase": "commit",
+      "scenario": "approval_wrong_policy",
+      "result": "deny",
+      "semantic_code": "agentools.precondition.confirmation_approval_mismatch",
+      "category": "precondition",
+      "retryable": false,
+      "trust_seam": "approval_evidence_reader",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-019",
+      "phase": "commit",
+      "scenario": "duplicate_approver",
+      "result": "deny",
+      "semantic_code": "agentools.precondition.confirmation_approval_mismatch",
+      "category": "precondition",
+      "retryable": false,
+      "trust_seam": "approval_evidence",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-020",
+      "phase": "commit",
+      "scenario": "insufficient_quorum",
+      "result": "deny",
+      "semantic_code": "agentools.permission.confirmation_quorum_insufficient",
+      "category": "permission",
+      "retryable": false,
+      "trust_seam": "approval_evidence_reader",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-021",
+      "phase": "commit",
+      "scenario": "revoked_approval",
+      "result": "deny",
+      "semantic_code": "agentools.precondition.confirmation_approval_stale",
+      "category": "precondition",
+      "retryable": false,
+      "trust_seam": "approval_evidence_reader",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-022",
+      "phase": "commit",
+      "scenario": "expired_approval",
+      "result": "deny",
+      "semantic_code": "agentools.precondition.confirmation_approval_stale",
+      "category": "precondition",
+      "retryable": false,
+      "trust_seam": "approval_evidence_reader",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-023",
+      "phase": "commit",
+      "scenario": "authorization_revoked",
+      "result": "deny",
+      "semantic_code": "agentools.permission.confirmation_authorization_denied",
+      "category": "permission",
+      "retryable": false,
+      "trust_seam": "confirmation_authorizer",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-024",
+      "phase": "commit",
+      "scenario": "redacted_denial",
+      "result": "deny",
+      "semantic_code": "agentools.permission.confirmation_authorization_denied",
+      "category": "permission",
+      "retryable": false,
+      "trust_seam": "confirmation_authorizer",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-025",
+      "phase": "commit",
+      "scenario": "happy_path_no_approval",
+      "result": "allow",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "trust_seam": "confirmation_service",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    },
+    {
+      "id": "CNF-SAFE-026",
+      "phase": "commit",
+      "scenario": "happy_path_quorum",
+      "result": "allow",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "trust_seam": "confirmation_service",
+      "applicability": [
+        "php",
+        "dart"
+      ]
+    }
+  ]
+}

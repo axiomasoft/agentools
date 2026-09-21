@@ -9,13 +9,19 @@ final class ActionProfile {
     Map<String, dynamic>? extensionMembers,
   }) : extensionMembers = extensionMembers ?? const {} {
     if (!_isOpenValue(sideEffect)) {
-      throw ArgumentError('side_effect must be a core or product extension value.');
+      throw ArgumentError(
+        'side_effect must be a core or product extension value.',
+      );
     }
     if (confirmation != null && !_isOpenValue(confirmation!)) {
-      throw ArgumentError('confirmation must be a core or product extension value.');
+      throw ArgumentError(
+        'confirmation must be a core or product extension value.',
+      );
     }
     if (contentOrigin != null && !_isContentOrigin(contentOrigin!)) {
-      throw ArgumentError('content_origin must be a core or product extension value.');
+      throw ArgumentError(
+        'content_origin must be a core or product extension value.',
+      );
     }
     if (_baseRequiresConfirmation(sideEffect) && confirmation == 'none') {
       throw ArgumentError(

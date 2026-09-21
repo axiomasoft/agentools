@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace AgenTools\Tests\Ops;
 
-use AgenTools\Action\ActionJournal;
 use AgenTools\Action\ActionStatus;
 use AgenTools\Action\Actor;
 use AgenTools\Ops\JournalAppender;
 use AgenTools\Ops\LongOperationCoordinator;
 use AgenTools\Ops\LongOperationPath;
 use AgenTools\Ops\TaskBinding;
-use AgenTools\Persistence\FixedClock;
+use AgenTools\TestKit\FixedClock;
 use PHPUnit\Framework\TestCase;
 
 final class LongOperationCoordinatorTest extends TestCase
@@ -110,38 +109,17 @@ final class LongOperationCoordinatorTest extends TestCase
 
     private function baseJournal(): JournalAppender
     {
-        $journal = new ActionJournal([
-            new \AgenTools\Action\ActionEvent(
-                'ev-act-1-0001',
-                'act-1',
-                1,
-                0,
-                '2026-08-05T10:00:00+00:00',
-                $this->actor,
-                'action_created',
-                1,
-                '2026-08',
-                [],
-            ),
-            new \AgenTools\Action\ActionEvent(
-                'ev-act-1-0002',
-                'act-1',
-                2,
-                1,
-                '2026-08-05T10:00:01+00:00',
-                $this->actor,
-                'action_started',
-                1,
-                '2026-08',
-                [],
-            ),
-        ]);
-
-        return new JournalAppender(
-            $journal,
+        $store = new \AgenTools\TestKit\InMemoryEventStore();
+        $appender = new JournalAppender(
+            $store,
+            'tenant-test',
             'act-1',
             $this->actor,
             new FixedClock(new \DateTimeImmutable('2026-08-05T10:00:02+00:00')),
         );
+        $appender->append('action_created');
+        $appender->append('action_started');
+
+        return $appender;
     }
 }

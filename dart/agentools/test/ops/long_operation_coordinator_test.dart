@@ -1,4 +1,5 @@
 import 'package:agentools/agentools.dart';
+import 'package:agentools/agentools_testkit.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -12,13 +13,10 @@ void main() {
   test('supports task and synchronous paths', () {
     final coordinator = LongOperationCoordinator();
 
-    expect(
-      coordinator.availablePaths(),
-      [
-        LongOperationPath.taskBacked,
-        LongOperationPath.synchronous,
-      ],
-    );
+    expect(coordinator.availablePaths(), [
+      LongOperationPath.taskBacked,
+      LongOperationPath.synchronous,
+    ]);
   });
 
   // LOP-10; task id is journaled before the first status observation.
@@ -34,11 +32,7 @@ void main() {
     coordinator.bindTask(journal, binding);
     coordinator.observeTaskStatus(journal, 'working');
 
-    final kinds = journal
-        .journal()
-        .events
-        .map((event) => event.kind)
-        .toList();
+    final kinds = journal.journal().events.map((event) => event.kind).toList();
     expect(kinds, ['action_created', 'action_started', 'task_bound']);
   });
 
@@ -64,10 +58,7 @@ void main() {
     coordinator.runSynchronously(journal, [
       (
         kind: 'effect_requested',
-        payload: {
-          'effect_id': 'eff-sync-1',
-          'tool_name': 'pay',
-        },
+        payload: {'effect_id': 'eff-sync-1', 'tool_name': 'pay'},
       ),
     ]);
 
@@ -93,11 +84,7 @@ void main() {
     );
     coordinator.recordBindingLost(
       journal,
-      TaskBinding(
-        actionId: 'act-1',
-        taskId: 'task-1',
-        lostReason: 'expired',
-      ),
+      TaskBinding(actionId: 'act-1', taskId: 'task-1', lostReason: 'expired'),
     );
 
     expect(
@@ -128,7 +115,7 @@ void main() {
 
     expect(
       () => coordinator.assertNoFractionalProgressClaims({
-        [ 'per', 'cent' ].join(): 50,
+        ['per', 'cent'].join(): 50,
       }),
       throwsArgumentError,
     );
@@ -136,37 +123,14 @@ void main() {
 }
 
 JournalAppender _baseJournal(Actor actor) {
-  final journal = ActionJournal([
-    ActionEvent(
-      eventId: 'ev-act-1-0001',
-      actionId: 'act-1',
-      seq: 1,
-      expectedPrevSeq: 0,
-      timestamp: '2026-08-05T10:00:00+00:00',
-      actor: actor,
-      kind: 'action_created',
-      eventVersion: 1,
-      specRevision: '2026-08',
-      payload: const {},
-    ),
-    ActionEvent(
-      eventId: 'ev-act-1-0002',
-      actionId: 'act-1',
-      seq: 2,
-      expectedPrevSeq: 1,
-      timestamp: '2026-08-05T10:00:01+00:00',
-      actor: actor,
-      kind: 'action_started',
-      eventVersion: 1,
-      specRevision: '2026-08',
-      payload: const {},
-    ),
-  ]);
-
-  return JournalAppender(
-    journal: journal,
+  final appender = JournalAppender(
+    store: InMemoryEventStore(),
+    tenantId: 'tenant-test',
     actionId: 'act-1',
     actor: actor,
     clock: FixedClock(DateTime.parse('2026-08-05T10:00:02Z')),
   );
+  appender.append('action_created');
+  appender.append('action_started');
+  return appender;
 }

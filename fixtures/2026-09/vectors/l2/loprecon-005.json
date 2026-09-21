@@ -1,0 +1,106 @@
+{
+  "id": "loprecon-005",
+  "title": "Утрата привязки к задаче при незавершённом эффекте переводит действие в reconciliation_required; выход — ровно один из двух записанных исходов эффекта",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "LOP-15",
+    "LOP-16",
+    "LOP-17",
+    "LOP-18",
+    "LOP-19"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "fina_payment_send",
+        "title": "Отправить платёж",
+        "description": "Отправляет платёжное поручение во внешнюю систему. Необратимое действие.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "counterparty_id": {
+              "type": "string"
+            },
+            "amount_minor": {
+              "type": "integer"
+            },
+            "purpose": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "counterparty_id",
+            "amount_minor",
+            "purpose"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "payment_id": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "irreversible",
+            "confirmation": "double_confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "fina.payment.send"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "fina_payment_send",
+          "args": {
+            "counterparty_id": "cp-2",
+            "amount_minor": 25000,
+            "purpose": "invoice-2"
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    },
+    {
+      "approval": "approve"
+    },
+    {
+      "tick_seconds": 3600
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "effect_requested"
+      },
+      {
+        "kind": "task_binding_lost",
+        "payload": {
+          "reason": "expired"
+        }
+      },
+      {
+        "kind": "effect_confirmed"
+      }
+    ],
+    "final_state": "running"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "schema_version": "agentools.supply-chain-lock/v1",
+  "reviewed_at": "2026-09-20",
+  "reviewer_note": "Full-length commit SHAs and release tarball digests reviewed for P9.1; workflows adopt these pins in P9.2.",
+  "github_actions": [
+    {
+      "id": "actions/checkout",
+      "ref_human": "v4",
+      "ref_immutable": "11d5960a326750d5838078e36cf38b85af677262",
+      "source": "https://github.com/actions/checkout",
+      "license": "MIT"
+    },
+    {
+      "id": "shivammathur/setup-php",
+      "ref_human": "v2",
+      "ref_immutable": "f3e473d116dcccaddc5834248c87452386958240",
+      "source": "https://github.com/shivammathur/setup-php",
+      "license": "MIT"
+    },
+    {
+      "id": "actions/attest",
+      "ref_human": "v4",
+      "ref_immutable": "1e69f48acb82d1966a394da916b4c1698aa569d6",
+      "source": "https://github.com/actions/attest",
+      "license": "MIT"
+    },
+    {
+      "id": "actions/cache",
+      "ref_human": "v4",
+      "ref_immutable": "0057852bfaa89a56745cba8c7296529d2fc39830",
+      "source": "https://github.com/actions/cache",
+      "license": "MIT"
+    },
+    {
+      "id": "dart-lang/setup-dart",
+      "ref_human": "v1",
+      "ref_immutable": "6afc89df92d6eb3834022f73cd65adc8cdfcb92d",
+      "source": "https://github.com/dart-lang/setup-dart",
+      "license": "BSD-3-Clause"
+    }
+  ],
+  "cli_tools": [
+    {
+      "id": "anchore/syft",
+      "version": "v1.52.0",
+      "artifact": "syft_1.52.0_linux_amd64.tar.gz",
+      "download_url": "https://github.com/anchore/syft/releases/download/v1.52.0/syft_1.52.0_linux_amd64.tar.gz",
+      "sha256": "caeedb81fb0491615f1ebd1761e4145d41ee86dd2cc7bf80669f9f5ad9d6133d",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "google/osv-scanner",
+      "version": "v2.6.0",
+      "artifact": "osv-scanner_linux_amd64",
+      "download_url": "https://github.com/google/osv-scanner/releases/download/v2.6.0/osv-scanner_linux_amd64",
+      "sha256": "ca69b3d3cd08f889a49dc0a383122f71cc528b83803671df5fd874d97485b108",
+      "license": "Apache-2.0"
+    },
+    {
+      "id": "gitleaks/gitleaks",
+      "version": "v8.30.1",
+      "artifact": "gitleaks_8.30.1_linux_x64.tar.gz",
+      "download_url": "https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz",
+      "sha256": "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb",
+      "license": "MIT"
+    }
+  ]
+}

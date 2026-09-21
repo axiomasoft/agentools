@@ -10,7 +10,9 @@ use AgenTools\Action\VersionConflict;
 use AgenTools\Contracts\EventLog;
 use PDO;
 
-/** SQLite append-only journal with optimistic concurrency on expected_prev_seq. */
+/** SQLite EventLog (single append, silent id no-op). Insufficient for P5.3 durable close:
+ *  no tenant key, no IDENTITY global_position, no content-hash classifier, no keyset limit.
+ */
 final class SqliteEventLog implements EventLog
 {
     public function __construct(

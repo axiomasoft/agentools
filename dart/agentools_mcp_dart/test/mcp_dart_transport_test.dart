@@ -20,9 +20,7 @@ void main() {
         requestLog: mockLog,
       );
       transport = McpDartTransport();
-      await transport.connect(
-        Uri.parse('http://localhost:${server.port}/mcp'),
-      );
+      await transport.connect(Uri.parse('http://localhost:${server.port}/mcp'));
     });
 
     tearDown(() async {

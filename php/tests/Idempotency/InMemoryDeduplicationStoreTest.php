@@ -14,7 +14,7 @@ use AgenTools\Idempotency\IdempotencyFailure;
 use AgenTools\Idempotency\IdempotencyKey;
 use AgenTools\Idempotency\IdempotencyRequest;
 use AgenTools\Idempotency\IdempotencyScope;
-use AgenTools\Idempotency\InMemoryDeduplicationStore;
+use AgenTools\TestKit\InMemoryDeduplicationStore;
 use AgenTools\Idempotency\StoredResultDigest;
 use AgenTools\Idempotency\StoredToolResult;
 use AgenTools\Schema\Canonicalizer;
@@ -35,17 +35,19 @@ final class InMemoryDeduplicationStoreTest extends TestCase
         $request = $this->request('{"amount":1}');
         $now = new \DateTimeImmutable('2026-08-03T09:14:22Z');
 
-        self::assertSame(DeduplicationState::New, $store->resolve($request, $now)->state);
-        $inFlight = $store->resolve($request, $now);
+        $first = $store->acquire($request, $now, new \DateInterval('PT30S'));
+        self::assertSame(DeduplicationState::New, $first->state);
+        $inFlight = $store->acquire($request, $now, new \DateInterval('PT30S'));
         self::assertSame(DeduplicationState::ConcurrentInFlight, $inFlight->state);
         self::assertNotNull($inFlight->error);
         self::assertSame(ToolErrorCode::IdempotencyInFlight->value, $inFlight->error->code);
         self::assertTrue($inFlight->error->retryable);
 
         $error = new ToolError('billing.validation.period_closed', ErrorCategory::VALIDATION, false, 'Period is closed');
-        $store->complete($request, new StoredToolResult(error: $error), StoredResultDigest::fromJcs('{"error":"period_closed"}'));
+        self::assertNotNull($first->lease);
+        $store->fail($first->lease, new StoredToolResult(error: $error), StoredResultDigest::fromJcs('{"error":"period_closed"}'), $now);
 
-        $duplicate = $store->resolve($request, $now);
+        $duplicate = $store->acquire($request, $now, new \DateInterval('PT30S'));
         self::assertSame(DeduplicationState::DuplicateCompleted, $duplicate->state);
         self::assertSame($error, $duplicate->storedResult?->error);
     }
@@ -55,10 +57,10 @@ final class InMemoryDeduplicationStoreTest extends TestCase
     {
         $store = new InMemoryDeduplicationStore($this->policy('P1D'));
         $now = new \DateTimeImmutable('2026-08-03T09:14:22Z');
-        $store->resolve($this->request('{"amount":1}'), $now);
+        $store->acquire($this->request('{"amount":1}'), $now, new \DateInterval('PT30S'));
 
         try {
-            $store->resolve($this->request('{"amount":2}'), $now);
+            $store->acquire($this->request('{"amount":2}'), $now, new \DateInterval('PT30S'));
             self::fail('Expected an idempotency key reuse error.');
         } catch (IdempotencyFailure $failure) {
             self::assertSame(ToolErrorCode::IdempotencyKeyReuse->value, $failure->error->code);
@@ -83,9 +85,11 @@ final class InMemoryDeduplicationStoreTest extends TestCase
         $store = new InMemoryDeduplicationStore($this->policy('PT1S'));
         $request = $this->request('{"amount":1}');
         $now = new \DateTimeImmutable('2026-08-03T09:14:22Z');
-        $store->resolve($request, $now);
+        $lease = $store->acquire($request, $now, new \DateInterval('PT30S'))->lease;
+        self::assertNotNull($lease);
+        $store->complete($lease, new StoredToolResult(value: ['ok' => true]), StoredResultDigest::fromJcs('{"ok":true}'), $now);
 
-        self::assertSame(DeduplicationState::New, $store->resolve($request, $now->modify('+2 seconds'))->state);
+        self::assertSame(DeduplicationState::New, $store->acquire($request, $now->modify('+2 seconds'), new \DateInterval('PT30S'))->state);
     }
 
     /** IDE-18, IDE-19; retention must cover confirmation lifetime plus the client retry window. */

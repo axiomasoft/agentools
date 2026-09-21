@@ -1,0 +1,15 @@
+{
+  "id": "hrd-001",
+  "title": "Hardening semantics P2 confirmation (HRD-1..HRD-5)",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": ["HRD-1", "HRD-2", "HRD-3", "HRD-4", "HRD-5"],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "conformance_report",
+    "inline": "{\"rule_id\":\"HRD-1\",\"normative_word\":\"MUST\",\"outcome\":\"completed\",\"counts_toward_level\":true,\"reason\":null}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

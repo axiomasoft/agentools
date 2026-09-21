@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace AgenTools\Reference\Support;
 
 use AgenTools\Contracts\Clock;
-use AgenTools\Persistence\FixedClock;
+use AgenTools\TestKit\FixedClock;
 
 /** Test-friendly clock that can be advanced without touching system time. */
 final class InjectableClock implements Clock

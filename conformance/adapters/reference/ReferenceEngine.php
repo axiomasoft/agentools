@@ -11,6 +11,15 @@ final class ReferenceEngine
 {
     private string $clock = '2000-01-01T00:00:00Z';
     private string $seed = 'agentools-conformance';
+    private string $specRevision = '2026-08';
+
+    public function bindSpecRevision(string $revision): void
+    {
+        if (!in_array($revision, ['2026-08', '2026-09'], true)) {
+            throw new RuntimeException('unsupported spec revision: ' . $revision);
+        }
+        $this->specRevision = $revision;
+    }
 
     public function configure(mixed $clock, mixed $seed): void
     {
@@ -258,7 +267,7 @@ final class ReferenceEngine
         }
 
         $snapshot = is_array($state['snapshot'] ?? null) ? $state['snapshot'] : [];
-        if ($snapshot !== [] && (($snapshot['seq'] ?? null) !== $previous || ($snapshot['spec_rev'] ?? '2026-08') !== '2026-08')) {
+        if ($snapshot !== [] && (($snapshot['seq'] ?? null) !== $previous || ($snapshot['spec_rev'] ?? $this->specRevision) !== $this->specRevision)) {
             $this->fail($emit, $id, 'snapshot_mismatch');
             return;
         }

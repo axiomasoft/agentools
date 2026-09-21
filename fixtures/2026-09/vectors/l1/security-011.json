@@ -1,0 +1,78 @@
+{
+  "id": "security-011",
+  "title": "SEC-11: запрещённое состояние — irreversible вызов без confirmation gate",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "SEC-11"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Security probe.\nCall when: verify a security rule.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"case\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "irreversible",
+            "permissions_hint": [
+              "demo.write"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "provenance": [
+        {
+          "address": "args.value",
+          "content_origin": "untrusted_external"
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Выполни security-проверку"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "sec-11"
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_failed",
+        "payload": {
+          "reason": "irreversible_untrusted_route_without_gate",
+          "security_rule": "SEC-11",
+          "stimulus_pointer": "/given/tools/0/_meta/dev.agentools~1action/confirmation",
+          "!tool_effect": true
+        }
+      }
+    ],
+    "final_state": "failed",
+    "tool_calls": []
+  }
+}

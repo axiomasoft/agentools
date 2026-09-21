@@ -19,16 +19,21 @@ final class ToolDescriptor {
     Map<String, dynamic>? otherMeta,
     Map<String, dynamic>? extraMembers,
     RawDocument? rawDocument,
-  })  : otherMeta = otherMeta ?? const {},
-        extraMembers = extraMembers ?? const {},
-        _rawDocument = rawDocument {
-    if (!RegExp(r'^[a-z][a-z0-9]*(_[a-z0-9]+)+$').hasMatch(name) || name.length > 64) {
-      throw ArgumentError('Tool name must use the published AgenTools grammar.');
+  }) : otherMeta = otherMeta ?? const {},
+       extraMembers = extraMembers ?? const {},
+       _rawDocument = rawDocument {
+    if (!RegExp(r'^[a-z][a-z0-9]*(_[a-z0-9]+)+$').hasMatch(name) ||
+        name.length > 64) {
+      throw ArgumentError(
+        'Tool name must use the published AgenTools grammar.',
+      );
     }
     if (!RegExp(
       r'^Purpose: [^\r\n]+\nCall when: [^\r\n]+\nRequired arguments: [^\r\n]+\nExample: [^\r\n]+$',
     ).hasMatch(description)) {
-      throw ArgumentError('Tool description must have the four actionable lines.');
+      throw ArgumentError(
+        'Tool description must have the four actionable lines.',
+      );
     }
     _assertAnnotationsMatchEffect();
   }

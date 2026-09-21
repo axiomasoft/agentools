@@ -30,7 +30,8 @@ final class ExtensionMeta {
   static Iterable<String> ignorableOwnVendorKeys(Map<String, Object?> meta) {
     return meta.keys.where(
       (key) =>
-          key != ExtensionIdentity.dataKey && VendorMetaKey.isOwnVendorPrefix(key),
+          key != ExtensionIdentity.dataKey &&
+          VendorMetaKey.isOwnVendorPrefix(key),
     );
   }
 }

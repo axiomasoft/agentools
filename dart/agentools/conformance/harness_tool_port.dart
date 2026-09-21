@@ -18,11 +18,7 @@ final class HarnessToolPort implements ToolPort {
       'vector_id': _vectorId,
       'probe_id': 'scenario-$tool-$idempotencyKey',
       'probe_kind': 'tool_boundary',
-      'operation': {
-        'tool': tool,
-        'phase': 'prepare',
-        'args': arguments,
-      },
+      'operation': {'tool': tool, 'phase': 'prepare', 'args': arguments},
     });
     return ToolExecutionResult.success({'ok': true});
   }

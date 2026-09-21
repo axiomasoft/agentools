@@ -9,7 +9,7 @@ import 'scenario_result.dart';
 /// or hidden control-flow.
 final class ScenarioRunner {
   ScenarioRunner({ExpressionEvaluator? expressions})
-      : _expressions = expressions ?? ExpressionEvaluator();
+    : _expressions = expressions ?? ExpressionEvaluator();
 
   final ExpressionEvaluator _expressions;
   var _executedSteps = 0;
@@ -226,7 +226,8 @@ final class ScenarioRunner {
   }
 
   String _failureAction(Map<String, dynamic> step, {required bool technical}) {
-    final route = step[technical ? 'on_technical_fail' : 'on_semantic_fail'] ??
+    final route =
+        step[technical ? 'on_technical_fail' : 'on_semantic_fail'] ??
         const {'action': 'abort'};
     if (route is! Map) {
       throw ArgumentError('Failure routes must be abort, retry, or continue.');

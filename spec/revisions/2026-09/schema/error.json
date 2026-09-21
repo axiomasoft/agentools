@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/schema/2026-09/error.json",
+  "title": "Объект ошибки исполнения инструмента",
+  "description": "Форма отказа состоявшегося вызова инструмента: доменного либо валидационного. Форма сближена с RFC 7807 Problem Details, роль члена type исполняет строковый код. Файл — единственный носитель перечислений кода и категории ошибки в схемах ревизии. Протокольные ошибки транспорта и уровня JSON-RPC этой схемой не описываются.",
+  "type": "object",
+  "properties": {
+    "code": {
+      "$ref": "#/$defs/ErrorCode"
+    },
+    "category": {
+      "$ref": "#/$defs/ErrorCategory"
+    },
+    "retryable": {
+      "type": "boolean",
+      "description": "Обратимость экземпляра отказа. Значение экземпляра авторитетнее умолчания его категории, приведённого таблицей документа 09."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Краткое человекочитаемое описание класса отказа по-русски."
+    },
+    "detail": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Пояснение конкретного экземпляра отказа по-русски."
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Структурированный контекст отказа, уже замаскированный от персональных данных по составу, допущенному документом 08. Открыт намеренно: состав зависит от кода, а не от этой схемы."
+    },
+    "example_of_valid_call": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Форма корректного вызова инструмента: то, чем модель заменяет отвергнутое, а не повтор отвергнутых аргументов."
+    }
+  },
+  "required": [
+    "code",
+    "category",
+    "retryable",
+    "title"
+  ],
+  "$defs": {
+    "ErrorCode": {
+      "description": "Код ошибки: строка формы вендор.категория.slug. Перечисление открытое — коды ревизии плюс ветвь продуктового расширения. Каждый код ревизии имеет названного производителя — правило, при исполнении которого отказ возникает (таблица документа 09).",
+      "oneOf": [
+        {
+          "const": "agentools.validation.idempotency_key_missing",
+          "description": "Вызов инструмента, объявившего идемпотентное применение, предъявлен без ключа идемпотентности."
+        },
+        {
+          "const": "agentools.conflict.idempotency_in_flight",
+          "description": "По тому же ключу идемпотентности уже идёт работа; отказ повторяем позже."
+        },
+        {
+          "const": "agentools.validation.idempotency_key_reuse",
+          "description": "Тот же ключ идемпотентности предъявлен с другим отпечатком аргументов."
+        },
+        {
+          "const": "agentools.conflict.version_conflict",
+          "description": "Ожидаемый номер предыдущего события журнала не равен фактическому."
+        },
+        {
+          "const": "agentools.precondition.descriptor_drift",
+          "description": "Дайджест дескриптора инструмента изменился между подготовкой и применением."
+        },
+        {
+          "const": "agentools.precondition.confirmation_args_mismatch",
+          "description": "Отпечаток аргументов, покрытый токеном, не совпал с отпечатком фактически предъявленных аргументов."
+        },
+        {
+          "const": "agentools.precondition.confirmation_expired",
+          "description": "Срок токена подтверждения истёк к моменту применения."
+        },
+        {
+          "const": "agentools.precondition.confirmation_token_spent",
+          "description": "Токен подтверждения предъявлен повторно и уже погашен."
+        },
+        {
+          "const": "agentools.permission.confirmation_principal_mismatch",
+          "description": "Токен подтверждения предъявлен принципалом, отличным от покрытого токеном."
+        },
+        {
+          "const": "agentools.permission.foreign_access_token",
+          "description": "Предъявленный токен доступа выпущен не для этой реализации."
+        },
+        {
+          "const": "agentools.precondition.extension_unsupported",
+          "description": "Расширение обязательно для запрошенной операции, а контрагент его не объявил."
+        },
+        {
+          "const": "agentools.budget.clarification_rounds_exhausted",
+          "description": "Исчерпан бюджет раундов уточнения, назначенный рантаймом."
+        },
+        {
+          "const": "agentools.validation.unknown_result_type",
+          "description": "Признак вида результата неизвестен, и форма результата не определена."
+        },
+        {
+          "const": "agentools.budget.limit_exceeded",
+          "description": "Превышен количественный лимит вычислителя выражений либо прогона сценария."
+        },
+        {
+          "const": "agentools.precondition.task_input_required_while_applying",
+          "description": "Задача запросила недостающий ввод у действия, уже запросившего внешний эффект."
+        },
+        {
+          "const": "agentools.budget.baggage_limit_exceeded",
+          "description": "Превышен лимит числа элементов либо суммарного размера baggage."
+        },
+        {
+          "const": "agentools.validation.canonicalization_failed",
+          "description": "Вход канонизации несёт NaN, бесконечность либо дублирующиеся ключи объекта."
+        },
+        {
+          "const": "agentools.conflict.idempotency_lost_lease",
+          "description": "Lease idempotency потерян до complete/fail; эффект не исполняется."
+        },
+        {
+          "const": "agentools.precondition.idempotency_ambiguous_effect",
+          "description": "Внешний эффект неоднозначен после takeover или crash window."
+        },
+        {
+          "const": "agentools.precondition.idempotency_capability_unknown",
+          "description": "Инструмент high-risk без объявленной idempotency capability."
+        },
+        {
+          "const": "agentools.conflict.event_id_collision",
+          "description": "Тот же event_id с другим content hash."
+        },
+        {
+          "const": "agentools.conflict.event_batch_partial_overlap",
+          "description": "Часть batch event_id уже закоммичена, часть — нет."
+        },
+        {
+          "const": "agentools.validation.event_batch_empty",
+          "description": "Пустой batch append."
+        },
+        {
+          "const": "agentools.validation.event_batch_limit",
+          "description": "Batch превышает лимит 64."
+        },
+        {
+          "const": "agentools.validation.event_id_duplicate_in_batch",
+          "description": "Дублирующийся event_id внутри batch."
+        },
+        {
+          "const": "agentools.validation.event_id_seq_derived",
+          "description": "event_id выведен из seq (запрещённый шаблон)."
+        },
+        {
+          "const": "agentools.validation.event_stream_identity",
+          "description": "Отсутствует tenant_id или action_id потока."
+        },
+        {
+          "const": "agentools.validation.audit_forbidden_field",
+          "description": "Audit payload содержит запрещённое поле."
+        },
+        {
+          "const": "agentools.validation.metric_label_forbidden",
+          "description": "Metric label из deny-list."
+        },
+        {
+          "const": "agentools.budget.event_page_limit",
+          "description": "limit load вне [1,1000]."
+        },
+        {
+          "const": "agentools.validation.confirmation_token_invalid",
+          "description": "Токен malformed или подпись не сходится."
+        },
+        {
+          "const": "agentools.precondition.confirmation_record_missing",
+          "description": "Authoritative confirmation record отсутствует."
+        },
+        {
+          "const": "agentools.permission.confirmation_context_mismatch",
+          "description": "Tenant/context не совпал с записью."
+        },
+        {
+          "const": "agentools.permission.confirmation_policy_denied",
+          "description": "Политика отсутствует или disabled."
+        },
+        {
+          "const": "agentools.precondition.confirmation_policy_changed",
+          "description": "Политика изменилась или downgraded."
+        },
+        {
+          "const": "agentools.permission.confirmation_approval_missing",
+          "description": "Требуемое approval evidence отсутствует."
+        },
+        {
+          "const": "agentools.precondition.confirmation_approval_stale",
+          "description": "Approval revoked/expired."
+        },
+        {
+          "const": "agentools.precondition.confirmation_approval_mismatch",
+          "description": "Approval tuple не совпал."
+        },
+        {
+          "const": "agentools.permission.confirmation_quorum_insufficient",
+          "description": "Недостаточно distinct approvers."
+        },
+        {
+          "const": "agentools.permission.confirmation_separation_violation",
+          "description": "Proposer учтён при separation."
+        },
+        {
+          "const": "agentools.permission.confirmation_authorization_denied",
+          "description": "Authorization deny-by-default."
+        },
+        {
+          "const": "agentools.permission.confirmation_token_key_denied",
+          "description": "Signing key denied или rotated."
+        },
+        {
+          "const": "agentools.permission.confirmation_token_binding_mismatch",
+          "description": "Token binding не совпал с record."
+        },
+        {
+          "const": "agentools.precondition.confirmation_token_not_yet_valid",
+          "description": "nbf в будущем."
+        },
+        {
+          "const": "agentools.conflict.confirmation_token_collision",
+          "description": "Коллизия token digest при insert."
+        },
+        {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*\\.[a-z0-9_]+\\.[a-z0-9_]+$",
+          "not": {
+            "pattern": "^agentools\\."
+          },
+          "description": "Продуктовый код отказа доменного инструмента. Пространство agentools. исключено из ветви: код ревизии удовлетворял бы двум ветвям сразу, и форма oneOf перестала бы быть однозначной."
+        }
+      ]
+    },
+    "ErrorCategory": {
+      "description": "Категория отказа: словарь доменных отказов инструмента. Перечисление открытое — категории ядра плюс ветвь продуктового расширения с двухуровневым префиксом контура. Отображение категории на класс отказа шага и умолчание обратимости приводит таблица документа 09.",
+      "oneOf": [
+        {
+          "const": "validation",
+          "description": "Аргументы не прошли схему либо доменное правило."
+        },
+        {
+          "const": "permission",
+          "description": "Прав на запрошенную операцию нет."
+        },
+        {
+          "const": "not_found",
+          "description": "Ссылка на отсутствующую сущность."
+        },
+        {
+          "const": "conflict",
+          "description": "Гонка, дубль либо конфликт версий."
+        },
+        {
+          "const": "precondition",
+          "description": "Наблюдаемое состояние не допускает запрошенное действие."
+        },
+        {
+          "const": "unavailable",
+          "description": "Контрагент недоступен либо не ответил вовремя."
+        },
+        {
+          "const": "budget",
+          "description": "Бюджет прогона либо количественный лимит исчерпан."
+        },
+        {
+          "const": "internal",
+          "description": "Непредвиденный сбой рантайма."
+        },
+        {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*\\.[a-z0-9_]+$",
+          "description": "Продуктовая категория контура: двухуровневый префикс. В обязательное покрытие соответствия не входит."
+        }
+      ]
+    }
+  }
+}

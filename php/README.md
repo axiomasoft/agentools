@@ -1,23 +1,11 @@
 # AgenTools PHP SDK
 
-`agentools/sdk` — Composer-пакет с namespace `AgenTools\` для реализации
-протокола AgenTools revision `2026-08`. Минимальная версия PHP — 8.3.
+`agentools/sdk` implements the AgenTools protocol for PHP 8.3+. The candidate spec
+revision is **2026-09** (frozen **2026-08** remains for regression vectors only).
 
-Это тонкая библиотека контрактов, валидаторов и детерминированных примитивов;
-она не является Laravel-интеграцией, вторым агентным runtime или эталонным
-conformance-адаптером. Интеграцию с `corex/ai` реализует потребляющий контур.
+Thin contracts library: not a Laravel integration or second agent runtime.
 
-## Зависимости и качество
-
-Пакет фиксирует lockfile в репозитории, чтобы локальные и CI-прогоны использовали
-одни и те же версии. Зависимости намеренно ограничены линиями, совместимыми с
-объявленным PHP 8.3: `opis/json-schema:^2.6`, `symfony/uid:^7.4` и
-`mmccook/php-json-canonicalization-scheme:^1.0`; QA использует
-`phpunit/phpunit:^12` и `phpstan/phpstan:^2.2`.
-
-Локальная версия PHP может быть новее 8.3, поэтому зелёный прогон сам по себе не
-является доказательством нижней границы. Это доказывается констрейнтами зависимостей
-и отсутствием в исходниках конструкций, требующих PHP 8.4.
+## Install and test
 
 ```bash
 composer install --working-dir=php
@@ -25,10 +13,15 @@ composer test --working-dir=php
 composer analyse --working-dir=php
 ```
 
-Conformance-адаптер живёт в `php/conformance/adapter.php`. Тесты пакета входят в слой 3
-CI с регистрацией SDK в `conformance/sdks.json` (item P7.12).
+Production archives exclude `AgenTools\TestKit\` and `AgenTools\Reference\` (dev autoload only).
 
-**Owner-gate `DR-02` §6 — ветка (C):** решения владельца по SDK-части слоя 2 нет.
-`tools/ci_gate.py` печатает «SDK-часть слоя 2 — без предмета…»; чекер структурной
-сверки «поле схемы ↔ поле типа SDK» **не пишется** (это решило бы owner-gate за владельца).
-Открытый вопрос: Q-12.
+## API
+
+See [API.md](API.md) and [UPGRADING.md](UPGRADING.md). Stable surface is defined in
+`api/package-surface-v1.json`.
+
+## Durable adapters
+
+Use `PdoPostgres*` stores in production when guarantees require cross-process replay
+protection, lease fencing, or event collision handling. In-memory implementations are
+testkit-only.

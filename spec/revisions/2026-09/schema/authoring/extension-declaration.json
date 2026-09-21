@@ -1,0 +1,32 @@
+{
+  "$defs": {
+    "AgenToolsSettings": {
+      "description": "Объект настроек расширения AgenTools. Пустой объект — объявление поддержки без настроек: ревизия объявляющей стороны в этом случае неизвестна получателю.",
+      "properties": {
+        "specRevision": {
+          "description": "Идентификатор ревизии спецификации AgenTools, которую реализует объявляющая сторона, например 2026-09.",
+          "pattern": "^[0-9]{4}-[0-9]{2}$",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "$id": "https://agentools.dev/schema/2026-09/authoring/extension-declaration.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Фрагмент карты объявленных расширений: ключ — идентификатор расширения, значение — объект его настроек. Схема описывает форму карты; грамматика ключа нормирована правилом EXT-8 и проверяется линтером ревизии, а не этой схемой — провод открыт, строгость у линтера.",
+  "patternProperties": {
+    "^[^/]+/[^/]*$": {
+      "additionalProperties": false,
+      "description": "Запись расширения любого другого вендора: ревизия её не нормирует и не интерпретирует.",
+      "type": "object"
+    },
+    "^dev\\.agentools/core(-v[1-9][0-9]*)?$": {
+      "$ref": "#/$defs/AgenToolsSettings",
+      "unevaluatedProperties": false
+    }
+  },
+  "title": "Объявление расширений в capabilities.extensions",
+  "type": "object"
+}

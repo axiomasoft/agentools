@@ -78,7 +78,8 @@ final class ToolDescriptor {
     };
   }
 
-  String toJsonText() => _rawDocument?.toJson() ?? RawDocument(toJson()).toJson();
+  String toJsonText() =>
+      _rawDocument?.toJson() ?? RawDocument(toJson()).toJson();
 
   /// Published schema `properties` for structural alignment checks.
   static const schemaProperties = <String>{

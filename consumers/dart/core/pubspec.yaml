@@ -1,0 +1,14 @@
+name: agentools_consumer_core
+description: P7.4 clean Dart core consumer (supported libraries only).
+publish_to: none
+version: 0.0.1
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  agentools:
+    path: PACKAGE_PATH
+
+dev_dependencies:
+  lints: ^6.1.0

@@ -1,7 +1,17 @@
+export 'approval_evidence_reader.dart';
+export 'authenticated_actor_provider.dart';
+export 'authorization_context_resolver.dart';
+export 'confirmation_authorizer.dart';
+export 'confirmation_policy_resolver.dart';
+export 'confirmation_record_store.dart';
+export 'confirmation_token_store.dart';
+export 'tool_descriptor_registry.dart';
 export 'audit_sink.dart';
 export 'clock.dart';
 export 'commit_authorizer.dart';
 export 'event_log.dart';
+export 'event_store.dart';
+export 'external_effect_probe.dart';
 export 'idempotency_store.dart';
 export 'llm_port.dart';
 export 'mcp_transport.dart';

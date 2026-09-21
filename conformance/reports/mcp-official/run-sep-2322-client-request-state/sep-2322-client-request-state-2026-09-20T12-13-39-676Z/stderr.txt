@@ -1,0 +1,12 @@
+[INFO][mcp_dart.client] Setting request handler for potentially custom method 'ping'. Ensure client capabilities match.
+[DEBUG][mcp_dart.client] MCP Server Discovered. Server: mrtr-mock-server 1.0.0, Protocol: 2026-07-28
+[DEBUG][mcp_dart.client] MCP Server Discovered. Server: mrtr-mock-server 1.0.0, Protocol: 2026-07-28
+Unhandled exception:
+FormatException: input_required result must include inputRequests and requestState
+#0      mapToolCallResult (package:agentools_mcp_dart/src/mcp_dart_mapping.dart:35:7)
+#1      McpDartTransport._sendToolCall (package:agentools_mcp_dart/src/mcp_dart_transport.dart:81:12)
+<asynchronous suspension>
+#2      _runMrtr (file:///home/vostrikov/projects/packages/agentools/dart/agentools_mcp_dart/tool/conformance_client.dart:51:22)
+<asynchronous suspension>
+#3      main (file:///home/vostrikov/projects/packages/agentools/dart/agentools_mcp_dart/tool/conformance_client.dart:32:7)
+<asynchronous suspension>

@@ -10,7 +10,9 @@ final class NegotiationToolError {
     if (title.isEmpty) {
       throw ArgumentError('A tool error title must not be empty.');
     }
-    final match = RegExp(r'^.+\.([a-z0-9_]+)\.([a-z][a-z0-9_]*)$').firstMatch(code);
+    final match = RegExp(
+      r'^.+\.([a-z0-9_]+)\.([a-z][a-z0-9_]*)$',
+    ).firstMatch(code);
     if (match == null || match.group(1) != category) {
       throw ArgumentError(
         'A tool error code must have the form <vendor>.<category>.<slug>.',

@@ -97,7 +97,7 @@ Terms **secure** and **exactly-once** appear only with explicit scope and negati
 
 | ID | Finding | Owner | Note |
 |:--|:--|:--|:--|
-| TM-013 | F13 Timestamp/projection bookkeeping | P1/P10 | Observability defect; does not relax TM-001–TM-005 |
+| TM-013 | F13 Timestamp/projection bookkeeping | P5 | Journal/projection hygiene; does not relax TM-001–TM-005 |
 | TM-014 | F14 Audit SQL/interface sketches | Phase design | Reference only — not mitigations |
 
 No row is marked **mitigated** without executable evidence in the current tree.

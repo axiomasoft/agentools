@@ -1,0 +1,2524 @@
+{
+  "checker_subject": "tools/spec_lint.py",
+  "evidence": [
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "artifact",
+      "carrier_ids": [
+        "lifecycleindex-001",
+        "lifecycleindex-002"
+      ],
+      "finding": "F10",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "raw-fact:ALC-14",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecycleindex-002",
+          "classes": [
+            "checker_derived:lifecycle_index"
+          ],
+          "oracle_sha256": "c083c8faa4f6a04ede21242b9c93c366b7054e0d76d0669c7bf36e75344d2ea5"
+        }
+      ],
+      "rule_id": "ALC-14",
+      "stimulus": {
+        "negative_subject_sha256": "d5ca11850ee4d4bf6670f026840c93eca8d32886ca3111c1ec0e5a940c4fb961",
+        "positive_subject_sha256": "7a46dbfc7504b7d33284554e1b96bc2b22ef19bc7d638e01ea0df68f074ca0be"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecyclefold-006",
+        "lifecyclefold-106"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-15",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecyclefold-006",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "645e2a4a86f959d1f9cad2a6272bf37aa91a6c12e2d09e460f7c86d9dc524979"
+        },
+        {
+          "carrier_id": "lifecyclefold-106",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "645e2a4a86f959d1f9cad2a6272bf37aa91a6c12e2d09e460f7c86d9dc524979"
+        }
+      ],
+      "rule_id": "ALC-15",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecyclefold-006",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "created"
+            },
+            "value_hash": "7daa1f163ba35e313d9fced8257ffc53f88415838e1de374c8c4c5514ab25e17"
+          },
+          {
+            "id": "lifecyclefold-106",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "created"
+            },
+            "value_hash": "af7e60c58192b8308cf8a81f539ae77e5ea0ccd498121701af8259fee00638f1"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/0/kind",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecyclefold-008",
+        "lifecyclefold-108"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-18",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecyclefold-008",
+          "classes": [
+            "journal_projection",
+            "tool_boundary"
+          ],
+          "oracle_sha256": "d9fbc4bcb29564766fdb9de2e16339e23da9f2cb5c94c3974eb2d24edee8cd44"
+        },
+        {
+          "carrier_id": "lifecyclefold-108",
+          "classes": [
+            "journal_projection",
+            "tool_boundary"
+          ],
+          "oracle_sha256": "d9fbc4bcb29564766fdb9de2e16339e23da9f2cb5c94c3974eb2d24edee8cd44"
+        }
+      ],
+      "rule_id": "ALC-18",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecyclefold-008",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "220b3223431254a1b5fd98ba15d784da2a722972d830d46e7a92611a97f1ae25"
+          },
+          {
+            "id": "lifecyclefold-108",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "8634843255a48d5e25bdeeded8e541ec312ccf1935b241441b71574a1263744a"
+          }
+        ],
+        "pointer": "/script/1/llm_stub/toolCall/args/value",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecycleconcurrency-001",
+        "lifecycleconcurrency-101"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-19",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecycleconcurrency-001",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "c051a3f28b8e194ff9abfb8659e7eb3b469d8bdd554e710524e10ad0d41979ff"
+        },
+        {
+          "carrier_id": "lifecycleconcurrency-101",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "c051a3f28b8e194ff9abfb8659e7eb3b469d8bdd554e710524e10ad0d41979ff"
+        }
+      ],
+      "rule_id": "ALC-19",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecycleconcurrency-001",
+            "oracle": {
+              "event_kinds": [
+                "effect_requested"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "68730fedacbf1a777b7eb2605756a947cfee61116ce2b8c41fdaa01b5082e342"
+          },
+          {
+            "id": "lifecycleconcurrency-101",
+            "oracle": {
+              "event_kinds": [
+                "effect_requested"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "6571594d75b7418ed199ed157b1fbbf7cd0692afe58d0c64c38422411010718a"
+          }
+        ],
+        "pointer": "/script/1/llm_stub/toolCall/args/value",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecyclefold-001",
+        "lifecyclefold-101"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-2",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecyclefold-001",
+          "classes": [
+            "journal_projection",
+            "tool_boundary"
+          ],
+          "oracle_sha256": "d94556452ac881cae0a31ded03e67d5b3366259f0dcb28abb31bba854ca87d88"
+        },
+        {
+          "carrier_id": "lifecyclefold-101",
+          "classes": [
+            "journal_projection",
+            "tool_boundary"
+          ],
+          "oracle_sha256": "d94556452ac881cae0a31ded03e67d5b3366259f0dcb28abb31bba854ca87d88"
+        }
+      ],
+      "rule_id": "ALC-2",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecyclefold-001",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "0016b0bd88d722a96d24af3ba567a5944de8d629da87579f061c96f79353519d"
+          },
+          {
+            "id": "lifecyclefold-101",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "6bde135a41691052e974613772804a5984fecf27e64aa834b091b65a11be0c74"
+          }
+        ],
+        "pointer": "/script/1/llm_stub/toolCall/args/value",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecycleconcurrency-002",
+        "lifecycleconcurrency-102"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-20",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecycleconcurrency-002",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "5fb350584c34638f9fa37553087126d7f1e02d6b774759fb2768529d1b0e3db5"
+        },
+        {
+          "carrier_id": "lifecycleconcurrency-102",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "a7430f2e133131d9b516756b66fb99ae316e3c629a8cec62129cfd03d55c76c2"
+        }
+      ],
+      "rule_id": "ALC-20",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecycleconcurrency-002",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "failed"
+            },
+            "value_hash": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+          },
+          {
+            "id": "lifecycleconcurrency-102",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "running"
+            },
+            "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          }
+        ],
+        "pointer": "/given/driver_state/append_probe/attempted_event/expected_prev_seq",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecycleconcurrency-004",
+        "lifecycleconcurrency-104"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-22",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecycleconcurrency-004",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "980c68c14bf19cf9b9748883d6b11d1502290614e48c39ca377cefb5ca51761f"
+        },
+        {
+          "carrier_id": "lifecycleconcurrency-104",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "5915913c68dfc4d9d099535707d8416a73541d4a965b1700e6b052df7d5a4d09"
+        }
+      ],
+      "rule_id": "ALC-22",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecycleconcurrency-004",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "running"
+            },
+            "value_hash": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+          },
+          {
+            "id": "lifecycleconcurrency-104",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "running"
+            },
+            "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          }
+        ],
+        "pointer": "/given/driver_state/append_probe/attempted_event/expected_prev_seq",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecycleconcurrency-005",
+        "lifecycleconcurrency-105"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-23",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecycleconcurrency-005",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "4ea6b9b001021983890b71616c172e189969bcdffa7b1bbd466b9e9538d68b32"
+        },
+        {
+          "carrier_id": "lifecycleconcurrency-105",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "0013311f9585dbb7722293fb75c4a9c77c8c2354d2a0926006d2002fe5567f6f"
+        }
+      ],
+      "rule_id": "ALC-23",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecycleconcurrency-005",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "running"
+            },
+            "value_hash": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+          },
+          {
+            "id": "lifecycleconcurrency-105",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "running"
+            },
+            "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          }
+        ],
+        "pointer": "/given/driver_state/append_probe/attempted_event/expected_prev_seq",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecycleconcurrency-007",
+        "lifecycleconcurrency-107"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-26",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecycleconcurrency-007",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "271c8a3539b41af50325c0f040058dd22192be8150460ce14220cbc1aeda482b"
+        },
+        {
+          "carrier_id": "lifecycleconcurrency-107",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "69880008a14a21148a35ca587301fd46971c199884f56dbd6497b03f87feb9f7"
+        }
+      ],
+      "rule_id": "ALC-26",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecycleconcurrency-007",
+            "oracle": {
+              "event_kinds": [
+                "epoch_started"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          },
+          {
+            "id": "lifecycleconcurrency-107",
+            "oracle": {
+              "event_kinds": [
+                "epoch_started"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/0/payload/epoch",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecycleintegrity-001",
+        "lifecycleintegrity-101"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-28",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecycleintegrity-001",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "f88c77e05f25cc29b4fbe2d1bfc8661300ee91225c3396781e5e0f936e6854c9"
+        },
+        {
+          "carrier_id": "lifecycleintegrity-101",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "f88c77e05f25cc29b4fbe2d1bfc8661300ee91225c3396781e5e0f936e6854c9"
+        }
+      ],
+      "rule_id": "ALC-28",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecycleintegrity-001",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "828b7cde2c5884eeedf5443a58053b6d0918f79f933f5881cb6639b19e31d8e3"
+          },
+          {
+            "id": "lifecycleintegrity-101",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "3af42cb82f55ca87fdf796cf190aa574fc14eb0fca6654a2f0970c60e4179976"
+          }
+        ],
+        "pointer": "/script/1/llm_stub/toolCall/meta/idempotency_key",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecyclefold-002",
+        "lifecyclefold-102"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-3",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecyclefold-002",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "dbb3bd66a021650941a41ded3ec52a72cd9853c9adc7ba679519265caa1c0312"
+        },
+        {
+          "carrier_id": "lifecyclefold-102",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "dbb3bd66a021650941a41ded3ec52a72cd9853c9adc7ba679519265caa1c0312"
+        }
+      ],
+      "rule_id": "ALC-3",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecyclefold-002",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "created"
+            },
+            "value_hash": "6bde135a41691052e974613772804a5984fecf27e64aa834b091b65a11be0c74"
+          },
+          {
+            "id": "lifecyclefold-102",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "created"
+            },
+            "value_hash": "61e1f62c126c294a53deecaa64824c4850b7a8ea3666d75329a63c671b5cb6f2"
+          }
+        ],
+        "pointer": "/given/now",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecycleintegrity-002",
+        "lifecycleintegrity-102"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-30",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecycleintegrity-002",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "8ff18d124b820927c9373f95aa690c6f6c86af1f828faa749b8eeb34bc2e6035"
+        },
+        {
+          "carrier_id": "lifecycleintegrity-102",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "8ff18d124b820927c9373f95aa690c6f6c86af1f828faa749b8eeb34bc2e6035"
+        }
+      ],
+      "rule_id": "ALC-30",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecycleintegrity-002",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "created"
+            },
+            "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          },
+          {
+            "id": "lifecycleintegrity-102",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "created"
+            },
+            "value_hash": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/0/event_version",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecycleintegrity-003",
+        "lifecycleintegrity-103"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-31",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecycleintegrity-003",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "29e06149415cb3e505c9f2fb87262880d537c274093e24cdb8b170f05c3e538e"
+        },
+        {
+          "carrier_id": "lifecycleintegrity-103",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "29e06149415cb3e505c9f2fb87262880d537c274093e24cdb8b170f05c3e538e"
+        }
+      ],
+      "rule_id": "ALC-31",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecycleintegrity-003",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "created"
+            },
+            "value_hash": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+          },
+          {
+            "id": "lifecycleintegrity-103",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "created"
+            },
+            "value_hash": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/0/event_version",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecycleintegrity-004",
+        "lifecycleintegrity-104"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-33",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecycleintegrity-004",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "4560349b1e7ebb5e2addebda9e122a63e8fec2380782323c4c3578139e70bb38"
+        },
+        {
+          "carrier_id": "lifecycleintegrity-104",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "4560349b1e7ebb5e2addebda9e122a63e8fec2380782323c4c3578139e70bb38"
+        }
+      ],
+      "rule_id": "ALC-33",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecycleintegrity-004",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "created"
+            },
+            "value_hash": "e30309d1d5bb4b0311be21de096466e84163f3b0c6a3aef37f8b64eb1e9e1b49"
+          },
+          {
+            "id": "lifecycleintegrity-104",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "created"
+            },
+            "value_hash": "d2a00a915410343ecba384bac1af54d644df8219f1f0f437bb010693afed50f6"
+          }
+        ],
+        "pointer": "/given/driver_state/snapshot/spec_rev",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecycleintegrity-005",
+        "lifecycleintegrity-105"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-34",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecycleintegrity-005",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "f917286e0f8a4997a90e5517cf0d0eeffe65cce4206417d89717b2c1ce9810eb"
+        },
+        {
+          "carrier_id": "lifecycleintegrity-105",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "f917286e0f8a4997a90e5517cf0d0eeffe65cce4206417d89717b2c1ce9810eb"
+        }
+      ],
+      "rule_id": "ALC-34",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecycleintegrity-005",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "created"
+            },
+            "value_hash": "e9c6c7eab63b97ace1ed584f168beaba80eb77c85e4aef9d014e7242bef77f8e"
+          },
+          {
+            "id": "lifecycleintegrity-105",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "created"
+            },
+            "value_hash": "0ae4a12a0955ea36299f4e09c53f58a2d0128dc6bea4692b25b05b83a81a7751"
+          }
+        ],
+        "pointer": "/given/driver_state/snapshot/state",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecycleintegrity-006",
+        "lifecycleintegrity-106"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-35",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecycleintegrity-006",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "afab6d5ebbe3c6f639152de24f5497b4e9cf3565ef3877b00927c0a4c73552b3"
+        },
+        {
+          "carrier_id": "lifecycleintegrity-106",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "cc5af03903ab6f44a1cb22f7b3a4050fc924efe2c764a185cea80fe54cf4ec46"
+        }
+      ],
+      "rule_id": "ALC-35",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecycleintegrity-006",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "failed"
+            },
+            "present": true,
+            "value_hash": "4852f888b84b1d4b96488d59837e33d47bb777effcd04626c01f48110a0bafe7"
+          },
+          {
+            "id": "lifecycleintegrity-106",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "created"
+            },
+            "present": false
+          }
+        ],
+        "pointer": "/given/driver_state/journal/0/prev_hash",
+        "relation": "presence"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecycleintegrity-007",
+        "lifecycleintegrity-107"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-36",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecycleintegrity-007",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "4cf4903756ea067ced2a246b89e579094fe5b947c000c07422ec0f0faa812850"
+        },
+        {
+          "carrier_id": "lifecycleintegrity-107",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "6d92ba9f417800347aa4ce3bd8186a6c273bd44bc4c9b98465cd391c225dda89"
+        }
+      ],
+      "rule_id": "ALC-36",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecycleintegrity-007",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "failed"
+            },
+            "value_hash": "8cbb253bf1b20be0a507b6521cb472eccc6648b3f4ef278e49992e56046e47da"
+          },
+          {
+            "id": "lifecycleintegrity-107",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "running"
+            },
+            "value_hash": "74f276ca3f840c8d7c528abe4c42775cb1b1485a1ae58147a6f477802a17288c"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/2/prev_hash",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecycleintegrity-008",
+        "lifecycleintegrity-108"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-37",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecycleintegrity-008",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "c50d3ddbd76e8f82cffc02d98915494cd3a7321768a3e006d898b8262c59b0c1"
+        },
+        {
+          "carrier_id": "lifecycleintegrity-108",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "624a2160710db074c672bc3e2331f839730bbaefae7c64eb308f9041bfdf89d9"
+        }
+      ],
+      "rule_id": "ALC-37",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecycleintegrity-008",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "failed"
+            },
+            "value_hash": "4852f888b84b1d4b96488d59837e33d47bb777effcd04626c01f48110a0bafe7"
+          },
+          {
+            "id": "lifecycleintegrity-108",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "running"
+            },
+            "value_hash": "22991a1f4351ff736faa65ff4082d73e7eafe29fdf991f2cd3e8fb87b6b2eba5"
+          }
+        ],
+        "pointer": "/given/driver_state/journal/1/prev_hash",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "lifecyclefold-003",
+        "lifecyclefold-103"
+      ],
+      "finding": "F11",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:ALC-4",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "lifecyclefold-003",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "58345d4cf04d8cead57bd02cb39cb91090184c9ab29111448a0b25a14860b8b9"
+        },
+        {
+          "carrier_id": "lifecyclefold-103",
+          "classes": [
+            "journal_projection"
+          ],
+          "oracle_sha256": "58345d4cf04d8cead57bd02cb39cb91090184c9ab29111448a0b25a14860b8b9"
+        }
+      ],
+      "rule_id": "ALC-4",
+      "stimulus": {
+        "members": [
+          {
+            "id": "lifecyclefold-003",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "created"
+            },
+            "value_hash": "e9c6c7eab63b97ace1ed584f168beaba80eb77c85e4aef9d014e7242bef77f8e"
+          },
+          {
+            "id": "lifecyclefold-103",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "created"
+            },
+            "value_hash": "0ae4a12a0955ea36299f4e09c53f58a2d0128dc6bea4692b25b05b83a81a7751"
+          }
+        ],
+        "pointer": "/given/driver_state/materialized_state/state",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "audit-004",
+        "audit-104"
+      ],
+      "finding": "F13",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:AOB-25",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "audit-004",
+          "classes": [
+            "audit_sink"
+          ],
+          "oracle_sha256": "70daf2c2dcbab8d0d28bfb66121b96108136496f13b951eae93606e336e3c4e6"
+        },
+        {
+          "carrier_id": "audit-104",
+          "classes": [
+            "audit_sink"
+          ],
+          "oracle_sha256": "4e116c7fa5918e43cc1c13b74bf2ddc0f8dd97a02ca6077bcfec91fcb8ce98d2"
+        }
+      ],
+      "rule_id": "AOB-25",
+      "stimulus": {
+        "members": [
+          {
+            "id": "audit-004",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "failed"
+            },
+            "value_hash": "b983beca6fd51a7bec9535e5180375b7eccddc76c0bd4e5c708f1c0c27c60d41"
+          },
+          {
+            "id": "audit-104",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "7b34258345b984068e93c653aa0f130b84d723b7d99c5434be34827bcd44d362"
+          }
+        ],
+        "pointer": "/given/driver_state/audit_export/mapping_version",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "audit-008",
+        "audit-108"
+      ],
+      "finding": "F13",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:AOB-29",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "audit-008",
+          "classes": [
+            "audit_sink"
+          ],
+          "oracle_sha256": "28705e0fa2ce008e5752ada3097e56e037b115662eaf7c99ea1b1b9bb0990714"
+        },
+        {
+          "carrier_id": "audit-108",
+          "classes": [
+            "audit_sink"
+          ],
+          "oracle_sha256": "0ecd26ed585bd0007c1c03724bff72981e1fa89cfc1ae64e00c562aeff8bde88"
+        }
+      ],
+      "rule_id": "AOB-29",
+      "stimulus": {
+        "members": [
+          {
+            "id": "audit-008",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "failed"
+            },
+            "value_hash": "fd0b647b51e1fb0fd6f8129fc9e2200a503a6c4f7298e0abaa1e841e05fc0972"
+          },
+          {
+            "id": "audit-108",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "09f83587dc893baa2bfeac562ae0a7fda3662a93be19f125fa656dcb52a562b8"
+          }
+        ],
+        "pointer": "/given/driver_state/baggage/0/classification",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "audit-009",
+        "audit-109"
+      ],
+      "finding": "F13",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:AOB-30",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "audit-009",
+          "classes": [
+            "audit_sink"
+          ],
+          "oracle_sha256": "8cacb8eeb6694ebaf8136e8057a93e541094fc6df9e40d81265864398fdfdafe"
+        },
+        {
+          "carrier_id": "audit-109",
+          "classes": [
+            "audit_sink"
+          ],
+          "oracle_sha256": "82f5145d152d01567b17654001878cd126d4cf75f28be90e946cf2d1daa4e168"
+        }
+      ],
+      "rule_id": "AOB-30",
+      "stimulus": {
+        "members": [
+          {
+            "id": "audit-009",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "failed"
+            },
+            "value_hash": "43227791bb15cbb9db9215a31f1281149ae2edaf0e2c86536438b0d66c2e957f"
+          },
+          {
+            "id": "audit-109",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "09f83587dc893baa2bfeac562ae0a7fda3662a93be19f125fa656dcb52a562b8"
+          }
+        ],
+        "pointer": "/given/driver_state/baggage/0/classification",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "audit-010",
+        "audit-110"
+      ],
+      "finding": "F13",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:AOB-31",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "audit-010",
+          "classes": [
+            "audit_sink"
+          ],
+          "oracle_sha256": "1ce25df536f64331b105fd948f24d6acf381253031a381b27ca45290ebcf4832"
+        },
+        {
+          "carrier_id": "audit-110",
+          "classes": [
+            "audit_sink"
+          ],
+          "oracle_sha256": "683b76ca874e771f4885f4b83da6c64654c3ce87f7e6c90356d5c760879b8505"
+        }
+      ],
+      "rule_id": "AOB-31",
+      "stimulus": {
+        "members": [
+          {
+            "id": "audit-010",
+            "length": 65,
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "failed"
+            }
+          },
+          {
+            "id": "audit-110",
+            "length": 64,
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            }
+          }
+        ],
+        "pointer": "/given/driver_state/baggage",
+        "relation": "length"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "artifact",
+      "carrier_ids": [
+        "cfhbaseline-001",
+        "cfhbaseline-101"
+      ],
+      "finding": "F15",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "raw-fact:CFH-24",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "cfhbaseline-101",
+          "classes": [
+            "checker_derived:known_failures"
+          ],
+          "oracle_sha256": "c083c8faa4f6a04ede21242b9c93c366b7054e0d76d0669c7bf36e75344d2ea5"
+        }
+      ],
+      "rule_id": "CFH-24",
+      "stimulus": {
+        "negative_subject_sha256": "764ec26cfbc21e12f7f073be3f684a479b183e33129d91bf3ea7ed49e5a84e88",
+        "positive_subject_sha256": "4beaee0fb22d5cfb5a5ef1b06ae06bc6383fa36445fadcf2997283b045b0d0de"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "artifact",
+      "carrier_ids": [
+        "cfhbaseline-003",
+        "cfhbaseline-103"
+      ],
+      "finding": "F15",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "raw-fact:CFH-26",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "cfhbaseline-103",
+          "classes": [
+            "checker_derived:known_failures"
+          ],
+          "oracle_sha256": "c083c8faa4f6a04ede21242b9c93c366b7054e0d76d0669c7bf36e75344d2ea5"
+        }
+      ],
+      "rule_id": "CFH-26",
+      "stimulus": {
+        "negative_subject_sha256": "9172af1ef368108e1ff5073c4aa7a0ee3d5293e488114719db6b24d90056e509",
+        "positive_subject_sha256": "10cbe5009782ba008cc41f0b4611411f06e64dcc702201ebbb26bac1acf43410"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "artifact",
+      "carrier_ids": [
+        "cfhgrease-001",
+        "cfhgrease-101"
+      ],
+      "finding": "F15",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "raw-fact:CFH-51",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "cfhgrease-101",
+          "classes": [
+            "checker_derived:grease_registration"
+          ],
+          "oracle_sha256": "c083c8faa4f6a04ede21242b9c93c366b7054e0d76d0669c7bf36e75344d2ea5"
+        }
+      ],
+      "rule_id": "CFH-51",
+      "stimulus": {
+        "negative_subject_sha256": "647174a460c5324c4a19118afa2c691e1a84694f2dfb2ac79a64312a423a499d",
+        "positive_subject_sha256": "7071b8f3810e5e8e7a1d1bf9a56ccce4122bff9d945d85fc522cf3f4838a8b0e"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "artifact",
+      "carrier_ids": [
+        "cfhreport-001",
+        "cfhreport-101"
+      ],
+      "finding": "F15",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "raw-fact:CFH-53",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "cfhreport-101",
+          "classes": [
+            "checker_derived:conformance_report"
+          ],
+          "oracle_sha256": "c083c8faa4f6a04ede21242b9c93c366b7054e0d76d0669c7bf36e75344d2ea5"
+        }
+      ],
+      "rule_id": "CFH-53",
+      "stimulus": {
+        "negative_subject_sha256": "acfa9c995278f9f105a2471ccfd874150f75792b411feccbe3fdfd3a229cfcb3",
+        "positive_subject_sha256": "3ed665fcc4e7b9b8a2a0251f06c191d8774520c56169c396841f6f82ad654b8e"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "clarificationstate-001",
+        "clarificationstate-101"
+      ],
+      "finding": "F12",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:CLR-2",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "clarificationstate-001",
+          "classes": [
+            "task_binding"
+          ],
+          "oracle_sha256": "bbb9a1559d9f8f5f60eeaf03b53b751d4d6ec83c5bc2682a0184d9ee382107be"
+        },
+        {
+          "carrier_id": "clarificationstate-101",
+          "classes": [
+            "task_binding"
+          ],
+          "oracle_sha256": "adac6ebdf7dceed81f44a029b4f63e7fbd19c236a98c3e1c11c6824256e9d957"
+        }
+      ],
+      "rule_id": "CLR-2",
+      "stimulus": {
+        "members": [
+          {
+            "id": "clarificationstate-001",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "running"
+            },
+            "value_hash": "597c0c565ae5c56f2128fe26c743dccd45a4dab664d04f5220f61cc41f639dcd"
+          },
+          {
+            "id": "clarificationstate-101",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "dfb1f7f74a12259e3f1e30c31e2f5cbbc86c5a2092b274c84b26c296206ffc40"
+          }
+        ],
+        "pointer": "/script/2/task_message/status",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "clarificationstate-002",
+        "clarificationstate-102"
+      ],
+      "finding": "F12",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:CLR-8",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "clarificationstate-002",
+          "classes": [
+            "task_binding"
+          ],
+          "oracle_sha256": "8612e22d1a2c28adf479855e3ffa3ee19c6f8068afcedf22c7f6513c0d6e63ed"
+        },
+        {
+          "carrier_id": "clarificationstate-102",
+          "classes": [
+            "task_binding"
+          ],
+          "oracle_sha256": "de3784d573308b9eff9918f46d16a611e9e0ccba4f288c094f5713f3c47c03d5"
+        }
+      ],
+      "rule_id": "CLR-8",
+      "stimulus": {
+        "members": [
+          {
+            "id": "clarificationstate-002",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "failed"
+            },
+            "value_hash": "032bdac02f67a0dc974f318ede756b73d9e1de2d80e2e1b69e4cdb495be7c399"
+          },
+          {
+            "id": "clarificationstate-102",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "running"
+            },
+            "value_hash": "8dcd887c75f0bf1c94c2ae5bfe0c3c276c910eb5219a2e755be1d2ab7e3965ed"
+          }
+        ],
+        "pointer": "/script/2/task_message/operation",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "confpolicy-002",
+        "confpolicy-102"
+      ],
+      "finding": "F12",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:CNF-3",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "confpolicy-002",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "2144a6710000c4d8258e31dedcd9aa504c2ff8774f2412ee933f8b5a64585961"
+        },
+        {
+          "carrier_id": "confpolicy-102",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "af61282d700aef0b978147364433f20257f835c3c24f17dca348cc15e1ab6ef0"
+        }
+      ],
+      "rule_id": "CNF-3",
+      "stimulus": {
+        "members": [
+          {
+            "id": "confpolicy-002",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "failed"
+            },
+            "value_hash": "02f97a1800ef06704f994cae34328477c8ac48b002dc7cc67de1d1fe3bb336cf"
+          },
+          {
+            "id": "confpolicy-102",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "398818caecab25590aa9e67481384e381f17a5946fc712ebcd168699a8ec9a88"
+          }
+        ],
+        "pointer": "/given/policy/rules/0/verdict",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "confpolicy-005",
+        "confpolicy-105"
+      ],
+      "finding": "F12",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:CNF-6",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "confpolicy-005",
+          "classes": [
+            "confirmation_boundary",
+            "tool_boundary"
+          ],
+          "oracle_sha256": "559465596e674de4c55fc069549c5e5d4a2175b683fba473d6964b66c2da54a5"
+        },
+        {
+          "carrier_id": "confpolicy-105",
+          "classes": [
+            "confirmation_boundary",
+            "tool_boundary"
+          ],
+          "oracle_sha256": "559465596e674de4c55fc069549c5e5d4a2175b683fba473d6964b66c2da54a5"
+        }
+      ],
+      "rule_id": "CNF-6",
+      "stimulus": {
+        "members": [
+          {
+            "id": "confpolicy-005",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "a42e03abf3ceafd8d316664a5ae7e9f7cce41c478e0da289bc2cd7b74d63056b"
+          },
+          {
+            "id": "confpolicy-105",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "398818caecab25590aa9e67481384e381f17a5946fc712ebcd168699a8ec9a88"
+          }
+        ],
+        "pointer": "/given/policy/rules/0/verdict",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "confpolicy-006",
+        "confpolicy-106"
+      ],
+      "finding": "F12",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:CNF-8",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "confpolicy-006",
+          "classes": [
+            "confirmation_boundary",
+            "tool_boundary"
+          ],
+          "oracle_sha256": "f02ad45452c272ef95ba8e5f8d97727ce7d5ecd78826bb27e40d9466ba8395b4"
+        },
+        {
+          "carrier_id": "confpolicy-106",
+          "classes": [
+            "confirmation_boundary",
+            "tool_boundary"
+          ],
+          "oracle_sha256": "f02ad45452c272ef95ba8e5f8d97727ce7d5ecd78826bb27e40d9466ba8395b4"
+        }
+      ],
+      "rule_id": "CNF-8",
+      "stimulus": {
+        "members": [
+          {
+            "id": "confpolicy-006",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "9a7d469ee31c85617b47990418cdcf535c45728d90c73d4195d16cf3ec1d2b41"
+          },
+          {
+            "id": "confpolicy-106",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "284a0c1498048ff8a1f7afc5a03b443d11113ea5703baeee9dcb4429b610c684"
+          }
+        ],
+        "pointer": "/given/policy/rules/0/scope",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "security-010",
+        "security-110"
+      ],
+      "finding": "F14",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:SEC-10",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "security-010",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "7404603786824e2cd9b61b010eb388866ce834584b6e3ae4b2224890550eaade"
+        },
+        {
+          "carrier_id": "security-110",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "386404c6628c3ed1e16070b4f353277a719656af6017904864a1cd3a4a58f915"
+        }
+      ],
+      "rule_id": "SEC-10",
+      "stimulus": {
+        "members": [
+          {
+            "id": "security-010",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "8778fae2f6a9cf2e6bb3037286e817fc25fca09643f988dbd04f3a1886cdc3da"
+          },
+          {
+            "id": "security-110",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "8fec632f957f512eed2545b2c779fb8a73b8817c8841f14f4c85ea9705003b74"
+          }
+        ],
+        "pointer": "/given/driver_state/provenance/0/content_origin",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "security-012",
+        "security-112"
+      ],
+      "finding": "F14",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:SEC-12",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "security-012",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "dab91c983a60d0ce93f3faaccde1f5262f02a4c02facd0a3432376d65a6ef623"
+        },
+        {
+          "carrier_id": "security-112",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "11e61cffb6fcef00f836aae625c6128a9a88235661e0f299e272e0f60eb12891"
+        }
+      ],
+      "rule_id": "SEC-12",
+      "stimulus": {
+        "members": [
+          {
+            "id": "security-012",
+            "oracle": {
+              "event_kinds": [
+                "tool_invocation_recorded"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "8778fae2f6a9cf2e6bb3037286e817fc25fca09643f988dbd04f3a1886cdc3da"
+          },
+          {
+            "id": "security-112",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "8fec632f957f512eed2545b2c779fb8a73b8817c8841f14f4c85ea9705003b74"
+          }
+        ],
+        "pointer": "/given/driver_state/provenance/0/content_origin",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "security-013",
+        "security-113"
+      ],
+      "finding": "F14",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:SEC-13",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "security-013",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "5c5cc9b20cbf7a24200f27b462e2fe3bb49dd2c11af4511b2395f977dc77ee49"
+        },
+        {
+          "carrier_id": "security-113",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "00734f0aa36348d498ee5f3de381434ccdead776505e10063c2de77fe3889736"
+        }
+      ],
+      "rule_id": "SEC-13",
+      "stimulus": {
+        "members": [
+          {
+            "id": "security-013",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "failed"
+            },
+            "value_hash": "4167f8c58700b255cd162a53550e2c860800e11eb5691b8c94cfce4596e390cb"
+          },
+          {
+            "id": "security-113",
+            "oracle": {
+              "event_kinds": [
+                "tool_invocation_recorded"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "be559d5b9816df40b35e7292aa062b89762902be32ed36d600f6b5505b606d1c"
+          }
+        ],
+        "pointer": "/given/driver_state/principals/agent/id",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "security-014",
+        "security-114"
+      ],
+      "finding": "F14",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:SEC-14",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "security-014",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "e4e006df79f547a0ddea042af08e8125a612beedba40d71db01b83f65d45f3c1"
+        },
+        {
+          "carrier_id": "security-114",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "91204ec7dc441deadf966c16054e773ebee372bc74d21c0b4dc91e2e3c0210ef"
+        }
+      ],
+      "rule_id": "SEC-14",
+      "stimulus": {
+        "members": [
+          {
+            "id": "security-014",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "failed"
+            },
+            "value_hash": "4167f8c58700b255cd162a53550e2c860800e11eb5691b8c94cfce4596e390cb"
+          },
+          {
+            "id": "security-114",
+            "oracle": {
+              "event_kinds": [
+                "tool_invocation_recorded"
+              ],
+              "final_state": "completed"
+            },
+            "value_hash": "be559d5b9816df40b35e7292aa062b89762902be32ed36d600f6b5505b606d1c"
+          }
+        ],
+        "pointer": "/given/driver_state/principals/agent/id",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "security-015",
+        "security-115"
+      ],
+      "finding": "F14",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:SEC-15",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "security-015",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "1773af15196ebe2820111fe647ab512934b2aa06fa342cf05d21bfd3a592ce1f"
+        },
+        {
+          "carrier_id": "security-115",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "a8828fc435b984c02254853473487708c6bb17578d9e1090c51bdde282cc9c96"
+        }
+      ],
+      "rule_id": "SEC-15",
+      "stimulus": {
+        "members": [
+          {
+            "id": "security-015",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "failed"
+            },
+            "value_hash": "be559d5b9816df40b35e7292aa062b89762902be32ed36d600f6b5505b606d1c"
+          },
+          {
+            "id": "security-115",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "4167f8c58700b255cd162a53550e2c860800e11eb5691b8c94cfce4596e390cb"
+          }
+        ],
+        "pointer": "/given/driver_state/principals/initiator/id",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "security-016",
+        "security-116"
+      ],
+      "finding": "F14",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:SEC-16",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "security-016",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "986e9a4094f44b30160e8fc0f67cd8904dd8fff8cd5992bc914b2dd792a47506"
+        },
+        {
+          "carrier_id": "security-116",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "ba00aeb7423a836ee0395b279e7effcc9b5231781a81631f1f7c7fdc3a5edcc5"
+        }
+      ],
+      "rule_id": "SEC-16",
+      "stimulus": {
+        "members": [
+          {
+            "id": "security-016",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "failed"
+            },
+            "value_hash": "0a3c3a706bb483edce77d28f2a975d54fe91ea1ffee6f1fb4e81a006a2f0e209"
+          },
+          {
+            "id": "security-116",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "0c899945f18c32b2607d1b40ad2d45a7bb2a97a016ac95ee712ad7686ccb12bd"
+          }
+        ],
+        "pointer": "/given/driver_state/authorization/call_id",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "security-018",
+        "security-118"
+      ],
+      "finding": "F14",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:SEC-18",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "security-018",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "5f1bccce74c82e8ac2a440ac3e8eb32e785db23a4a83ac101b9182122275aaba"
+        },
+        {
+          "carrier_id": "security-118",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "575a39a58a2cb91e85e1ba08f91bc78e68fef0695b8f54c51e0028dcb6336314"
+        }
+      ],
+      "rule_id": "SEC-18",
+      "stimulus": {
+        "members": [
+          {
+            "id": "security-018",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "failed"
+            },
+            "present": true,
+            "value_hash": "0ea526703c801f37d4dabd89acf5dbb7e422fda35b6a3a0a10591c1abc15c6d9"
+          },
+          {
+            "id": "security-118",
+            "oracle": {
+              "event_kinds": [
+                "confirmation_resolved"
+              ],
+              "final_state": "completed"
+            },
+            "present": false
+          }
+        ],
+        "pointer": "/given/driver_state/journal",
+        "relation": "presence"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "security-004",
+        "security-104"
+      ],
+      "finding": "F14",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:SEC-4",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "security-004",
+          "classes": [
+            "credential_boundary"
+          ],
+          "oracle_sha256": "3ebecd879b8a588453ff0f41f37a9aee1cabcca47af5267be4743cd9caba5151"
+        },
+        {
+          "carrier_id": "security-104",
+          "classes": [
+            "credential_boundary"
+          ],
+          "oracle_sha256": "3fc411c525197244e77307b6c8de17c770cc24f1a355d2d70214ce0806634dd7"
+        }
+      ],
+      "rule_id": "SEC-4",
+      "stimulus": {
+        "members": [
+          {
+            "id": "security-004",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "ce8b697ae28765382f13a932ff5dc7b409eaab70c1cf825f74a288478afad6e2"
+          },
+          {
+            "id": "security-104",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "failed"
+            },
+            "value_hash": "381d47ab67ca543f04e417fe3c6261d359f9295de8d2b48f145f7d14e1ffaad4"
+          }
+        ],
+        "pointer": "/given/driver_state/credentials/0/audience",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "security-009",
+        "security-109"
+      ],
+      "finding": "F14",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:SEC-9",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "security-009",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "8d84cb33a82b6523044c53efca33fe590e12e94002a82722bd369c6f9dbf6083"
+        },
+        {
+          "carrier_id": "security-109",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "d89d50c176d0e8545c39663fa40694442cba39ff7e0c3f2c07809f603b0bd1fe"
+        }
+      ],
+      "rule_id": "SEC-9",
+      "stimulus": {
+        "members": [
+          {
+            "id": "security-009",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "8778fae2f6a9cf2e6bb3037286e817fc25fca09643f988dbd04f3a1886cdc3da"
+          },
+          {
+            "id": "security-109",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "8fec632f957f512eed2545b2c779fb8a73b8817c8841f14f4c85ea9705003b74"
+          }
+        ],
+        "pointer": "/given/driver_state/provenance/0/content_origin",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "confpolicy-001",
+        "confpolicy-101"
+      ],
+      "finding": "F9",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:TLP-11",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "confpolicy-001",
+          "classes": [
+            "confirmation_boundary",
+            "tool_boundary"
+          ],
+          "oracle_sha256": "9b46c420973653be60a7dd7d1489ad4960618db1c06fb6520e2a9f2e4e664c39"
+        },
+        {
+          "carrier_id": "confpolicy-101",
+          "classes": [
+            "confirmation_boundary",
+            "tool_boundary"
+          ],
+          "oracle_sha256": "9b46c420973653be60a7dd7d1489ad4960618db1c06fb6520e2a9f2e4e664c39"
+        }
+      ],
+      "rule_id": "TLP-11",
+      "stimulus": {
+        "members": [
+          {
+            "id": "confpolicy-001",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "b9ca9244fa4639a7ad1b0be4d9ffbf905e7ddea75162e98611b5f0f6f1e168a8"
+          },
+          {
+            "id": "confpolicy-101",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "2d84769f1ad1c5338ee25c427778a0a3767fcab45b2e81e8f11005b7454ab3b9"
+          }
+        ],
+        "pointer": "/given/tools/0/_meta/dev.agentools~1action/confirmation",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "artifact",
+      "carrier_ids": [
+        "toolcontract-005",
+        "toolcontract-105"
+      ],
+      "finding": "F10",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "raw-fact:TLP-12",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "toolcontract-105",
+          "classes": [
+            "checker_derived:tool_contract_case"
+          ],
+          "oracle_sha256": "c083c8faa4f6a04ede21242b9c93c366b7054e0d76d0669c7bf36e75344d2ea5"
+        }
+      ],
+      "rule_id": "TLP-12",
+      "stimulus": {
+        "negative_subject_sha256": "3df939546fcf5abc4a7fc2b03c5f3acb36b8117e7c8f9417fb6fa39cc6ecf29e",
+        "positive_subject_sha256": "47e4b34b7a9f4b506e06689ac54dee7f87596a5ed3723bc172dbec0579e5fa2a"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "behavior",
+      "carrier_ids": [
+        "profileuntrusted-001",
+        "profileuntrusted-101"
+      ],
+      "finding": "F9",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "self-report:TLP-25",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "profileuntrusted-001",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "9776d2d996b14df930ece8748bf450ed07db8b233ee022249c72639c7ebbe329"
+        },
+        {
+          "carrier_id": "profileuntrusted-101",
+          "classes": [
+            "tool_boundary"
+          ],
+          "oracle_sha256": "0024a37048596ed6048e4a7bc4768c622a1b26a39d089e315bc93d970bfb8825"
+        }
+      ],
+      "rule_id": "TLP-25",
+      "stimulus": {
+        "members": [
+          {
+            "id": "profileuntrusted-001",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "8778fae2f6a9cf2e6bb3037286e817fc25fca09643f988dbd04f3a1886cdc3da"
+          },
+          {
+            "id": "profileuntrusted-101",
+            "oracle": {
+              "event_kinds": [],
+              "final_state": "completed"
+            },
+            "value_hash": "8fec632f957f512eed2545b2c779fb8a73b8817c8841f14f4c85ea9705003b74"
+          }
+        ],
+        "pointer": "/given/driver_state/provenance/0/content_origin",
+        "relation": "value"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "artifact",
+      "carrier_ids": [
+        "toolauthoring-001",
+        "toolauthoring-101"
+      ],
+      "finding": "F10",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "raw-fact:TLP-26",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "toolauthoring-101",
+          "classes": [
+            "checker_derived:authoring_schema_profile"
+          ],
+          "oracle_sha256": "c083c8faa4f6a04ede21242b9c93c366b7054e0d76d0669c7bf36e75344d2ea5"
+        }
+      ],
+      "rule_id": "TLP-26",
+      "stimulus": {
+        "negative_subject_sha256": "1cdbfdb3ee36bde6a5cb33f84ab0756ade4b48782a2ef3bfaa3c2618962a52e0",
+        "positive_subject_sha256": "b8c93507c5a790606def1b68f813d5fad3092053b44f5403c0b2f9f456a76ead"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "artifact",
+      "carrier_ids": [
+        "toolauthoring-002",
+        "toolauthoring-102"
+      ],
+      "finding": "F10",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "raw-fact:TLP-27",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "toolauthoring-102",
+          "classes": [
+            "checker_derived:authoring_schema_profile"
+          ],
+          "oracle_sha256": "c083c8faa4f6a04ede21242b9c93c366b7054e0d76d0669c7bf36e75344d2ea5"
+        }
+      ],
+      "rule_id": "TLP-27",
+      "stimulus": {
+        "negative_subject_sha256": "22cef590532b51097309e5f9539ef5399ea793a1f448ffb42b4ad69ae94ac3cd",
+        "positive_subject_sha256": "b8c93507c5a790606def1b68f813d5fad3092053b44f5403c0b2f9f456a76ead"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "artifact",
+      "carrier_ids": [
+        "toolauthoring-003",
+        "toolauthoring-103"
+      ],
+      "finding": "F10",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "raw-fact:TLP-28",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "toolauthoring-103",
+          "classes": [
+            "checker_derived:authoring_schema_profile"
+          ],
+          "oracle_sha256": "c083c8faa4f6a04ede21242b9c93c366b7054e0d76d0669c7bf36e75344d2ea5"
+        }
+      ],
+      "rule_id": "TLP-28",
+      "stimulus": {
+        "negative_subject_sha256": "118a66ecca905cd30828885bc2d5bf8ca55b66fe8e1562e052be6d6d9a908ac3",
+        "positive_subject_sha256": "4439521fce49f399f579fc2b17714499efa3ec859d76810e3537e7a0db88056a"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "artifact",
+      "carrier_ids": [
+        "toolauthoring-004",
+        "toolauthoring-104"
+      ],
+      "finding": "F10",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "raw-fact:TLP-30",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "toolauthoring-104",
+          "classes": [
+            "checker_derived:authoring_schema_profile"
+          ],
+          "oracle_sha256": "c083c8faa4f6a04ede21242b9c93c366b7054e0d76d0669c7bf36e75344d2ea5"
+        }
+      ],
+      "rule_id": "TLP-30",
+      "stimulus": {
+        "negative_subject_sha256": "d1ddcdf8814107cd40c226e798630b9d2c9e6542fbfdcb5dd5b05fae3898081e",
+        "positive_subject_sha256": "b4cc07f66de0de1070f1838f219b5f0eca9cd3af04a6c40a24af26eab2e888f0"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "artifact",
+      "carrier_ids": [
+        "toolauthoring-005",
+        "toolauthoring-105"
+      ],
+      "finding": "F10",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "raw-fact:TLP-31",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "toolauthoring-105",
+          "classes": [
+            "checker_derived:authoring_schema_profile"
+          ],
+          "oracle_sha256": "c083c8faa4f6a04ede21242b9c93c366b7054e0d76d0669c7bf36e75344d2ea5"
+        }
+      ],
+      "rule_id": "TLP-31",
+      "stimulus": {
+        "negative_subject_sha256": "db590d503372d4262914f6b085c727fdf15dda4a2f20ab47fb40c1c57e558cb7",
+        "positive_subject_sha256": "cdd33bb1752cd1c136a9c3e9d8ca5be414b60bf04cb70e747c0ad53126e541ad"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "artifact",
+      "carrier_ids": [
+        "toolauthoring-006",
+        "toolauthoring-106"
+      ],
+      "finding": "F10",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "raw-fact:TLP-32",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "toolauthoring-106",
+          "classes": [
+            "checker_derived:authoring_schema_profile"
+          ],
+          "oracle_sha256": "c083c8faa4f6a04ede21242b9c93c366b7054e0d76d0669c7bf36e75344d2ea5"
+        }
+      ],
+      "rule_id": "TLP-32",
+      "stimulus": {
+        "negative_subject_sha256": "928e1cd7547a99d356e42e962aeb361e14a46c8d3748c746103be966bd8d8ba0",
+        "positive_subject_sha256": "b8a5ae2a7c3950afd9e388a56976abf7bdead925dffd6931fd321f065984fc2c"
+      }
+    },
+    {
+      "banned_shortcuts": [],
+      "carrier_class": "artifact",
+      "carrier_ids": [
+        "toolcontract-001",
+        "toolcontract-101"
+      ],
+      "finding": "F10",
+      "mutant": {
+        "diagnostic_count": 1,
+        "id": "raw-fact:TLP-7",
+        "result": "rejected"
+      },
+      "observations": [
+        {
+          "carrier_id": "toolcontract-101",
+          "classes": [
+            "checker_derived:tool_catalog"
+          ],
+          "oracle_sha256": "c083c8faa4f6a04ede21242b9c93c366b7054e0d76d0669c7bf36e75344d2ea5"
+        }
+      ],
+      "rule_id": "TLP-7",
+      "stimulus": {
+        "negative_subject_sha256": "bf62e8f8cd0e058faeedc4fac3d0c15052ce61df719c7ce04f8770ff7a46ab62",
+        "positive_subject_sha256": "75c1e8fd81fc15f9127eef14e88d98e0f8dea28e1d94b0740e81b41cd538a668"
+      }
+    }
+  ],
+  "gaps": [],
+  "generated_by": "tools/spec_lint.py --gate-b-remediation-write",
+  "mutation_reject_count": 51,
+  "observation_schema_subject": "fixtures/2026-09/schema/vector.json",
+  "partitions": {
+    "artifact": 13,
+    "behavior": 38,
+    "total": 51
+  },
+  "schema_version": 2,
+  "semantic_preflight": {
+    "checks": [
+      {
+        "mutant": "rejected",
+        "name": "confirmation-layer-boundary",
+        "result": "passed",
+        "rule_ids": [
+          "TLP-11",
+          "CNF-6",
+          "CNF-8"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "clarification-protocol-operations",
+        "result": "passed",
+        "rule_ids": [
+          "CLR-8"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "audit-independent-mapping-registry",
+        "result": "passed",
+        "rule_ids": [
+          "AOB-25"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "baggage-wire-byte-boundary",
+        "result": "passed",
+        "rule_ids": [
+          "AOB-31"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "untrusted-derivation-lineage",
+        "result": "passed",
+        "rule_ids": [
+          "SEC-9"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "authorization-per-call-binding",
+        "result": "passed",
+        "rule_ids": [
+          "SEC-16"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "append-adapter-conflict-stimulus",
+        "result": "passed",
+        "rule_ids": [
+          "ALC-20",
+          "ALC-22",
+          "ALC-23"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "journal-hash-excludes-own-prev-hash",
+        "result": "passed",
+        "rule_ids": [
+          "ALC-36"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "known-failure-every-run",
+        "result": "passed",
+        "rule_ids": [
+          "CFH-24"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "journal-emission-append-accounting",
+        "result": "passed",
+        "rule_ids": [
+          "ALC-19",
+          "ALC-26"
+        ]
+      },
+      {
+        "mutant": "rejected",
+        "name": "rejected-audit-sink-is-empty",
+        "result": "passed",
+        "rule_ids": [
+          "AOB-25",
+          "AOB-29",
+          "AOB-30",
+          "AOB-31"
+        ]
+      }
+    ],
+    "mutation_reject_count": 11,
+    "passed": 11
+  },
+  "source_tree_sha256": "7a10395bf59c187db67ee7972b5147c31d6e0722f9896cc862fca338ad4ce4c6"
+}

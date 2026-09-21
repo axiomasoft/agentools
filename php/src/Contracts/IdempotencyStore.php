@@ -4,19 +4,40 @@ declare(strict_types=1);
 
 namespace AgenTools\Contracts;
 
-use AgenTools\Idempotency\DeduplicationResolution;
+use AgenTools\Idempotency\IdempotencyAcquisition;
+use AgenTools\Idempotency\IdempotencyLease;
 use AgenTools\Idempotency\IdempotencyRequest;
 use AgenTools\Idempotency\StoredResultDigest;
 use AgenTools\Idempotency\StoredToolResult;
 
-/** Deduplication record persistence. Production stores must make resolve's unique-key insert atomic. */
+/** Fenced deduplication persistence. Production stores must CAS on lease_token. */
 interface IdempotencyStore
 {
-    public function resolve(IdempotencyRequest $request, \DateTimeImmutable $now): DeduplicationResolution;
+    public function acquire(
+        IdempotencyRequest $request,
+        \DateTimeImmutable $now,
+        \DateInterval $leaseDuration,
+    ): IdempotencyAcquisition;
+
+    public function heartbeat(
+        IdempotencyLease $lease,
+        \DateTimeImmutable $now,
+        \DateInterval $leaseDuration,
+    ): IdempotencyLease;
 
     public function complete(
-        IdempotencyRequest $request,
+        IdempotencyLease $lease,
         StoredToolResult $result,
         StoredResultDigest $digest,
+        \DateTimeImmutable $now,
     ): void;
+
+    public function fail(
+        IdempotencyLease $lease,
+        StoredToolResult $result,
+        StoredResultDigest $digest,
+        \DateTimeImmutable $now,
+    ): void;
+
+    public function cleanup(\DateTimeImmutable $now): int;
 }

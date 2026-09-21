@@ -1,0 +1,900 @@
+{
+  "schema_version": "mcp-applicability/v1",
+  "summary_phrase": "official MCP scenario compatibility",
+  "conformance_package": "@modelcontextprotocol/conformance@0.2.0-alpha.11",
+  "conformance_integrity": "sha512-imPK9tx5gQsL6ZKQq4MrsyDYfSaIwpRmX6+ogjbeAXs9LGvxkBxWcY7KcS7TvwaBk/ZiVWl6b/naF4q83UwDRA==",
+  "requirements_revision": "2026-07-28",
+  "generated_by": "tools/mcp_applicability.py",
+  "rows": [
+    {
+      "scenario_id": "auth/authorization-server-migration",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/basic-cimd",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/client-credentials-basic",
+      "role": "client",
+      "scored_class": "extension",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/client-credentials-jwt",
+      "role": "client",
+      "scored_class": "extension",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/dpop",
+      "role": "client",
+      "scored_class": "extension",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/dpop-nonce",
+      "role": "client",
+      "scored_class": "extension",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/enterprise-managed-authorization",
+      "role": "client",
+      "scored_class": "extension",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/iss-normalized",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/iss-not-advertised",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/iss-supported",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/iss-supported-missing",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/iss-unexpected",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/iss-wrong-issuer",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/metadata-default",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/metadata-issuer-mismatch",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/metadata-var1",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/metadata-var2",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/metadata-var3",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/offline-access-not-supported",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/offline-access-scope",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/pre-registration",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/resource-mismatch",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/scope-from-scopes-supported",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/scope-from-www-authenticate",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/scope-omitted-when-undefined",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/scope-retry-limit",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/scope-step-up",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/token-endpoint-auth-basic",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/token-endpoint-auth-none",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/token-endpoint-auth-post",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "auth/wif-jwt-bearer",
+      "role": "client",
+      "scored_class": "extension",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "agentools_mcp_dart exposes no OAuth client surface",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "http-custom-headers",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "HTTP header mapping is not on the public McpDartTransport contract",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "http-invalid-tool-headers",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "HTTP header mapping is not on the public McpDartTransport contract",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "http-standard-headers",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "HTTP header mapping is not on the public McpDartTransport contract",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "json-schema-2020-12-preservation",
+      "role": "client",
+      "scored_class": "added-after-release",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "not_scored row (added-after-release); outside bounded agentools_mcp_dart claim",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "json-schema-ref-no-deref",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "HTTP header mapping is not on the public McpDartTransport contract",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "request-metadata",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "unsupported-protocol retry probe is not exposed on public McpDartTransport (require2026-only)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "sep-2322-client-request-state",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "MRTR request-state isolation probes require wire-level client behavior; public McpDartTransport exposes invoke/resume only for product tool calls",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tools_call",
+      "role": "client",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "applicable",
+      "reason": "exercised through public agentools_mcp_dart McpDartTransport boundary",
+      "receipt_path": "conformance/reports/mcp-official/tools_call.json",
+      "execution_status": "pending"
+    },
+    {
+      "scenario_id": "caching",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "completion-complete",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "dns-rebinding-protection",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "http-custom-header-server-validation",
+      "role": "server",
+      "scored_class": "pending",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "http-header-validation",
+      "role": "server",
+      "scored_class": "pending",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "input-required-result-basic-elicitation",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "input-required-result-basic-list-roots",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "input-required-result-basic-sampling",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "input-required-result-capability-check",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "input-required-result-ignore-extra-params",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "input-required-result-missing-input-response",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "input-required-result-multi-round",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "input-required-result-multiple-input-requests",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "input-required-result-non-tool-request",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "input-required-result-request-state",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "input-required-result-result-type",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "input-required-result-tampered-state",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "input-required-result-unsupported-methods",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "input-required-result-validate-input",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "json-schema-2020-12",
+      "role": "server",
+      "scored_class": "pending",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "prompts-get-embedded-resource",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "prompts-get-simple",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "prompts-get-with-args",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "prompts-get-with-image",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "prompts-list",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "resources-list",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "resources-read-binary",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "resources-read-text",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "resources-templates-read",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "sep-2164-resource-not-found",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "server-sse-multiple-streams",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "server-stateless",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tasks-capability-negotiation",
+      "role": "server",
+      "scored_class": "extension",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tasks-dispatch-and-envelope",
+      "role": "server",
+      "scored_class": "extension",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tasks-lifecycle",
+      "role": "server",
+      "scored_class": "extension",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tasks-mrtr-composition",
+      "role": "server",
+      "scored_class": "extension",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tasks-mrtr-input",
+      "role": "server",
+      "scored_class": "extension",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tasks-request-headers",
+      "role": "server",
+      "scored_class": "extension",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tasks-request-state-removal",
+      "role": "server",
+      "scored_class": "extension",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tasks-required-task-error",
+      "role": "server",
+      "scored_class": "extension",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tasks-status-notifications",
+      "role": "server",
+      "scored_class": "extension",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tasks-wire-fields",
+      "role": "server",
+      "scored_class": "extension",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tools-call-audio",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tools-call-embedded-resource",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tools-call-error",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tools-call-image",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tools-call-mixed-content",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tools-call-simple-text",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tools-call-with-progress",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    },
+    {
+      "scenario_id": "tools-list",
+      "role": "server",
+      "scored_class": "required",
+      "requirements_revision": "2026-07-28",
+      "applicability": "non_applicable",
+      "reason": "repository ships no MCP server; server-role requirements are not product claims (D11)",
+      "receipt_path": null,
+      "execution_status": null
+    }
+  ]
+}

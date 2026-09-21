@@ -92,4 +92,13 @@ final class AuditEventFactoryTest extends TestCase
         $this->expectException(EventStoreFailure::class);
         $factory->costRecorded('act-1', 3, 2, new Actor('agent', 'a1'), ['token' => 'secret']);
     }
+
+    public function testItNormalizesTimestampToUtc(): void
+    {
+        $factory = new AuditEventFactory(new FixedClock(new \DateTimeImmutable('2026-08-05T15:00:00+03:00')));
+
+        $event = $factory->policyEvaluated('act-1', 1, 0, new Actor('agent', 'a1'), 'crm_report_list', 'read', 'allow');
+
+        self::assertSame('2026-08-05T12:00:00+00:00', $event->timestamp);
+    }
 }

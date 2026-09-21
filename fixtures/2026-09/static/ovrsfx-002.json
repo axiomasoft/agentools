@@ -1,0 +1,19 @@
+{
+  "id": "ovrsfx-002",
+  "title": "Инструмент write: side_effect='write', гейт confirmation='confirm' — требование выведено верно",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "OVR-19",
+    "OVR-20",
+    "OVR-21"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "tool_descriptor",
+    "path": "fixtures/2026-09/common/tool-write.json"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

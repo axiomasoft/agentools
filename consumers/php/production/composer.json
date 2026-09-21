@@ -1,0 +1,21 @@
+{
+  "name": "agentools/consumer-php-production",
+  "description": "P7.4 clean consumer: production install only (--no-dev).",
+  "type": "project",
+  "license": "proprietary",
+  "require": {
+    "php": ">=8.3",
+    "agentools/sdk": "@dev"
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "PACKAGE_PATH",
+      "options": {
+        "symlink": false
+      }
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

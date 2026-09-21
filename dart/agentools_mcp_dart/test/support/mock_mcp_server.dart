@@ -11,8 +11,9 @@ Future<HttpServer> startMockMcpServer({
   List<String>? requestLog,
   int port = 0,
 }) async {
-  final discoverResult =
-      jsonDecode(File(discoverFixturePath).readAsStringSync());
+  final discoverResult = jsonDecode(
+    File(discoverFixturePath).readAsStringSync(),
+  );
   final callToolResult = callToolFixturePath == null
       ? null
       : jsonDecode(File(callToolFixturePath).readAsStringSync());

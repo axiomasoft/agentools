@@ -1,0 +1,19 @@
+{
+  "id": "ovrlegacy-001",
+  "title": "Легаси-термин 'initialize' употреблён нормативно вне огороженного блока «Out of scope by design»",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "OVR-2",
+    "OVR-26"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "doc_text",
+    "inline": "Реализация MUST поддерживать сообщение initialize для совместимости со старыми клиентами."
+  },
+  "expect": {
+    "linter": "reject",
+    "diagnostic_substring": "вне огороженного блока (D20)"
+  }
+}

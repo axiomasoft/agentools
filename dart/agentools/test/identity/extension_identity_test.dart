@@ -20,7 +20,8 @@ void main() {
     expect(
       ExtensionIdentity.schemaIdBase.startsWith('https://'),
       isTrue,
-      reason: 'Schema ids remain namespace identifiers, not download endpoints.',
+      reason:
+          'Schema ids remain namespace identifiers, not download endpoints.',
     );
   });
 }

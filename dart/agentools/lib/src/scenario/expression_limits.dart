@@ -6,7 +6,12 @@ final class ExpressionLimits {
     this.maxCollectionSize = 1000,
     this.maxVisitedNodes = 10000,
   }) {
-    for (final limit in [maxDepth, maxLength, maxCollectionSize, maxVisitedNodes]) {
+    for (final limit in [
+      maxDepth,
+      maxLength,
+      maxCollectionSize,
+      maxVisitedNodes,
+    ]) {
       if (limit < 1) {
         throw ArgumentError('Expression limits must be positive.');
       }

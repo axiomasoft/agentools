@@ -1,0 +1,18 @@
+{
+  "id": "cfhreport-001",
+  "title": "Failed L3 обязан быть перечислен",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "CFH-53"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "conformance_report",
+    "inline": "{\"declared_level\":\"L1\",\"submitted_vectors\":[\"alpha-001\",\"gamma-001\"],\"vectors\":[{\"id\":\"alpha-001\",\"level\":\"L1\",\"outcome\":\"completed\",\"rule_ids\":[\"CFH-52\"]},{\"id\":\"gamma-001\",\"level\":\"L3\",\"outcome\":\"failed\",\"rule_ids\":[\"AOB-25\"]}],\"failed_l3\":[],\"failed\":[\"gamma-001\"],\"warnings\":[],\"not_testable\":[],\"success\":false}"
+  },
+  "expect": {
+    "linter": "reject",
+    "diagnostic_substring": "непройденных L3"
+  }
+}

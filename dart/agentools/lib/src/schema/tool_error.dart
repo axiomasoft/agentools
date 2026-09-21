@@ -51,11 +51,7 @@ final class ToolError {
 
   factory ToolError.fromJsonText(String json, JsonSchema schema) {
     final document = RawDocument.fromJson(json);
-    return ToolError.fromJson(
-      document.toMap(),
-      schema,
-      rawDocument: document,
-    );
+    return ToolError.fromJson(document.toMap(), schema, rawDocument: document);
   }
 
   Map<String, dynamic> toJson() {
@@ -74,7 +70,8 @@ final class ToolError {
     };
   }
 
-  String toJsonText() => _rawDocument?.toJson() ?? RawDocument(toJson()).toJson();
+  String toJsonText() =>
+      _rawDocument?.toJson() ?? RawDocument(toJson()).toJson();
 
   static Map<String, dynamic>? _optionalObject(
     Map<String, dynamic> json,

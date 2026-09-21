@@ -28,12 +28,11 @@ enum ActionStatus {
   }
 
   bool isTerminal() => switch (this) {
-        ActionStatus.completed ||
-        ActionStatus.rejected ||
-        ActionStatus.expired ||
-        ActionStatus.failed ||
-        ActionStatus.cancelled =>
-          true,
-        _ => false,
-      };
+    ActionStatus.completed ||
+    ActionStatus.rejected ||
+    ActionStatus.expired ||
+    ActionStatus.failed ||
+    ActionStatus.cancelled => true,
+    _ => false,
+  };
 }

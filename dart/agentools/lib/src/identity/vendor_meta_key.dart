@@ -32,9 +32,7 @@ final class VendorMetaKey {
   /// EXT-8: проверяет грамматику собственного `_meta`-ключа.
   static VendorMetaKeyParse parseOwn(String key) {
     if (_reservedMcpPrefixPattern.hasMatch(key)) {
-      return VendorMetaKeyRejected(
-        '$key uses a reserved MCP vendor prefix.',
-      );
+      return VendorMetaKeyRejected('$key uses a reserved MCP vendor prefix.');
     }
     if (!key.startsWith('${ExtensionIdentity.vendorPrefix}/')) {
       return VendorMetaKeyRejected(

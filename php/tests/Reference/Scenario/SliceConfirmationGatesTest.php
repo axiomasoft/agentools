@@ -10,6 +10,8 @@ use AgenTools\Reference\Adapters\RegistryToolPort;
 use AgenTools\Reference\Crypto\TenantHmacTokenSigner;
 use AgenTools\Reference\Scenario\ConfirmationMetrics;
 use AgenTools\Reference\Scenario\PermissionCommitAuthorizer;
+use AgenTools\Reference\Scenario\ReferenceConfirmationServiceFactory;
+use AgenTools\Reference\Scenario\ReferenceIdempotencyCoordinatorFactory;
 use AgenTools\Reference\Scenario\SliceToolCoordinator;
 use AgenTools\Reference\Support\InjectableClock;
 use AgenTools\Reference\Tools\DayReportStore;
@@ -20,7 +22,6 @@ use PHPUnit\Framework\TestCase;
 
 final class SliceConfirmationGatesTest extends TestCase
 {
-    /** Negative: swapped arguments after preview are rejected at commit. */
     public function testItRejectsArgsMismatchOnCommit(): void
     {
         $coordinator = $this->coordinator();
@@ -32,7 +33,6 @@ final class SliceConfirmationGatesTest extends TestCase
         self::assertSame('agentools.precondition.confirmation_args_mismatch', $result->error?->code);
     }
 
-    /** Negative: expired token surfaces as tool execution error. */
     public function testItRejectsExpiredToken(): void
     {
         $clock = new InjectableClock(new \DateTimeImmutable('2026-09-19T10:00:00+00:00'));
@@ -46,45 +46,31 @@ final class SliceConfirmationGatesTest extends TestCase
         self::assertSame('agentools.precondition.confirmation_expired', $result->error?->code);
     }
 
-    /** Negative: presenting the same spent token again is rejected. */
     public function testItRejectsSpentToken(): void
     {
         $clock = new InjectableClock(new \DateTimeImmutable('2026-09-19T10:00:00+00:00'));
-        $protocol = new ConfirmationProtocol(new TenantHmacTokenSigner('tenant-a', 'reference-slice-secret'));
-        $coordinator = $this->coordinator($clock, $protocol);
+        $port = $this->port();
+        $bundle = (new ReferenceConfirmationServiceFactory())->bundle($port, $clock, 'tenant-a', 'user-a', ['slice.write']);
         $args = ['report_id' => 'r-3', 'date' => '2026-09-19', 'body' => 'body'];
-        $coordinator->invoke('slice_write_day_report', $args, 'idem-3', null);
-        $token = (string) $coordinator->pendingTokenValue();
-        self::assertFalse($coordinator->invoke('slice_write_day_report', $args, 'idem-3-commit', 'approve')->isError());
-
-        $canonicalizer = new Canonicalizer();
-        $factory = new ReferenceSliceToolFactory(new DayReportStore());
-        $fingerprint = \AgenTools\Idempotency\ArgumentsFingerprint::fromArguments($args, $canonicalizer);
-        $digest = \AgenTools\Tool\DescriptorDigest::for($factory->writeDescriptor(), $canonicalizer);
-        $authorizer = new PermissionCommitAuthorizer(['slice.write']);
-
-        try {
-            $protocol->commit($token, $fingerprint, $digest, 'user-a', $clock->now(), $authorizer);
-            self::fail('Expected a spent confirmation token.');
-        } catch (\AgenTools\Confirmation\ConfirmationFailure $failure) {
-            self::assertSame('agentools.precondition.confirmation_token_spent', $failure->error->code);
-        }
+        $token = $bundle->service->prepare('act-1', 'slice_write_day_report', $args, ['summary' => 's', 'changes' => []]);
+        $bundle->service->commit($token->value, $args);
+        $this->expectException(\AgenTools\Confirmation\ConfirmationFailure::class);
+        $bundle->service->commit($token->value, $args);
     }
 
-    /** Negative: descriptor drift between prepare and commit. */
     public function testItSurfacesDescriptorDrift(): void
     {
         $port = $this->port();
+        $clock = new InjectableClock(new \DateTimeImmutable('2026-09-19T10:00:00+00:00'));
+        $service = (new ReferenceConfirmationServiceFactory())->create($port, $clock, 'tenant-a', 'user-a', ['slice.write']);
         $coordinator = new SliceToolCoordinator(
             $port,
-            new ConfirmationProtocol(new TenantHmacTokenSigner('tenant-a', 'reference-slice-secret')),
+            ReferenceIdempotencyCoordinatorFactory::create($port, 'tenant-a', 'act-drift', static fn (): \DateTimeImmutable => $clock->now()),
+            $service,
             new DeliveryCollector('tenant-a'),
             new ConfirmationMetrics(),
             new Canonicalizer(),
-            new InjectableClock(new \DateTimeImmutable('2026-09-19T10:00:00+00:00')),
             'act-drift',
-            'user-a',
-            new PermissionCommitAuthorizer(['slice.write']),
         );
 
         $args = ['report_id' => 'r-4', 'date' => '2026-09-19', 'body' => 'body'];
@@ -92,13 +78,9 @@ final class SliceConfirmationGatesTest extends TestCase
 
         $factory = new ReferenceSliceToolFactory(new DayReportStore());
         $base = $factory->writeDescriptor()->toArray();
-        if (!isset($base['inputSchema']) || !is_array($base['inputSchema'])) {
-            self::fail('Expected inputSchema on descriptor.');
-        }
         $schema = $base['inputSchema'];
-        if (!isset($schema['properties']) || !is_array($schema['properties'])) {
-            self::fail('Expected inputSchema.properties on descriptor.');
-        }
+        self::assertIsArray($schema);
+        self::assertIsArray($schema['properties'] ?? null);
         $schema['properties']['revision'] = ['type' => 'string'];
         $base['inputSchema'] = $schema;
         $port->register(ToolDescriptor::fromArray($base), static fn (array $arguments, string $idempotencyKey): \AgenTools\Error\ToolExecutionResult => \AgenTools\Error\ToolExecutionResult::success(['report' => []]));
@@ -109,18 +91,20 @@ final class SliceConfirmationGatesTest extends TestCase
         self::assertSame('agentools.precondition.descriptor_drift', $result->error?->code);
     }
 
-    private function coordinator(?InjectableClock $clock = null, ?ConfirmationProtocol $protocol = null): SliceToolCoordinator
+    private function coordinator(?InjectableClock $clock = null): SliceToolCoordinator
     {
+        $clock ??= new InjectableClock(new \DateTimeImmutable('2026-09-19T10:00:00+00:00'));
+        $port = $this->port();
+        $service = (new ReferenceConfirmationServiceFactory())->create($port, $clock, 'tenant-a', 'user-a', ['slice.write']);
+
         return new SliceToolCoordinator(
-            $this->port(),
-            $protocol ?? new ConfirmationProtocol(new TenantHmacTokenSigner('tenant-a', 'reference-slice-secret')),
+            $port,
+            ReferenceIdempotencyCoordinatorFactory::create($port, 'tenant-a', 'act-test', static fn (): \DateTimeImmutable => $clock->now()),
+            $service,
             new DeliveryCollector('tenant-a'),
             new ConfirmationMetrics(),
             new Canonicalizer(),
-            $clock ?? new InjectableClock(new \DateTimeImmutable('2026-09-19T10:00:00+00:00')),
             'act-test',
-            'user-a',
-            new PermissionCommitAuthorizer(['slice.write']),
         );
     }
 

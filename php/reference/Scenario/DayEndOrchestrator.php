@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace AgenTools\Reference\Scenario;
 
-use AgenTools\Confirmation\ConfirmationProtocol;
 use AgenTools\Error\ToolExecutionResult;
 use AgenTools\Reference\Adapters\DeliveryCollector;
 use AgenTools\Reference\Adapters\RegistryToolPort;
 use AgenTools\Reference\Cli\ConfirmationChoice;
-use AgenTools\Reference\Crypto\TenantHmacTokenSigner;
+use AgenTools\Reference\Scenario\ReferenceConfirmationServiceFactory;
 use AgenTools\Reference\Support\InjectableClock;
 use AgenTools\Reference\Support\JsonGuard;
 use AgenTools\Reference\Tools\DayReportStore;
@@ -45,18 +44,22 @@ final class DayEndOrchestrator
         (new ReferenceSliceToolFactory($this->store))->registerOn($port, $this->tenantId);
         $port->bindSubject($this->principals(), $this->authorization());
 
-        $signer = new TenantHmacTokenSigner($this->tenantId, 'reference-slice-secret');
-        $protocol = new ConfirmationProtocol($signer);
+        $canonicalizer = new Canonicalizer();
+        $service = (new ReferenceConfirmationServiceFactory())->create($port, $this->clock, $this->tenantId, 'user-a', ['slice.write']);
+        $idempotency = ReferenceIdempotencyCoordinatorFactory::create(
+            $port,
+            $this->tenantId,
+            'act-' . $vectorId,
+            fn (): \DateTimeImmutable => $this->clock->now(),
+        );
         $coordinator = new SliceToolCoordinator(
             $port,
-            $protocol,
+            $idempotency,
+            $service,
             $delivery,
             $metrics,
-            new Canonicalizer(),
-            $this->clock,
+            $canonicalizer,
             'act-' . $vectorId,
-            'user-a',
-            new PermissionCommitAuthorizer(['slice.write']),
         );
 
         $clarification = new ClarificationSession();
@@ -70,7 +73,7 @@ final class DayEndOrchestrator
                 $result = $coordinator->invoke(
                     $pendingWrite['tool'],
                     $pendingWrite['args'],
-                    $vectorId . ':' . $pendingWrite['tool'] . ':commit',
+                    $this->durableKey($vectorId, $pendingWrite['tool'], 'commit'),
                     $step['approval'],
                 );
                 $pendingWrite = null;
@@ -124,7 +127,7 @@ final class DayEndOrchestrator
             if ($toolCall !== null) {
                 $tool = JsonGuard::string($toolCall['tool'] ?? null);
                 $args = JsonGuard::stringKeyedMap(is_array($toolCall['args'] ?? null) ? $toolCall['args'] : []);
-                $result = $coordinator->invoke($tool, $args, $vectorId . ':' . $tool, null);
+                $result = $coordinator->invoke($tool, $args, $this->durableKey($vectorId, $tool), null);
                 if ($result->isError()) {
                     return ['final_state' => 'failed', 'metrics' => $metrics, 'report_id' => null];
                 }
@@ -178,7 +181,7 @@ final class DayEndOrchestrator
             $result = $coordinator->invoke(
                 $pendingWrite['tool'],
                 $args,
-                $vectorId . ':' . $pendingWrite['tool'] . ':commit',
+                $this->durableKey($vectorId, $pendingWrite['tool'], 'commit'),
                 $approval,
             );
             if ($result->isError()) {
@@ -204,6 +207,19 @@ final class DayEndOrchestrator
 
             return ['pending' => null, 'failed' => false, 'rejected' => false, 'report_id' => null];
         }
+    }
+
+    private function durableKey(string $vectorId, string $tool, string $suffix = 'invoke'): string
+    {
+        $slug = preg_replace('/[^A-Za-z0-9_-]/', '-', $vectorId . '-' . $tool . '-' . $suffix) ?? 'key';
+        if (strlen($slug) < 8) {
+            $slug = str_pad($slug, 8, 'x');
+        }
+        if (strlen($slug) > 128) {
+            $slug = substr($slug, 0, 128);
+        }
+
+        return 'at1:' . $slug;
     }
 
     /** @return array<string, mixed> */

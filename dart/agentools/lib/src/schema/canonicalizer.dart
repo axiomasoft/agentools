@@ -67,14 +67,11 @@ final class Canonicalizer {
       members[entry.key.toString()] = entry.value;
     }
 
-    final keys = members.keys.toList()
-      ..sort(_compareUtf16CodeUnits);
+    final keys = members.keys.toList()..sort(_compareUtf16CodeUnits);
 
     final serialized = <String>[];
     for (final key in keys) {
-      serialized.add(
-        '${_encodeJsonString(key)}:${_serialize(members[key])}',
-      );
+      serialized.add('${_encodeJsonString(key)}:${_serialize(members[key])}');
     }
     return '{${serialized.join(',')}}';
   }

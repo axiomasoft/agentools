@@ -15,16 +15,16 @@ final class ActionEvent {
     required Map<String, dynamic> payload,
     this.epoch,
     this.previousHash,
-  })  : payload = Map.unmodifiable(payload),
-        assert(eventId.isNotEmpty),
-        assert(actionId.isNotEmpty),
-        assert(timestamp.isNotEmpty),
-        assert(kind.isNotEmpty),
-        assert(specRevision.isNotEmpty),
-        assert(seq >= 1),
-        assert(expectedPrevSeq >= 0),
-        assert(eventVersion >= 1),
-        assert(epoch == null || epoch >= 1);
+  }) : payload = Map.unmodifiable(payload),
+       assert(eventId.isNotEmpty),
+       assert(actionId.isNotEmpty),
+       assert(timestamp.isNotEmpty),
+       assert(kind.isNotEmpty),
+       assert(specRevision.isNotEmpty),
+       assert(seq >= 1),
+       assert(expectedPrevSeq >= 0),
+       assert(eventVersion >= 1),
+       assert(epoch == null || epoch >= 1);
 
   final String eventId;
   final String actionId;

@@ -1,0 +1,84 @@
+{
+  "id": "hgoldenctrl-001",
+  "title": "Контрольная golden-пара (CFH-41): доставленный эталон заведомо не равен канонической форме входа",
+  "vector_class": "harness",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "CFH-41",
+    "CFH-40"
+  ],
+  "conformance_level": "L1",
+  "transcript": [
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "start",
+        "harness_protocol_version": "1.1",
+        "spec_rev": "2026-09"
+      }
+    },
+    {
+      "direction": "adapter_to_runner",
+      "message": {
+        "type": "ready",
+        "sdk": "agentools-dart/0.1.0",
+        "spec_rev": "2026-09",
+        "declared_level": "L1"
+      }
+    },
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "config",
+        "fixed_clock": "2026-09-01T00:00:00Z",
+        "fixed_seed": "harness-0001"
+      }
+    },
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "golden_pair",
+        "vector_id": "jcs-control-mismatch",
+        "fixture_version": "1.0.0",
+        "input": {
+          "n": 100.0
+        },
+        "golden": "{\"n\":999}\n"
+      }
+    },
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "run",
+        "vector_id": "jcs-control-mismatch",
+        "vector": {
+          "spec_rule_ids": [
+            "AOB-38",
+            "CFH-41"
+          ],
+          "spec_rev": "2026-09"
+        }
+      }
+    },
+    {
+      "direction": "adapter_to_runner",
+      "message": {
+        "type": "result",
+        "vector_id": "jcs-control-mismatch",
+        "outcome": "completed",
+        "final_state": "completed",
+        "canonical": "{\"n\":100}\n",
+        "canonical_golden": "{\"n\":999}\n"
+      }
+    },
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "stop"
+      }
+    }
+  ],
+  "expect": {
+    "outcome": "conformant"
+  }
+}

@@ -1,19 +1,188 @@
-name: conformance
+name: ci
 
 on:
-  push:
   pull_request:
+  push:
+    branches:
+      - main
+
+permissions: {}
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  conformance:
+  supply-chain:
+    name: supply-chain policy
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          php-version: '8.4'
-      - run: composer install --working-dir=conformance --no-interaction --prefer-dist
-      - run: python3 tools/ci_gate.py --layer 1
-      - run: python3 tools/ci_gate.py --layer 2
-      - run: python3 tools/ci_gate.py --layer 3
-      - run: python3 tools/ci_gate.py --layer 4
+          persist-credentials: false
+      - run: python3 tools/ci_policy.py check-lock
+      - run: python3 tools/ci_policy.py check-workflows
+      - run: python3 tools/ci_matrix.py validate
+
+  security:
+    name: osv and gitleaks
+    needs: supply-chain
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install pinned scanners
+        run: python3 tools/ci_matrix.py install-scanners
+      - name: OSV lockfile scan
+        run: python3 tools/ci_matrix.py osv-scan
+      - name: Gitleaks history and worktree
+        run: python3 tools/ci_matrix.py gitleaks-scan
+
+  focused:
+    name: focused (${{ matrix.name }})
+    needs: supply-chain
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: spec-gates
+            steps: focused-spec
+          - name: php-supported-8.3
+            steps: php-supported
+            php: "8.3"
+          - name: php-supported-8.4
+            steps: php-supported
+            php: "8.4"
+          - name: dart-core-3.11.0
+            steps: dart-supported
+            dart_package: dart/agentools
+            sdk: "3.11.0"
+          - name: dart-core-3.13.4
+            steps: dart-supported
+            dart_package: dart/agentools
+            sdk: "3.13.4"
+          - name: dart-mcp-3.11.0
+            steps: dart-supported
+            dart_package: dart/agentools_mcp_dart
+            sdk: "3.11.0"
+          - name: dart-mcp-3.13.4
+            steps: dart-supported
+            dart_package: dart/agentools_mcp_dart
+            sdk: "3.13.4"
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Spec and contract gates
+        if: matrix.steps == 'focused-spec'
+        run: |
+          python3 tools/ci_gate.py --layer 1
+          python3 tools/ci_gate.py --layer 2
+          python3 tools/validate_adversarial_contract.py
+          python3 tools/package_surface.py validate-contract
+      - name: Setup PHP
+        if: matrix.steps == 'php-supported'
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+      - name: PHP supported lane
+        if: matrix.steps == 'php-supported'
+        run: |
+          composer install --working-dir=php --no-interaction --prefer-dist
+          composer validate --strict --working-dir=php
+          composer test --working-dir=php
+          composer analyse --working-dir=php
+      - name: Setup Dart
+        if: matrix.steps == 'dart-supported'
+        uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1
+        with:
+          sdk: ${{ matrix.sdk }}
+      - name: Dart supported lane
+        if: matrix.steps == 'dart-supported'
+        working-directory: ${{ matrix.dart_package }}
+        run: |
+          dart pub get
+          dart analyze --fatal-infos
+          dart test
+
+  bounded:
+    name: bounded conformance
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: focused
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: "8.4"
+          coverage: none
+      - uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1
+        with:
+          sdk: "3.13.4"
+      - name: Bounded gates
+        run: |
+          composer install --working-dir=conformance --no-interaction --prefer-dist
+          composer install --working-dir=php --no-interaction --prefer-dist
+          python3 tools/ci_gate.py --layer 3
+          python3 tools/ci_gate.py --layer 4
+          conformance/bin/semantic-parity
+          cd dart/agentools && dart pub get && dart test
+          cd ../agentools_mcp_dart && dart pub get && dart test
+
+  disposable-resolution:
+    name: disposable ${{ matrix.resolution }} (${{ matrix.ecosystem }})
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: supply-chain
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - ecosystem: php
+            resolution: lowest
+          - ecosystem: php
+            resolution: latest
+          - ecosystem: dart_core
+            resolution: lowest
+          - ecosystem: dart_core
+            resolution: latest
+          - ecosystem: dart_mcp
+            resolution: lowest
+          - ecosystem: dart_mcp
+            resolution: latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        if: matrix.ecosystem == 'php'
+        with:
+          php-version: "8.4"
+          coverage: none
+      - uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1
+        if: matrix.ecosystem != 'php'
+        with:
+          sdk: "3.13.4"
+      - name: Verify disposable resolution does not touch source locks
+        run: python3 tools/ci_matrix.py disposable-${{ matrix.ecosystem }}-${{ matrix.resolution }}

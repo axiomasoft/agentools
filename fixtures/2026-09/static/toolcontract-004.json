@@ -1,0 +1,1 @@
+{"id":"toolcontract-004","title":"Структурированный результат без обязательного поля отвергается","vector_class":"artifact","spec_rev":"2026-09","spec_rule_ids":["TLP-5"],"conformance_level":"L1","subject":{"kind":"tool_result_case","inline":"{\"outputSchema\":{\"required\":[\"task_id\"]},\"result\":{}}"},"expect":{"linter":"reject","diagnostic_substring":"structured result"}}

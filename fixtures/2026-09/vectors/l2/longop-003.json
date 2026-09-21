@@ -1,0 +1,69 @@
+{
+  "id": "longop-003",
+  "title": "Идентификатор задачи журналируется до poll/subscription и не восстанавливается перечислением",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "LOP-10",
+    "LOP-11",
+    "LOP-27"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Детерминированный пробный инструмент для проверки поведения рантайма.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {}
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "confirmation": "none",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "user_input": "Идентификатор задачи журналируется до poll/subscription и не восстанавливается перечислением"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "longop-003"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "task_bound",
+        "payload": {
+          "action_id": "action-003",
+          "task_id": "task-003"
+        }
+      },
+      {
+        "kind": "task_status_observed",
+        "payload": {
+          "task_id": "task-003",
+          "channel": "poll"
+        }
+      }
+    ],
+    "final_state": "completed"
+  }
+}

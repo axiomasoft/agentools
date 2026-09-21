@@ -5,11 +5,10 @@ void main() {
   // AOB-23, AOB-24; cost is computed from token usage and a versioned price table.
   test('calculates cost from token usage', () {
     final recorder = CostRecorder();
-    final amount = recorder.calculateAmountMinor(
-      100,
-      50,
-      {'input_minor': 2, 'output_minor': 3},
-    );
+    final amount = recorder.calculateAmountMinor(100, 50, {
+      'input_minor': 2,
+      'output_minor': 3,
+    });
 
     expect(amount, 350);
   });

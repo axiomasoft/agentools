@@ -1,0 +1,16 @@
+title = "agentools gitleaks policy (P9.1)"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Example fixtures and generated conformance reports"
+paths = [
+  '''fixtures/''',
+  '''conformance/reports/''',
+  '''plans/''',
+]
+
+[redact]
+description = "Never print matched secret material in CI logs"
+redact = 100

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+// ignore_for_file: implementation_imports
+
 import 'package:agentools/agentools.dart';
 import 'package:agentools/src/schema/tool_descriptor.dart' as schema_dto;
 import 'package:test/test.dart';
@@ -16,8 +18,9 @@ void main() {
   }
 
   test('DTO field sets match published schema properties', () {
-    final toolDescriptorProps =
-        loadSchemaProperties('tool-descriptor.json')['tool-descriptor.json']!;
+    final toolDescriptorProps = loadSchemaProperties(
+      'tool-descriptor.json',
+    )['tool-descriptor.json']!;
     final errorProps = loadSchemaProperties('error.json')['error.json']!;
 
     expect(schema_dto.ToolDescriptor.schemaProperties, toolDescriptorProps);

@@ -1,0 +1,72 @@
+{
+  "id": "longop-001",
+  "title": "Синхронный путь без Tasks сохраняет журнал, гейт, эффекты и наблюдаемое состояние",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "LOP-1",
+    "LOP-2",
+    "LOP-3",
+    "LOP-4",
+    "LOP-5"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Детерминированный пробный инструмент для проверки поведения рантайма.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {}
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "confirmation": "none",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "user_input": "Синхронный путь без Tasks сохраняет журнал, гейт, эффекты и наблюдаемое состояние"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "longop-001"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_started",
+        "payload": {
+          "transport": "synchronous"
+        }
+      },
+      {
+        "kind": "confirmation_requested"
+      },
+      {
+        "kind": "effect_requested"
+      },
+      {
+        "kind": "action_completed"
+      }
+    ],
+    "final_state": "completed"
+  }
+}

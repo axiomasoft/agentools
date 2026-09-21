@@ -36,6 +36,10 @@ CREATE TABLE idempotency_records (
     tool_name TEXT NOT NULL,
     idempotency_key TEXT NOT NULL,
     fingerprint TEXT NOT NULL,
+    state TEXT NOT NULL,
+    lease_token TEXT,
+    lease_until TEXT,
+    attempt INTEGER NOT NULL,
     expires_at TEXT NOT NULL,
     result_json TEXT,
     digest TEXT

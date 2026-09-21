@@ -22,10 +22,7 @@ final class InMemoryEventLog implements EventLog {
 
     final lastSeq = await this.lastSeq(actionId);
     if (event.expectedPrevSeq != lastSeq) {
-      throw VersionConflict(
-        expected: event.expectedPrevSeq,
-        actual: lastSeq,
-      );
+      throw VersionConflict(expected: event.expectedPrevSeq, actual: lastSeq);
     }
 
     final events = [...?_eventsByAction[actionId], event];

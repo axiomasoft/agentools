@@ -1,0 +1,105 @@
+{
+  "id": "scenario-009",
+  "title": "Успешные шаги компенсируются в обратном порядке с исходным ключом идемпотентности",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "SCN-23",
+    "SCN-24",
+    "SCN-25",
+    "SCN-28"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Детерминированный пробный инструмент для проверки поведения рантайма.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {}
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "confirmation": "none",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "scenario": {
+      "scenario_id": "saga_reverse",
+      "title": "Сценарий saga_reverse",
+      "spec_rev": "2026-09",
+      "steps": [
+        {
+          "id": "reserve",
+          "tool": "demo_probe",
+          "compensate": {
+            "tool": "demo_probe",
+            "input_map": {
+              "value": "$steps.reserve.value"
+            }
+          }
+        },
+        {
+          "id": "send",
+          "tool": "demo_probe",
+          "on_semantic_fail": {
+            "action": "abort"
+          }
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Успешные шаги компенсируются в обратном порядке с исходным ключом идемпотентности"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "scenario-009"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "step_completed",
+        "payload": {
+          "step_id": "reserve"
+        }
+      },
+      {
+        "kind": "step_failed",
+        "payload": {
+          "step_id": "send"
+        }
+      },
+      {
+        "kind": "compensation_started",
+        "payload": {
+          "step_id": "reserve",
+          "idempotency_key": "at1:scenario009"
+        }
+      },
+      {
+        "kind": "scenario_completed",
+        "payload": {
+          "outcome": "COMPENSATED"
+        }
+      }
+    ],
+    "final_state": "completed"
+  }
+}

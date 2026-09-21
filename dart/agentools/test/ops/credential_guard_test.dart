@@ -42,8 +42,9 @@ void main() {
 
   // SEC-6; confirmation tokens cannot be used as access tokens.
   test('rejects confirmation token as access token', () {
-    final result =
-        CredentialGuard().rejectConfirmationTokenAsAccess('confirmation_token');
+    final result = CredentialGuard().rejectConfirmationTokenAsAccess(
+      'confirmation_token',
+    );
 
     expect(result, isNotNull);
     expect(result!.error!.code, OpsErrorCodes.foreignAccessToken);

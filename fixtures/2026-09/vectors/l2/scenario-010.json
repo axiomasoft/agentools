@@ -1,0 +1,95 @@
+{
+  "id": "scenario-010",
+  "title": "Провал компенсации останавливает разворот и сохраняет отдельный исход",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "SCN-26",
+    "SCN-27",
+    "SCN-28",
+    "SCN-29"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Детерминированный пробный инструмент для проверки поведения рантайма.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {}
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "confirmation": "none",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "scenario": {
+      "scenario_id": "saga_failure",
+      "title": "Сценарий saga_failure",
+      "spec_rev": "2026-09",
+      "steps": [
+        {
+          "id": "reserve",
+          "tool": "demo_probe",
+          "compensate": {
+            "tool": "demo_probe",
+            "input_map": {
+              "value": "$steps.reserve.value"
+            }
+          }
+        },
+        {
+          "id": "send",
+          "tool": "demo_probe",
+          "on_semantic_fail": {
+            "action": "abort"
+          }
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Провал компенсации останавливает разворот и сохраняет отдельный исход"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "scenario-010"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "compensation_failed",
+        "payload": {
+          "step_id": "reserve"
+        }
+      },
+      {
+        "kind": "scenario_completed",
+        "payload": {
+          "outcome": "COMPENSATION_FAILED"
+        }
+      }
+    ],
+    "final_state": "failed",
+    "error": {
+      "code": "demo.conflict.compensation_failed"
+    }
+  }
+}

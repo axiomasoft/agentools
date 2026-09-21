@@ -6,6 +6,7 @@ export 'action_status.dart';
 export 'actor.dart';
 export 'effect_record.dart';
 export 'effect_status.dart';
+export 'event_id_collision.dart';
 export 'event_upcaster.dart';
 export 'event_upcaster_chain.dart';
 export 'folded_action.dart';

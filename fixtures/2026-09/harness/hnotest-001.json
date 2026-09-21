@@ -1,0 +1,69 @@
+{
+  "id": "hnotest-001",
+  "title": "Исход not_testable несёт обязательную причину недоступной возможности контрагента",
+  "vector_class": "harness",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "CFH-11"
+  ],
+  "conformance_level": "L1",
+  "transcript": [
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "start",
+        "harness_protocol_version": "1.1",
+        "spec_rev": "2026-09"
+      }
+    },
+    {
+      "direction": "adapter_to_runner",
+      "message": {
+        "type": "ready",
+        "sdk": "agentools-php/0.1.0",
+        "spec_rev": "2026-09",
+        "declared_level": "L1"
+      }
+    },
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "config",
+        "fixed_clock": "2026-09-01T00:00:00Z",
+        "fixed_seed": "harness-0001"
+      }
+    },
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "run",
+        "vector_id": "lop-task-poll",
+        "vector": {
+          "spec_rule_ids": [
+            "LOP-9"
+          ],
+          "spec_rev": "2026-09"
+        }
+      }
+    },
+    {
+      "direction": "adapter_to_runner",
+      "message": {
+        "type": "result",
+        "vector_id": "lop-task-poll",
+        "outcome": "not_testable",
+        "final_state": "failed",
+        "not_testable_reason": "контрагент не объявил возможность задач (07_long-operations.md)"
+      }
+    },
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "stop"
+      }
+    }
+  ],
+  "expect": {
+    "outcome": "conformant"
+  }
+}

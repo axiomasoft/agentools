@@ -1,0 +1,494 @@
+{
+  "capabilities": {
+    "github_dependency_review": "unavailable-plan",
+    "github_secret_scanning": "available-disabled",
+    "hosted_attestation": "unavailable-plan"
+  },
+  "contract_ref": "plans/2026.09.19-\u21161-AGENTOOLS-HARDENING/root/contracts/compatibility-support-v1.md",
+  "lockfiles": {
+    "conformance": "3fca1daa7b7b6469c5316cf56c62dacb34e09f3c7ca03c8912fb68165ab36440",
+    "dart_core": "a8c83297ce9ab15bfa59692f5e1c9c89331adc17318fe990b7e9ee01a9691cf7",
+    "dart_mcp": "efc7853cac34edbc7e4f54db6d7bbb0d54da51ab69b8876d4dd6f81f6af3b689",
+    "php": "d684d91a32ba989b85a805b7a84f3fd532ec7a2b53fd41737c55ce8411957f0c"
+  },
+  "matrix_rows": [
+    {
+      "ecosystem": "php",
+      "package": "php",
+      "resolution": "supported",
+      "runtime": "8.3"
+    },
+    {
+      "ecosystem": "php",
+      "package": "php",
+      "resolution": "supported",
+      "runtime": "8.4"
+    },
+    {
+      "ecosystem": "php",
+      "package": "php",
+      "resolution": "lowest",
+      "runtime": "disposable"
+    },
+    {
+      "ecosystem": "php",
+      "package": "php",
+      "resolution": "latest",
+      "runtime": "disposable"
+    },
+    {
+      "ecosystem": "dart",
+      "package": "dart_core",
+      "path": "dart/agentools",
+      "resolution": "supported",
+      "runtime": "3.11.0"
+    },
+    {
+      "ecosystem": "dart",
+      "package": "dart_core",
+      "path": "dart/agentools",
+      "resolution": "supported",
+      "runtime": "3.13.4"
+    },
+    {
+      "ecosystem": "dart",
+      "package": "dart_core",
+      "path": "dart/agentools",
+      "resolution": "lowest",
+      "runtime": "disposable"
+    },
+    {
+      "ecosystem": "dart",
+      "package": "dart_core",
+      "path": "dart/agentools",
+      "resolution": "latest",
+      "runtime": "disposable"
+    },
+    {
+      "ecosystem": "dart",
+      "package": "dart_mcp",
+      "path": "dart/agentools_mcp_dart",
+      "resolution": "supported",
+      "runtime": "3.11.0"
+    },
+    {
+      "ecosystem": "dart",
+      "package": "dart_mcp",
+      "path": "dart/agentools_mcp_dart",
+      "resolution": "supported",
+      "runtime": "3.13.4"
+    },
+    {
+      "ecosystem": "dart",
+      "package": "dart_mcp",
+      "path": "dart/agentools_mcp_dart",
+      "resolution": "lowest",
+      "runtime": "disposable"
+    },
+    {
+      "ecosystem": "dart",
+      "package": "dart_mcp",
+      "path": "dart/agentools_mcp_dart",
+      "resolution": "latest",
+      "runtime": "disposable"
+    }
+  ],
+  "schema_version": "agentools.ci-map/v1",
+  "security_lanes": {
+    "gitleaks": {
+      "modes": [
+        "detect",
+        "protect"
+      ],
+      "redact": true
+    },
+    "osv": {
+      "lockfiles": [
+        "php/composer.lock",
+        "conformance/composer.lock",
+        "dart/agentools/pubspec.lock",
+        "dart/agentools_mcp_dart/pubspec.lock"
+      ],
+      "scanner": "google/osv-scanner"
+    }
+  },
+  "tiers": {
+    "bounded": {
+      "av_ids": [
+        "AV-001",
+        "AV-002",
+        "AV-003",
+        "AV-004",
+        "AV-005",
+        "AV-006",
+        "AV-007",
+        "AV-008",
+        "AV-009",
+        "AV-010",
+        "AV-011",
+        "AV-012",
+        "AV-013",
+        "AV-014",
+        "AV-015",
+        "AV-018",
+        "AV-022"
+      ],
+      "commands": [
+        [
+          "python3",
+          "tools/ci_policy.py",
+          "check-lock"
+        ],
+        [
+          "python3",
+          "tools/ci_matrix.py",
+          "validate"
+        ],
+        [
+          "python3",
+          "tools/ci_policy.py",
+          "check-workflows"
+        ],
+        [
+          "python3",
+          "tools/ci_gate.py",
+          "--layer",
+          "1"
+        ],
+        [
+          "python3",
+          "tools/ci_gate.py",
+          "--layer",
+          "2"
+        ],
+        [
+          "python3",
+          "tools/validate_adversarial_contract.py"
+        ],
+        [
+          "python3",
+          "tools/package_surface.py",
+          "validate-contract"
+        ],
+        [
+          "python3",
+          "tools/ci_gate.py",
+          "--layer",
+          "3"
+        ],
+        [
+          "python3",
+          "tools/ci_gate.py",
+          "--layer",
+          "4"
+        ],
+        [
+          "bash",
+          "conformance/bin/semantic-parity"
+        ]
+      ],
+      "events": [
+        "push"
+      ],
+      "input_digests": {
+        "commands": "1370a1625f5857425f9351621f3f3a473b56ff908ca968b5bff29dff2d4579a4",
+        "compat_contract": "e7d6874ce5646de455efccf1c237528a71508eded24b1cfe957fccc93a20cc92",
+        "lock:conformance": "3fca1daa7b7b6469c5316cf56c62dacb34e09f3c7ca03c8912fb68165ab36440",
+        "lock:dart_core": "a8c83297ce9ab15bfa59692f5e1c9c89331adc17318fe990b7e9ee01a9691cf7",
+        "lock:dart_mcp": "efc7853cac34edbc7e4f54db6d7bbb0d54da51ab69b8876d4dd6f81f6af3b689",
+        "lock:php": "d684d91a32ba989b85a805b7a84f3fd532ec7a2b53fd41737c55ce8411957f0c"
+      }
+    },
+    "extended": {
+      "av_ids": [
+        "AV-001",
+        "AV-002",
+        "AV-003",
+        "AV-004",
+        "AV-005",
+        "AV-006",
+        "AV-007",
+        "AV-008",
+        "AV-009",
+        "AV-010",
+        "AV-011",
+        "AV-015",
+        "AV-021",
+        "AV-022"
+      ],
+      "commands": [
+        [
+          "python3",
+          "tools/ci_policy.py",
+          "check-lock"
+        ],
+        [
+          "python3",
+          "tools/ci_matrix.py",
+          "validate"
+        ],
+        [
+          "python3",
+          "tools/ci_policy.py",
+          "check-workflows"
+        ],
+        [
+          "python3",
+          "tools/ci_gate.py",
+          "--layer",
+          "1"
+        ],
+        [
+          "python3",
+          "tools/ci_gate.py",
+          "--layer",
+          "2"
+        ],
+        [
+          "python3",
+          "tools/validate_adversarial_contract.py"
+        ],
+        [
+          "python3",
+          "tools/package_surface.py",
+          "validate-contract"
+        ],
+        [
+          "python3",
+          "tools/ci_gate.py",
+          "--layer",
+          "3"
+        ],
+        [
+          "python3",
+          "tools/ci_gate.py",
+          "--layer",
+          "4"
+        ],
+        [
+          "bash",
+          "conformance/bin/semantic-parity"
+        ],
+        [
+          "python3",
+          "tools/mutation_gate.py",
+          "run"
+        ],
+        [
+          "python3",
+          "tools/adversarial_corpus.py",
+          "run"
+        ],
+        [
+          "python3",
+          "tools/resource_gate.py",
+          "run"
+        ]
+      ],
+      "events": [
+        "schedule",
+        "workflow_dispatch"
+      ],
+      "input_digests": {
+        "commands": "b6f42033cf64a42e911a3e7f3137ca46472cbbfce45883ca3862515b589b37b7",
+        "compat_contract": "e7d6874ce5646de455efccf1c237528a71508eded24b1cfe957fccc93a20cc92",
+        "lock:conformance": "3fca1daa7b7b6469c5316cf56c62dacb34e09f3c7ca03c8912fb68165ab36440",
+        "lock:dart_core": "a8c83297ce9ab15bfa59692f5e1c9c89331adc17318fe990b7e9ee01a9691cf7",
+        "lock:dart_mcp": "efc7853cac34edbc7e4f54db6d7bbb0d54da51ab69b8876d4dd6f81f6af3b689",
+        "lock:php": "d684d91a32ba989b85a805b7a84f3fd532ec7a2b53fd41737c55ce8411957f0c"
+      }
+    },
+    "focused": {
+      "av_ids": [
+        "AV-001",
+        "AV-002",
+        "AV-003",
+        "AV-004",
+        "AV-005",
+        "AV-006",
+        "AV-007",
+        "AV-008",
+        "AV-009",
+        "AV-010",
+        "AV-011",
+        "AV-012",
+        "AV-013",
+        "AV-014",
+        "AV-016",
+        "AV-017",
+        "AV-018",
+        "AV-022"
+      ],
+      "commands": [
+        [
+          "python3",
+          "tools/ci_policy.py",
+          "check-lock"
+        ],
+        [
+          "python3",
+          "tools/ci_matrix.py",
+          "validate"
+        ],
+        [
+          "python3",
+          "tools/ci_policy.py",
+          "check-workflows"
+        ],
+        [
+          "python3",
+          "tools/ci_gate.py",
+          "--layer",
+          "1"
+        ],
+        [
+          "python3",
+          "tools/ci_gate.py",
+          "--layer",
+          "2"
+        ],
+        [
+          "python3",
+          "tools/validate_adversarial_contract.py"
+        ],
+        [
+          "python3",
+          "tools/package_surface.py",
+          "validate-contract"
+        ]
+      ],
+      "events": [
+        "pull_request"
+      ],
+      "input_digests": {
+        "commands": "9d41e15b831ed60a936a63bed45b19c8b88fdfbc876450bb8664101ed0f946ef",
+        "compat_contract": "e7d6874ce5646de455efccf1c237528a71508eded24b1cfe957fccc93a20cc92",
+        "lock:conformance": "3fca1daa7b7b6469c5316cf56c62dacb34e09f3c7ca03c8912fb68165ab36440",
+        "lock:dart_core": "a8c83297ce9ab15bfa59692f5e1c9c89331adc17318fe990b7e9ee01a9691cf7",
+        "lock:dart_mcp": "efc7853cac34edbc7e4f54db6d7bbb0d54da51ab69b8876d4dd6f81f6af3b689",
+        "lock:php": "d684d91a32ba989b85a805b7a84f3fd532ec7a2b53fd41737c55ce8411957f0c"
+      }
+    },
+    "release-candidate": {
+      "av_ids": [
+        "AV-001",
+        "AV-002",
+        "AV-003",
+        "AV-004",
+        "AV-005",
+        "AV-006",
+        "AV-007",
+        "AV-008",
+        "AV-009",
+        "AV-010",
+        "AV-011",
+        "AV-015",
+        "AV-016",
+        "AV-018",
+        "AV-019",
+        "AV-020",
+        "AV-022"
+      ],
+      "commands": [
+        [
+          "python3",
+          "tools/ci_policy.py",
+          "check-lock"
+        ],
+        [
+          "python3",
+          "tools/ci_matrix.py",
+          "validate"
+        ],
+        [
+          "python3",
+          "tools/ci_policy.py",
+          "check-workflows"
+        ],
+        [
+          "python3",
+          "tools/ci_gate.py",
+          "--layer",
+          "1"
+        ],
+        [
+          "python3",
+          "tools/ci_gate.py",
+          "--layer",
+          "2"
+        ],
+        [
+          "python3",
+          "tools/validate_adversarial_contract.py"
+        ],
+        [
+          "python3",
+          "tools/package_surface.py",
+          "validate-contract"
+        ],
+        [
+          "python3",
+          "tools/ci_gate.py",
+          "--layer",
+          "3"
+        ],
+        [
+          "python3",
+          "tools/ci_gate.py",
+          "--layer",
+          "4"
+        ],
+        [
+          "bash",
+          "conformance/bin/semantic-parity"
+        ],
+        [
+          "python3",
+          "tools/mutation_gate.py",
+          "run"
+        ],
+        [
+          "python3",
+          "tools/adversarial_corpus.py",
+          "run"
+        ],
+        [
+          "python3",
+          "tools/resource_gate.py",
+          "run"
+        ],
+        [
+          "python3",
+          "tools/release_candidate.py",
+          "run"
+        ],
+        [
+          "python3",
+          "tools/sbom_gate.py",
+          "run"
+        ],
+        [
+          "python3",
+          "tools/private_rc_gate.py",
+          "run"
+        ]
+      ],
+      "events": [
+        "workflow_dispatch",
+        "push"
+      ],
+      "input_digests": {
+        "commands": "d19c46fdfceee56ee9f10c60ddafefab99ab930377a4cde2e56cc6b915322dd5",
+        "compat_contract": "e7d6874ce5646de455efccf1c237528a71508eded24b1cfe957fccc93a20cc92",
+        "lock:conformance": "3fca1daa7b7b6469c5316cf56c62dacb34e09f3c7ca03c8912fb68165ab36440",
+        "lock:dart_core": "a8c83297ce9ab15bfa59692f5e1c9c89331adc17318fe990b7e9ee01a9691cf7",
+        "lock:dart_mcp": "efc7853cac34edbc7e4f54db6d7bbb0d54da51ab69b8876d4dd6f81f6af3b689",
+        "lock:php": "d684d91a32ba989b85a805b7a84f3fd532ec7a2b53fd41737c55ce8411957f0c"
+      }
+    }
+  },
+  "timing": {
+    "fingerprint_digest": "508b50b69a81783d7153c3586c9eae7f349ab1fa9b47cf9cf6dbb89be9df83dd",
+    "status": "matched"
+  }
+}

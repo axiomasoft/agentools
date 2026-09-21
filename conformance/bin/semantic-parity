@@ -1,0 +1,62 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use AgenTools\Conformance\SemanticParity;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__, 2) . '/php/conformance/semantic_profile.php';
+
+const EXIT_OK = 0;
+const EXIT_DRIFT = 1;
+const EXIT_USAGE = 2;
+
+$manifestPath = dirname(__DIR__, 2) . '/spec/revisions/2026-09/semantic-manifest.json';
+$reportPath = dirname(__DIR__) . '/reports/semantic-parity.json';
+
+$manifest = json_decode((string) file_get_contents($manifestPath), true, flags: JSON_THROW_ON_ERROR);
+$phpProfile = agentools_semantic_profile();
+
+$dartCmd = 'dart run ' . escapeshellarg(
+    dirname(__DIR__, 2) . '/dart/agentools/conformance/semantic_profile.dart'
+);
+$dartJson = shell_exec($dartCmd);
+if (!is_string($dartJson) || trim($dartJson) === '') {
+    fwrite(STDERR, "semantic-parity: failed to run dart profile exporter\n");
+    exit(EXIT_USAGE);
+}
+$dartProfile = json_decode($dartJson, true, flags: JSON_THROW_ON_ERROR);
+
+$normative = [
+    'schema_version' => 'semantic-profile/v1',
+    'spec_revision' => '2026-09',
+    'error_codes' => $manifest['error_codes'],
+];
+
+$phpCompare = SemanticParity::compareErrorCodes($normative, $phpProfile);
+$dartCompare = SemanticParity::compareErrorCodes($normative, $dartProfile);
+$crossCompare = SemanticParity::compareErrorCodes($phpProfile, $dartProfile);
+
+$report = [
+    'generated_by' => 'conformance/bin/semantic-parity',
+    'manifest_path' => $manifestPath,
+    'manifest_digest' => $manifest['manifest_digest'] ?? null,
+    'php' => $phpCompare,
+    'dart' => $dartCompare,
+    'php_dart' => $crossCompare,
+];
+
+file_put_contents($reportPath, json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n");
+
+$failed = $phpCompare['missing'] || $phpCompare['extra'] || $phpCompare['mismatch']
+    || $dartCompare['missing'] || $dartCompare['extra'] || $dartCompare['mismatch']
+    || $crossCompare['missing'] || $crossCompare['extra'] || $crossCompare['mismatch'];
+
+if ($failed) {
+    fwrite(STDERR, "semantic-parity: drift detected — see {$reportPath}\n");
+    exit(EXIT_DRIFT);
+}
+
+fwrite(STDOUT, "semantic-parity: OK (report {$reportPath})\n");
+exit(EXIT_OK);

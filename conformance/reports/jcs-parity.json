@@ -1,0 +1,43 @@
+{
+    "generated_by": "conformance\/bin\/jcs-differential",
+    "oracle": "\/home\/vostrikov\/projects\/packages\/agentools\/conformance\/oracles\/jcs",
+    "php_rows": [
+        {
+            "case_id": "arrays",
+            "expected_sha256": "099601b171cafed97c333f8878d68e7f8c8f795412adb34b2fdcf0e7c7beac42",
+            "actual_sha256": "099601b171cafed97c333f8878d68e7f8c8f795412adb34b2fdcf0e7c7beac42",
+            "match": true
+        },
+        {
+            "case_id": "french",
+            "expected_sha256": "d99d0ebdcb0033cb858cfa830ae46bc0fb3309413b271f1da828c89901a27ed5",
+            "actual_sha256": "d99d0ebdcb0033cb858cfa830ae46bc0fb3309413b271f1da828c89901a27ed5",
+            "match": true
+        },
+        {
+            "case_id": "structures",
+            "expected_sha256": "605f65004ec2db7692522a0852c22f1c989e036d547e88963d1a3143cf3195d5",
+            "actual_sha256": "605f65004ec2db7692522a0852c22f1c989e036d547e88963d1a3143cf3195d5",
+            "match": true
+        },
+        {
+            "case_id": "unicode",
+            "expected_sha256": "0d99aad92a125196ff887876643fd3206786a84ddce2cee52ba4ad256d2381d3",
+            "actual_sha256": "0d99aad92a125196ff887876643fd3206786a84ddce2cee52ba4ad256d2381d3",
+            "match": true
+        },
+        {
+            "case_id": "values",
+            "expected_sha256": "2d5e01a318d0f0879ab568c4be289c8b1f64ef8921a53c6277d5e069978baacb",
+            "actual_sha256": "2d5e01a318d0f0879ab568c4be289c8b1f64ef8921a53c6277d5e069978baacb",
+            "match": true
+        },
+        {
+            "case_id": "weird",
+            "expected_sha256": "6af595a9aa80110b964b4de3f82a05fa6ae7423005019bacfa2620dddc4e94d1",
+            "actual_sha256": "6af595a9aa80110b964b4de3f82a05fa6ae7423005019bacfa2620dddc4e94d1",
+            "match": true
+        }
+    ],
+    "dart_exit": 0
+}

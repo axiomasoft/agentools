@@ -1,0 +1,4 @@
+# OSV-Scanner companion config (P9.1). Lockfiles are passed explicitly on the CLI in P9.2:
+#   php/composer.lock
+#   dart/agentools/pubspec.lock
+#   dart/agentools_mcp_dart/pubspec.lock

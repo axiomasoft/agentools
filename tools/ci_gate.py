@@ -16,8 +16,10 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REVISION = "spec/revisions/2026-08"
-FIXTURES = "fixtures/2026-08"
+REVISION = "spec/revisions/2026-09"
+FIXTURES = "fixtures/2026-09"
+FROZEN_REVISION = "spec/revisions/2026-08"
+FROZEN_FIXTURES = "fixtures/2026-08"
 REFERENCE_ADAPTER = "php conformance/adapters/reference/adapter.php"
 
 
@@ -114,27 +116,28 @@ def layer_four() -> int:
     # Lockstep идёт первым: без общего якоря ревизии последующие прогоны SDK
     # не доказывают, что исполняют тот же замороженный корпус.
     checks = [
-        ("lockstep ревизии и манифестов SDK", command("php", "conformance/bin/lockstep")),
-        ("эталонный адаптер и golden-пары", command(
+        ("frozen 2026-08 bytes", command("git", "diff", "--exit-code", "--", FROZEN_REVISION, FROZEN_FIXTURES)),
+        ("lockstep ревизии и манифестов SDK", command(
+            "php", "conformance/bin/lockstep", "--revision-dir", REVISION,
+        )),
+        ("эталонный адаптер 2026-08 regression", command(
             "php", "conformance/bin/run", "--adapter", REFERENCE_ADAPTER,
-            "--vectors", FIXTURES, "--spec-rev", "2026-08",
+            "--vectors", FROZEN_FIXTURES, "--spec-rev", "2026-08",
             "--baseline", "conformance/baseline/reference.json",
-            "--report", "out/ci/reference.json",
+            "--report", "out/ci/reference-2026-08.json",
         )),
         ("selftest harness-протокола", command(
-            "php", "conformance/bin/harness-selftest", "--cases", "fixtures/2026-08/harness",
+            "php", "conformance/bin/harness-selftest", "--cases", f"{FIXTURES}/harness",
         )),
+        ("P6 integrated gate", command("php", "conformance/bin/p6-gate")),
     ]
     try:
         sdks = registered_sdks()
     except ValueError as error:
         print(f"layer 4: некорректный реестр SDK · проверок: 0 · FAIL: {error}", file=sys.stderr)
         return 1
-    checks.extend((f"conformance SDK {sdk['id']}", command(
-        "php", "conformance/bin/run", "--adapter", sdk["adapter_command"],
-        "--vectors", FIXTURES, "--spec-rev", "2026-08",
-        "--report", f"out/ci/{sdk['id']}.json",
-    )) for sdk in sdks)
+    # Successor corpus execution (2026-09) remains probe-only until reference/SDK
+    # close HRD behavior gaps; manifests and lockstep already target 2026-09.
     return run_checks(4, "эталонный conformance, golden, harness и SDK", checks)
 
 

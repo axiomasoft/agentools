@@ -11,8 +11,8 @@ final class LongOperationCoordinator {
   LongOperationCoordinator({
     TaskStatusMapper? statusMapper,
     CooperativeCancellation? cancellation,
-  })  : _statusMapper = statusMapper ?? TaskStatusMapper(),
-        _cancellation = cancellation ?? CooperativeCancellation();
+  }) : _statusMapper = statusMapper ?? TaskStatusMapper(),
+       _cancellation = cancellation ?? CooperativeCancellation();
 
   final TaskStatusMapper _statusMapper;
   final CooperativeCancellation _cancellation;

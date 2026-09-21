@@ -46,7 +46,7 @@ final readonly class DecisionAudit
             'decision' => $this->decision,
             'actor_id' => $this->actorId,
             'actor_role' => $this->actorRole,
-            'decided_at' => $this->decidedAt->format(DATE_ATOM),
+            'decided_at' => $this->decidedAt->setTimezone(new \DateTimeZone('UTC'))->format(DATE_ATOM),
             'reason' => $this->reason,
             'args_hash_at_decision' => $this->argsHashAtDecision->value,
             'args_hash_at_commit' => $this->argsHashAtCommit?->value,

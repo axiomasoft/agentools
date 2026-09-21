@@ -1,0 +1,91 @@
+{
+  "id": "hgolden-001",
+  "title": "Golden-пара доставлена перед run; сравнение структурное, затем байтовое, без канонизации входа раннером",
+  "vector_class": "harness",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "CFH-35",
+    "CFH-36",
+    "CFH-37",
+    "CFH-38",
+    "CFH-39",
+    "CFH-42",
+    "CFH-43",
+    "CFH-44"
+  ],
+  "conformance_level": "L1",
+  "transcript": [
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "start",
+        "harness_protocol_version": "1.1",
+        "spec_rev": "2026-09"
+      }
+    },
+    {
+      "direction": "adapter_to_runner",
+      "message": {
+        "type": "ready",
+        "sdk": "agentools-dart/0.1.0",
+        "spec_rev": "2026-09",
+        "declared_level": "L1"
+      }
+    },
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "config",
+        "fixed_clock": "2026-09-01T00:00:00Z",
+        "fixed_seed": "harness-0001"
+      }
+    },
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "golden_pair",
+        "vector_id": "jcs-number-forms",
+        "fixture_version": "1.0.0",
+        "input": {
+          "n": 100.0
+        },
+        "golden": "{\"n\":100}\n"
+      }
+    },
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "run",
+        "vector_id": "jcs-number-forms",
+        "vector": {
+          "spec_rule_ids": [
+            "AOB-38",
+            "AOB-44",
+            "CFH-36"
+          ],
+          "spec_rev": "2026-09"
+        }
+      }
+    },
+    {
+      "direction": "adapter_to_runner",
+      "message": {
+        "type": "result",
+        "vector_id": "jcs-number-forms",
+        "outcome": "completed",
+        "final_state": "completed",
+        "canonical": "{\"n\":100}\n",
+        "canonical_golden": "{\"n\":100}\n"
+      }
+    },
+    {
+      "direction": "runner_to_adapter",
+      "message": {
+        "type": "stop"
+      }
+    }
+  ],
+  "expect": {
+    "outcome": "conformant"
+  }
+}

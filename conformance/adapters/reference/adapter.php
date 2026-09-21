@@ -27,9 +27,10 @@ while (($line = fgets(STDIN)) !== false) {
             case 'start':
                 $protocol = $message['harness_protocol_version'] ?? null;
                 $revision = $message['spec_rev'] ?? null;
-                if ($protocol !== '1.1' || $revision !== '2026-08') {
+                if ($protocol !== '1.1' || !in_array($revision, ['2026-08', '2026-09'], true)) {
                     throw new RuntimeException('unsupported harness protocol or revision');
                 }
+                $engine->bindSpecRevision($revision);
                 emit(['type' => 'ready', 'sdk' => 'agentools/reference', 'spec_rev' => $revision, 'declared_level' => 'L3']);
                 break;
             case 'config':

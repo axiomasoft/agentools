@@ -1,0 +1,19 @@
+{
+  "id": "ovrline-001",
+  "title": "Строка правила без уровня — грамматика '**<ID> (<СЛОВО>, <Ln>).** <текст>' нарушена",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "OVR-7",
+    "OVR-12"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "rule_line",
+    "inline": "**OVR-90 (MUST).** Правило без уровня — грамматика нарушена (anti-regression №3)."
+  },
+  "expect": {
+    "linter": "reject",
+    "diagnostic_substring": "не соответствует грамматике"
+  }
+}

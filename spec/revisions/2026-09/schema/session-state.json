@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.dev/schema/2026-09/session-state.json",
+  "title": "Снапшот состояния действия",
+  "description": "Проекция состояния действия с жизненным циклом, отдельным от журнала. Файл — единственный носитель перечисления состояний действия в схемах ревизии. Источником истины проекция не является: расхождение со свёрткой журнала разрешается в пользу журнала — правило ALC-34.",
+  "type": "object",
+  "properties": {
+    "action_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Идентификатор действия, состояние которого спроецировано."
+    },
+    "status": {
+      "$ref": "#/$defs/ActionStatus"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Номер события, на котором построена проекция: продолжение свёртки начинается со следующего номера."
+    },
+    "spec_rev": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Идентификатор ревизии спеки, по правилам которой выполнена свёртка."
+    },
+    "epoch": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Текущая эпоха исполнителя действия на момент проекции."
+    },
+    "projected_at": {
+      "type": "string",
+      "minLength": 20,
+      "description": "Время построения проекции в форме RFC 3339 с зоной UTC. Свойством журнала не является."
+    }
+  },
+  "required": [
+    "action_id",
+    "status",
+    "seq",
+    "spec_rev"
+  ],
+  "$defs": {
+    "ActionStatus": {
+      "description": "Состояние действия. Перечисление закрытое: добавление состояния — намеренно ломающее изменение, выходящее новой датированной ревизией (правило ALC-11).",
+      "enum": [
+        "created",
+        "running",
+        "awaiting_confirmation",
+        "applying",
+        "reconciliation_required",
+        "completed",
+        "rejected",
+        "expired",
+        "failed",
+        "cancelled"
+      ]
+    }
+  }
+}

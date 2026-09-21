@@ -20,7 +20,7 @@ No migration is executed in P1.
 | M-010 | F10 / TM-010 | Unproven guarantees | Test corpus | Unit-only → adversarial gates | P8 evidence bundle | Maintainers | P8 GREEN | P8 |
 | M-011 | F11 / TM-011 | Supply-chain weakness | CI/release | Partial workflows → attested pipeline | P9 RC artifacts | Release operators | P9 GREEN | P9 |
 | M-012 | F12 / TM-012 | Untested shipping | Release process | Source-only → archive consumers + dossier | P10 acceptance packet | Owner / consumers | P10 GREEN | P10 |
-| M-013 | F13 / TM-013 | Observability | Bookkeeping | Epoch timestamps → corrected projections | P10 hygiene receipt | Operators | P10 or P1 follow-up | P1/P10 |
+| M-013 | F13 / TM-013 | Observability | Bookkeeping | Epoch timestamps → corrected projections | P5 projection/audit proofs | Operators | P5 parity gate | P5 |
 | M-014 | PHP `composer validate` RED | Metadata drift | Package metadata | Current composer.json → valid strict manifest | Baseline or P9 | PHP consumers | Next baseline diff | P9 |
 | M-015 | `ci_gate` layers 3–4 RED | Conformance gap | Test harness | Failing layers → green lockstep | CI receipt | SDK maintainers | CI green on main | P6/P9 |
 | M-016 | Dart core analyze RED | Static analysis debt | Code quality | Analyzer infos/errors → clean analyze | `dart analyze` green | Dart consumers | Baseline improvement | P7/P8 |

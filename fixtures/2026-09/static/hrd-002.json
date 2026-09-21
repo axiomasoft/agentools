@@ -1,0 +1,15 @@
+{
+  "id": "hrd-002",
+  "title": "Hardening semantics P3 token replay (HRD-9..HRD-12)",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": ["HRD-9", "HRD-10", "HRD-11", "HRD-12"],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "conformance_report",
+    "inline": "{\"rule_id\":\"HRD-9\",\"normative_word\":\"MUST\",\"outcome\":\"completed\",\"counts_toward_level\":true}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

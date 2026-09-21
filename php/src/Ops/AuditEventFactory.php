@@ -18,6 +18,7 @@ final class AuditEventFactory
         private readonly ?PublishedSchemaValidator $validator = null,
         private readonly ?AuditSink $auditSink = null,
         private readonly string $specRevision = '2026-08',
+        private readonly AuditRedaction $redaction = new AuditRedaction(),
     ) {
     }
 
@@ -89,21 +90,25 @@ final class AuditEventFactory
         string $kind,
         array $payload,
     ): ActionEvent {
+        $this->redaction->assertPayload($payload);
         $event = new ActionEvent(
-            eventId: sprintf('ev-%s-%04d', $actionId, $seq),
+            eventId: JournalAppender::newEventId(),
             actionId: $actionId,
             seq: $seq,
             expectedPrevSeq: $expectedPrevSeq,
-            timestamp: $this->clock->now()->format(DATE_ATOM),
+            timestamp: $this->clock->now()->setTimezone(new \DateTimeZone('UTC'))->format(DATE_ATOM),
             actor: $actor,
             kind: $kind,
             eventVersion: 1,
             specRevision: $this->specRevision,
             payload: $payload,
         );
-        $document = $event->toArray();
+        $document = $this->redaction->redactDocument($event->toArray());
         $this->validator?->assertValid($document, 'https://agentools.dev/schema/2026-08/audit-event.json');
-        $this->auditSink?->export($document);
+        try {
+            $this->auditSink?->export($document);
+        } catch (\Throwable) {
+        }
 
         return $event;
     }

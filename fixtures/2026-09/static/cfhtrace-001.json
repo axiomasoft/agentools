@@ -1,0 +1,18 @@
+{
+  "id": "cfhtrace-001",
+  "title": "Двунаправленная трассировка различает адресность ссылки и содержательность проверки",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "CFH-14",
+    "CFH-16"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "traceability_index",
+    "path": "spec/revisions/2026-09/rules.json"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

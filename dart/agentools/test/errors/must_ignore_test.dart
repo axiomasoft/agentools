@@ -32,19 +32,15 @@ void main() {
     _setActionProfileValue(
       document,
       'future_extension_field_unknown_to_this_revision',
-      {
-        'anything': 'здесь',
-        'может': 'быть',
-      },
+      {'anything': 'здесь', 'может': 'быть'},
     );
     final json = jsonEncode(document);
 
     expect(ToolDescriptor.fromJson(json).toJsonText(), json);
     expect(
-      ToolDescriptor.fromJson(json)
-          .actionProfile
-          .extensionMembers
-          .containsKey('future_extension_field_unknown_to_this_revision'),
+      ToolDescriptor.fromJson(json).actionProfile.extensionMembers.containsKey(
+        'future_extension_field_unknown_to_this_revision',
+      ),
       isTrue,
     );
   });
@@ -59,7 +55,11 @@ void main() {
       'openWorldHint': false,
     };
     _setActionProfileValue(document, 'side_effect', 'read');
-    _setActionProfileValue(document, 'confirmation', 'acme.custom_double_check');
+    _setActionProfileValue(
+      document,
+      'confirmation',
+      'acme.custom_double_check',
+    );
 
     expect(
       ToolDescriptor.fromMap(document).actionProfile.requiresConfirmation(),

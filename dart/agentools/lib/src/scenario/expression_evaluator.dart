@@ -5,11 +5,9 @@ import 'expression_parser.dart';
 
 /// SCN-14–SCN-19. Walks a parsed AST without seeing the original expression string.
 final class ExpressionEvaluator {
-  ExpressionEvaluator({
-    ExpressionLimits? limits,
-    ExpressionParser? parser,
-  })  : _limits = limits ?? ExpressionLimits(),
-        _parser = parser ?? ExpressionParser(limits: limits);
+  ExpressionEvaluator({ExpressionLimits? limits, ExpressionParser? parser})
+    : _limits = limits ?? ExpressionLimits(),
+      _parser = parser ?? ExpressionParser(limits: limits);
 
   final ExpressionLimits _limits;
   final ExpressionParser _parser;
@@ -38,12 +36,20 @@ final class ExpressionEvaluator {
 
     return switch (node) {
       LiteralNode(value: final value) => value,
-      ReferenceNode(value: final reference) =>
-        _resolve(reference, context, steps, allowMissing: false),
-      MissingNode(reference: final reference) =>
-        !_exists(reference, context, steps),
-      NotNode(operand: final operand) =>
-        !_boolean(_walk(operand, context, steps)),
+      ReferenceNode(value: final reference) => _resolve(
+        reference,
+        context,
+        steps,
+        allowMissing: false,
+      ),
+      MissingNode(reference: final reference) => !_exists(
+        reference,
+        context,
+        steps,
+      ),
+      NotNode(operand: final operand) => !_boolean(
+        _walk(operand, context, steps),
+      ),
       BinaryNode(
         operator: final operator,
         left: final left,

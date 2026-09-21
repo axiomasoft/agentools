@@ -8,6 +8,8 @@
 /conformance/vendor/
 /conformance/composer.lock
 /out/
+/conformance/mcp/node_modules/
+/.ci/cache/
 __pycache__/
 *.py[cod]
 *.log
@@ -22,6 +24,7 @@ __pycache__/
 .cursor/state/
 .cursor/logs/
 .cursor/runs/
+**/.cursor/state/
 .claude/settings.json
 .claude/settings.local.json
 .claude/settings.json.bak
@@ -35,6 +38,9 @@ __pycache__/
 .claude/skills/
 .codex/
 .swissknifeman/task-terminal/
+/.swissknifeman/terminal-admission/
+/.serena/memories/
+/plans/*/.plan-cache/
 *.bak
 *.last
 

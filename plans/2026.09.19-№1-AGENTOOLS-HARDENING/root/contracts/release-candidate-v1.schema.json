@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.local/schemas/release-candidate-receipt/v1",
+  "title": "Release candidate reproducibility receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "source_commit",
+    "source_date_epoch",
+    "reproducibility_match",
+    "builder_a",
+    "builder_b"
+  ],
+  "properties": {
+    "schema_version": { "const": "release-candidate-receipt/v1" },
+    "status": { "enum": ["green", "red"] },
+    "source_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "source_date_epoch": { "type": "integer", "minimum": 0 },
+    "reproducibility_match": { "type": "boolean" },
+    "verdict": { "type": "string" },
+    "errors": { "type": "array", "items": { "type": "string" } },
+    "fingerprints": { "type": "object" },
+    "builder_a": { "$ref": "#/$defs/builder" },
+    "builder_b": { "$ref": "#/$defs/builder" }
+  },
+  "$defs": {
+    "digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "digest"],
+      "properties": {
+        "algorithm": { "enum": ["sha256"] },
+        "digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject_id",
+        "format",
+        "paired_status",
+        "public_release_blocked",
+        "file_count",
+        "content_manifest_digest",
+        "archive_digest",
+        "inventory"
+      ],
+      "properties": {
+        "subject_id": {
+          "enum": ["php-sdk", "dart-core", "dart-mcp-companion"]
+        },
+        "format": { "const": "agentools.release-subject/tar-gzip/v1" },
+        "paired_status": { "enum": ["standalone", "private-paired"] },
+        "public_release_blocked": { "type": "boolean" },
+        "file_count": { "type": "integer", "minimum": 1 },
+        "content_manifest_digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "archive_digest": { "$ref": "#/$defs/digest" },
+        "inventory": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path", "bytes", "sha256"],
+            "properties": {
+              "path": { "type": "string" },
+              "bytes": { "type": "integer" },
+              "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+            }
+          }
+        }
+      }
+    },
+    "builder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "builder",
+        "source_commit",
+        "source_date_epoch",
+        "contract_sha256",
+        "schema_sha256",
+        "supply_chain_lock_sha256",
+        "public_release_claimed",
+        "subjects"
+      ],
+      "properties": {
+        "schema_version": { "const": "release-candidate-receipt/v1" },
+        "builder": { "type": "string" },
+        "source_commit": { "type": "string" },
+        "source_date_epoch": { "type": "integer" },
+        "contract_sha256": { "type": "string" },
+        "schema_sha256": { "type": "string" },
+        "supply_chain_lock_sha256": { "type": "string" },
+        "public_release_claimed": { "const": false },
+        "subjects": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": { "$ref": "#/$defs/subject" }
+        }
+      }
+    }
+  }
+}

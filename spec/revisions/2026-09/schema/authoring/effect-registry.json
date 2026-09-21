@@ -1,0 +1,87 @@
+{
+  "$defs": {
+    "EffectRecord": {
+      "description": "Свёртка событий одного эффекта: запрос и его исход.",
+      "properties": {
+        "effect_id": {
+          "description": "Детерминированный идентификатор эффекта: не зависит от времени, случайности и номера попытки.",
+          "minLength": 1,
+          "type": "string"
+        },
+        "epoch": {
+          "description": "Эпоха исполнителя, записавшего последнее событие этого эффекта.",
+          "minimum": 1,
+          "type": "integer"
+        },
+        "external_ref": {
+          "description": "Ссылка на след эффекта во внешней системе, если контрагент её вернул.",
+          "minLength": 1,
+          "type": "string"
+        },
+        "idempotency_key": {
+          "description": "Идемпотентный ключ применения, предъявленный вызывающим; механика ключа — документ 09.",
+          "minLength": 1,
+          "type": "string"
+        },
+        "requested_seq": {
+          "description": "Номер события запроса эффекта в журнале действия.",
+          "minimum": 1,
+          "type": "integer"
+        },
+        "resolved_seq": {
+          "description": "Номер события исхода эффекта в журнале действия. Отсутствует, пока исход не записан.",
+          "minimum": 1,
+          "type": "integer"
+        },
+        "status": {
+          "$ref": "#/$defs/EffectStatus"
+        },
+        "tool_name": {
+          "description": "Имя инструмента, применяющего эффект, по грамматике документа 02.",
+          "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "effect_id",
+        "status",
+        "epoch",
+        "requested_seq"
+      ],
+      "type": "object"
+    },
+    "EffectStatus": {
+      "description": "Состояние эффекта в реестре. Перечисление закрытое: за запросом следует ровно один из двух исходов (правило ALC-24).",
+      "enum": [
+        "requested",
+        "confirmed",
+        "failed"
+      ]
+    }
+  },
+  "$id": "https://agentools.dev/schema/2026-09/authoring/effect-registry.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Проекция событий реестра эффектов: по ней путь применения выясняет, был ли эффект уже применён, до любого повтора. Файл — единственный носитель перечисления состояний эффекта в схемах ревизии.",
+  "properties": {
+    "action_id": {
+      "description": "Идентификатор действия, которому принадлежит реестр.",
+      "minLength": 1,
+      "type": "string"
+    },
+    "effects": {
+      "additionalProperties": {
+        "$ref": "#/$defs/EffectRecord",
+        "unevaluatedProperties": false
+      },
+      "description": "Карта эффектов действия, ключ — детерминированный идентификатор эффекта. Множество ключей открыто по построению.",
+      "type": "object"
+    }
+  },
+  "required": [
+    "action_id",
+    "effects"
+  ],
+  "title": "Проекция реестра эффектов действия",
+  "type": "object"
+}

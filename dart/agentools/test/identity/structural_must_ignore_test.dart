@@ -10,10 +10,7 @@ void main() {
     };
 
     expect(ExtensionMeta.acceptsTopLevelDocument(document), isTrue);
-    expect(
-      ExtensionMeta.actionData(document),
-      {'side_effect': 'write'},
-    );
+    expect(ExtensionMeta.actionData(document), {'side_effect': 'write'});
   });
 
   /// EXT-16: unknown own-prefix keys are ignored, not rejected
@@ -23,13 +20,9 @@ void main() {
       'dev.agentools/future-feature': {'enabled': true},
     };
 
-    expect(
-      ExtensionMeta.ignorableOwnVendorKeys(meta),
-      ['dev.agentools/future-feature'],
-    );
-    expect(
-      ExtensionMeta.actionData(meta),
-      {'side_effect': 'write'},
-    );
+    expect(ExtensionMeta.ignorableOwnVendorKeys(meta), [
+      'dev.agentools/future-feature',
+    ]);
+    expect(ExtensionMeta.actionData(meta), {'side_effect': 'write'});
   });
 }

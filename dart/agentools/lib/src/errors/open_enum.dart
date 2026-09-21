@@ -43,7 +43,9 @@ sealed class OpenEnum {
     return OpenEnum(value, known, lifecycle: lifecycle);
   }
 
-  static final RegExp _fallbackPattern = RegExp(r'^[a-z][a-z0-9]*\.[a-z0-9_]+$');
+  static final RegExp _fallbackPattern = RegExp(
+    r'^[a-z][a-z0-9]*\.[a-z0-9_]+$',
+  );
 
   final String value;
 

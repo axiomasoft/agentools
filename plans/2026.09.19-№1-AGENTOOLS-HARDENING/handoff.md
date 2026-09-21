@@ -1,27 +1,31 @@
-# HANDOFF — 2026-09-20 — after P8.3
+# HANDOFF — 2026-09-21 — after P0.1
 
-**Next:** run-items: task:plan-run 2026.09.19-№1-AGENTOOLS-HARDENING P8.4
+**Next:** план закрыт
 
 | Параметр | Значение |
 |:--|:--|
 | Batch | solo |
-| Model class | implementation |
+| Model class | frontier |
 | Effort | high |
 | Capabilities | — |
-| Context | continue-root |
-| Суть | PostgreSQL multi-process crash/interleave schedules without SQLite substitution |
+| Context | terminal |
+| Суть | PLAN1 is privately accepted and control-plane reconciled; no public release authority was granted. |
 
-**Provider-native command:**
-
-```bash
-agent --workspace /home/vostrikov/projects/packages/agentools --model grok-4.6 --force --sandbox disabled --trust --approve-mcps 'task:plan-run 2026.09.19-№1-AGENTOOLS-HARDENING P8.4'
+```
+No successor execution is authorized by this handoff. Any public tag, registry upload,
+legal-identity change or credential use requires a separate exact owner invocation citing
+the immutable non-authorizing G-RELEASE packet.
 ```
 
-**Done:** P8.1–P8.3: adversarial-verification contract and AV-001–022 manifest; deterministic corpus/differential; 26/26 catalog kills; Infection 0.35.4 combined covered MSI 75.68 with floors 70/70.
-**Remaining:** P8.4 PostgreSQL schedules; P8.5 resource envelopes and aggregate receipt; P0.1 design audit; P9 CI; P10 RC.
-**Sources of truth:** plans/2026.09.19-№1-AGENTOOLS-HARDENING/plan.md · plans/2026.09.19-№1-AGENTOOLS-HARDENING/phases/P8/P8.md · fixtures/hardening/adversarial/manifest.v1.json · artifacts/P8-mutation-baseline.json
-**Open risks:** Infection enum-in-class exclusion for LongOperationCoordinator.php; herd-lite PHP cannot load PCOV — baseline used /usr/bin/php8.4.
+```session-continuity-decision/v1
+{"schema_version":"session-continuity-decision/v1","outcome":"terminal","reason":"terminal-evidence","evidence":["plan:P0.1:closed-green","private-acceptance:green","public-authorized:false"],"runnable":false}
+```
+
+**Done:** P1–P10 are terminal GREEN; D17 journal migration is preimage/manifest/receipt bound; WPA-02 is repaired; repeat independent audit and plan lint are GREEN; private RC acceptance is GREEN.
+**Remaining:** no private PLAN1 work; public release remains a separate owner-gated scope.
+**Sources of truth:** `findings/audit-verdicts.md` · `artifacts/P10-acceptance-matrix.json` · `artifacts/P10-release-dossier.json` · `artifacts/P10-private-rc-acceptance.json` · `journal.jsonl` · `plan.md`
+**Open risks:** public eligibility remains RED with 18 explicit blockers and `public_authorized=false`.
 **Workarounds/Deferred/Open questions:**
-- workarounds: Infection source exclude for LongOperationCoordinator.php; coverage driver is system PHP 8.4 + PCOV
-- deferred: CRP-JCS-10K and CRP-SEM-213 remain declared not proved; P8.4/P8.5
-- open_questions: —
+- workarounds: none
+- deferred: public G-RELEASE remains non-authorized and out of scope
+- open_questions: none for private PLAN1 closure

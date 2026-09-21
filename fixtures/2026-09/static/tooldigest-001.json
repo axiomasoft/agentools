@@ -1,0 +1,23 @@
+{
+  "id": "tooldigest-001",
+  "title": "Дайджест дескриптора имеет закрытый вход, порядок преобразований и адресный drift",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "TLP-17",
+    "TLP-18",
+    "TLP-19",
+    "TLP-20",
+    "TLP-21",
+    "TLP-22",
+    "TLP-23"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "descriptor_digest_case",
+    "inline": "{\"descriptor\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{},\"_meta\":{},\"title\":\"Task\"},\"digest_input\":{\"name\":\"crm_task_update\",\"description\":\"Purpose: Update a task.\",\"inputSchema\":{\"type\":\"object\"},\"outputSchema\":{\"type\":\"object\"},\"annotations\":{}},\"algorithm\":[\"jcs\",\"utf8\",\"sha256\"],\"capture_phase\":\"prepare\",\"mismatch_code\":\"agentools.precondition.descriptor_drift\"}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "id": "grease-004",
+  "title": "GREASE: неизвестное значение confirmation-политики MUST NOT ослаблять гейт, выведенный из side_effect (must-ignore, OVR-20/TLP-14/IDE-39)",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": ["OVR-20", "TLP-14", "IDE-39"],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "fina_expense_approve",
+        "title": "Утвердить расход",
+        "description": "Утверждает расходную операцию. Обратимая операционная запись; confirmation несёт заведомо неизвестное продуктовое значение политики гейта.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "expense_id": { "type": "string" }
+          },
+          "required": ["expense_id"]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "expense_id": { "type": "string" },
+            "status": { "type": "string" }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "write",
+            "confirmation": "acme.custom_double_check",
+            "idempotent_commit": true,
+            "permissions_hint": ["fina.expense.approve"]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    { "user_input": "Утверди расход E-501" },
+    { "llm_stub": { "toolCall": { "tool": "fina_expense_approve", "args": { "expense_id": "E-501" } } } },
+    { "approval": "approve" }
+  ],
+  "expect": {
+    "events": [
+      { "kind": "confirmation_requested" },
+      { "kind": "confirmation_resolved" }
+    ],
+    "final_state": "completed",
+    "tool_calls": [
+      { "tool": "fina_expense_approve", "phase": "prepare" },
+      { "tool": "fina_expense_approve", "phase": "commit" }
+    ]
+  }
+}

@@ -11,17 +11,14 @@ void main() {
       PolicyVerdict.ask,
     );
     expect(
-      policy.decide(
-        ActionProfile(sideEffect: 'write'),
-        [PolicyVerdict.allow],
-      ),
+      policy.decide(ActionProfile(sideEffect: 'write'), [PolicyVerdict.allow]),
       PolicyVerdict.ask,
     );
     expect(
-      policy.decide(
-        ActionProfile(sideEffect: 'read'),
-        [PolicyVerdict.ask, PolicyVerdict.deny],
-      ),
+      policy.decide(ActionProfile(sideEffect: 'read'), [
+        PolicyVerdict.ask,
+        PolicyVerdict.deny,
+      ]),
       PolicyVerdict.deny,
     );
   });

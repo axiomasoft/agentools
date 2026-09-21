@@ -14,9 +14,7 @@ final class ExtensionAnnouncement {
   };
 
   /// EXT-14: неизвестная или неполная запись трактуется как неизвестная ревизия.
-  static ExtensionAnnouncement fromExtensions(
-    Map<String, Object?> extensions,
-  ) {
+  static ExtensionAnnouncement fromExtensions(Map<String, Object?> extensions) {
     final settings = extensions[ExtensionIdentity.identifier];
     if (settings is! Map) {
       return const ExtensionAnnouncement(null);

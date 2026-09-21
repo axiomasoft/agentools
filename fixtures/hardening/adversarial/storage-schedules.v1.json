@@ -1,0 +1,371 @@
+{
+  "catalog_ids": [
+    "SCH-EVT-CONCURRENT",
+    "SCH-IDC-TAKEOVER",
+    "SCH-TKN-CONCURRENT"
+  ],
+  "schema": "storage-schedules/v1",
+  "seed": 1,
+  "timeouts": {
+    "idle_in_tx_ms": 10000,
+    "lock_ms": 2000,
+    "observe_ms": 1500,
+    "statement_ms": 5000
+  },
+  "version": "1.0.0",
+  "schedules": [
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-TKN-CONCURRENT",
+      "family": "replay-consume",
+      "id": "tkn-commit",
+      "setup": {
+        "digest": "token-a",
+        "surface": "tokens",
+        "tenant_id": "tenant-a",
+        "token_id": "jti-1"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-begin", "op": "begin"},
+        {"actor": "a", "id": "a-consume", "op": "consume"},
+        {"await": "b", "blocker": "a", "expect": {"outcome": "spent"}, "id": "b-blocked", "op": "observe_blocked", "start": {"actor": "b", "op": "consume"}},
+        {"actor": "a", "id": "a-commit", "op": "commit"}
+      ],
+      "verify": [{"digest_of": "token-a", "expect_count": 1, "op": "token_row"}]
+    },
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-TKN-CONCURRENT",
+      "family": "replay-consume",
+      "id": "tkn-rollback",
+      "setup": {
+        "digest": "token-a",
+        "surface": "tokens",
+        "tenant_id": "tenant-a",
+        "token_id": "jti-1"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-begin", "op": "begin"},
+        {"actor": "a", "id": "a-consume", "op": "consume"},
+        {"await": "b", "blocker": "a", "expect": {"outcome": "accepted"}, "id": "b-blocked", "op": "observe_blocked", "start": {"actor": "b", "op": "consume"}},
+        {"actor": "a", "id": "a-rollback", "op": "rollback"}
+      ],
+      "verify": [{"digest_of": "token-a", "expect_count": 1, "op": "token_row"}]
+    },
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-TKN-CONCURRENT",
+      "family": "replay-consume",
+      "id": "tkn-crash",
+      "setup": {
+        "digest": "token-a",
+        "surface": "tokens",
+        "tenant_id": "tenant-a",
+        "token_id": "jti-1"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-begin", "op": "begin"},
+        {"actor": "a", "id": "a-consume", "op": "consume"},
+        {"await": "b", "blocker": "a", "expect": {"outcome": "accepted"}, "id": "b-blocked", "op": "observe_blocked", "start": {"actor": "b", "op": "consume"}},
+        {"actor": "a", "fault": "client_crash", "id": "a-crash", "op": "client_crash"}
+      ],
+      "verify": [{"digest_of": "token-a", "expect_count": 1, "op": "token_row"}]
+    },
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-TKN-CONCURRENT",
+      "family": "replay-consume",
+      "id": "tkn-cancel",
+      "setup": {
+        "digest": "token-a",
+        "surface": "tokens",
+        "tenant_id": "tenant-a",
+        "token_id": "jti-1"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-begin", "op": "begin"},
+        {"actor": "a", "id": "a-consume", "op": "consume"},
+        {"await": "b", "blocker": "a", "expect": {"fault": "query_cancel"}, "id": "b-blocked", "op": "observe_blocked", "start": {"actor": "b", "op": "consume"}},
+        {"actor": "b", "id": "b-cancel", "op": "query_cancel"},
+        {"actor": "a", "id": "a-rollback", "op": "rollback"}
+      ],
+      "verify": [{"expect_count": 0, "op": "token_row"}]
+    },
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-TKN-CONCURRENT",
+      "family": "replay-consume",
+      "id": "tkn-term",
+      "setup": {
+        "digest": "token-a",
+        "surface": "tokens",
+        "tenant_id": "tenant-a",
+        "token_id": "jti-1"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-begin", "op": "begin"},
+        {"actor": "a", "id": "a-consume", "op": "consume"},
+        {"await": "b", "blocker": "a", "expect": {"outcome": "accepted"}, "id": "b-blocked", "op": "observe_blocked", "start": {"actor": "b", "op": "consume"}},
+        {"actor": "a", "fault": "backend_terminate", "id": "a-term", "op": "backend_terminate"}
+      ],
+      "verify": [{"digest_of": "token-a", "expect_count": 1, "op": "token_row"}]
+    },
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-TKN-CONCURRENT",
+      "family": "replay-consume",
+      "id": "tkn-coll",
+      "setup": {
+        "digest": "token-a",
+        "surface": "tokens",
+        "tenant_id": "tenant-a",
+        "token_id": "jti-1"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-consume", "op": "consume"},
+        {"actor": "b", "digest": "token-b", "expect": {"outcome": "collision"}, "id": "b-coll", "op": "consume"}
+      ],
+      "verify": [{"digest_of": "token-a", "expect_count": 1, "op": "token_row"}]
+    },
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-TKN-CONCURRENT",
+      "family": "replay-consume",
+      "id": "tkn-tenant",
+      "setup": {
+        "digest": "token-a",
+        "surface": "tokens",
+        "tenant_id": "tenant-a",
+        "token_id": "jti-1"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-consume", "op": "consume"},
+        {"actor": "b", "expect": {"outcome": "accepted"}, "id": "b-other", "op": "consume", "tenant_id": "tenant-b"}
+      ],
+      "verify": [{"expect_count": 1, "op": "token_row", "tenant_id": "tenant-a"}, {"expect_count": 1, "op": "token_row", "tenant_id": "tenant-b"}]
+    },
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-IDC-TAKEOVER",
+      "family": "lease-fence",
+      "id": "idc-first",
+      "setup": {
+        "fingerprint": "{\"amount\":1}",
+        "key": "at1:firstkey",
+        "surface": "leases",
+        "tenant_id": "tenant-1",
+        "tool_name": "payment_send"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-begin", "op": "begin"},
+        {"actor": "a", "id": "a-acq", "now": "2026-09-20T10:00:00+00:00", "op": "acquire"},
+        {"await": "b", "blocker": "a", "expect": {"outcome": "in_flight"}, "id": "b-blocked", "now": "2026-09-20T10:00:00+00:00", "op": "observe_blocked", "start": {"actor": "b", "now": "2026-09-20T10:00:00+00:00", "op": "acquire"}},
+        {"actor": "a", "id": "a-commit", "op": "commit"}
+      ],
+      "verify": [{"expect_attempt": 1, "expect_state": "in_progress", "op": "lease_row"}]
+    },
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-IDC-TAKEOVER",
+      "family": "lease-fence",
+      "id": "idc-take",
+      "setup": {
+        "fingerprint": "{\"amount\":1}",
+        "key": "at1:takeover1",
+        "surface": "leases",
+        "tenant_id": "tenant-1",
+        "tool_name": "payment_send"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-acq", "now": "2026-09-20T10:00:00+00:00", "op": "acquire"},
+        {"actor": "b", "expect": {"outcome": "takeover", "attempt": 2}, "id": "b-take", "now": "2026-09-20T10:00:31+00:00", "op": "acquire"}
+      ],
+      "verify": [{"expect_attempt": 2, "expect_state": "in_progress", "op": "lease_row"}]
+    },
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-IDC-TAKEOVER",
+      "family": "lease-fence",
+      "id": "idc-stale",
+      "setup": {
+        "fingerprint": "{\"amount\":1}",
+        "key": "at1:stalekey1",
+        "surface": "leases",
+        "tenant_id": "tenant-1",
+        "tool_name": "payment_send"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-acq", "now": "2026-09-20T10:00:00+00:00", "op": "acquire"},
+        {"actor": "b", "expect": {"outcome": "takeover"}, "id": "b-take", "now": "2026-09-20T10:00:31+00:00", "op": "acquire"},
+        {"actor": "a", "expect": {"outcome": "lost_lease"}, "id": "a-hb", "now": "2026-09-20T10:00:32+00:00", "op": "heartbeat"},
+        {"actor": "a", "expect": {"outcome": "lost_lease"}, "id": "a-complete", "now": "2026-09-20T10:00:32+00:00", "op": "complete"},
+        {"actor": "a", "expect": {"outcome": "lost_lease"}, "id": "a-fail", "now": "2026-09-20T10:00:32+00:00", "op": "fail"}
+      ],
+      "verify": [{"expect_attempt": 2, "expect_state": "in_progress", "op": "lease_row"}]
+    },
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-IDC-TAKEOVER",
+      "family": "lease-fence",
+      "id": "idc-skew",
+      "setup": {
+        "fingerprint": "{\"amount\":1}",
+        "key": "at1:skewbound",
+        "surface": "leases",
+        "tenant_id": "tenant-1",
+        "tool_name": "payment_send"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-acq", "now": "2026-09-20T10:00:00+00:00", "op": "acquire"},
+        {"actor": "b", "expect": {"outcome": "in_flight"}, "id": "b-before", "now": "2026-09-20T10:00:29+00:00", "op": "acquire"},
+        {"actor": "b", "expect": {"outcome": "takeover"}, "id": "b-after", "now": "2026-09-20T10:00:31+00:00", "op": "acquire"}
+      ],
+      "verify": [{"expect_attempt": 2, "expect_state": "in_progress", "op": "lease_row"}]
+    },
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-IDC-TAKEOVER",
+      "family": "lease-fence",
+      "id": "idc-crash",
+      "setup": {
+        "fingerprint": "{\"amount\":1}",
+        "key": "at1:crashkey1",
+        "surface": "leases",
+        "tenant_id": "tenant-1",
+        "tool_name": "payment_send"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-acq", "now": "2026-09-20T10:00:00+00:00", "op": "acquire"},
+        {"actor": "a", "fault": "client_crash", "id": "a-crash", "op": "client_crash"},
+        {"actor": "b", "expect": {"outcome": "in_flight"}, "id": "b-live", "now": "2026-09-20T10:00:05+00:00", "op": "acquire"},
+        {"actor": "b", "expect": {"outcome": "takeover"}, "id": "b-take", "now": "2026-09-20T10:00:31+00:00", "op": "acquire"}
+      ],
+      "verify": [{"expect_attempt": 2, "expect_state": "in_progress", "op": "lease_row"}]
+    },
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-EVT-CONCURRENT",
+      "family": "event-append",
+      "id": "evt-ver",
+      "setup": {
+        "action_id": "act-1",
+        "event_id": "ev-aaaaaaaaaaaaaaaa",
+        "surface": "events",
+        "tenant_id": "tenant-e"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-lock", "op": "append_prepare"},
+        {"await": "b", "blocker": "a", "expect": {"outcome": "version_conflict"}, "id": "b-blocked", "op": "observe_blocked", "start": {"actor": "b", "event_id": "ev-bbbbbbbbbbbbbbbb", "op": "append"}},
+        {"actor": "a", "id": "a-finish", "op": "append_finish"}
+      ],
+      "verify": [{"expect_count": 1, "op": "event_count"}]
+    },
+    {
+      "actors": ["a"],
+      "catalog_id": "SCH-EVT-CONCURRENT",
+      "family": "event-append",
+      "id": "evt-roll",
+      "setup": {
+        "action_id": "act-1",
+        "batch": ["ev-aaaaaaaaaaaaaaaa", "ev-bbbbbbbbbbbbbbbb"],
+        "surface": "events",
+        "tenant_id": "tenant-e"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-lock", "op": "append_prepare"},
+        {"actor": "a", "id": "a-one", "op": "append_one"},
+        {"actor": "a", "id": "a-rollback", "op": "rollback"}
+      ],
+      "verify": [{"expect_count": 0, "op": "event_count"}]
+    },
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-EVT-CONCURRENT",
+      "family": "event-append",
+      "id": "evt-replay",
+      "setup": {
+        "action_id": "act-1",
+        "event_id": "ev-aaaaaaaaaaaaaaaa",
+        "surface": "events",
+        "tenant_id": "tenant-e"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-app", "op": "append"},
+        {"actor": "b", "expect": {"outcome": "idempotent_replay"}, "id": "b-replay", "op": "append"}
+      ],
+      "verify": [{"expect_count": 1, "op": "event_count"}]
+    },
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-EVT-CONCURRENT",
+      "family": "event-append",
+      "id": "evt-coll",
+      "setup": {
+        "action_id": "act-1",
+        "event_id": "ev-aaaaaaaaaaaaaaaa",
+        "surface": "events",
+        "tenant_id": "tenant-e"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-app", "op": "append"},
+        {"actor": "b", "expect": {"outcome": "collision"}, "id": "b-coll", "op": "append", "payload": {"n": 2}}
+      ],
+      "verify": [{"expect_count": 1, "op": "event_count"}]
+    },
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-EVT-CONCURRENT",
+      "family": "event-append",
+      "id": "evt-part",
+      "setup": {
+        "action_id": "act-1",
+        "event_id": "ev-aaaaaaaaaaaaaaaa",
+        "surface": "events",
+        "tenant_id": "tenant-e"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-app", "op": "append"},
+        {"actor": "b", "batch": ["ev-aaaaaaaaaaaaaaaa", "ev-cccccccccccccccc"], "expect": {"outcome": "partial_overlap"}, "expected_prev_seq": 0, "id": "b-part", "op": "append"}
+      ],
+      "verify": [{"expect_count": 1, "op": "event_count"}]
+    },
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-EVT-CONCURRENT",
+      "family": "event-append",
+      "id": "evt-page",
+      "setup": {
+        "action_id": "act-1",
+        "batch": ["ev-aaaaaaaaaaaaaaaa", "ev-bbbbbbbbbbbbbbbb", "ev-cccccccccccccccc"],
+        "surface": "events",
+        "tenant_id": "tenant-e"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-app", "op": "append"},
+        {"actor": "a", "expect": {"has_more": true, "count": 2}, "id": "a-load", "limit": 2, "op": "load"},
+        {"actor": "b", "batch": ["ev-dddddddddddddddd"], "expected_prev_seq": 3, "id": "b-grow", "op": "append"},
+        {"actor": "a", "after_seq": 2, "expect": {"has_more": false, "count": 2}, "id": "a-next", "limit": 2, "op": "load"}
+      ],
+      "verify": [{"expect_count": 4, "op": "event_count"}]
+    },
+    {
+      "actors": ["a", "b"],
+      "catalog_id": "SCH-EVT-CONCURRENT",
+      "family": "event-append",
+      "id": "evt-wait",
+      "setup": {
+        "action_id": "act-1",
+        "event_id": "ev-aaaaaaaaaaaaaaaa",
+        "surface": "events",
+        "tenant_id": "tenant-e"
+      },
+      "steps": [
+        {"actor": "a", "id": "a-lock", "op": "append_prepare"},
+        {"await": "b", "blocker": "a", "expect": {"fault": "backend_terminate"}, "id": "b-blocked", "op": "observe_blocked", "start": {"actor": "b", "event_id": "ev-bbbbbbbbbbbbbbbb", "op": "append"}},
+        {"actor": "b", "fault": "backend_terminate", "id": "b-term", "op": "backend_terminate"},
+        {"actor": "a", "id": "a-finish", "op": "append_finish"}
+      ],
+      "verify": [{"expect_count": 1, "op": "event_count"}]
+    }
+  ]
+}

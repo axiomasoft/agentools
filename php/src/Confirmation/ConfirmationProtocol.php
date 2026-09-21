@@ -5,21 +5,29 @@ declare(strict_types=1);
 namespace AgenTools\Confirmation;
 
 use AgenTools\Contracts\CommitAuthorizer;
-use AgenTools\Contracts\TokenSigner;
+use AgenTools\Contracts\ConfirmationTokenStore;
 use AgenTools\Idempotency\ArgumentsFingerprint;
 use AgenTools\Tool\DescriptorDigest;
 
-/** Protocol-only layer: issues and verifies the signed one-shot gate token. */
+/** @deprecated Unsafe expert/legacy primitive. Applications must use ConfirmationService. */
 final class ConfirmationProtocol
 {
-    /** @var array<string, true> */
-    private array $spentTokens = [];
-
-    public function __construct(private readonly TokenSigner $signer)
-    {
+    public function __construct(
+        private readonly TokenKeyProvider $keys,
+        private readonly ConfirmationTokenStore $store,
+        private readonly string $issuer,
+        private readonly string $audience,
+        private readonly int $maxLifetimeSeconds = TokenEnvelope::DEFAULT_MAX_LIFETIME_SECONDS,
+    ) {
+        if ($issuer === '' || $audience === '') {
+            throw new \InvalidArgumentException('Issuer and audience are required.');
+        }
+        if ($maxLifetimeSeconds < 1 || $maxLifetimeSeconds > TokenEnvelope::HARD_MAX_LIFETIME_SECONDS) {
+            throw new \InvalidArgumentException('Confirmation lifetime limit must be between 1 second and 7 days.');
+        }
     }
 
-    public function prepare(Proposal $proposal, \DateTimeImmutable $now): ConfirmationToken
+    public function prepare(Proposal $proposal, \DateTimeImmutable $now, string $tenantId): ConfirmationToken
     {
         if ($proposal->state !== ProposalState::Pending) {
             throw new \InvalidArgumentException('Only a pending proposal can receive a token.');
@@ -27,9 +35,29 @@ final class ConfirmationProtocol
         if ($proposal->expiresAt <= $now) {
             throw new \InvalidArgumentException('A proposal requires a future expires_at deadline.');
         }
-        return ConfirmationToken::issue($proposal, $this->signer);
+        if ($proposal->expiresAt->getTimestamp() - $now->getTimestamp() > $this->maxLifetimeSeconds) {
+            throw new \InvalidArgumentException('The proposal lifetime exceeds the configured confirmation limit.');
+        }
+        if ($tenantId === '') {
+            throw new \InvalidArgumentException('Tenant id is required to issue a confirmation token.');
+        }
+
+        return ConfirmationToken::issueAt1($proposal, $tenantId, $this->keys, $this->issuer, $this->audience, $now);
     }
 
+    /**
+     * @deprecated Expert/legacy primitive. Application code must use {@see ConfirmationService}.
+     */
+    public function verify(string $token, \DateTimeImmutable $now): ConfirmationToken
+    {
+        return ConfirmationToken::fromEnvelope(
+            TokenEnvelope::parse($token, $this->keys, $now, $this->issuer, $this->audience),
+        );
+    }
+
+    /**
+     * @deprecated Unsafe application boundary: security inputs are caller-controlled.
+     */
     public function commit(
         string $token,
         ArgumentsFingerprint $actualArguments,
@@ -44,15 +72,10 @@ final class ConfirmationProtocol
         if ($decision !== null) {
             $decision->assertAllowsCommit($actualArguments);
         }
-        $parsed = ConfirmationToken::parse($token, $this->signer);
+        $envelope = TokenEnvelope::parse($token, $this->keys, $now, $this->issuer, $this->audience);
+        $parsed = ConfirmationToken::fromEnvelope($envelope);
         if ($parsed->argsFingerprint->value !== $actualArguments->value) {
             throw ConfirmationFailure::argsMismatch();
-        }
-        if ($parsed->expiresAt <= $now) {
-            throw ConfirmationFailure::expired();
-        }
-        if (array_key_exists($parsed->value, $this->spentTokens)) {
-            throw ConfirmationFailure::spent();
         }
         if ($parsed->principal !== $principal) {
             throw ConfirmationFailure::principalMismatch();
@@ -64,12 +87,21 @@ final class ConfirmationProtocol
             throw new \LogicException('Dual control requires a different approving principal.');
         }
 
-        // A token proves the proposal, never the current permission. Spend it on
-        // presentation before the product boundary can reject the invocation.
-        $this->spentTokens[$parsed->value] = true;
+        $this->store->consume(
+            $envelope->tenantId,
+            $envelope->jti,
+            hash('sha256', $token),
+            TokenPurpose::Confirmation->value,
+            $parsed->expiresAt,
+            $now,
+        );
+
         if (!$authorizer->isAllowed($principal, $parsed->toolName)) {
-            throw new \LogicException('The principal is no longer authorized to commit this tool.');
+            $this->store->refineOutcome($envelope->tenantId, $envelope->jti, 'authorization_denied');
+            throw ConfirmationFailure::authorizationDenied();
         }
+
+        $this->store->refineOutcome($envelope->tenantId, $envelope->jti, 'authorized');
         return $parsed;
     }
 }

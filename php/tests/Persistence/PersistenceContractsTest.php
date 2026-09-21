@@ -12,9 +12,9 @@ use AgenTools\Action\SessionStateProjection;
 use AgenTools\Action\VersionConflict;
 use AgenTools\Contracts\Clock;
 use AgenTools\Error\ToolErrorCode;
-use AgenTools\Persistence\FixedClock;
-use AgenTools\Persistence\InMemoryEventLog;
-use AgenTools\Persistence\InMemorySessionStore;
+use AgenTools\TestKit\FixedClock;
+use AgenTools\TestKit\InMemoryEventLog;
+use AgenTools\TestKit\InMemorySessionStore;
 use PHPUnit\Framework\TestCase;
 
 final class PersistenceContractsTest extends TestCase

@@ -1,0 +1,82 @@
+{
+  "id": "scenario-011",
+  "title": "Требование ввода и гейт продолжают шаг, не превращаясь в отказ",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "SCN-30"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Детерминированный пробный инструмент для проверки поведения рантайма.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {}
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "confirmation": "none",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "scenario": {
+      "scenario_id": "input_and_gate",
+      "title": "Сценарий input_and_gate",
+      "spec_rev": "2026-09",
+      "steps": [
+        {
+          "id": "probe",
+          "tool": "demo_probe"
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Требование ввода и гейт продолжают шаг, не превращаясь в отказ"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "scenario-011"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "input_recorded",
+        "payload": {
+          "step_id": "probe"
+        }
+      },
+      {
+        "kind": "confirmation_requested",
+        "payload": {
+          "step_id": "probe"
+        }
+      },
+      {
+        "kind": "step_completed",
+        "payload": {
+          "step_id": "probe"
+        }
+      }
+    ],
+    "final_state": "completed"
+  }
+}

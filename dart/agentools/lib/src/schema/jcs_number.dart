@@ -40,7 +40,8 @@ String formatJcsNumber(num number) {
   if (exponent >= -6 && exponent < 21) {
     final decimalPosition = match.group(2)!.length + exponent;
     if (decimalPosition <= 0) {
-      return '$sign' '0.${'0' * -decimalPosition}$mantissaDigits';
+      return '$sign'
+          '0.${'0' * -decimalPosition}$mantissaDigits';
     }
     if (decimalPosition >= mantissaDigits.length) {
       return '$sign$mantissaDigits${'0' * (decimalPosition - mantissaDigits.length)}';
@@ -55,5 +56,6 @@ String formatJcsNumber(num number) {
     mantissa = '$mantissa.$fraction';
   }
   final exponentSuffix = exponent >= 0 ? '+$exponent' : '$exponent';
-  return '$sign$mantissa' 'e$exponentSuffix';
+  return '$sign$mantissa'
+      'e$exponentSuffix';
 }

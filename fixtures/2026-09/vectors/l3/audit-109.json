@@ -1,0 +1,85 @@
+{
+  "id": "audit-109",
+  "title": "Baggage без персонального значения допускается",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "AOB-30"
+  ],
+  "conformance_level": "L3",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Экспортирует проверяемую запись аудита.\nCall when: Нужно проверить baggage.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"audit\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "baggage": [
+        {
+          "key": "correlation",
+          "value": "subject-7",
+          "classification": "opaque_identifier"
+        }
+      ],
+      "audit_export": {
+        "adapter_id": "otel-audit-adapter",
+        "mapping_version": "otel-semconv-1.27",
+        "boundary": "external",
+        "attributes": [
+          "action_id"
+        ],
+        "audit_fields": [
+          "action_id"
+        ]
+      }
+    }
+  },
+  "script": [
+    {
+      "user_input": "Экспортируй аудит"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "audit"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [],
+    "final_state": "completed",
+    "observations": [
+      {
+        "kind": "audit_sink",
+        "probe_id": "aob_30_external_sink",
+        "record_count": 1,
+        "attribute_names": [
+          "action_id"
+        ],
+        "baggage_count": 1,
+        "baggage_bytes": 20
+      }
+    ]
+  }
+}

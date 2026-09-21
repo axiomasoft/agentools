@@ -239,10 +239,10 @@ package-owner mapping точного selector в `implementation` либо но�
 
 | Контракт | Версия | Статус | Потребители | Уведомлены |
 |:--|:--|:--|:--|:--|
-| `root/contracts/threat-model-v1.md` | v1 draft | создаётся P1.2 | P2–P10 | — |
-| `root/contracts/compatibility-support-v1.md` | v1 draft | создаётся P1.3 | P2–P10 | — |
-| `root/contracts/hardening-guarantees-v1.md` | v1 draft | создаётся P1.4 | P2–P10 | — |
-| `root/contracts/resource-envelope-v1.md` | v1 draft | создаётся P1.5 | P2–P10 | — |
+| `plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/threat-model-v1.md` | v1 draft | P1.2 GREEN | P2–P10 | — |
+| `plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/compatibility-support-v1.md` | v1 draft | P1.3 GREEN | P2–P10 | — |
+| `plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md` | v1 draft | P1.4 GREEN | P2–P10 | — |
+| `plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/resource-envelope-v1.md` | v1 draft | P1.5 GREEN | P2–P10 | — |
 | `root/contracts/confirmation-security-v1.md` | v1 draft | создаётся P2.1 | P2.2–P10 | — |
 | `root/contracts/token-replay-v1.md` | v1 draft | создаётся P3.1 | P3.2–P10 | — |
 | `root/contracts/idempotency-lease-v1.md` | v1 draft | создаётся P4.1 | P4.2–P10 | — |

@@ -2,7 +2,9 @@ parameters:
     level: max
     paths:
         - src
+        - testkit
         - reference
         - tests
     excludePaths:
         - reference/conformance/adapter.php
+        - tests/Adversarial/storage_worker.php

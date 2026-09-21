@@ -1,0 +1,50 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+const EXIT_OK = 0;
+const EXIT_DRIFT = 1;
+
+$root = dirname(__DIR__, 2);
+$oracle = $root . '/conformance/oracles/jcs';
+$reportPath = dirname(__DIR__) . '/reports/jcs-parity.json';
+require $root . '/php/vendor/autoload.php';
+
+$canonicalizer = new \AgenTools\Schema\Canonicalizer();
+$rows = [];
+foreach (glob($oracle . '/input/*.json') as $inputPath) {
+    $name = basename($inputPath, '.json');
+    $expectedPath = $oracle . '/output/' . $name . '.json';
+    $input = (string) file_get_contents($inputPath);
+    $expected = rtrim((string) file_get_contents($expectedPath), "\n");
+    $actual = $canonicalizer->canonicalizeJson($input);
+    $rows[] = [
+        'case_id' => $name,
+        'expected_sha256' => hash('sha256', $expected),
+        'actual_sha256' => hash('sha256', $actual),
+        'match' => $expected === $actual,
+    ];
+}
+
+$cwd = getcwd();
+chdir($root . '/dart/agentools');
+exec('dart test test/schema/canonicalizer_oracle_test.dart', $dartOut, $dartCode);
+chdir($cwd);
+
+$report = [
+    'generated_by' => 'conformance/bin/jcs-differential',
+    'oracle' => $oracle,
+    'php_rows' => $rows,
+    'dart_exit' => $dartCode,
+];
+file_put_contents($reportPath, json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n");
+
+$failed = array_filter($rows, static fn(array $row): bool => !$row['match']) || $dartCode !== 0;
+if ($failed) {
+    fwrite(STDERR, "jcs-differential: mismatch — see {$reportPath}\n");
+    exit(EXIT_DRIFT);
+}
+
+fwrite(STDOUT, "jcs-differential: OK ({$reportPath})\n");
+exit(EXIT_OK);

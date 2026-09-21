@@ -1,0 +1,98 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+const EXIT_OK = 0;
+const EXIT_FAIL = 1;
+
+$root = dirname(__DIR__, 2);
+$reports = $root . '/conformance/reports';
+
+function run(string $label, array $cmd, string $cwd): int
+{
+    $line = implode(' ', array_map('escapeshellarg', $cmd));
+    fwrite(STDOUT, "p6-gate: → {$label}: {$line}\n");
+    $descriptor = [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
+    $proc = proc_open($cmd, $descriptor, $pipes, $cwd);
+    if (!is_resource($proc)) {
+        fwrite(STDERR, "p6-gate: FAIL: {$label}: cannot start\n");
+        return EXIT_FAIL;
+    }
+    fclose($pipes[0]);
+    stream_get_contents($pipes[1]);
+    stream_get_contents($pipes[2]);
+    fclose($pipes[1]);
+    fclose($pipes[2]);
+    $code = proc_close($proc);
+    if ($code !== 0) {
+        fwrite(STDERR, "p6-gate: FAIL: {$label} (exit {$code})\n");
+    }
+    return $code === 0 ? EXIT_OK : EXIT_FAIL;
+}
+
+function digest(string $path): ?string
+{
+    if (!is_file($path)) {
+        return null;
+    }
+    return hash_file('sha256', $path);
+}
+
+$checks = [
+    ['semantic manifest', ['python3', 'tools/semantic_manifest.py', '--check']],
+    ['revision lock', ['python3', 'tools/revision_lock.py', '--check']],
+    ['semantic parity', ['php', 'conformance/bin/semantic-parity']],
+    ['jcs differential', ['php', 'conformance/bin/jcs-differential']],
+    ['mcp applicability', ['python3', 'tools/mcp_applicability.py', '--check']],
+    ['mcp official receipts', [$root . '/conformance/mcp/bin/run']],
+];
+
+foreach ($checks as [$label, $cmd]) {
+    if (run($label, $cmd, $root) !== EXIT_OK) {
+        exit(EXIT_FAIL);
+    }
+}
+
+run('successor corpus probe (non-blocking)', [
+    'php', 'conformance/bin/run', '--adapter', 'php conformance/adapters/reference/adapter.php',
+    '--vectors', 'fixtures/2026-09', '--spec-rev', '2026-09',
+    '--report', 'out/ci/reference-2026-09-probe.json',
+], $root);
+
+$integrated = [
+    'schema_version' => 'p6-integrated-receipt/v1',
+    'spec_revision' => '2026-09',
+    'summary_phrase' => 'P6 integrated gate (namespaces are not merged into one pass rate)',
+    'generated_by' => 'conformance/bin/p6-gate',
+    'namespaces' => [
+        'agentools' => [
+            'reference_report_2026_08_regression' => 'out/ci/reference-2026-08.json',
+            'reference_digest_sha256' => digest($root . '/out/ci/reference-2026-08.json'),
+            'successor_corpus_probe' => 'out/ci/reference-2026-09-probe.json',
+            'successor_probe_digest_sha256' => digest($root . '/out/ci/reference-2026-09-probe.json'),
+        ],
+        'jcs_oracle' => [
+            'report' => 'conformance/reports/jcs-parity.json',
+            'digest_sha256' => digest($reports . '/jcs-parity.json'),
+        ],
+        'semantic_profile' => [
+            'report' => 'conformance/reports/semantic-parity.json',
+            'digest_sha256' => digest($reports . '/semantic-parity.json'),
+        ],
+        'mcp_official' => [
+            'report' => 'conformance/reports/mcp-official/summary.json',
+            'digest_sha256' => digest($reports . '/mcp-official/summary.json'),
+        ],
+    ],
+    'residual_owner' => [
+        'public_tag_spec-2026-09' => 'P9/P10',
+        'jcs_10k_es6_corpus' => 'P8',
+        'package_exports' => 'P7',
+    ],
+];
+
+$out = $reports . '/p6-integrated.json';
+file_put_contents($out, json_encode($integrated, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n");
+fwrite(STDOUT, "p6-gate: wrote {$out}\n");
+exit(EXIT_OK);

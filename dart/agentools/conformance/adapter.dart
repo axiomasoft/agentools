@@ -32,9 +32,11 @@ void main(List<String> args) {
         case 'start':
           protocol = message['harness_protocol_version']?.toString();
           revision = message['spec_rev']?.toString();
-          if (protocol != '1.1' || revision != '2026-08') {
+          if (protocol != '1.1' ||
+              (revision != '2026-08' && revision != '2026-09')) {
             throw StateError('unsupported harness protocol or revision');
           }
+          engine.bindSpecRevision(revision!);
           _emit({
             'type': 'ready',
             'sdk': 'agentools/sdk',
@@ -99,23 +101,18 @@ void main(List<String> args) {
 
           final fresh = SdkConformanceEngine();
           fresh.configure(fixedClock, fixedSeed);
-          fresh.run(
-            vectorId,
-            vector,
-            (probe) {
-              _emit(probe);
-              final reply = stdin.readLineSync();
-              if (reply == null) {
-                throw StateError('runner closed probe channel');
-              }
-              final decoded = jsonDecode(reply);
-              if (decoded is! Map || decoded['type'] != 'probe_result') {
-                throw StateError('invalid probe response');
-              }
-              return Map<String, dynamic>.from(decoded);
-            },
-            _emit,
-          );
+          fresh.run(vectorId, vector, (probe) {
+            _emit(probe);
+            final reply = stdin.readLineSync();
+            if (reply == null) {
+              throw StateError('runner closed probe channel');
+            }
+            final decoded = jsonDecode(reply);
+            if (decoded is! Map || decoded['type'] != 'probe_result') {
+              throw StateError('invalid probe response');
+            }
+            return Map<String, dynamic>.from(decoded);
+          }, _emit);
         case 'stop':
           exit(0);
         default:

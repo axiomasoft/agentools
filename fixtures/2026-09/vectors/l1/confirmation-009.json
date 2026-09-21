@@ -1,0 +1,101 @@
+{
+  "id": "confirmation-009",
+  "title": "Аудит решения — единственный носитель: тело события confirmation_resolved журнала, не отдельное хранилище",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "CNF-37",
+    "CNF-40",
+    "CNF-41"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "now": "2026-07-27T09:00:00Z",
+    "tools": [
+      {
+        "name": "fina_payment_send",
+        "title": "Отправить платёж",
+        "description": "Отправляет платёжное поручение во внешнюю систему. Необратимое действие.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "counterparty_id": {
+              "type": "string"
+            },
+            "amount_minor": {
+              "type": "integer"
+            },
+            "purpose": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "counterparty_id",
+            "amount_minor",
+            "purpose"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "payment_id": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "irreversible",
+            "confirmation": "double_confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "fina.payment.send"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "user_input": "Отправь платёж контрагенту cp-2 на 50000 минорных единиц, назначение — аванс"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "fina_payment_send",
+          "args": {
+            "counterparty_id": "cp-2",
+            "amount_minor": 50000,
+            "purpose": "Аванс"
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "confirmation_requested"
+      },
+      {
+        "kind": "confirmation_resolved",
+        "payload": {
+          "decision": "approve",
+          "reason": "",
+          "decided_at": "2026-07-27T09:00:00Z"
+        }
+      }
+    ],
+    "final_state": "completed"
+  }
+}

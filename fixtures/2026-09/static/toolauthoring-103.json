@@ -1,0 +1,17 @@
+{
+  "id": "toolauthoring-103",
+  "title": "TLP-28: raw schema profile принят",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "TLP-28"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "authoring_schema_profile",
+    "inline": "{\"published\":{\"type\":\"object\",\"properties\":{\"amount_minor\":{\"type\":\"integer\"},\"mode\":{\"oneOf\":[{\"const\":\"core\"},{\"type\":\"string\",\"pattern\":\"^x-[a-z]+$\"}]}}},\"authoring\":{\"type\":\"object\",\"properties\":{\"amount_minor\":{\"type\":\"integer\"},\"mode\":{\"oneOf\":[{\"const\":\"core\"},{\"type\":\"string\",\"pattern\":\"^x-[a-z]+$\"}]}},\"additionalProperties\":false}}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

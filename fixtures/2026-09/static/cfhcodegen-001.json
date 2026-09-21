@@ -1,0 +1,18 @@
+{
+  "id": "cfhcodegen-001",
+  "title": "Генератор закрытых схем остаётся производным инструментом и не становится источником runtime-валидации",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "CFH-33",
+    "CFH-34"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "codegen_boundary",
+    "path": "tools/close_schema.py"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

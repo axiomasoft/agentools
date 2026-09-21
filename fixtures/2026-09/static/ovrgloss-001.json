@@ -1,0 +1,18 @@
+{
+  "id": "ovrgloss-001",
+  "title": "00_overview.md несёт раздел '## Покрытие решений DR-01' последним разделом (OVR-27)",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "OVR-25",
+    "OVR-27"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "coverage_table",
+    "path": "spec/revisions/2026-09/00_overview.md"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

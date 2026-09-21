@@ -1,0 +1,9 @@
+{
+  "schema_version": "release-postgres-drill/v1",
+  "description": "Disposable-namespace install, idempotent re-apply, drop/recovery, token row lifecycle.",
+  "hardening_sql": [
+    "fixtures/hardening/sql/confirmation-consumed-tokens.v1.sql",
+    "fixtures/hardening/sql/idempotency-lease.v1.sql",
+    "fixtures/hardening/sql/event-store.v1.sql"
+  ]
+}

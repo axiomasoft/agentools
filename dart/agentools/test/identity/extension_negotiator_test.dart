@@ -17,10 +17,9 @@ void main() {
 
   /// EXT-14, EXT-15
   test('falls back to the core protocol for an unknown revision', () {
-    final result = negotiator.negotiate(
-      {ExtensionIdentity.identifier: <String, Object?>{}},
-      extensionRequired: false,
-    );
+    final result = negotiator.negotiate({
+      ExtensionIdentity.identifier: <String, Object?>{},
+    }, extensionRequired: false);
 
     expect(result.mode, NegotiationMode.coreProtocol);
     expect(result.error, isNull);
@@ -41,32 +40,23 @@ void main() {
       'acme.crm/legacy-profile': {'side_effect': 'read'},
     };
 
-    expect(
-      ExtensionMeta.actionData(meta),
-      {'side_effect': 'write'},
-    );
+    expect(ExtensionMeta.actionData(meta), {'side_effect': 'write'});
   });
 
   /// EXT-16
   test('unknown extension entries do not cause a rejection', () {
-    final result = negotiator.negotiate(
-      {'acme.crm/feature': <String, Object?>{}},
-      extensionRequired: false,
-    );
+    final result = negotiator.negotiate({
+      'acme.crm/feature': <String, Object?>{},
+    }, extensionRequired: false);
 
     expect(result.mode, NegotiationMode.coreProtocol);
   });
 
   /// EXT-14; vector extnegotiation-002 (unknown revision behaves as absent)
   test('treats a mismatched specRevision as an unknown revision', () {
-    final result = negotiator.negotiate(
-      {
-        ExtensionIdentity.identifier: {
-          'specRevision': '2026-07',
-        },
-      },
-      extensionRequired: false,
-    );
+    final result = negotiator.negotiate({
+      ExtensionIdentity.identifier: {'specRevision': '2026-07'},
+    }, extensionRequired: false);
 
     expect(result.mode, NegotiationMode.coreProtocol);
   });

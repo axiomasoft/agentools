@@ -7,11 +7,13 @@ import '../contracts/token_signer.dart';
 /// HMAC implementation; the secret is supplied by the consuming runtime.
 final class HmacTokenSigner implements TokenSigner {
   HmacTokenSigner(String secret)
-      : _secretBytes = utf8.encode(
-          secret.isEmpty
-              ? (throw ArgumentError('The token-signing secret must not be empty.'))
-              : secret,
-        );
+    : _secretBytes = utf8.encode(
+        secret.isEmpty
+            ? (throw ArgumentError(
+                'The token-signing secret must not be empty.',
+              ))
+            : secret,
+      );
 
   final List<int> _secretBytes;
 

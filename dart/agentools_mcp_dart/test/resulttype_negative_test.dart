@@ -11,9 +11,7 @@ void main() {
     final transport = McpDartTransport();
     Object? caught;
     try {
-      await transport.connect(
-        Uri.parse('http://localhost:${server.port}/mcp'),
-      );
+      await transport.connect(Uri.parse('http://localhost:${server.port}/mcp'));
     } catch (error) {
       caught = error;
     } finally {

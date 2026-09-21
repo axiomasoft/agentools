@@ -1,11 +1,16 @@
+import 'dart:convert';
+
 import 'package:agentools/agentools.dart';
+import 'package:agentools/agentools_testkit.dart';
 import 'package:test/test.dart';
+
+const _tenant = 'test-tenant';
 
 void main() {
   // CNF-18; arguments shown at prepare cannot be swapped at commit.
   test('rejects changed arguments', () {
     final protocol = _protocol();
-    final token = protocol.prepare(_proposal(), _now());
+    final token = protocol.prepare(_proposal(), _now(), _tenant);
 
     expect(
       () => protocol.commit(
@@ -29,7 +34,11 @@ void main() {
   // CNF-19; expiry is a structured tool-execution error.
   test('rejects expired tokens', () {
     final protocol = _protocol();
-    final token = protocol.prepare(_proposal(expiry: Duration(hours: 1)), _now());
+    final token = protocol.prepare(
+      _proposal(expiry: Duration(hours: 1)),
+      _now(),
+      _tenant,
+    );
 
     expect(
       () => protocol.commit(
@@ -53,7 +62,7 @@ void main() {
   // CNF-20; the same token cannot execute the action twice.
   test('rejects a presented token', () {
     final protocol = _protocol();
-    final token = protocol.prepare(_proposal(), _now());
+    final token = protocol.prepare(_proposal(), _now(), _tenant);
     protocol.commit(
       token: token.value,
       actualArguments: _fingerprint('prepared'),
@@ -85,7 +94,7 @@ void main() {
   // CNF-21; a token is covered by the only principal allowed to commit.
   test('rejects a foreign principal', () {
     final protocol = _protocol();
-    final token = protocol.prepare(_proposal(), _now());
+    final token = protocol.prepare(_proposal(), _now(), _tenant);
 
     expect(
       () => protocol.commit(
@@ -109,8 +118,11 @@ void main() {
   // CNF-33, CNF-34; dual control compares principal ids, not roles.
   test('rejects the proposer in dual control mode', () {
     final protocol = _protocol();
-    final proposal = _proposal(principal: 'proposer-1', proposerId: 'proposer-1');
-    final token = protocol.prepare(proposal, _now());
+    final proposal = _proposal(
+      principal: 'proposer-1',
+      proposerId: 'proposer-1',
+    );
+    final token = protocol.prepare(proposal, _now(), _tenant);
 
     expect(
       () => protocol.commit(
@@ -130,7 +142,7 @@ void main() {
   // CNF-35, CNF-36; permission is evaluated again at commit, not cached from prepare.
   test('reauthorizes at commit', () {
     final protocol = _protocol();
-    final token = protocol.prepare(_proposal(), _now());
+    final token = protocol.prepare(_proposal(), _now(), _tenant);
 
     expect(
       () => protocol.commit(
@@ -141,7 +153,13 @@ void main() {
         now: _now(),
         authorizer: _DeniedAuthorizer(),
       ),
-      throwsA(isA<StateError>()),
+      throwsA(
+        isA<ConfirmationFailure>().having(
+          (error) => error.error.code,
+          'code',
+          ConfirmationErrorCodes.authorizationDenied,
+        ),
+      ),
     );
   });
 
@@ -153,6 +171,20 @@ void main() {
       () => protocol.prepare(
         _proposal(expiry: const Duration(minutes: -1)),
         _now(),
+        _tenant,
+      ),
+      throwsA(isA<ArgumentError>()),
+    );
+  });
+
+  test('rejects proposal above the default 72 hour lifetime', () {
+    final protocol = _protocol();
+
+    expect(
+      () => protocol.prepare(
+        _proposal(expiry: const Duration(hours: 73)),
+        _now(),
+        _tenant,
       ),
       throwsA(isA<ArgumentError>()),
     );
@@ -166,7 +198,7 @@ void main() {
       original,
       successor,
     );
-    final token = _protocol().prepare(successor, _now());
+    final token = _protocol().prepare(successor, _now(), _tenant);
 
     expect(payloads[0]['state'], 'pending');
     expect(payloads[1]['state'], 'superseded');
@@ -191,20 +223,14 @@ void main() {
       argsHashAtCommit: fingerprint,
     );
 
-    expect(
-      audit.toPayload()['args_hash_at_decision'],
-      fingerprint.value,
-    );
-    expect(
-      audit.toPayload()['args_hash_at_commit'],
-      fingerprint.value,
-    );
+    expect(audit.toPayload()['args_hash_at_decision'], fingerprint.value);
+    expect(audit.toPayload()['args_hash_at_commit'], fingerprint.value);
   });
 
   // CNF-38; mismatched decision and commit hashes deny commit even when the token matches.
   test('rejects commit when decision audit hashes mismatch', () {
     final protocol = _protocol();
-    final token = protocol.prepare(_proposal(), _now());
+    final token = protocol.prepare(_proposal(), _now(), _tenant);
     final decisionHash = _fingerprint('prepared');
     final commitHash = _fingerprint('changed');
     final audit = DecisionAudit(
@@ -241,7 +267,17 @@ void main() {
 }
 
 ConfirmationProtocol _protocol() {
-  return ConfirmationProtocol(HmacTokenSigner('test-secret'));
+  final key = SigningKey(
+    id: KeyId('k1'),
+    algorithm: 'HS256',
+    secret: utf8.encode('s' * 32),
+  );
+  return ConfirmationProtocol(
+    keys: StaticTokenKeyProvider(key),
+    store: InMemoryConfirmationTokenStore(),
+    issuer: 'agentools',
+    audience: 'confirmation',
+  );
 }
 
 Proposal _proposal({
@@ -259,10 +295,7 @@ Proposal _proposal({
     argsFingerprint: _fingerprint('prepared'),
     descriptorDigest: _digest(),
     expiresAt: _now().add(expiry),
-    preview: const {
-      'summary': 'Payment',
-      'changes': <dynamic>[],
-    },
+    preview: const {'summary': 'Payment', 'changes': <dynamic>[]},
   );
 }
 
@@ -277,10 +310,7 @@ Proposal _editedProposal() {
     argsFingerprint: _fingerprint('edited'),
     descriptorDigest: _digest(),
     expiresAt: _now().add(const Duration(hours: 1)),
-    preview: const {
-      'summary': 'Payment edited',
-      'changes': <dynamic>[],
-    },
+    preview: const {'summary': 'Payment edited', 'changes': <dynamic>[]},
   );
 }
 

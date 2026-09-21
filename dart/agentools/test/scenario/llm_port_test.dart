@@ -20,8 +20,14 @@ final class ScriptLlmPort implements LlmPort {
 void main() {
   test('scripted LLM port returns deterministic responses', () {
     final llm = ScriptLlmPort([
-      {'tool': 'demo_probe', 'args': {'value': 'scenario-010'}},
-      {'tool': 'demo_probe', 'args': {'value': 'scenario-010'}},
+      {
+        'tool': 'demo_probe',
+        'args': {'value': 'scenario-010'},
+      },
+      {
+        'tool': 'demo_probe',
+        'args': {'value': 'scenario-010'},
+      },
     ]);
 
     final first = llm.respond({'prompt': 'run'});

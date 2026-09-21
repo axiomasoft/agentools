@@ -26,11 +26,7 @@ final class NotNode extends ExpressionNode {
 }
 
 final class BinaryNode extends ExpressionNode {
-  BinaryNode({
-    required this.operator,
-    required this.left,
-    required this.right,
-  });
+  BinaryNode({required this.operator, required this.left, required this.right});
 
   final String operator;
   final ExpressionNode left;

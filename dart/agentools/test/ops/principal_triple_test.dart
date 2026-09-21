@@ -62,7 +62,8 @@ void main() {
   // SEC-14; agent principal must use actor.type = agent.
   test('requires agent actor carrier', () {
     expect(
-      () => PrincipalTriple().assertAgentActor(Actor(type: 'user', id: 'user-7')),
+      () =>
+          PrincipalTriple().assertAgentActor(Actor(type: 'user', id: 'user-7')),
       throwsArgumentError,
     );
   });

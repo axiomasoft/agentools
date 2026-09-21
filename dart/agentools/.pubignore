@@ -1,0 +1,3 @@
+# P7.4 archive boundary: conformance harness is root/monorepo-only (parity with PHP archive.exclude).
+/conformance/
+/test/

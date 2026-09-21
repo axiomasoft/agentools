@@ -1,0 +1,1 @@
+{"id":"securityauthoring-002","title":"Frozen schema хранит только различимые principal ids","vector_class":"artifact","spec_rev":"2026-09","spec_rule_ids":["SEC-17"],"conformance_level":"L1","subject":{"kind":"security_authoring","inline":"{\"schema\":{\"properties\":{\"principal_id\":{\"type\":\"string\"}}}}"},"expect":{"linter":"accept"}}

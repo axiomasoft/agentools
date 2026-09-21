@@ -1,0 +1,115 @@
+{
+  "id": "confpolicy-105",
+  "title": "Ask сохраняет гейт необратимого действия",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "CNF-6"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Записывает проверяемое значение.\nCall when: Нужно проверить подтверждённое изменение.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"x\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "irreversible",
+            "confirmation": "confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "demo.write"
+            ]
+          }
+        }
+      }
+    ],
+    "policy": {
+      "allowed_tools": [
+        "demo_probe"
+      ],
+      "rules": [
+        {
+          "scope": "tenant",
+          "verdict": "ask"
+        }
+      ]
+    },
+    "driver_state": {
+      "principals": {
+        "initiator": {
+          "id": "user-a"
+        },
+        "agent": {
+          "id": "agent-a"
+        },
+        "authorizer": {
+          "id": "user-a"
+        }
+      },
+      "authorization": {
+        "resource": "record-1",
+        "tool": "demo_probe",
+        "permissions": [
+          "demo.write"
+        ]
+      }
+    }
+  },
+  "script": [
+    {
+      "user_input": "Измени запись"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "policy"
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [],
+    "final_state": "completed",
+    "observations": [
+      {
+        "kind": "tool_boundary",
+        "probe_id": "cnf_6_tool_spy",
+        "tool": "demo_probe",
+        "phase": "commit",
+        "calls": 1,
+        "route": "default",
+        "args_subset": {
+          "value": "policy"
+        },
+        "actor_ids": [
+          "user-a",
+          "agent-a"
+        ],
+        "credential_ids": []
+      },
+      {
+        "kind": "confirmation_boundary",
+        "probe_id": "cnf_6_confirmation_spy",
+        "proposal_count": 1,
+        "token_issue_count": 1,
+        "token_consume_count": 1,
+        "decision_event_count": 1
+      }
+    ]
+  }
+}

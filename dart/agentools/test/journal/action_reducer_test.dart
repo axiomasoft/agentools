@@ -64,20 +64,14 @@ void main() {
         4,
         3,
         'effect_requested',
-        payload: {
-          'effect_id': 'payment-1',
-          'tool_name': 'payment_send',
-        },
+        payload: {'effect_id': 'payment-1', 'tool_name': 'payment_send'},
         epoch: 1,
       ),
       event(
         5,
         4,
         'effect_confirmed',
-        payload: {
-          'effect_id': 'payment-1',
-          'external_ref': 'pay-9',
-        },
+        payload: {'effect_id': 'payment-1', 'external_ref': 'pay-9'},
         epoch: 1,
       ),
       event(6, 5, 'action_completed'),
@@ -100,7 +94,9 @@ void main() {
         2,
         1,
         'vendor.future_event',
-        payload: {'future_member': {'deep': true}},
+        payload: {
+          'future_member': {'deep': true},
+        },
       ),
     ]);
 
@@ -111,9 +107,13 @@ void main() {
         2,
         1,
         'vendor.future_event',
-        payload: {'future_member': {'deep': true}},
+        payload: {
+          'future_member': {'deep': true},
+        },
       ).toMap()['payload'],
-      {'future_member': {'deep': true}},
+      {
+        'future_member': {'deep': true},
+      },
     );
   });
 
@@ -137,9 +137,7 @@ void main() {
   // ALC-31; recorded events are immutable value objects, not mutable envelopes.
   test('recorded events cannot be mutated in place', () {
     final original = event(1, 0, 'action_created');
-    final updated = original.withPreviousHash(
-      'sha-256:${'a' * 64}',
-    );
+    final updated = original.withPreviousHash('sha-256:${'a' * 64}');
 
     expect(original.previousHash, isNull);
     expect(updated.previousHash, isNotNull);
@@ -203,20 +201,17 @@ void main() {
     final reducer = ActionReducer(hashChain: chain);
     final first = event(1, 0, 'action_created');
     final state = reducer.fold([first]);
-    final second = event(2, 1, 'action_started').withPreviousHash(
-      state.previousHash,
-    );
-    expect(
-      reducer.fold([first, second]).status,
-      ActionStatus.running,
-    );
+    final second = event(
+      2,
+      1,
+      'action_started',
+    ).withPreviousHash(state.previousHash);
+    expect(reducer.fold([first, second]).status, ActionStatus.running);
 
     expect(
       () => reducer.fold([
         first,
-        event(2, 1, 'action_started').withPreviousHash(
-          'sha-256:${'0' * 64}',
-        ),
+        event(2, 1, 'action_started').withPreviousHash('sha-256:${'0' * 64}'),
       ]),
       throwsA(isA<JournalIntegrityException>()),
     );

@@ -1,0 +1,291 @@
+{
+  "schema_version": "token-replay-cases/v1",
+  "cases": [
+    {
+      "id": "CNF-RPLY-001",
+      "phase": "parse",
+      "scenario": "oversize",
+      "result": "deny",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "trust_seam": "parser",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-002",
+      "phase": "parse",
+      "scenario": "extra_segment",
+      "result": "deny",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "trust_seam": "parser",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-003",
+      "phase": "parse",
+      "scenario": "duplicate_json_name",
+      "result": "deny",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "trust_seam": "parser",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-004",
+      "phase": "parse",
+      "scenario": "unknown_version",
+      "result": "deny",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "trust_seam": "parser",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-005",
+      "phase": "parse",
+      "scenario": "old_two_segment_token",
+      "result": "deny",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "trust_seam": "parser",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-006",
+      "phase": "parse",
+      "scenario": "extra_member",
+      "result": "deny",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "trust_seam": "parser",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-007",
+      "phase": "parse",
+      "scenario": "nested_member",
+      "result": "deny",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "trust_seam": "parser",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-008",
+      "phase": "parse",
+      "scenario": "missing_required_claim",
+      "result": "deny",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "trust_seam": "parser",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-009",
+      "phase": "verify",
+      "scenario": "unknown_alg",
+      "result": "deny",
+      "semantic_code": "agentools.permission.confirmation_token_key_denied",
+      "category": "permission",
+      "retryable": false,
+      "trust_seam": "key_provider",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-010",
+      "phase": "verify",
+      "scenario": "none_alg",
+      "result": "deny",
+      "semantic_code": "agentools.permission.confirmation_token_key_denied",
+      "category": "permission",
+      "retryable": false,
+      "trust_seam": "key_provider",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-011",
+      "phase": "verify",
+      "scenario": "unknown_kid",
+      "result": "deny",
+      "semantic_code": "agentools.permission.confirmation_token_key_denied",
+      "category": "permission",
+      "retryable": false,
+      "trust_seam": "key_provider",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-012",
+      "phase": "verify",
+      "scenario": "retired_kid",
+      "result": "deny",
+      "semantic_code": "agentools.permission.confirmation_token_key_denied",
+      "category": "permission",
+      "retryable": false,
+      "trust_seam": "key_provider",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-013",
+      "phase": "verify",
+      "scenario": "compromised_kid",
+      "result": "deny",
+      "semantic_code": "agentools.permission.confirmation_token_key_denied",
+      "category": "permission",
+      "retryable": false,
+      "trust_seam": "key_provider",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-014",
+      "phase": "verify",
+      "scenario": "cross_tenant_key",
+      "result": "deny",
+      "semantic_code": "agentools.permission.confirmation_token_key_denied",
+      "category": "permission",
+      "retryable": false,
+      "trust_seam": "key_provider",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-015",
+      "phase": "verify",
+      "scenario": "purpose_mismatch",
+      "result": "deny",
+      "semantic_code": "agentools.permission.confirmation_token_binding_mismatch",
+      "category": "permission",
+      "retryable": false,
+      "trust_seam": "claims",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-016",
+      "phase": "verify",
+      "scenario": "iss_mismatch",
+      "result": "deny",
+      "semantic_code": "agentools.permission.confirmation_token_binding_mismatch",
+      "category": "permission",
+      "retryable": false,
+      "trust_seam": "claims",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-017",
+      "phase": "verify",
+      "scenario": "aud_mismatch",
+      "result": "deny",
+      "semantic_code": "agentools.permission.confirmation_token_binding_mismatch",
+      "category": "permission",
+      "retryable": false,
+      "trust_seam": "claims",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-018",
+      "phase": "verify",
+      "scenario": "nbf_skew",
+      "result": "deny",
+      "semantic_code": "agentools.precondition.confirmation_token_not_yet_valid",
+      "category": "precondition",
+      "retryable": false,
+      "trust_seam": "clock",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-019",
+      "phase": "verify",
+      "scenario": "exp_skew",
+      "result": "deny",
+      "semantic_code": "agentools.precondition.confirmation_expired",
+      "category": "precondition",
+      "retryable": false,
+      "trust_seam": "clock",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-020",
+      "phase": "verify",
+      "scenario": "verify_only_cannot_sign",
+      "result": "deny",
+      "semantic_code": "agentools.permission.confirmation_token_key_denied",
+      "category": "permission",
+      "retryable": false,
+      "trust_seam": "key_provider",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-021",
+      "phase": "consume",
+      "scenario": "empty_returning_spent",
+      "result": "deny",
+      "semantic_code": "agentools.precondition.confirmation_token_spent",
+      "category": "precondition",
+      "retryable": false,
+      "trust_seam": "replay_store",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-022",
+      "phase": "consume",
+      "scenario": "digest_jti_collision",
+      "result": "deny",
+      "semantic_code": "agentools.conflict.confirmation_token_collision",
+      "category": "conflict",
+      "retryable": false,
+      "trust_seam": "replay_store",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-023",
+      "phase": "consume",
+      "scenario": "restart_after_consume",
+      "result": "deny",
+      "semantic_code": "agentools.precondition.confirmation_token_spent",
+      "category": "precondition",
+      "retryable": false,
+      "trust_seam": "replay_store",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-024",
+      "phase": "consume",
+      "scenario": "pre_presentation_no_consume",
+      "result": "deny",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "trust_seam": "replay_store",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-025",
+      "phase": "cleanup",
+      "scenario": "cleanup_unexpired_row",
+      "result": "allow",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "trust_seam": "replay_store",
+      "applicability": ["php", "dart"]
+    },
+    {
+      "id": "CNF-RPLY-026",
+      "phase": "consume",
+      "scenario": "happy_path_consume",
+      "result": "allow",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "trust_seam": "replay_store",
+      "applicability": ["php", "dart"]
+    }
+  ]
+}

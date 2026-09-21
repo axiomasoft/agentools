@@ -32,10 +32,7 @@ void main() {
       ),
       isTrue,
     );
-    expect(
-      evaluator.evaluate(r'$ctx.today == 2026', context, steps),
-      isFalse,
-    );
+    expect(evaluator.evaluate(r'$ctx.today == 2026', context, steps), isFalse);
     expect(
       evaluator.evaluate(r'missing($ctx.draft.parent)', context, steps),
       isFalse,
@@ -45,10 +42,9 @@ void main() {
   // SCN-15 / E15: host-code-shaped input is rejected by the grammar before evaluation.
   test('rejects host code syntax', () {
     expect(
-      () => ExpressionEvaluator().evaluate(
-        r'$ctx.today == exec("id")',
-        {'today': '2026-08-03'},
-      ),
+      () => ExpressionEvaluator().evaluate(r'$ctx.today == exec("id")', {
+        'today': '2026-08-03',
+      }),
       throwsA(isA<ExpressionException>()),
     );
   });
@@ -56,10 +52,7 @@ void main() {
   // SCN-16: parse depth above the published limit reports expression.max_depth.
   test('names the exceeded depth limit', () {
     try {
-      ExpressionEvaluator().evaluate(
-        '${'(' * 33}true${')' * 33}',
-        {},
-      );
+      ExpressionEvaluator().evaluate('${'(' * 33}true${')' * 33}', {});
       fail('Expected depth limit failure.');
     } on ExpressionException catch (error) {
       expect(error.limitName, 'expression.max_depth');
@@ -73,10 +66,7 @@ void main() {
     );
     final longLiteral = 'A' * 11;
     try {
-      evaluator.evaluate(
-        r'$ctx.flag == "' + longLiteral + '"',
-        {'flag': true},
-      );
+      evaluator.evaluate('\$ctx.flag == "$longLiteral"', {'flag': true});
       fail('Expected length limit failure.');
     } on ExpressionException catch (error) {
       expect(error.limitName, 'expression.max_length');

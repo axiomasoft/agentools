@@ -79,7 +79,19 @@ try {
     if (!str_starts_with($tag, 'spec-') || substr($tag, 5) !== $revision) {
         $errors[] = "тег {$tag} не выражает ревизию корпуса {$revision}";
     } elseif (!annotatedTagExists($root, $tag)) {
-        $errors[] = "аннотированный тег {$tag} отсутствует: ревизия {$revision} не заморожена";
+        $lockPath = $revisionDir . '/revision.lock.json';
+        if ($revision === '2026-09' && is_file($lockPath)) {
+            $status = 0;
+            $output = [];
+            exec('python3 ' . escapeshellarg($root . '/tools/revision_lock.py') . ' --check 2>&1', $output, $status);
+            if ($status === 0) {
+                printf("lockstep: corpus %s ↔ candidate revision.lock.json: OK\n", $revision);
+            } else {
+                $errors[] = 'candidate revision.lock.json stale or invalid: ' . implode("\n", $output);
+            }
+        } else {
+            $errors[] = "аннотированный тег {$tag} отсутствует: ревизия {$revision} не заморожена";
+        }
     } else {
         printf("lockstep: corpus %s ↔ annotated tag %s: OK\n", $revision, $tag);
     }

@@ -1,0 +1,19 @@
+{
+  "id": "ovrdup-001",
+  "title": "Маркер OVR-91 объявлен дважды в тексте ревизии",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "OVR-10",
+    "OVR-11"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "rule_line",
+    "inline": "**OVR-91 (MUST, L1).** Первое объявление маркера.\n**OVR-91 (MUST, L1).** Повторное объявление того же маркера — дубль."
+  },
+  "expect": {
+    "linter": "reject",
+    "diagnostic_substring": "дублирующийся маркер"
+  }
+}

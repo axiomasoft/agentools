@@ -1,0 +1,18 @@
+{
+  "id": "ovrline-002",
+  "title": "Тот же текст с уровнем L1 — грамматика соблюдена",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "OVR-7",
+    "OVR-12"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "rule_line",
+    "inline": "**OVR-90 (MUST, L1).** Правило с уровнем — грамматика соблюдена."
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

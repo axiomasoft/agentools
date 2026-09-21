@@ -43,21 +43,16 @@ import spec_lint  # noqa: E402  (грамматика и таблица преф
 RULE_NUMBER_RE = re.compile(r"-T?(?P<number>\d+)$")
 
 
-def _rule_paragraphs(doc_text):
-    """Отдаёт (номер строки, match грамматики, строки абзаца) для каждой строки-
-    кандидата документа. Кандидат, не прошедший грамматику `RULE_LINE_RE_2026_08`,
-    здесь НЕ считается правилом молча: `spec_lint.py` уже обязан был отчитаться о
-    нём как об ошибке (`check_rule_lines`) — генератор не дублирует эту проверку,
-    он просто не индексирует то, что не разобрал."""
+def _rule_paragraphs(doc_text, candidate_re, rule_line_re):
     lines = doc_text.split("\n")
     for lineno, line in enumerate(lines, start=1):
-        if not spec_lint.RULE_CANDIDATE_RE_2026_08.match(line):
+        if not candidate_re.match(line):
             continue
-        match = spec_lint.RULE_LINE_RE_2026_08.match(line)
+        match = rule_line_re.match(line)
         if not match:
             continue
         paragraph = [line]
-        j = lineno  # lines — 0-based, lineno уже на 1 больше текущего индекса
+        j = lineno
         while j < len(lines) and lines[j].strip() != "":
             paragraph.append(lines[j])
             j += 1
@@ -69,8 +64,8 @@ def _text_digest(paragraph_lines):
     return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
 
 
-def _sort_key(entry):
-    doc_index = spec_lint.DOCS_2026_08.index(entry["doc"])
+def _sort_key(entry, docs):
+    doc_index = docs.index(entry["doc"])
     number = int(RULE_NUMBER_RE.search(entry["rule_id"]).group("number"))
     return (doc_index, number)
 
@@ -78,13 +73,23 @@ def _sort_key(entry):
 def build_index(revision_dir):
     """Строит индекс в памяти — без побочных эффектов на диске (нужно и `--write`,
     и `--check`, различается только запись результата)."""
+    rev = revision_dir.resolve().name
+    docs = spec_lint.DOCS_2026_09 if rev == "2026-09" else spec_lint.DOCS_2026_08
+    candidate_re = (
+        spec_lint.RULE_CANDIDATE_RE_2026_09
+        if rev == "2026-09"
+        else spec_lint.RULE_CANDIDATE_RE_2026_08
+    )
+    rule_line_re = (
+        spec_lint.RULE_LINE_RE_2026_09 if rev == "2026-09" else spec_lint.RULE_LINE_RE_2026_08
+    )
     entries = []
-    for name in spec_lint.DOCS_2026_08:
+    for name in docs:
         doc_path = revision_dir / name
         if not doc_path.is_file():
             continue
         text = doc_path.read_text(encoding="utf-8")
-        for _lineno, match, paragraph in _rule_paragraphs(text):
+        for _lineno, match, paragraph in _rule_paragraphs(text, candidate_re, rule_line_re):
             entries.append(
                 {
                     "rule_id": match.group("id"),
@@ -95,7 +100,7 @@ def build_index(revision_dir):
                     "text_digest": _text_digest(paragraph),
                 }
             )
-    entries.sort(key=_sort_key)
+    entries.sort(key=lambda entry: _sort_key(entry, docs))
     return {
         "spec_rev": revision_dir.resolve().name,
         "generator": "tools/rules_index.py",

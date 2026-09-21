@@ -4,7 +4,9 @@ import 'tool_execution_error.dart';
 final class ToolExecutionResult {
   ToolExecutionResult._({this.value, this.error}) {
     if ((value == null) == (error == null)) {
-      throw ArgumentError('A tool execution result must contain exactly one outcome.');
+      throw ArgumentError(
+        'A tool execution result must contain exactly one outcome.',
+      );
     }
   }
 

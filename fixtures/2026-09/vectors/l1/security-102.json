@@ -1,0 +1,88 @@
+{
+  "id": "security-102",
+  "title": "SEC-2: допустимое состояние — непроверенная целостность access token",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "SEC-2"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Security probe.\nCall when: verify a security rule.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"case\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "credentials": [
+        {
+          "kind": "access_token",
+          "source": "trusted_credential",
+          "issuer": "issuer-trusted",
+          "audience": "agentools-runtime",
+          "integrity": "verified",
+          "principal_id": "user-7",
+          "scopes": [
+            "demo.read"
+          ]
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Выполни security-проверку"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "sec-2"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_completed",
+        "payload": {
+          "security_rule": "SEC-2",
+          "stimulus_pointer": "/given/driver_state/credentials/0/integrity"
+        }
+      }
+    ],
+    "final_state": "completed",
+    "tool_calls": [
+      {
+        "tool": "demo_probe",
+        "args_subset": {
+          "value": "sec-2"
+        },
+        "phase": "prepare"
+      }
+    ]
+  }
+}

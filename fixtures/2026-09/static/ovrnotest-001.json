@@ -1,0 +1,19 @@
+{
+  "id": "ovrnotest-001",
+  "title": "Правило со статусом 'Not testable' несёт пустую причину — тихий SKIP вместо названного статуса",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "OVR-7",
+    "CFH-20"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "rule_line",
+    "inline": "**OVR-95 (MUST, L1, Not testable:  ).** Правило с пустой причиной недоступности."
+  },
+  "expect": {
+    "linter": "reject",
+    "diagnostic_substring": "тихого SKIP не существует (DR-01 §J3)"
+  }
+}

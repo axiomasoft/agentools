@@ -1,0 +1,71 @@
+{
+  "id": "longop-004",
+  "title": "Статусы Tasks отображаются на журнал, а input_required в applying даёт типизированный отказ",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "LOP-12",
+    "LOP-13",
+    "LOP-14"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Детерминированный пробный инструмент для проверки поведения рантайма.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {}
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "confirmation": "none",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "user_input": "Статусы Tasks отображаются на журнал, а input_required в applying даёт типизированный отказ"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "longop-004"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "task_status_observed",
+        "payload": {
+          "status": "input_required",
+          "action_state": "applying"
+        }
+      },
+      {
+        "kind": "action_failed",
+        "payload": {
+          "reason": "task_input_required_while_applying"
+        }
+      }
+    ],
+    "final_state": "failed",
+    "error": {
+      "code": "agentools.precondition.task_input_required_while_applying"
+    }
+  }
+}

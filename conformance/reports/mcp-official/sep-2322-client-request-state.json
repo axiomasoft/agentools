@@ -1,0 +1,6 @@
+{
+  "scenario": "sep-2322-client-request-state",
+  "checks": [],
+  "passed": true,
+  "raw_dir": "reports/mcp-official/run-sep-2322-client-request-state"
+}

@@ -1,0 +1,155 @@
+{
+  "id": "confirmation-001",
+  "title": "Two-phase happy path: prepare→preview→approve(user)→commit одним инструментом",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "CNF-2",
+    "CNF-9",
+    "CNF-10",
+    "CNF-11",
+    "CNF-12",
+    "ALC-8",
+    "ALC-17",
+    "ALC-24"
+  ],
+  "conformance_level": "L1",
+  "given": {
+    "tools": [
+      {
+        "name": "crm_task_update",
+        "title": "Обновить задачу",
+        "description": "Изменяет статус либо поля задачи CRM. Обратимая операционная запись: изменение устранимо повторным вызовом с прежними значениями.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "task_id": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "assignee_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "task_id"
+          ]
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "task_id": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "write",
+            "confirmation": "confirm",
+            "idempotent_commit": true,
+            "permissions_hint": [
+              "crm.task.write"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "script": [
+    {
+      "user_input": "Переведи задачу T-100 на исполнителя u-9"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "crm_task_update",
+          "args": {
+            "task_id": "T-100",
+            "assignee_id": "u-9"
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "action_created"
+      },
+      {
+        "kind": "action_started"
+      },
+      {
+        "kind": "input_recorded"
+      },
+      {
+        "kind": "confirmation_requested",
+        "payload": {
+          "preview": {
+            "changes": [
+              {
+                "entity": "task",
+                "entity_id": "T-100"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "kind": "confirmation_resolved",
+        "actor": {
+          "type": "user"
+        },
+        "payload": {
+          "decision": "approve"
+        }
+      },
+      {
+        "kind": "effect_requested",
+        "payload": {
+          "tool_name": "crm_task_update"
+        }
+      },
+      {
+        "kind": "effect_confirmed"
+      },
+      {
+        "kind": "action_completed"
+      }
+    ],
+    "final_state": "completed",
+    "tool_calls": [
+      {
+        "tool": "crm_task_update",
+        "args_subset": {
+          "task_id": "T-100",
+          "assignee_id": "u-9"
+        },
+        "phase": "prepare"
+      },
+      {
+        "tool": "crm_task_update",
+        "args_subset": {
+          "task_id": "T-100",
+          "assignee_id": "u-9"
+        },
+        "phase": "commit"
+      }
+    ]
+  }
+}

@@ -7,7 +7,10 @@ void main() {
     test('parses the single declared data key', () {
       final result = ExtensionKey.parseOwn(ExtensionIdentity.dataKey);
       expect(result, isA<ExtensionKeyParsed>());
-      expect((result as ExtensionKeyParsed).key.value, ExtensionIdentity.dataKey);
+      expect(
+        (result as ExtensionKeyParsed).key.value,
+        ExtensionIdentity.dataKey,
+      );
     });
 
     /// EXT-6; vector extidentity-002
@@ -48,13 +51,16 @@ void main() {
     });
 
     /// EXT-7
-    test('rejects another own-prefix key that is not the declared data key', () {
-      final result = ExtensionKey.parseOwn('dev.agentools/profile');
-      expect(result, isA<InvalidVendorKeyReject>());
-      expect(
-        (result as InvalidVendorKeyReject).message,
-        'dev.agentools/profile is not the declared AgenTools data key.',
-      );
-    });
+    test(
+      'rejects another own-prefix key that is not the declared data key',
+      () {
+        final result = ExtensionKey.parseOwn('dev.agentools/profile');
+        expect(result, isA<InvalidVendorKeyReject>());
+        expect(
+          (result as InvalidVendorKeyReject).message,
+          'dev.agentools/profile is not the declared AgenTools data key.',
+        );
+      },
+    );
   });
 }

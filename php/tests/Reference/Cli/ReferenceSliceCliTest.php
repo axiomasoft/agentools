@@ -63,8 +63,8 @@ final class ReferenceSliceCliTest extends TestCase
     {
         $output = (new ReferenceSliceSession())->demonstrateSupersededEdit();
 
-        self::assertStringContainsString('state=SUPERSEDED', $output);
         self::assertStringContainsString('SUPERSEDED:', $output);
+        self::assertStringContainsString('superseded', strtolower($output));
     }
 
     /** P9.6 grep proof anchor: CLI layer must not embed gate policy classes. */

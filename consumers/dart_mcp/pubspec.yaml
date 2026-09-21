@@ -1,0 +1,17 @@
+name: agentools_consumer_mcp
+description: P7.4 paired-private MCP companion consumer (path dependency; not pub.dev-ready).
+publish_to: none
+version: 0.0.1
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  agentools:
+    path: AGENTOOLS_PATH
+  agentools_mcp_dart:
+    path: MCP_PATH
+
+dev_dependencies:
+  lints: ^6.1.0
+  test: ^1.31.0

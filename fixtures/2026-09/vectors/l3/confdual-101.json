@@ -1,0 +1,98 @@
+{
+  "id": "confdual-101",
+  "title": "Разные principal удовлетворяют dual control",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "CNF-33"
+  ],
+  "conformance_level": "L3",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Purpose: Выполняет необратимое проверяемое действие.\nCall when: Нужно проверить dual control или изолированный маршрут.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"x\"})",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "irreversible",
+            "confirmation": "double_confirm",
+            "permissions_hint": [
+              "demo.write"
+            ]
+          }
+        }
+      }
+    ],
+    "driver_state": {
+      "principals": {
+        "initiator": {
+          "id": "user-a"
+        },
+        "agent": {
+          "id": "agent-a"
+        },
+        "authorizer": {
+          "id": "user-b"
+        }
+      },
+      "authorization": {
+        "resource": "payment-1",
+        "tool": "demo_probe",
+        "permissions": [
+          "demo.write"
+        ]
+      }
+    }
+  },
+  "script": [
+    {
+      "user_input": "Отправь платёж"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "payment-1"
+          }
+        }
+      }
+    },
+    {
+      "approval": "approve"
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "confirmation_resolved",
+        "payload": {
+          "proposer_principal": "user-a",
+          "approver_principal": "user-b",
+          "principals_distinct": true
+        }
+      },
+      {
+        "kind": "action_completed"
+      }
+    ],
+    "final_state": "completed",
+    "tool_calls": [
+      {
+        "tool": "demo_probe",
+        "args_subset": {
+          "value": "payment-1"
+        },
+        "phase": "commit"
+      }
+    ]
+  }
+}

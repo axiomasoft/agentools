@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:agentools/agentools.dart';
+import 'package:agentools/agentools_testkit.dart';
 import 'package:crypto/crypto.dart';
 
 import 'harness_tool_port.dart';
@@ -14,6 +15,14 @@ typedef EmitFn = void Function(Map<String, dynamic> message);
 final class SdkConformanceEngine {
   String _clockIso = '2000-01-01T00:00:00Z';
   String _seed = 'agentools-conformance';
+  String _specRevision = '2026-08';
+
+  void bindSpecRevision(String revision) {
+    if (revision != '2026-08' && revision != '2026-09') {
+      throw StateError('unsupported spec revision: $revision');
+    }
+    _specRevision = revision;
+  }
 
   void configure(String clock, String seed) {
     _clockIso = clock;
@@ -59,13 +68,19 @@ final class SdkConformanceEngine {
       return;
     }
     if (_hasTaskState(state)) {
-      _longOperation(vectorId, state, script.cast<Map<String, dynamic>>(), emit);
+      _longOperation(
+        vectorId,
+        state,
+        script.cast<Map<String, dynamic>>(),
+        emit,
+      );
       return;
     }
 
     final call = _toolCall(script.cast<Map<String, dynamic>>());
     final tool = _toolDocument(given, call['tool']);
-    final profile = tool['_meta'] is Map &&
+    final profile =
+        tool['_meta'] is Map &&
             (tool['_meta'] as Map)[ExtensionIdentity.dataKey] is Map
         ? Map<String, dynamic>.from(
             (tool['_meta'] as Map)[ExtensionIdentity.dataKey] as Map,
@@ -114,9 +129,7 @@ final class SdkConformanceEngine {
       });
     }
     for (final call in _list(projection['tool_calls'])) {
-      if (call is! Map ||
-          call['tool'] is! String ||
-          call['phase'] is! String) {
+      if (call is! Map || call['tool'] is! String || call['phase'] is! String) {
         continue;
       }
       final operation = <String, dynamic>{
@@ -207,7 +220,7 @@ final class SdkConformanceEngine {
         : <String, dynamic>{};
     if (snapshot.isNotEmpty &&
         (snapshot['seq'] != previous ||
-            (snapshot['spec_rev'] ?? '2026-08') != '2026-08')) {
+            (snapshot['spec_rev'] ?? _specRevision) != _specRevision)) {
       _fail(emit, id, 'snapshot_mismatch');
       return;
     }
@@ -217,7 +230,9 @@ final class SdkConformanceEngine {
       final actionState = _stateFromFolded(folded, last, terminal);
       _journalProbe(probe, id, actionState, journal);
       if (state['append_probe'] is Map) {
-        final appendProbe = Map<String, dynamic>.from(state['append_probe'] as Map);
+        final appendProbe = Map<String, dynamic>.from(
+          state['append_probe'] as Map,
+        );
         final attempt = appendProbe['attempted_event'];
         final storage = appendProbe['storage_last_seq'];
         if (attempt is Map &&
@@ -234,12 +249,7 @@ final class SdkConformanceEngine {
       }
       _result(emit, id, actionState);
     } on VersionConflict {
-      _fail(
-        emit,
-        id,
-        'version_conflict',
-        JournalErrorCodes.versionConflict,
-      );
+      _fail(emit, id, 'version_conflict', JournalErrorCodes.versionConflict);
     } on LifecycleException {
       _fail(emit, id, 'lifecycle_violation');
     }
@@ -294,7 +304,8 @@ final class SdkConformanceEngine {
     final actor = Actor(type: 'agent', id: 'agent-conformance');
     final clock = FixedClock(DateTime.parse(_clockIso));
     final journal = JournalAppender(
-      journal: ActionJournal(),
+      store: InMemoryEventStore(),
+      tenantId: 'tenant-conformance',
       actionId: 'act-$id',
       actor: actor,
       clock: clock,
@@ -369,7 +380,8 @@ final class SdkConformanceEngine {
     final actor = Actor(type: 'agent', id: actorId);
     final clock = FixedClock(DateTime.parse(_clockIso));
     final journal = JournalAppender(
-      journal: ActionJournal(),
+      store: InMemoryEventStore(),
+      tenantId: 'tenant-conformance',
       actionId: 'act-$id',
       actor: actor,
       clock: clock,
@@ -381,10 +393,10 @@ final class SdkConformanceEngine {
     }
     for (final step in script) {
       if (step.containsKey('user_input')) {
-        journal.append('input_recorded', payload: {
-          'name': 'user_input',
-          'value': step['user_input'],
-        });
+        journal.append(
+          'input_recorded',
+          payload: {'name': 'user_input', 'value': step['user_input']},
+        );
       }
     }
 
@@ -398,11 +410,7 @@ final class SdkConformanceEngine {
         'vector_id': id,
         'probe_id': 'prepare-tool',
         'probe_kind': 'tool_boundary',
-        'operation': {
-          'tool': toolName,
-          'phase': 'prepare',
-          'args': args,
-        },
+        'operation': {'tool': toolName, 'phase': 'prepare', 'args': args},
       });
     }
 
@@ -412,15 +420,15 @@ final class SdkConformanceEngine {
         _result(emit, id, 'awaiting_confirmation');
         return;
       }
-      _event(emit, id, 'confirmation_resolved', {'decision': approval}, {
-        'type': 'user',
-      });
+      _event(
+        emit,
+        id,
+        'confirmation_resolved',
+        {'decision': approval},
+        {'type': 'user'},
+      );
       if (approval != 'approve') {
-        _result(
-          emit,
-          id,
-          approval == 'reject' ? 'rejected' : 'expired',
-        );
+        _result(emit, id, approval == 'reject' ? 'rejected' : 'expired');
         return;
       }
     }
@@ -432,11 +440,7 @@ final class SdkConformanceEngine {
         'vector_id': id,
         'probe_id': 'commit-tool',
         'probe_kind': 'tool_boundary',
-        'operation': {
-          'tool': toolName,
-          'phase': 'commit',
-          'args': args,
-        },
+        'operation': {'tool': toolName, 'phase': 'commit', 'args': args},
       });
       _event(emit, id, 'effect_confirmed');
     }
@@ -490,7 +494,7 @@ final class SdkConformanceEngine {
       ),
       kind: event['kind']?.toString() ?? 'unknown',
       eventVersion: event['event_version'] as int? ?? 1,
-      specRevision: event['spec_rev']?.toString() ?? '2026-08',
+      specRevision: event['spec_rev']?.toString() ?? _specRevision,
       payload: event['payload'] is Map
           ? Map<String, dynamic>.from(event['payload'] as Map)
           : const {},
@@ -585,10 +589,7 @@ final class SdkConformanceEngine {
     );
   }
 
-  Map<String, dynamic> _toolDocument(
-    Map<String, dynamic> given,
-    Object? name,
-  ) {
+  Map<String, dynamic> _toolDocument(Map<String, dynamic> given, Object? name) {
     for (final tool in _list(given['tools'])) {
       if (tool is Map && tool['name'] == name) {
         return Map<String, dynamic>.from(tool);
@@ -657,19 +658,9 @@ final class SdkConformanceEngine {
     emit(event);
   }
 
-  void _fail(
-    EmitFn emit,
-    String id,
-    String reason, [
-    String? code,
-  ]) {
+  void _fail(EmitFn emit, String id, String reason, [String? code]) {
     _event(emit, id, 'action_failed', {'reason': reason});
-    _result(
-      emit,
-      id,
-      'failed',
-      code == null ? null : {'code': code},
-    );
+    _result(emit, id, 'failed', code == null ? null : {'code': code});
   }
 
   List<dynamic> _list(Object? value) {

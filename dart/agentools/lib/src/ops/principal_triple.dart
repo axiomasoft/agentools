@@ -50,10 +50,7 @@ final class PrincipalTriple {
 
     return (
       actor: Actor(type: 'agent', id: agentId),
-      payload: {
-        'end_user_id': initiatorId,
-        'authorization_scope': scope,
-      },
+      payload: {'end_user_id': initiatorId, 'authorization_scope': scope},
     );
   }
 

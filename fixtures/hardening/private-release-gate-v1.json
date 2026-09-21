@@ -1,0 +1,71 @@
+{
+  "schema_version": "private-release-gate-fixtures/v1",
+  "negative_g_release": [
+    {
+      "id": "self-authorized",
+      "document": {
+        "schema_version": "g-release-request/v1",
+        "authorized": true,
+        "owner_grant_evidence": {"kind": "forged"},
+        "public_authorized": false,
+        "decision_references": {"D5": "proposed"},
+        "proposed_actions": [],
+        "public_eligible": "red",
+        "public_blockers": [{"id": "RR-DEC-D5-PUBLIC-IDENTITY"}],
+        "packet_digest": "00"
+      }
+    },
+    {
+      "id": "wildcard-channel",
+      "document": {
+        "schema_version": "g-release-request/v1",
+        "authorized": false,
+        "owner_grant_evidence": null,
+        "public_authorized": false,
+        "decision_references": {"D5": "proposed"},
+        "proposed_actions": [
+          {"action_id": "x", "channel": "*", "preconditions_met": false}
+        ],
+        "public_eligible": "red",
+        "public_blockers": [{"id": "RR-DEC-D5-PUBLIC-IDENTITY"}],
+        "packet_digest": "00"
+      }
+    },
+    {
+      "id": "stale-packet-digest",
+      "document": {
+        "schema_version": "g-release-request/v1",
+        "authorized": false,
+        "owner_grant_evidence": null,
+        "public_authorized": false,
+        "decision_references": {"D5": "proposed"},
+        "proposed_actions": [],
+        "public_eligible": "red",
+        "public_blockers": [{"id": "RR-DEC-D5-PUBLIC-IDENTITY"}],
+        "packet_digest": "deadbeef"
+      }
+    }
+  ],
+  "negative_acceptance": [
+    {
+      "id": "promoted-green-without-evidence",
+      "document": {
+        "schema_version": "private-rc-acceptance/v1",
+        "verdict": "green",
+        "public_authorized": false,
+        "subjects": {},
+        "manifest_sha256": "00"
+      }
+    },
+    {
+      "id": "public-authorized-true",
+      "document": {
+        "schema_version": "private-rc-acceptance/v1",
+        "verdict": "red",
+        "public_authorized": true,
+        "subjects": {},
+        "manifest_sha256": "00"
+      }
+    }
+  ]
+}

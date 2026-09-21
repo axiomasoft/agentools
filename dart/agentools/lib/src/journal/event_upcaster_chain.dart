@@ -5,7 +5,7 @@ import 'lifecycle_exception.dart';
 /// Applies pure event migrations only while reading; records are never mutated.
 final class EventUpcasterChain {
   EventUpcasterChain([List<EventUpcaster> upcasters = const []])
-      : _upcasters = List.unmodifiable(upcasters);
+    : _upcasters = List.unmodifiable(upcasters);
 
   final List<EventUpcaster> _upcasters;
 

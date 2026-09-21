@@ -3,8 +3,8 @@ import 'dart:convert';
 /// Retains every received member so an unknown extension round-trips unchanged.
 final class RawDocument {
   RawDocument(Map<String, dynamic> raw, {String? originalJson})
-      : _raw = Map<String, dynamic>.from(raw),
-        _originalJson = originalJson;
+    : _raw = Map<String, dynamic>.from(raw),
+      _originalJson = originalJson;
 
   final Map<String, dynamic> _raw;
   final String? _originalJson;

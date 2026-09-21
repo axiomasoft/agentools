@@ -1,0 +1,3 @@
+[INFO][mcp_dart.client] Setting request handler for potentially custom method 'ping'. Ensure client capabilities match.
+[DEBUG][mcp_dart.client] MCP Server Discovered. Server: conformance-mock-server 1.0.0, Protocol: 2026-07-28
+[DEBUG][mcp_dart.client] MCP Server Discovered. Server: conformance-mock-server 1.0.0, Protocol: 2026-07-28

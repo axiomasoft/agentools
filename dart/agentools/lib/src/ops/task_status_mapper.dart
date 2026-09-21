@@ -14,12 +14,8 @@ final class TaskStatusMapper {
     return switch (status) {
       'working' => const [],
       'input_required' => _mapInputRequired(state, inputPayload),
-      'completed' => [
-        (kind: 'action_completed', payload: <String, dynamic>{}),
-      ],
-      'failed' => [
-        (kind: 'action_failed', payload: <String, dynamic>{}),
-      ],
+      'completed' => [(kind: 'action_completed', payload: <String, dynamic>{})],
+      'failed' => [(kind: 'action_failed', payload: <String, dynamic>{})],
       'cancelled' => _mapCancelled(state),
       _ => const [],
     };
@@ -47,7 +43,8 @@ final class TaskStatusMapper {
     return [
       (
         kind: 'input_recorded',
-        payload: inputPayload ??
+        payload:
+            inputPayload ??
             <String, dynamic>{'name': 'task_input', 'value': null},
       ),
     ];
@@ -61,9 +58,7 @@ final class TaskStatusMapper {
       return const [];
     }
 
-    return [
-      (kind: 'action_cancelled', payload: <String, dynamic>{}),
-    ];
+    return [(kind: 'action_cancelled', payload: <String, dynamic>{})];
   }
 }
 

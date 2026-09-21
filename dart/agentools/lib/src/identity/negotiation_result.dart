@@ -5,9 +5,7 @@ import 'tool_error.dart';
 final class NegotiationResult {
   NegotiationResult(this.mode, {this.error}) {
     if ((mode == NegotiationMode.rejected) != (error != null)) {
-      throw ArgumentError(
-        'Only a rejected negotiation carries a tool error.',
-      );
+      throw ArgumentError('Only a rejected negotiation carries a tool error.');
     }
   }
 

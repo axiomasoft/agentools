@@ -7,38 +7,38 @@ void main() {
   final canonicalizer = Canonicalizer();
 
   Map<String, dynamic> document() => {
-        'name': 'fina_payment_send',
-        'title': 'Отправить платёж',
-        'description':
-            'Purpose: Отправляет платёж во внешнюю систему.\nCall when: Подтверждённый платёж готов к отправке.\nRequired arguments: amount_minor\nExample: fina_payment_send({"amount_minor":12500})',
-        'inputSchema': {
-          'type': 'object',
-          'properties': {
-            'amount_minor': {'type': 'integer'},
-          },
-        },
-        'outputSchema': {
-          'type': 'object',
-          'properties': {
-            'payment_id': {'type': 'string'},
-          },
-        },
-        'annotations': {
-          'readOnlyHint': false,
-          'destructiveHint': true,
-          'idempotentHint': true,
-          'openWorldHint': true,
-        },
-        '_meta': {
-          'dev.agentools/action': {
-            'side_effect': 'irreversible',
-            'confirmation': 'double_confirm',
-            'idempotent_commit': true,
-            'permissions_hint': ['fina.payment.send'],
-            'content_origin': 'untrusted_external',
-          },
-        },
-      };
+    'name': 'fina_payment_send',
+    'title': 'Отправить платёж',
+    'description':
+        'Purpose: Отправляет платёж во внешнюю систему.\nCall when: Подтверждённый платёж готов к отправке.\nRequired arguments: amount_minor\nExample: fina_payment_send({"amount_minor":12500})',
+    'inputSchema': {
+      'type': 'object',
+      'properties': {
+        'amount_minor': {'type': 'integer'},
+      },
+    },
+    'outputSchema': {
+      'type': 'object',
+      'properties': {
+        'payment_id': {'type': 'string'},
+      },
+    },
+    'annotations': {
+      'readOnlyHint': false,
+      'destructiveHint': true,
+      'idempotentHint': true,
+      'openWorldHint': true,
+    },
+    '_meta': {
+      'dev.agentools/action': {
+        'side_effect': 'irreversible',
+        'confirmation': 'double_confirm',
+        'idempotent_commit': true,
+        'permissions_hint': ['fina.payment.send'],
+        'content_origin': 'untrusted_external',
+      },
+    },
+  };
 
   ToolDescriptor makeDescriptor([Map<String, dynamic>? overrides]) {
     final payload = Map<String, dynamic>.from(document());
@@ -50,7 +50,9 @@ void main() {
 
   String phpGoldenDigest() {
     final phpTest = File('../../php/tests/Tool/ToolDescriptorTest.php');
-    final match = RegExp(r'sha-256:[0-9a-f]{64}').firstMatch(phpTest.readAsStringSync());
+    final match = RegExp(
+      r'sha-256:[0-9a-f]{64}',
+    ).firstMatch(phpTest.readAsStringSync());
     if (match == null) {
       throw StateError('Golden digest not found in ${phpTest.path}');
     }
@@ -72,8 +74,10 @@ void main() {
   test('changing description changes the digest', () {
     final original = makeDescriptor().digest(canonicalizer);
     final changed = Map<String, dynamic>.from(document());
-    changed['description'] = (changed['description'] as String)
-        .replaceAll('платёж', 'перевод');
+    changed['description'] = (changed['description'] as String).replaceAll(
+      'платёж',
+      'перевод',
+    );
 
     final next = ToolDescriptor.fromMap(changed).digest(canonicalizer);
     // ignore: avoid_print
@@ -87,11 +91,14 @@ void main() {
   test('rejects a descriptor changed after preparation', () {
     final expected = makeDescriptor().digest(canonicalizer);
     final changed = Map<String, dynamic>.from(document());
-    changed['description'] = (changed['description'] as String)
-        .replaceAll('платёж', 'перевод');
+    changed['description'] = (changed['description'] as String).replaceAll(
+      'платёж',
+      'перевод',
+    );
 
     expect(
-      () => ToolDescriptor.fromMap(changed).assertDigest(expected, canonicalizer),
+      () =>
+          ToolDescriptor.fromMap(changed).assertDigest(expected, canonicalizer),
       throwsA(
         isA<DescriptorDrift>().having(
           (error) => error.error.code,
@@ -105,7 +112,9 @@ void main() {
   // TLP-10; catalog rejects a hint pair that contradicts its core side_effect.
   test('rejects inconsistent effect annotations', () {
     final payload = Map<String, dynamic>.from(document());
-    final annotations = Map<String, dynamic>.from(payload['annotations'] as Map);
+    final annotations = Map<String, dynamic>.from(
+      payload['annotations'] as Map,
+    );
     annotations['destructiveHint'] = false;
     payload['annotations'] = annotations;
 
@@ -125,7 +134,9 @@ void main() {
     action['side_effect'] = 'sec.incident_escalation';
     meta['dev.agentools/action'] = action;
     payload['_meta'] = meta;
-    final annotations = Map<String, dynamic>.from(payload['annotations'] as Map);
+    final annotations = Map<String, dynamic>.from(
+      payload['annotations'] as Map,
+    );
     annotations['destructiveHint'] = false;
     payload['annotations'] = annotations;
 

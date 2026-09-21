@@ -49,7 +49,8 @@
 сверяется с `expect.linter` и адресной `diagnostic_substring`. Полная JSON-Schema-валидация
 `behavior`/`harness` вне периметра (D14, stdlib-only) — приходит эмпирически (`bakeoff/`) и с
 раннером фазы P6. Двунаправленная traceability и отчёт покрытия включаются общим проходом
-ревизии `2026-08`; `--coverage --write|--check` владеет производным `coverage.md`.
+поддерживаемой ревизии; `--coverage --write|--check` владеет её производным
+`fixtures/<revision>/coverage.md`.
 
 Без сетевых обращений, stdlib-only. Ошибки собираются списком и печатаются
 разом; exit 1 при наличии хотя бы одной ошибки, иначе exit 0.
@@ -129,6 +130,8 @@ DOCS_2026_08 = [
     "11_conformance-harness.md",
 ]
 
+DOCS_2026_09 = DOCS_2026_08 + ["12_hardening-semantics.md"]
+
 # Маркер ↔ документ (`research/02-…` §2). Маркер чужого документа — ошибка: обе
 # ревизии живут в одном репозитории и греп-ищутся одними командами.
 RULE_PREFIXES_2026_08 = {
@@ -146,6 +149,11 @@ RULE_PREFIXES_2026_08 = {
     "11_conformance-harness.md": "CFH",
 }
 
+RULE_PREFIXES_2026_09 = {
+    **RULE_PREFIXES_2026_08,
+    "12_hardening-semantics.md": "HRD",
+}
+
 RULE_LINE_RE_2026_08 = re.compile(
     r"^\*\*(?P<id>(?:OVR|EXT|TLP|ALC|CNF|CLR|SCN|LOP|AOB|IDE|SEC|CFH)-T?\d+) "
     r"\((?P<word>MUST NOT|MUST|SHOULD NOT|SHOULD|MAY), (?P<level>L1|L2|L3)"
@@ -156,6 +164,14 @@ RULE_LINE_RE_2026_08 = re.compile(
 # не существует (anti-regression №3).
 RULE_CANDIDATE_RE_2026_08 = re.compile(
     r"^\*\*(?:OVR|EXT|TLP|ALC|CNF|CLR|SCN|LOP|AOB|IDE|SEC|CFH)-T?\d+\b")
+
+RULE_LINE_RE_2026_09 = re.compile(
+    r"^\*\*(?P<id>(?:OVR|EXT|TLP|ALC|CNF|CLR|SCN|LOP|AOB|IDE|SEC|CFH|HRD)-T?\d+) "
+    r"\((?P<word>MUST NOT|MUST|SHOULD NOT|SHOULD|MAY), (?P<level>L1|L2|L3)"
+    r"(?:, Not testable: (?P<reason>[^)]+))?\)\.\*\* (?P<text>.+)$")
+
+RULE_CANDIDATE_RE_2026_09 = re.compile(
+    r"^\*\*(?:OVR|EXT|TLP|ALC|CNF|CLR|SCN|LOP|AOB|IDE|SEC|CFH|HRD)-T?\d+\b")
 
 # Матрица «документ → решения DR-01» (`research/02-p3-authoring-conventions-2026-08.md`
 # §7 — тот же вход, что читал каждый item P3.2–P3.13 при написании своей таблицы
@@ -178,6 +194,11 @@ COVERAGE_MATRIX_2026_08 = {
     "11_conformance-harness.md": (
         "§J1", "§J2", "§J3", "§J4", "§J5", "§J6", "§J7", "§J8", "§J9", "§E4",
     ),
+}
+
+COVERAGE_MATRIX_2026_09 = {
+    **COVERAGE_MATRIX_2026_08,
+    "12_hardening-semantics.md": ("D7", "D8", "D9", "D10"),
 }
 
 # --- корпус `fixtures/2026-08/**` (`--fixtures-check`, P4.1) -------------------
@@ -281,6 +302,7 @@ REVISION_PROFILES = {
         "fixtures_multi_class": True,
         "rule_prefixes": RULE_PREFIXES_2026_08,
         "rule_line_re": RULE_LINE_RE_2026_08,
+        "rule_candidate_re": RULE_CANDIDATE_RE_2026_08,
         "keyword_lists": True,
         "legacy_terms": LEGACY_TERMS_2026_08,
         "coverage_required": True,
@@ -292,6 +314,34 @@ REVISION_PROFILES = {
         "actionable_description": True,
         # D144/P3.17: owner-ветка A сохраняет namespace. Счётчики фиксируют
         # реальную цену миграции, а не прежнюю оценку «два носителя» из D46.
+        "namespace_domain": "agentools.dev",
+        "namespace_vendor_prefix": "dev.agentools",
+        "namespace_expected": {
+            "domain_file_count": 32,
+            "combined_file_count": 35,
+        },
+    },
+    "2026-09": {
+        "required_docs": DOCS_2026_09,
+        "schema_dirs": [("schema", "A"), ("schema/authoring", "B")],
+        "schema_id_base": "https://agentools.dev/schema/2026-09/",
+        "spec_ref_re": re.compile(
+            r"^(OVR|EXT|TLP|ALC|CNF|CLR|SCN|LOP|AOB|IDE|SEC|CFH|HRD)-T?[0-9]+$"),
+        "fixtures_root": "fixtures/2026-09",
+        "min_vectors": 154,
+        "fixtures_multi_class": True,
+        "rule_prefixes": RULE_PREFIXES_2026_09,
+        "rule_line_re": RULE_LINE_RE_2026_09,
+        "rule_candidate_re": RULE_CANDIDATE_RE_2026_09,
+        "keyword_lists": True,
+        "legacy_terms": LEGACY_TERMS_2026_08,
+        "coverage_required": True,
+        "enum_single_defs": True,
+        "description_no_norm": True,
+        "refs_offline": True,
+        "examples_structural": True,
+        "coverage_matrix": True,
+        "actionable_description": True,
         "namespace_domain": "agentools.dev",
         "namespace_vendor_prefix": "dev.agentools",
         "namespace_expected": {
@@ -1318,7 +1368,7 @@ def check_rule_lines(revision_dir, profile, errors):
             continue
         own_prefix = prefixes[name]
         for lineno, line in enumerate(doc.read_text(encoding="utf-8").split("\n"), start=1):
-            if not RULE_CANDIDATE_RE_2026_08.match(line):
+            if not profile["rule_candidate_re"].match(line):
                 continue
             match = rule_line_re.match(line)
             if not match:
@@ -1495,7 +1545,9 @@ def check_coverage_matrix(revision_dir, profile, errors):
     матрицы покрыта целиком, но приписка решения именно СВОЕМУ документу тоже
     часть контракта research/02-…-2026-08.md §7: решение без правила в своём
     документе — дефект, даже если случайно упомянуто в чужой таблице)."""
-    for name, decisions in COVERAGE_MATRIX_2026_08.items():
+    for name, decisions in (
+        COVERAGE_MATRIX_2026_09 if revision_dir.name == "2026-09" else COVERAGE_MATRIX_2026_08
+    ).items():
         doc = revision_dir / name
         if not doc.is_file():
             continue
@@ -1859,7 +1911,24 @@ def validate_artifact_subject(subject, repo_root, source):
         if data is None:
             return errors
         declaration = data.get("declaration")
-        if set(data) != {"schema_id", "declaration", "absent_peer", "unknown_extension", "cache_scope"} or not isinstance(data.get("schema_id"), str) or not data["schema_id"].startswith("https://agentools.dev/schema/2026-08/") or not isinstance(declaration, dict) or declaration != {"map_key": "dev.agentools/core", "specRevision": "2026-08", "scope": "per_request"} or data.get("absent_peer") != "core_or_typed_error" or data.get("unknown_extension") != "ignore" or data.get("cache_scope") != "exchange":
+        schema_id = data.get("schema_id")
+        rev_match = re.search(r"/schema/([^/]+)/", schema_id or "")
+        spec_revision = rev_match.group(1) if rev_match else "2026-08"
+        expected_declaration = {
+            "map_key": "dev.agentools/core",
+            "specRevision": spec_revision,
+            "scope": "per_request",
+        }
+        if (
+            set(data) != {"schema_id", "declaration", "absent_peer", "unknown_extension", "cache_scope"}
+            or not isinstance(schema_id, str)
+            or not schema_id.startswith(f"https://agentools.dev/schema/{spec_revision}/")
+            or not isinstance(declaration, dict)
+            or declaration != expected_declaration
+            or data.get("absent_peer") != "core_or_typed_error"
+            or data.get("unknown_extension") != "ignore"
+            or data.get("cache_scope") != "exchange"
+        ):
             errors.append(f"{source}: negotiation расширения расходится с контрактом EXT-11..EXT-17")
     elif kind == "tool_contract_case":
         data = json.loads(inline)
@@ -2086,8 +2155,10 @@ def check_fixtures_format(fixtures_root, profile, errors):
                     f"{vf}: vector_class {data['vector_class']!r} не совпадает с классом каталога "
                     f"{dirname!r} (ожидался {meta['class']!r})"
                 )
-            if data["spec_rev"] != "2026-08":
-                errors.append(f"{vf}: spec_rev {data['spec_rev']!r} должен быть '2026-08'")
+            if data["spec_rev"] != fixtures_root.name:
+                errors.append(
+                    f"{vf}: spec_rev {data['spec_rev']!r} должен быть {fixtures_root.name!r}"
+                )
 
             rule_ids = data["spec_rule_ids"]
             if not isinstance(rule_ids, list) or not rule_ids:
@@ -3281,15 +3352,15 @@ def _rule_sort_key(rule):
     return doc_index, number, transition, rule["rule_id"]
 
 
-def render_coverage(rules, coverage, records):
+def render_coverage(revision, rules, coverage, records):
     testable = [rule for rule in rules if not rule.get("not_testable")]
     covered = [rule for rule in testable if coverage.get(rule["rule_id"])]
     mandatory = [rule for rule in testable if rule.get("normative_word") in ("MUST", "MUST NOT")]
     mandatory_covered = [rule for rule in mandatory if coverage.get(rule["rule_id"])]
     lines = [
-        "# Покрытие правил ревизии `2026-08`",
+        f"# Покрытие правил ревизии `{revision}`",
         "",
-        "> Производный артефакт: ручная правка запрещена. Генератор: `python3 tools/spec_lint.py spec/revisions/2026-08 --coverage --write`.",
+        f"> Производный артефакт: ручная правка запрещена. Генератор: `python3 tools/spec_lint.py spec/revisions/{revision} --coverage --write`.",
         "",
         "## Сводка",
         "",
@@ -3342,11 +3413,12 @@ def render_coverage(rules, coverage, records):
 
 
 def apply_coverage_mode(revision_dir, rules, coverage, errors, write, check):
-    profile = REVISION_PROFILES["2026-08"]
+    revision = revision_dir.resolve().name
+    profile = REVISION_PROFILES[revision]
     repo_root = revision_dir.resolve().parents[2]
     fixtures_root = repo_root / profile["fixtures_root"]
     records = collect_coverage_records(fixtures_root, [])
-    rendered = render_coverage(rules, coverage, records)
+    rendered = render_coverage(revision, rules, coverage, records)
     target = fixtures_root / "coverage.md"
     if write:
         target.write_text(rendered, encoding="utf-8", newline="\n")
@@ -3855,7 +3927,11 @@ def run_fixtures_check(fixtures_root):
     if not fixtures_root.is_dir():
         print(f"Ошибка: {fixtures_root} не является директорией", file=sys.stderr)
         return 2
-    profile = REVISION_PROFILES["2026-08"]
+    rev = fixtures_root.resolve().name
+    if rev not in REVISION_PROFILES:
+        print(f"Ошибка: неизвестная ревизия корпуса {rev!r}", file=sys.stderr)
+        return 2
+    profile = REVISION_PROFILES[rev]
     check_fixtures_format(fixtures_root, profile, errors)
     return report(errors, f"--fixtures-check, {fixtures_root}")
 
@@ -4005,8 +4081,8 @@ def main():
     except KeyError as exc:
         print(f"Ошибка: {exc}", file=sys.stderr)
         return 2
-    if coverage_mode and revision_dir.resolve().name != "2026-08":
-        print("Ошибка: --coverage определён только для ревизии 2026-08", file=sys.stderr)
+    if coverage_mode and revision_dir.resolve().name not in ("2026-08", "2026-09"):
+        print("Ошибка: --coverage определён только для ревизий 2026-08 и 2026-09", file=sys.stderr)
         return 2
 
     errors = []

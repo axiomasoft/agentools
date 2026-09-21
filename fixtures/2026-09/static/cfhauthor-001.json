@@ -1,0 +1,18 @@
+{
+  "id": "cfhauthor-001",
+  "title": "Схема авторинга tool-descriptor.json правлена руками мимо генератора close_schema.py",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "CFH-28"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "derived_schema",
+    "inline": "{\"allOf\": [{\"properties\": {\"name\": {\"type\": \"string\"}}, \"type\": \"object\"}], \"unevaluatedProperties\": false, \"x_hand_edited_marker\": true}"
+  },
+  "expect": {
+    "linter": "reject",
+    "diagnostic_substring": "расходится с генератором (непустой diff)"
+  }
+}

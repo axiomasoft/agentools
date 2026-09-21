@@ -1,0 +1,95 @@
+{
+  "id": "scenario-002",
+  "title": "Технический retry исчерпывается в abort, semantic continue оставляет результат отсутствующим",
+  "vector_class": "behavior",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "SCN-6",
+    "SCN-7",
+    "SCN-8",
+    "SCN-9",
+    "SCN-10",
+    "SCN-11"
+  ],
+  "conformance_level": "L2",
+  "given": {
+    "tools": [
+      {
+        "name": "demo_probe",
+        "description": "Детерминированный пробный инструмент для проверки поведения рантайма.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {}
+          }
+        },
+        "_meta": {
+          "dev.agentools/action": {
+            "side_effect": "read",
+            "confirmation": "none",
+            "permissions_hint": [
+              "demo.read"
+            ]
+          }
+        }
+      }
+    ],
+    "scenario": {
+      "scenario_id": "failure_routes",
+      "title": "Сценарий failure_routes",
+      "spec_rev": "2026-09",
+      "steps": [
+        {
+          "id": "probe",
+          "tool": "demo_probe",
+          "on_technical_fail": {
+            "action": "retry",
+            "attempts": 2
+          },
+          "on_semantic_fail": {
+            "action": "continue"
+          }
+        },
+        {
+          "id": "after",
+          "tool": "demo_probe",
+          "when": "missing($steps.probe.value)"
+        }
+      ]
+    }
+  },
+  "script": [
+    {
+      "user_input": "Технический retry исчерпывается в abort, semantic continue оставляет результат отсутствующим"
+    },
+    {
+      "llm_stub": {
+        "toolCall": {
+          "tool": "demo_probe",
+          "args": {
+            "value": "scenario-002"
+          }
+        }
+      }
+    }
+  ],
+  "expect": {
+    "events": [
+      {
+        "kind": "step_failed",
+        "payload": {
+          "step_id": "probe",
+          "failure_class": "technical",
+          "attempts": 3
+        }
+      },
+      {
+        "kind": "scenario_failed",
+        "payload": {
+          "outcome": "FAILED"
+        }
+      }
+    ],
+    "final_state": "failed"
+  }
+}

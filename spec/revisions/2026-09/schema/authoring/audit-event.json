@@ -1,0 +1,195 @@
+{
+  "$defs": {
+    "AuditEventKind": {
+      "description": "Вид аудит-события. Перечисление открытое: виды ревизии плюс ветка продуктового расширения. Каждый вид ревизии имеет названного производителя — правило, при исполнении которого он возникает (таблица документа 08). В перечислении видов события документа 03 вид аудита проходит веткой расширения, поэтому свёртка состояния его не трактует.",
+      "oneOf": [
+        {
+          "const": "audit.policy_evaluated",
+          "description": "Вычислен вердикт политики по вызову: имя инструмента, класс его побочного эффекта и сам вердикт."
+        },
+        {
+          "const": "audit.cost_recorded",
+          "description": "Записана стоимость вызова модели: потребление токенов, сумма в минорных единицах, валюта и версия таблицы цен."
+        },
+        {
+          "const": "audit.limit_exceeded",
+          "description": "Превышен лимит вычислителя выражений либо прогона сценария."
+        },
+        {
+          "const": "audit.scenario_run_finished",
+          "description": "Прогон сценария завершён: единственная запись о его исходе, собственного журнала прогон не заводит."
+        },
+        {
+          "const": "audit.compensation_executed",
+          "description": "Шаг прогона развёрнут компенсацией: принадлежность развёрнутого шага прогону."
+        },
+        {
+          "description": "Продуктовое расширение вида аудита: двухуровневый префикс контура. Пространство audit. исключено из ветки: вид ревизии удовлетворял бы двум веткам сразу, и форма oneOf перестала бы быть однозначной.",
+          "not": {
+            "pattern": "^audit\\."
+          },
+          "pattern": "^[a-z][a-z0-9]*\\.[a-z0-9_]+$",
+          "type": "string"
+        }
+      ]
+    },
+    "AuditPayload": {
+      "additionalProperties": true,
+      "description": "Тело аудит-события. Открыто намеренно: состав зависит от вида события и нормируется таблицей документа 08, а не этой схемой. Перечисленные свойства — поля, употребляемые видами ревизии.",
+      "properties": {
+        "amount_minor": {
+          "description": "Денежная величина целым в минорных единицах валюты. Числа с плавающей точкой в аудите не употребляются.",
+          "type": "integer"
+        },
+        "currency": {
+          "description": "Код валюты по ISO 4217.",
+          "pattern": "^[A-Z]{3}$",
+          "type": "string"
+        },
+        "limit_name": {
+          "description": "Имя лимита, превышение которого наблюдалось.",
+          "minLength": 1,
+          "type": "string"
+        },
+        "limit_value": {
+          "description": "Значение лимита, действовавшее в момент наблюдения.",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "observed": {
+          "description": "Наблюдённая величина, превысившая лимит.",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "outcome": {
+          "$ref": "scenario.json#/$defs/ScenarioOutcome"
+        },
+        "price_table_version": {
+          "description": "Версия таблицы цен, по которой получена сумма. Без неё сумма невоспроизводима.",
+          "minLength": 1,
+          "type": "string"
+        },
+        "scenario_id": {
+          "description": "Идентификатор сценария, к прогону которого относится запись.",
+          "minLength": 1,
+          "type": "string"
+        },
+        "side_effect": {
+          "$ref": "side-effect.json#/$defs/SideEffect"
+        },
+        "step_id": {
+          "description": "Идентификатор шага прогона.",
+          "minLength": 1,
+          "type": "string"
+        },
+        "stopped_at_step_id": {
+          "description": "Идентификатор шага, на котором остановлен разворот компенсаций.",
+          "minLength": 1,
+          "type": "string"
+        },
+        "tokens_in": {
+          "description": "Потребление токенов на входе вызова модели, как оно записано в журнале.",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "tokens_out": {
+          "description": "Потребление токенов на выходе вызова модели, как оно записано в журнале.",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "tool_name": {
+          "description": "Имя инструмента, к вызову которого относится запись.",
+          "minLength": 1,
+          "type": "string"
+        },
+        "trace": {
+          "$ref": "#/$defs/TraceContext"
+        },
+        "verdict": {
+          "$ref": "confirmation.json#/$defs/PolicyEffect"
+        }
+      },
+      "type": "object"
+    },
+    "TraceContext": {
+      "description": "Блок корреляции записи журнала с телеметрией. Живёт в payload, потому что перечень полей конверта закрыт документом 03. Пара идентификаторов — то, чем связывается span подготовки со span'ом применения.",
+      "properties": {
+        "span_id": {
+          "description": "Идентификатор span'а, контекст которого сохранён в журнале: 8 байт строчными шестнадцатеричными цифрами.",
+          "pattern": "^[0-9a-f]{16}$",
+          "type": "string"
+        },
+        "trace_id": {
+          "description": "Идентификатор трассы в форме W3C Trace Context: 16 байт строчными шестнадцатеричными цифрами.",
+          "pattern": "^[0-9a-f]{32}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "trace_id"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://agentools.dev/schema/2026-09/authoring/audit-event.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    {
+      "$ref": "lifecycle-event.json"
+    }
+  ],
+  "description": "Запись аудита в журнале действия. Конверт подключается ссылкой на lifecycle-event.json: собственных определений полей конверта файл не заводит, а объявляет их состав ссылками на определения документа 03. Файл — единственный носитель перечисления видов аудит-события и формы блока корреляции трассировки в схемах ревизии. Состав payload зависит от вида события и нормируется таблицей документа 08.",
+  "properties": {
+    "action_id": {
+      "$ref": "lifecycle-event.json#/properties/action_id"
+    },
+    "actor": {
+      "$ref": "lifecycle-event.json#/$defs/Actor"
+    },
+    "epoch": {
+      "$ref": "lifecycle-event.json#/properties/epoch"
+    },
+    "event_id": {
+      "$ref": "lifecycle-event.json#/properties/event_id"
+    },
+    "event_version": {
+      "$ref": "lifecycle-event.json#/properties/event_version"
+    },
+    "expected_prev_seq": {
+      "$ref": "lifecycle-event.json#/properties/expected_prev_seq"
+    },
+    "kind": {
+      "$ref": "#/$defs/AuditEventKind"
+    },
+    "payload": {
+      "$ref": "#/$defs/AuditPayload"
+    },
+    "prev_hash": {
+      "$ref": "lifecycle-event.json#/properties/prev_hash"
+    },
+    "seq": {
+      "$ref": "lifecycle-event.json#/properties/seq"
+    },
+    "spec_rev": {
+      "$ref": "lifecycle-event.json#/properties/spec_rev"
+    },
+    "ts": {
+      "$ref": "lifecycle-event.json#/properties/ts"
+    }
+  },
+  "required": [
+    "event_id",
+    "action_id",
+    "seq",
+    "expected_prev_seq",
+    "ts",
+    "actor",
+    "kind",
+    "event_version",
+    "spec_rev",
+    "payload"
+  ],
+  "title": "Аудит-событие журнала действия",
+  "type": "object",
+  "unevaluatedProperties": false
+}

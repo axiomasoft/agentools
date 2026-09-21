@@ -33,7 +33,10 @@ final class Runner
                 ));
             }
         }
-        $catalog = RuleCatalog::fromFile($options['rules_index'] ?? 'spec/revisions/' . $options['spec_rev'] . '/rules.json');
+        $catalog = RuleCatalog::fromFile(
+            $options['rules_index']
+                ?? dirname(__DIR__, 3) . '/spec/revisions/' . $options['spec_rev'] . '/rules.json',
+        );
         $baseline = Baseline::fromFile($options['baseline'] ?? null);
         $report = [
             'spec_rev' => $options['spec_rev'],

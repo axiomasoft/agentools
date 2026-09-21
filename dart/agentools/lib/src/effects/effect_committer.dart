@@ -5,7 +5,7 @@ import 'effect_applier.dart';
 import 'effect_reconciliation_required.dart';
 
 /// The external call is reachable only after the action's effect registry has
-/// been read and a fresh [effect_requested] event has been appended.
+/// been read and a fresh `effect_requested` event has been appended.
 final class EffectCommitter {
   ActionJournal commit(
     ActionJournal journal,
@@ -13,7 +13,9 @@ final class EffectCommitter {
     EffectApplier applier,
   ) {
     if (request.kind != 'effect_requested') {
-      throw ArgumentError('EffectCommitter accepts only effect_requested events.');
+      throw ArgumentError(
+        'EffectCommitter accepts only effect_requested events.',
+      );
     }
     final effectId = request.payload['effect_id'];
     if (effectId is! String || effectId.isEmpty) {

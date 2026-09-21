@@ -1,0 +1,21 @@
+{
+  "id": "cfhci-001",
+  "title": "Четыре слоя CI идут строго по порядку и не превращают отсутствующий предмет в зелёный слой",
+  "vector_class": "artifact",
+  "spec_rev": "2026-09",
+  "spec_rule_ids": [
+    "CFH-27",
+    "CFH-29",
+    "CFH-30",
+    "CFH-31",
+    "CFH-32"
+  ],
+  "conformance_level": "L1",
+  "subject": {
+    "kind": "ci_pipeline",
+    "inline": "{\"layers\":[\"spec_lint\",\"derived_freshness\",\"sdk_tests_both\",\"cross_language_vectors\"],\"order\":\"strict\",\"missing_subject\":\"not_applicable_not_pass\"}"
+  },
+  "expect": {
+    "linter": "accept"
+  }
+}

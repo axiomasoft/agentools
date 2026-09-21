@@ -13,9 +13,9 @@ final class ToolAnnotations {
   final bool openWorldHint;
 
   Map<String, bool> toJson() => {
-        'readOnlyHint': readOnlyHint,
-        'destructiveHint': destructiveHint,
-        'idempotentHint': idempotentHint,
-        'openWorldHint': openWorldHint,
-      };
+    'readOnlyHint': readOnlyHint,
+    'destructiveHint': destructiveHint,
+    'idempotentHint': idempotentHint,
+    'openWorldHint': openWorldHint,
+  };
 }

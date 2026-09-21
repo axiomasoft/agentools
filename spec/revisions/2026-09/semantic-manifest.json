@@ -1,0 +1,1268 @@
+{
+  "schema_version": "semantic-profile/v1",
+  "spec_revision": "2026-09",
+  "generated_by": "tools/semantic_manifest.py",
+  "source_digests": {
+    "error_schema_sha256": "ed3a7ab09a9d2026d8d64b0df21a163f9cc00db3c0481f5a0c05f37ffc46ed00",
+    "error_table_doc_sha256": "99efee5aaf61dcbcbe7bbefc61544325bc98aca9386d4e61ee1672f3a89e94a2",
+    "hardening_glob": "fixtures/hardening/*-v1.json"
+  },
+  "canonicalization_profile": "RFC8785",
+  "conformance_level_declared": "L1",
+  "error_codes": [
+    {
+      "code": "agentools.budget.baggage_limit_exceeded",
+      "category": "budget",
+      "default_retryable": false,
+      "producer_rules": [
+        "`AOB-31`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "5024d1c952c4bbe6280263638ca0a5d5b72aa2b6cb19c34f229c626af11ee474"
+    },
+    {
+      "code": "agentools.budget.clarification_rounds_exhausted",
+      "category": "budget",
+      "default_retryable": false,
+      "producer_rules": [
+        "`CLR-12`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "7f862d733dd916dc555e19780e83bbc4be759992201c47ea55789021a80e575c"
+    },
+    {
+      "code": "agentools.budget.event_page_limit",
+      "category": "budget",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-23`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "5838e369aa55de179a539f277672178e75f5da99eb39551206e9b6db3978012f"
+    },
+    {
+      "code": "agentools.budget.limit_exceeded",
+      "category": "budget",
+      "default_retryable": false,
+      "producer_rules": [
+        "`SCN-21`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "d56c30da34779b65a515b02e5e18008c99776855ccfc7061358c7e8b0d7e277d"
+    },
+    {
+      "code": "agentools.conflict.confirmation_token_collision",
+      "category": "conflict",
+      "default_retryable": true,
+      "producer_rules": [
+        "`HRD-10`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "0590d8ac46aaefae196c078c8ab3f533b78d04766d524fe1864a259462954ba0"
+    },
+    {
+      "code": "agentools.conflict.event_batch_partial_overlap",
+      "category": "conflict",
+      "default_retryable": true,
+      "producer_rules": [
+        "`HRD-22`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "2b8da604d9415d6215b16589b832631763ed4cfcc21d626edf521454c6a665d0"
+    },
+    {
+      "code": "agentools.conflict.event_id_collision",
+      "category": "conflict",
+      "default_retryable": true,
+      "producer_rules": [
+        "`HRD-22`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "061918baba44945fa39f1884e1fb83b8904758e8e29e37cf44576182ac9ed602"
+    },
+    {
+      "code": "agentools.conflict.idempotency_in_flight",
+      "category": "conflict",
+      "default_retryable": true,
+      "producer_rules": [
+        "`IDE-14`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "c4d250924d12d0bf42922dc415449d846c7ec27f3ed760a96969552e3f5d3d11"
+    },
+    {
+      "code": "agentools.conflict.idempotency_lost_lease",
+      "category": "conflict",
+      "default_retryable": true,
+      "producer_rules": [
+        "`HRD-16`",
+        "`IDE-14`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "90d3f2aeb3f4669c0dd2f1e1717d9b924b1fd185db443bdba2863ee46b6d7a1a"
+    },
+    {
+      "code": "agentools.conflict.version_conflict",
+      "category": "conflict",
+      "default_retryable": true,
+      "producer_rules": [
+        "`ALC-21`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "1d0fff7ea981e3fd16036df68d5265e24110ada701afd2b5e50f91d05b487e98"
+    },
+    {
+      "code": "agentools.permission.confirmation_approval_missing",
+      "category": "permission",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-4`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "650aba149e0297cee535d8823bd37299b4151583f3b3ca395c9f485fbd45d6d2"
+    },
+    {
+      "code": "agentools.permission.confirmation_authorization_denied",
+      "category": "permission",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-5`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "303e8eb868de04ca1dbf9ac2e84d4e3c53ce17fb79988fa27db687a982024b7c"
+    },
+    {
+      "code": "agentools.permission.confirmation_context_mismatch",
+      "category": "permission",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-12`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "6039b15a69740d744445c2254b7296fee543af04962a13b4b819d40b68b96189"
+    },
+    {
+      "code": "agentools.permission.confirmation_policy_denied",
+      "category": "permission",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-4`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "cd02bf8c166606a451b469226f8e22b26b720164e59b92803ed77aed9d74581a"
+    },
+    {
+      "code": "agentools.permission.confirmation_principal_mismatch",
+      "category": "permission",
+      "default_retryable": false,
+      "producer_rules": [
+        "`CNF-21`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "b22bb5beab37499c622e8c18b6a2616635ca1a506a8ba2433b165832422ae8b2"
+    },
+    {
+      "code": "agentools.permission.confirmation_quorum_insufficient",
+      "category": "permission",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-4`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "9c69f3bf4a81ae81784aaeb109ffbec93d18b4c9cba58b27a84185cd858e03ba"
+    },
+    {
+      "code": "agentools.permission.confirmation_separation_violation",
+      "category": "permission",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-4`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "24f9c2da98f2c07d4c0465f3dadf7c9f0b3b32748dd5f9dd671d5a3e6d4c1f6c"
+    },
+    {
+      "code": "agentools.permission.confirmation_token_binding_mismatch",
+      "category": "permission",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-12`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "8948175cf4425ef84b80683d267ab25caf2bb5bbf04301f45e8baabd24ae4a13"
+    },
+    {
+      "code": "agentools.permission.confirmation_token_key_denied",
+      "category": "permission",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-12`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "93844f72471f3fbe1334a8feabf5f9edbcc05c209ff385c435a4094ca84b4ddf"
+    },
+    {
+      "code": "agentools.permission.foreign_access_token",
+      "category": "permission",
+      "default_retryable": false,
+      "producer_rules": [
+        "`SEC-3`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "32994d6f7d47ef1202ad060674323d83929de47b9d8b0a970113000973764c91"
+    },
+    {
+      "code": "agentools.precondition.confirmation_approval_mismatch",
+      "category": "precondition",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-4`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "f638a731e4eafc5b18f77521ad1124b0d95b0bdef756da4ab2ff559cbeba4389"
+    },
+    {
+      "code": "agentools.precondition.confirmation_approval_stale",
+      "category": "precondition",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-4`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "c1b4a0326f76b1e558b2adbaae022f32ddec8f4d3a68e6e4fdd89936a6061aaa"
+    },
+    {
+      "code": "agentools.precondition.confirmation_args_mismatch",
+      "category": "precondition",
+      "default_retryable": false,
+      "producer_rules": [
+        "`CNF-18`",
+        "`CNF-38`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "1237086e082b4fd3f44fae3eae30eb58e02565d1004ddf905309547bb8e2a7e3"
+    },
+    {
+      "code": "agentools.precondition.confirmation_expired",
+      "category": "precondition",
+      "default_retryable": false,
+      "producer_rules": [
+        "`CNF-19`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "122051fcc86ab97a96d66a09a113c8ec328cf23965967c97e02a338b4c89fbb5"
+    },
+    {
+      "code": "agentools.precondition.confirmation_policy_changed",
+      "category": "precondition",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-4`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "061b270793d829fe1ede81d2a2e6f67bc0db91b37975d65f9b1821a77de8aa34"
+    },
+    {
+      "code": "agentools.precondition.confirmation_record_missing",
+      "category": "precondition",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-4`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "3299f651b2f5491e819a6494828383b2f726d2cea1c0cc10f6cc33d50aa41c78"
+    },
+    {
+      "code": "agentools.precondition.confirmation_token_not_yet_valid",
+      "category": "precondition",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-12`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "7adadff69d5e32e96c878cc5ef594de63282dfc1ec769856b7210366d7c99402"
+    },
+    {
+      "code": "agentools.precondition.confirmation_token_spent",
+      "category": "precondition",
+      "default_retryable": false,
+      "producer_rules": [
+        "`CNF-20`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "0a2007271018bf4698f6e558ad883834ef337bbf307b7c8313c710699fd28591"
+    },
+    {
+      "code": "agentools.precondition.descriptor_drift",
+      "category": "precondition",
+      "default_retryable": false,
+      "producer_rules": [
+        "`TLP-22`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "43e1631af1a4a6d1328f65424b715658a8802fb5c2650a3af3895054a5513eb6"
+    },
+    {
+      "code": "agentools.precondition.extension_unsupported",
+      "category": "precondition",
+      "default_retryable": false,
+      "producer_rules": [
+        "`EXT-15`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "962b4927aed8d62fac67e8388b6d7161369bcd1d2307ddbfebd03e07710b813f"
+    },
+    {
+      "code": "agentools.precondition.idempotency_ambiguous_effect",
+      "category": "precondition",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-18`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "ff4c63e9885c3dbef3bc57e2dd3f4906c53e829cbcd2d131970e8c6bb25f7102"
+    },
+    {
+      "code": "agentools.precondition.idempotency_capability_unknown",
+      "category": "precondition",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-17`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "b3ee0ed08829528189f0ea09fee5c805ed3999d00c8969e0b6cef1a4c2bc3ebc"
+    },
+    {
+      "code": "agentools.precondition.task_input_required_while_applying",
+      "category": "precondition",
+      "default_retryable": false,
+      "producer_rules": [
+        "`LOP-14`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "83369361efc45d92e946c2b75658b9335c22b253c9ac39d417bf892ecba49a7c"
+    },
+    {
+      "code": "agentools.validation.audit_forbidden_field",
+      "category": "validation",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-24`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "9a0ad3710fecf3fed4207f5806e416646620c54bca4dd44b54752523914d5ca0"
+    },
+    {
+      "code": "agentools.validation.canonicalization_failed",
+      "category": "validation",
+      "default_retryable": false,
+      "producer_rules": [
+        "`AOB-36`",
+        "`AOB-37`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "510882b40b249216e684bcaf5393fff1b7b1a450a369732b015b870a34ab2662"
+    },
+    {
+      "code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-9`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "c14dcf879ce5594185cfa528ff2363d0291287e8bd210afc54594487f28fc477"
+    },
+    {
+      "code": "agentools.validation.event_batch_empty",
+      "category": "validation",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-22`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "92c0affc168e6d8c7f9ce30c3985e55ffdee5db2c805c22d2b6308b57bead9db"
+    },
+    {
+      "code": "agentools.validation.event_batch_limit",
+      "category": "validation",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-22`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "3e721b2f147b3547dd8fd70796b17918311f647dbd0b97be27d811b803c6edc1"
+    },
+    {
+      "code": "agentools.validation.event_id_duplicate_in_batch",
+      "category": "validation",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-22`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "37b9d62ba9232b46e78be9840d95b1415dfe824cf1f50f66db7e4e0c0d9979da"
+    },
+    {
+      "code": "agentools.validation.event_id_seq_derived",
+      "category": "validation",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-22`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "af9fab166e79726cb98d48a387e17e1c55853de422be9a35bde1ae802e6bb044"
+    },
+    {
+      "code": "agentools.validation.event_stream_identity",
+      "category": "validation",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-21`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "ea9af27f407a766b954f1f052dfe2cfa3147eb57f3978853f4a4b3e88ad20eed"
+    },
+    {
+      "code": "agentools.validation.idempotency_key_missing",
+      "category": "validation",
+      "default_retryable": false,
+      "producer_rules": [
+        "`IDE-9`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "7e8a6357069d7fa2e0c1d618d9aac83d8c8ab513263483ab6c9a21b32af4daf8"
+    },
+    {
+      "code": "agentools.validation.idempotency_key_reuse",
+      "category": "validation",
+      "default_retryable": false,
+      "producer_rules": [
+        "`IDE-16`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "6e41c93ab10bab18cf7773a5813839d67cebda1b950da0ddf68bf4e7e4aff8d8"
+    },
+    {
+      "code": "agentools.validation.metric_label_forbidden",
+      "category": "validation",
+      "default_retryable": false,
+      "producer_rules": [
+        "`HRD-24`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "bf3b7b33ec2919193ffd3fdf4d0a0eeb1b2a53e61f6fa52c40233449eb3947d3"
+    },
+    {
+      "code": "agentools.validation.unknown_result_type",
+      "category": "validation",
+      "default_retryable": false,
+      "producer_rules": [
+        "`CLR-18`"
+      ],
+      "safe_context_keys": [],
+      "source": "spec/revisions/2026-09/09_idempotency-errors.md#IDE-31",
+      "source_digest": "6f4926e520f5886a8f049b1e21a5e43094a20da44152288ede68d8be454c54ff"
+    }
+  ],
+  "case_retryability": [
+    {
+      "case_id": "CNF-RPLY-001",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-002",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-003",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-004",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-005",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-006",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-007",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-008",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-009",
+      "semantic_code": "agentools.permission.confirmation_token_key_denied",
+      "category": "permission",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-010",
+      "semantic_code": "agentools.permission.confirmation_token_key_denied",
+      "category": "permission",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-011",
+      "semantic_code": "agentools.permission.confirmation_token_key_denied",
+      "category": "permission",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-012",
+      "semantic_code": "agentools.permission.confirmation_token_key_denied",
+      "category": "permission",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-013",
+      "semantic_code": "agentools.permission.confirmation_token_key_denied",
+      "category": "permission",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-014",
+      "semantic_code": "agentools.permission.confirmation_token_key_denied",
+      "category": "permission",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-015",
+      "semantic_code": "agentools.permission.confirmation_token_binding_mismatch",
+      "category": "permission",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-016",
+      "semantic_code": "agentools.permission.confirmation_token_binding_mismatch",
+      "category": "permission",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-017",
+      "semantic_code": "agentools.permission.confirmation_token_binding_mismatch",
+      "category": "permission",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-018",
+      "semantic_code": "agentools.precondition.confirmation_token_not_yet_valid",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-019",
+      "semantic_code": "agentools.precondition.confirmation_expired",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-020",
+      "semantic_code": "agentools.permission.confirmation_token_key_denied",
+      "category": "permission",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-021",
+      "semantic_code": "agentools.precondition.confirmation_token_spent",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-022",
+      "semantic_code": "agentools.conflict.confirmation_token_collision",
+      "category": "conflict",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-023",
+      "semantic_code": "agentools.precondition.confirmation_token_spent",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-024",
+      "semantic_code": "agentools.validation.confirmation_token_invalid",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-025",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-RPLY-026",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/token-replay-v1.json",
+      "source_digest": "23564a841d8d3cd28a3a78dcb16a20bbc4289ed711182779e14c9982c3b4d71c"
+    },
+    {
+      "case_id": "CNF-SAFE-001",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-002",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-003",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-004",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-005",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-006",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-007",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-008",
+      "semantic_code": "agentools.permission.confirmation_context_mismatch",
+      "category": "permission",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-009",
+      "semantic_code": "agentools.permission.confirmation_separation_violation",
+      "category": "permission",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-010",
+      "semantic_code": "agentools.permission.confirmation_context_mismatch",
+      "category": "permission",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-011",
+      "semantic_code": "agentools.permission.confirmation_policy_denied",
+      "category": "permission",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-012",
+      "semantic_code": "agentools.precondition.confirmation_policy_changed",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-013",
+      "semantic_code": "agentools.precondition.confirmation_policy_changed",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-014",
+      "semantic_code": "agentools.precondition.confirmation_approval_mismatch",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-015",
+      "semantic_code": "agentools.precondition.confirmation_approval_mismatch",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-016",
+      "semantic_code": "agentools.precondition.confirmation_approval_mismatch",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-017",
+      "semantic_code": "agentools.precondition.confirmation_approval_mismatch",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-018",
+      "semantic_code": "agentools.precondition.confirmation_approval_mismatch",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-019",
+      "semantic_code": "agentools.precondition.confirmation_approval_mismatch",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-020",
+      "semantic_code": "agentools.permission.confirmation_quorum_insufficient",
+      "category": "permission",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-021",
+      "semantic_code": "agentools.precondition.confirmation_approval_stale",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-022",
+      "semantic_code": "agentools.precondition.confirmation_approval_stale",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-023",
+      "semantic_code": "agentools.permission.confirmation_authorization_denied",
+      "category": "permission",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-024",
+      "semantic_code": "agentools.permission.confirmation_authorization_denied",
+      "category": "permission",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-025",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "CNF-SAFE-026",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/confirmation-security-v1.json",
+      "source_digest": "681f5218465a01026bdb6582b3c959b51e9eb41dc04ec7b13decc459289d80fc"
+    },
+    {
+      "case_id": "EVT-STORE-001",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-002",
+      "semantic_code": "agentools.conflict.version_conflict",
+      "category": "conflict",
+      "retryable": true,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-003",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-004",
+      "semantic_code": "agentools.conflict.event_id_collision",
+      "category": "conflict",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-005",
+      "semantic_code": "agentools.conflict.event_batch_partial_overlap",
+      "category": "conflict",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-006",
+      "semantic_code": "agentools.validation.event_id_duplicate_in_batch",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-007",
+      "semantic_code": "agentools.validation.event_batch_empty",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-008",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-009",
+      "semantic_code": "agentools.budget.event_page_limit",
+      "category": "budget",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-010",
+      "semantic_code": "agentools.validation.audit_forbidden_field",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-011",
+      "semantic_code": "agentools.validation.metric_label_forbidden",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-012",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-013",
+      "semantic_code": "agentools.validation.event_id_seq_derived",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-014",
+      "semantic_code": "agentools.conflict.version_conflict",
+      "category": "conflict",
+      "retryable": true,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-015",
+      "semantic_code": "agentools.validation.event_batch_limit",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-016",
+      "semantic_code": "agentools.validation.event_stream_identity",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-017",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-018",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-019",
+      "semantic_code": "agentools.conflict.event_id_collision",
+      "category": "conflict",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-020",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "EVT-STORE-021",
+      "semantic_code": "agentools.budget.event_page_limit",
+      "category": "budget",
+      "retryable": false,
+      "source": "fixtures/hardening/event-store-v1.json",
+      "source_digest": "f4aba0f52a83fa20bc952ec1e643a5c6ccd78a90fd88913a91de209b121c6ee6"
+    },
+    {
+      "case_id": "IDE-LEASE-001",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-002",
+      "semantic_code": "agentools.conflict.idempotency_in_flight",
+      "category": "conflict",
+      "retryable": true,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-003",
+      "semantic_code": "agentools.validation.idempotency_key_reuse",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-004",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-005",
+      "semantic_code": "agentools.conflict.idempotency_lost_lease",
+      "category": "conflict",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-006",
+      "semantic_code": "agentools.conflict.idempotency_lost_lease",
+      "category": "conflict",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-007",
+      "semantic_code": "agentools.conflict.idempotency_lost_lease",
+      "category": "conflict",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-008",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-009",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-010",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-011",
+      "semantic_code": "agentools.precondition.idempotency_capability_unknown",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-012",
+      "semantic_code": "agentools.precondition.idempotency_ambiguous_effect",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-013",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-014",
+      "semantic_code": "agentools.validation.idempotency_key_missing",
+      "category": "validation",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-015",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-016",
+      "semantic_code": "agentools.precondition.idempotency_ambiguous_effect",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-017",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-018",
+      "semantic_code": "agentools.precondition.idempotency_ambiguous_effect",
+      "category": "precondition",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-019",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-020",
+      "semantic_code": "ok",
+      "category": "success",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    },
+    {
+      "case_id": "IDE-LEASE-021",
+      "semantic_code": "agentools.conflict.idempotency_lost_lease",
+      "category": "conflict",
+      "retryable": false,
+      "source": "fixtures/hardening/idempotency-lease-v1.json",
+      "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
+    }
+  ],
+  "capabilities": [],
+  "manifest_digest": "2de00f636b662e09fbf76fbf3dda23af6cc499b684736f92858cb28ae9a3025a"
+}

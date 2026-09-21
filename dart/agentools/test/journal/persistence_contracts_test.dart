@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:agentools/agentools.dart';
+import 'package:agentools/agentools_testkit.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -68,10 +69,7 @@ void main() {
 
     await store.save(projection);
 
-    expect(
-      (await store.load('action-1'))?.toMap(),
-      projection.toMap(),
-    );
+    expect((await store.load('action-1'))?.toMap(), projection.toMap());
   });
 
   // ALC-17; timestamps for recorded input come from the injected clock, not fold logic.

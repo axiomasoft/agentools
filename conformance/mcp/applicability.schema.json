@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MCP applicability matrix",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "summary_phrase",
+    "conformance_package",
+    "conformance_integrity",
+    "requirements_revision",
+    "generated_by",
+    "rows"
+  ],
+  "properties": {
+    "schema_version": { "const": "mcp-applicability/v1" },
+    "summary_phrase": { "const": "official MCP scenario compatibility" },
+    "conformance_package": { "type": "string" },
+    "conformance_integrity": { "type": "string" },
+    "requirements_revision": { "const": "2026-07-28" },
+    "generated_by": { "type": "string" },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "scenario_id",
+          "role",
+          "scored_class",
+          "requirements_revision",
+          "applicability",
+          "reason"
+        ],
+        "properties": {
+          "scenario_id": { "type": "string" },
+          "role": { "enum": ["server", "client", "unknown"] },
+          "scored_class": { "type": "string" },
+          "requirements_revision": { "const": "2026-07-28" },
+          "applicability": {
+            "enum": ["applicable", "non_applicable", "blocked_dependency", "passed", "failed"]
+          },
+          "reason": { "type": "string", "minLength": 8 },
+          "receipt_path": { "type": ["string", "null"] },
+          "execution_status": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}

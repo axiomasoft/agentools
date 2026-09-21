@@ -3,7 +3,7 @@ import 'package:mcp_dart/mcp_dart.dart';
 
 import 'mcp_dart_mapping.dart';
 
-/// [McpTransport] backed by [McpClient] with modern-only negotiation.
+/// `McpTransport` backed by `McpClient` with modern-only negotiation.
 final class McpDartTransport implements McpTransport {
   McpDartTransport({McpClient? client}) : _client = client ?? _createClient();
 
@@ -48,9 +48,7 @@ final class McpDartTransport implements McpTransport {
   }
 
   @override
-  Future<McpToolCallResult> resumeClarification(
-    McpClarificationRetry retry,
-  ) {
+  Future<McpToolCallResult> resumeClarification(McpClarificationRetry retry) {
     return _sendToolCall(
       CallToolRequest(
         name: retry.invocation.toolName,
@@ -64,10 +62,7 @@ final class McpDartTransport implements McpTransport {
   @override
   Future<McpTaskSnapshot> fetchTaskState(String taskId) async {
     final task = await _client.request<Task>(
-      JsonRpcGetTaskRequest(
-        id: -1,
-        getParams: GetTaskRequest(taskId: taskId),
-      ),
+      JsonRpcGetTaskRequest(id: -1, getParams: GetTaskRequest(taskId: taskId)),
       Task.fromJson,
     );
     return mapTask(task);

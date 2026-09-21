@@ -3,6 +3,8 @@ import '../contracts/clock.dart';
 import '../journal/action_event.dart';
 import '../journal/actor.dart';
 import '../schema/published_schema_validator.dart';
+import 'audit_redaction.dart';
+import 'journal_appender.dart';
 
 /// Builds audit.* journal events and optionally exports them (AOB-1..AOB-16).
 final class AuditEventFactory {
@@ -11,12 +13,15 @@ final class AuditEventFactory {
     PublishedSchemaValidator? validator,
     AuditSink? auditSink,
     this.specRevision = '2026-08',
-  })  : _validator = validator,
-        _auditSink = auditSink;
+    AuditRedaction? redaction,
+  }) : _validator = validator,
+       _auditSink = auditSink,
+       _redaction = redaction ?? AuditRedaction();
 
   final Clock clock;
   final PublishedSchemaValidator? _validator;
   final AuditSink? _auditSink;
+  final AuditRedaction _redaction;
   final String specRevision;
 
   ActionEvent policyEvaluated({
@@ -90,8 +95,9 @@ final class AuditEventFactory {
     required String kind,
     required Map<String, Object> payload,
   }) {
+    _redaction.assertPayload(Map<String, dynamic>.from(payload));
     final event = ActionEvent(
-      eventId: 'ev-$actionId-${seq.toString().padLeft(4, '0')}',
+      eventId: JournalAppender.newEventId(),
       actionId: actionId,
       seq: seq,
       expectedPrevSeq: expectedPrevSeq,
@@ -102,12 +108,14 @@ final class AuditEventFactory {
       specRevision: specRevision,
       payload: Map<String, dynamic>.from(payload),
     );
-    final document = event.toMap();
+    final document = _redaction.redactDocument(event.toMap());
     _validator?.assertValid(
       document,
       'https://agentools.dev/schema/2026-08/audit-event.json',
     );
-    _auditSink?.export(document);
+    try {
+      _auditSink?.export(document);
+    } catch (_) {}
     return event;
   }
 

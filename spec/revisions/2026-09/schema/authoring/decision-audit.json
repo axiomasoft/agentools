@@ -1,0 +1,90 @@
+{
+  "$defs": {
+    "Decision": {
+      "description": "Решение по гейту. Перечисление открытое: значения ядра плюс ветка продуктового расширения. Неизвестное значение трактуется как не разрешающее — правило CNF-25.",
+      "oneOf": [
+        {
+          "const": "approve",
+          "description": "Согласие на применение предложения."
+        },
+        {
+          "const": "reject",
+          "description": "Отказ в применении предложения."
+        },
+        {
+          "const": "revoke",
+          "description": "Отзыв ранее данного согласия до применения."
+        },
+        {
+          "const": "expire",
+          "description": "Исход по истечении срока ожидания решения."
+        },
+        {
+          "description": "Продуктовое расширение решения: двухуровневый префикс контура.",
+          "pattern": "^[a-z][a-z0-9]*\\.[a-z0-9_]+$",
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "$id": "https://agentools.dev/schema/2026-09/authoring/decision-audit.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Тело события решения по гейту в журнале действия: кто решил, когда, на основании чего и с какими отпечатками аргументов. Файл — единственный носитель перечисления решений в схемах ревизии.",
+  "properties": {
+    "actor_id": {
+      "description": "Идентификатор принципала, принявшего решение.",
+      "minLength": 1,
+      "type": "string"
+    },
+    "actor_role": {
+      "description": "Роль принципала на момент решения в терминах контура. Различие ролей не заменяет различия идентификаторов в режиме двойного контроля.",
+      "minLength": 1,
+      "type": "string"
+    },
+    "args_hash_at_commit": {
+      "description": "Отпечаток канонизированных аргументов на момент применения. Присутствует только у решения о разрешении, дошедшего до применения.",
+      "pattern": "^sha-256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "args_hash_at_decision": {
+      "description": "Отпечаток канонизированных аргументов на момент решения.",
+      "pattern": "^sha-256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "decided_at": {
+      "description": "Время решения в форме RFC 3339 с зоной UTC.",
+      "minLength": 20,
+      "type": "string"
+    },
+    "decision": {
+      "$ref": "#/$defs/Decision"
+    },
+    "proposal_id": {
+      "description": "Идентификатор предложения, по которому принято решение.",
+      "minLength": 1,
+      "type": "string"
+    },
+    "reason": {
+      "description": "Основание решения, введённое человеком. Пустая строка означает отсутствие введённого основания.",
+      "type": "string"
+    },
+    "token": {
+      "description": "Токен подтверждения, выданный предложению. Для вызывающего непрозрачен; в аудите сохраняется как след предъявления.",
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "proposal_id",
+    "token",
+    "decision",
+    "actor_id",
+    "actor_role",
+    "decided_at",
+    "reason",
+    "args_hash_at_decision"
+  ],
+  "title": "Запись аудита решения по гейту",
+  "type": "object"
+}

@@ -14,7 +14,7 @@ final class ConfirmationJournalSupport
             'proposal_id' => $proposal->proposalId,
             'proposal_version' => $proposal->proposalVersion,
             'state' => $proposal->state->value,
-            'deadline' => $proposal->expiresAt->format(DATE_ATOM),
+            'deadline' => $proposal->expiresAt->setTimezone(new \DateTimeZone('UTC'))->format(DATE_ATOM),
         ];
         if ($proposal->supersededBy !== null) {
             $payload['superseded_by'] = $proposal->supersededBy;

@@ -13,8 +13,8 @@ final class FoldedAction {
     Map<String, EffectRecord>? effects,
     this.cancellationRequested = false,
     this.previousHash,
-  })  : inputs = Map.unmodifiable(inputs ?? const {}),
-        effects = Map.unmodifiable(effects ?? const {});
+  }) : inputs = Map.unmodifiable(inputs ?? const {}),
+       effects = Map.unmodifiable(effects ?? const {});
 
   final String? actionId;
   final ActionStatus? status;
