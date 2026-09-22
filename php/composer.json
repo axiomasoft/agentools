@@ -39,7 +39,7 @@
     ]
   },
   "scripts": {
-    "analyse": "phpstan analyse -c phpstan.neon --no-progress",
+    "analyse": "phpstan analyse -c phpstan.neon --no-progress --memory-limit=1G",
     "test": "phpunit",
     "infection": "infection --threads=max --ignore-msi-with-no-mutations"
   },

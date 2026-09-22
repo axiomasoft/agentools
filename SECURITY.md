@@ -22,8 +22,9 @@ frozen for regression only.
 
 ## Reporting
 
-Report suspected vulnerabilities through the repository owner's private security
-channel for this distribution. Include:
+Report suspected vulnerabilities through a private GitHub Security Advisory:
+<https://github.com/axiomasoft/agentools/security/advisories/new>. This route does
+not imply that GitHub public private-vulnerability reporting is enabled. Include:
 
 - affected package and version/commit or RC subject digest
 - reproduction steps or proof-of-concept

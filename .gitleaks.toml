@@ -1,15 +1,31 @@
 title = "agentools gitleaks policy (P9.1)"
+minVersion = "8.25.0"
 
 [extend]
 useDefault = true
 
-[allowlist]
-description = "Example fixtures and generated conformance reports"
-paths = [
-  '''fixtures/''',
-  '''conformance/reports/''',
-  '''plans/''',
+[[allowlists]]
+description = "Published non-secret confirmation token examples"
+regexes = [
+  '''^at1\.eyJ2IjoxfQ\.Zm9vYmFy$''',
+  '''^at_ct_9f8b1c2d4e6a8c0f2b4d6e8a0c2e4f60$''',
 ]
+
+[[allowlists]]
+description = "Generated successor revision lock integrity digests with secret-like fixture names"
+condition = "AND"
+paths = ['''^spec/revisions/2026-09/revision\.lock\.json$''']
+regexTarget = "match"
+regexes = [
+  '''^(?:duplicate-keys\.(?:error|input|meta)|token-replay-v1|conftoken-[0-9]+)\.json\"?: \"[0-9a-f]{64}\"$''',
+]
+
+[[allowlists]]
+description = "Generated adversarial manifest digest for the token-replay carrier"
+condition = "AND"
+paths = ['''^fixtures/hardening/adversarial/manifest\.v1\.json$''']
+regexTarget = "match"
+regexes = ['''^token_replay\":\"[0-9a-f]{64}\"$''']
 
 [redact]
 description = "Never print matched secret material in CI logs"

@@ -9,15 +9,17 @@
     "conformance_package",
     "conformance_integrity",
     "requirements_revision",
+    "frozen_required_client_total",
     "generated_by",
     "rows"
   ],
   "properties": {
-    "schema_version": { "const": "mcp-applicability/v1" },
+    "schema_version": { "const": "mcp-applicability/v2" },
     "summary_phrase": { "const": "official MCP scenario compatibility" },
     "conformance_package": { "type": "string" },
     "conformance_integrity": { "type": "string" },
     "requirements_revision": { "const": "2026-07-28" },
+    "frozen_required_client_total": { "const": 32 },
     "generated_by": { "type": "string" },
     "rows": {
       "type": "array",
@@ -31,6 +33,8 @@
           "requirements_revision",
           "applicability",
           "reason"
+          ,"receipt_path"
+          ,"execution_status"
         ],
         "properties": {
           "scenario_id": { "type": "string" },
@@ -38,11 +42,11 @@
           "scored_class": { "type": "string" },
           "requirements_revision": { "const": "2026-07-28" },
           "applicability": {
-            "enum": ["applicable", "non_applicable", "blocked_dependency", "passed", "failed"]
+            "enum": ["applicable", "non_applicable", "blocked_dependency"]
           },
           "reason": { "type": "string", "minLength": 8 },
           "receipt_path": { "type": ["string", "null"] },
-          "execution_status": { "type": ["string", "null"] }
+          "execution_status": { "enum": ["pending", "passed", "failed", "not_run"] }
         }
       }
     }

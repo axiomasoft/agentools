@@ -100,6 +100,17 @@ def display_path(path: Path) -> str:
 def check_workflow_document(path: Path, document: dict[str, Any]) -> list[Violation]:
     violations: list[Violation] = []
     rel = display_path(path)
+    lock = load_lock()
+    lock_actions = {
+        str(entry.get("id")): str(entry.get("ref_immutable"))
+        for entry in lock.get("github_actions", [])
+        if isinstance(entry, dict)
+    }
+    sha_actions = {
+        str(entry.get("ref_immutable")): str(entry.get("id"))
+        for entry in lock.get("github_actions", [])
+        if isinstance(entry, dict)
+    }
 
     on = document.get("on") or document.get(True)
     events: set[str] = set()
@@ -200,6 +211,25 @@ def check_workflow_document(path: Path, document: dict[str, Any]) -> list[Violat
                             f"mutable action ref: {uses}",
                         )
                     )
+            else:
+                repo, pin = uses.rsplit("@", 1)
+                locked_pin = lock_actions.get(repo)
+                if locked_pin is None:
+                    owner = sha_actions.get(pin)
+                    message = f"action missing from supply-chain lock: {repo}"
+                    if owner is not None:
+                        message = f"action repository mismatch: {repo}@{pin} is locked for {owner}"
+                    violations.append(
+                        Violation("SC-LOCK-001", f"{rel}#jobs.{job_name}", message)
+                    )
+                elif locked_pin != pin:
+                    violations.append(
+                        Violation(
+                            "SC-LOCK-002",
+                            f"{rel}#jobs.{job_name}",
+                            f"action SHA mismatch: {repo}@{pin}; lock has {locked_pin}",
+                        )
+                    )
             if uses.startswith("actions/checkout@") and is_pinned_action(uses):
                 with_block = step.get("with") or {}
                 if isinstance(with_block, dict) and with_block.get("persist-credentials") is not False:
@@ -237,6 +267,8 @@ def validate_lock_document(document: dict[str, Any]) -> list[str]:
         entries = document.get(key)
         if not isinstance(entries, list) or not entries:
             errors.append(f"{key} must be a non-empty list")
+    action_ids: set[str] = set()
+    action_pairs: set[tuple[str, str]] = set()
     for entry in document.get("github_actions", []) or []:
         if not isinstance(entry, dict):
             errors.append("github_actions entry must be object")
@@ -247,6 +279,17 @@ def validate_lock_document(document: dict[str, Any]) -> list[str]:
         ref = str(entry.get("ref_immutable", ""))
         if not SHA_RE.match(ref):
             errors.append(f"invalid action SHA for {entry.get('id')}")
+        action_id = str(entry.get("id", ""))
+        if action_id in action_ids:
+            errors.append(f"duplicate action id: {action_id}")
+        action_ids.add(action_id)
+        pair = (action_id, ref)
+        if pair in action_pairs:
+            errors.append(f"duplicate action repo/SHA row: {action_id}@{ref}")
+        action_pairs.add(pair)
+        expected_source = f"https://github.com/{action_id}"
+        if entry.get("source") != expected_source:
+            errors.append(f"invalid source for {action_id}: expected {expected_source}")
     for entry in document.get("cli_tools", []) or []:
         if not isinstance(entry, dict):
             errors.append("cli_tools entry must be object")
@@ -410,6 +453,59 @@ class CiPolicyTests(unittest.TestCase):
         }
         rules = {v.rule_id for v in check_workflow_document(Path("dyn.yml"), doc)}
         self.assertIn("SC-EXPR-001", rules)
+
+    def _workflow_with_action(self, uses: str) -> dict[str, Any]:
+        return {
+            "on": "push",
+            "permissions": {},
+            "concurrency": {"group": "g"},
+            "jobs": {
+                "x": {
+                    "runs-on": "ubuntu-latest",
+                    "timeout-minutes": 5,
+                    "steps": [{"uses": uses}],
+                }
+            },
+        }
+
+    def test_sha_from_wrong_repository_is_red(self) -> None:
+        uses = "actions/upload-artifact@0057852bfaa89a56745cba8c7296529d2fc39830"
+        rules = {
+            v.rule_id
+            for v in check_workflow_document(
+                Path("wrong-repo.yml"), self._workflow_with_action(uses)
+            )
+        }
+        self.assertIn("SC-LOCK-002", rules)
+
+    def test_unknown_action_is_red(self) -> None:
+        uses = "example/unknown@1111111111111111111111111111111111111111"
+        rules = {
+            v.rule_id
+            for v in check_workflow_document(Path("unknown.yml"), self._workflow_with_action(uses))
+        }
+        self.assertIn("SC-LOCK-001", rules)
+
+    def test_stale_action_sha_is_red(self) -> None:
+        uses = "actions/checkout@1111111111111111111111111111111111111111"
+        rules = {
+            v.rule_id
+            for v in check_workflow_document(Path("stale.yml"), self._workflow_with_action(uses))
+        }
+        self.assertIn("SC-LOCK-002", rules)
+
+    def test_duplicate_action_id_is_red(self) -> None:
+        lock = load_lock()
+        lock["github_actions"].append(dict(lock["github_actions"][0]))
+        errors = validate_lock_document(lock)
+        self.assertTrue(any("duplicate action id" in error for error in errors))
+        self.assertTrue(any("duplicate action repo/SHA row" in error for error in errors))
+
+    def test_invalid_action_source_is_red(self) -> None:
+        lock = load_lock()
+        lock["github_actions"][0]["source"] = "https://github.com/example/wrong"
+        errors = validate_lock_document(lock)
+        self.assertTrue(any("invalid source" in error for error in errors))
 
 
 def build_parser() -> argparse.ArgumentParser:

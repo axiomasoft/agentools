@@ -56,8 +56,8 @@ DEPTH_MUTANT = (
 )
 BAGGAGE_MUTANT = (
     "php/src/Ops/BaggageRefs.php",
-    "    private const MAX_ITEMS = 64;",
-    "    private const MAX_ITEMS = 128;",
+    "    public const MAX_ITEMS = 64;",
+    "    public const MAX_ITEMS = 128;",
 )
 DART_DEPTH_MUTANT = (
     "lib/src/scenario/expression_parser.dart",
@@ -255,6 +255,12 @@ def measure_growth(sdk: str, builder, sizes: list[int]) -> dict[str, Any]:
             "class": result.get("class"),
             "output_bytes": result.get("output_bytes") or result.get("inner", {}).get("output_bytes"),
             "input_bytes": len(canonical_json(builder(size)).encode()),
+            "appended_count": result.get("appended_count"),
+            "loaded_count": result.get("loaded_count"),
+            "folded_count": result.get("folded_count"),
+            "final_seq": result.get("final_seq"),
+            "digest": result.get("digest"),
+            "timing_ns": result.get("timing_ns"),
         })
     ratios = []
     for prev, cur in zip(series, series[1:]):
@@ -264,13 +270,27 @@ def measure_growth(sdk: str, builder, sizes: list[int]) -> dict[str, Any]:
         out_cur = max(int(cur["output_bytes"] or 1), 1)
         growth = (out_cur / out_prev) / (in_cur / in_prev)
         ratios.append(growth)
+    internal_failure = any(row.get("ok") is not True for row in series)
+    count_mismatch = any(
+        row.get("appended_count") != row["size"]
+        or row.get("loaded_count") != row["size"]
+        or row.get("folded_count") != row["size"]
+        or row.get("final_seq") != row["size"]
+        for row in series
+    )
     superlinear = any(ratio > 8.0 for ratio in ratios)
+    red = internal_failure or count_mismatch or superlinear
     return {
         "sdk": sdk,
         "series": series,
         "growth_ratios": ratios,
-        "verdict": "red" if superlinear else "green",
-        "class": "superlinear" if superlinear else "bounded",
+        "verdict": "red" if red else "green",
+        "class": (
+            "internal_failure" if internal_failure
+            else "count_mismatch" if count_mismatch
+            else "superlinear" if superlinear
+            else "bounded"
+        ),
     }
 
 
@@ -487,9 +507,10 @@ def collect_portable(php_env: dict[str, str] | None = None, php_cwd: Path | None
         "php": invoke("php", {"op": "constants"}, env=php_env, cwd=php_cwd),
         "dart": invoke("dart", {"op": "constants"}, cwd=dart_cwd),
     }
+    event_sizes = [1, 10, 100, 1_000, 10_000]
     growth = {
-        "php": measure_growth("php", lambda n: {"op": "jcs", "json": json.dumps({"a": list(range(n))})}, [1, 2, 4, 8, 16, 32]),
-        "dart": measure_growth("dart", lambda n: {"op": "jcs", "json": json.dumps({"a": list(range(n))})}, [1, 2, 4, 8, 16, 32]),
+        "php": measure_growth("php", lambda n: {"op": "event_fold", "events": n}, event_sizes),
+        "dart": measure_growth("dart", lambda n: {"op": "event_fold", "events": n}, event_sizes),
     }
     return {"probes": rows, "constants": constants, "growth": growth}
 
@@ -790,11 +811,11 @@ def aggregate_receipt(resource: dict[str, Any]) -> dict[str, Any]:
 def write_findings(resource: dict[str, Any], gate: dict[str, Any]) -> None:
     FINDING_BASELINE.write_text(
         "# P8.5 resource envelopes\n\n"
-        f"**Date:** {resource['generated_at'][:10]}  \n"
-        f"**Receipt:** `artifacts/P8-resource-baseline.json` (`{resource['schema']}`)  \n"
-        f"**Fingerprint:** `{resource['fingerprint']['digest']}`  \n"
+        f"**Date:** {resource['generated_at'][:10]}\n"
+        f"**Receipt:** `artifacts/P8-resource-baseline.json` (`{resource['schema']}`)\n"
+        f"**Fingerprint:** `{resource['fingerprint']['digest']}`\n"
         f"**Host:** {resource['fingerprint']['os']} {resource['fingerprint']['kernel']} "
-        f"{resource['fingerprint']['arch']} / {resource['fingerprint']['cpu']}  \n\n"
+        f"{resource['fingerprint']['arch']} / {resource['fingerprint']['cpu']}\n\n"
         "Portable gates own depth/count/byte/page/lease caps. Timing is compared only on a matching "
         "fingerprint; a mismatch refuses a timing verdict. PHP and Dart speed are not compared.\n\n"
         "## Limits\n\n"
@@ -810,9 +831,9 @@ def write_findings(resource: dict[str, Any], gate: dict[str, Any]) -> None:
     )
     FINDING_GATE.write_text(
         "# P8 aggregate adversarial receipt\n\n"
-        f"**Date:** {gate['generated_at'][:10]}  \n"
-        f"**Receipt:** `artifacts/P8-adversarial-gate.json` (`{gate['schema']}`)  \n"
-        f"**Verdict:** {gate['verdict']}  \n"
+        f"**Date:** {gate['generated_at'][:10]}\n"
+        f"**Receipt:** `artifacts/P8-adversarial-gate.json` (`{gate['schema']}`)\n"
+        f"**Verdict:** {gate['verdict']}\n"
         f"**Producer-ready for P9/P10:** {gate['producer_readiness']}\n\n"
         f"Coverage: missing={gate['coverage']['missing']} extra={gate['coverage']['extra']} "
         f"stale={gate['coverage']['stale']}\n\n"
@@ -936,6 +957,50 @@ class ResourceGateTests(unittest.TestCase):
         for prev, cur in zip(fake["series"], fake["series"][1:]):
             ratios.append((cur["output_bytes"] / prev["output_bytes"]) / (cur["input_bytes"] / prev["input_bytes"]))
         self.assertTrue(any(ratio > 8.0 for ratio in ratios))
+
+    def test_event_fold_counts_and_digest_match(self) -> None:
+        results = {
+            sdk: invoke(sdk, {"op": "event_fold", "events": 100})
+            for sdk in ("php", "dart")
+        }
+        for result in results.values():
+            self.assertTrue(result["ok"])
+            self.assertEqual(result["appended_count"], 100)
+            self.assertEqual(result["loaded_count"], 100)
+            self.assertEqual(result["folded_count"], 100)
+            self.assertEqual(result["final_seq"], 100)
+            self.assertEqual(set(result["timing_ns"]), {"append", "load", "fold"})
+        self.assertEqual(results["php"]["digest"], results["dart"]["digest"])
+
+    def test_unexpected_failure_is_safe_internal_error_and_red(self) -> None:
+        for sdk in ("php", "dart"):
+            result = invoke(sdk, {"op": "event_fold", "events": 1, "inject_internal": True})
+            self.assertFalse(result["ok"])
+            self.assertEqual(result["class"], "error.internal")
+            self.assertIn("diagnostic_class", result)
+            self.assertNotIn("error", result)
+            self.assertNotIn("message", result)
+            self.assertFalse(expect_accept(result))
+
+    def test_outcome_taxonomy_matches(self) -> None:
+        token = issue_token()
+        prefix, payload, signature = token.split(".")
+        signature = ("A" if signature[0] != "A" else "B") + signature[1:]
+        malformed_signature = ".".join((prefix, payload, signature))
+        requests = [
+            {"op": "expression", "source": "("},
+            {"op": "event_fold", "events": 0},
+            {"op": "token_parse", "token": malformed_signature},
+            {"op": "event_page", "limit": 1001},
+            {"op": "not-supported"},
+            {"op": "event_fold", "events": 1, "inject_internal": True},
+        ]
+        expected = [
+            "reject.syntax", "reject.claim", "reject.signature", "reject.limit",
+            "reject.unsupported", "error.internal",
+        ]
+        for sdk in ("php", "dart"):
+            self.assertEqual([invoke(sdk, request)["class"] for request in requests], expected)
 
     def test_fingerprint_mismatch_refuses_timing(self) -> None:
         summary = summarize([1000, 1100, 1200, 1000, 1050])

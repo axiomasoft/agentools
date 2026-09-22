@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:agentools/agentools.dart';
 import 'package:agentools/agentools_testkit.dart';
 import 'package:benchmark_harness/benchmark_harness.dart';
+import 'package:crypto/crypto.dart';
 
 /// One-call exercise: default [BenchmarkBase.exercise] repeats [run] ten times.
 /// P8.5 times a single call; [measure] is never used.
@@ -26,6 +27,12 @@ final class _SilentEmitter implements ScoreEmitter {
   @override
   void emit(String testName, double value) {}
 }
+
+Map<String, Object?> internalFailure(Object error) => {
+  'ok': false,
+  'class': 'error.internal',
+  'diagnostic_class': error.runtimeType.toString(),
+};
 
 final class _DummyTools implements ToolPort {
   @override
@@ -118,13 +125,11 @@ Map<String, Object?> evalExpression(
     final value = ExpressionEvaluator(limits: limits).evaluate(source, context);
     return {'ok': true, 'class': 'accept', 'value': value};
   } on ExpressionException catch (error) {
-    return {
-      'ok': false,
-      'class': 'reject.limit',
-      'code': error.limitName ?? 'expression.invalid',
-    };
-  } catch (_) {
-    return {'ok': false, 'class': 'reject.invalid_expression'};
+    return error.limitName == null
+        ? {'ok': false, 'class': 'reject.syntax', 'code': 'expression.syntax'}
+        : {'ok': false, 'class': 'reject.limit', 'code': error.limitName};
+  } catch (error) {
+    return internalFailure(error);
   }
 }
 
@@ -138,7 +143,9 @@ Map<String, Object?> evalBaggage(List<String> ids) {
   } on BaggageLimitException {
     return {'ok': false, 'class': 'reject.limit', 'code': 'baggage'};
   } on ArgumentError {
-    return {'ok': false, 'class': 'reject.invalid_id'};
+    return {'ok': false, 'class': 'reject.claim', 'code': 'baggage.id'};
+  } catch (error) {
+    return internalFailure(error);
   }
 }
 
@@ -161,14 +168,26 @@ Map<String, Object?> evalToken(String token) {
     return {'ok': true, 'class': 'accept'};
   } on ConfirmationFailure catch (failure) {
     final oversize = token.length > TokenEnvelope.maxRawBytes;
-    return {
-      'ok': false,
-      'class': oversize ? 'reject.limit' : 'reject.token',
-      'code': failure.error.code,
-    };
-  } catch (_) {
-    final oversize = token.length > TokenEnvelope.maxRawBytes;
-    return {'ok': false, 'class': oversize ? 'reject.limit' : 'reject.token'};
+    if (oversize) {
+      return {'ok': false, 'class': 'reject.limit', 'code': failure.error.code};
+    }
+    if (!token.startsWith('at1.') || '.'.allMatches(token).length != 2) {
+      return {
+        'ok': false,
+        'class': 'reject.syntax',
+        'code': failure.error.code,
+      };
+    }
+    final code = failure.error.code;
+    final classification =
+        code.contains('key_denied') ||
+            code.contains('binding_mismatch') ||
+            code.contains('token_invalid')
+        ? 'reject.signature'
+        : 'reject.claim';
+    return {'ok': false, 'class': classification, 'code': code};
+  } catch (error) {
+    return internalFailure(error);
   }
 }
 
@@ -181,8 +200,12 @@ Map<String, Object?> evalJcs(String json) {
       'bytes': bytes,
       'output_bytes': bytes.length,
     };
-  } catch (_) {
-    return {'ok': false, 'class': 'reject.invalid_json'};
+  } on FormatException {
+    return {'ok': false, 'class': 'reject.syntax', 'code': 'json.syntax'};
+  } on ArgumentError {
+    return {'ok': false, 'class': 'reject.syntax', 'code': 'json.syntax'};
+  } catch (error) {
+    return internalFailure(error);
   }
 }
 
@@ -191,12 +214,10 @@ Map<String, Object?> evalDescriptor() {
     final descriptor = ToolDescriptor.fromMap(descriptorDocument());
     final digest = descriptor.digest(Canonicalizer());
     return {'ok': true, 'class': 'accept', 'digest': digest.value};
+  } on ArgumentError {
+    return {'ok': false, 'class': 'reject.claim', 'code': 'descriptor.claim'};
   } catch (error) {
-    return {
-      'ok': false,
-      'class': 'reject.descriptor',
-      'error': error.toString(),
-    };
+    return internalFailure(error);
   }
 }
 
@@ -206,6 +227,8 @@ Map<String, Object?> evalEventPage(int limit) {
     return {'ok': true, 'class': 'accept', 'limit': limit};
   } on EventStoreFailure {
     return {'ok': false, 'class': 'reject.limit', 'code': 'page'};
+  } catch (error) {
+    return internalFailure(error);
   }
 }
 
@@ -213,8 +236,10 @@ Map<String, Object?> evalLease(int seconds) {
   try {
     LeaseDuration.assertValid(Duration(seconds: seconds));
     return {'ok': true, 'class': 'accept', 'seconds': seconds};
-  } catch (_) {
+  } on ArgumentError {
     return {'ok': false, 'class': 'reject.limit', 'code': 'lease'};
+  } catch (error) {
+    return internalFailure(error);
   }
 }
 
@@ -225,7 +250,7 @@ Map<String, Object?> evalScenarioSteps(int count) {
   ];
   try {
     ScenarioRunner().run(
-      {'spec_rev': '2026-08', 'scenario_id': 'bench', 'steps': steps},
+      {'spec_rev': '2026-09', 'scenario_id': 'bench', 'steps': steps},
       <String, dynamic>{},
       _DummyTools(),
     );
@@ -236,23 +261,106 @@ Map<String, Object?> evalScenarioSteps(int count) {
       'class': 'reject.limit',
       'code': error.limitName ?? 'scenario.max_steps',
     };
+  } on ArgumentError {
+    return {'ok': false, 'class': 'reject.claim', 'code': 'scenario.claim'};
   } catch (error) {
-    return {'ok': false, 'class': 'reject.invalid', 'error': error.toString()};
+    return internalFailure(error);
   }
 }
 
-Map<String, Object?> evalEventFold(int events) {
-  InMemoryEventStore().load('tenant', 'action');
-  final bytes = Canonicalizer().canonicalize({
-    'events': events,
-    'k': [for (var i = 0; i <= events.clamp(0, 8); i++) i],
-  });
-  return {
-    'ok': true,
-    'class': 'accept',
-    'output_bytes': bytes.length,
-    'count': events,
-  };
+Map<String, Object?> evalEventFold(int events, {bool injectInternal = false}) {
+  try {
+    if (injectInternal) {
+      throw StateError('injected benchmark failure');
+    }
+    if (events < 1) {
+      return {'ok': false, 'class': 'reject.claim', 'code': 'events.minimum'};
+    }
+
+    final store = InMemoryEventStore();
+    final actor = Actor(type: 'system', id: 'resource-gate');
+    final pending = [
+      for (var index = 1; index <= events; index++)
+        UncommittedEvent(
+          eventId: 'benchid-${index.toString().padLeft(8, '0')}',
+          kind: index == 1 ? 'action_created' : 'benchmark_tick',
+          eventVersion: 1,
+          specRevision: '2026-09',
+          actor: actor,
+          timestamp: '2026-09-22T00:00:00+00:00',
+          payload: index == 1 ? {} : {'index': index},
+        ),
+    ];
+
+    final appendWatch = Stopwatch()..start();
+    var expected = 0;
+    for (
+      var offset = 0;
+      offset < pending.length;
+      offset += InMemoryEventStore.maxBatch
+    ) {
+      final end = (offset + InMemoryEventStore.maxBatch).clamp(
+        0,
+        pending.length,
+      );
+      final result = store.append(
+        'tenant',
+        'benchmark-action',
+        expected,
+        pending.sublist(offset, end),
+      );
+      expected = result.lastSeq;
+    }
+    appendWatch.stop();
+
+    final loadWatch = Stopwatch()..start();
+    final loaded = <ActionEvent>[];
+    var after = 0;
+    bool hasMore;
+    do {
+      final page = store.load(
+        'tenant',
+        'benchmark-action',
+        afterSeq: after,
+        limit: InMemoryEventStore.maxPage,
+      );
+      loaded.addAll(page.events);
+      after = page.lastSeq;
+      hasMore = page.hasMore;
+    } while (hasMore);
+    loadWatch.stop();
+
+    final foldWatch = Stopwatch()..start();
+    final state = ActionReducer(specRevision: '2026-09').fold(loaded);
+    foldWatch.stop();
+    final stateDocument = <String, Object?>{
+      'action_id': state.actionId,
+      'status': state.status?.value,
+      'seq': state.seq,
+      'epoch': state.epoch,
+      'inputs_count': state.inputs.length,
+      'effects_count': state.effects.length,
+      'cancellation_requested': state.cancellationRequested,
+    };
+    final bytes = Canonicalizer().canonicalize(stateDocument);
+    return {
+      'ok': true,
+      'class': 'accept',
+      'appended_count': expected,
+      'loaded_count': loaded.length,
+      'folded_count': state.seq,
+      'final_seq': state.seq,
+      'digest': sha256.convert(utf8.encode(bytes)).toString(),
+      'output_bytes': utf8.encode(bytes).length,
+      'timing_ns': {
+        'append': appendWatch.elapsedMicroseconds * 1000,
+        'load': loadWatch.elapsedMicroseconds * 1000,
+        'fold': foldWatch.elapsedMicroseconds * 1000,
+      },
+    };
+  } catch (error) {
+    return internalFailure(error);
+  }
 }
 
 Map<String, Object?> dispatch(Map<String, dynamic> request) {
@@ -289,18 +397,25 @@ Map<String, Object?> dispatch(Map<String, dynamic> request) {
     case 'scenario_steps':
       return evalScenarioSteps(request['count'] as int? ?? 1);
     case 'event_fold':
-      return evalEventFold(request['events'] as int? ?? 1);
+      return evalEventFold(
+        request['events'] as int? ?? 1,
+        injectInternal: request['inject_internal'] == true,
+      );
     case 'timed':
       return timed(request);
     default:
-      return {'ok': false, 'class': 'reject.unknown_op'};
+      return {
+        'ok': false,
+        'class': 'reject.unsupported',
+        'code': 'operation.unsupported',
+      };
   }
 }
 
 Map<String, Object?> timed(Map<String, dynamic> request) {
   final innerRaw = request['inner'];
   if (innerRaw is! Map<String, dynamic>) {
-    return {'ok': false, 'class': 'reject.unknown_op'};
+    return {'ok': false, 'class': 'reject.claim', 'code': 'timed.inner'};
   }
   final warmup = (request['warmup'] as int?) ?? 0;
   final samples = (request['samples'] as int?) ?? 1;
@@ -335,6 +450,28 @@ void main(List<String> args) {
     stderr.writeln('empty request');
     exit(2);
   }
-  final request = jsonDecode(raw) as Map<String, dynamic>;
-  stdout.writeln(jsonEncode(dispatch(request)));
+  try {
+    final decoded = jsonDecode(raw);
+    if (decoded is! Map<String, dynamic>) {
+      stdout.writeln(
+        jsonEncode({
+          'ok': false,
+          'class': 'reject.claim',
+          'code': 'request.object',
+        }),
+      );
+      return;
+    }
+    stdout.writeln(jsonEncode(dispatch(decoded)));
+  } on FormatException {
+    stdout.writeln(
+      jsonEncode({
+        'ok': false,
+        'class': 'reject.syntax',
+        'code': 'request.json',
+      }),
+    );
+  } catch (error) {
+    stdout.writeln(jsonEncode(internalFailure(error)));
+  }
 }

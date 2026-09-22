@@ -37,11 +37,14 @@ final class SdkConformanceEngine {
   ) {
     final given = vector['given'];
     final script = vector['script'];
-    if (given is! Map<String, dynamic> || script is! List) {
-      throw StateError('given and script are required');
+    final ruleIds = vector['spec_rule_ids'];
+    if (ruleIds is! List || given is! Map<String, dynamic> || script is! List) {
+      throw StateError('spec_rule_ids, given and script are required');
     }
 
     final projection = SdkProjectionCatalog.resolve(
+      _specRevision,
+      ruleIds,
       Map<String, dynamic>.from(given),
       script,
     );

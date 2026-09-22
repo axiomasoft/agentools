@@ -31,10 +31,8 @@ McpToolCallResult mapToolCallResult(BaseResultData result) {
   if (result is InputRequiredResult) {
     final requests = result.inputRequests;
     final requestState = result.requestState;
-    if (requests == null || requestState == null) {
-      throw FormatException(
-        'input_required result must include inputRequests and requestState',
-      );
+    if (requests == null) {
+      throw FormatException('input_required result must include inputRequests');
     }
     return McpToolCallResult.inputRequired(
       inputRequests: mapInputRequests(requests),

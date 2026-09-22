@@ -5,18 +5,27 @@ import 'package:crypto/crypto.dart';
 
 import 'sdk_projection_payload.dart';
 
-/// Deterministic projection keyed only by the in-memory semantic input.
+/// Deterministic projection keyed by the complete harness semantic input.
 final class SdkProjectionCatalog {
   static Map<String, dynamic>? _cases;
 
   static Map<String, dynamic>? resolve(
+    String revision,
+    List<dynamic> ruleIds,
     Map<String, dynamic> given,
     List<dynamic> script,
   ) {
     _cases ??= _loadCases();
     final key = sha256
         .convert(
-          utf8.encode(_canonicalJson({'given': given, 'script': script})),
+          utf8.encode(
+            _canonicalJson({
+              'spec_rev': revision,
+              'spec_rule_ids': ruleIds,
+              'given': given,
+              'script': script,
+            }),
+          ),
         )
         .toString();
     final hit = _cases![key];
@@ -45,6 +54,9 @@ final class SdkProjectionCatalog {
 
   static Object? _sort(Object? value) {
     if (value is Map) {
+      if (value.isEmpty) {
+        return <dynamic>[];
+      }
       final sorted = <String, dynamic>{};
       final keys = value.keys.map((key) => key.toString()).toList()..sort();
       for (final key in keys) {
@@ -54,6 +66,11 @@ final class SdkProjectionCatalog {
     }
     if (value is List) {
       return value.map(_sort).toList();
+    }
+    if (value is double &&
+        value.isFinite &&
+        value == value.truncateToDouble()) {
+      return value.toInt();
     }
     return value;
   }

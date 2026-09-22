@@ -100,6 +100,7 @@ void main(List<String> args) {
           }
 
           final fresh = SdkConformanceEngine();
+          fresh.bindSpecRevision(revision);
           fresh.configure(fixedClock, fixedSeed);
           fresh.run(vectorId, vector, (probe) {
             _emit(probe);

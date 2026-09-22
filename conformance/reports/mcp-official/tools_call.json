@@ -6,7 +6,7 @@
       "name": "ToolAddNumbers",
       "description": "Validates that the add_numbers tool works correctly",
       "status": "SUCCESS",
-      "timestamp": "2026-09-21T17:06:32.726Z",
+      "timestamp": "2026-09-21T21:38:47.450Z",
       "specReferences": [
         {
           "id": "MCP-Tools",
@@ -24,7 +24,7 @@
       "name": "WireSchemaValid",
       "description": "Every JSON-RPC message the implementation sent is valid per the spec JSON schema for the negotiated spec version",
       "status": "SUCCESS",
-      "timestamp": "2026-09-21T17:06:32.726Z",
+      "timestamp": "2026-09-21T21:38:47.450Z",
       "specReferences": [
         {
           "id": "MCP-Schema",
@@ -37,6 +37,7 @@
       }
     }
   ],
+  "runner_exit": 0,
   "passed": true,
   "raw_dir": "reports/mcp-official/run-tools_call"
 }

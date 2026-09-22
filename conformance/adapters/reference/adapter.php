@@ -9,7 +9,8 @@ use AgenTools\Reference\ReferenceEngine;
 
 /**
  * Внешняя оболочка эталона намеренно владеет только JSONL-протоколом. Семантика
- * получает ровно given/script, поэтому fixtures не могут стать oracle для SUT.
+ * получает только нормативный scope и given/script, поэтому presentation metadata
+ * fixture не может стать oracle для SUT.
  */
 $engine = new ReferenceEngine();
 $protocol = null;

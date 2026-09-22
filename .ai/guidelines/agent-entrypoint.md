@@ -6,6 +6,8 @@
   `conformance/`, and the PHP and Dart SDKs semantically aligned.
 - The current revision and repository map are in `README.md`; API surfaces are
   documented in `php/API.md` and `dart/*/API.md`.
+- Development hierarchy, impact routing, commands, generated-file ownership,
+  and definition of done are in `DEVELOPMENT.md`.
 - The repository is private. Do not publish packages or claim public readiness
   without the recorded owner release gate.
 - For plan work, use the matching `plans/*/status.md` and `plan.md`; open only

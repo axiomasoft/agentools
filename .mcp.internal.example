@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "perplexity": {
+      "command": "<ABS_PATH_TO_PERPLEXITY_WEB_MCP>/start.sh",
+      "args": [
+        "--pool=default"
+      ]
+    }
+  }
+}

@@ -27,8 +27,8 @@ final class ScenarioRunner
     public function run(array $scenario, array $context, ToolPort $tools): ScenarioResult
     {
         $this->executedSteps = 0;
-        if (($scenario['spec_rev'] ?? null) !== '2026-08') {
-            throw new \InvalidArgumentException('A scenario must declare spec revision 2026-08.');
+        if (!in_array($scenario['spec_rev'] ?? null, ['2026-08', '2026-09'], true)) {
+            throw new \InvalidArgumentException('A scenario must declare a supported specification revision.');
         }
         $scenarioId = $this->stringField($scenario, 'scenario_id');
         $steps = $scenario['steps'] ?? null;

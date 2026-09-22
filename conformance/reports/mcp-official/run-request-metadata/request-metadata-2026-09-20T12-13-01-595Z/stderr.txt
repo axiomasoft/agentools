@@ -1,4 +1,0 @@
-[INFO][mcp_dart.client] Setting request handler for potentially custom method 'ping'. Ensure client capabilities match.
-[ERROR][mcp_dart.client] MCP Client Initialization Failed: McpError -32022: Unsupported protocol version (data: {supported: [2026-07-28], requested: 2026-07-28})
-Unhandled exception:
-McpError -32022: Unsupported protocol version (data: {supported: [2026-07-28], requested: 2026-07-28})

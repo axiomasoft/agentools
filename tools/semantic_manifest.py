@@ -89,6 +89,99 @@ def load_hardening_cases() -> list[dict]:
     return cases
 
 
+def load_states() -> list[dict]:
+    sources = {
+        "action": (REVISION / "schema/session-state.json", "ActionStatus"),
+        "proposal": (REVISION / "schema/confirmation.json", "ProposalState"),
+        "idempotency": (REVISION / "schema/idempotency.json", "DedupState"),
+    }
+    rows = []
+    for domain, (path, definition) in sources.items():
+        schema = json.loads(path.read_text(encoding="utf-8"))
+        for value in schema["$defs"][definition]["enum"]:
+            rows.append({"key": f"{domain}:{value}", "domain": domain, "value": value})
+    return sorted(rows, key=lambda row: row["key"])
+
+
+def load_transitions() -> list[dict]:
+    path = REVISION / "03_action-lifecycle.md"
+    rows = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.startswith("| ALC-T"):
+            continue
+        cells = [cell.strip().strip("`") for cell in line.split("|")[1:-1]]
+        if len(cells) != 5:
+            continue
+        transition, source, event, target, _guard = cells
+        rows.append({
+            "transition": transition,
+            "from": None if source.startswith("—") else source,
+            "event": event,
+            "to": target,
+        })
+    if len(rows) != 38:
+        raise SystemExit(f"expected 38 lifecycle transitions, found {len(rows)}")
+    return rows
+
+
+def load_bounds() -> list[dict]:
+    scenario = (REVISION / "06_scenarios.md").read_text(encoding="utf-8")
+    audit = (REVISION / "08_audit-observability.md").read_text(encoding="utf-8")
+    hardening = (REVISION / "12_hardening-semantics.md").read_text(encoding="utf-8")
+    required = {
+        "expression.max_depth": (scenario, r"SCN-16[\s\S]*?\*\*(\d+)\*\*"),
+        "expression.max_length": (scenario, r"SCN-17[\s\S]*?\*\*(\d+)\*\*"),
+        "expression.max_collection_size": (scenario, r"SCN-18[\s\S]*?\*\*(\d+)\*\*"),
+        "expression.max_visited_nodes": (scenario, r"SCN-19[\s\S]*?\*\*(\d+)\*\*"),
+        "event_store.max_page": (hardening, r"HRD-23[\s\S]*?\[1,(\d+)\]"),
+        "baggage.max_items": (audit, r"AOB-31[\s\S]*?(\d+) элементов"),
+        "baggage.max_bytes": (audit, r"AOB-31[\s\S]*?(\d+) байт"),
+    }
+    rows = []
+    for bound, (text, pattern) in required.items():
+        match = re.search(pattern, text)
+        if match is None:
+            raise SystemExit(f"normative bound not found: {bound}")
+        rows.append({"bound": bound, "value": int(match.group(1))})
+    # HRD-22 delegates the exact append limit to the candidate case manifest.
+    event_cases = json.loads((REVISION.parents[2] / "fixtures/2026-09/hardening/event-store-v1.json").read_text(encoding="utf-8"))
+    if not any(case.get("scenario") == "batch_over_64" for case in event_cases["cases"]):
+        raise SystemExit("event-store batch bound case missing")
+    rows.append({"bound": "event_store.max_batch", "value": 64})
+    return sorted(rows, key=lambda row: row["bound"])
+
+
+def load_outcomes() -> list[dict]:
+    schema = json.loads((REVISION / "schema/scenario.json").read_text(encoding="utf-8"))
+    return [
+        {"key": f"scenario:{value}", "domain": "scenario", "value": value}
+        for value in schema["$defs"]["ScenarioOutcome"]["enum"]
+    ]
+
+
+def load_capabilities() -> list[dict]:
+    path = REPO / "fixtures/2026-09/hardening/idempotency-lease-v1.json"
+    cases = json.loads(path.read_text(encoding="utf-8"))["cases"]
+    mapping = {
+        "native_key": "native_key",
+        "read_before_write": "read_before_write",
+        "compensatable": "compensatable",
+        "at_most_once": "at_most_once_only",
+        "unknown": "unknown",
+    }
+    found = set()
+    for case in cases:
+        if case.get("phase") != "capability":
+            continue
+        scenario = case["scenario"]
+        for marker, capability in mapping.items():
+            if marker in scenario:
+                found.add(capability)
+    if found != set(mapping.values()):
+        raise SystemExit(f"capability case manifest incomplete: {sorted(found)}")
+    return [{"capability": value} for value in sorted(found)]
+
+
 def build_manifest() -> dict:
     error_doc = (REVISION / "09_idempotency-errors.md").read_text(encoding="utf-8")
     schema_path = REVISION / "schema/error.json"
@@ -128,7 +221,14 @@ def build_manifest() -> dict:
         "conformance_level_declared": "L1",
         "error_codes": error_rows,
         "case_retryability": load_hardening_cases(),
-        "capabilities": [],
+        "states": load_states(),
+        "transitions": load_transitions(),
+        "envelope_versions": [
+            {"envelope": "confirmation_token", "version": 1, "prefix": "at1."},
+        ],
+        "bounds": load_bounds(),
+        "outcomes": load_outcomes(),
+        "capabilities": load_capabilities(),
     }
     manifest["manifest_digest"] = sha256_text(
         canonical_json({k: v for k, v in manifest.items() if k != "manifest_digest"})

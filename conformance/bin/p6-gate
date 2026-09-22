@@ -13,22 +13,56 @@ function run(string $label, array $cmd, string $cwd): int
 {
     $line = implode(' ', array_map('escapeshellarg', $cmd));
     fwrite(STDOUT, "p6-gate: → {$label}: {$line}\n");
-    $descriptor = [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
+    // Inherit output streams so CI sees progress immediately and neither pipe can
+    // fill while the other is being drained.
+    $descriptor = [0 => ['pipe', 'r'], 1 => STDOUT, 2 => STDERR];
     $proc = proc_open($cmd, $descriptor, $pipes, $cwd);
     if (!is_resource($proc)) {
         fwrite(STDERR, "p6-gate: FAIL: {$label}: cannot start\n");
         return EXIT_FAIL;
     }
     fclose($pipes[0]);
-    stream_get_contents($pipes[1]);
-    stream_get_contents($pipes[2]);
-    fclose($pipes[1]);
-    fclose($pipes[2]);
     $code = proc_close($proc);
     if ($code !== 0) {
         fwrite(STDERR, "p6-gate: FAIL: {$label} (exit {$code})\n");
     }
     return $code === 0 ? EXIT_OK : EXIT_FAIL;
+}
+
+/** @return array<string,mixed>|null */
+function requireConformanceReport(string $label, string $path, string $revision): ?array
+{
+    if (!is_file($path)) {
+        fwrite(STDERR, "p6-gate: FAIL: {$label}: report missing: {$path}\n");
+        return null;
+    }
+    try {
+        $report = json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+    } catch (Throwable $error) {
+        fwrite(STDERR, "p6-gate: FAIL: {$label}: unreadable report: {$error->getMessage()}\n");
+        return null;
+    }
+    $summary = is_array($report['summary'] ?? null) ? $report['summary'] : [];
+    if (($report['spec_rev'] ?? null) !== $revision
+        || ($summary['total'] ?? null) !== 213
+        || ($summary['pass'] ?? null) !== 213
+        || ($summary['fail'] ?? null) !== 0
+        || ($summary['warn'] ?? null) !== 0
+        || ($summary['baseline-expected'] ?? null) !== 0) {
+        fwrite(STDERR, "p6-gate: FAIL: {$label}: report is not an exact 213/213 {$revision} result\n");
+        return null;
+    }
+    return $report;
+}
+
+function requireDigest(string $label, string $path, mixed $expected): bool
+{
+    $actual = digest($path);
+    if (!is_string($expected) || $actual === null || !hash_equals($expected, $actual)) {
+        fwrite(STDERR, "p6-gate: FAIL: {$label}: report digest mismatch\n");
+        return false;
+    }
+    return true;
 }
 
 function digest(string $path): ?string
@@ -40,11 +74,13 @@ function digest(string $path): ?string
 }
 
 $checks = [
+    ['projection catalog', ['python3', 'tools/projection_catalog.py', '--check']],
     ['semantic manifest', ['python3', 'tools/semantic_manifest.py', '--check']],
     ['revision lock', ['python3', 'tools/revision_lock.py', '--check']],
     ['semantic parity', ['php', 'conformance/bin/semantic-parity']],
     ['jcs differential', ['php', 'conformance/bin/jcs-differential']],
     ['mcp applicability', ['python3', 'tools/mcp_applicability.py', '--check']],
+    ['mcp applicability tests', ['python3', 'tools/mcp_applicability.py', 'test']],
     ['mcp official receipts', [$root . '/conformance/mcp/bin/run']],
 ];
 
@@ -54,11 +90,31 @@ foreach ($checks as [$label, $cmd]) {
     }
 }
 
-run('successor corpus probe (non-blocking)', [
-    'php', 'conformance/bin/run', '--adapter', 'php conformance/adapters/reference/adapter.php',
-    '--vectors', 'fixtures/2026-09', '--spec-rev', '2026-09',
-    '--report', 'out/ci/reference-2026-09-probe.json',
-], $root);
+$candidateRuns = [
+    ['reference 2026-09', 'out/ci/reference-2026-09.json', 'php conformance/adapters/reference/adapter.php'],
+    ['PHP SDK 2026-09', 'out/ci/php-2026-09.json', 'php php/conformance/adapter.php'],
+    ['Dart SDK 2026-09', 'out/ci/dart-2026-09.json', 'dart run dart/agentools/conformance/adapter.dart'],
+];
+$candidateDigests = [];
+foreach ($candidateRuns as [$label, $relativeReport, $adapter]) {
+    if (run($label, [
+        'php', 'conformance/bin/run', '--adapter', $adapter,
+        '--vectors', 'fixtures/2026-09', '--spec-rev', '2026-09',
+        '--report', $relativeReport,
+    ], $root) !== EXIT_OK) {
+        exit(EXIT_FAIL);
+    }
+    $reportPath = $root . '/' . $relativeReport;
+    if (requireConformanceReport($label, $reportPath, '2026-09') === null) {
+        exit(EXIT_FAIL);
+    }
+    $candidateDigests[$relativeReport] = digest($reportPath);
+}
+
+$regressionReport = $root . '/out/ci/reference-2026-08.json';
+if (requireConformanceReport('reference 2026-08 regression', $regressionReport, '2026-08') === null) {
+    exit(EXIT_FAIL);
+}
 
 $integrated = [
     'schema_version' => 'p6-integrated-receipt/v1',
@@ -69,8 +125,12 @@ $integrated = [
         'agentools' => [
             'reference_report_2026_08_regression' => 'out/ci/reference-2026-08.json',
             'reference_digest_sha256' => digest($root . '/out/ci/reference-2026-08.json'),
-            'successor_corpus_probe' => 'out/ci/reference-2026-09-probe.json',
-            'successor_probe_digest_sha256' => digest($root . '/out/ci/reference-2026-09-probe.json'),
+            'reference_report_2026_09' => 'out/ci/reference-2026-09.json',
+            'reference_2026_09_digest_sha256' => $candidateDigests['out/ci/reference-2026-09.json'],
+            'php_report_2026_09' => 'out/ci/php-2026-09.json',
+            'php_2026_09_digest_sha256' => $candidateDigests['out/ci/php-2026-09.json'],
+            'dart_report_2026_09' => 'out/ci/dart-2026-09.json',
+            'dart_2026_09_digest_sha256' => $candidateDigests['out/ci/dart-2026-09.json'],
         ],
         'jcs_oracle' => [
             'report' => 'conformance/reports/jcs-parity.json',
@@ -94,5 +154,15 @@ $integrated = [
 
 $out = $reports . '/p6-integrated.json';
 file_put_contents($out, json_encode($integrated, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n");
+foreach ([
+    ['reference 2026-08', $regressionReport, $integrated['namespaces']['agentools']['reference_digest_sha256']],
+    ['reference 2026-09', $root . '/out/ci/reference-2026-09.json', $integrated['namespaces']['agentools']['reference_2026_09_digest_sha256']],
+    ['PHP SDK 2026-09', $root . '/out/ci/php-2026-09.json', $integrated['namespaces']['agentools']['php_2026_09_digest_sha256']],
+    ['Dart SDK 2026-09', $root . '/out/ci/dart-2026-09.json', $integrated['namespaces']['agentools']['dart_2026_09_digest_sha256']],
+] as [$label, $path, $expected]) {
+    if (!requireDigest($label, $path, $expected)) {
+        exit(EXIT_FAIL);
+    }
+}
 fwrite(STDOUT, "p6-gate: wrote {$out}\n");
 exit(EXIT_OK);

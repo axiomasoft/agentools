@@ -1,20 +1,141 @@
 {
     "generated_by": "conformance\/bin\/semantic-parity",
     "manifest_path": "\/home\/vostrikov\/projects\/packages\/agentools\/spec\/revisions\/2026-09\/semantic-manifest.json",
-    "manifest_digest": "2de00f636b662e09fbf76fbf3dda23af6cc499b684736f92858cb28ae9a3025a",
+    "manifest_digest": "e9140d34a44a14e109587692eb8360f350062cae7ac70ac2631cacaedcfe0d18",
+    "families": [
+        "error_codes",
+        "case_retryability",
+        "states",
+        "transitions",
+        "envelope_versions",
+        "bounds",
+        "outcomes",
+        "capabilities"
+    ],
     "php": {
-        "missing": [],
-        "extra": [],
-        "mismatch": []
+        "error_codes": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "case_retryability": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "states": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "transitions": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "envelope_versions": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "bounds": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "outcomes": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "capabilities": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        }
     },
     "dart": {
-        "missing": [],
-        "extra": [],
-        "mismatch": []
+        "error_codes": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "case_retryability": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "states": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "transitions": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "envelope_versions": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "bounds": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "outcomes": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "capabilities": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        }
     },
     "php_dart": {
-        "missing": [],
-        "extra": [],
-        "mismatch": []
+        "error_codes": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "case_retryability": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "states": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "transitions": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "envelope_versions": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "bounds": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "outcomes": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        },
+        "capabilities": {
+            "missing": [],
+            "extra": [],
+            "mismatch": []
+        }
     }
 }

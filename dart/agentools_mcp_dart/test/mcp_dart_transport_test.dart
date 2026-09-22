@@ -60,5 +60,43 @@ void main() {
       expect(result.isError, isFalse);
       expect(result.content.first['text'], contains('tools/call ok'));
     });
+
+    test('retries a supported version after an explicit rejection', () async {
+      await transport.close();
+      await server.close(force: true);
+      mockLog.clear();
+      server = await startMockMcpServer(
+        discoverFixturePath: 'test/fixtures/discover-result.json',
+        callToolFixturePath: 'test/fixtures/call-tool-result.json',
+        requestLog: mockLog,
+        rejectFirstDiscovery: true,
+      );
+      transport = McpDartTransport();
+
+      await transport.connect(Uri.parse('http://localhost:${server.port}/mcp'));
+
+      expect(
+        mockLog.where((line) => line.contains('server/discover')).length,
+        2,
+      );
+    });
+
+    test('treats an omitted tools/call result type as complete', () async {
+      await transport.close();
+      await server.close(force: true);
+      server = await startMockMcpServer(
+        discoverFixturePath: 'test/fixtures/discover-result.json',
+        callToolFixturePath: 'test/fixtures/call-tool-result-no-type.json',
+      );
+      transport = McpDartTransport();
+      await transport.connect(Uri.parse('http://localhost:${server.port}/mcp'));
+
+      final result = await transport.invokeTool(
+        const McpToolInvocation(toolName: 'agentools.smoke', arguments: {}),
+      );
+
+      expect(result.kind, McpToolOutcomeKind.complete);
+      expect(result.content.first['text'], 'default complete');
+    });
   });
 }

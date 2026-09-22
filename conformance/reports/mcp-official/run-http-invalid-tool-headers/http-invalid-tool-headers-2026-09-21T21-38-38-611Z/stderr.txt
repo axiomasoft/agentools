@@ -1,0 +1,13 @@
+[INFO][mcp_dart.client] Setting request handler for potentially custom method 'ping'. Ensure client capabilities match.
+[DEBUG][mcp_dart.client] MCP Server Discovered. Server: http-invalid-tool-headers-server 1.0.0, Protocol: 2026-07-28
+[DEBUG][mcp_dart.client] MCP Server Discovered. Server: http-invalid-tool-headers-server 1.0.0, Protocol: 2026-07-28
+[WARN][mcp_dart.client] Rejecting tool "invalid_empty_header" from tools/list: parameter "value" has an empty x-mcp-header value
+[WARN][mcp_dart.client] Rejecting tool "invalid_object_header" from tools/list: parameter "data" uses x-mcp-header on a schema that is not string, integer, or boolean
+[WARN][mcp_dart.client] Rejecting tool "invalid_array_header" from tools/list: parameter "items" uses x-mcp-header on a schema that is not string, integer, or boolean
+[WARN][mcp_dart.client] Rejecting tool "invalid_null_header" from tools/list: parameter "nil" uses x-mcp-header on a schema that is not string, integer, or boolean
+[WARN][mcp_dart.client] Rejecting tool "invalid_duplicate_same_case" from tools/list: x-mcp-header value "Region" is not unique
+[WARN][mcp_dart.client] Rejecting tool "invalid_duplicate_diff_case" from tools/list: x-mcp-header value "myfield" is not unique
+[WARN][mcp_dart.client] Rejecting tool "invalid_space_in_name" from tools/list: parameter "value" has invalid x-mcp-header value "My Region"
+[WARN][mcp_dart.client] Rejecting tool "invalid_colon_in_name" from tools/list: parameter "value" has invalid x-mcp-header value "Region:Primary"
+[WARN][mcp_dart.client] Rejecting tool "invalid_non_ascii_name" from tools/list: parameter "value" has invalid x-mcp-header value "Région"
+[WARN][mcp_dart.client] Rejecting tool "invalid_control_char_name" from tools/list: parameter "value" has invalid x-mcp-header value "Region	1"

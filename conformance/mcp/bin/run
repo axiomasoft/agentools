@@ -5,9 +5,15 @@ MCP_ROOT="$ROOT/conformance/mcp"
 MATRIX="$MCP_ROOT/applicability-2026-07-28.json"
 REPORTS="$ROOT/conformance/reports/mcp-official"
 CLIENT_CMD="dart run $ROOT/dart/agentools_mcp_dart/tool/conformance_client.dart"
+BINARY="$MCP_ROOT/node_modules/.bin/conformance"
+
+if [[ ! -x "$BINARY" ]]; then
+  echo "mcp/run: missing local conformance binary; run npm ci --ignore-scripts --prefix conformance/mcp" >&2
+  exit 2
+fi
 
 cd "$MCP_ROOT"
-PKG_VERSION="$(npm exec -- conformance --version)"
+PKG_VERSION="$("$BINARY" --version)"
 LOCK_INTEGRITY="$(node -e "const l=require('./package-lock.json'); const p=l.packages['node_modules/@modelcontextprotocol/conformance']; if(!p) process.exit(2); console.log(p.integrity);")"
 EXPECTED_INTEGRITY="sha512-imPK9tx5gQsL6ZKQq4MrsyDYfSaIwpRmX6+ogjbeAXs9LGvxkBxWcY7KcS7TvwaBk/ZiVWl6b/naF4q83UwDRA=="
 if [[ "$PKG_VERSION" != "0.2.0-alpha.11" || "$LOCK_INTEGRITY" != "$EXPECTED_INTEGRITY" ]]; then
@@ -25,20 +31,24 @@ FAILED=0
 for scenario in $APPLICABLE; do
   OUT="$REPORTS/run-$scenario"
   rm -rf "$OUT"
-  if ! npm exec -- conformance client \
+  if "$BINARY" client \
     --command "$CLIENT_CMD" \
     --scenario "$scenario" \
     --spec-version 2026-07-28 \
     --output-dir "$OUT" \
     --timeout 60000; then
+    SCENARIO_EXIT=0
+  else
+    SCENARIO_EXIT=$?
     FAILED=1
   fi
-  python3 - "$OUT" "$REPORTS/$scenario.json" "$scenario" <<'PY'
+  python3 - "$OUT" "$REPORTS/$scenario.json" "$scenario" "$SCENARIO_EXIT" <<'PY'
 import json, sys
 from pathlib import Path
 out = Path(sys.argv[1])
 report = Path(sys.argv[2])
 scenario = sys.argv[3]
+scenario_exit = int(sys.argv[4])
 checks = []
 if out.is_dir():
     candidates = sorted(out.glob("*/checks.json")) + sorted(out.glob("checks.json"))
@@ -47,41 +57,15 @@ if out.is_dir():
 summary = {
     "scenario": scenario,
     "checks": checks,
-    "passed": bool(checks) and all(c.get("status") in ("pass", "SUCCESS") for c in checks),
+    "runner_exit": scenario_exit,
+    "passed": scenario_exit == 0 and bool(checks) and not any(c.get("status") in ("fail", "FAILURE") for c in checks),
     "raw_dir": str(out.relative_to(out.parents[2])) if out.exists() else None,
 }
 report.write_text(json.dumps(summary, indent=2) + "\n")
 PY
 done
 
-python3 - "$MATRIX" "$SUMMARY" "$REPORTS" <<'PY'
-import json, sys
-from pathlib import Path
-matrix = json.load(open(sys.argv[1]))
-summary_path = Path(sys.argv[2])
-reports_dir = Path(sys.argv[3])
-rows = []
-for row in matrix["rows"]:
-    item = dict(row)
-    if row["applicability"] == "applicable":
-        receipt = reports_dir / f"{row['scenario_id']}.json"
-        data = json.loads(receipt.read_text())
-        item["execution_status"] = "passed" if data["passed"] else "failed"
-        item["applicability"] = "passed" if data["passed"] else "failed"
-    rows.append(item)
-doc = {
-    "summary_phrase": matrix["summary_phrase"],
-    "requirements_revision": matrix["requirements_revision"],
-    "conformance_package": matrix["conformance_package"],
-    "applicable_passed": sum(1 for r in rows if r.get("execution_status") == "passed"),
-    "applicable_total": sum(1 for r in matrix["rows"] if r["applicability"] == "applicable"),
-    "rows": rows,
-}
-summary_path.write_text(json.dumps(doc, indent=2) + "\n")
-print(f"mcp/run: official MCP scenario compatibility — {doc['applicable_passed']}/{doc['applicable_total']} applicable scenarios passed")
-if doc["applicable_passed"] != doc["applicable_total"]:
-    raise SystemExit(1)
-PY
+python3 "$ROOT/tools/mcp_applicability.py" --summarize "$REPORTS" "$SUMMARY"
 if [[ "$FAILED" -ne 0 ]]; then
   exit 1
 fi

@@ -136,8 +136,6 @@ def layer_four() -> int:
     except ValueError as error:
         print(f"layer 4: некорректный реестр SDK · проверок: 0 · FAIL: {error}", file=sys.stderr)
         return 1
-    # Successor corpus execution (2026-09) remains probe-only until reference/SDK
-    # close HRD behavior gaps; manifests and lockstep already target 2026-09.
     return run_checks(4, "эталонный conformance, golden, harness и SDK", checks)
 
 

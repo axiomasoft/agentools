@@ -31,17 +31,20 @@ $dartProfile = json_decode($dartJson, true, flags: JSON_THROW_ON_ERROR);
 $normative = [
     'schema_version' => 'semantic-profile/v1',
     'spec_revision' => '2026-09',
-    'error_codes' => $manifest['error_codes'],
 ];
+foreach (SemanticParity::FAMILIES as $family) {
+    $normative[$family] = $manifest[$family] ?? [];
+}
 
-$phpCompare = SemanticParity::compareErrorCodes($normative, $phpProfile);
-$dartCompare = SemanticParity::compareErrorCodes($normative, $dartProfile);
-$crossCompare = SemanticParity::compareErrorCodes($phpProfile, $dartProfile);
+$phpCompare = SemanticParity::compareProfiles($normative, $phpProfile);
+$dartCompare = SemanticParity::compareProfiles($normative, $dartProfile);
+$crossCompare = SemanticParity::compareProfiles($phpProfile, $dartProfile);
 
 $report = [
     'generated_by' => 'conformance/bin/semantic-parity',
     'manifest_path' => $manifestPath,
     'manifest_digest' => $manifest['manifest_digest'] ?? null,
+    'families' => SemanticParity::FAMILIES,
     'php' => $phpCompare,
     'dart' => $dartCompare,
     'php_dart' => $crossCompare,
@@ -49,9 +52,9 @@ $report = [
 
 file_put_contents($reportPath, json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n");
 
-$failed = $phpCompare['missing'] || $phpCompare['extra'] || $phpCompare['mismatch']
-    || $dartCompare['missing'] || $dartCompare['extra'] || $dartCompare['mismatch']
-    || $crossCompare['missing'] || $crossCompare['extra'] || $crossCompare['mismatch'];
+$failed = SemanticParity::failed($phpCompare)
+    || SemanticParity::failed($dartCompare)
+    || SemanticParity::failed($crossCompare);
 
 if ($failed) {
     fwrite(STDERR, "semantic-parity: drift detected — see {$reportPath}\n");

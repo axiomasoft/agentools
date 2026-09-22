@@ -4,8 +4,8 @@ import 'ops_error_codes.dart';
 
 /// Opaque baggage identifiers only; substantive data is forbidden (AOB-29..AOB-31).
 final class BaggageRefs {
-  static const _maxItems = 64;
-  static const _maxBytes = 8192;
+  static const maxItems = 64;
+  static const maxBytes = 8192;
 
   BaggageRefs([List<String>? refs])
     : _refs = List.unmodifiable(refs ?? const []);
@@ -19,7 +19,7 @@ final class BaggageRefs {
 
     final next = [..._refs, opaqueId];
     final encoded = next.join(',');
-    if (next.length > _maxItems || encoded.length > _maxBytes) {
+    if (next.length > maxItems || encoded.length > maxBytes) {
       throw BaggageLimitException(
         ToolExecutionResult.failure(
           ToolExecutionError(

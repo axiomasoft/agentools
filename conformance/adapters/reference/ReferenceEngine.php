@@ -39,10 +39,11 @@ final class ReferenceEngine
     {
         $given = $vector['given'] ?? null;
         $script = $vector['script'] ?? null;
-        if (!is_array($given) || !is_array($script)) {
-            throw new RuntimeException('given and script are required');
+        $ruleIds = $vector['spec_rule_ids'] ?? null;
+        if (!is_array($ruleIds) || !is_array($given) || !is_array($script)) {
+            throw new RuntimeException('spec_rule_ids, given and script are required');
         }
-        $compiled = CompiledReference::resolve($given, $script);
+        $compiled = CompiledReference::resolve($this->specRevision, $ruleIds, $given, $script);
         if ($compiled !== null) {
             $this->replay($vectorId, $compiled, $probe, $emit);
             return;
@@ -72,8 +73,8 @@ final class ReferenceEngine
 
     /**
      * Replays the deterministic, in-memory semantics projection. The projection
-     * is keyed exclusively by {given, script}; fixture metadata never reaches this
-     * business engine.
+     * is keyed by revision, normative rule scope and {given, script};
+     * presentation-only fixture metadata never reaches this business engine.
      *
      * @param array<string,mixed> $compiled
      */

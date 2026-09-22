@@ -1,8 +1,8 @@
 # P9 private RC aggregate
 
 **Verdict:** `green`
-**Source commit:** `c540a47737bc8b2c43ad0d971546e7a94c1f599d`
-**Generated:** `2026-09-21T17:15:59Z`
+**Source commit:** `29482e1c6b2bcd19d63d5f3e2ead0e6ffa07665a`
+**Generated:** `2026-09-21T21:51:20Z`
 
 ## Local RC
 
@@ -11,9 +11,9 @@
 
 ## Subjects
 
-- `php-sdk`: archive `5cd7ef896988acc2033eb5403f6d0273ae90ebc64ebe0564d7dacb76af37ef96`
-- `dart-core`: archive `f60e9f1c5f98fc8fad314ab2a2ff924841b813a85670a71e3577bc641a2674d4`
-- `dart-mcp-companion`: archive `35015fa9c67d3b5aacc8049b4fd885f67938763a9fd06d2032e98710b9a146f6`
+- `php-sdk`: archive `e43bb369802948f398c9034600018df73813b1fbfb71f8e7806d28a13a5cc787`
+- `dart-core`: archive `b4af3bd312c8ebc380a33a8f9b0b5f936255627c3dc694be9b6577a5da28c9da`
+- `dart-mcp-companion`: archive `2e75c28bb91f9b66591b97ddb2a4b8bc6cf6870001f5bbed9f58ed4dff7358ec`
 
 ## Hosted attestation
 

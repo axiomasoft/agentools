@@ -7,8 +7,12 @@
         "agentools": {
             "reference_report_2026_08_regression": "out\/ci\/reference-2026-08.json",
             "reference_digest_sha256": "c9a737bc29907be0bbd5306f20b1669b95a90ca396163c9df79ba57994a9c4a5",
-            "successor_corpus_probe": "out\/ci\/reference-2026-09-probe.json",
-            "successor_probe_digest_sha256": "1b9353dae34ec5a7dc7cf0d58f88803e8f17819da1da0a2aceab2ee2b0cb8ffd"
+            "reference_report_2026_09": "out\/ci\/reference-2026-09.json",
+            "reference_2026_09_digest_sha256": "4dee8e274da04e9a08c65de5bc4699e833b032a2ff9598d7e551b1a3ae052573",
+            "php_report_2026_09": "out\/ci\/php-2026-09.json",
+            "php_2026_09_digest_sha256": "1dad6af42522583810bf15f0c50869b161a2675f9b4c7ef15cafa859f3d65b24",
+            "dart_report_2026_09": "out\/ci\/dart-2026-09.json",
+            "dart_2026_09_digest_sha256": "1dad6af42522583810bf15f0c50869b161a2675f9b4c7ef15cafa859f3d65b24"
         },
         "jcs_oracle": {
             "report": "conformance\/reports\/jcs-parity.json",
@@ -16,11 +20,11 @@
         },
         "semantic_profile": {
             "report": "conformance\/reports\/semantic-parity.json",
-            "digest_sha256": "3fa12cada151e5c53ff46b972552b8ed8dba5c73ddc60e86d6be70521cea7a09"
+            "digest_sha256": "b8ec4ba2aecdbb73fa58154f44155fda1f5b60fd487dede5f0dbee2a82328249"
         },
         "mcp_official": {
             "report": "conformance\/reports\/mcp-official\/summary.json",
-            "digest_sha256": "c458e521522ea7c62195308096acc51518209a458e907d778a74d805179a67a1"
+            "digest_sha256": "c84bce7a7083ba6c41dd7243f291611c6306c6d829b4dac52bdc7dbddd3031dd"
         }
     },
     "residual_owner": {

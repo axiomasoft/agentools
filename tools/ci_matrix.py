@@ -41,6 +41,7 @@ LOCKFILES = {
     "conformance": REPO / "conformance/composer.lock",
     "dart_core": REPO / "dart/agentools/pubspec.lock",
     "dart_mcp": REPO / "dart/agentools_mcp_dart/pubspec.lock",
+    "mcp_npm": REPO / "conformance/mcp/package-lock.json",
 }
 
 DART_PACKAGES = {
@@ -51,7 +52,7 @@ DART_PACKAGES = {
 TIERS = ("focused", "bounded", "extended", "release-candidate")
 TIER_EVENTS = {
     "focused": ("pull_request",),
-    "bounded": ("push",),
+    "bounded": ("pull_request", "push"),
     "extended": ("schedule", "workflow_dispatch"),
     "release-candidate": ("workflow_dispatch", "push"),
 }
@@ -500,6 +501,10 @@ def install_cli_tool(tool_id: str) -> Path:
     dest = Path(tempfile.gettempdir()) / f"agentools-{tool_id.replace('/', '-')}"
     if dest.exists():
         return dest
+    if tool_id == "gitleaks/gitleaks":
+        cached = Path(tempfile.gettempdir()) / "agentools-extract-gitleaks-gitleaks" / "gitleaks"
+        if cached.is_file():
+            return cached
     import urllib.request
 
     url = entry["download_url"]
@@ -531,7 +536,7 @@ def install_cli_tool(tool_id: str) -> Path:
 def run_osv_scan() -> int:
     scanner = install_cli_tool("google/osv-scanner")
     args = [str(scanner), "scan", "--config", str(REPO / ".osv-scanner.toml")]
-    for path in (LOCKFILES["php"], LOCKFILES["dart_core"], LOCKFILES["dart_mcp"]):
+    for path in LOCKFILES.values():
         args.extend(["-L", str(path)])
     return subprocess.run(args, cwd=REPO, check=False).returncode
 
@@ -561,6 +566,18 @@ def cmd_test(_: argparse.Namespace) -> int:
 
 
 class CiMatrixTests(unittest.TestCase):
+    def test_osv_roster_is_exact(self) -> None:
+        self.assertEqual(
+            {path.relative_to(REPO).as_posix() for path in LOCKFILES.values()},
+            {
+                "php/composer.lock",
+                "conformance/composer.lock",
+                "dart/agentools/pubspec.lock",
+                "dart/agentools_mcp_dart/pubspec.lock",
+                "conformance/mcp/package-lock.json",
+            },
+        )
+
     def test_supported_matrix_exact(self) -> None:
         rows = expected_matrix_rows()
         php_supported = [r for r in rows if r["ecosystem"] == "php" and r["resolution"] == "supported"]
@@ -626,6 +643,114 @@ class CiMatrixTests(unittest.TestCase):
     def test_gitleaks_redaction_config(self) -> None:
         text = (REPO / ".gitleaks.toml").read_text(encoding="utf-8")
         self.assertIn("redact", text)
+
+    def test_gitleaks_has_no_directory_wide_allowlists(self) -> None:
+        text = (REPO / ".gitleaks.toml").read_text(encoding="utf-8")
+        self.assertNotIn("'''fixtures/'''", text)
+        self.assertNotIn("'''plans/'''", text)
+        self.assertNotIn("'''conformance/reports/'''", text)
+        self.assertIn('condition = "AND"', text)
+
+    def test_gitleaks_detects_secrets_in_formerly_allowlisted_directories(self) -> None:
+        scanner = install_cli_tool("gitleaks/gitleaks")
+        with tempfile.TemporaryDirectory(prefix="agentools-gitleaks-negative-") as tmp:
+            root = Path(tmp)
+            paths = (
+                "fixtures/leak.env",
+                "plans/leak.env",
+                "conformance/reports/leak.env",
+            )
+            access_keys = (
+                "AKIAQWERTYUIOPASDFGH",
+                "AKIAZXCVBNMASDFGHJKL",
+                "AKIAMNBVCXZLKJHGFDSA",
+            )
+            for relative, access_key in zip(paths, access_keys, strict=True):
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(f"AWS_ACCESS_KEY_ID={access_key}\n", encoding="utf-8")
+            report = root / "report.json"
+            proc = subprocess.run(
+                [
+                    str(scanner), "detect", "--no-banner", "--no-git", "--redact",
+                    "--config", str(REPO / ".gitleaks.toml"), "--source", str(root),
+                    "--report-format", "json", "--report-path", str(report),
+                ],
+                cwd=REPO,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(proc.returncode, 1, proc.stdout + proc.stderr)
+            findings = json.loads(report.read_text(encoding="utf-8"))
+            found = {
+                Path(str(row["File"])).resolve().relative_to(root.resolve()).as_posix()
+                for row in findings
+            }
+            self.assertEqual(found, set(paths))
+
+    def test_gitleaks_allows_only_the_known_fake_token_form(self) -> None:
+        scanner = install_cli_tool("gitleaks/gitleaks")
+        with tempfile.TemporaryDirectory(prefix="agentools-gitleaks-fake-") as tmp:
+            root = Path(tmp)
+            fixture = root / "fixtures" / "known-fake.json"
+            fixture.parent.mkdir(parents=True)
+            fixture.write_text(
+                '{"confirmation_token":"at1.eyJ2IjoxfQ.Zm9vYmFy"}\n',
+                encoding="utf-8",
+            )
+            proc = subprocess.run(
+                [
+                    str(scanner), "detect", "--no-banner", "--no-git", "--redact",
+                    "--config", str(REPO / ".gitleaks.toml"), "--source", str(root),
+                ],
+                cwd=REPO,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+
+    def test_cursor_registers_only_fail_closed_safe_dirs(self) -> None:
+        document = json.loads((REPO / ".cursor/hooks.json").read_text(encoding="utf-8"))
+        self.assertEqual(set(document["hooks"]), {"beforeShellExecution"})
+        self.assertEqual(len(document["hooks"]["beforeShellExecution"]), 1)
+        hook = document["hooks"]["beforeShellExecution"][0]
+        self.assertIn("--surface security.safe-dirs", hook["command"])
+        self.assertIs(hook["failClosed"], True)
+
+    def test_cursor_memory_scope_uses_versioned_project_metadata(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="agentools-audit-") as tmp:
+            root = Path(tmp)
+            (root / ".cursor").mkdir()
+            (root / ".serena").mkdir()
+            (root / ".cursor" / "memory.env.ini").write_text(
+                "MODE=maind\nBRAIN=core\n", encoding="utf-8"
+            )
+            (root / ".serena" / "project.yml").write_text(
+                'project_name: "agentools"\n', encoding="utf-8"
+            )
+            payload = {
+                "hook_event_name": "sessionStart",
+                "conversation_id": "test-conversation",
+                "session_id": "test-session",
+                "cwd": str(root),
+            }
+            proc = subprocess.run(
+                [
+                    sys.executable, str(REPO / ".cursor/hooks/lifecycle.py"),
+                    "--surface", "lifecycle.memory",
+                ],
+                input=json.dumps(payload),
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            result = json.loads(proc.stdout)
+            self.assertEqual(
+                result["env"]["SWISSKNIFEMAN_MEMORY_SCOPE"], "project:agentools"
+            )
 
 
 def build_parser() -> argparse.ArgumentParser:

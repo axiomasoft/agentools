@@ -1263,6 +1263,412 @@
       "source_digest": "3a3a96be28f7d46cc32444ff6a2f02f2ff65ba552f789f5e1bfaea303f470596"
     }
   ],
-  "capabilities": [],
-  "manifest_digest": "2de00f636b662e09fbf76fbf3dda23af6cc499b684736f92858cb28ae9a3025a"
+  "states": [
+    {
+      "key": "action:applying",
+      "domain": "action",
+      "value": "applying"
+    },
+    {
+      "key": "action:awaiting_confirmation",
+      "domain": "action",
+      "value": "awaiting_confirmation"
+    },
+    {
+      "key": "action:cancelled",
+      "domain": "action",
+      "value": "cancelled"
+    },
+    {
+      "key": "action:completed",
+      "domain": "action",
+      "value": "completed"
+    },
+    {
+      "key": "action:created",
+      "domain": "action",
+      "value": "created"
+    },
+    {
+      "key": "action:expired",
+      "domain": "action",
+      "value": "expired"
+    },
+    {
+      "key": "action:failed",
+      "domain": "action",
+      "value": "failed"
+    },
+    {
+      "key": "action:reconciliation_required",
+      "domain": "action",
+      "value": "reconciliation_required"
+    },
+    {
+      "key": "action:rejected",
+      "domain": "action",
+      "value": "rejected"
+    },
+    {
+      "key": "action:running",
+      "domain": "action",
+      "value": "running"
+    },
+    {
+      "key": "idempotency:concurrent_in_flight",
+      "domain": "idempotency",
+      "value": "concurrent_in_flight"
+    },
+    {
+      "key": "idempotency:duplicate_completed",
+      "domain": "idempotency",
+      "value": "duplicate_completed"
+    },
+    {
+      "key": "idempotency:new",
+      "domain": "idempotency",
+      "value": "new"
+    },
+    {
+      "key": "proposal:approved",
+      "domain": "proposal",
+      "value": "approved"
+    },
+    {
+      "key": "proposal:expired",
+      "domain": "proposal",
+      "value": "expired"
+    },
+    {
+      "key": "proposal:pending",
+      "domain": "proposal",
+      "value": "pending"
+    },
+    {
+      "key": "proposal:rejected",
+      "domain": "proposal",
+      "value": "rejected"
+    },
+    {
+      "key": "proposal:revoked",
+      "domain": "proposal",
+      "value": "revoked"
+    },
+    {
+      "key": "proposal:superseded",
+      "domain": "proposal",
+      "value": "superseded"
+    }
+  ],
+  "transitions": [
+    {
+      "transition": "ALC-T1",
+      "from": null,
+      "event": "action_created",
+      "to": "created"
+    },
+    {
+      "transition": "ALC-T2",
+      "from": "created",
+      "event": "input_recorded",
+      "to": "created"
+    },
+    {
+      "transition": "ALC-T3",
+      "from": "created",
+      "event": "epoch_started",
+      "to": "created"
+    },
+    {
+      "transition": "ALC-T4",
+      "from": "created",
+      "event": "action_started",
+      "to": "running"
+    },
+    {
+      "transition": "ALC-T5",
+      "from": "running",
+      "event": "input_recorded",
+      "to": "running"
+    },
+    {
+      "transition": "ALC-T6",
+      "from": "running",
+      "event": "epoch_started",
+      "to": "running"
+    },
+    {
+      "transition": "ALC-T7",
+      "from": "running",
+      "event": "confirmation_requested",
+      "to": "awaiting_confirmation"
+    },
+    {
+      "transition": "ALC-T8",
+      "from": "running",
+      "event": "effect_requested",
+      "to": "applying"
+    },
+    {
+      "transition": "ALC-T9",
+      "from": "running",
+      "event": "action_completed",
+      "to": "completed"
+    },
+    {
+      "transition": "ALC-T10",
+      "from": "running",
+      "event": "action_failed",
+      "to": "failed"
+    },
+    {
+      "transition": "ALC-T11",
+      "from": "awaiting_confirmation",
+      "event": "confirmation_resolved",
+      "to": "running"
+    },
+    {
+      "transition": "ALC-T12",
+      "from": "awaiting_confirmation",
+      "event": "confirmation_resolved",
+      "to": "rejected"
+    },
+    {
+      "transition": "ALC-T13",
+      "from": "awaiting_confirmation",
+      "event": "confirmation_resolved",
+      "to": "rejected"
+    },
+    {
+      "transition": "ALC-T14",
+      "from": "awaiting_confirmation",
+      "event": "confirmation_resolved",
+      "to": "expired"
+    },
+    {
+      "transition": "ALC-T15",
+      "from": "awaiting_confirmation",
+      "event": "confirmation_requested",
+      "to": "awaiting_confirmation"
+    },
+    {
+      "transition": "ALC-T16",
+      "from": "awaiting_confirmation",
+      "event": "epoch_started",
+      "to": "awaiting_confirmation"
+    },
+    {
+      "transition": "ALC-T17",
+      "from": "awaiting_confirmation",
+      "event": "action_failed",
+      "to": "failed"
+    },
+    {
+      "transition": "ALC-T18",
+      "from": "applying",
+      "event": "effect_confirmed",
+      "to": "running"
+    },
+    {
+      "transition": "ALC-T19",
+      "from": "applying",
+      "event": "effect_failed",
+      "to": "running"
+    },
+    {
+      "transition": "ALC-T20",
+      "from": "applying",
+      "event": "effect_requested",
+      "to": "applying"
+    },
+    {
+      "transition": "ALC-T21",
+      "from": "applying",
+      "event": "epoch_started",
+      "to": "applying"
+    },
+    {
+      "transition": "ALC-T22",
+      "from": "applying",
+      "event": "action_failed",
+      "to": "failed"
+    },
+    {
+      "transition": "ALC-T23",
+      "from": "running",
+      "event": "task_bound",
+      "to": "running"
+    },
+    {
+      "transition": "ALC-T24",
+      "from": "applying",
+      "event": "task_bound",
+      "to": "applying"
+    },
+    {
+      "transition": "ALC-T25",
+      "from": "running",
+      "event": "task_binding_lost",
+      "to": "running"
+    },
+    {
+      "transition": "ALC-T26",
+      "from": "applying",
+      "event": "task_binding_lost",
+      "to": "reconciliation_required"
+    },
+    {
+      "transition": "ALC-T27",
+      "from": "reconciliation_required",
+      "event": "effect_confirmed",
+      "to": "running"
+    },
+    {
+      "transition": "ALC-T28",
+      "from": "reconciliation_required",
+      "event": "effect_failed",
+      "to": "running"
+    },
+    {
+      "transition": "ALC-T29",
+      "from": "reconciliation_required",
+      "event": "epoch_started",
+      "to": "reconciliation_required"
+    },
+    {
+      "transition": "ALC-T30",
+      "from": "reconciliation_required",
+      "event": "action_failed",
+      "to": "failed"
+    },
+    {
+      "transition": "ALC-T31",
+      "from": "created",
+      "event": "cancellation_requested",
+      "to": "created"
+    },
+    {
+      "transition": "ALC-T32",
+      "from": "running",
+      "event": "cancellation_requested",
+      "to": "running"
+    },
+    {
+      "transition": "ALC-T33",
+      "from": "awaiting_confirmation",
+      "event": "cancellation_requested",
+      "to": "awaiting_confirmation"
+    },
+    {
+      "transition": "ALC-T34",
+      "from": "applying",
+      "event": "cancellation_requested",
+      "to": "applying"
+    },
+    {
+      "transition": "ALC-T35",
+      "from": "reconciliation_required",
+      "event": "cancellation_requested",
+      "to": "reconciliation_required"
+    },
+    {
+      "transition": "ALC-T36",
+      "from": "created",
+      "event": "action_cancelled",
+      "to": "cancelled"
+    },
+    {
+      "transition": "ALC-T37",
+      "from": "running",
+      "event": "action_cancelled",
+      "to": "cancelled"
+    },
+    {
+      "transition": "ALC-T38",
+      "from": "awaiting_confirmation",
+      "event": "action_cancelled",
+      "to": "cancelled"
+    }
+  ],
+  "envelope_versions": [
+    {
+      "envelope": "confirmation_token",
+      "version": 1,
+      "prefix": "at1."
+    }
+  ],
+  "bounds": [
+    {
+      "bound": "baggage.max_bytes",
+      "value": 8192
+    },
+    {
+      "bound": "baggage.max_items",
+      "value": 64
+    },
+    {
+      "bound": "event_store.max_batch",
+      "value": 64
+    },
+    {
+      "bound": "event_store.max_page",
+      "value": 1000
+    },
+    {
+      "bound": "expression.max_collection_size",
+      "value": 1000
+    },
+    {
+      "bound": "expression.max_depth",
+      "value": 32
+    },
+    {
+      "bound": "expression.max_length",
+      "value": 512
+    },
+    {
+      "bound": "expression.max_visited_nodes",
+      "value": 10000
+    }
+  ],
+  "outcomes": [
+    {
+      "key": "scenario:COMPLETED",
+      "domain": "scenario",
+      "value": "COMPLETED"
+    },
+    {
+      "key": "scenario:FAILED",
+      "domain": "scenario",
+      "value": "FAILED"
+    },
+    {
+      "key": "scenario:COMPENSATED",
+      "domain": "scenario",
+      "value": "COMPENSATED"
+    },
+    {
+      "key": "scenario:COMPENSATION_FAILED",
+      "domain": "scenario",
+      "value": "COMPENSATION_FAILED"
+    }
+  ],
+  "capabilities": [
+    {
+      "capability": "at_most_once_only"
+    },
+    {
+      "capability": "compensatable"
+    },
+    {
+      "capability": "native_key"
+    },
+    {
+      "capability": "read_before_write"
+    },
+    {
+      "capability": "unknown"
+    }
+  ],
+  "manifest_digest": "e9140d34a44a14e109587692eb8360f350062cae7ac70ac2631cacaedcfe0d18"
 }

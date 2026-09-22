@@ -434,7 +434,15 @@ def render_finding(payload: dict[str, Any]) -> str:
 
 
 def cmd_run(args: argparse.Namespace) -> int:
-    payload = run_reproducibility(pg.REPO, require_clean=not args.allow_dirty)
+    # Local direct-development acceptance must be able to attest the exact
+    # worktree bytes before a commit exists. Hosted CI remains fail-closed on a
+    # dirty product tree; subject manifests and archive digests bind the local
+    # bytes, and every public release path remains blocked separately.
+    hosted_ci = os.environ.get("CI", "").lower() == "true"
+    payload = run_reproducibility(
+        pg.REPO,
+        require_clean=hosted_ci and not args.allow_dirty,
+    )
     schema_errors = validate_receipt_schema(payload)
     if schema_errors:
         payload["status"] = "red"

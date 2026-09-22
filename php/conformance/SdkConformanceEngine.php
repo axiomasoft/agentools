@@ -61,11 +61,12 @@ final class SdkConformanceEngine
     {
         $given = $vector['given'] ?? null;
         $script = $vector['script'] ?? null;
-        if (!is_array($given) || !is_array($script)) {
-            throw new RuntimeException('given and script are required');
+        $ruleIds = $vector['spec_rule_ids'] ?? null;
+        if (!is_array($ruleIds) || !is_array($given) || !is_array($script)) {
+            throw new RuntimeException('spec_rule_ids, given and script are required');
         }
 
-        $projection = SdkProjectionCatalog::resolve($given, $script);
+        $projection = SdkProjectionCatalog::resolve($this->specRevision, $ruleIds, $given, $script);
         if ($projection !== null) {
             $this->replay($vectorId, $projection, $probe, $emit);
             return;

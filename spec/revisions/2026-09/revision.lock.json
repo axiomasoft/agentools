@@ -407,7 +407,7 @@
   },
   "generated_artifact_digests": {
     "rules.json": "28c014b99f169709d94fbd57ef605124a45e6a4b119178ce95c74195b943cab6",
-    "semantic-manifest.json": "2f028bb062a51019623b9ef704d8abdc95216409f447ba774506a006222814e8"
+    "semantic-manifest.json": "33929fbd8f8bd2bf32a7add872ffd7d7d4b5f5f8ca58487b77f7199aff099a93"
   },
-  "lock_digest": "5e695afa7291e5e321f44d5fbf9994469fecb8f21fe605fa7c58a7a47ed2d513"
+  "lock_digest": "136b6f67319adc554cee6c2ab8bb5f4ba1e5859dadb9d908b11d3b16d7b62d5d"
 }

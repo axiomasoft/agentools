@@ -11,8 +11,8 @@ use AgenTools\Error\ToolExecutionResult;
 /** Opaque baggage identifiers only; substantive data is forbidden (AOB-29..AOB-31). */
 final class BaggageRefs
 {
-    private const MAX_ITEMS = 64;
-    private const MAX_BYTES = 8192;
+    public const MAX_ITEMS = 64;
+    public const MAX_BYTES = 8192;
 
     /** @var list<string> */
     private array $refs = [];

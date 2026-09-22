@@ -130,12 +130,35 @@ def _read_memory_config(cwd):
     return mode, brain
 
 
+def _project_name_from_metadata(cwd):
+    if not cwd:
+        return None
+    current = Path(cwd).resolve()
+    for directory in (current, *current.parents):
+        metadata = directory / ".serena" / "project.yml"
+        try:
+            text = metadata.read_text(encoding="utf-8")
+        except OSError:
+            continue
+        for line in text.splitlines():
+            match = re.fullmatch(r"\s*project_name\s*:\s*[\"']?([^\"'#]+?)[\"']?\s*(?:#.*)?", line)
+            if match:
+                value = match.group(1).strip()
+                if value:
+                    return value
+        return None
+    return None
+
+
 def _memory(payload):
     cwd = _payload_cwd(payload)
     mode, brain = _read_memory_config(cwd)
     if mode == "off":
         return
-    project_name = Path(cwd).resolve().name if cwd else "unknown"
+    project_name = _project_name_from_metadata(cwd)
+    if project_name is None:
+        sys.stderr.write("lifecycle.memory: project_name missing from .serena/project.yml\n")
+        sys.exit(2)
     out = {
         "SWISSKNIFEMAN_MEMORY_PROVIDER": mode,
         "SWISSKNIFEMAN_MEMORY_BRAIN": brain,

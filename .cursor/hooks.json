@@ -1,25 +1,10 @@
 {
   "version": 1,
   "hooks": {
-    "sessionStart": [
+    "beforeShellExecution": [
       {
-        "command": "python3 \"${CURSOR_PROJECT_DIR:-.}/.cursor/hooks/lifecycle.py\" --surface lifecycle.memory"
-      }
-    ],
-    "afterShellExecution": [
-      {
-        "command": "python3 \"${CURSOR_PROJECT_DIR:-.}/.cursor/hooks/lifecycle.py\" --surface lifecycle.command-log"
-      }
-    ],
-    "beforeShellExecution": [],
-    "preToolUse": [
-      {
-        "command": "python3 \"${CURSOR_PROJECT_DIR:-.}/.cursor/hooks/lifecycle.py\" --surface lifecycle.tool-telemetry"
-      }
-    ],
-    "sessionEnd": [
-      {
-        "command": "python3 \"${CURSOR_PROJECT_DIR:-.}/.cursor/hooks/lifecycle.py\" --surface lifecycle.run-report"
+        "command": "python3 \"${CURSOR_PROJECT_DIR:-.}/.cursor/hooks/lifecycle.py\" --surface security.safe-dirs",
+        "failClosed": true
       }
     ]
   }

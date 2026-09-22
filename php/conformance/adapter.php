@@ -80,6 +80,7 @@ while (($line = fgets(STDIN)) !== false) {
                     break;
                 }
                 $engine = new SdkConformanceEngine();
+                $engine->bindSpecRevision($revision);
                 $engine->configure($fixedClock, $fixedSeed);
                 $engine->run($message['vector_id'], $message['vector'], static function (array $out): array {
                     emit($out);

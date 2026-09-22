@@ -82,7 +82,7 @@ final class McpToolCallResult {
 
   factory McpToolCallResult.inputRequired({
     required Map<String, dynamic> inputRequests,
-    required String requestState,
+    String? requestState,
   }) {
     return McpToolCallResult._(
       kind: McpToolOutcomeKind.inputRequired,

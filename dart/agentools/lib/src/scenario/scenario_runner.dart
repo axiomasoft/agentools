@@ -20,8 +20,10 @@ final class ScenarioRunner {
     ToolPort tools,
   ) {
     _executedSteps = 0;
-    if (scenario['spec_rev'] != '2026-08') {
-      throw ArgumentError('A scenario must declare spec revision 2026-08.');
+    if (!const {'2026-08', '2026-09'}.contains(scenario['spec_rev'])) {
+      throw ArgumentError(
+        'A scenario must declare a supported specification revision.',
+      );
     }
     final scenarioId = _stringField(scenario, 'scenario_id');
     final steps = scenario['steps'];

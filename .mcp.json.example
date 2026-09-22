@@ -22,12 +22,6 @@
         "--enable-web-dashboard",
         "false"
       ]
-    },
-    "perplexity": {
-      "command": "<HOME>/projects/packages/perplexity-web-mcp/start.sh",
-      "args": [
-        "--pool=default"
-      ]
     }
   }
 }

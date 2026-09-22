@@ -43,10 +43,17 @@ jobs:
       - uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1
         with:
           sdk: "3.13.4"
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: conformance/mcp/package-lock.json
       - name: Install dependencies
         run: |
           composer install --working-dir=php --no-interaction --prefer-dist
           composer install --working-dir=conformance --no-interaction --prefer-dist
+          npm ci --ignore-scripts --prefix conformance/mcp
+          conformance/mcp/node_modules/.bin/conformance --version
           cd dart/agentools && dart pub get
           cd ../agentools_mcp_dart && dart pub get
       - name: Bounded baseline before extended proofs
