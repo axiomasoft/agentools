@@ -3,6 +3,6 @@
   "private": true,
   "description": "Dev-only pin for official MCP conformance evidence (P6.4). Not a runtime dependency of PHP/Dart SDKs.",
   "devDependencies": {
-    "@modelcontextprotocol/conformance": "0.2.0-alpha.11"
+    "@modelcontextprotocol/conformance": "0.2.0-alpha.12"
   }
 }
