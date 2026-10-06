@@ -320,13 +320,15 @@ def run_reproducibility(
     repo: Path,
     *,
     require_clean: bool = True,
+    source_date_epoch: int | None = None,
 ) -> dict[str, Any]:
     if require_clean:
         dirty = product_tree_dirty(repo)
         if dirty:
             raise RcError(f"dirty product tree: {dirty[:3]}")
     source_commit = git_head_sha(repo)
-    source_date_epoch = git_commit_epoch(repo)
+    if source_date_epoch is None:
+        source_date_epoch = git_commit_epoch(repo)
     work_a = Path(tempfile.mkdtemp(prefix="p93-rc-a-"))
     work_b = Path(tempfile.mkdtemp(prefix="p93-rc-b-"))
     oracle_work = Path(tempfile.mkdtemp(prefix="p93-oracle-"))

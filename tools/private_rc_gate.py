@@ -12,6 +12,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -192,7 +193,7 @@ def independent_subject_rehash(repro: dict[str, Any]) -> list[str]:
                 errors.append(f"{subject_id} independent archive digest mismatch")
             if digest != stored[subject_id]["archive_sha256"]:
                 errors.append(f"{subject_id} fingerprint drift vs receipt")
-        live = run_repro_fingerprints()
+        live = run_repro_fingerprints(epoch)
         if live != stored:
             errors.append("live dual-builder fingerprints differ from committed receipt")
     finally:
@@ -200,10 +201,14 @@ def independent_subject_rehash(repro: dict[str, Any]) -> list[str]:
     return errors
 
 
-def run_repro_fingerprints() -> dict[str, dict[str, str]]:
+def run_repro_fingerprints(source_date_epoch: int) -> dict[str, dict[str, str]]:
     from tools.release_candidate import run_reproducibility  # noqa: WPS433
 
-    payload = run_reproducibility(REPO, require_clean=False)
+    # An evidence or merge commit can advance HEAD without changing product
+    # bytes. Rebuild with the receipt's tar timestamp, as the first rehash does.
+    payload = run_reproducibility(
+        REPO, require_clean=False, source_date_epoch=source_date_epoch,
+    )
     return payload.get("fingerprints", {}).get("builder_a", {})
 
 
@@ -494,6 +499,12 @@ def cmd_verify(_: argparse.Namespace) -> int:
 
 
 class PrivateRcGateTests(unittest.TestCase):
+    def test_rehash_preserves_receipt_epoch_after_later_commit(self) -> None:
+        repro = load_json(REPRO)
+        later_epoch = int(repro["source_date_epoch"]) + 3600
+        with mock.patch("tools.release_candidate.git_commit_epoch", return_value=later_epoch):
+            self.assertEqual(independent_subject_rehash(repro), [])
+
     def test_forbidden_release_command_detected(self) -> None:
         doc = "run: gh release create v1"
         self.assertTrue(any(p.search(doc) for p in FORBIDDEN_WORKFLOW_RE))
@@ -533,6 +544,8 @@ class PrivateRcGateTests(unittest.TestCase):
         self.assertEqual([], errors)
         bad = verify_subject_exact_set(mutated)
         self.assertEqual([], bad)
+        bad = independent_subject_rehash(mutated)
+        self.assertTrue(any("independent archive digest mismatch" in error for error in bad))
 
     def test_workflow_file_is_policy_green(self) -> None:
         if not WORKFLOW_PATH.is_file():
