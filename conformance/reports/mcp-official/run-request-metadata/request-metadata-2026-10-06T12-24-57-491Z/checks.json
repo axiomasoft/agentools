@@ -4,7 +4,7 @@
     "name": "ClientSendsVersionHeader",
     "description": "Client sends MCP-Protocol-Version header on every POST",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:44.367Z",
+    "timestamp": "2026-10-06T12:24:58.796Z",
     "specReferences": [
       {
         "id": "SEP-2575",
@@ -21,7 +21,7 @@
     "name": "ClientPopulatesMeta",
     "description": "Client populates _meta on every request with the required fields (protocolVersion, clientCapabilities)",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:44.367Z",
+    "timestamp": "2026-10-06T12:24:58.796Z",
     "specReferences": [
       {
         "id": "SEP-2575",
@@ -45,7 +45,7 @@
     "name": "ClientSendsClientInfo",
     "description": "Client SHOULD include io.modelcontextprotocol/clientInfo in every request's _meta (spec PR #3002)",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:44.367Z",
+    "timestamp": "2026-10-06T12:24:58.796Z",
     "specReferences": [
       {
         "id": "SEP-2575",
@@ -69,7 +69,7 @@
     "name": "ClientVersionHeaderMatchesMeta",
     "description": "MCP-Protocol-Version header matches _meta.protocolVersion",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:44.367Z",
+    "timestamp": "2026-10-06T12:24:58.796Z",
     "specReferences": [
       {
         "id": "SEP-2575",
@@ -86,7 +86,7 @@
     "name": "ClientDeclaresRootsCapability",
     "description": "Client declares valid roots capability if present",
     "status": "SKIPPED",
-    "timestamp": "2026-09-21T21:38:44.367Z",
+    "timestamp": "2026-10-06T12:24:58.796Z",
     "specReferences": [
       {
         "id": "SEP-2575",
@@ -100,7 +100,7 @@
     "name": "ClientDeclaresSamplingCapability",
     "description": "Client declares valid sampling capability if present",
     "status": "SKIPPED",
-    "timestamp": "2026-09-21T21:38:44.367Z",
+    "timestamp": "2026-10-06T12:24:58.796Z",
     "specReferences": [
       {
         "id": "SEP-2575",
@@ -114,7 +114,7 @@
     "name": "ClientDeclaresElicitationCapability",
     "description": "Client declares valid elicitation capability if present",
     "status": "SKIPPED",
-    "timestamp": "2026-09-21T21:38:44.367Z",
+    "timestamp": "2026-10-06T12:24:58.796Z",
     "specReferences": [
       {
         "id": "SEP-2575",
@@ -128,7 +128,7 @@
     "name": "ClientRetrySupportedVersion",
     "description": "Client retries with a supported version when first choice is rejected",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:44.346Z",
+    "timestamp": "2026-10-06T12:24:58.773Z",
     "specReferences": [
       {
         "id": "SEP-2575",

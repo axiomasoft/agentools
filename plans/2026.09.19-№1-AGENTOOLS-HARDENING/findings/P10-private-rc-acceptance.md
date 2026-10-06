@@ -1,7 +1,7 @@
 # P10.5 private RC acceptance
 
 **Verdict:** `green` (non-authorizing)
-**Source commit:** `c540a47737bc8b2c43ad0d971546e7a94c1f599d`
+**Source commit:** `1581ab407ef461bb6135fe841d3897ced5a5906d`
 **Dossier private_ready:** `green`
 
 ## Reasons
@@ -10,6 +10,6 @@
 
 ## Subjects
 
-- `dart-core`: `f60e9f1c5f98fc8fad314ab2a2ff924841b813a85670a71e3577bc641a2674d4`
-- `dart-mcp-companion`: `35015fa9c67d3b5aacc8049b4fd885f67938763a9fd06d2032e98710b9a146f6`
-- `php-sdk`: `5cd7ef896988acc2033eb5403f6d0273ae90ebc64ebe0564d7dacb76af37ef96`
+- `dart-core`: `67ffde98164b5f34513245b6de22461a4a58c73b189d208f7a085b36477ace27`
+- `dart-mcp-companion`: `6b2e747a9411cd9821340086b345badb6b39cf505841cc350f0263ff5f881d93`
+- `php-sdk`: `ead9210232e16338fc17e6d754d7850673f6f8d6742de8c35f157ae0fbcef33e`

@@ -16,11 +16,11 @@
         },
         "jcs_oracle": {
             "report": "conformance\/reports\/jcs-parity.json",
-            "digest_sha256": "81f8958619dcddbfa5be0152a8fc31e70de530fcd8cafdd54339520dc2406a96"
+            "digest_sha256": "5ce18cc0a9b377937d24aaea272eb5df82b8c98ae72ab82c9b737e50875ea3b4"
         },
         "semantic_profile": {
             "report": "conformance\/reports\/semantic-parity.json",
-            "digest_sha256": "b8ec4ba2aecdbb73fa58154f44155fda1f5b60fd487dede5f0dbee2a82328249"
+            "digest_sha256": "5f8066a1e6690fc2e4685586b5fbe476a73260fbcf8ed4ce002de0107f3bc677"
         },
         "mcp_official": {
             "report": "conformance\/reports\/mcp-official\/summary.json",

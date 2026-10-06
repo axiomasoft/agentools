@@ -51,7 +51,8 @@ Dart core (269 тестов), Dart MCP (7 тестов), Python tools (77 тес
 `ci_policy`, `ci_matrix`, OSV, Gitleaks history/worktree, все четыре слоя
 `ci_gate`, semantic parity, официальный MCP runner (7/7 применимых сценариев),
 adversarial corpus (29 случаев), mutation gate (26/26), resource gate,
-release candidate, SBOM и private RC aggregate. Замороженные `2026-08`
+release candidate, SBOM, private RC aggregate, потребители собранных архивов
+и итоговый P10 private RC acceptance. Замороженные `2026-08`
 spec/fixtures не изменены. Новые проверки resource gate и locked CLI прошли.
 
 GitHub API подтвердил причину отказа Actions: job не запущен из-за платежей
