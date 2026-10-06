@@ -9,6 +9,7 @@
     "conformance": "3fca1daa7b7b6469c5316cf56c62dacb34e09f3c7ca03c8912fb68165ab36440",
     "dart_core": "a8c83297ce9ab15bfa59692f5e1c9c89331adc17318fe990b7e9ee01a9691cf7",
     "dart_mcp": "efc7853cac34edbc7e4f54db6d7bbb0d54da51ab69b8876d4dd6f81f6af3b689",
+    "mcp_npm": "66cb763fd1a1502335b59db3f396ad34398117992ce0b485b1e7f0fd189799ab",
     "php": "d684d91a32ba989b85a805b7a84f3fd532ec7a2b53fd41737c55ce8411957f0c"
   },
   "matrix_rows": [
@@ -97,8 +98,8 @@
   "security_lanes": {
     "gitleaks": {
       "modes": [
-        "detect",
-        "protect"
+        "git",
+        "dir"
       ],
       "redact": true
     },
@@ -107,7 +108,8 @@
         "php/composer.lock",
         "conformance/composer.lock",
         "dart/agentools/pubspec.lock",
-        "dart/agentools_mcp_dart/pubspec.lock"
+        "dart/agentools_mcp_dart/pubspec.lock",
+        "conformance/mcp/package-lock.json"
       ],
       "scanner": "google/osv-scanner"
     }
@@ -188,6 +190,7 @@
         ]
       ],
       "events": [
+        "pull_request",
         "push"
       ],
       "input_digests": {
@@ -196,6 +199,7 @@
         "lock:conformance": "3fca1daa7b7b6469c5316cf56c62dacb34e09f3c7ca03c8912fb68165ab36440",
         "lock:dart_core": "a8c83297ce9ab15bfa59692f5e1c9c89331adc17318fe990b7e9ee01a9691cf7",
         "lock:dart_mcp": "efc7853cac34edbc7e4f54db6d7bbb0d54da51ab69b8876d4dd6f81f6af3b689",
+        "lock:mcp_npm": "66cb763fd1a1502335b59db3f396ad34398117992ce0b485b1e7f0fd189799ab",
         "lock:php": "d684d91a32ba989b85a805b7a84f3fd532ec7a2b53fd41737c55ce8411957f0c"
       }
     },
@@ -295,6 +299,7 @@
         "lock:conformance": "3fca1daa7b7b6469c5316cf56c62dacb34e09f3c7ca03c8912fb68165ab36440",
         "lock:dart_core": "a8c83297ce9ab15bfa59692f5e1c9c89331adc17318fe990b7e9ee01a9691cf7",
         "lock:dart_mcp": "efc7853cac34edbc7e4f54db6d7bbb0d54da51ab69b8876d4dd6f81f6af3b689",
+        "lock:mcp_npm": "66cb763fd1a1502335b59db3f396ad34398117992ce0b485b1e7f0fd189799ab",
         "lock:php": "d684d91a32ba989b85a805b7a84f3fd532ec7a2b53fd41737c55ce8411957f0c"
       }
     },
@@ -366,6 +371,7 @@
         "lock:conformance": "3fca1daa7b7b6469c5316cf56c62dacb34e09f3c7ca03c8912fb68165ab36440",
         "lock:dart_core": "a8c83297ce9ab15bfa59692f5e1c9c89331adc17318fe990b7e9ee01a9691cf7",
         "lock:dart_mcp": "efc7853cac34edbc7e4f54db6d7bbb0d54da51ab69b8876d4dd6f81f6af3b689",
+        "lock:mcp_npm": "66cb763fd1a1502335b59db3f396ad34398117992ce0b485b1e7f0fd189799ab",
         "lock:php": "d684d91a32ba989b85a805b7a84f3fd532ec7a2b53fd41737c55ce8411957f0c"
       }
     },
@@ -483,12 +489,13 @@
         "lock:conformance": "3fca1daa7b7b6469c5316cf56c62dacb34e09f3c7ca03c8912fb68165ab36440",
         "lock:dart_core": "a8c83297ce9ab15bfa59692f5e1c9c89331adc17318fe990b7e9ee01a9691cf7",
         "lock:dart_mcp": "efc7853cac34edbc7e4f54db6d7bbb0d54da51ab69b8876d4dd6f81f6af3b689",
+        "lock:mcp_npm": "66cb763fd1a1502335b59db3f396ad34398117992ce0b485b1e7f0fd189799ab",
         "lock:php": "d684d91a32ba989b85a805b7a84f3fd532ec7a2b53fd41737c55ce8411957f0c"
       }
     }
   },
   "timing": {
-    "fingerprint_digest": "508b50b69a81783d7153c3586c9eae7f349ab1fa9b47cf9cf6dbb89be9df83dd",
+    "fingerprint_digest": "aea42242a9a08b0b39a853443a3a943f4a9822212ac8f385090e0d89145bd3e0",
     "status": "matched"
   }
 }

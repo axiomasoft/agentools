@@ -1,9 +1,9 @@
 # P8.5 resource envelopes
 
-**Date:** 2026-09-21
+**Date:** 2026-10-06
 **Receipt:** `artifacts/P8-resource-baseline.json` (`p8-resource-baseline/v1`)
-**Fingerprint:** `f259d7bd5a1b0eefb3541820dc79e4fda8b71ff27c593eea0e3255204fdd803e`
-**Host:** Linux 7.0.0-31-generic x86_64 / Intel(R) Core(TM) i7-14700K
+**Fingerprint:** `aea42242a9a08b0b39a853443a3a943f4a9822212ac8f385090e0d89145bd3e0`
+**Host:** Linux 7.0.0-38-generic x86_64 / Intel(R) Core(TM) i7-14700K
 
 Portable gates own depth/count/byte/page/lease caps. Timing is compared only on a matching fingerprint; a mismatch refuses a timing verdict. PHP and Dart speed are not compared.
 

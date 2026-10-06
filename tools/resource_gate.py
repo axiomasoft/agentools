@@ -1002,6 +1002,16 @@ class ResourceGateTests(unittest.TestCase):
         for sdk in ("php", "dart"):
             self.assertEqual([invoke(sdk, request)["class"] for request in requests], expected)
 
+    def test_scenario_worker_enforces_step_limit(self) -> None:
+        for sdk in ("php", "dart"):
+            for count in (1, 64):
+                result = invoke(sdk, {"op": "scenario_steps", "count": count})
+                self.assertTrue(expect_accept(result), (sdk, count, result))
+            result = invoke(sdk, {"op": "scenario_steps", "count": 65})
+            self.assertFalse(result["ok"])
+            self.assertEqual(result["class"], "reject.limit")
+            self.assertEqual(result["code"], "scenario.max_steps")
+
     def test_fingerprint_mismatch_refuses_timing(self) -> None:
         summary = summarize([1000, 1100, 1200, 1000, 1050])
         band = band_of(summary)

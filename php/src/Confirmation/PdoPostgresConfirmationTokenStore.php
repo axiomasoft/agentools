@@ -37,7 +37,9 @@ SQL;
 
     public function __construct(private readonly \PDO $pdo)
     {
-        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        if ($this->pdo->getAttribute(\PDO::ATTR_ERRMODE) !== \PDO::ERRMODE_EXCEPTION) {
+            throw new \InvalidArgumentException('PdoPostgresConfirmationTokenStore requires a PDO connection in ERRMODE_EXCEPTION.');
+        }
     }
 
     public function consume(

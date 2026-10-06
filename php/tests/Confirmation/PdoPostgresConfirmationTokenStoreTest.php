@@ -7,6 +7,7 @@ namespace AgenTools\Tests\Confirmation;
 use AgenTools\Confirmation\ConfirmationFailure;
 use AgenTools\Confirmation\PdoPostgresConfirmationTokenStore;
 use AgenTools\Confirmation\TokenConsumeAdmission;
+use AgenTools\Tests\Support\PostgresRequirement;
 use PHPUnit\Framework\TestCase;
 
 final class PdoPostgresConfirmationTokenStoreTest extends TestCase
@@ -33,7 +34,7 @@ final class PdoPostgresConfirmationTokenStoreTest extends TestCase
     protected function setUp(): void
     {
         if (self::$pdo === null) {
-            $this->markTestSkipped('PostgreSQL test database is not available.');
+            PostgresRequirement::unavailable();
         }
         self::$pdo->exec('TRUNCATE confirmation_consumed_tokens');
     }

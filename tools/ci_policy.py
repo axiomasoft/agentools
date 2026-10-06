@@ -178,6 +178,18 @@ def check_workflow_document(path: Path, document: dict[str, Any]) -> list[Violat
                         "container image must be digest-pinned",
                     )
                 )
+        services = job.get("services")
+        if isinstance(services, dict):
+            for service_name, service in services.items():
+                image = service.get("image", "") if isinstance(service, dict) else service
+                if not isinstance(image, str) or "@sha256:" not in image:
+                    violations.append(
+                        Violation(
+                            "SC-CONTAINER-002",
+                            f"{rel}#jobs.{job_name}.services.{service_name}",
+                            "service container image must be digest-pinned",
+                        )
+                    )
         for step in iter_steps(job):
             uses = action_uses(step)
             if not uses:
@@ -437,6 +449,31 @@ class CiPolicyTests(unittest.TestCase):
         for path in sorted(WORKFLOWS.glob("*.yml")):
             violations.extend(check_workflow_file(path))
         self.assertEqual(violations, [])
+
+    def _workflow_with_service(self, service: object) -> dict[str, Any]:
+        return {
+            "on": "push",
+            "permissions": {},
+            "concurrency": {"group": "g"},
+            "jobs": {
+                "x": {
+                    "runs-on": "ubuntu-latest",
+                    "timeout-minutes": 5,
+                    "services": {"postgres": service},
+                    "steps": [],
+                }
+            },
+        }
+
+    def test_tag_only_service_image_is_red(self) -> None:
+        for service in ({"image": "postgres:17-alpine"}, "postgres:17-alpine", {"ports": ["5432:5432"]}):
+            rules = {v.rule_id for v in check_workflow_document(Path("svc.yml"), self._workflow_with_service(service))}
+            self.assertIn("SC-CONTAINER-002", rules, service)
+
+    def test_digest_pinned_service_image_is_green(self) -> None:
+        image = "postgres:17.11-alpine@sha256:" + "0" * 64
+        doc = self._workflow_with_service({"image": image})
+        self.assertEqual(check_workflow_document(Path("svc.yml"), doc), [])
 
     def test_dynamic_action_ref_is_red(self) -> None:
         doc = {

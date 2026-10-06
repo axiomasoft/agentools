@@ -73,7 +73,7 @@ final class IdempotencyCoordinator implements ToolPort
             }
         }
         $this->store->heartbeat($lease, $now, $this->leaseDuration);
-        $result = $this->tools->call($tool, $arguments, $idempotencyKey);
+        $result = $this->invokeTool($tool, $arguments, $idempotencyKey);
         $stored = $this->stored($result);
         $digest = StoredResultDigest::fromJcs($this->canonicalizer->canonicalize($stored->error?->toArray() ?? $stored->value ?? []));
         try {
@@ -90,6 +90,24 @@ final class IdempotencyCoordinator implements ToolPort
         }
 
         return $result;
+    }
+
+    /**
+     * A typed tool-execution error thrown by the tool is the same outcome as a returned failure
+     * (IDE-23): it is recorded under the lease and replayed as is (IDE-12, IDE-13) instead of
+     * leaving the key in flight until the lease expires. Any other throwable means the effect
+     * is unknown; it propagates and the lease is left to expire so that the takeover protocol
+     * decides by tool capability.
+     *
+     * @param array<string, mixed> $arguments
+     */
+    private function invokeTool(string $tool, array $arguments, string $idempotencyKey): ToolExecutionResult
+    {
+        try {
+            return $this->tools->call($tool, $arguments, $idempotencyKey);
+        } catch (ToolExecutionException $exception) {
+            return ToolExecutionResult::failure($exception->error);
+        }
     }
 
     /** @return ToolExecutionResult|null null means re-invoke the tool */

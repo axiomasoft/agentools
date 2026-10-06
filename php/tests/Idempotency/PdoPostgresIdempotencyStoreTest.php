@@ -19,6 +19,7 @@ use AgenTools\Idempotency\LeaseDuration;
 use AgenTools\Idempotency\PdoPostgresIdempotencyStore;
 use AgenTools\Idempotency\StoredResultDigest;
 use AgenTools\Idempotency\StoredToolResult;
+use AgenTools\Tests\Support\PostgresRequirement;
 use PHPUnit\Framework\TestCase;
 
 final class PdoPostgresIdempotencyStoreTest extends TestCase
@@ -45,7 +46,7 @@ final class PdoPostgresIdempotencyStoreTest extends TestCase
     protected function setUp(): void
     {
         if (self::$pdo === null) {
-            $this->markTestSkipped('PostgreSQL test database is not available.');
+            PostgresRequirement::unavailable();
         }
         self::$pdo->exec('TRUNCATE agentools_idempotency_leases');
     }

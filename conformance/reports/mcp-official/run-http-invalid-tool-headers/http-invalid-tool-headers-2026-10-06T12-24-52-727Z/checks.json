@@ -4,7 +4,7 @@
     "name": "ClientKeepsValidTool",
     "description": "Client MUST keep valid tools while excluding invalid ones",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:39.927Z",
+    "timestamp": "2026-10-06T12:24:54.079Z",
     "specReferences": [
       {
         "id": "SEP-2243-x-mcp-header",
@@ -17,7 +17,7 @@
     "name": "ClientRejectsInvalidTool_invalid_empty_header",
     "description": "Client MUST NOT call tool 'invalid_empty_header' with invalid x-mcp-header",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:39.927Z",
+    "timestamp": "2026-10-06T12:24:54.079Z",
     "specReferences": [
       {
         "id": "SEP-2243-x-mcp-header",
@@ -30,7 +30,7 @@
     "name": "ClientRejectsInvalidTool_invalid_object_header",
     "description": "Client MUST NOT call tool 'invalid_object_header' with invalid x-mcp-header",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:39.927Z",
+    "timestamp": "2026-10-06T12:24:54.079Z",
     "specReferences": [
       {
         "id": "SEP-2243-x-mcp-header",
@@ -43,7 +43,7 @@
     "name": "ClientRejectsInvalidTool_invalid_array_header",
     "description": "Client MUST NOT call tool 'invalid_array_header' with invalid x-mcp-header",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:39.927Z",
+    "timestamp": "2026-10-06T12:24:54.079Z",
     "specReferences": [
       {
         "id": "SEP-2243-x-mcp-header",
@@ -56,7 +56,7 @@
     "name": "ClientRejectsInvalidTool_invalid_null_header",
     "description": "Client MUST NOT call tool 'invalid_null_header' with invalid x-mcp-header",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:39.927Z",
+    "timestamp": "2026-10-06T12:24:54.079Z",
     "specReferences": [
       {
         "id": "SEP-2243-x-mcp-header",
@@ -69,7 +69,7 @@
     "name": "ClientRejectsInvalidTool_invalid_duplicate_same_case",
     "description": "Client MUST NOT call tool 'invalid_duplicate_same_case' with invalid x-mcp-header",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:39.927Z",
+    "timestamp": "2026-10-06T12:24:54.079Z",
     "specReferences": [
       {
         "id": "SEP-2243-x-mcp-header",
@@ -82,7 +82,7 @@
     "name": "ClientRejectsInvalidTool_invalid_duplicate_diff_case",
     "description": "Client MUST NOT call tool 'invalid_duplicate_diff_case' with invalid x-mcp-header",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:39.927Z",
+    "timestamp": "2026-10-06T12:24:54.079Z",
     "specReferences": [
       {
         "id": "SEP-2243-x-mcp-header",
@@ -95,7 +95,7 @@
     "name": "ClientRejectsInvalidTool_invalid_space_in_name",
     "description": "Client MUST NOT call tool 'invalid_space_in_name' with invalid x-mcp-header",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:39.927Z",
+    "timestamp": "2026-10-06T12:24:54.079Z",
     "specReferences": [
       {
         "id": "SEP-2243-x-mcp-header",
@@ -108,7 +108,7 @@
     "name": "ClientRejectsInvalidTool_invalid_colon_in_name",
     "description": "Client MUST NOT call tool 'invalid_colon_in_name' with invalid x-mcp-header",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:39.927Z",
+    "timestamp": "2026-10-06T12:24:54.079Z",
     "specReferences": [
       {
         "id": "SEP-2243-x-mcp-header",
@@ -121,7 +121,7 @@
     "name": "ClientRejectsInvalidTool_invalid_non_ascii_name",
     "description": "Client MUST NOT call tool 'invalid_non_ascii_name' with invalid x-mcp-header",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:39.927Z",
+    "timestamp": "2026-10-06T12:24:54.079Z",
     "specReferences": [
       {
         "id": "SEP-2243-x-mcp-header",
@@ -134,7 +134,7 @@
     "name": "ClientRejectsInvalidTool_invalid_control_char_name",
     "description": "Client MUST NOT call tool 'invalid_control_char_name' with invalid x-mcp-header",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:39.927Z",
+    "timestamp": "2026-10-06T12:24:54.079Z",
     "specReferences": [
       {
         "id": "SEP-2243-x-mcp-header",

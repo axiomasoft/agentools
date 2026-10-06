@@ -42,6 +42,23 @@ jobs:
     timeout-minutes: 120
     permissions:
       contents: read
+    services:
+      postgres:
+        image: postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+        env:
+          POSTGRES_USER: agentools
+          POSTGRES_PASSWORD: agentools-test
+          POSTGRES_DB: agentools_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U agentools -d agentools_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+    env:
+      AGENTOOLS_TEST_PG_DSN: pgsql:host=127.0.0.1;port=5432;dbname=agentools_test
+      AGENTOOLS_TEST_PG_REQUIRED: "1"
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -49,6 +66,7 @@ jobs:
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
           php-version: "8.4"
+          extensions: pdo_pgsql
       - uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1
         with:
           sdk: "3.13.4"
@@ -57,10 +75,14 @@ jobs:
           node-version: "24"
           cache: npm
           cache-dependency-path: conformance/mcp/package-lock.json
-      - name: Install MCP conformance dependency
+      - name: Install locked dependencies
         run: |
+          composer install --working-dir=php --no-interaction --prefer-dist
+          composer install --working-dir=conformance --no-interaction --prefer-dist
           npm ci --ignore-scripts --prefix conformance/mcp
           conformance/mcp/node_modules/.bin/conformance --version
+          (cd dart/agentools && dart pub get)
+          (cd dart/agentools_mcp_dart && dart pub get)
       - name: Supply-chain policy
         run: |
           python3 tools/ci_policy.py check-lock
@@ -73,6 +95,7 @@ jobs:
           python3 tools/adversarial_corpus.py run
           python3 tools/mutation_gate.py run
           python3 tools/resource_gate.py run
+          python3 tools/ci_matrix.py emit
       - name: Private RC subjects and supply-chain evidence
         run: |
           python3 tools/release_candidate.py run

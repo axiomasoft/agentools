@@ -5,6 +5,12 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # Every action bump must also update .ci/supply-chain-lock.json (SC-LOCK-002),
+    # so batch them into one PR that gets a single lock sync.
+    groups:
+      github-actions:
+        patterns:
+          - "*"
     labels:
       - dependencies
       - supply-chain

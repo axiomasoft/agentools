@@ -7,14 +7,19 @@ namespace AgenTools\Reference\Adapters;
 use AgenTools\Contracts\ToolPort;
 use AgenTools\Error\ErrorCategory;
 use AgenTools\Error\ToolError;
+use AgenTools\Error\ToolExecutionException;
 use AgenTools\Error\ToolExecutionResult;
 use AgenTools\Ops\PrincipalTriple;
 use AgenTools\Tool\ToolDescriptor;
 
-/** Single in-process tool registry with discover and invoke permission gates. */
+/**
+ * Single in-process tool registry with discover and invoke permission gates.
+ *
+ * @phpstan-type ToolHandler callable(array<string, mixed>, string, array<string, mixed>, array<string, mixed>): ToolExecutionResult
+ */
 final class RegistryToolPort implements ToolPort
 {
-    /** @var array<string, array{descriptor: ToolDescriptor, handler: callable}> */
+    /** @var array<string, array{descriptor: ToolDescriptor, handler: ToolHandler}> */
     private array $tools = [];
 
     /** @var array<string, mixed>|null */
@@ -28,6 +33,7 @@ final class RegistryToolPort implements ToolPort
     ) {
     }
 
+    /** @param ToolHandler $handler */
     public function register(ToolDescriptor $descriptor, callable $handler): void
     {
         $this->tools[$descriptor->name] = [
@@ -108,11 +114,33 @@ final class RegistryToolPort implements ToolPort
             ));
         }
 
-        $handler = $entry['handler'];
-        /** @var ToolExecutionResult $result */
-        $result = $handler($arguments, $idempotencyKey, $this->principals, $this->authorization);
+        return $this->invoke($entry['handler'], $arguments, $idempotencyKey, $this->principals, $this->authorization);
+    }
 
-        return $result;
+    /**
+     * Tool-execution errors are results, not exceptions (IDE-23, IDE-24): a typed
+     * ToolExecutionException becomes a failure result. Any other throwable propagates
+     * unchanged, because the external effect of the handler is unknown and the idempotency
+     * coordinator must keep the lease for capability-driven takeover.
+     *
+     * @param ToolHandler $handler
+     * @param array<string, mixed> $arguments
+     * @param array<string, mixed> $principals
+     * @param array<string, mixed> $authorization
+     */
+    private function invoke(
+        callable $handler,
+        array $arguments,
+        string $idempotencyKey,
+        array $principals,
+        array $authorization,
+    ): ToolExecutionResult {
+        try {
+            // The native return type turns a handler result of any other type into a TypeError.
+            return $handler($arguments, $idempotencyKey, $principals, $authorization);
+        } catch (ToolExecutionException $exception) {
+            return ToolExecutionResult::failure($exception->error);
+        }
     }
 
     private function assertSubjectBound(): void

@@ -1,15 +1,15 @@
 # P9 reproducibility — private RC subjects
 
 **Status:** `green`
-**Source commit:** `29482e1c6b2bcd19d63d5f3e2ead0e6ffa07665a`
-**SOURCE_DATE_EPOCH:** `1790011340`
+**Source commit:** `1581ab407ef461bb6135fe841d3897ced5a5906d`
+**SOURCE_DATE_EPOCH:** `1791289966`
 **Independent builders match:** `True`
 
 ## Subject fingerprints (builder A)
 
-- `dart-core`: manifest `9dcee5babb73086f0c0830c4628b7497ee8c5ef2babb8edf5cd630bb8653d2ae` · archive `b4af3bd312c8ebc380a33a8f9b0b5f936255627c3dc694be9b6577a5da28c9da`
-- `dart-mcp-companion`: manifest `be070361aa2e6bf26d4acc94689ddc6098be1a1be286d3b58ab1047a21c59680` · archive `2e75c28bb91f9b66591b97ddb2a4b8bc6cf6870001f5bbed9f58ed4dff7358ec`
-- `php-sdk`: manifest `a679ff0f53cc3516b1563e8b737759e607093a32ef5015cafdf367dd269abba8` · archive `e43bb369802948f398c9034600018df73813b1fbfb71f8e7806d28a13a5cc787`
+- `dart-core`: manifest `b7e2a60f7a438e5c663fd406c591a1a44faf261f2e8c828d32182ff3e4dd49c3` · archive `67ffde98164b5f34513245b6de22461a4a58c73b189d208f7a085b36477ace27`
+- `dart-mcp-companion`: manifest `be070361aa2e6bf26d4acc94689ddc6098be1a1be286d3b58ab1047a21c59680` · archive `6b2e747a9411cd9821340086b345badb6b39cf505841cc350f0263ff5f881d93`
+- `php-sdk`: manifest `9a015af4b52883b939919a60007743b3fed42ffefbeb08a812d5b3fae5b9bcff` · archive `ead9210232e16338fc17e6d754d7850673f6f8d6742de8c35f157ae0fbcef33e`
 
 ## Notes
 

@@ -253,6 +253,7 @@ Map<String, Object?> evalScenarioSteps(int count) {
       {'spec_rev': '2026-09', 'scenario_id': 'bench', 'steps': steps},
       <String, dynamic>{},
       _DummyTools(),
+      IdempotencyKey('at1:benchmark-run'),
     );
     return {'ok': true, 'class': 'accept', 'count': count};
   } on ExpressionException catch (error) {

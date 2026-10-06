@@ -1,5 +1,10 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
+
 import '../contracts/tool_port.dart';
 import '../errors/tool_execution_result.dart';
+import '../idempotency/idempotency_key.dart';
 import 'expression_evaluator.dart';
 import 'expression_exception.dart';
 import 'scenario_outcome.dart';
@@ -7,17 +12,27 @@ import 'scenario_result.dart';
 
 /// SCN-1–SCN-11 and SCN-20–SCN-29: a linear interpreter with no goto, loops,
 /// or hidden control-flow.
+///
+/// The runner is the caller of its tools, so it generates their idempotency
+/// keys (IDE-1): every step and compensation key is derived from the caller's
+/// run key, the scenario id and the step id. Re-running with the same run key
+/// re-presents the same keys (SCN-8, SCN-25), a new run key is a new intent,
+/// and every derived key satisfies the IDE-4 grammar.
 final class ScenarioRunner {
   ScenarioRunner({ExpressionEvaluator? expressions})
     : _expressions = expressions ?? ExpressionEvaluator();
 
+  static const _keyDomain = 'agentools.scenario-step-key.v1';
+
   final ExpressionEvaluator _expressions;
   var _executedSteps = 0;
 
+  /// Runs [scenario]; [runKey] is the caller-generated key of this run (IDE-1).
   ScenarioResult run(
     Map<String, dynamic> scenario,
     Map<String, dynamic> context,
     ToolPort tools,
+    IdempotencyKey runKey,
   ) {
     _executedSteps = 0;
     if (!const {'2026-08', '2026-09'}.contains(scenario['spec_rev'])) {
@@ -77,7 +92,7 @@ final class ScenarioRunner {
           tools,
           _stringField(stepMap, 'tool'),
           arguments,
-          '$scenarioId:$stepId',
+          _stepKey(runKey, scenarioId, stepId, 'step'),
           stepMap['on_semantic_fail'],
         );
         if (result.isError) {
@@ -85,8 +100,8 @@ final class ScenarioRunner {
             continue;
           }
           return _handleFailure(
+            runKey: runKey,
             scenarioId: scenarioId,
-            stepId: stepId,
             step: stepMap,
             compensations: compensations,
             tools: tools,
@@ -109,8 +124,8 @@ final class ScenarioRunner {
           continue;
         }
         return _handleFailure(
+          runKey: runKey,
           scenarioId: scenarioId,
-          stepId: stepId,
           step: stepMap,
           compensations: compensations,
           tools: tools,
@@ -124,8 +139,8 @@ final class ScenarioRunner {
   }
 
   ScenarioResult _handleFailure({
+    required IdempotencyKey runKey,
     required String scenarioId,
-    required String stepId,
     required Map<String, dynamic> step,
     required List<_CompensationEntry> compensations,
     required ToolPort tools,
@@ -148,7 +163,7 @@ final class ScenarioRunner {
         tools,
         tool,
         arguments,
-        '$scenarioId:${entry.id}:compensation',
+        _stepKey(runKey, scenarioId, entry.id, 'compensation'),
       );
       if (result.isError) {
         return ScenarioResult(
@@ -240,6 +255,24 @@ final class ScenarioRunner {
       throw ArgumentError('Failure routes must be abort, retry, or continue.');
     }
     return action;
+  }
+
+  /// at1 key = base64url(SHA-256(domain || run key || scenario id || step id ||
+  /// role)) where every part is length-prefixed with its UTF-8 byte count, so
+  /// distinct tuples never collide.
+  static String _stepKey(
+    IdempotencyKey runKey,
+    String scenarioId,
+    String stepId,
+    String role,
+  ) {
+    final input = StringBuffer();
+    for (final part in [_keyDomain, runKey.value, scenarioId, stepId, role]) {
+      input.write('${utf8.encode(part).length}:$part,');
+    }
+    final digest = sha256.convert(utf8.encode(input.toString())).bytes;
+    final encoded = base64Url.encode(digest).replaceAll('=', '');
+    return IdempotencyKey('at1:$encoded').value;
   }
 
   ToolExecutionResult _call(

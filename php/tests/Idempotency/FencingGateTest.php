@@ -19,6 +19,7 @@ use AgenTools\Idempotency\PdoPostgresIdempotencyStore;
 use AgenTools\Idempotency\ToolIdempotencyCapability;
 use AgenTools\Idempotency\ToolIdempotencyCatalog;
 use AgenTools\Schema\Canonicalizer;
+use AgenTools\Tests\Support\PostgresRequirement;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -80,7 +81,7 @@ final class FencingGateTest extends TestCase
         try {
             $pdo = new \PDO($dsn, 'agentools', 'agentools-test', [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
         } catch (\PDOException) {
-            $this->markTestSkipped('PostgreSQL test database is not available.');
+            PostgresRequirement::unavailable();
         }
         $sql = file_get_contents(dirname(__DIR__, 3) . '/fixtures/hardening/sql/idempotency-lease.v1.sql');
         self::assertIsString($sql);

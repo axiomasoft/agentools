@@ -13,6 +13,11 @@ typedef EmitFn = void Function(Map<String, dynamic> message);
 /// Harness-facing SDK semantics. Routes each vector through public SDK surfaces;
 /// per-vector state is isolated by constructing a fresh engine per run message.
 final class SdkConformanceEngine {
+  /// Resource identity and trusted issuer set the conformance driver declares
+  /// for credentials.
+  static const _driverResourceAudience = 'agentools-runtime';
+  static const _driverTrustedIssuers = ['issuer-trusted'];
+
   String _clockIso = '2000-01-01T00:00:00Z';
   String _seed = 'agentools-conformance';
   String _specRevision = '2026-08';
@@ -274,7 +279,10 @@ final class SdkConformanceEngine {
       'scenario_id': scenario['scenario_id'],
     });
     try {
-      final result = runner.run(scenario, context, tools);
+      final runKey = IdempotencyKey(
+        'at1:${sha256.convert(utf8.encode('$_seed$id')).toString().substring(0, 32)}',
+      );
+      final result = runner.run(scenario, context, tools, runKey);
       for (final step in _list(scenario['steps'])) {
         if (step is Map) {
           _event(emit, id, 'step_started', {'step_id': step['id']});
@@ -354,16 +362,28 @@ final class SdkConformanceEngine {
     ProbeFn probe,
     EmitFn emit,
   ) {
-    final guard = CredentialGuard();
-    for (final credential in _list(state['credentials'])) {
+    final guard = CredentialGuard(
+      resourceAudience: _driverResourceAudience,
+      trustedIssuers: _driverTrustedIssuers,
+    );
+    final credentials = _list(state['credentials']);
+    for (var index = 0; index < credentials.length; index++) {
+      final credential = credentials[index];
       if (credential is! Map) {
         continue;
       }
       final failure = guard.validateAccessToken(
         Map<String, dynamic>.from(credential),
       );
-      if (failure != null) {
-        _event(emit, id, 'action_failed', failure.error?.context ?? {});
+      final context = failure?.error?.context;
+      if (context != null) {
+        final field = context['credential_field'];
+        _event(emit, id, 'action_failed', {
+          'reason': context['reason'],
+          'security_rule': context['security_rule'],
+          'stimulus_pointer':
+              '/given/driver_state/credentials/$index/${field is String ? field : ''}',
+        });
         _result(emit, id, 'failed');
         return;
       }

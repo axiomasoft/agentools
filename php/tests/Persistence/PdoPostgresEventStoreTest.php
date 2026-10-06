@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace AgenTools\Tests\Persistence;
 
+use AgenTools\Action\ActionEvent;
 use AgenTools\Action\Actor;
 use AgenTools\Action\EventIdCollision;
+use AgenTools\Action\JournalHashChain;
 use AgenTools\Action\VersionConflict;
 use AgenTools\Contracts\EventStore;
 use AgenTools\Persistence\AppendResult;
 use AgenTools\Persistence\PdoPostgresEventStore;
 use AgenTools\Persistence\UncommittedEvent;
 use AgenTools\Reference\Persistence\SqliteEventLog;
+use AgenTools\Schema\Canonicalizer;
+use AgenTools\Tests\Support\PostgresRequirement;
 use PHPUnit\Framework\TestCase;
 
 final class PdoPostgresEventStoreTest extends TestCase
@@ -42,7 +46,7 @@ final class PdoPostgresEventStoreTest extends TestCase
             return;
         }
         if (self::$pdo === null) {
-            $this->markTestSkipped('PostgreSQL test database is not available.');
+            PostgresRequirement::unavailable();
         }
         self::$pdo->exec('TRUNCATE agentools_events, agentools_event_streams RESTART IDENTITY');
     }
@@ -159,6 +163,47 @@ final class PdoPostgresEventStoreTest extends TestCase
         self::assertSame($result->lastGlobalPosition, (int) $query->fetchColumn());
     }
 
+    /** Event-store hash chain stays verifiable after reload whatever the input offset, precision or session time zone. */
+    public function testHashChainSurvivesReloadOfNonCanonicalTimestamps(): void
+    {
+        $pdo = $this->storePdo();
+        $pdo->exec("SET TIME ZONE 'Asia/Kathmandu'");
+        $store = new PdoPostgresEventStore($pdo);
+        $store->append('tenant-a', 'action-1', 0, [
+            $this->event(sprintf('ab%030d', 1), timestamp: '2026-09-20T10:00:00.25Z'),
+            $this->event(sprintf('ab%030d', 2), timestamp: '2026-09-20T12:00:01+02:00'),
+        ]);
+        $store->append('tenant-a', 'action-1', 2, [
+            $this->event(sprintf('ab%030d', 3), timestamp: '2026-09-20T10:00:02.1234567Z'),
+        ]);
+        $store->append('tenant-a', 'action-1', 3, [
+            $this->event(sprintf('ab%030d', 4), timestamp: '2026-09-20T10:00:03Z'),
+        ]);
+
+        $events = $store->load('tenant-a', 'action-1')->events;
+        $chain = new JournalHashChain(new Canonicalizer());
+
+        self::assertNull($events[0]->previousHash);
+        for ($i = 1, $count = count($events); $i < $count; $i++) {
+            self::assertSame($chain->hash($events[$i - 1]), $events[$i]->previousHash, 'broken chain at seq ' . $events[$i]->seq);
+        }
+        self::assertSame(
+            ['2026-09-20T10:00:00.250000+00:00', '2026-09-20T10:00:01+00:00', '2026-09-20T10:00:02.123456+00:00', '2026-09-20T10:00:03+00:00'],
+            array_map(static fn (ActionEvent $event): string => $event->timestamp, $events),
+        );
+    }
+
+    public function testIdempotentReplayKeepsTheOriginalContentHashIdentity(): void
+    {
+        $store = $this->store();
+        $event = $this->event(sprintf('ac%030d', 1), timestamp: '2026-09-20T10:00:00.25Z');
+        $store->append('tenant-a', 'action-1', 0, [$event]);
+
+        $replay = $store->append('tenant-a', 'action-1', 0, [$event]);
+
+        self::assertSame(AppendResult::IDEMPOTENT_REPLAY, $replay->outcome);
+    }
+
     private function store(): PdoPostgresEventStore
     {
         return new PdoPostgresEventStore(self::connect());
@@ -177,7 +222,7 @@ final class PdoPostgresEventStoreTest extends TestCase
     }
 
     /** @param array<string, mixed> $payload */
-    private function event(string $eventId, array $payload = []): UncommittedEvent
+    private function event(string $eventId, array $payload = [], string $timestamp = '2026-09-20T10:00:00+00:00'): UncommittedEvent
     {
         return new UncommittedEvent(
             eventId: $eventId,
@@ -185,7 +230,7 @@ final class PdoPostgresEventStoreTest extends TestCase
             eventVersion: 1,
             specRevision: '2026-08',
             actor: new Actor('user', 'u-1'),
-            timestamp: '2026-09-20T10:00:00+00:00',
+            timestamp: $timestamp,
             payload: $payload,
         );
     }

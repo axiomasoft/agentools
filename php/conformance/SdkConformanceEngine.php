@@ -19,6 +19,7 @@ use AgenTools\Ops\JournalAppender;
 use AgenTools\Ops\LongOperationCoordinator;
 use AgenTools\Ops\TaskBinding;
 use AgenTools\TestKit\FixedClock;
+use AgenTools\Idempotency\IdempotencyKey;
 use AgenTools\Scenario\ScenarioRunner;
 use AgenTools\Scenario\ScenarioOutcome;
 use AgenTools\Tool\ActionProfile;
@@ -31,6 +32,10 @@ use RuntimeException;
  */
 final class SdkConformanceEngine
 {
+    /** Resource identity and trusted issuer set the conformance driver declares for credentials. */
+    private const DRIVER_RESOURCE_AUDIENCE = 'agentools-runtime';
+    private const DRIVER_TRUSTED_ISSUERS = ['issuer-trusted'];
+
     private string $clockIso = '2000-01-01T00:00:00Z';
     private string $seed = 'agentools-conformance';
     private string $specRevision = '2026-08';
@@ -210,7 +215,7 @@ final class SdkConformanceEngine
         $context = is_array($script[0]['context'] ?? null) ? $script[0]['context'] : [];
         $this->event($emit, $id, 'scenario_started', ['scenario_id' => $scenario['scenario_id'] ?? null]);
         try {
-            $result = $runner->run($scenario, $context, $tools);
+            $result = $runner->run($scenario, $context, $tools, new IdempotencyKey('at1:' . substr(hash('sha256', $this->seed . $id), 0, 32)));
             foreach ($scenario['steps'] ?? [] as $step) {
                 if (is_array($step)) {
                     $this->event($emit, $id, 'step_started', ['step_id' => $step['id'] ?? null]);
@@ -268,14 +273,20 @@ final class SdkConformanceEngine
         callable $probe,
         callable $emit,
     ): void {
-        $guard = new CredentialGuard();
-        foreach ($state['credentials'] ?? [] as $credential) {
+        $guard = new CredentialGuard(self::DRIVER_RESOURCE_AUDIENCE, self::DRIVER_TRUSTED_ISSUERS);
+        foreach ($state['credentials'] ?? [] as $index => $credential) {
             if (!is_array($credential)) {
                 continue;
             }
             $failure = $guard->validateAccessToken($credential);
-            if ($failure !== null) {
-                $this->event($emit, $id, 'action_failed', $failure->error->context);
+            $context = $failure?->error?->context;
+            if ($context !== null) {
+                $field = $context['credential_field'] ?? null;
+                $this->event($emit, $id, 'action_failed', [
+                    'reason' => $context['reason'] ?? null,
+                    'security_rule' => $context['security_rule'] ?? null,
+                    'stimulus_pointer' => '/given/driver_state/credentials/' . $index . '/' . (is_string($field) ? $field : ''),
+                ]);
                 $this->result($emit, $id, 'failed');
                 return;
             }

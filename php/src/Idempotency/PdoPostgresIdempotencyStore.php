@@ -67,7 +67,9 @@ SQL;
         private readonly PDO $pdo,
         private readonly DeduplicationPolicy $policy,
     ) {
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        if ($this->pdo->getAttribute(PDO::ATTR_ERRMODE) !== PDO::ERRMODE_EXCEPTION) {
+            throw new \InvalidArgumentException('PdoPostgresIdempotencyStore requires a PDO connection in ERRMODE_EXCEPTION.');
+        }
     }
 
     public function acquire(

@@ -4,7 +4,7 @@
     "name": "ClientSupportsCustomHeaders",
     "description": "Client supports custom headers: calls the x-mcp-header annotated tool and mirrors at least one parameter",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.405Z",
+    "timestamp": "2026-10-06T12:24:52.512Z",
     "specReferences": [
       {
         "id": "SEP-2243-Custom-Headers",
@@ -17,7 +17,7 @@
     "name": "ClientCustomHeader_Region",
     "description": "Client sends correct Mcp-Param-Region header (string value)",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.405Z",
+    "timestamp": "2026-10-06T12:24:52.512Z",
     "specReferences": [
       {
         "id": "SEP-2243-Value-Encoding",
@@ -37,7 +37,7 @@
     "name": "ClientCustomHeader_Priority",
     "description": "Client sends correct Mcp-Param-Priority header (integer value)",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.405Z",
+    "timestamp": "2026-10-06T12:24:52.512Z",
     "specReferences": [
       {
         "id": "SEP-2243-Value-Encoding",
@@ -57,7 +57,7 @@
     "name": "ClientCustomHeader_Verbose",
     "description": "Client sends correct Mcp-Param-Verbose header (boolean value)",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.405Z",
+    "timestamp": "2026-10-06T12:24:52.512Z",
     "specReferences": [
       {
         "id": "SEP-2243-Value-Encoding",
@@ -77,7 +77,7 @@
     "name": "ClientCustomHeader_Debug",
     "description": "Client sends correct Mcp-Param-Debug header (boolean value)",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.405Z",
+    "timestamp": "2026-10-06T12:24:52.512Z",
     "specReferences": [
       {
         "id": "SEP-2243-Value-Encoding",
@@ -97,7 +97,7 @@
     "name": "ClientCustomHeader_EmptyVal",
     "description": "Client sends correct Mcp-Param-EmptyVal header (string value)",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.405Z",
+    "timestamp": "2026-10-06T12:24:52.512Z",
     "specReferences": [
       {
         "id": "SEP-2243-Value-Encoding",
@@ -117,7 +117,7 @@
     "name": "ClientCustomHeader_Method",
     "description": "Client sends correct Mcp-Param-Method header (string value)",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.405Z",
+    "timestamp": "2026-10-06T12:24:52.512Z",
     "specReferences": [
       {
         "id": "SEP-2243-Value-Encoding",
@@ -137,7 +137,7 @@
     "name": "ClientCustomHeaderNoMirrorNumber",
     "description": "Client MUST NOT add Mcp-Param headers for parameters without x-mcp-header (number-typed float_val is served unannotated per SEP-2243)",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.405Z",
+    "timestamp": "2026-10-06T12:24:52.512Z",
     "specReferences": [
       {
         "id": "SEP-2243-Custom-Headers",
@@ -150,7 +150,7 @@
     "name": "ClientCustomHeader_NonAscii",
     "description": "Client sends correct Mcp-Param-NonAscii header (string value)",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.405Z",
+    "timestamp": "2026-10-06T12:24:52.512Z",
     "specReferences": [
       {
         "id": "SEP-2243-Value-Encoding",
@@ -170,7 +170,7 @@
     "name": "ClientCustomHeader_Whitespace",
     "description": "Client sends correct Mcp-Param-Whitespace header (string value)",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.405Z",
+    "timestamp": "2026-10-06T12:24:52.512Z",
     "specReferences": [
       {
         "id": "SEP-2243-Value-Encoding",
@@ -190,7 +190,7 @@
     "name": "ClientCustomHeader_LeadingSpace",
     "description": "Client sends correct Mcp-Param-LeadingSpace header (string value)",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.405Z",
+    "timestamp": "2026-10-06T12:24:52.512Z",
     "specReferences": [
       {
         "id": "SEP-2243-Value-Encoding",
@@ -210,7 +210,7 @@
     "name": "ClientCustomHeader_TrailingSpace",
     "description": "Client sends correct Mcp-Param-TrailingSpace header (string value)",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.405Z",
+    "timestamp": "2026-10-06T12:24:52.512Z",
     "specReferences": [
       {
         "id": "SEP-2243-Value-Encoding",
@@ -230,7 +230,7 @@
     "name": "ClientCustomHeader_InternalSpace",
     "description": "Client sends correct Mcp-Param-InternalSpace header (string value)",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.405Z",
+    "timestamp": "2026-10-06T12:24:52.512Z",
     "specReferences": [
       {
         "id": "SEP-2243-Value-Encoding",
@@ -250,7 +250,7 @@
     "name": "ClientCustomHeader_ControlChar",
     "description": "Client sends correct Mcp-Param-ControlChar header (string value)",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.405Z",
+    "timestamp": "2026-10-06T12:24:52.512Z",
     "specReferences": [
       {
         "id": "SEP-2243-Value-Encoding",
@@ -270,7 +270,7 @@
     "name": "ClientCustomHeader_CrLf",
     "description": "Client sends correct Mcp-Param-CrLf header (string value)",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.406Z",
+    "timestamp": "2026-10-06T12:24:52.512Z",
     "specReferences": [
       {
         "id": "SEP-2243-Value-Encoding",
@@ -290,7 +290,7 @@
     "name": "ClientCustomHeader_Tab",
     "description": "Client sends correct Mcp-Param-Tab header (string value)",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.406Z",
+    "timestamp": "2026-10-06T12:24:52.512Z",
     "specReferences": [
       {
         "id": "SEP-2243-Value-Encoding",
@@ -310,7 +310,7 @@
     "name": "ClientCustomHeaderNoMirrorUnannotated",
     "description": "Client MUST NOT add Mcp-Param headers for parameters without x-mcp-header",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.406Z",
+    "timestamp": "2026-10-06T12:24:52.512Z",
     "specReferences": [
       {
         "id": "SEP-2243-Custom-Headers",
@@ -323,7 +323,7 @@
     "name": "ClientCustomHeaderOmitNull",
     "description": "Client MUST omit Mcp-Param header when parameter value is null or not provided",
     "status": "SUCCESS",
-    "timestamp": "2026-09-21T21:38:38.408Z",
+    "timestamp": "2026-10-06T12:24:52.515Z",
     "specReferences": [
       {
         "id": "SEP-2243-Custom-Headers",

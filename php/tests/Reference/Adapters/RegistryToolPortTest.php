@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace AgenTools\Tests\Reference\Adapters;
 
+use AgenTools\Error\ErrorCategory;
+use AgenTools\Error\ToolError;
+use AgenTools\Error\ToolExecutionException;
 use AgenTools\Error\ToolExecutionResult;
 use AgenTools\Reference\Adapters\RegistryToolPort;
 use AgenTools\Tool\ToolDescriptor;
@@ -58,6 +61,36 @@ final class RegistryToolPortTest extends TestCase
 
         self::assertTrue($result->isError());
         self::assertSame('agentools.permission.missing_subject', $result->error?->code);
+    }
+
+    /** IDE-23, IDE-24; a typed tool-execution exception from the handler is returned as a failure result. */
+    public function testItReturnsThrownToolExecutionErrorsAsResults(): void
+    {
+        $port = new RegistryToolPort();
+        $port->register($this->descriptor(['demo.read']), static function (): ToolExecutionResult {
+            throw new ToolExecutionException(new ToolError('acme.not_found.note', ErrorCategory::NOT_FOUND, false, 'Note not found.'));
+        });
+        $port->bindSubject($this->principals(), $this->authorization(['demo.read']));
+
+        $result = $port->call('demo_read_note', [], 'idem-4');
+
+        self::assertTrue($result->isError());
+        self::assertSame('acme.not_found.note', $result->error?->code);
+    }
+
+    /** HRD-18; an unknown handler failure propagates so the coordinator keeps the lease. */
+    public function testItPropagatesUnexpectedHandlerFailures(): void
+    {
+        $port = new RegistryToolPort();
+        $port->register($this->descriptor(['demo.read']), static function (): ToolExecutionResult {
+            throw new \RuntimeException('upstream timeout');
+        });
+        $port->bindSubject($this->principals(), $this->authorization(['demo.read']));
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('upstream timeout');
+
+        $port->call('demo_read_note', [], 'idem-5');
     }
 
     /**
