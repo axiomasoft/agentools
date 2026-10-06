@@ -15,6 +15,7 @@ use AgenTools\Persistence\PdoPostgresEventStore;
 use AgenTools\Persistence\UncommittedEvent;
 use AgenTools\Reference\Persistence\SqliteEventLog;
 use AgenTools\Schema\Canonicalizer;
+use AgenTools\Tests\Support\PostgresRequirement;
 use PHPUnit\Framework\TestCase;
 
 final class PdoPostgresEventStoreTest extends TestCase
@@ -45,7 +46,7 @@ final class PdoPostgresEventStoreTest extends TestCase
             return;
         }
         if (self::$pdo === null) {
-            $this->markTestSkipped('PostgreSQL test database is not available.');
+            PostgresRequirement::unavailable();
         }
         self::$pdo->exec('TRUNCATE agentools_events, agentools_event_streams RESTART IDENTITY');
     }

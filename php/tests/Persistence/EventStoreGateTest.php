@@ -11,6 +11,7 @@ use AgenTools\Ops\JournalAppender;
 use AgenTools\TestKit\FixedClock;
 use AgenTools\TestKit\InMemoryEventStore;
 use AgenTools\Persistence\PdoPostgresEventStore;
+use AgenTools\Tests\Support\PostgresRequirement;
 use PHPUnit\Framework\TestCase;
 
 final class EventStoreGateTest extends TestCase
@@ -79,7 +80,7 @@ final class EventStoreGateTest extends TestCase
     {
         $store = $this->durableStore();
         if ($store === null) {
-            $this->markTestSkipped('PostgreSQL test database is not available.');
+            PostgresRequirement::unavailable();
         }
         $actionId = 'action-pg-' . bin2hex(random_bytes(8));
         $appender = new JournalAppender(
