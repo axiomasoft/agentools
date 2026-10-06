@@ -1,12 +1,9 @@
+# Lockfiles are committed on purpose: the OSV lane (tools/ci_matrix.py LOCKFILES)
+# scans them. Dart build state is ignored by dart/.gitignore.
 /php/vendor/
-/php/composer.lock
 /php/var/*.sqlite
 /php/var/*.sqlite-*
-/dart/.dart_tool/
-/dart/.packages
-/dart/pubspec.lock
 /conformance/vendor/
-/conformance/composer.lock
 /out/
 /conformance/mcp/node_modules/
 /.ci/cache/
