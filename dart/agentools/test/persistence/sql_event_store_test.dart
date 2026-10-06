@@ -23,6 +23,7 @@ class _ScriptedExecutor implements SqlExecutor {
 UncommittedEvent _event(
   String eventId, {
   Map<String, dynamic> payload = const {},
+  String timestamp = '2026-09-20T10:00:00+00:00',
 }) {
   return UncommittedEvent(
     eventId: eventId,
@@ -30,7 +31,7 @@ UncommittedEvent _event(
     eventVersion: 1,
     specRevision: '2026-08',
     actor: Actor(type: 'user', id: 'u-1'),
-    timestamp: '2026-09-20T10:00:00+00:00',
+    timestamp: timestamp,
     payload: payload,
   );
 }
@@ -224,5 +225,107 @@ void main() {
     }
 
     expect(productionDependencies, isNot(contains(startsWith('postgres:'))));
+  });
+
+  // The hash chain stays verifiable after reload whatever the input offset,
+  // precision or the session time zone of the executor.
+  test('stores, chains and hydrates canonical UTC timestamps', () {
+    final executor = _ScriptedExecutor([
+      const SqlQueryResult(rows: [], affectedRows: 0),
+      const SqlQueryResult(rows: [], affectedRows: 1),
+      const SqlQueryResult(
+        rows: [
+          {'current_seq': 1},
+        ],
+        affectedRows: 1,
+      ),
+      const SqlQueryResult(rows: [], affectedRows: 0),
+      const SqlQueryResult(rows: [], affectedRows: 0),
+      const SqlQueryResult(
+        rows: [
+          {
+            'event_id': 'ev-tail',
+            'action_id': 'action-1',
+            'seq': 1,
+            'expected_prev_seq': 0,
+            'ts': '2026-09-20 15:44:59.5+05:45',
+            'actor_type': 'user',
+            'actor_id': 'u-1',
+            'kind': 'action_created',
+            'event_version': 1,
+            'spec_rev': '2026-08',
+            'epoch': null,
+            'prev_hash': null,
+            'payload_json': '{}',
+          },
+        ],
+        affectedRows: 1,
+      ),
+      const SqlQueryResult(
+        rows: [
+          {'seq': 2, 'global_position': 8},
+        ],
+        affectedRows: 1,
+      ),
+      const SqlQueryResult(
+        rows: [
+          {'seq': 3, 'global_position': 9},
+        ],
+        affectedRows: 1,
+      ),
+      const SqlQueryResult(rows: [], affectedRows: 1),
+      const SqlQueryResult(rows: [], affectedRows: 0),
+    ]);
+    SqlEventStore(executor).append('tenant-a', 'action-1', 1, [
+      _event(
+        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab',
+        timestamp: '2026-09-20T12:00:01+02:00',
+      ),
+      _event(
+        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac',
+        timestamp: '2026-09-20T10:00:02.1234567Z',
+      ),
+    ]);
+
+    final inserts = executor.calls
+        .where((call) => call.$1 == SqlEventStore.insertEventSql)
+        .map((call) => call.$2)
+        .toList();
+    expect(inserts.map((params) => params['ts']), [
+      '2026-09-20T10:00:01+00:00',
+      '2026-09-20T10:00:02.123456+00:00',
+    ]);
+
+    ActionEvent hydrated(String id, int seq, String ts, String? prev) {
+      return ActionEvent(
+        eventId: id,
+        actionId: 'action-1',
+        seq: seq,
+        expectedPrevSeq: seq - 1,
+        timestamp: ts,
+        actor: Actor(type: 'user', id: 'u-1'),
+        kind: 'action_created',
+        eventVersion: 1,
+        specRevision: '2026-08',
+        payload: const {},
+        previousHash: prev,
+      );
+    }
+
+    final chain = JournalHashChain(Canonicalizer());
+    final tail = hydrated(
+      'ev-tail',
+      1,
+      '2026-09-20T09:59:59.500000+00:00',
+      null,
+    );
+    expect(inserts[0]['prev_hash'], chain.hash(tail));
+    final first = hydrated(
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab',
+      2,
+      inserts[0]['ts'] as String,
+      inserts[0]['prev_hash'] as String?,
+    );
+    expect(inserts[1]['prev_hash'], chain.hash(first));
   });
 }

@@ -38,6 +38,11 @@ Versions follow SemVer for package manifests; spec changes use dated revisions.
   as the stored failure for the key (IDE-12, IDE-13, IDE-23) instead of leaving the key in
   flight until lease expiry; other throwables still keep the lease for capability-driven
   takeover (HRD-17, HRD-18)
+- Postgres/SQL event stores (PHP/Dart) store, chain and hydrate `ts` in one canonical UTC
+  form (microsecond precision, fraction omitted when zero); previously `prev_hash` written
+  inside a batch did not match the hash of the reloaded event when the input used `Z`,
+  fractional seconds or another offset, or the session time zone was not UTC, and hydrated
+  `ts` violated the `lifecycle-event.json` UTC requirement
 
 ### Documentation
 

@@ -223,12 +223,13 @@ SQL;
         $lastPosition = 0;
         foreach ($events as $index => $event) {
             $seq = $actual + $index + 1;
+            $timestamp = $this->timestamp($event->timestamp);
             $committed = new ActionEvent(
                 eventId: $event->eventId,
                 actionId: $actionId,
                 seq: $seq,
                 expectedPrevSeq: $actual + $index,
-                timestamp: $event->timestamp,
+                timestamp: $timestamp,
                 actor: $event->actor,
                 kind: $event->kind,
                 eventVersion: $event->eventVersion,
@@ -247,7 +248,7 @@ SQL;
                 'spec_rev' => $event->specRevision,
                 'actor_type' => $event->actor->type,
                 'actor_id' => $event->actor->id,
-                'ts' => $event->timestamp,
+                'ts' => $timestamp,
                 'payload_json' => json_encode($event->payload, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),
                 'epoch' => $event->epoch,
                 'prev_hash' => $committed->previousHash,
@@ -317,9 +318,17 @@ SQL;
         );
     }
 
+    /**
+     * Canonical lexical form of an event instant: UTC, microsecond precision (the TIMESTAMPTZ
+     * resolution), fraction omitted when zero. The same form is stored, hashed into the chain
+     * and hydrated, so `prev_hash` stays verifiable after reload regardless of the input offset,
+     * input precision or the session time zone.
+     */
     private function timestamp(string $value): string
     {
-        return (new \DateTimeImmutable($value))->format(\DATE_ATOM);
+        $instant = (new \DateTimeImmutable($value))->setTimezone(new \DateTimeZone('UTC'));
+
+        return $instant->format($instant->format('u') === '000000' ? 'Y-m-d\\TH:i:sP' : 'Y-m-d\\TH:i:s.uP');
     }
 
     /** @param array<mixed, mixed> $row

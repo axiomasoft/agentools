@@ -189,12 +189,13 @@ WHERE tenant_id = @tenant_id AND event_id = @event_id
     for (var index = 0; index < events.length; index++) {
       final event = events[index];
       final seq = actual + index + 1;
+      final timestamp = _canonicalTimestamp(event.timestamp);
       final committed = ActionEvent(
         eventId: event.eventId,
         actionId: actionId,
         seq: seq,
         expectedPrevSeq: actual + index,
-        timestamp: event.timestamp,
+        timestamp: timestamp,
         actor: event.actor,
         kind: event.kind,
         eventVersion: event.eventVersion,
@@ -213,7 +214,7 @@ WHERE tenant_id = @tenant_id AND event_id = @event_id
         'spec_rev': event.specRevision,
         'actor_type': event.actor.type,
         'actor_id': event.actor.id,
-        'ts': event.timestamp,
+        'ts': timestamp,
         'payload_json': jsonEncode(event.payload),
         'epoch': event.epoch,
         'prev_hash': committed.previousHash,
@@ -300,7 +301,7 @@ WHERE tenant_id = @tenant_id AND event_id = @event_id
       actionId: row['action_id'] as String,
       seq: (row['seq'] as num).toInt(),
       expectedPrevSeq: (row['expected_prev_seq'] as num).toInt(),
-      timestamp: row['ts'] as String,
+      timestamp: _canonicalTimestamp(row['ts']),
       actor: Actor(
         type: row['actor_type'] as String,
         id: row['actor_id'] as String,
@@ -312,5 +313,28 @@ WHERE tenant_id = @tenant_id AND event_id = @event_id
       epoch: (row['epoch'] as num?)?.toInt(),
       previousHash: row['prev_hash'] as String?,
     );
+  }
+
+  /// Canonical lexical form of an event instant: UTC, microsecond precision
+  /// (the TIMESTAMPTZ resolution), fraction omitted when zero. The same form is
+  /// stored, hashed into the chain and hydrated, so `prev_hash` stays
+  /// verifiable after reload regardless of the input offset, input precision,
+  /// the session time zone or whether the executor yields text or [DateTime].
+  static String _canonicalTimestamp(Object? value) {
+    final instant = switch (value) {
+      DateTime() => value.toUtc(),
+      String() => DateTime.parse(value).toUtc(),
+      _ => throw FormatException('Event timestamp must be text or DateTime.'),
+    };
+    String two(int part) => part.toString().padLeft(2, '0');
+    final date =
+        '${instant.year.toString().padLeft(4, '0')}-${two(instant.month)}-${two(instant.day)}';
+    final time =
+        '${two(instant.hour)}:${two(instant.minute)}:${two(instant.second)}';
+    final fraction = instant.millisecond * 1000 + instant.microsecond;
+    final micros = fraction == 0
+        ? ''
+        : '.${fraction.toString().padLeft(6, '0')}';
+    return '${date}T$time$micros+00:00';
   }
 }
