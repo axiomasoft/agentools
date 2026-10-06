@@ -1,7 +1,7 @@
 # P10 G-RELEASE decision packet (request only)
 
-**Packet digest:** `201aa23425ccc160…`
-**Expires:** `2027-01-04T12:35:41Z`
+**Packet digest:** `65b78b8baf5d5089…`
+**Expires:** `2027-01-04T13:49:22Z`
 **Authorized:** `False`
 **Public eligible:** `red`
 **Public blockers:** 18

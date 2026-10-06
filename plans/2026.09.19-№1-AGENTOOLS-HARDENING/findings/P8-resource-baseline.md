@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-06
 **Receipt:** `artifacts/P8-resource-baseline.json` (`p8-resource-baseline/v1`)
-**Fingerprint:** `aea42242a9a08b0b39a853443a3a943f4a9822212ac8f385090e0d89145bd3e0`
+**Fingerprint:** `71d892931261dc28718739273c12fe7a457612f5904394c2eedc68ad9517900d`
 **Host:** Linux 7.0.0-38-generic x86_64 / Intel(R) Core(TM) i7-14700K
 
 Portable gates own depth/count/byte/page/lease caps. Timing is compared only on a matching fingerprint; a mismatch refuses a timing verdict. PHP and Dart speed are not compared.

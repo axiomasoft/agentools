@@ -1,15 +1,15 @@
 # P10.3 release consumer acceptance
 
 **Verdict:** `green`
-**Generated:** 2026-10-06T12:35:40Z
-**Source commit:** `1581ab407ef461bb6135fe841d3897ced5a5906d`
-**P9 RC digest:** `0de3d0700b7720bc4e0ac44c1abe0bafaabd9915383f5b1dd622cdf997c947c9`
+**Generated:** 2026-10-06T13:49:21Z
+**Source commit:** `8100ad3c51008551fa1da668190fdd309d34c52e`
+**P9 RC digest:** `69f1571a13eb981583cc835b92376dc86b281a2d9f57b5830a91fae02cd2b46d`
 
 ## Subjects (re-hashed against P9-private-rc.json)
 
-- `dart-core`: archive `67ffde98164b5f34…` manifest `b7e2a60f7a438e5c…`
-- `dart-mcp-companion`: archive `6b2e747a9411cd98…` manifest `be070361aa2e6bf2…`
-- `php-sdk`: archive `ead9210232e16338…` manifest `9a015af4b52883b9…`
+- `dart-core`: archive `44c781033fe05651…` manifest `b7e2a60f7a438e5c…`
+- `dart-mcp-companion`: archive `f7b500e7d88eb82c…` manifest `be070361aa2e6bf2…`
+- `php-sdk`: archive `d33616bb9eb7c8cc…` manifest `9f1eb525480b30d3…`
 
 ## PostgreSQL drill
 

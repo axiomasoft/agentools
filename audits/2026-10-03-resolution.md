@@ -65,6 +65,34 @@ GitHub API подтвердил причину отказа Actions: job не з
 Ограничение CONF-1 (ответы SDK conformance из каталога) сохраняется; изменения
 SDK дополнительно проверены прямыми unit- и credential-vector тестами.
 
+### Проверка на GitHub-hosted runners, 2026-10-06
+
+По запросу владельца код перенесён в отдельный приватный `ax1oma/agentools`.
+Первый настоящий прогон выявил три проблемы чистого окружения:
+
+- PHP lock содержал пять Symfony 8-пакетов, требующих PHP >=8.4.1, при заявленной
+  поддержке PHP 8.3. В Composer закреплён `config.platform.php: 8.3.0`; только
+  эти пять транзитивных пакетов переведены на совместимые Symfony 7.4.
+  Холодная установка и `check-platform-reqs` на PHP 8.3 прошли.
+- Dart core проверяет хеши событий через PHP-процесс; его отдельные CI jobs
+  не устанавливали PHP-зависимости. Добавлены подготовка PHP и установка
+  locked-зависимостей для этого oracle, без пропуска cross-language теста.
+- Disposable resolution MCP-пакета теряла соседнюю path-зависимость
+  `../agentools`. Оба пакета копируются с сохранением относительной структуры,
+  без `.dart_tool` и `build`; тест проверяет lowest/latest и неизменность обоих
+  исходных lock-файлов.
+
+На коммите `8100ad3` все GitHub workflow прошли:
+
+- [ci — 17/17 jobs](https://github.com/ax1oma/agentools/actions/runs/37465526582)
+- [private-rc — 2/2 jobs](https://github.com/ax1oma/agentools/actions/runs/37465526579)
+- [extended — 2/2 jobs](https://github.com/ax1oma/agentools/actions/runs/37465727272)
+
+Проверены PHP 8.3/8.4, Dart 3.11.0/3.13.4 для обоих пакетов, реальный
+PostgreSQL 17, OSV/Gitleaks, bounded conformance, mutation и resource gates,
+сборка приватных RC и загрузка evidence bundle. Локально прошли 79 Python
+тестов и обновлённый P10 private RC acceptance. Публикация пакетов не разрешена.
+
 ## 2. Тесты: до и после (локально)
 
 | Набор | `main` @ `87dbb55` | `audit/fixes-1` |

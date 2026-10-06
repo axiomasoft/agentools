@@ -4,7 +4,7 @@
     "name": "NoNetworkRefDereference",
     "description": "Client did not dereference the network-URI $ref in the tool inputSchema",
     "status": "SUCCESS",
-    "timestamp": "2026-10-06T12:24:57.297Z",
+    "timestamp": "2026-10-06T13:44:50.327Z",
     "specReferences": [
       {
         "id": "SEP-2106",

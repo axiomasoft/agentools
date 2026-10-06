@@ -6,7 +6,7 @@
       "name": "ClientMcpMethodHeader_tools_list",
       "description": "Client sends correct Mcp-Method header on tools/list request",
       "status": "SUCCESS",
-      "timestamp": "2026-10-06T12:24:55.622Z",
+      "timestamp": "2026-10-06T13:44:48.852Z",
       "specReferences": [
         {
           "id": "SEP-2243-Standard-Headers",
@@ -23,7 +23,7 @@
       "name": "ClientMcpMethodHeader_tools_call",
       "description": "Client sends correct Mcp-Method header on tools/call request",
       "status": "SUCCESS",
-      "timestamp": "2026-10-06T12:24:55.629Z",
+      "timestamp": "2026-10-06T13:44:48.857Z",
       "specReferences": [
         {
           "id": "SEP-2243-Standard-Headers",
@@ -40,7 +40,7 @@
       "name": "ClientMcpNameHeader_tools_call",
       "description": "Client sends correct Mcp-Name header on tools/call request",
       "status": "SUCCESS",
-      "timestamp": "2026-10-06T12:24:55.629Z",
+      "timestamp": "2026-10-06T13:44:48.857Z",
       "specReferences": [
         {
           "id": "SEP-2243-Standard-Headers",
@@ -59,7 +59,7 @@
       "name": "ClientMcpMethodHeader_initialize",
       "description": "Client sends correct Mcp-Method header on initialize request",
       "status": "SKIPPED",
-      "timestamp": "2026-10-06T12:24:55.649Z",
+      "timestamp": "2026-10-06T13:44:48.873Z",
       "errorMessage": "Client did not send a initialize request; Mcp-Method header was not exercised for this method.",
       "specReferences": [
         {
@@ -73,7 +73,7 @@
       "name": "ClientMcpMethodHeader_notifications_initialized",
       "description": "Client sends correct Mcp-Method header on notifications/initialized request",
       "status": "SKIPPED",
-      "timestamp": "2026-10-06T12:24:55.649Z",
+      "timestamp": "2026-10-06T13:44:48.873Z",
       "errorMessage": "Client did not send a notifications/initialized request; Mcp-Method header was not exercised for this method.",
       "specReferences": [
         {
@@ -87,7 +87,7 @@
       "name": "ClientMcpMethodHeader_resources_list",
       "description": "Client sends correct Mcp-Method header on resources/list request",
       "status": "SKIPPED",
-      "timestamp": "2026-10-06T12:24:55.649Z",
+      "timestamp": "2026-10-06T13:44:48.873Z",
       "errorMessage": "Client did not send a resources/list request; Mcp-Method header was not exercised for this method.",
       "specReferences": [
         {
@@ -101,7 +101,7 @@
       "name": "ClientMcpMethodHeader_resources_read",
       "description": "Client sends correct Mcp-Method header on resources/read request",
       "status": "SKIPPED",
-      "timestamp": "2026-10-06T12:24:55.649Z",
+      "timestamp": "2026-10-06T13:44:48.873Z",
       "errorMessage": "Client did not send a resources/read request; Mcp-Method header was not exercised for this method.",
       "specReferences": [
         {
@@ -115,7 +115,7 @@
       "name": "ClientMcpMethodHeader_prompts_list",
       "description": "Client sends correct Mcp-Method header on prompts/list request",
       "status": "SKIPPED",
-      "timestamp": "2026-10-06T12:24:55.649Z",
+      "timestamp": "2026-10-06T13:44:48.873Z",
       "errorMessage": "Client did not send a prompts/list request; Mcp-Method header was not exercised for this method.",
       "specReferences": [
         {
@@ -129,7 +129,7 @@
       "name": "ClientMcpMethodHeader_prompts_get",
       "description": "Client sends correct Mcp-Method header on prompts/get request",
       "status": "SKIPPED",
-      "timestamp": "2026-10-06T12:24:55.649Z",
+      "timestamp": "2026-10-06T13:44:48.873Z",
       "errorMessage": "Client did not send a prompts/get request; Mcp-Method header was not exercised for this method.",
       "specReferences": [
         {
@@ -143,7 +143,7 @@
       "name": "ClientMcpNameHeader_resources_read",
       "description": "Client sends correct Mcp-Name header on resources/read request",
       "status": "SKIPPED",
-      "timestamp": "2026-10-06T12:24:55.649Z",
+      "timestamp": "2026-10-06T13:44:48.873Z",
       "errorMessage": "Client did not send a resources/read request; Mcp-Name header was not exercised for this method.",
       "specReferences": [
         {
@@ -157,7 +157,7 @@
       "name": "ClientMcpNameHeader_prompts_get",
       "description": "Client sends correct Mcp-Name header on prompts/get request",
       "status": "SKIPPED",
-      "timestamp": "2026-10-06T12:24:55.649Z",
+      "timestamp": "2026-10-06T13:44:48.873Z",
       "errorMessage": "Client did not send a prompts/get request; Mcp-Name header was not exercised for this method.",
       "specReferences": [
         {
