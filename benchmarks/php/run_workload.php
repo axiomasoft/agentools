@@ -13,6 +13,7 @@ use AgenTools\Action\Actor;
 use AgenTools\Error\EventStoreFailure;
 use AgenTools\Error\ToolExecutionResult;
 use AgenTools\Idempotency\LeaseDuration;
+use AgenTools\Idempotency\IdempotencyKey;
 use AgenTools\Ops\BaggageLimitException;
 use AgenTools\Ops\BaggageRefs;
 use AgenTools\Persistence\EventStoreSupport;
@@ -237,6 +238,7 @@ function eval_scenario_steps(int $count): array
             ['spec_rev' => '2026-09', 'scenario_id' => 'bench', 'steps' => $steps],
             [],
             dummy_tools(),
+            new IdempotencyKey('at1:benchmark-run'),
         );
         return ['ok' => true, 'class' => 'accept', 'count' => $count];
     } catch (ExpressionException $exception) {

@@ -27,6 +27,35 @@
 
 **Ломающие изменения** (`CHANGELOG.md`, Unreleased): конструктор `CredentialGuard`; минимум 32 байта для `HmacTokenSigner`; `ScenarioRunner::run(…, IdempotencyKey $runKey)`; адаптеры `PdoPostgres*` требуют `ERRMODE_EXCEPTION` (это значение PDO по умолчанию с PHP 8.0).
 
+### Ревью PR #10, 2026-10-06
+
+При независимой проверке исправлены ещё три воспроизводимые проблемы:
+
+- PHP-бенчмарк не передавал новый ключ запуска в `ScenarioRunner`, поэтому
+  `scenario_steps` возвращал `error.internal` / `ArgumentCountError`. Вызов
+  обновлён; оба SDK проверяются на допустимых 1/64 шагах и отказе на 65-м.
+- Команда `gitleaks-scan` проверяла только историю Git. Добавлена проверка
+  текущих tracked-файлов и новых non-ignored файлов, с тестами на секрет в
+  незакоммиченном изменении и в новом файле. Существующие точечные allowlist
+  сохранены; зависимости и build state в snapshot не входят.
+- `tarfile` удаляет начальный `/` при безопасной распаковке, но распаковщик
+  возвращал путь, построенный из исходного абсолютного имени. Воспроизведено
+  получение постороннего файла вместо проверенного бинарника; абсолютные
+  имена теперь отклоняются, тест проверяет также неизменность постороннего файла.
+
+Локально прошли PHP 8.4 (318 тестов с отдельным PostgreSQL 17.11), PHPStan max,
+Dart core (269 тестов), Dart MCP (7 тестов), Python tools (77 тестов),
+`ci_policy`, `ci_matrix`, OSV, Gitleaks history/worktree, все четыре слоя
+`ci_gate`, semantic parity, официальный MCP runner (7/7 применимых сценариев),
+adversarial corpus (29 случаев), mutation gate (26/26), resource gate,
+release candidate, SBOM и private RC aggregate. Замороженные `2026-08`
+spec/fixtures не изменены. Новые проверки resource gate и locked CLI прошли.
+
+GitHub API подтвердил причину отказа Actions: job не запущен из-за платежей
+или лимита расходов аккаунта. Это локальная проверка, а не зелёный hosted CI.
+Ограничение CONF-1 (ответы SDK conformance из каталога) сохраняется; изменения
+SDK дополнительно проверены прямыми unit- и credential-vector тестами.
+
 ## 2. Тесты: до и после (локально)
 
 | Набор | `main` @ `87dbb55` | `audit/fixes-1` |

@@ -15,6 +15,7 @@ import unittest
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
+from unittest import mock
 
 try:
     import yaml
@@ -292,7 +293,7 @@ def build_map() -> dict[str, Any]:
                 "scanner": "google/osv-scanner",
             },
             "gitleaks": {
-                "modes": ["detect", "protect"],
+                "modes": ["git", "dir"],
                 "redact": True,
             },
         },
@@ -483,7 +484,9 @@ def cmd_osv_scan(_: argparse.Namespace) -> int:
 
 
 def cmd_gitleaks_scan(_: argparse.Namespace) -> int:
-    return run_gitleaks_detect()
+    history = run_gitleaks_detect()
+    worktree = run_gitleaks_worktree()
+    return history or worktree
 
 
 def cmd_disposable(raw: str) -> int:
@@ -543,6 +546,31 @@ def run_gitleaks_detect() -> int:
     ).returncode
 
 
+def run_gitleaks_worktree() -> int:
+    """Scan current tracked and non-ignored new files, including uncommitted edits."""
+    scanner = install_cli_tool("gitleaks/gitleaks")
+    paths = subprocess.check_output(
+        ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"], cwd=REPO,
+    ).decode().split("\0")
+    with tempfile.TemporaryDirectory(prefix="agentools-gitleaks-worktree-") as tmp:
+        snapshot = Path(tmp)
+        for relative in sorted(set(paths) - {""}):
+            source = REPO / relative
+            target = snapshot / relative
+            if source.is_symlink():
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(str(source.readlink()), encoding="utf-8")
+            elif source.is_file():
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source, target)
+        # Relative paths preserve the exact path-scoped fixture digest allowlists.
+        return subprocess.run(
+            [str(scanner), "dir", "--no-banner", "--redact", "--config",
+             str(REPO / ".gitleaks.toml"), "."],
+            cwd=snapshot, check=False,
+        ).returncode
+
+
 def cmd_test(_: argparse.Namespace) -> int:
     suite = unittest.defaultTestLoader.loadTestsFromModule(sys.modules[__name__])
     result = unittest.TextTestRunner(verbosity=2).run(suite)
@@ -550,6 +578,29 @@ def cmd_test(_: argparse.Namespace) -> int:
 
 
 class CiMatrixTests(unittest.TestCase):
+    def test_worktree_scan_catches_uncommitted_and_untracked_secrets(self) -> None:
+        scanner = install_cli_tool("gitleaks/gitleaks")
+        config = REPO / ".gitleaks.toml"
+        with tempfile.TemporaryDirectory(prefix="agentools-worktree-scan-test-") as tmp:
+            root = Path(tmp)
+            subprocess.run(["git", "init", "--quiet", str(root)], check=True)
+            shutil.copyfile(config, root / ".gitleaks.toml")
+            tracked = root / "tracked.env"
+            tracked.write_text("clean\n", encoding="utf-8")
+            subprocess.run(["git", "add", "tracked.env"], cwd=root, check=True)
+            canary = "AWS_ACCESS_KEY_ID=AKIA" + "QWERTYUIOPASDFGH\n"
+            with mock.patch.object(sys.modules[__name__], "REPO", root), mock.patch.object(
+                sys.modules[__name__], "install_cli_tool", return_value=scanner,
+            ):
+                tracked.write_text(canary, encoding="utf-8")
+                self.assertEqual(run_gitleaks_worktree(), 1)
+                tracked.write_text("clean\n", encoding="utf-8")
+                untracked = root / "new.env"
+                untracked.write_text(canary, encoding="utf-8")
+                self.assertEqual(run_gitleaks_worktree(), 1)
+                untracked.unlink()
+                self.assertEqual(run_gitleaks_worktree(), 0)
+
     def test_osv_roster_is_exact(self) -> None:
         self.assertEqual(
             {path.relative_to(REPO).as_posix() for path in LOCKFILES.values()},

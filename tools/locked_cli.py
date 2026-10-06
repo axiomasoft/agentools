@@ -73,6 +73,10 @@ def materialize_binary(entry: dict[str, Any], data: bytes, binary_name: str, wor
             )
             if member is None:
                 raise LockedToolError(f"{entry['id']}: {binary_name} binary missing in archive")
+            if Path(member.name).is_absolute():
+                # The data filter strips the leading slash during extraction, but
+                # joining the original absolute name below would escape workdir.
+                raise LockedToolError(f"{entry['id']}: absolute binary member path")
             archive.extract(member, path=workdir, filter="data")
         binary = workdir / member.name
     else:
@@ -170,6 +174,19 @@ class LockedCliTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaises(LockedToolError):
                 materialize_binary(_entry(data, "https://example.invalid/t.tar.gz"), data, "tool", Path(tmp))
+
+    def test_absolute_binary_member_cannot_select_an_existing_external_file(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            outside = Path(tmp) / "tool"
+            outside.write_bytes(b"planted")
+            outside.chmod(0o600)
+            workdir = Path(tmp) / "work"
+            workdir.mkdir()
+            data = _tar_gz({str(outside): b"verified"})
+            with self.assertRaises(LockedToolError):
+                materialize_binary(_entry(data, "https://example.invalid/t.tar.gz"), data, "tool", workdir)
+            self.assertEqual(outside.read_bytes(), b"planted")
+            self.assertEqual(outside.stat().st_mode & 0o777, 0o600)
 
     def test_plain_binary_is_written_executable(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
