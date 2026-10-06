@@ -28,6 +28,9 @@ Versions follow SemVer for package manifests; spec changes use dated revisions.
   sourced from arguments, model output or tool results and confirmation tokens presented as
   access tokens are rejected; reasons and `security_rule` follow the `security-*` vectors;
   argument inspection is recursive with a fail-closed depth limit (SEC-1, SEC-2, SEC-5, SEC-6)
+- Signing secrets are marked `#[\SensitiveParameter]` and redacted from debug dumps
+  (`SigningKey`, `HmacTokenSigner`); **breaking:** `HmacTokenSigner` (PHP/Dart) requires a
+  secret of at least 32 bytes, the same HS256 floor as `SigningKey`
 
 ### Fixed
 

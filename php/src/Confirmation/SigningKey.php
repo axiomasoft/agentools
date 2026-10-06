@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace AgenTools\Confirmation;
 
+/**
+ * Active HS256 signing material. Verify-only/compromised/retired keys cannot be constructed here.
+ *
+ * The secret is hidden from stack traces and debug dumps; never log or serialize this object.
+ */
 final readonly class SigningKey
 {
     public function __construct(
         public KeyId $id,
         public string $algorithm,
+        #[\SensitiveParameter]
         public string $secret,
         public KeyState $state = KeyState::Active,
     ) {
@@ -21,5 +27,11 @@ final readonly class SigningKey
         if ($state !== KeyState::Active) {
             throw ConfirmationFailure::keyDenied();
         }
+    }
+
+    /** @return array{id: KeyId, algorithm: string, secret: string, state: KeyState} */
+    public function __debugInfo(): array
+    {
+        return ['id' => $this->id, 'algorithm' => $this->algorithm, 'secret' => '[redacted]', 'state' => $this->state];
     }
 }
