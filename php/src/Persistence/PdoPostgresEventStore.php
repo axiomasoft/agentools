@@ -75,7 +75,9 @@ SQL;
         private readonly PDO $pdo,
         private readonly Canonicalizer $canonicalizer = new Canonicalizer(),
     ) {
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        if ($this->pdo->getAttribute(PDO::ATTR_ERRMODE) !== PDO::ERRMODE_EXCEPTION) {
+            throw new \InvalidArgumentException('PdoPostgresEventStore requires a PDO connection in ERRMODE_EXCEPTION.');
+        }
     }
 
     /** @param list<UncommittedEvent> $events */

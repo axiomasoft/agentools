@@ -18,6 +18,10 @@ Versions follow SemVer for package manifests; spec changes use dated revisions.
 - Supported development target spec: `2026-09` (frozen `2026-08` retained for regression)
 - Reference slice and production facades wired through `ConfirmationService` and
   `IdempotencyCoordinator`
+- **Breaking:** the PHP PostgreSQL adapters (`PdoPostgresEventStore`,
+  `PdoPostgresIdempotencyStore`, `PdoPostgresConfirmationTokenStore`) no longer switch the
+  caller's shared `PDO` to `ERRMODE_EXCEPTION`; they reject a connection in any other mode
+  with `InvalidArgumentException` (exception mode is the PDO default since PHP 8.0)
 
 ### Security
 
@@ -39,7 +43,6 @@ Versions follow SemVer for package manifests; spec changes use dated revisions.
   grammar. The previous `<scenario_id>:<step_id>` keys were rejected by
   `IdempotencyCoordinator` and were identical across runs of the same scenario (IDE-1, IDE-4,
   SCN-8, SCN-25)
-
 - `IdempotencyCoordinator` (PHP/Dart) records a `ToolExecutionException` thrown by the tool
   as the stored failure for the key (IDE-12, IDE-13, IDE-23) instead of leaving the key in
   flight until lease expiry; other throwables still keep the lease for capability-driven
