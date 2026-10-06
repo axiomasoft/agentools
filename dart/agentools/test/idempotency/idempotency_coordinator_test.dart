@@ -213,4 +213,57 @@ void main() {
     expect(second.isError, isFalse);
     expect(port.calls, 1);
   });
+
+  // IDE-12, IDE-13, IDE-23; a thrown tool-execution error is stored and
+  // replayed, not left in flight.
+  test('thrown tool error is stored and replayed', () {
+    final store = InMemoryDeduplicationStore(_policy());
+    final port = _HandlerPort(
+      (tool, arguments, key) => throw ToolExecutionException(
+        ToolExecutionError(
+          code: 'acme.validation.amount_too_large',
+          category: 'validation',
+          retryable: false,
+          title: 'Amount is too large.',
+        ),
+      ),
+    );
+    final subject = _coordinator(
+      store: store,
+      catalog: ToolIdempotencyCatalog(
+        {'pay': ToolIdempotencyCapability.nativeKey},
+        {'pay': 'write'},
+      ),
+      port: port,
+    );
+    final first = subject.call('pay', {'amount': 1}, 'at1:abcdefgh');
+    final second = subject.call('pay', {'amount': 1}, 'at1:abcdefgh');
+    expect(first.error?.code, 'acme.validation.amount_too_large');
+    expect(second.error?.code, 'acme.validation.amount_too_large');
+    expect(port.calls, 1);
+  });
+
+  // IDE-14, HRD-17, HRD-18; an unknown failure keeps the lease: a retry inside
+  // it is in flight, later takeover follows capability.
+  test('unexpected error keeps the lease', () {
+    final store = InMemoryDeduplicationStore(_policy());
+    final port = _HandlerPort(
+      (tool, arguments, key) => throw StateError('connection reset'),
+    );
+    final subject = _coordinator(
+      store: store,
+      catalog: ToolIdempotencyCatalog(
+        {'pay': ToolIdempotencyCapability.nativeKey},
+        {'pay': 'write'},
+      ),
+      port: port,
+    );
+    expect(
+      () => subject.call('pay', {'amount': 1}, 'at1:abcdefgh'),
+      throwsStateError,
+    );
+    final retry = subject.call('pay', {'amount': 1}, 'at1:abcdefgh');
+    expect(retry.error?.code, IdempotencyErrorCodes.inFlight);
+    expect(port.calls, 1);
+  });
 }

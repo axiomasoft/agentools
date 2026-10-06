@@ -29,6 +29,13 @@ Versions follow SemVer for package manifests; spec changes use dated revisions.
   access tokens are rejected; reasons and `security_rule` follow the `security-*` vectors;
   argument inspection is recursive with a fail-closed depth limit (SEC-1, SEC-2, SEC-5, SEC-6)
 
+### Fixed
+
+- `IdempotencyCoordinator` (PHP/Dart) records a `ToolExecutionException` thrown by the tool
+  as the stored failure for the key (IDE-12, IDE-13, IDE-23) instead of leaving the key in
+  flight until lease expiry; other throwables still keep the lease for capability-driven
+  takeover (HRD-17, HRD-18)
+
 ### Documentation
 
 - Root security/support policies, installation, migrations, and operations guides

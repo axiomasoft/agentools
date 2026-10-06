@@ -111,7 +111,7 @@ final class IdempotencyCoordinator implements ToolPort {
       }
     }
     _store.heartbeat(lease, now, leaseDuration);
-    final result = _tools.call(tool, arguments, idempotencyKey);
+    final result = _invokeTool(tool, arguments, idempotencyKey);
     final stored = _stored(result);
     final digest = StoredResultDigest.fromJcs(
       _canonicalizer.canonicalize(stored.error?.toMap() ?? stored.value ?? {}),
@@ -129,6 +129,24 @@ final class IdempotencyCoordinator implements ToolPort {
       rethrow;
     }
     return result;
+  }
+
+  /// A typed tool-execution error thrown by the tool is the same outcome as a
+  /// returned failure (IDE-23): it is recorded under the lease and replayed as
+  /// is (IDE-12, IDE-13) instead of leaving the key in flight until the lease
+  /// expires. Any other error means the effect is unknown; it propagates and
+  /// the lease is left to expire so that the takeover protocol decides by tool
+  /// capability.
+  ToolExecutionResult _invokeTool(
+    String tool,
+    Map<String, dynamic> arguments,
+    String idempotencyKey,
+  ) {
+    try {
+      return _tools.call(tool, arguments, idempotencyKey);
+    } on ToolExecutionException catch (exception) {
+      return ToolExecutionResult.failure(exception.error);
+    }
   }
 
   ToolExecutionResult? _takeoverDecision(

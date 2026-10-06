@@ -6,6 +6,9 @@ namespace AgenTools\Tests\Idempotency;
 
 use AgenTools\Contracts\ExternalEffectProbe;
 use AgenTools\Contracts\ToolPort;
+use AgenTools\Error\ErrorCategory;
+use AgenTools\Error\ToolError;
+use AgenTools\Error\ToolExecutionException;
 use AgenTools\Error\ToolExecutionResult;
 use AgenTools\Idempotency\ArgumentsFingerprint;
 use AgenTools\Idempotency\DeduplicationPolicy;
@@ -166,6 +169,54 @@ final class IdempotencyCoordinatorTest extends TestCase
         $now = $now->add(new \DateInterval('PT31S'));
         $second = $coordinator->call('pay', ['amount' => 1], 'at1:abcdefgh');
         self::assertFalse($second->isError());
+        self::assertSame(1, $calls);
+    }
+
+    /** IDE-12, IDE-13, IDE-23; a thrown tool-execution error is stored and replayed, not left in flight. */
+    public function testThrownToolErrorIsStoredAndReplayed(): void
+    {
+        $store = new InMemoryDeduplicationStore($this->policy());
+        $calls = 0;
+        $coordinator = $this->coordinator(
+            $store,
+            new ToolIdempotencyCatalog(['pay' => ToolIdempotencyCapability::NativeKey], ['pay' => 'write']),
+            function () use (&$calls): ToolExecutionResult {
+                $calls++;
+                throw new ToolExecutionException(new ToolError('acme.validation.amount_too_large', ErrorCategory::VALIDATION, false, 'Amount is too large.'));
+            },
+        );
+
+        $first = $coordinator->call('pay', ['amount' => 1], 'at1:abcdefgh');
+        $second = $coordinator->call('pay', ['amount' => 1], 'at1:abcdefgh');
+
+        self::assertSame('acme.validation.amount_too_large', $first->error?->code);
+        self::assertSame('acme.validation.amount_too_large', $second->error?->code);
+        self::assertSame(1, $calls);
+    }
+
+    /** IDE-14, HRD-17, HRD-18; an unknown failure keeps the lease: a retry inside it is in flight, later takeover follows capability. */
+    public function testUnexpectedThrowableKeepsTheLease(): void
+    {
+        $store = new InMemoryDeduplicationStore($this->policy());
+        $calls = 0;
+        $coordinator = $this->coordinator(
+            $store,
+            new ToolIdempotencyCatalog(['pay' => ToolIdempotencyCapability::NativeKey], ['pay' => 'write']),
+            function () use (&$calls): ToolExecutionResult {
+                $calls++;
+                throw new \RuntimeException('connection reset');
+            },
+        );
+
+        try {
+            $coordinator->call('pay', ['amount' => 1], 'at1:abcdefgh');
+            self::fail('An unexpected throwable must propagate.');
+        } catch (\RuntimeException $exception) {
+            self::assertSame('connection reset', $exception->getMessage());
+        }
+        $retry = $coordinator->call('pay', ['amount' => 1], 'at1:abcdefgh');
+
+        self::assertSame('agentools.conflict.idempotency_in_flight', $retry->error?->code);
         self::assertSame(1, $calls);
     }
 
