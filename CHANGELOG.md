@@ -34,6 +34,12 @@ Versions follow SemVer for package manifests; spec changes use dated revisions.
 
 ### Fixed
 
+- **Breaking:** `ScenarioRunner::run()` / `ScenarioRunner.run()` take the caller's run
+  `IdempotencyKey`; step and compensation keys are derived from it and satisfy the IDE-4
+  grammar. The previous `<scenario_id>:<step_id>` keys were rejected by
+  `IdempotencyCoordinator` and were identical across runs of the same scenario (IDE-1, IDE-4,
+  SCN-8, SCN-25)
+
 - `IdempotencyCoordinator` (PHP/Dart) records a `ToolExecutionException` thrown by the tool
   as the stored failure for the key (IDE-12, IDE-13, IDE-23) instead of leaving the key in
   flight until lease expiry; other throwables still keep the lease for capability-driven

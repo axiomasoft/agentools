@@ -19,6 +19,7 @@ use AgenTools\Ops\JournalAppender;
 use AgenTools\Ops\LongOperationCoordinator;
 use AgenTools\Ops\TaskBinding;
 use AgenTools\TestKit\FixedClock;
+use AgenTools\Idempotency\IdempotencyKey;
 use AgenTools\Scenario\ScenarioRunner;
 use AgenTools\Scenario\ScenarioOutcome;
 use AgenTools\Tool\ActionProfile;
@@ -214,7 +215,7 @@ final class SdkConformanceEngine
         $context = is_array($script[0]['context'] ?? null) ? $script[0]['context'] : [];
         $this->event($emit, $id, 'scenario_started', ['scenario_id' => $scenario['scenario_id'] ?? null]);
         try {
-            $result = $runner->run($scenario, $context, $tools);
+            $result = $runner->run($scenario, $context, $tools, new IdempotencyKey('at1:' . substr(hash('sha256', $this->seed . $id), 0, 32)));
             foreach ($scenario['steps'] ?? [] as $step) {
                 if (is_array($step)) {
                     $this->event($emit, $id, 'step_started', ['step_id' => $step['id'] ?? null]);

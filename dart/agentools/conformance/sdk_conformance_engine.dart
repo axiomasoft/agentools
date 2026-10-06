@@ -279,7 +279,10 @@ final class SdkConformanceEngine {
       'scenario_id': scenario['scenario_id'],
     });
     try {
-      final result = runner.run(scenario, context, tools);
+      final runKey = IdempotencyKey(
+        'at1:${sha256.convert(utf8.encode('$_seed$id')).toString().substring(0, 32)}',
+      );
+      final result = runner.run(scenario, context, tools, runKey);
       for (final step in _list(scenario['steps'])) {
         if (step is Map) {
           _event(emit, id, 'step_started', {'step_id': step['id']});
