@@ -23,6 +23,11 @@ Versions follow SemVer for package manifests; spec changes use dated revisions.
 
 - Structured refusal paths for confirmation binding, TTL/skew, and replay
 - Durable spent-token consume and lease fence tokens before external effects
+- **Breaking:** `CredentialGuard` (PHP/Dart) is fail-closed: the resource audience and the
+  trusted issuer set are required constructor arguments with no built-in defaults; credentials
+  sourced from arguments, model output or tool results and confirmation tokens presented as
+  access tokens are rejected; reasons and `security_rule` follow the `security-*` vectors;
+  argument inspection is recursive with a fail-closed depth limit (SEC-1, SEC-2, SEC-5, SEC-6)
 
 ### Documentation
 

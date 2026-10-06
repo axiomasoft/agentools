@@ -31,6 +31,10 @@ use RuntimeException;
  */
 final class SdkConformanceEngine
 {
+    /** Resource identity and trusted issuer set the conformance driver declares for credentials. */
+    private const DRIVER_RESOURCE_AUDIENCE = 'agentools-runtime';
+    private const DRIVER_TRUSTED_ISSUERS = ['issuer-trusted'];
+
     private string $clockIso = '2000-01-01T00:00:00Z';
     private string $seed = 'agentools-conformance';
     private string $specRevision = '2026-08';
@@ -268,14 +272,20 @@ final class SdkConformanceEngine
         callable $probe,
         callable $emit,
     ): void {
-        $guard = new CredentialGuard();
-        foreach ($state['credentials'] ?? [] as $credential) {
+        $guard = new CredentialGuard(self::DRIVER_RESOURCE_AUDIENCE, self::DRIVER_TRUSTED_ISSUERS);
+        foreach ($state['credentials'] ?? [] as $index => $credential) {
             if (!is_array($credential)) {
                 continue;
             }
             $failure = $guard->validateAccessToken($credential);
-            if ($failure !== null) {
-                $this->event($emit, $id, 'action_failed', $failure->error->context);
+            $context = $failure?->error?->context;
+            if ($context !== null) {
+                $field = $context['credential_field'] ?? null;
+                $this->event($emit, $id, 'action_failed', [
+                    'reason' => $context['reason'] ?? null,
+                    'security_rule' => $context['security_rule'] ?? null,
+                    'stimulus_pointer' => '/given/driver_state/credentials/' . $index . '/' . (is_string($field) ? $field : ''),
+                ]);
                 $this->result($emit, $id, 'failed');
                 return;
             }
