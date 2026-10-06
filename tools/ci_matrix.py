@@ -451,8 +451,14 @@ def disposable_dart_resolution(package: str, mode: str) -> tuple[int, str]:
     lock = LOCKFILES[package]
     source_digest = sha256_file(lock)
     with tempfile.TemporaryDirectory() as tmp:
-        workspace = Path(tmp) / "tree"
-        shutil.copytree(root, workspace)
+        workspace = Path(tmp) / "tree" / root.name
+        ignore = shutil.ignore_patterns(".dart_tool", "build")
+        shutil.copytree(root, workspace, ignore=ignore)
+        if package == "dart_mcp":
+            # Preserve the companion's ../agentools path dependency in a cold
+            # workspace rather than borrowing the checkout's package config.
+            core = DART_PACKAGES["dart_core"]
+            shutil.copytree(core, workspace.parent / core.name, ignore=ignore)
         if mode == "lowest":
             cmd = ["dart", "pub", "downgrade"]
         else:
@@ -669,6 +675,16 @@ class CiMatrixTests(unittest.TestCase):
             self.skipTest("dart pub downgrade exceeded local timeout")
         self.assertEqual(sha256_file(LOCKFILES["dart_core"]), source_digest)
         self.assertEqual(code, 0, message)
+
+    def test_dart_companion_resolves_with_its_private_core_dependency(self) -> None:
+        if shutil.which("dart") is None:
+            self.skipTest("dart missing")
+        before = {key: sha256_file(LOCKFILES[key]) for key in DART_PACKAGES}
+        for mode in ("lowest", "latest"):
+            with self.subTest(mode=mode):
+                code, message = disposable_dart_resolution("dart_mcp", mode)
+                self.assertEqual(code, 0, message)
+        self.assertEqual(before, {key: sha256_file(LOCKFILES[key]) for key in DART_PACKAGES})
 
     def test_osv_positive_fixture_would_fail(self) -> None:
         payload = '{"package":{"name":"bad","version":"0.0.0"}}\n'
