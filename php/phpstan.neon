@@ -5,6 +5,8 @@ parameters:
         - testkit
         - reference
         - tests
+    scanFiles:
+        - conformance/HarnessToolPort.php
     excludePaths:
         - reference/conformance/adapter.php
         - tests/Adversarial/storage_worker.php
