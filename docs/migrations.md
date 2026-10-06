@@ -1,7 +1,17 @@
 # Migrations and schema rollout
 
-SQL artifacts for durable confirmation tokens, idempotency leases, and event storage
-ship with the PHP and Dart packages (shared SSOT under `php/reference/migrations/`).
+The PostgreSQL DDL for durable confirmation tokens, idempotency leases, and event
+storage is the shared contract under `fixtures/hardening/sql/`:
+
+| Table | DDL | Adapters |
+|---|---|---|
+| `confirmation_consumed_tokens` | `fixtures/hardening/sql/confirmation-consumed-tokens.v1.sql` | `PdoPostgresConfirmationTokenStore`, `SqlConfirmationTokenStore` |
+| `agentools_idempotency_leases` | `fixtures/hardening/sql/idempotency-lease.v1.sql` | `PdoPostgresIdempotencyStore`, `SqlIdempotencyStore` |
+| `agentools_event_streams`, `agentools_events` | `fixtures/hardening/sql/event-store.v1.sql` | `PdoPostgresEventStore`, `SqlEventStore` |
+
+These files are **not** part of the PHP or Dart package archives; apply them from a
+checkout of this repository. `php/reference/migrations/` contains only the SQLite
+schema of the reference slice and is not a production schema.
 This guide is **forward-safe**; it does not promise a universal production down-migration.
 
 ## Principles
