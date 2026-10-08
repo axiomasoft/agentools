@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 
 REPO = Path(__file__).resolve().parents[1]
-PLAN = REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING"
+PLAN = REPO / "verification"
 MATRIX = PLAN / "artifacts/P10-acceptance-matrix.json"
 ARTIFACT = PLAN / "artifacts/P10-docs.json"
 FINDING = PLAN / "findings/P10-docs.md"

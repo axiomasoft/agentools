@@ -1,0 +1,11 @@
+{
+  "id": "merge-php",
+  "cwd": "php",
+  "command": [
+    "composer",
+    "test"
+  ],
+  "started_utc": "2026-10-08T14:12:58.742848+00:00",
+  "exit_code": 0,
+  "duration_seconds": 1.016
+}

@@ -1,0 +1,11 @@
+{
+  "id": "fix-clean-bootstrap",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "audits/2026-10-08-full/verify_clean_bootstrap.py"
+  ],
+  "started_utc": "2026-10-08T13:35:07.054963+00:00",
+  "exit_code": 0,
+  "duration_seconds": 19.448
+}

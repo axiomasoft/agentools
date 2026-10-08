@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D92",
+  "title": "Решение",
+  "date": "2026-07-27",
+  "status": "accepted",
+  "decision": "**Механика lock и игнорирования на Dart-стороне ЗЕРКАЛЬНА PHP-стороне, и обе ловушки проверены прогоном.** Правила корневого `.gitignore` `/dart/pubspec.lock` и `/dart/.dart_tool/` якорны от корня и на раскладке `dart/agentools/**` НЕ срабатывают: `pubspec.lock` коммитится БЕЗ переисключения (в отличие от PHP, D80), зато `.dart_tool/` уедет в item-коммит — носитель защиты — вложенный `dart/.gitignore` (`*/.dart_tool/`, `*/build/`). Отдельно правило `*.log` игнорирует ЗАКОММИЧЕННОЕ свидетельство находки F7, поэтому пакет-спутник обязан переисключить `!evidence/*.log` (проверенный образец — `bakeoff/.gitignore`). Корневой `.gitignore` НЕ правится ни одним item'ом фазы (правило фазы P7); ставшее мёртвым правило `/dart/pubspec.lock` называется фактом в Completion Notes; `git check-ignore -v` обязателен ДО коммита В ОБЕ СТОРОНЫ. Альтернатива «положить пакет прямо в `dart/`» отклонена: два pub-пакета не могут быть вложены друг в друга, а сиблинги требуют переезда ядра в подкаталог",
+  "rationale": "молчаливый no-op `git add` в этом репозитории уже случался (D34, D67), и здесь его цена — «F7 закрыта доказательством, которого нет в дереве», то есть ровно повторение исходного дефекта находки. `RAG:— (repo-grounded: @plan/knowledge/findings-P8-dart-sdk-recon-2026-07-27.json §2 — вывод git check-ignore -v на пяти путях)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D92\ndate: 2026-07-27\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Механика lock и игнорирования на Dart-стороне ЗЕРКАЛЬНА PHP-стороне, и обе ловушки проверены прогоном.** Правила корневого `.gitignore` `/dart/pubspec.lock` и `/dart/.dart_tool/` якорны от корня и на раскладке `dart/agentools/**` НЕ срабатывают: `pubspec.lock` коммитится БЕЗ переисключения (в отличие от PHP, D80), зато `.dart_tool/` уедет в item-коммит — носитель защиты — вложенный `dart/.gitignore` (`*/.dart_tool/`, `*/build/`). Отдельно правило `*.log` игнорирует ЗАКОММИЧЕННОЕ свидетельство находки F7, поэтому пакет-спутник обязан переисключить `!evidence/*.log` (проверенный образец — `bakeoff/.gitignore`). Корневой `.gitignore` НЕ правится ни одним item'ом фазы (правило фазы P7); ставшее мёртвым правило `/dart/pubspec.lock` называется фактом в Completion Notes; `git check-ignore -v` обязателен ДО коммита В ОБЕ СТОРОНЫ. Альтернатива «положить пакет прямо в `dart/`» отклонена: два pub-пакета не могут быть вложены друг в друга, а сиблинги требуют переезда ядра в подкаталог"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "молчаливый no-op `git add` в этом репозитории уже случался (D34, D67), и здесь его цена — «F7 закрыта доказательством, которого нет в дереве», то есть ровно повторение исходного дефекта находки. `RAG:— (repo-grounded: @plan/knowledge/findings-P8-dart-sdk-recon-2026-07-27.json §2 — вывод git check-ignore -v на пяти путях)`"
+    }
+  ]
+}

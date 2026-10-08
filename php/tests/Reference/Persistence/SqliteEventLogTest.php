@@ -50,7 +50,7 @@ final class SqliteEventLogTest extends TestCase
         self::assertCount(2, $events);
         self::assertNull($events[0]->previousHash);
         self::assertSame($secondHash, $events[1]->previousHash);
-        (new ActionReducer())->fold($events);
+        (new ActionReducer('2026-08'))->fold($events);
     }
 
     /** @param array<string, mixed> $payload */

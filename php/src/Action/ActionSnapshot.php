@@ -37,7 +37,16 @@ final readonly class ActionSnapshot
         array $tail,
         ?ActionReducer $reducer = null,
     ): FoldedAction {
-        if (!$snapshot->matches($expectedHash)) {
+        $events = $journal->events();
+        $checkpoint = $events[$snapshot->state->seq - 1] ?? null;
+        $expectedTail = array_slice($events, $snapshot->state->seq);
+        $validCheckpoint = $checkpoint !== null
+            && $checkpoint->seq === $snapshot->state->seq
+            && $checkpoint->actionId === $snapshot->state->actionId
+            && $checkpoint->specRevision === $snapshot->specRevision
+            && array_map(static fn (ActionEvent $event): array => $event->toArray(), $expectedTail)
+                === array_map(static fn (ActionEvent $event): array => $event->toArray(), $tail);
+        if (!$snapshot->matches($expectedHash) || !$validCheckpoint) {
             return $journal->state($reducer);
         }
 

@@ -1,0 +1,235 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P3.14",
+  "title": "`rules.json`: генератор индекса правил + уровни + зелёный линтер (гейт фазы)",
+  "status": "done",
+  "summary": "Реализовать детерминированный генератор индекса правил (`tools/rules_index.py` → `spec/revisions/2026-08/rules.json`: идентификатор, документ, нормативное слово, уровень, причина «Not testable», дайджест текста), добиться полного покрытия матрицы решений и зелёного линтера ревизии БЕЗ `--allow-missing` и выдать вердикт `ГЕЙТ A2` — гейт выхода фазы.",
+  "why": "Гейт §K требует «линтер зелёный; каждое MUST-правило имеет идентификатор», а фаза P4 строит двунаправленное покрытие именно по этому индексу: без машинночитаемого `rules.json` покрытие правил векторами снова станет ручной оценкой (в `2026-07-draft` оно было ~30 % и не измерялось). Детерминированность — условие того, чтобы расхождение сгенерированного индекса с закоммиченным стало красным CI (слой 1 гейта §J5). `RAG:— (repo-grounded: @plan/knowledge/research-00-user-intent.json §3 п.2 и §4 №4 — механика индекса и дефект «покрытие не измерялось»; DR-01 §J2)`.",
+  "scope": {
+    "include": [
+      "(а) `tools/rules_index.py`: разбор 12 документов по `RULE_LINE_RE`, вывод `rules.json` (`spec_rev`, генератор, отсортированный список записей `{rule_id, doc, normative_word, level, not_testable, text_digest}`), детерминированный формат (сортировка, отступ 2, LF, ровно один завершающий перевод строки), режимы `--write` и `--check` (расхождение с закоммиченным → exit 1); (б) проверки полноты, включаемые в профиль линтера: уникальность маркера по всей ревизии, ровно один уровень на правило, маркер принадлежит своему документу (префикс ↔ файл), каждое `MUST`/`MUST NOT`-правило имеет непустой текст, `Not testable` несёт причину; (в) **сводный гейт покрытия решений**: объединение таблиц покрытия 12 документов сверяется с матрицей `research/02-…` §7 — решение `DR-01` без правила есть ошибка; (г) прогон линтера БЕЗ `--allow-missing` и его зелёный результат; (д) `@plan/knowledge/artifacts-P3-gate-a2.json` — вердикт `ГЕЙТ A2: PASS` либо `ГЕЙТ A2: BLOCKED — <причина>` с таблицей условий гейта, числами (правил всего, по уровням, по документам) и якорем-коммитом; (е) обновление `README.md` ревизии (статусы всех 12 документов, ссылка на `rules.json`)."
+    ],
+    "exclude": [
+      "двунаправленный линтер «правило ↔ вектор» и отчёт покрытия векторами (фаза P4, item P4.5 — здесь только индекс, на который он опирается); тест-векторы (фаза P4); freeze ревизии и git-тег (фаза P5); правки нормативного текста по существу — расхождение, найденное генератором, чинится точечно в своём документе с записью в Pending Work соответствующего item'а, а не переписыванием правил."
+    ]
+  },
+  "depends_on": [
+    "P3.2",
+    "P3.13"
+  ],
+  "decisions": [
+    "D14"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "spec/revisions/2026-08/",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-02-p3-authoring-conventions-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-00-user-intent.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "tools/spec_lint.py",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-02-p3-authoring-conventions-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-00-user-intent.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/00_overview.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "tools/rules_index.py",
+      "change": "any"
+    },
+    {
+      "path": "tools/spec_lint.py",
+      "change": "any"
+    },
+    {
+      "path": "spec/revisions/2026-08/rules.json",
+      "change": "any"
+    },
+    {
+      "path": "spec/revisions/2026-08/README.md",
+      "change": "any"
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P3-gate-a2.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "python3 stdlib-only, без сети (D14); генератор — единственный автор `rules.json`, ручная правка файла запрещена и ловится `--check`; дайджест считается по нормализованному абзацу правила (`research/02-…` §3) — алгоритм описан в докстринге, потому что от него зависит стабильность индекса между прогонами; порядок записей детерминирован (документ, затем числовая часть маркера — не лексикографическая, иначе `ALC-10` встанет перед `ALC-2`); вердикт гейта пишется в `@plan/knowledge/artifacts-P3-gate-a2.json` строкой ровно `ГЕЙТ A2: PASS` либо `ГЕЙТ A2: BLOCKED — <причина>`; все числа отчёта приводятся с якорем на item-коммит; плановый линтер запускается командой `python3 /home/vostrikov/projects/packages/swissknifeman/packages/task/scripts/plan-lint.py <каталог плана>` — путь машинно-специфичен и живёт здесь, а не в `Validation`."
+  ],
+  "guidance": "Стиль — как в `spec_lint.py` (русские докстринги «почему», сбор ошибок списком). Анти-самообман (гейт-item): ЗАПРЕЩЕНО ставить `PASS`, если хотя бы одно условие гейта красное — «остальное зелёное» не основание; недостающее покрытие решения `DR-01` закрывается правилом в СВОЁМ документе, а не строкой-заглушкой в таблице покрытия. ЗАПРЕЩЕНО: подгонять `RULE_LINE_RE` под уже написанный текст, если текст отклонился от грамматики (чинится текст, не грамматика); ослаблять проверку полноты ради зелёного прогона; править нормативные формулировки «чтобы генератор разобрал» без записи в Pending Work документа-владельца. If-then: правило не разбирается генератором → починить строку правила в её документе (точечная правка, item-коммит этого item'а), зафиксировать в Completion Notes перечень поправленных маркеров. If-then: решение `DR-01` не покрыто ни одним правилом и его нельзя покрыть без нового нормативного текста → `ГЕЙТ A2: BLOCKED`, статус `🔴 Blocked`, эскалация (trigger «unclear acceptance»), решение — новый заход `plan-design` по документу-владельцу.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "python3 tools/rules_index.py --write spec/revisions/2026-08 && python3 tools/rules_index.py --check spec/revisions/2026-08; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "python3 tools/spec_lint.py spec/revisions/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "python3 -c \"import json;d=json.load(open('spec/revisions/2026-08/rules.json'));print(len(d['rules']))\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "python3 -c \"import json;d=json.load(open('spec/revisions/2026-08/rules.json'));print(sum(1 for r in d['rules'] if r['level'] not in ('L1','L2','L3')))\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "cmd": "python3 -c \"import json;d=json.load(open('spec/revisions/2026-08/rules.json'));ids=[r['rule_id'] for r in d['rules']];print(len(ids)-len(set(ids)))\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "cmd": "python3 tools/spec_lint.py --legacy-check spec/revisions/2026-08; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "cmd": "python3 tools/close_schema.py --check spec/revisions/2026-08; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V8",
+      "cmd": "grep -c 'ГЕЙТ A2: PASS' artifacts/P3-gate-a2.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "`tools/rules_index.py` (`--write`/`--check`) + `rules.json` (≥150 правил, уровни, дайджесты) + проверки полноты в профиле линтера + зелёный `spec_lint` без `--allow-missing` + `@plan/knowledge/artifacts-P3-gate-a2.json` с вердиктом `ГЕЙТ A2` + актуальный `README.md` ревизии."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-07-27T19:31:14Z",
+    "finished_at": "2026-07-28T00:10:10Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "sonnet/high",
+      "effort": "high"
+    },
+    "notes": "ГЕЙТ A2: PASS, фаза P3 терминальна 15/15; rules_index.py + сводный гейт покрытия (D135)",
+    "deviations": [],
+    "pending": [],
+    "checks": []
+  },
+  "updated_at": "2026-07-28T00:10:10Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Реализовать детерминированный генератор индекса правил (`tools/rules_index.py` → `spec/revisions/2026-08/rules.json`: идентификатор, документ, нормативное слово, уровень, причина «Not testable», дайджест текста), добиться полного покрытия матрицы решений и зелёного линтера ревизии БЕЗ `--allow-missing` и выдать вердикт `ГЕЙТ A2` — гейт выхода фазы."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Гейт §K требует «линтер зелёный; каждое MUST-правило имеет идентификатор», а фаза P4 строит двунаправленное покрытие именно по этому индексу: без машинночитаемого `rules.json` покрытие правил векторами снова станет ручной оценкой (в `2026-07-draft` оно было ~30 % и не измерялось). Детерминированность — условие того, чтобы расхождение сгенерированного индекса с закоммиченным стало красным CI (слой 1 гейта §J5). `RAG:— (repo-grounded: @plan/knowledge/research-00-user-intent.json §3 п.2 и §4 №4 — механика индекса и дефект «покрытие не измерялось»; DR-01 §J2)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "(а) `tools/rules_index.py`: разбор 12 документов по `RULE_LINE_RE`, вывод `rules.json` (`spec_rev`, генератор, отсортированный список записей `{rule_id, doc, normative_word, level, not_testable, text_digest}`), детерминированный формат (сортировка, отступ 2, LF, ровно один завершающий перевод строки), режимы `--write` и `--check` (расхождение с закоммиченным → exit 1); (б) проверки полноты, включаемые в профиль линтера: уникальность маркера по всей ревизии, ровно один уровень на правило, маркер принадлежит своему документу (префикс ↔ файл), каждое `MUST`/`MUST NOT`-правило имеет непустой текст, `Not testable` несёт причину; (в) **сводный гейт покрытия решений**: объединение таблиц покрытия 12 документов сверяется с матрицей `research/02-…` §7 — решение `DR-01` без правила есть ошибка; (г) прогон линтера БЕЗ `--allow-missing` и его зелёный результат; (д) `@plan/knowledge/artifacts-P3-gate-a2.json` — вердикт `ГЕЙТ A2: PASS` либо `ГЕЙТ A2: BLOCKED — <причина>` с таблицей условий гейта, числами (правил всего, по уровням, по документам) и якорем-коммитом; (е) обновление `README.md` ревизии (статусы всех 12 документов, ссылка на `rules.json`)."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "двунаправленный линтер «правило ↔ вектор» и отчёт покрытия векторами (фаза P4, item P4.5 — здесь только индекс, на который он опирается); тест-векторы (фаза P4); freeze ревизии и git-тег (фаза P5); правки нормативного текста по существу — расхождение, найденное генератором, чинится точечно в своём документе с записью в Pending Work соответствующего item'а, а не переписыванием правил."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "все 12 документов `spec/revisions/2026-08/` (items P3.2–P3.13) · `@plan/knowledge/research-02-p3-authoring-conventions-2026-08.json` §3 (грамматика и дайджест), §4 (уровни), §7 (матрица покрытия), §8 (производные артефакты) · `@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §J2, §J3, §J5 · `@plan/knowledge/research-00-user-intent.json` §3 · `tools/spec_lint.py` (профиль ревизии — расширяется проверками полноты)."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`tools/rules_index.py` · `tools/spec_lint.py` · `spec/revisions/2026-08/rules.json` · `spec/revisions/2026-08/README.md` · `05-Projects/03-Packages/AgenTools/@plan/knowledge/artifacts-P3-gate-a2.json`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `05-Projects/03-Packages/AgenTools/@plan/knowledge/research-02-p3-authoring-conventions-2026-08.json` §3, §4, §7, §8 2) `05-Projects/03-Packages/AgenTools/@plan/knowledge/research-00-user-intent.json` §3 3) `05-Projects/03-Packages/AgenTools/@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §J2, §J3, §J5 4) `tools/spec_lint.py` 5) `spec/revisions/2026-08/00_overview.md`."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "python3 stdlib-only, без сети (D14); генератор — единственный автор `rules.json`, ручная правка файла запрещена и ловится `--check`; дайджест считается по нормализованному абзацу правила (`research/02-…` §3) — алгоритм описан в докстринге, потому что от него зависит стабильность индекса между прогонами; порядок записей детерминирован (документ, затем числовая часть маркера — не лексикографическая, иначе `ALC-10` встанет перед `ALC-2`); вердикт гейта пишется в `@plan/knowledge/artifacts-P3-gate-a2.json` строкой ровно `ГЕЙТ A2: PASS` либо `ГЕЙТ A2: BLOCKED — <причина>`; все числа отчёта приводятся с якорем на item-коммит; плановый линтер запускается командой `python3 /home/vostrikov/projects/packages/swissknifeman/packages/task/scripts/plan-lint.py <каталог плана>` — путь машинно-специфичен и живёт здесь, а не в `Validation`."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Стиль — как в `spec_lint.py` (русские докстринги «почему», сбор ошибок списком). Анти-самообман (гейт-item): ЗАПРЕЩЕНО ставить `PASS`, если хотя бы одно условие гейта красное — «остальное зелёное» не основание; недостающее покрытие решения `DR-01` закрывается правилом в СВОЁМ документе, а не строкой-заглушкой в таблице покрытия. ЗАПРЕЩЕНО: подгонять `RULE_LINE_RE` под уже написанный текст, если текст отклонился от грамматики (чинится текст, не грамматика); ослаблять проверку полноты ради зелёного прогона; править нормативные формулировки «чтобы генератор разобрал» без записи в Pending Work документа-владельца. If-then: правило не разбирается генератором → починить строку правила в её документе (точечная правка, item-коммит этого item'а), зафиксировать в Completion Notes перечень поправленных маркеров. If-then: решение `DR-01` не покрыто ни одним правилом и его нельзя покрыть без нового нормативного текста → `ГЕЙТ A2: BLOCKED`, статус `🔴 Blocked`, эскалация (trigger «unclear acceptance»), решение — новый заход `plan-design` по документу-владельцу."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`python3 tools/rules_index.py --write spec/revisions/2026-08 && python3 tools/rules_index.py --check spec/revisions/2026-08; echo $?` = 0 · `python3 tools/spec_lint.py spec/revisions/2026-08` → `spec_lint: OK`, exit 0 (БЕЗ `--allow-missing`) · `python3 -c \"import json;d=json.load(open('spec/revisions/2026-08/rules.json'));print(len(d['rules']))\"` ≥ 150 · `python3 -c \"import json;d=json.load(open('spec/revisions/2026-08/rules.json'));print(sum(1 for r in d['rules'] if r['level'] not in ('L1','L2','L3')))\"` = 0 · `python3 -c \"import json;d=json.load(open('spec/revisions/2026-08/rules.json'));ids=[r['rule_id'] for r in d['rules']];print(len(ids)-len(set(ids)))\"` = 0 · `python3 tools/spec_lint.py --legacy-check spec/revisions/2026-08; echo $?` = 0 · `python3 tools/close_schema.py --check spec/revisions/2026-08; echo $?` = 0 · `grep -c 'ГЕЙТ A2: PASS' @plan/knowledge/artifacts-P3-gate-a2.json` = 1 (команда — из каталога плана) · прогнать плановый линтер по каталогу плана и опубликовать счёт с атрибуцией, K = 0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "`tools/rules_index.py` (`--write`/`--check`) + `rules.json` (≥150 правил, уровни, дайджесты) + проверки полноты в профиле линтера + зелёный `spec_lint` без `--allow-missing` + `@plan/knowledge/artifacts-P3-gate-a2.json` с вердиктом `ГЕЙТ A2` + актуальный `README.md` ревизии."
+    }
+  ]
+}

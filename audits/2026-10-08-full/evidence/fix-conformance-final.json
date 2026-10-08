@@ -1,0 +1,12 @@
+{
+  "id": "fix-conformance-final",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/ci_gate.py",
+    "--all"
+  ],
+  "started_utc": "2026-10-08T13:31:06.285317+00:00",
+  "exit_code": 0,
+  "duration_seconds": 25.11
+}

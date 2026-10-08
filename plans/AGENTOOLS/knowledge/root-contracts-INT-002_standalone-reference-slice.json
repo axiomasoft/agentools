@@ -1,0 +1,77 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "root-contracts-INT-002_standalone-reference-slice",
+  "title": "INT-002 — автономный референсный вертикальный срез (только репозиторий agentools)",
+  "sections": [
+    {
+      "id": "INT-002-agentools",
+      "title": "INT-002 — автономный референсный вертикальный срез (только репозиторий agentools)",
+      "text": "**Статус:** draft (публикуется решением D186; исполняется P9.3–P9.7)  \n**Версия:** 1.0.0  \n**Дата:** 2026-09-19  \n**План:** AGENTOOLS P9 · **Дом кода:** `~/projects/packages/agentools` (D186)  \n**Норматив протокола:** ревизия `spec/revisions/2026-08/` (frozen)  \n**Заменяет для исполнения P9:** INT-001 (deferred)\n\n> Референсный срез доказывает, что восемь портов SDK и сценарий протокола сходятся **без** зависимости\n> на CoreX, FlexCRM, AiGateway, ToolRegistry контура или Laravel-приложение потребителя.\n> Продуктовая интеграция — вне scope (D186).\n\n**Опора:** `@plan/knowledge/findings-P9-decouple-corex-2026-09-19.json` · `php/src/**` (порты и in-memory референсы P7)\n\n---"
+    },
+    {
+      "id": "1.",
+      "title": "1. Карта восьми портов (референсный контур)",
+      "text": "Направление зависимости: `php/reference/**` → `php/src/**` (SDK). Внешних composer/path-зависимостей на CoreX/Flex **нет**.\n\n| Порт SDK | Референсный класс (целевой) | Носитель | Примечание |\n|:--|:--|:--|:--|\n| `EventLog` | `AgenTools\\Reference\\Persistence\\SqliteEventLog` (P9.4) | SQLite `php/var/reference-slice.sqlite` | append-only, `expected_prev_seq`, `prev_hash` |\n| `SessionStore` | `AgenTools\\Reference\\Persistence\\SqliteSessionStore` | та же БД + fold | снапшот отдельно от журнала |\n| `Clock` | `AgenTools\\Reference\\Support\\InjectableClock` | in-memory | подменяемый для E2E |\n| `TokenSigner` | `AgenTools\\Reference\\Crypto\\TenantHmacTokenSigner` | config теста / env | секрет на тенанта, не глобальный |\n| `IdempotencyStore` | `AgenTools\\Reference\\Persistence\\SqliteIdempotencyStore` | та же БД | три состояния, два таймера §D1–§D3 |\n| `LlmPort` | `AgenTools\\Reference\\Adapters\\ScriptedLlmPort` | stub-ответы из вектора / JSON fixture | **без** сети и без AiGateway |\n| `ToolPort` | `AgenTools\\Reference\\Adapters\\RegistryToolPort` | in-process registry | двухуровневый permission-гейт |\n| `AuditSink` | `AgenTools\\Reference\\Audit\\CollectingAuditSink` | in-memory / SQLite проекция | единственный путь записи решения §I4 |\n\n**Корень пакета:** `php/reference/` (адаптеры, persistence, demo).  \n**Тесты:** `php/tests/reference/**`.\n\n---"
+    },
+    {
+      "id": "2.-P9.3",
+      "title": "2. Поведенческие адаптеры (P9.3)",
+      "text": ""
+    },
+    {
+      "id": "2.1-ScriptedLlmPort",
+      "title": "2.1 `ScriptedLlmPort`",
+      "text": "- Читает scripted-ответ из `llm_stub` вектора или из named fixture в `php/reference/fixtures/llm/`.\n- Ошибка «квота» — структурный код `LLM_QUOTA_EXCEEDED` → **tool execution error** SDK, не протокольная.\n- Прямых HTTP-вызовов к провайдеру нет; греп по `php/reference` на URL провайдеров = 0."
+    },
+    {
+      "id": "2.2-RegistryToolPort",
+      "title": "2.2 `RegistryToolPort`",
+      "text": "- Единственный in-process реестр инструментов; второй реестр не заводится.\n- **Discover:** каталог фильтруется по субъекту (permission set).\n- **Invoke:** повторная проверка прав; инструмент вне прав отсутствует в каталоге **и** отвергается при прямом вызове.\n- Субъект обязателен: `PrincipalTriple` из SDK Ops; «система без субъекта» → typed error."
+    },
+    {
+      "id": "2.3",
+      "title": "2.3 Доставка протокольных объектов",
+      "text": "- `DeliveryCollector` — in-process подписчик: clarification, preview, deferred-confirmation **как есть** (без переименования полей).\n- Тенантная изоляция: подписчик с `tenant_id` A не получает события tenant B (тест).\n- Классификация побочного эффекта — только таблица §3 ниже (не локальный словарь)."
+    },
+    {
+      "id": "2.4-InjectableClock",
+      "title": "2.4 `InjectableClock`",
+      "text": "- Обёртка над `FixedClock` с возможностью advance в тестах.\n\n---"
+    },
+    {
+      "id": "3.",
+      "title": "3. Классификация побочного эффекта (единственная таблица)",
+      "text": "| `side_effect` (ревизия) | Policy hint (срез) | Two-phase |\n|:--|:--|:--|\n| `read` | нет | нет |\n| `draft` | нет | нет |\n| `write` | да | да |\n| `irreversible` | да + `dual_control` | да |\n\n---"
+    },
+    {
+      "id": "4.-P9.4",
+      "title": "4. Персистентность (P9.4)",
+      "text": "- SQLite — единственная БД среза; миграции в `php/reference/migrations/`.\n- Прогон эквивалентности: conformance adapter с SQLite-портами, `--level L1`, 0 отказов вне baseline.\n- In-memory реализации SDK (`php/src/Persistence/*`) — эталон при расхождении.\n\n---"
+    },
+    {
+      "id": "5.-P9.5",
+      "title": "5. Сценарий и векторы (P9.5)",
+      "text": "- Сценарий «итог дня → черновик → уточнения → превью → запись» на **референсных** инструментах (`read`/`draft`/`write`).\n- Продуктовые векторы: `fixtures/product-slice/**` (вне `fixtures/2026-08/**`).\n- LLM только scripted (D8). Счётчик запросов подтверждения на полном пути = 1.\n\n---"
+    },
+    {
+      "id": "6.-UI-P9.6-CLI-Flex",
+      "title": "6. Потребитель UI (P9.6) — CLI, не продукт Flex",
+      "text": "- `php/bin/reference-slice-demo` (или эквивалент): читает объекты из `DeliveryCollector`, не интерпретирует протокол.\n- Нет Reverb, нет Flex UI, нет batch-STT (голос — `Pending Work` / P9.7 optional).\n- Три отрицательных: чужой tenant, TTL превью, `edit` → новый prepare.\n\n---"
+    },
+    {
+      "id": "7.-P9.7",
+      "title": "7. Гейт фазы (P9.7)",
+      "text": "Условия `ГЕЙТ P9` (адаптация DR-01 §K без продуктовой БД Flex):\n\n1. Сценарий доведён до записи в **SQLite** среза (идентификатор записи в отчёте).\n2. Шесть отрицательных доказательств фазы (`research/08-…` §9) — на референсном контуре.\n3. Продуктовые векторы зелёные (scripted LLM).\n4. Прогон L1 на SQLite-адаптере зелёный.\n5. Тесты + статанализ `php/` зелёные.\n6. `@plan/knowledge/artifacts-P9-slice-report.json` с `ГЕЙТ P9: PASS` и разделом «что НЕ проверялось» (нет Flex, нет CoreX, нет remote CI, нет реальной модели по умолчанию).\n\n**Опционально** (не блокирует PASS): E2E с реальной моделью при `AGENTOOLS_REAL_LLM=1` — фиксируется в отчёте отдельной таблицей.\n\n---"
+    },
+    {
+      "id": "8.-scope",
+      "title": "8. Явно вне scope",
+      "text": "- Любой код в `~/projects/packages/corex`, `~/projects/flexcrm`.\n- AiGateway, ADR-020, ADR-022, B-32 как runtime-зависимости.\n- INT-001 и предложения дельт Flex — до отдельного решения владельца."
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "root/contracts/INT-002_standalone-reference-slice.md",
+    "sha256": "5e53984312a5aede6184f20d1b9459325dafbd70f33fc054f01b941612f7e7db"
+  }
+}

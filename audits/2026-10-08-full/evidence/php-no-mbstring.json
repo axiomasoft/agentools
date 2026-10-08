@@ -1,0 +1,12 @@
+{
+  "id": "php-no-mbstring",
+  "cwd": ".",
+  "command": [
+    "/usr/bin/php8.4",
+    "-n",
+    "audits/2026-10-08-full/reproduce_no_mbstring.php"
+  ],
+  "started_utc": "2026-10-08T12:14:15.269589+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.016
+}

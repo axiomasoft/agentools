@@ -81,7 +81,7 @@ void main() {
 
   // ALC-3, ALC-33; snapshot plus tail replay matches a full fold.
   test('snapshot projection matches folded state', () {
-    final reducer = ActionReducer();
+    final reducer = ActionReducer(specRevision: '2026-08');
     final events = [
       event(1, 0, 'action_created'),
       event(2, 1, 'action_started'),
@@ -99,7 +99,7 @@ void main() {
   // ALC-36; cross-language hash-chain anchor must match PHP byte-for-byte.
   test('hash chain matches PHP golden anchor', () {
     final chain = JournalHashChain(Canonicalizer());
-    final reducer = ActionReducer(hashChain: chain);
+    final reducer = ActionReducer(specRevision: '2026-08', hashChain: chain);
     final first = event(1, 0, 'action_created');
     final firstHash = chain.hash(first);
     final second = event(2, 1, 'action_started').withPreviousHash(firstHash);
@@ -119,7 +119,7 @@ use AgenTools\Action\JournalHashChain;
 use AgenTools\Schema\Canonicalizer;
 
 $chain = new JournalHashChain(new Canonicalizer());
-$reducer = new ActionReducer(hashChain: $chain);
+$reducer = new ActionReducer(specRevision: '2026-08', hashChain: $chain);
 $first = new ActionEvent(
     "event-1",
     "action-1",

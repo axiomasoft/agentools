@@ -99,6 +99,64 @@ void main() {
     expect(executor.calls.first.$1, SqlIdempotencyStore.insertSql);
   });
 
+  test(
+    'expired completed key accepts new fingerprint; in-progress remains fenced',
+    () {
+      final now = DateTime.parse('2026-09-20T10:00:00Z');
+      final executor = _ScriptedExecutor([
+        const SqlQueryResult(rows: [], affectedRows: 0),
+        SqlQueryResult(
+          rows: [
+            {
+              'fingerprint': 'old-fingerprint',
+              'state': 'completed',
+              'expires_at': now.toIso8601String(),
+            },
+          ],
+          affectedRows: 1,
+        ),
+        const SqlQueryResult(rows: [], affectedRows: 1),
+        const SqlQueryResult(
+          rows: [
+            {'attempt': 1},
+          ],
+          affectedRows: 1,
+        ),
+      ]);
+      final result = SqlIdempotencyStore(
+        executor,
+        _policy(),
+      ).acquire(_request(), now, const Duration(seconds: 30));
+      expect(result.state, DeduplicationState.newIntent);
+      expect(executor.calls[2].$1, SqlIdempotencyStore.deleteCompletedSql);
+      for (final state in ['in_progress', 'completed']) {
+        final retained = _ScriptedExecutor([
+          const SqlQueryResult(rows: [], affectedRows: 0),
+          SqlQueryResult(
+            rows: [
+              {
+                'fingerprint': 'old-fingerprint',
+                'state': state,
+                'expires_at': now
+                    .add(const Duration(seconds: 1))
+                    .toIso8601String(),
+              },
+            ],
+            affectedRows: 1,
+          ),
+        ]);
+        expect(
+          () => SqlIdempotencyStore(
+            retained,
+            _policy(),
+          ).acquire(_request(), now, const Duration(seconds: 30)),
+          throwsA(isA<IdempotencyFailure>()),
+        );
+        expect(retained.calls, hasLength(2));
+      }
+    },
+  );
+
   test('empty finish returning is lost-lease', () {
     final executor = _ScriptedExecutor([
       const SqlQueryResult(rows: [], affectedRows: 0),

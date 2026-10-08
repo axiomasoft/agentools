@@ -1,0 +1,12 @@
+{
+  "id": "docs-gate",
+  "cwd": "/tmp/agentools-audit-copy-4tslglh6/repo",
+  "command": [
+    "python3",
+    "tools/docs_gate.py",
+    "run"
+  ],
+  "started_utc": "2026-10-08T12:11:18.656930+00:00",
+  "exit_code": 1,
+  "duration_seconds": 1.316
+}

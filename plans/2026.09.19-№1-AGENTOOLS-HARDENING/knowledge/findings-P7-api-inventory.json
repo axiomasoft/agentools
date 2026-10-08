@@ -1,0 +1,49 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "findings-P7-api-inventory",
+  "title": "P7 API inventory — current reachability to target roster",
+  "sections": [
+    {
+      "id": "P7-API-inventory-current-reachability-to-target-roster",
+      "title": "P7 API inventory — current reachability to target roster",
+      "text": "**Schema:** `package-surface/v1`  \n**PHP entries:** 199  \n**Dart entries:** 187  \n**Source tree digest:** `b4ef0fddee452d08f03afda4d0897a9d38f1200633186dce095ab20fa4eb65ca`"
+    },
+    {
+      "id": "Tier-counts",
+      "title": "Tier counts",
+      "text": "| Tier | Count |\n|:--|--:|\n| `stable` | 12 |\n| `advanced` | 315 |\n| `testkit` | 14 |\n| `reference` | 44 |\n| `internal` | 1 |"
+    },
+    {
+      "id": "P1-baseline-digest-delta",
+      "title": "P1 baseline digest delta",
+      "text": "P1 captured path-derived PHP names and one-level Dart barrel exports. P7.1 inventories\ntokenized PHP types and transitive Dart export closures. The sets below are explained,\nnot ignored.\n\n- PHP identities only in P1 path-map: **7**\n- PHP identities new since P1: **73**\n- Dart one-level barrel rows only in P1: **0**\n- Dart one-level barrel rows new since P1: **8**\n\n- P1 baseline derived PHP identities from relative paths, including script files without types.\n- P7.1 tokenizes class/interface/trait/enum declarations and fails closed on collisions.\n- PHP/Dart additions after the P1 capture are P2–P6 hardening types, not P7 semantic changes."
+    },
+    {
+      "id": "PSR-4-path-namespace-case-mismatches",
+      "title": "PSR-4 path/namespace case mismatches",
+      "text": "- `php:AgenTools\\Reference\\Conformance\\SqliteJournalExercise`"
+    },
+    {
+      "id": "PHP-path-map-identities-without-tokenized-types",
+      "title": "PHP path-map identities without tokenized types",
+      "text": "- `AgenTools\\Idempotency\\InMemoryDeduplicationStore`\n- `AgenTools\\Persistence\\FixedClock`\n- `AgenTools\\Persistence\\InMemoryEventLog`\n- `AgenTools\\Persistence\\InMemorySessionStore`\n- `AgenTools\\Reference\\conformance\\SqliteJournalExercise`\n- `AgenTools\\Reference\\conformance\\adapter`\n- `AgenTools\\Reference\\conformance\\product_slice_adapter`"
+    },
+    {
+      "id": "Pending-ownership-moves",
+      "title": "Pending ownership moves",
+      "text": "These current identities remain reachable until P7.2/P7.3 rewrite autoload/exports.\n**Pending:** 0  \n**Missing target:** 0  \n**Undeclared extra:** 0"
+    },
+    {
+      "id": "Cross-tier-rules",
+      "title": "Cross-tier rules",
+      "text": "- Production PHP autoload must not map `AgenTools\\Reference\\` or `AgenTools\\TestKit\\`.\n- `agentools.dart` must not export testkit implementations after P7.3.\n- Core must not depend on `mcp_dart` or Flutter.\n- `lib/src` remains technically importable; it is unsupported API."
+    }
+  ],
+  "applies_to": [
+    "P7"
+  ],
+  "provenance": {
+    "path": "findings/P7-api-inventory.md",
+    "sha256": "d9f93123e3ff2fa2e6c632746a9acb7008152a22652dcaf4e563eab346c07773"
+  }
+}

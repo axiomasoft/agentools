@@ -1,0 +1,13 @@
+{
+  "id": "dart-probes-with-asserts",
+  "cwd": ".",
+  "command": [
+    "dart",
+    "--enable-asserts",
+    "--packages=dart/agentools/.dart_tool/package_config.json",
+    "audits/2026-10-08-full/reproduce.dart"
+  ],
+  "started_utc": "2026-10-08T12:26:50.701504+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.615
+}

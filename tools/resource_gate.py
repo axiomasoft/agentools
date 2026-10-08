@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Any
 
 REPO = Path(__file__).resolve().parents[1]
-PLAN = REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING"
+PLAN = REPO / "verification"
 MANIFEST = REPO / "fixtures/hardening/adversarial/manifest.v1.json"
 PHP_WORKER = REPO / "benchmarks/php/run_workload.php"
 DART_PKG = REPO / "dart/agentools"
@@ -40,8 +40,8 @@ CHILD_RECEIPTS = {
     "conformance": REPO / "conformance/reports/p6-integrated.json",
 }
 DEFERRED_CARRIERS = {
-    "AV-019": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/ci-supply-chain-v1.md",
-    "AV-020": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/release-acceptance-v1.md",
+    "AV-019": "verification/root/contracts/ci-supply-chain-v1.md",
+    "AV-020": "verification/root/contracts/release-acceptance-v1.md",
 }
 PASSING_CHILD_VERDICTS = {"green", "GREEN", "pass"}
 NAMED_SUCCESS_VERDICTS = {"private-local-package-receipt"}

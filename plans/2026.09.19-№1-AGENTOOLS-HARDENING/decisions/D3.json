@@ -1,0 +1,54 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D3",
+  "title": "Sol для синтеза, Grok 4.6 для adversarial distributed-system phases",
+  "date": "2026-09-19",
+  "status": "accepted",
+  "decision": "На `high` detail P1/P2/P6/P7/P9/P10 выполняет `gpt-5.6-sol`; P3/P4/P5/P8 — Grok 4.6.\nВсе проходы используют repository recon и широкий внешний retrieval. Perplexity предпочтителен,\nкогда connector доступен, но каждый load-bearing external claim подтверждается primary source.",
+  "rationale": "Sol назначен на сквозной synthesis public contracts, parity, packaging и release evidence.\nGrok назначен независимой adversarial линзой на replay, leases/fencing, event concurrency и\nfalse-green test gates. Альтернатива «одна модель на все фазы» теряет полезное разнообразие проверки.",
+  "applies_to": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7",
+    "P8",
+    "P9",
+    "P10"
+  ],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "plan-designer/gpt-5.6-sol/high",
+    "effort": "high"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D3\ndate: 2026-09-19\nstatus: accepted\nitem: P1\nitems: [P1, P2, P3, P4, P5, P6, P7, P8, P9, P10]\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "D3-Sol-Grok-4.6-adversarial-distributed-system-phases",
+      "title": "D3 — Sol для синтеза, Grok 4.6 для adversarial distributed-system phases",
+      "text": "**Actor:** plan-designer/gpt-5.6-sol/high\n**Evidence:** RAG:— owner ограничил выбор Sol/Grok 4.6; risk profile фаз в `@plan/plan.json` §3"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "На `high` detail P1/P2/P6/P7/P9/P10 выполняет `gpt-5.6-sol`; P3/P4/P5/P8 — Grok 4.6.\nВсе проходы используют repository recon и широкий внешний retrieval. Perplexity предпочтителен,\nкогда connector доступен, но каждый load-bearing external claim подтверждается primary source."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Sol назначен на сквозной synthesis public contracts, parity, packaging и release evidence.\nGrok назначен независимой adversarial линзой на replay, leases/fencing, event concurrency и\nfalse-green test gates. Альтернатива «одна модель на все фазы» теряет полезное разнообразие проверки."
+    },
+    {
+      "id": "Consequences",
+      "title": "Consequences",
+      "text": "Route отражён в `@plan/plan.json`, `@plan/plan.json` и handoff. Недоступность конкретного provider требует\nнового route decision, а недоступность Perplexity — явной границы retrieval, не фиктивной ссылки."
+    }
+  ]
+}

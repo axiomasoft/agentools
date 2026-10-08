@@ -1,0 +1,12 @@
+{
+  "id": "fix-compat-php-latest",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/ci_matrix.py",
+    "disposable-php-latest"
+  ],
+  "started_utc": "2026-10-08T13:18:40.217958+00:00",
+  "exit_code": 0,
+  "duration_seconds": 10.433
+}

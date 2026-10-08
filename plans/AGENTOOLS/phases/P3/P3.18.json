@@ -1,0 +1,199 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P3.18",
+  "title": "Измеримый owner-вердикт Q-27 по small-model descriptions",
+  "status": "done",
+  "summary": "Получить явный owner-вердикт по Q-27 и материализовать одну честную ветку: структурно измеримый actionable-description либо явный defer эффективности малых моделей за границу ревизии. `RAG:— (repo-grounded: @plan/brief.json §3; @plan/knowledge/artifacts-P5-gate-b.json F8)`.",
+  "why": "Наличие строки `description` не доказывает достаточность для малой модели; непроверяемое MUST запрещено, но молчаливое выпадение мысли брифа до freeze также недопустимо. `RAG:— (repo-grounded: @plan/plan.json Q-27; @plan/knowledge/research-12-p3-p4-gate-b-remediation-2026-08.json §3)`.",
+  "scope": {
+    "include": [
+      "owner D# выбирает `measurable` или `defer`; measurable — `02_tool-contract-profile.md` фиксирует четыре структурных компонента (назначение, условия вызова, обязательные аргументы, пример), schema/линтер проверяют форму без заявления о качестве модели; defer — документ и brief refinement прямо говорят, что эффективность остаётся предметом P10.6/следующей ревизии; Q-27 получает `Resolved → D#` в обеих ветках."
+    ],
+    "exclude": [
+      "benchmark реальных LLM (P10.6); выбор модели/провайдера; субъективный скоринг текста линтером; изменение MCP schema; автоматическая генерация описаний."
+    ]
+  },
+  "depends_on": [],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/brief.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "02_tool-contract-profile.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "schema/tool-descriptor.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P5-gate-b.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/brief.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P5-gate-b.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-12-p3-p4-gate-b-remediation-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/02_tool-contract-profile.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "spec/revisions/2026-08/02_tool-contract-profile.md",
+      "change": "any"
+    },
+    {
+      "path": "spec/revisions/2026-08/schema/tool-descriptor.json",
+      "change": "any"
+    },
+    {
+      "path": "spec/revisions/2026-08/schema/authoring/tool-descriptor.json",
+      "change": "any"
+    },
+    {
+      "path": "tools/spec_lint.py",
+      "change": "any"
+    },
+    {
+      "path": "@plan/plan.json",
+      "change": "any"
+    },
+    {
+      "path": "@plan/brief.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "owner D# обязателен до мутации. Measurable-ветка нормирует только структурно проверяемые компоненты и не использует слово «достаточно» как acceptance; defer-ветка сохраняет обязательное непустое MCP description, но явно снимает утверждение об эффективности. `RAG:— (repo-grounded: @plan/knowledge/artifacts-P5-gate-b.json F8)`."
+  ],
+  "guidance": "Не вводить NLP/LLM-эвристику в stdlib-линер и не считать длину текста прокси качества. Measurable-ветка имеет минимальную negative/positive пару, исполняемую P4.12; defer-ветка не создаёт фиктивный artifact-вектор. Если владелец предлагает неизмеримое «описание должно быть хорошим», остановиться и вернуть выбор двух канонических веток.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "python3 tools/spec_lint.py spec/revisions/2026-08 --allow-missing",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "owner D#; resolved Q-27; нормативный/brief carrier выбранной ветки; точный input для P4.12."
+  ],
+  "route": {
+    "class": "frontier",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "owner_gate",
+    "label": "два owner-gate до freeze (namespace Q-5 и измеримость Q-27): ветки открыты и меняют опубликованный контракт либо границу брифа, поэтому frontier; solo, не batch",
+    "scope": "два owner-gate до freeze (namespace Q-5 и измеримость Q-27): ветки открыты и меняют опубликованный контракт либо границу брифа, поэтому frontier; solo, не batch"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-08-04T02:17:25Z",
+    "finished_at": "2026-08-04T02:26:18Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "gpt-5/high",
+      "effort": "high"
+    },
+    "notes": "D145 выбрал measurable; добавлен actionable-description profile.",
+    "deviations": [],
+    "pending": [],
+    "checks": []
+  },
+  "updated_at": "2026-08-04T02:26:18Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Получить явный owner-вердикт по Q-27 и материализовать одну честную ветку: структурно измеримый actionable-description либо явный defer эффективности малых моделей за границу ревизии. `RAG:— (repo-grounded: @plan/brief.json §3; @plan/knowledge/artifacts-P5-gate-b.json F8)`."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Наличие строки `description` не доказывает достаточность для малой модели; непроверяемое MUST запрещено, но молчаливое выпадение мысли брифа до freeze также недопустимо. `RAG:— (repo-grounded: @plan/plan.json Q-27; @plan/knowledge/research-12-p3-p4-gate-b-remediation-2026-08.json §3)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "owner D# выбирает `measurable` или `defer`; measurable — `02_tool-contract-profile.md` фиксирует четыре структурных компонента (назначение, условия вызова, обязательные аргументы, пример), schema/линтер проверяют форму без заявления о качестве модели; defer — документ и brief refinement прямо говорят, что эффективность остаётся предметом P10.6/следующей ревизии; Q-27 получает `Resolved → D#` в обеих ветках."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "benchmark реальных LLM (P10.6); выбор модели/провайдера; субъективный скоринг текста линтером; изменение MCP schema; автоматическая генерация описаний."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/brief.json` §3 · `@plan/plan.json` Q-27 · `02_tool-contract-profile.md` §1 · `schema/tool-descriptor.json` · `@plan/knowledge/artifacts-P5-gate-b.json` F8."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`spec/revisions/2026-08/02_tool-contract-profile.md` · `spec/revisions/2026-08/schema/tool-descriptor.json` · `spec/revisions/2026-08/schema/authoring/tool-descriptor.json` · `tools/spec_lint.py` · `@plan/plan.json` · `@plan/brief.json`."
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/brief.json` §3 2) `@plan/plan.json` Q-27 3) `@plan/knowledge/artifacts-P5-gate-b.json` F8 4) `@plan/knowledge/research-12-p3-p4-gate-b-remediation-2026-08.json` §3 5) `spec/revisions/2026-08/02_tool-contract-profile.md` §1 6) tool descriptor schemas."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "owner D# обязателен до мутации. Measurable-ветка нормирует только структурно проверяемые компоненты и не использует слово «достаточно» как acceptance; defer-ветка сохраняет обязательное непустое MCP description, но явно снимает утверждение об эффективности. `RAG:— (repo-grounded: @plan/knowledge/artifacts-P5-gate-b.json F8)`."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Не вводить NLP/LLM-эвристику в stdlib-линер и не считать длину текста прокси качества. Measurable-ветка имеет минимальную negative/positive пару, исполняемую P4.12; defer-ветка не создаёт фиктивный artifact-вектор. Если владелец предлагает неизмеримое «описание должно быть хорошим», остановиться и вернуть выбор двух канонических веток."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "owner D# существует; Q-27 = `Resolved → D#`; ровно одна ветка записана в brief refinement · measurable: negative/positive fixture профиля даёт reject/accept и schema остаётся valid · defer: grep на явную границу ревизии и адрес P10.6 ≥1, новых MUST на качество 0 · `python3 tools/spec_lint.py spec/revisions/2026-08 --allow-missing` = 0 · plan-lint K=0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "owner D#; resolved Q-27; нормативный/brief carrier выбранной ветки; точный input для P4.12."
+    }
+  ]
+}

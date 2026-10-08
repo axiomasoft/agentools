@@ -12,30 +12,30 @@ use AgenTools\Idempotency\IdempotencyKey;
  * SCN-1–SCN-11 and SCN-20–SCN-29: a linear interpreter with no goto, loops,
  * or hidden control-flow. Successful compensable steps form the only rollback
  * register and are therefore reversed deterministically.
- *
- * The runner is the caller of its tools, so it generates their idempotency keys (IDE-1):
- * every step and compensation key is derived from the caller's run key, the scenario id and
- * the step id. Re-running with the same run key re-presents the same keys (SCN-8, SCN-25),
- * a new run key is a new intent, and every derived key satisfies the IDE-4 grammar.
  */
 final class ScenarioRunner
 {
+    private const KEY_DOMAIN = 'agentools.scenario-step-key.v1';
     private int $executedSteps = 0;
 
     public function __construct(private readonly ExpressionEvaluator $expressions = new ExpressionEvaluator())
     {
     }
 
-    private const KEY_DOMAIN = 'agentools.scenario-step-key.v1';
-
     /**
      * @param array<string, mixed> $scenario
      * @param array<string, mixed> $context
-     * @param IdempotencyKey $runKey caller-generated key of this scenario run (IDE-1)
      */
-    public function run(array $scenario, array $context, ToolPort $tools, IdempotencyKey $runKey): ScenarioResult
+    public function run(array $scenario, array $context, ToolPort $tools, IdempotencyKey|string|null $runKey = null, ?string $runId = null): ScenarioResult
     {
         $this->executedSteps = 0;
+        if ($runKey !== null && $runId !== null) {
+            throw new \InvalidArgumentException('Provide only one scenario run identity.');
+        }
+        $runId ??= $runKey ?? bin2hex(random_bytes(16));
+        if ($runId === '') {
+            throw new \InvalidArgumentException('A scenario run identity must not be empty.');
+        }
         if (!in_array($scenario['spec_rev'] ?? null, ['2026-08', '2026-09'], true)) {
             throw new \InvalidArgumentException('A scenario must declare a supported specification revision.');
         }
@@ -71,22 +71,22 @@ final class ScenarioRunner
                     }
                 }
                 $arguments = $this->arguments($step['input_map'] ?? [], $context, $results);
-                $result = $this->invoke($tools, $this->stringField($step, 'tool'), $arguments, self::stepKey($runKey, $scenarioId, $stepId, 'step'), $step['on_semantic_fail'] ?? null);
+                $result = $this->invoke($tools, $this->stringField($step, 'tool'), $arguments, $this->key($runId, $scenarioId, $stepId, 'execute'), $step['on_semantic_fail'] ?? null);
                 if ($result->isError()) {
                     if ($this->failureAction($step, false) === 'continue') {
                         continue;
                     }
-                    return $this->handleFailure($runKey, $scenarioId, $step, $compensations, $tools, $results, false);
+                    return $this->handleFailure($runId, $scenarioId, $stepId, $step, $compensations, $tools, $context, $results, false);
                 }
                 $results[$stepId] = $result->value ?? [];
                 if (isset($step['compensate']) && is_array($step['compensate'])) {
                     $compensations[] = ['id' => $stepId, 'compensate' => $step['compensate']];
                 }
-            } catch (ExpressionException $error) {
+            } catch (\Throwable $error) {
                 if ($this->failureAction($step, true) === 'continue') {
                     continue;
                 }
-                return $this->handleFailure($runKey, $scenarioId, $step, $compensations, $tools, $results, true);
+                return $this->handleFailure($runId, $scenarioId, $stepId, $step, $compensations, $tools, $context, $results, true);
             }
         }
         return new ScenarioResult(ScenarioOutcome::Completed, $results);
@@ -96,8 +96,9 @@ final class ScenarioRunner
      * @param array<mixed, mixed> $step
      * @param list<array{id: string, compensate: array<mixed, mixed>}> $compensations
      * @param array<string, array<string, mixed>> $results
+     * @param array<string, mixed> $context
      */
-    private function handleFailure(IdempotencyKey $runKey, string $scenarioId, array $step, array $compensations, ToolPort $tools, array $results, bool $technical): ScenarioResult
+    private function handleFailure(IdempotencyKey|string $runId, string $scenarioId, string $stepId, array $step, array $compensations, ToolPort $tools, array $context, array $results, bool $technical): ScenarioResult
     {
         $action = $this->failureAction($step, $technical);
         // Retrying is handled at the invocation boundary in a future journal-aware runner;
@@ -106,10 +107,14 @@ final class ScenarioRunner
             return new ScenarioResult(ScenarioOutcome::Failed, []);
         }
         foreach (array_reverse($compensations) as $entry) {
-            $arguments = $this->arguments($entry['compensate']['input_map'] ?? [], [], $results);
-            $tool = $this->stringField($entry['compensate'], 'tool');
-            $result = $this->call($tools, $tool, $arguments, self::stepKey($runKey, $scenarioId, $entry['id'], 'compensation'));
-            if ($result->isError()) {
+            try {
+                $arguments = $this->arguments($entry['compensate']['input_map'] ?? [], $context, $results);
+                $tool = $this->stringField($entry['compensate'], 'tool');
+                $result = $this->call($tools, $tool, $arguments, $this->key($runId, $scenarioId, $entry['id'], 'compensate'));
+                if ($result->isError()) {
+                    return new ScenarioResult(ScenarioOutcome::CompensationFailed, [], $entry['id']);
+                }
+            } catch (\Throwable) {
                 return new ScenarioResult(ScenarioOutcome::CompensationFailed, [], $entry['id']);
             }
         }
@@ -135,6 +140,14 @@ final class ScenarioRunner
             $arguments[$name] = is_string($expression) ? $this->expressions->evaluate($expression, $context, $results) : $expression;
         }
         return $arguments;
+    }
+
+    private function key(IdempotencyKey|string $runId, string $scenarioId, string $stepId, string $operation): string
+    {
+        if ($runId instanceof IdempotencyKey) {
+            return self::stepKey($runId, $scenarioId, $stepId, $operation === 'execute' ? 'step' : 'compensation');
+        }
+        return 'at1:' . hash('sha256', (new \AgenTools\Schema\Canonicalizer())->canonicalize([$runId, $scenarioId, $stepId, $operation]));
     }
 
     /** @param array<string, mixed> $arguments */

@@ -1,0 +1,12 @@
+{
+  "id": "fix-private-release-final",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/private_release_gate.py",
+    "capture"
+  ],
+  "started_utc": "2026-10-08T13:45:58.816469+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.114
+}

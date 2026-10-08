@@ -18,13 +18,36 @@ render() {
     cat "$SOURCE"
 }
 
+# Other tools own the trailing managed sections. Keep their bytes intact when
+# refreshing our entrypoint, and include them in the check's expected output.
+managed_suffix() {
+    python3 - "$1" <<'PY'
+import pathlib, sys
+path = pathlib.Path(sys.argv[1])
+text = path.read_text() if path.exists() else ''
+markers = ('<!-- swissknifeman:hub:start -->', '<!-- maind:healthcheck ')
+positions = [text.index(marker) for marker in markers if marker in text]
+if positions:
+    sys.stdout.write('\n' + text[min(positions):])
+PY
+}
+
+render_target() {
+    render
+    managed_suffix "$1"
+}
+
 case "$MODE" in
     write)
-        render > "$ROOT/CLAUDE.md"
-        render > "$ROOT/AGENTS.md"
+        for target in "$ROOT/CLAUDE.md" "$ROOT/AGENTS.md"; do
+            output="$(mktemp)"
+            render_target "$target" > "$output"
+            cat "$output" > "$target"
+            rm "$output"
+        done
         ;;
     --check)
-        cmp -s <(render) "$ROOT/CLAUDE.md" && cmp -s <(render) "$ROOT/AGENTS.md" || {
+        cmp -s <(render_target "$ROOT/CLAUDE.md") "$ROOT/CLAUDE.md" && cmp -s <(render_target "$ROOT/AGENTS.md") "$ROOT/AGENTS.md" || {
             echo "Agent entrypoints are stale; run bash scripts/build-agent-docs.sh" >&2
             exit 1
         }

@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D150",
+  "title": "Решение",
+  "date": "2026-08-04",
+  "status": "accepted",
+  "decision": "**P3 реопенена в третий раз после RED-аудита захода 2: terminal P3.1–P3.23 сохраняются, новый fail-closed ремонт живёт в P3.24.** Status Board переведён в `🟡`, версия 0.23.0 → 0.24.0, Phase Handoff инвалидирован. **Consequences:** supersedes D146 только в части утверждения, что P3-remediation исчерпывается P3.20–P3.23; платим ещё одним close/audit и задержкой P4.9, зато ложный GREEN checker'а не передаётся в P4/P6–P8.",
+  "rationale": "`@plan/phases/P3/phase.json` Audit P3 заход 2 F1; `@plan/knowledge/research-14-p3-open-enum-fail-closed-2026-08.json`. `RAG:— (repo-grounded)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D150\ndate: 2026-08-04\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**P3 реопенена в третий раз после RED-аудита захода 2: terminal P3.1–P3.23 сохраняются, новый fail-closed ремонт живёт в P3.24.** Status Board переведён в `🟡`, версия 0.23.0 → 0.24.0, Phase Handoff инвалидирован. **Consequences:** supersedes D146 только в части утверждения, что P3-remediation исчерпывается P3.20–P3.23; платим ещё одним close/audit и задержкой P4.9, зато ложный GREEN checker'а не передаётся в P4/P6–P8."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`@plan/phases/P3/phase.json` Audit P3 заход 2 F1; `@plan/knowledge/research-14-p3-open-enum-fail-closed-2026-08.json`. `RAG:— (repo-grounded)`"
+    }
+  ]
+}

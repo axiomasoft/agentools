@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "fixtures/hardening/event-store-v1.json"
-PLAN = ROOT / "plans/2026.09.19-№1-AGENTOOLS-HARDENING"
+PLAN = ROOT / "verification"
 CONTRACT = PLAN / "root/contracts/event-store-v1.md"
 MIGRATION = PLAN / "findings/P5-eventlog-migration.md"
 PHASES = {"append", "load", "collision", "replay", "pagination", "audit", "metrics", "snapshot"}

@@ -1,0 +1,63 @@
+00:00 +0: loading test/resulttype_negative_test.dart
+00:00 +0: test/mcp_dart_mapping_test.dart: input_required permits an omitted request state
+00:00 +1: test/resulttype_negative_test.dart: discover without resultType is rejected by mcp_dart client
+[INFO][mcp_dart.client] Setting request handler for potentially custom method 'ping'. Ensure client capabilities match.
+00:00 +2: test/resulttype_negative_test.dart: discover without resultType is rejected by mcp_dart client
+[INFO][mcp_dart.client] Setting request handler for potentially custom method 'ping'. Ensure client capabilities match.
+MOCK RECEIVED: method=server/discover id=0 body={"jsonrpc":"2.0","id":0,"method":"server/discover","params":{"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientInfo":{"name":"agentools-mcp-dart","version":"0.0.1"},"io.modelcontextprotocol/clientCapabilities":{}}}}
+[ERROR][mcp_dart.client] MCP Client Initialization Failed: McpError -32603: Failed to parse result for server/discover (data: FormatException: MCP stateless responses must include resultType
+#0      Protocol._validateResponseResultType (package:mcp_dart/src/shared/protocol.dart:789:7)
+#1      Protocol._requestWithRequestId.<anonymous closure> (package:mcp_dart/src/shared/protocol.dart:2790:9)
+#2      _rootRunUnary (dart:async/zone_root.dart:48:47)
+#3      _CustomZone.runUnary (dart:async/zone.dart:816:35)
+<asynchronous suspension>
+#4      Protocol._requestWithRequestId.<anonymous closure> (package:mcp_dart/src/shared/protocol.dart:2849:21)
+<asynchronous suspension>
+#5      McpClient._discoverServerWithVersion (package:mcp_dart/src/client/client.dart:575:20)
+<asynchronous suspension>
+#6      McpClient.discoverServer (package:mcp_dart/src/client/client.dart:630:14)
+<asynchronous suspension>
+#7      McpClient.connect (package:mcp_dart/src/client/client.dart:662:11)
+<asynchronous suspension>
+#8      McpDartTransport.connect (package:agentools_mcp_dart/src/mcp_dart_transport.dart:22:7)
+<asynchronous suspension>
+#9      main.<anonymous closure> (file:///home/vostrikov/projects/packages/agentools/dart/agentools_mcp_dart/test/resulttype_negative_test.dart:14:7)
+<asynchronous suspension>
+#10     Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:253:15)
+<asynchronous suspension>
+#11     Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:250:11)
+<asynchronous suspension>
+#12     Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:318:9)
+<asynchronous suspension>
+)
+00:00 +3: test/mcp_dart_transport_test.dart: McpDartTransport connect uses server/discover without initialize
+MOCK RECEIVED: method=server/discover id=0 body={"jsonrpc":"2.0","id":0,"method":"server/discover","params":{"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientInfo":{"name":"agentools-mcp-dart","version":"0.0.1"},"io.modelcontextprotocol/clientCapabilities":{}}}}
+[DEBUG][mcp_dart.client] MCP Server Discovered. Server: unknown, Protocol: 2026-07-28
+MOCK RECEIVED: method=server/discover id=1 body={"jsonrpc":"2.0","id":1,"method":"server/discover","params":{"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientInfo":{"name":"agentools-mcp-dart","version":"0.0.1"},"io.modelcontextprotocol/clientCapabilities":{}}}}
+[DEBUG][mcp_dart.client] MCP Server Discovered. Server: unknown, Protocol: 2026-07-28
+MOCK RECEIVED: method=tools/list id=2 body={"jsonrpc":"2.0","id":2,"method":"tools/list","params":{"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientInfo":{"name":"agentools-mcp-dart","version":"0.0.1"},"io.modelcontextprotocol/clientCapabilities":{}}}}
+MOCK RECEIVED: method=tools/call id=3 body={"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"agentools.smoke","arguments":{"probe":"p8.12"},"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientInfo":{"name":"agentools-mcp-dart","version":"0.0.1"},"io.modelcontextprotocol/clientCapabilities":{}}}}
+00:00 +4: test/mcp_dart_transport_test.dart: McpDartTransport invokeTool returns complete result
+[INFO][mcp_dart.client] Setting request handler for potentially custom method 'ping'. Ensure client capabilities match.
+MOCK RECEIVED: method=server/discover id=0 body={"jsonrpc":"2.0","id":0,"method":"server/discover","params":{"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientInfo":{"name":"agentools-mcp-dart","version":"0.0.1"},"io.modelcontextprotocol/clientCapabilities":{}}}}
+[DEBUG][mcp_dart.client] MCP Server Discovered. Server: unknown, Protocol: 2026-07-28
+MOCK RECEIVED: method=tools/call id=1 body={"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"agentools.smoke","arguments":{"probe":"p8.12"},"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientInfo":{"name":"agentools-mcp-dart","version":"0.0.1"},"io.modelcontextprotocol/clientCapabilities":{}}}}
+00:00 +5: test/mcp_dart_transport_test.dart: McpDartTransport retries a supported version after an explicit rejection
+[INFO][mcp_dart.client] Setting request handler for potentially custom method 'ping'. Ensure client capabilities match.
+MOCK RECEIVED: method=server/discover id=0 body={"jsonrpc":"2.0","id":0,"method":"server/discover","params":{"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientInfo":{"name":"agentools-mcp-dart","version":"0.0.1"},"io.modelcontextprotocol/clientCapabilities":{}}}}
+[DEBUG][mcp_dart.client] MCP Server Discovered. Server: unknown, Protocol: 2026-07-28
+[INFO][mcp_dart.client] Setting request handler for potentially custom method 'ping'. Ensure client capabilities match.
+MOCK RECEIVED: method=server/discover id=0 body={"jsonrpc":"2.0","id":0,"method":"server/discover","params":{"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientInfo":{"name":"agentools-mcp-dart","version":"0.0.1"},"io.modelcontextprotocol/clientCapabilities":{}}}}
+[ERROR][mcp_dart.client] MCP Client Initialization Failed: McpError -32022: Unsupported protocol version (data: {supported: [2026-07-28], requested: 2026-07-28})
+[INFO][mcp_dart.client] Setting request handler for potentially custom method 'ping'. Ensure client capabilities match.
+MOCK RECEIVED: method=server/discover id=0 body={"jsonrpc":"2.0","id":0,"method":"server/discover","params":{"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientInfo":{"name":"agentools-mcp-dart","version":"0.0.1"},"io.modelcontextprotocol/clientCapabilities":{}}}}
+[DEBUG][mcp_dart.client] MCP Server Discovered. Server: unknown, Protocol: 2026-07-28
+00:00 +6: test/mcp_dart_transport_test.dart: McpDartTransport treats an omitted tools/call result type as complete
+[INFO][mcp_dart.client] Setting request handler for potentially custom method 'ping'. Ensure client capabilities match.
+MOCK RECEIVED: method=server/discover id=0 body={"jsonrpc":"2.0","id":0,"method":"server/discover","params":{"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientInfo":{"name":"agentools-mcp-dart","version":"0.0.1"},"io.modelcontextprotocol/clientCapabilities":{}}}}
+[DEBUG][mcp_dart.client] MCP Server Discovered. Server: unknown, Protocol: 2026-07-28
+[INFO][mcp_dart.client] Setting request handler for potentially custom method 'ping'. Ensure client capabilities match.
+MOCK RECEIVED: method=server/discover id=0 body={"jsonrpc":"2.0","id":0,"method":"server/discover","params":{"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientInfo":{"name":"agentools-mcp-dart","version":"0.0.1"},"io.modelcontextprotocol/clientCapabilities":{}}}}
+[DEBUG][mcp_dart.client] MCP Server Discovered. Server: unknown, Protocol: 2026-07-28
+MOCK RECEIVED: method=tools/call id=1 body={"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"agentools.smoke","arguments":{},"_meta":{"io.modelcontextprotocol/protocolVersion":"2026-07-28","io.modelcontextprotocol/clientInfo":{"name":"agentools-mcp-dart","version":"0.0.1"},"io.modelcontextprotocol/clientCapabilities":{}}}}
+00:00 +7: All tests passed!

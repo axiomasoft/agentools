@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS agentools_events (
     actor_type TEXT NOT NULL,
     actor_id TEXT NOT NULL,
     ts TIMESTAMPTZ NOT NULL,
+    ts_text TEXT NOT NULL, -- exact wire timestamp bytes used by both content and chain hashes
     payload_json TEXT NOT NULL,
     epoch BIGINT,
     prev_hash TEXT,

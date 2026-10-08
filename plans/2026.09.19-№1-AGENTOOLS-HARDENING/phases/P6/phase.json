@@ -1,0 +1,80 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:phase:v1",
+  "id": "P6",
+  "title": "Cross-language semantics, errors, canonicalization и MCP conformance",
+  "design": "detailed",
+  "goal": "P6 превращает исполненные контракты P2–P5 в самодостаточную candidate-ревизию\n`2026-09` и один generated semantic profile для PHP/Dart. Фаза доказывает exact-set\nпаритет кодов, states, transitions, retryability, bounds и capabilities, а JCS-байты\nсверяет с независимым RFC/upstream oracle, а не только PHP с Dart.\n\nOfficial MCP остаётся отдельным доказательным контуром: каждая строка requirements\n`2026-07-28` получает applicability-класс, но исполняются только сценарии,\nдостижимые через public boundary `agentools_mcp_dart`. Полной MCP SDK/server certification\nфаза не заявляет.\n\n> **Контракт фазы (contract-first).** Потребляет: терминальные P2–P5 contracts, case manifests,\n> SDK surfaces и receipts; frozen `2026-08`; official MCP/JCS pins D11. Производит:\n> candidate `2026-09`, generated semantic manifest, PHP/Dart exact-set profile receipt,\n> independent JCS receipt, official MCP applicability/receipts и интегрированный P6 gate.\n> Границы: не меняет `2026-08`, не генерирует SDK source, не владеет package exports,\n> не минтит public tag и не называет partial official scenarios certification.\n\n> **Phase Assurance | v1.**\n> Impact: public-contract\n> Integration Seams: successor-spec-fixtures · php-dart-semantic-profile · error-boundary · jcs-oracle · official-mcp-client-applicability · conformance-gate\n> Live or Irreversible: no\n> Audit Intent: direct-close-eligible\n> Rationale: normative sources generate a digest-bound profile, independent oracle decides canonical bytes, and every official MCP requirement row remains visible; Review=full.",
+  "context": "P6 превращает исполненные контракты P2–P5 в самодостаточную candidate-ревизию\n`2026-09` и один generated semantic profile для PHP/Dart. Фаза доказывает exact-set\nпаритет кодов, states, transitions, retryability, bounds и capabilities, а JCS-байты\nсверяет с независимым RFC/upstream oracle, а не только PHP с Dart.\n\nOfficial MCP остаётся отдельным доказательным контуром: каждая строка requirements\n`2026-07-28` получает applicability-класс, но исполняются только сценарии,\nдостижимые через public boundary `agentools_mcp_dart`. Полной MCP SDK/server certification\nфаза не заявляет.\n\n> **Контракт фазы (contract-first).** Потребляет: терминальные P2–P5 contracts, case manifests,\n> SDK surfaces и receipts; frozen `2026-08`; official MCP/JCS pins D11. Производит:\n> candidate `2026-09`, generated semantic manifest, PHP/Dart exact-set profile receipt,\n> independent JCS receipt, official MCP applicability/receipts и интегрированный P6 gate.\n> Границы: не меняет `2026-08`, не генерирует SDK source, не владеет package exports,\n> не минтит public tag и не называет partial official scenarios certification.\n\n> **Phase Assurance | v1.**\n> Impact: public-contract\n> Integration Seams: successor-spec-fixtures · php-dart-semantic-profile · error-boundary · jcs-oracle · official-mcp-client-applicability · conformance-gate\n> Live or Irreversible: no\n> Audit Intent: direct-close-eligible\n> Rationale: normative sources generate a digest-bound profile, independent oracle decides canonical bytes, and every official MCP requirement row remains visible; Review=full.",
+  "depends_on": [],
+  "items": [
+    "P6.1",
+    "P6.2",
+    "P6.3",
+    "P6.4",
+    "P6.5"
+  ],
+  "batches": [
+    {
+      "id": "B-semantic-core",
+      "items": [
+        "P6.1",
+        "P6.2",
+        "P6.3"
+      ],
+      "mode": "recommended"
+    },
+    {
+      "id": "B-conformance-evidence",
+      "items": [
+        "P6.4",
+        "P6.5"
+      ],
+      "mode": "recommended"
+    }
+  ],
+  "closed": {
+    "at": "2026-09-20T12:20:00Z",
+    "result": "done",
+    "summary": "Derived from authentic terminal item states during migration; no new phase checks claimed."
+  },
+  "orchestration": {
+    "strategy": "sequential"
+  },
+  "sections": [
+    {
+      "id": "P6-Cross-language-semantics-errors-canonicalization-MCP-conformance",
+      "title": "P6 — Cross-language semantics, errors, canonicalization и MCP conformance",
+      "text": ""
+    },
+    {
+      "id": "Phase-Context",
+      "title": "Phase Context",
+      "text": "P6 превращает исполненные контракты P2–P5 в самодостаточную candidate-ревизию\n`2026-09` и один generated semantic profile для PHP/Dart. Фаза доказывает exact-set\nпаритет кодов, states, transitions, retryability, bounds и capabilities, а JCS-байты\nсверяет с независимым RFC/upstream oracle, а не только PHP с Dart.\n\nOfficial MCP остаётся отдельным доказательным контуром: каждая строка requirements\n`2026-07-28` получает applicability-класс, но исполняются только сценарии,\nдостижимые через public boundary `agentools_mcp_dart`. Полной MCP SDK/server certification\nфаза не заявляет.\n\n> **Контракт фазы (contract-first).** Потребляет: терминальные P2–P5 contracts, case manifests,\n> SDK surfaces и receipts; frozen `2026-08`; official MCP/JCS pins D11. Производит:\n> candidate `2026-09`, generated semantic manifest, PHP/Dart exact-set profile receipt,\n> independent JCS receipt, official MCP applicability/receipts и интегрированный P6 gate.\n> Границы: не меняет `2026-08`, не генерирует SDK source, не владеет package exports,\n> не минтит public tag и не называет partial official scenarios certification.\n\n> **Phase Assurance | v1.**\n> Impact: public-contract\n> Integration Seams: successor-spec-fixtures · php-dart-semantic-profile · error-boundary · jcs-oracle · official-mcp-client-applicability · conformance-gate\n> Live or Irreversible: no\n> Audit Intent: direct-close-eligible\n> Rationale: normative sources generate a digest-bound profile, independent oracle decides canonical bytes, and every official MCP requirement row remains visible; Review=full."
+    },
+    {
+      "id": "DoR-Definition-of-Ready",
+      "title": "DoR (Definition of Ready)",
+      "text": "- [x] Текущие error/JCS/spec-revision/MCP швы PHP, Dart и conformance инвентаризированы в `@plan/knowledge/research-P6-design.json`.\n- [x] D11 закрепляет successor `2026-09`, generated проекцию без SDK codegen, JCS oracle и границу official MCP claim.\n- [x] RFC 8785, upstream JCS corpus и official MCP conformance pin/requirements проверены по primary sources.\n- [x] Разведены Agentools conformance и official MCP scenario compatibility; общего pass-rate нет.\n- [ ] P2–P5 execution outputs существуют и digest-qualified; до этого P6 items dependency-not-ready, а не RED."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "Самодостаточная successor-ревизия и migration; unified error/state/transition/capability\nsemantics; generated semantic-profile projection; PHP/Dart exact-set drift gate; RFC 8785 corpus,\nUTF-16/string/number/invalid-input coverage и independent oracle; official MCP conformance exact pin,\napplicability matrix, bounded Dart-client driver/raw receipts; candidate revision lock; Agentools\nsuccessor conformance и P7–P10 residual handoff."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Правки `spec/revisions/2026-08/**` и `fixtures/2026-08/**`; генерация PHP/Dart source;\nполная MCP client/server SDK, PHP MCP transport, сервер, auth/prompts/resources ради зелёного\nsuite; MCP certification/Tier claim; package exports/layout; mutation/fuzz/100M-number stress;\nCI supply-chain policy; public tag/registry upload; изменение P2–P5 feature ownership."
+    },
+    {
+      "id": "Dependencies",
+      "title": "Dependencies",
+      "text": "P6.1 ждёт terminal P2–P5 contracts/cases/receipts. P6.2 ждёт P6.1 и implemented SDK\nsurfaces P2–P5. P6.3 и P6.4 ждут P6.1 и могут идти параллельно с P6.2. P6.5 ждёт\nP6.2–P6.4. D2 запрещает execution до детализации P1–P10 и GREEN whole-plan design audit.\nP7–P10 потребляют P6.5 receipt; P8 добавляет adversarial depth, P9 — automation/pin policy,\nP10 — candidate/release acceptance.\n\n| ID | Title | Status | Updated |\n|:--|:--|:--|:--|\n| P6.1 | Зафиксировать successor `2026-09`, semantic/error contract и migration | ⬜ Not started | 2026-09-19 |\n| P6.2 | Собрать generated semantic manifest и exact-set PHP/Dart drift gate | ⬜ Not started | 2026-09-19 |\n| P6.3 | Доказать JCS по pinned independent oracle и differential corpus | ⬜ Not started | 2026-09-19 |\n| P6.4 | Запиннить official MCP suite и выпустить applicability/scenario receipts | ⬜ Not started | 2026-09-19 |\n| P6.5 | Перевести conformance на successor и выпустить integrated P6 gate | ⬜ Not started | 2026-09-19 |"
+    },
+    {
+      "id": "Phase-Handoff",
+      "title": "Phase Handoff",
+      "text": "<Заполняется при закрытии фазы.>"
+    }
+  ]
+}

@@ -1,0 +1,194 @@
+['dart', 'test']:
+00:00 +0: loading test/adversarial/postgres_schedule_test.dart
+00:00 +0 -1: loading test/adversarial/postgres_schedule_test.dart [E]
+  Failed to load "test/adversarial/postgres_schedule_test.dart": 
+00:00 +0 -2: loading test/adversarial/audit_regression_test.dart [E]
+  Failed to load "test/adversarial/audit_regression_test.dart": 
+00:00 +0 -3: loading test/adversarial/package_boundary_kill_test.dart [E]
+  Failed to load "test/adversarial/package_boundary_kill_test.dart": 
+00:00 +0 -4: loading test/adversarial/adversarial_corpus_test.dart [E]
+  Failed to load "test/adversarial/adversarial_corpus_test.dart": 
+00:00 +0 -5: loading test/agentools_smoke_test.dart [E]
+  Failed to load "test/agentools_smoke_test.dart": 
+00:00 +0 -6: loading test/journal/event_store_gate_test.dart [E]
+  Failed to load "test/journal/event_store_gate_test.dart": 
+00:00 +0 -7: loading test/journal/action_reducer_test.dart [E]
+  Failed to load "test/journal/action_reducer_test.dart": 
+00:00 +0 -8: loading test/journal/in_memory_event_store_test.dart [E]
+  Failed to load "test/journal/in_memory_event_store_test.dart": 
+00:00 +0 -9: loading test/journal/event_store_collision_test.dart [E]
+  Failed to load "test/journal/event_store_collision_test.dart": 
+00:00 +0 -10: loading test/journal/persistence_contracts_test.dart [E]
+  Failed to load "test/journal/persistence_contracts_test.dart": 
+00:00 +0 -11: loading test/scenario/scenario_runner_test.dart [E]
+  Failed to load "test/scenario/scenario_runner_test.dart": 
+00:00 +0 -12: loading test/scenario/clarification_session_test.dart [E]
+  Failed to load "test/scenario/clarification_session_test.dart": 
+00:00 +0 -13: loading test/scenario/expression_evaluator_test.dart [E]
+  Failed to load "test/scenario/expression_evaluator_test.dart": 
+00:00 +0 -14: loading test/scenario/llm_port_test.dart [E]
+  Failed to load "test/scenario/llm_port_test.dart": 
+00:00 +0 -14: loading test/adversarial/postgres_schedule_test.dart [E]
+  SocketException: Write failed (OS Error: Broken pipe, errno = 32), port = 0
+  dart:io-patch/socket_patch.dart 1508:34                                _NativeSocket.write
+  dart:io-patch/socket_patch.dart 2421:15                                _RawSocket.write
+  dart:io-patch/socket_patch.dart 2938:18                                _Socket._write
+  dart:io-patch/socket_patch.dart 2661:28                                _SocketStreamConsumer.write
+  dart:io-patch/socket_patch.dart 2609:13                                _SocketStreamConsumer.addStream.<fn>
+  dart:async/zone_root.dart 48:47                                        _rootRunUnary
+  dart:async/zone.dart 816:35                                            _CustomZone.runUnary
+  dart:async/zone.dart 710:7                                             _CustomZone.runUnaryGuarded
+  dart:async/stream_impl.dart 381:11                                     _BufferingStreamSubscription._sendData
+  dart:async/stream_impl.dart 312:7                                      _BufferingStreamSubscription._add
+  dart:async/stream_controller.dart 798:19                               _SyncStreamControllerDispatch._sendData
+  dart:async/stream_controller.dart 663:7                                _StreamController._add
+  dart:async/stream_controller.dart 618:5                                _StreamController.add
+  dart:io/io_sink.dart 155:17                                            _StreamSinkImpl.add
+  dart:io/io_sink.dart 293:5                                             _IOSinkImpl.write
+  dart:io-patch/socket_patch.dart 2767:36                                _Socket.write
+  dart:io/stdio.dart 444:13                                              _StdSink.writeln
+  package:frontend_server_client/src/frontend_server_client.dart 328:21  FrontendServerClient._sendCommand
+  package:frontend_server_client/src/frontend_server_client.dart 245:5   FrontendServerClient.accept
+  package:test_core/src/runner/vm/test_compiler.dart 136:30              _TestCompilerForLanguageVersion._compile
+  ===== asynchronous gap ===========================
+  package:pool/pool.dart 127:14                                          Pool.withResource
+  ===== asynchronous gap ===========================
+  package:test_core/src/runner/vm/platform.dart 329:22                   VMPlatform._compileToKernel
+  ===== asynchronous gap ===========================
+  package:test_core/src/runner/vm/platform.dart 305:11                   VMPlatform._spawnIsolate
+  ===== asynchronous gap ===========================
+  package:test_core/src/runner/vm/platform.dart 84:19                    VMPlatform.load
+  ===== asynchronous gap ===========================
+  package:test_core/src/runner/loader.dart 249:27                        Loader.loadFile.<fn>
+  ===== asynchronous gap ===========================
+  package:test_core/src/runner/load_suite.dart 95:21                     new LoadSuite.<fn>.<fn>
+  
+00:00 +0 -15: loading test/tool/tool_descriptor_test.dart [E]
+  Failed to load "test/tool/tool_descriptor_test.dart": 
+00:00 +0 -16: loading test/ops/credential_guard_test.dart [E]
+  Failed to load "test/ops/credential_guard_test.dart": 
+00:00 +0 -17: loading test/ops/long_operation_coordinator_test.dart [E]
+  Failed to load "test/ops/long_operation_coordinator_test.dart": 
+00:00 +0 -18: loading test/ops/baggage_refs_test.dart [E]
+  Failed to load "test/ops/baggage_refs_test.dart": 
+00:00 +0 -19: loading test/ops/cost_recorder_test.dart [E]
+  Failed to load "test/ops/cost_recorder_test.dart": 
+00:00 +0 -20: loading test/ops/journal_appender_store_test.dart [E]
+  Failed to load "test/ops/journal_appender_store_test.dart": 
+00:00 +0 -21: loading test/ops/audit_event_factory_test.dart [E]
+  Failed to load "test/ops/audit_event_factory_test.dart": 
+00:00 +0 -22: loading test/ops/principal_triple_test.dart [E]
+  Failed to load "test/ops/principal_triple_test.dart": 
+00:00 +0 -23: loading test/ops/audit_redaction_test.dart [E]
+  Failed to load "test/ops/audit_redaction_test.dart": 
+00:00 +0 -24: loading test/idempotency/fencing_gate_test.dart [E]
+  Failed to load "test/idempotency/fencing_gate_test.dart": 
+00:00 +0 -25: loading test/idempotency/in_memory_deduplication_store_test.dart [E]
+  Failed to load "test/idempotency/in_memory_deduplication_store_test.dart": 
+00:00 +0 -26: loading test/idempotency/idempotency_coordinator_test.dart [E]
+  Failed to load "test/idempotency/idempotency_coordinator_test.dart": 
+00:00 +0 -27: loading test/idempotency/lease_fence_test.dart [E]
+  Failed to load "test/idempotency/lease_fence_test.dart": 
+00:00 +0 -28: loading test/idempotency/sql_idempotency_store_test.dart [E]
+  Failed to load "test/idempotency/sql_idempotency_store_test.dart": 
+00:00 +0 -29: loading test/schema/canonicalizer_oracle_test.dart [E]
+  Failed to load "test/schema/canonicalizer_oracle_test.dart": 
+00:00 +0 -30: loading test/schema/schema_alignment_test.dart [E]
+  Failed to load "test/schema/schema_alignment_test.dart": 
+00:00 +0 -31: loading test/schema/raw_document_test.dart [E]
+  Failed to load "test/schema/raw_document_test.dart": 
+00:00 +0 -32: loading test/schema/canonicalizer_test.dart [E]
+  Failed to load "test/schema/canonicalizer_test.dart": 
+00:00 +0 -33: loading test/schema/published_schema_validator_test.dart [E]
+  Failed to load "test/schema/published_schema_validator_test.dart": 
+00:00 +0 -34: loading test/schema/tool_dto_test.dart [E]
+  Failed to load "test/schema/tool_dto_test.dart": 
+00:00 +0 -35: loading test/persistence/sql_event_store_test.dart [E]
+  Failed to load "test/persistence/sql_event_store_test.dart": 
+00:00 +0 -36: loading test/errors/grease_vector_test.dart [E]
+  Failed to load "test/errors/grease_vector_test.dart": 
+00:00 +0 -37: loading test/errors/tool_execution_error_test.dart [E]
+  Failed to load "test/errors/tool_execution_error_test.dart": 
+00:00 +0 -38: loading test/errors/must_ignore_test.dart [E]
+  Failed to load "test/errors/must_ignore_test.dart": 
+00:00 +0 -39: loading test/errors/open_enum_test.dart [E]
+  Failed to load "test/errors/open_enum_test.dart": 
+00:00 +0 -40: loading test/errors/tool_execution_result_test.dart [E]
+  Failed to load "test/errors/tool_execution_result_test.dart": 
+00:00 +0 -41: loading test/effects/effect_committer_test.dart [E]
+  Failed to load "test/effects/effect_committer_test.dart": 
+00:00 +0 -42: loading test/identity/extension_negotiator_test.dart [E]
+  Failed to load "test/identity/extension_negotiator_test.dart": 
+00:00 +0 -43: loading test/identity/structural_must_ignore_test.dart [E]
+  Failed to load "test/identity/structural_must_ignore_test.dart": 
+00:00 +0 -44: loading test/identity/extension_identity_test.dart [E]
+  Failed to load "test/identity/extension_identity_test.dart": 
+00:00 +0 -45: loading test/identity/extension_key_test.dart [E]
+  Failed to load "test/identity/extension_key_test.dart": 
+00:00 +0 -46: loading test/identity/vendor_meta_key_test.dart [E]
+  Failed to load "test/identity/vendor_meta_key_test.dart": 
+00:00 +0 -47: loading test/confirmation/confirmation_protocol_test.dart [E]
+  Failed to load "test/confirmation/confirmation_protocol_test.dart": 
+00:00 +0 -48: loading test/confirmation/layer_boundary_test.dart [E]
+  Failed to load "test/confirmation/layer_boundary_test.dart": 
+00:00 +0 -49: loading test/confirmation/confirmation_token_store_test.dart [E]
+  Failed to load "test/confirmation/confirmation_token_store_test.dart": 
+00:00 +0 -50: loading test/confirmation/gate_policy_test.dart [E]
+  Failed to load "test/confirmation/gate_policy_test.dart": 
+00:00 +0 -51: loading test/confirmation/token_envelope_test.dart [E]
+  Failed to load "test/confirmation/token_envelope_test.dart": 
+00:00 +0 -52: loading test/confirmation/durable_replay_gate_test.dart [E]
+  Failed to load "test/confirmation/durable_replay_gate_test.dart": 
+00:00 +0 -53: loading test/confirmation/confirmation_service_test.dart [E]
+  Failed to load "test/confirmation/confirmation_service_test.dart": 
+00:00 +0 -54: loading test/confirmation/confirmation_security_model_test.dart [E]
+  Failed to load "test/confirmation/confirmation_security_model_test.dart": 
+00:00 +0 -54: Some tests failed.
+
+Failing tests:
+  test/adversarial/adversarial_corpus_test.dart: loading test/adversarial/adversarial_corpus_test.dart
+  test/adversarial/audit_regression_test.dart: loading test/adversarial/audit_regression_test.dart
+  test/adversarial/package_boundary_kill_test.dart: loading test/adversarial/package_boundary_kill_test.dart
+  test/adversarial/postgres_schedule_test.dart: loading test/adversarial/postgres_schedule_test.dart
+  ... and 50 more
+
+Could not find a command named "/usr/lib/dart/bin/snapshots/frontend_server.dart.snapshot".
+
+Usage: dart <command|dart-file> [arguments]
+
+Global options:
+-v, --verbose               Show additional command output.
+    --version               Print the Dart SDK version.
+    --enable-analytics      Enable analytics.
+    --disable-analytics     Disable analytics.
+    --suppress-analytics    Disallow analytics for this `dart *` run without changing the analytics configuration.
+-h, --help                  Print this usage information.
+
+Available commands:
+
+Global
+  install     Install or upgrade a Dart CLI tool for global use.
+  installed   List globally installed Dart CLI tools.
+  uninstall   Remove a globally installed Dart CLI tool.
+
+Project
+  build       Build a Dart application including code assets.
+  compile     Compile Dart to various formats.
+  create      Create a new Dart project.
+  pub         Work with packages.
+  run         Run a Dart program from a file or a local or remote package.
+  test        Run tests for a project.
+
+Source code
+  analyze     Analyze Dart code in a directory.
+  doc         Generate API documentation for Dart projects.
+  fix         Apply automated fixes to Dart source code.
+  format      Idiomatically format Dart source code.
+
+Tools
+  devtools    Open DevTools (optionally connecting to an existing application).
+  info        Show diagnostic information about the installed tooling.
+
+Run "dart help <command>" for more information about a command.
+See https://dart.dev/tools/dart-tool for detailed documentation.
+

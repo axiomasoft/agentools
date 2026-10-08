@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-08",
+  "head": "87dbb5500eaf48c13ef9160e4ee11afdf2942371",
+  "scope": "current working tree including pre-existing changes",
+  "initial_status_counts": {
+    "modified": 50,
+    "deleted": 746,
+    "untracked_entries": 421
+  },
+  "tracked_snapshot_entries": 2896,
+  "tracked_source_changes_during_audit": [],
+  "php": "8.4.1",
+  "php_minimum_probe": "8.3.35",
+  "dart": "3.13.5",
+  "node": "24.12.0",
+  "python": "3.12.3",
+  "postgres": "18 (dedicated temporary cluster, agentools_audit_test)",
+  "dependency_state": "preinstalled locked dependencies for main SDK/conformance runs; isolated package staging for consumers",
+  "checks_recorded": 47,
+  "expected_diagnostic_note": "A zero exit for reproduce scripts means probes completed, not that their actual behavior is correct.",
+  "temporary_postgres_stopped": true
+}

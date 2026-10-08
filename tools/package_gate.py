@@ -24,10 +24,10 @@ from unittest import mock
 SCHEMA_VERSION = "package-gate/v1"
 REPO = Path(__file__).resolve().parents[1]
 ARTIFACT_PATH = (
-    REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P7-package-gate.json"
+    REPO / "verification/artifacts/P7-package-gate.json"
 )
-REPORT_PATH = REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING/findings/P7-package-gate.md"
-MIGRATION_REPORT = REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING/findings/P7-migration-residuals.md"
+REPORT_PATH = REPO / "verification/findings/P7-package-gate.md"
+MIGRATION_REPORT = REPO / "verification/findings/P7-migration-residuals.md"
 SURFACE_PATH = REPO / "api/package-surface-v1.json"
 
 COPY_IGNORE = shutil.ignore_patterns(

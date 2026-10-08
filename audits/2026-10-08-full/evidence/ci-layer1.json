@@ -1,0 +1,13 @@
+{
+  "id": "ci-layer1",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/ci_gate.py",
+    "--layer",
+    "1"
+  ],
+  "started_utc": "2026-10-08T12:03:33.984189+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.214
+}

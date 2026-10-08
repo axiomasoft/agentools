@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D3",
+  "title": "Решение",
+  "date": "2026-07-07",
+  "status": "accepted",
+  "decision": "Ревизии спеки датированные: `spec/revisions/2026-07-draft/`; статус draft до зелёного PHP SDK на уровне L1 Core, затем переименование в `2026-XX` (release)",
+  "rationale": "паттерн MCP (R-06); draft-окно позволяет BC-правки без бюрократии _(частично superseded D18/D19: ревизия `2026-08` без суффикса и без переименования)_",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D3\ndate: 2026-07-07\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "Ревизии спеки датированные: `spec/revisions/2026-07-draft/`; статус draft до зелёного PHP SDK на уровне L1 Core, затем переименование в `2026-XX` (release)"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "паттерн MCP (R-06); draft-окно позволяет BC-правки без бюрократии _(частично superseded D18/D19: ревизия `2026-08` без суффикса и без переименования)_"
+    }
+  ]
+}

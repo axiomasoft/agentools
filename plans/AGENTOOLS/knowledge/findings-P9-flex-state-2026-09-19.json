@@ -1,0 +1,124 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "findings-P9-flex-state-2026-09-19",
+  "title": "датированное измерение контура Flex/CoreX (2026-09-19)",
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\ntype: findings\nplan: AGENTOOLS\nphase: P9\ncreated: 2026-09-19\nlayer: 1\n---"
+    },
+    {
+      "id": "P9-Flex-CoreX-2026-09-19",
+      "title": "P9 — датированное измерение контура Flex/CoreX (2026-09-19)",
+      "text": "Слой 1 (`plan-protocol` §16): сырьё, полученное прогоном команд и RAG в item P9.1.\nОпора сравнения — `@plan/knowledge/findings-P9-flex-corex-recon-2026-07-27.json`. Синтез — `@plan/knowledge/research-08-p9-crm-slice-2026-08.json`.\n\n**Якоря деревьев на момент измерения:**\n\n| Дерево | Команда | Хеш |\n|:--|:--|:--|\n| vault Brain | `git -C ~/Vaults/Brain rev-parse --short HEAD` | `616396a` |\n| монорепо CoreX | `git -C ~/projects/packages/corex rev-parse --short HEAD` | `0ca85d2` |\n| приложение flexcrm | `git -C ~/projects/flexcrm rev-parse --short HEAD` | `929a7c3` |\n| agentools (bookkeeping) | `git -C ~/projects/packages/agentools rev-parse --short HEAD` | `50a6811` |\n\n**Кontроль «чужие репозитории не тронуты»** (зафиксировано ДО работы item'а и сверено ПОСЛЕ):\n\n```console\n$ git -C ~/projects/packages/corex status --short | wc -l\n266\n$ git -C ~/projects/flexcrm status --short | wc -l\n1198\n```\n\n---"
+    },
+    {
+      "id": "1.-corex-ai",
+      "title": "1. Пакет `corex/ai` — по-прежнему НЕ СУЩЕСТВУЕТ",
+      "text": "```console\n$ ls ~/projects/packages/corex/packages/\napi  attributes  auth  core  crm  import-export  intl  media  modules\nnotifications  panels  recurrence  search  search-intl  search-meilisearch\ntasks  tasks-workflow  tenancy  transfer  wakeup  workflow\n\n$ ls ~/projects/packages/corex/packages/ai\nls: cannot access '/home/vostrikov/projects/packages/corex/packages/ai': No such file or directory\n```\n\n**Расхождение с разведкой 2026-07-27:** состав монорепо **расширился** (появились `api`, `attributes`, `import-export`, `intl`, `media`, `notifications`, `panels`, `recurrence`, `search*`, `tasks-workflow`, `transfer`, `wakeup`, `workflow`), но **`packages/ai` по-прежнему отсутствует** — факт §1 прежней разведки сохраняется.\n\n```console\n$ grep -rn \"agentools\\|AgenTools\" --include=*.php --include=*.json -l ~/projects/packages/corex | grep -v vendor\n(пусто)\n```\n\n---"
+    },
+    {
+      "id": "2.-composer.lock",
+      "title": "2. Версии стека — `composer.lock` обоих репозиториев",
+      "text": "Команда:\n\n```bash\npython3 -c \"import json; …\"  # см. прогон сессии P9.1\n```\n\n| Пакет | CoreX (`0ca85d2`) | flexcrm (`929a7c3`) | 2026-07-27 (recon) CoreX | 2026-07-27 flexcrm |\n|:--|:--|:--|:--|:--|\n| `laravel/framework` | v13.32.0 | v13.31.0 | v13.22.0 | v13.15.0 |\n| `laravel/reverb` | НЕТ | v1.11.1 | НЕТ | v1.10.2 |\n| `laravel/mcp` | НЕТ | **v1.0.0** | НЕТ | НЕТ |\n| `laravel/ai` | НЕТ | НЕТ | НЕТ | НЕТ |\n| `filament/filament` | НЕТ | v5.8.1 | НЕТ | v5.6.7 |\n| `corex/core` | dev-main | 0.3.2-alpha.20260915 | dev-main | dev-main |\n| `stancl/tenancy` | НЕТ | НЕТ | НЕТ | НЕТ |\n\n**Порог PHP:** CoreX `^8.3` · flexcrm `^8.5` (без изменения класса расхождения).\n\n**Именованные расхождения с §2 recon 2026-07-27:**\n- Laravel minor drift в обоих контурах (13.22→13.32, 13.15→13.31).\n- **`laravel/mcp` появился в flexcrm** (v1.0.0) — в recon не был установлен ни в одном репозитории.\n- **`laravel/ai` по-прежнему не установлен** ни в CoreX, ни в flexcrm.\n- `corex/core` в flexcrm **перестал быть `dev-main`** — пин alpha-сборки.\n\n---"
+    },
+    {
+      "id": "3.---2026-09-19",
+      "title": "3. Ре-верификация версий по первоисточникам (2026-09-19)",
+      "text": "| Факт | Значение на дату исполнения | Источник |\n|:--|:--|:--|\n| `laravel/ai` — последний стабильный релиз | **v0.11.2**, опубликован 2026-09-03 | `RAG:✅ 2026-09-19` [packagist.org/packages/laravel/ai](https://packagist.org/packages/laravel/ai) |\n| `laravel/ai` — HITL/approval | dev-ветка **`dev-fix/multi-step-approval-resume`** (не `dev-tool-approval-human-in-the-loop`) | тот же Packagist JSON |\n| `laravel/mcp` — последний стабильный релиз | **v1.0.0**, опубликован 2026-09-14 | `RAG:✅ 2026-09-19` [packagist.org/packages/laravel/mcp](https://packagist.org/packages/laravel/mcp) |\n| Laravel — текущая мажорная линия | Laravel 13, релиз **2026-03-17**, PHP **8.3–8.5** | `RAG:✅ 2026-09-19` [laravel.com/docs/13.x/releases](https://laravel.com/docs/13.x/releases) |\n\n**Расхождения с `@plan/knowledge/findings-P9-flex-corex-recon-2026-07-27.json` §6 (поимённо):**\n- `laravel/ai` v0.10.1 (2026-07-21) → **v0.11.2** (2026-09-03) — новый minor.\n- `laravel/mcp` v0.9.x → **v1.0.0** — мажорный скачок; flexcrm уже на v1.0.0 в lock.\n- HITL dev-ветка переименована (`dev-tool-approval-human-in-the-loop` → `dev-fix/multi-step-approval-resume`); **стабильный API Approvable/approval_state по-прежнему не подтверждён**.\n- Laravel 13 / PHP 8.3–8.5 — **расхождений нет**.\n\n---"
+    },
+    {
+      "id": "4.-CoreX-ADR-020-ADR-022-B-32",
+      "title": "4. Живой канон CoreX — ADR-020, ADR-022, B-32",
+      "text": ""
+    },
+    {
+      "id": "4.1",
+      "title": "4.1 Фронтматтер",
+      "text": "```console\n$ grep -n '^updated:' ~/Vaults/Brain/05-Projects/03-Packages/CoreX/docs/03_Dev/ADR/ADR-020*.md \\\n  ~/Vaults/Brain/05-Projects/03-Packages/CoreX/docs/03_Dev/ADR/ADR-022*.md\nADR-020: updated: 2026-07-03\nADR-022: updated: 2026-07-12\n```"
+    },
+    {
+      "id": "4.2-Git--vault-2026-07-27",
+      "title": "4.2 Git-история vault (после 2026-07-27)",
+      "text": "```console\n$ git -C ~/Vaults/Brain log --oneline -3 -- \\\n  \"05-Projects/03-Packages/CoreX/docs/03_Dev/ADR/ADR-020 AiGateway.md\" \\\n  \"05-Projects/03-Packages/CoreX/docs/03_Dev/ADR/ADR-022 Agentic Surface Norm.md\"\na58f8ae docs(plan): FLEX-2 P5.2 закрыт — … ADR-022 …\n8804fdd docs(flex): экосистема Flex — CoreX+FlexCRM … (#101)\n```\n\nКоммит `a58f8ae` позже 2026-07-27 касается ADR-022 в контексте FLEX-2 P5.2; **`updated:` в фронтматтере ADR-020/022 не менялся** с дат разведки. Содержательная сверка §3 recon (AiGateway middleware, ToolRegistry, confirm-гейт ADR-022 п.6) **не отменена** этим измерением — детальная таблица B-32 §3.8 остаётся опорой P9.2."
+    },
+    {
+      "id": "4.3-B-32-3.0-3.9",
+      "title": "4.3 B-32 §3.0–§3.9",
+      "text": "Перечитан `05-Projects/01-Products/FlexCRM/plans/flex/30_blueprints/B-32_agentic-surface.md` §3.0–§3.9. Расхождения П1–П7 с ревизией `2026-08` — **без изменения** относительно `findings/P9-…` §5 (опора сравнения, не повтор).\n\n---"
+    },
+    {
+      "id": "5.-FLEX-2-P6.15",
+      "title": "5. Чужой план FLEX-2 — P6.15 и открытые вопросы",
+      "text": ""
+    },
+    {
+      "id": "5.1-Status-Board",
+      "title": "5.1 Status Board",
+      "text": "Источник: `05-Projects/01-Products/FlexCRM/plans/FLEX-2/artifacts/migration-source-v1/phases/P6.md` (актуальная структура item'ов; live Status Board синхронен):\n\n| ID | Title | Status |\n|:--|:--|:--|\n| P6.15 | corex/ai (B-32 agentic-норматив + runtime) → GREEN | ⬜ Not started |\n\n**Расхождение с 2026-07-27:** статус **не изменился** — item по-прежнему не стартовал."
+    },
+    {
+      "id": "5.2-Scope-Excluded-P6.15-SDK",
+      "title": "5.2 `Scope Excluded` P6.15 — дословно (SDK)",
+      "text": "> SDK AgenTools (Q28 Deferred — нормативная ссылка, не кодовая зависимость v1)"
+    },
+    {
+      "id": "5.3-laravel-ai-laravel-mcp-P6.15",
+      "title": "5.3 Пин `laravel/ai` / `laravel/mcp` в спеке P6.15",
+      "text": "> Версии `laravel/ai`/`laravel/mcp` — пин v0.8.2 (elicitation отсутствует, П6); освежить RAG на scaffold'е.\n\n**Фактический lock flexcrm на 2026-09-19:** `laravel/mcp` **v1.0.0** установлен; `laravel/ai` **не установлен**. Пин v0.8.2 в чужом item'е **устарел** относительно Packagist (§3) — ожидаемо по тексту item'а («освежить RAG на scaffold'е»)."
+    },
+    {
+      "id": "5.4-Q25-Q26-Q28-Q58-Q59-FLEX-2",
+      "title": "5.4 Строки `Q25`/`Q26`/`Q28`/`Q58`/`Q59` плана FLEX-2",
+      "text": "| ID | Статус (FLEX-2 open-questions, vault) |\n|:--|:--|\n| Q25 | Decision pending (152-ФЗ sign-off) |\n| Q26 | Exploration (голосовой канал) |\n| Q28 | Deferred — «SDK AgenTools … v1»; B-32 §3.8: норматив от SDK не зависит |\n| Q58 | Decision pending (переименование 24 канонных CRM-тулз) |\n| Q59 | Decision pending (носитель декларации agentic) |\n\n**Q28 не снят** — кодовая зависимость от SDK по-прежнему исключена в P6.15.\n\n---"
+    },
+    {
+      "id": "6.-PHP-SDK",
+      "title": "6. Достаточность зрелости PHP SDK — пересечение «правила среза × красные векторы»",
+      "text": "**Источник уровней:** `@plan/knowledge/artifacts-P7-gate.json` + `conformance/reports/php-levels.md` (дерево agentools `50a6811`).\n\n| Уровень | pass | fail | warn |\n|:--|--:|--:|--:|\n| L1 | 126 | **0** | 0 |\n| L2 | 56 | **0** | 0 |\n| L3 | 31 | **0** | 0 |\n\n**Красные векторы отчёта `ГЕЙТ P7`:** множество **пусто** (fail = 0 на всех уровнях; подтверждено `out/php-all.json`: fails 0).\n\n**Правила сценария среза** (документы `05_clarification-mrtr.md`, `06_scenarios.md` + ядро `CNF-*`/`ALC-*`/`IDE-*` из `03_action-lifecycle.md`, `04_confirmation.md`, `09_idempotency-errors.md`):\n\n| Класс | Кол-во идентификаторов | Диапазон |\n|:--|--:|:--|\n| `SCN-*` | 30 | SCN-1 … SCN-30 |\n| `CLR-*` | 21 | CLR-1 … CLR-21 |\n| `CNF-*` (ядро) | 41 | CNF-1 … CNF-41 |\n| `ALC-*` (ядро) | 37 | ALC-1 … ALC-37 |\n| `IDE-*` (ядро) | 48 | IDE-1 … IDE-48 |\n\n**Пересечение «правила среза × красные векторы отчёта `ГЕЙТ P7`»:** **пересечение пусто**.\n\n**Следствие для Q-15 (D107):** по измеренным числам P7 (L2 = 56/56, L3 = 31/31) и пустому пересечению — **достаточность зрелости PHP SDK для фазы P9 по этой механике закрыта**; поднятие `declared_level` выше измеренного остаётся отдельным owner-вопросом, не блокером P9.1.\n\n---"
+    },
+    {
+      "id": "7.",
+      "title": "7. Пакет решения владельцу",
+      "text": ""
+    },
+    {
+      "id": "7.1-A-B-C",
+      "title": "7.1 Развилка дома кода (ветка A / B / C)",
+      "text": "| Ветка | Что означает на **2026-09-19** | Цена |\n|:--|:--|:--|\n| **(A) `corex/ai` + зависимость на `agentools/sdk`** | Пакета нет; потребует создания `packages/ai` и снятия/переворота Q28 FLEX-2 | Согласование с владельцем CoreX + правки чужого плана; код в чужом репо |\n| **(B) `corex/ai` без SDK + тонкий мост** | Пакета нет; мост всё равно ждёт P6.15 или параллельного каркаса | Третий пакет; двойная поверхность ToolRegistry/AiGateway |\n| **(C) `corex/ai` не создан** | **Факт сегодня** — P6.15 ⬜ Not started, каталога нет | **(C1)** waiting до FLEX-2 P6.15 · **(C2)** мост поверх `corex/core`+`flex/crm`+app с последующим переносом |\n\n**Рекомендация автора:** ветка **(C2)** — разрешённый владельцем мост поверх существующего контура, потому что P6.15 не стартовал, Q28 остаётся Deferred, а `laravel/mcp` v1.0.0 уже в flexcrm без `laravel/ai` (развод трёх гейтов в INT-001 становится критичнее, чем ожидание чужого майлстоуна без SLA).\n\n**Выбор ветки — гейт владельца; item его не делает.**\n\n**Owner gate (2026-09-19):** владелец выбрал **(C2)** → D184. Мост поверх `corex/core`+`flex/crm`+app; P9.2 разблокирован."
+    },
+    {
+      "id": "7.2-PHP-SDK",
+      "title": "7.2 Развилка зрелости PHP SDK",
+      "text": "| Ветка | Когда | Цена |\n|:--|:--|:--|\n| **(i) Follow-up item в P7 (реопен)** | Если бы пересечение было непустым | Срыв календаря P9; повторный гейт SDK |\n| **(ii) Сужение Scope среза** | Если бы пересечение было непустым | Урезанный сценарий CRM; запись в отчёт среза |\n| **(iii) Принятие риска** | Если бы пересечение было непустым | Явная строка риска в P9-slice-report |\n\n**Факт P9.1:** пересечение **пусто** — ветки (i–iii) **не активированы** для этой фазы по D107.\n\n**Рекомендация автора:** **не реопенить P7**; зафиксировать в Q-15 числа L2/L3 = 100 % и пустое пересечение; Known deviation projection-catalog из P7-gate остаётся честностью conformance, но не пересекается с правилами среза.\n\n---"
+    },
+    {
+      "id": "8.",
+      "title": "8. Команды измерения (воспроизводимость)",
+      "text": "```bash\nls ~/projects/packages/corex/packages/\ngit -C ~/projects/packages/corex rev-parse --short HEAD\ngit -C ~/projects/flexcrm rev-parse --short HEAD\ngit -C ~/Vaults/Brain rev-parse --short HEAD"
+    },
+    {
+      "id": "composer.lock-python3-P9.1",
+      "title": "composer.lock — python3 скрипт сессии P9.1",
+      "text": "grep -rn \"agentools\\|AgenTools\" --include=*.php --include=*.json -l ~/projects/packages/corex | grep -v vendor\ngit -C ~/Vaults/Brain log --oneline -3 -- \"…/ADR-020 …\" \"…/ADR-022 …\""
+    },
+    {
+      "id": "Packagist-curl-packagist.org-packages-laravel-ai-mcp-.json",
+      "title": "Packagist: curl packagist.org/packages/laravel/{ai,mcp}.json",
+      "text": ""
+    },
+    {
+      "id": "Laravel-releases-laravel.com-docs-13.x-releases",
+      "title": "Laravel releases: laravel.com/docs/13.x/releases",
+      "text": "git -C ~/projects/packages/corex status --short | wc -l\ngit -C ~/projects/flexcrm status --short | wc -l\n```"
+    }
+  ],
+  "applies_to": [
+    "P9"
+  ],
+  "provenance": {
+    "path": "findings/P9-flex-state-2026-09-19.md",
+    "sha256": "d2b54a0fcd5d66ae07f1ae7169def97674134b1365a6cf85cbd04cee7292cb52"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D169",
+  "title": "Решение",
+  "date": "2026-08-04",
+  "status": "accepted",
+  "decision": "**Gate B round 3 не считается начатым, пока semantic preflight нашёл остаточные self-report/magic gaps P4.19; P4 адресно реопенится одним P4.20.** Исправляются confirmation facts TLP-11/CNF-6/8, protocol operations CLR-8, registered mapping AOB-25, wire-byte boundary AOB-31, provenance derivation SEC-9, per-call binding SEC-16, append-adapter ALC-20/22/23, hash composition ALC-36 и per-run CFH-24. **Consequences:** history P4.16–P4.19 сохраняется, manifest/A3 переиздаются; owner-authorized Gate B расходуется только после terminal P4.20.",
+  "rationale": "Read-only semantic preflight exact 51 против нормативных строк; owner directive «формальный линтер без семантики не успех». `RAG:— (owner decision + repo-grounded)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D169\ndate: 2026-08-04\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Gate B round 3 не считается начатым, пока semantic preflight нашёл остаточные self-report/magic gaps P4.19; P4 адресно реопенится одним P4.20.** Исправляются confirmation facts TLP-11/CNF-6/8, protocol operations CLR-8, registered mapping AOB-25, wire-byte boundary AOB-31, provenance derivation SEC-9, per-call binding SEC-16, append-adapter ALC-20/22/23, hash composition ALC-36 и per-run CFH-24. **Consequences:** history P4.16–P4.19 сохраняется, manifest/A3 переиздаются; owner-authorized Gate B расходуется только после terminal P4.20."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Read-only semantic preflight exact 51 против нормативных строк; owner directive «формальный линтер без семантики не успех». `RAG:— (owner decision + repo-grounded)`"
+    }
+  ]
+}

@@ -65,7 +65,7 @@ final class EffectCommitterTest extends TestCase
     public function testItRejectsAZombieExecutorEpoch(): void
     {
         $this->expectException(StaleExecutorEpoch::class);
-        (new ActionReducer())->fold([
+        (new ActionReducer('2026-08'))->fold([
             $this->event(1, 0, 'action_created'),
             $this->event(2, 1, 'epoch_started', [], 1),
             $this->event(3, 2, 'action_started'),

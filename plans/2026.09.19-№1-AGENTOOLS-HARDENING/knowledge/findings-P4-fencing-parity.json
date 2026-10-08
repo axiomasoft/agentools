@@ -1,0 +1,34 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "findings-P4-fencing-parity",
+  "title": "P4 fencing parity receipt",
+  "sections": [
+    {
+      "id": "P4-fencing-parity-receipt",
+      "title": "P4 fencing parity receipt",
+      "text": "Exactly-once external effect is a non-guarantee. The store fences the idempotency\nrow; `native_key` is cooperation with a downstream key, not a wrapper around HTTP."
+    },
+    {
+      "id": "Supported-path-wiring",
+      "title": "Supported path wiring",
+      "text": "- PHP and Dart `IdempotencyStore` expose `acquire` / `heartbeat` / `complete(lease)` /\n  `fail(lease)` / `cleanup`. Unfenced `resolve` / `complete(request)` are absent.\n- `IdempotencyCoordinator` is a required `ToolPort`: store and catalog are constructor\n  arguments. High-risk + unknown denies before insert. Takeover + non-retryable\n  capability stores `idempotency_ambiguous_effect` without `ToolPort.call`.\n- Reference `SliceToolCoordinator` invokes through the coordinator, not `RegistryToolPort.call`.\n- `ScenarioRunner` still takes a `ToolPort`; fencing is injection of the coordinator.\n- PostgreSQL unique `(tenant_id, tool_name, idempotency_key)` is the durable arbiter.\n  SQLite implements the same CAS methods for the reference slice and is not a\n  multi-worker close substitute."
+    },
+    {
+      "id": "Evidence",
+      "title": "Evidence",
+      "text": "| Case | PHP | Dart |\n|------|-----|------|\n| 50-way acquire one winner | `LeaseFenceTest`, `PdoPostgresIdempotencyStoreTest` | `lease_fence_test.dart` |\n| in-flight immediate, no lease | `LeaseFenceTest` | `lease_fence_test.dart` |\n| fingerprint reuse | `LeaseFenceTest`, `PdoPostgresIdempotencyStoreTest` | `lease_fence_test.dart` |\n| takeover + stale complete/fail/heartbeat | `LeaseFenceTest`, `PdoPostgresIdempotencyStoreTest`, `SqliteIdempotencyStoreTest` | `lease_fence_test.dart` |\n| completed error replay / expiry | `LeaseFenceTest`, `PdoPostgresIdempotencyStoreTest` | `lease_fence_test.dart` |\n| in-progress survives TTL; completed-only cleanup | `LeaseFenceTest`, `PdoPostgresIdempotencyStoreTest` | `lease_fence_test.dart` |\n| two-connection unique arbiter | `PdoPostgresIdempotencyStoreTest` | SQL constants + scripted executor (`sql_idempotency_store_test.dart`) |\n| empty RETURNING is lost-lease | `PdoPostgresIdempotencyStoreTest` | `sql_idempotency_store_test.dart` |\n| unknown high-risk deny-before-insert | `IdempotencyCoordinatorTest` | `idempotency_coordinator_test.dart` |\n| native_key forwards durable key / takeover reinvoke | `IdempotencyCoordinatorTest` | `idempotency_coordinator_test.dart` |\n| at-most-once takeover stores ambiguous | `IdempotencyCoordinatorTest`, `FencingGateTest` | `idempotency_coordinator_test.dart`, `fencing_gate_test.dart` |\n| read-before-write probe / missing probe | `IdempotencyCoordinatorTest` | `idempotency_coordinator_test.dart` |\n| 50 nested coordinator acquires, one invoke | `FencingGateTest` | `fencing_gate_test.dart` |\n| stale worker after PostgreSQL takeover | `FencingGateTest` | Dart has no live PostgreSQL driver; parity is SQL CAS + PHP postgres gate |\n\nParity field/case check from `tools/validate_idempotency_lease_v1.py`: `missing=[]`, extra none, status green (21 cases)."
+    },
+    {
+      "id": "Residual-owners",
+      "title": "Residual owners",
+      "text": "- **P5**: lease attempt is not ALC epoch; event journal/epoch stays out of this row.\n- **P6**: shared error registry / spec revision for the three new codes.\n- **P7**: final barrel/PSR-4 removals; in-memory remains testkit/reference-only.\n- **P8/P9**: mutation/fuzz depth and CI matrix for `ext-pdo_pgsql` / ephemeral PostgreSQL."
+    }
+  ],
+  "applies_to": [
+    "P4"
+  ],
+  "provenance": {
+    "path": "findings/P4-fencing-parity.md",
+    "sha256": "cf292832799c7e53c87e262557a3ed6fe5fca529e949d2ef8fc27b5bc696975c"
+  }
+}

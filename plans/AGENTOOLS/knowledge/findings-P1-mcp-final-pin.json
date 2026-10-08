@@ -1,0 +1,34 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "findings-P1-mcp-final-pin",
+  "title": "Пин финала MCP 2026-07-28: коммит спеки + байты `schema.json`",
+  "sections": [
+    {
+      "id": "P1.1-MCP-2026-07-28-schema.json",
+      "title": "P1.1 — Пин финала MCP 2026-07-28: коммит спеки + байты `schema.json`",
+      "text": "**Дата сверки (item P1.1):** 2026-07-27\n**Вердикт Scope Included (а):** факт публикации финала **не подтверждён на дату исполнения** —\nревизия `2026-07-28` остаётся Release Candidate. По решению владельца **D130** (`@plan/plan.json` §5)\nэто НЕ блокер: item пиннит **RC-снимок** явным решением (ветка (b) из предыдущей сверки), а не\nждёт финала."
+    },
+    {
+      "id": "RAG-2026-07-27",
+      "title": "Источники (RAG, дата обращения 2026-07-27)",
+      "text": "1. GitHub Releases, `modelcontextprotocol/modelcontextprotocol`\n   (https://github.com/modelcontextprotocol/modelcontextprotocol/releases):\n   > «2026-07-28 RC (Pre-release) — This release marks the release candidate (RC) `2026-07-28`\n   > revision. […] this specification is not final. Changes may be introduced between the RC\n   > and the final release.»\n   Релиз `2026-07-28-RC` несёт флаг `prerelease: true` (проверено GitHub API,\n   `/repos/modelcontextprotocol/modelcontextprotocol/releases`); стабильный (`prerelease:\n   false`) релиз с тегом `2026-07-28` в списке отсутствует, последний стабильный тег —\n   `2025-11-25`.\n\n2. Официальный блог MCP, «The 2026-07-28 MCP Specification Release Candidate»\n   (https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/):\n   > «The release candidate is locked as of May 21, 2026. The final specification will be\n   > published on July 28, 2026.»"
+    },
+    {
+      "id": "RC-D130",
+      "title": "Пин (RC, по D130)",
+      "text": "| Поле | Значение |\n|:--|:--|\n| Тег | `2026-07-28-RC` |\n| Коммит-SHA | `9d700ed62dcf86cb77475c9b81930611a9182f46` (40 hex, дата коммита 2026-05-29T12:49:07Z) |\n| Путь схемы | `schema/draft/schema.json` — директория `schema/2026-07-28/` в репозитории ещё не заведена (RC живёт в `draft/`, промоция в датированную папку — шаг публикации финала) |\n| `sha256` | `bd19a7a9e6ee3a7394aec816cd0660a0156864e828a348129baccdb83457d234` |\n| Вендоринг | `~/projects/packages/agentools/spec/vendor/mcp/2026-07-28/schema.json` + `PIN.md` (item-коммит) |\n\n**Статус явно: RC, не финал** — пометка дословно перенесена в `PIN.md` и в эту выжимку."
+    },
+    {
+      "id": "section",
+      "title": "Вывод",
+      "text": "Дата сверки (2026-07-27) на один день предшествует заявленной датой публикации финала\n(2026-07-28). Оба первоисточника единогласно называют ревизию `2026-07-28` **release\ncandidate** на дату исполнения. По D130 item пиннит RC-снимок как рабочую основу; отложенный\nчекпоинт `DR-01` §A3 addendum («сверить RC-пин с финалом байт-в-байт») остаётся ОТЛОЖЕННЫМ —\nследующий пересмотр по факту публикации финала (адресат — фаза P1, если ещё открыта, иначе\nP1.2/P1.3 переисполнения по факту).\n\n**Статус item'а: пин RC выполнен.** Дальнейшая сверка нормативного текста — P1.2."
+    }
+  ],
+  "applies_to": [
+    "P1"
+  ],
+  "provenance": {
+    "path": "findings/P1-mcp-final-pin.md",
+    "sha256": "a70c53039e01e869dd3d0c2fc925c9d2f1b417e1cb7175669a5f8e6a69343219"
+  }
+}

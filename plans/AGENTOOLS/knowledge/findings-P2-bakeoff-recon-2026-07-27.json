@@ -1,0 +1,44 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "findings-P2-bakeoff-recon-2026-07-27",
+  "title": "разведка и репро перед исполнением фазы A1 (слой 1, 2026-07-27)",
+  "sections": [
+    {
+      "id": "P2-A1-1-2026-07-27",
+      "title": "P2 — разведка и репро перед исполнением фазы A1 (слой 1, 2026-07-27)",
+      "text": "> Сырьё сессии `plan-design AGENTOOLS P2` (2026-07-27). Здесь — только факты с источником и\n> воспроизводимой командой. Синтез и решения — `@plan/plan.json` §5 (D29–D34) и `@plan/phases/P2/phase.json`.\n> Повод захода: попытка `plan-run AGENTOOLS P2.1` завершилась `blocked`\n> (`@plan/log.jsonl`, ts `2026-07-26T22:03:20Z`, friction `routing-blocked`).\n\n---"
+    },
+    {
+      "id": "1.-3-Routing-Task-Contract",
+      "title": "1. Репро блокера: §3 Routing не парсится компилятором Task Contract",
+      "text": "Компилятор `packages/task/lib/task/task_contract.py` строит `pre_mutation`-границу и обязан\nразобрать route-ячейку строки `## 3. Routing` для item'а. Разбор — `raw_cell.partition(\"/\")`:\nлевая часть обязана быть именем класса (`economy`/`implementation`/`frontier`) либо\nоднозначным именем модели из `configs/command-routing.json` (`haiku`/`sonnet`/`opus`,\n`gpt-5.6-luna`/`-terra`/`-sol`), правая — членом лестницы `('low','medium','high','xhigh','max')`.\nЛюбой хвост в ячейке ломает правую часть.\n\nКоманда (из `~/projects/packages/swissknifeman/packages/task`):\n\n```bash\nPYTHONPATH=lib python3 -c \"\nfrom task import task_contract as tc\nP='/home/vostrikov/Vaults/Brain/05-Projects/03-Packages/AgenTools/plans/AGENTOOLS'\nfor item in ['P2.1','P2.5','P1.1']:\n    try: print(item,'OK',tc.build(P,item,actual_route={'model_class':'implementation','effort':'high'})['route'])\n    except Exception as e: print(item,'FAIL',e)\n\"\n```\n\nНаблюдаемый вывод (на дереве до правки этой сессии):\n\n```text\nP2.1 FAIL P2.1: Routing: route cell 'implementation/high (sonnet/high)': effort 'high (sonnet/high)' is outside the frozen ladder ('low', 'medium', 'high', 'xhigh', 'max')\nP2.5 FAIL P2.5: Routing: route cell 'implementation/high (sonnet/high)': effort 'high (sonnet/high)' is outside the frozen ladder (...)\nP1.1 FAIL P1.1: Routing: route cell 'implementation/medium (sonnet)': effort 'medium (sonnet)' is outside the frozen ladder (...)\n```\n\n**Вердикт:** дефект не в компиляторе и не в фазе P2 — он в форме ячеек §3 всего плана:\nподсказка провайдера в скобках («`(sonnet/high)`») попадала в поле effort. Блокировались **все**\nitems плана, включая готовую к исполнению фазу P1. `RAG:— (repo-grounded:\npackages/task/lib/task/task_contract.py:250–261 `_resolve`, :46–47 `MODEL_CLASS_ORDER`/`EFFORT_ORDER`,\nconfigs/command-routing.json `mappings.*.class_selectors`)`.\n\nВторое следствие того же разбора: строка §3 подбирается по колонке `Items` **точным** совпадением\nid либо диапазоном `^(P\\d+)\\.(\\d+)\\s*[–-]\\s*(P\\d+)\\.(\\d+)$` (`task_contract.py:93`,\n:263–272). Форма `P3.*` не матчится **никогда** — фазовые черновики `P3.*`…`P10.*` дали бы тот же\n`blocked` при первом же исполнении своей фазы. `RAG:— (repo-grounded: task_contract.py:93, :263–272)`."
+    },
+    {
+      "id": "2.-2026-07-27",
+      "title": "2. Окружение исполнителя (перепроверено 2026-07-27)",
+      "text": "```bash\nphp -v; composer --version; dart --version; node -v; npx --version; python3 -V\n```\n\n| Инструмент | Версия | Значение для фазы |\n|:--|:--|:--|\n| PHP | 8.4.1 (cli, NTS) | требование `wol-soft` (PHP ≥8.4) выполнимо |\n| Composer | 2.8.3 | песочница `bakeoff/php/` устанавливается |\n| Dart SDK | 3.12.2 stable (linux_x64) | песочницы `bakeoff/dart/`, `bakeoff/dart-transport/` |\n| Node | 24.12.0 | `quicktype` через `npx` |\n| npx | 11.6.2 | — |\n| python3 | 3.12.3 | мок-сервер stdlib (P2.4), генерация JSON |\n\n`RAG:— (окружение исполнителя, команды выше, 2026-07-27)`. Подтверждает и уточняет\n`@plan/knowledge/research-01-target-structure-2026-08.json` §3 (там та же таблица без версий npx/python)."
+    },
+    {
+      "id": "3.",
+      "title": "3. Кандидаты кодогенерации — внешние факты",
+      "text": "| Факт | Вердикт | Источник |\n|:--|:--|:--|\n| `quicktype` имеет таргеты **и `php`, и `dart`** (`--lang php`, `--lang dart`) в текущем публичном списке языков | подтверждено | `RAG:✅ 2026-07-27 (quicktype.io, quicktype.io/php, quicktype.io/dart)` |\n| `wol-soft/php-json-schema-model-generator`: документирован **только Draft 7**; автодетект `$schema` при неизвестном объявлении **откатывается на Draft 7**; класса/опции для 2020-12 в публичном API нет | 2020-12 как первоклассный таргет НЕ подтверждён | `RAG:✅ 2026-07-27 (github.com/wol-soft/php-json-schema-model-generator)` |\n| `swaggest/php-code-builder` (+ `swaggest/php-json-schema`): Draft 7/6/4, 2020-12 не заявлен | не кандидат по драфту | `RAG:✅ 2026-07-27 (github.com/swaggest/php-json-schema)` |\n| `opis/json-schema`: draft 2020-12/2019-09/07/06 — **валидатор, не генератор** | подтверждает пин D15, кодогенерацию не закрывает | `RAG:✅ 2026-07-27 (github.com/opis/json-schema)` |\n| `mcp_dart`: stable **2.2.2**; prerelease-линия **2.3.0-dev.x** (`dev.1`/`dev.2`/`dev.3` в разных срезах страницы) — именно она про MCP 2026-07-28, сохраняя совместимость с 2025-11-25; лицензия **MIT** | подтверждает `R-10` §4; точную dev-версию берёт исполнитель `dart pub` на дату прогона | `RAG:✅ 2026-07-27 (pub.dev/packages/mcp_dart)` |\n\n**Следствие для дизайна фазы (несущее).** PHP-генератор — Draft-7-ориентированный, зрелого\nschema-first генератора для Dart нет (`R-11` §10). Значит исход «в обоих языках DTO пишутся\nруками» — не экзотика, а **вероятный** результат прогонов, а он прямо задевает решение\n`DR-01` §J6 («каркас типов из схем»). Два следствия, внесённые в фазу:\n\n1. Контрольная точка «DTO руками» нужна **симметрично в обоих языках** (была только в P2.3):\n   без замера цены ручных DTO на стороне PHP решение §J6 по PHP в item'е P2.5 было бы догадкой.\n2. Ветка эскалации P2.5 (конфликт факта с §J6) — основной сценарий, а не «на всякий случай»;\n   формулировка item'а обязана вести исполнителя по ней без импровизации.\n\nОговорка честности: «Draft 7 в документации» ≠ «падает на 2020-12». Ровно это и меряет фаза —\nвердикт ставится по наблюдаемому выводу прогона, а не по этой таблице."
+    },
+    {
+      "id": "4.-.gitignore",
+      "title": "4. Артефакты фазы против `.gitignore` репозитория (репро)",
+      "text": "Корневой `.gitignore` репозитория `~/projects/packages/agentools` содержит `*.log` (а также\n`/php/vendor/`, `/dart/.dart_tool/` — якорь `/` привязывает их к корню, каталога `bakeoff/` они\nне покрывают). Items P2.2–P2.4 обязаны **закоммитить** логи прогонов\n(`bakeoff/results/*.log`) — при живом `*.log` `git add` по ним молча ничего не делает, и\nDeliverables item'а не попадают в item-коммит, хотя локальная Validation (`ls | wc -l`) зелёная.\n\nРепро механики вложенного `.gitignore` (переисключение работает, т.к. `*.log` исключает файлы,\nа не каталог-родитель):\n\n```bash\ncd /tmp && rm -rf gitest && mkdir gitest && cd gitest && git init -q .\nprintf '/php/vendor/\\n*.log\\n/dart/.dart_tool/\\n' > .gitignore\nmkdir -p bakeoff/results bakeoff/php/vendor\nprintf 'php/vendor/\\ndart/.dart_tool/\\n!results/*.log\\n' > bakeoff/.gitignore\ntouch bakeoff/results/php-x.log bakeoff/php/vendor/a.php bakeoff/php/composer.lock\ngit add -A && git status --short\n```\n\nВывод:\n\n```text\nA  .gitignore\nA  bakeoff/.gitignore\nA  bakeoff/php/composer.lock\nA  bakeoff/results/php-x.log\n```\n\n**Вердикт:** `bakeoff/.gitignore` с явным `!results/*.log` решает проблему без правки корневого\n`.gitignore`; `vendor/`/`.dart_tool/` под `bakeoff/` обязаны быть исключены там же (корневые\nякорные правила их не ловят); lock-файлы песочниц (`composer.lock`, `pubspec.lock`) **коммитятся**\n— они и есть доказательство того, какие версии кандидатов прогонялись.\n`RAG:— (git 2.x, репро выше, 2026-07-27)`."
+    },
+    {
+      "id": "5.-item",
+      "title": "5. Два репозитория на один item — факт раскладки",
+      "text": "Дом плана — vault (`Home: brain`, коммит `88109c9` перенёс планы в vault-папки проектов),\nартефакты кода — репозиторий `~/projects/packages/agentools` (последний коммит `83cb540`).\nЗначит закрытие любого code-producing item'а этой фазы физически идёт **двумя коммитами в двух\nразных репозиториях**: item-коммит — в `agentools`, bookkeeping-коммит — в vault `Brain`.\nТопология `plan-protocol` §8 (два коммита) сохраняется, но хеш item-коммита для handoff берётся\nиз репозитория `agentools`. `RAG:— (repo-grounded: git log 05-Projects/.../AGENTOOLS → 88109c9;\ngit -C ~/projects/packages/agentools log → 83cb540; @plan/plan.json Meta `Home: brain`)`."
+    }
+  ],
+  "applies_to": [
+    "P2"
+  ],
+  "provenance": {
+    "path": "findings/P2-bakeoff-recon-2026-07-27.md",
+    "sha256": "0180157f8042c751aefe184dd9d969a749636c83e77fef6e5ee4b9ad992fc878"
+  }
+}

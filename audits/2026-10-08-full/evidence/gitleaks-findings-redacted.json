@@ -1,0 +1,32 @@
+[
+  {
+    "Description": "Identified a pattern that may indicate AWS credentials, risking unauthorized cloud resource access and data breaches on AWS platforms.",
+    "File": "tools/ci_matrix.py",
+    "StartLine": 664,
+    "EndLine": 664,
+    "Commit": "87dbb5500eaf48c13ef9160e4ee11afdf2942371",
+    "RuleID": "aws-access-token",
+    "Fingerprint": "87dbb5500eaf48c13ef9160e4ee11afdf2942371:tools/ci_matrix.py:aws-access-token:664",
+    "Match": "REDACTED"
+  },
+  {
+    "Description": "Identified a pattern that may indicate AWS credentials, risking unauthorized cloud resource access and data breaches on AWS platforms.",
+    "File": "tools/ci_matrix.py",
+    "StartLine": 665,
+    "EndLine": 665,
+    "Commit": "87dbb5500eaf48c13ef9160e4ee11afdf2942371",
+    "RuleID": "aws-access-token",
+    "Fingerprint": "87dbb5500eaf48c13ef9160e4ee11afdf2942371:tools/ci_matrix.py:aws-access-token:665",
+    "Match": "REDACTED"
+  },
+  {
+    "Description": "Identified a pattern that may indicate AWS credentials, risking unauthorized cloud resource access and data breaches on AWS platforms.",
+    "File": "tools/ci_matrix.py",
+    "StartLine": 666,
+    "EndLine": 666,
+    "Commit": "87dbb5500eaf48c13ef9160e4ee11afdf2942371",
+    "RuleID": "aws-access-token",
+    "Fingerprint": "87dbb5500eaf48c13ef9160e4ee11afdf2942371:tools/ci_matrix.py:aws-access-token:666",
+    "Match": "REDACTED"
+  }
+]

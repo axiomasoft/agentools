@@ -1,0 +1,2 @@
+Because agentools_mcp_dart depends on agentools from path which doesn't exist (could not find package agentools at "../agentools"), version solving failed.
+

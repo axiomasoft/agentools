@@ -1,0 +1,135 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P0.8",
+  "title": "06_idempotency-errors.md + схемы",
+  "status": "done_with_deviations",
+  "summary": "Написать нормативный документ «Idempotency & Error Model»: формула ключа, dedupe-контракт, классы ошибок и retry-политика; + схемы `schema/error.json`, `schema/idempotency.json`.",
+  "why": "Resume перезапускает шаг с начала (02/LC) — без enforce-идемпотентности write задвоится; единый формат ошибок нужен LLM для self-correction и рантайму для маршрутизации semantic/technical fail.",
+  "scope": {
+    "include": [
+      "(1) ключ: `at1:` + sha256hex(JCS({tenant_id, session_id, step_id, tool, args})) — все поля обязательны, args = аргументы commit-вызова ДО исполнения; правило передачи: `_meta[\"agentools/v1\"].idempotency_key` в tool-вызове; (2) dedupe-контракт на границе tool: хранилище (key UNIQUE → {status: in_flight|done|failed, result_digest, stored_result?, ts}); повтор с тем же ключом: done → вернуть сохранённый результат (MUST), in_flight → ошибка conflict/retryable, failed → разрешён новый прогон; TTL записей ≥ TTL сессии; (3) error model: {code (строка `agentools.<category>.<slug>`), category: validation|permission|not_found|conflict|precondition|unavailable|budget|internal, retryable: bool, message (человекочитаемое, ru), details?, example_of_valid_call? (обучающая ошибка — канон Anthropic tool-design из R-06 flex)}; таблица маппинга category → semantic/technical fail (для 04) и → MCP tool error (isError + structuredContent); (4) retry-политика по category (какие retryable, лимиты); (5) правило для draft (side_effect=draft): идемпотентность через natural key черновика SHOULD."
+    ],
+    "exclude": [
+      "реализация хранилищ (SDK P2.6/P3.6); сетевые ретраи LLM-провайдеров (дело шлюзов)."
+    ]
+  },
+  "depends_on": [],
+  "decisions": [
+    "D5"
+  ],
+  "skills": [],
+  "reads": [],
+  "task_files": [
+    {
+      "path": "spec/revisions/2026-07-draft/06_idempotency-errors.md",
+      "change": "any"
+    },
+    {
+      "path": "schema/error.json",
+      "change": "any"
+    },
+    {
+      "path": "schema/idempotency.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "правила `IE-*`; формулу ключа дать с полным рабочим примером: конкретный JSON-вход → его JCS-строка → итоговый ключ (это golden-фикстура P0.9); категории ошибок — закрытый enum, расширение только новой ревизией спеки."
+  ],
+  "guidance": "error.json / idempotency.json — additionalProperties:false, description на русском; пример ключа посчитать реально (python3 однострочником с hashlib на канонизированной вручную строке — JCS-подмножество для примера без вложенных чисел допустимо, отметить это в тексте примера).",
+  "validation": [
+    {
+      "id": "V1",
+      "procedure": "spec_lint зелёный; пример ключа воспроизводится (указать команду в доке, исполнитель прогоняет и сверяет hex).",
+      "expect": "Source acceptance condition as written.",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "06_idempotency-errors.md (правила IE-*) + 2 схемы + воспроизводимый пример ключа."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "medium"
+  },
+  "review": {
+    "mode": "none"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "1970-01-01T00:00:08Z",
+    "finished_at": "1970-01-01T00:00:08Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "legacy source"
+    },
+    "notes": "Layout v2 current-state import from legacy status 🟠 Done with deviations; chronology: artifacts/migration-source-v1/journal.jsonl",
+    "deviations": [],
+    "pending": [],
+    "checks": []
+  },
+  "updated_at": "1970-01-01T00:00:08Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Написать нормативный документ «Idempotency & Error Model»: формула ключа, dedupe-контракт, классы ошибок и retry-политика; + схемы `schema/error.json`, `schema/idempotency.json`."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Resume перезапускает шаг с начала (02/LC) — без enforce-идемпотентности write задвоится; единый формат ошибок нужен LLM для self-correction и рантайму для маршрутизации semantic/technical fail."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "(1) ключ: `at1:` + sha256hex(JCS({tenant_id, session_id, step_id, tool, args})) — все поля обязательны, args = аргументы commit-вызова ДО исполнения; правило передачи: `_meta[\"agentools/v1\"].idempotency_key` в tool-вызове; (2) dedupe-контракт на границе tool: хранилище (key UNIQUE → {status: in_flight|done|failed, result_digest, stored_result?, ts}); повтор с тем же ключом: done → вернуть сохранённый результат (MUST), in_flight → ошибка conflict/retryable, failed → разрешён новый прогон; TTL записей ≥ TTL сессии; (3) error model: {code (строка `agentools.<category>.<slug>`), category: validation|permission|not_found|conflict|precondition|unavailable|budget|internal, retryable: bool, message (человекочитаемое, ru), details?, example_of_valid_call? (обучающая ошибка — канон Anthropic tool-design из R-06 flex)}; таблица маппинга category → semantic/technical fail (для 04) и → MCP tool error (isError + structuredContent); (4) retry-политика по category (какие retryable, лимиты); (5) правило для draft (side_effect=draft): идемпотентность через natural key черновика SHOULD."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "реализация хранилищ (SDK P2.6/P3.6); сетевые ретраи LLM-провайдеров (дело шлюзов)."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "plan D5; R-04 (idempotency-консенсус: формула, dedupe-таблица); R-03 (Tool Execution Errors в MCP 2025-11-25)."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`spec/revisions/2026-07-draft/06_idempotency-errors.md`, `schema/error.json`, `schema/idempotency.json`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) готовые 01_*–05_* (термины, конвенция D4, JCS из 05) 2) 05-Projects/03-Packages/AgenTools/@plan/knowledge/20_research-R-04_orchestration-hitl.json (Findings: durable-паттерны п.2) 3) 05-Projects/03-Packages/AgenTools/@plan/plan.json §5 (D5)."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "правила `IE-*`; формулу ключа дать с полным рабочим примером: конкретный JSON-вход → его JCS-строка → итоговый ключ (это golden-фикстура P0.9); категории ошибок — закрытый enum, расширение только новой ревизией спеки."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "error.json / idempotency.json — additionalProperties:false, description на русском; пример ключа посчитать реально (python3 однострочником с hashlib на канонизированной вручную строке — JCS-подмножество для примера без вложенных чисел допустимо, отметить это в тексте примера)."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "spec_lint зелёный; пример ключа воспроизводится (указать команду в доке, исполнитель прогоняет и сверяет hex)."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "06_idempotency-errors.md (правила IE-*) + 2 схемы + воспроизводимый пример ключа."
+    }
+  ]
+}

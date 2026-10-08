@@ -1,0 +1,12 @@
+{
+  "id": "dart-mcp-analyse",
+  "cwd": "dart/agentools_mcp_dart",
+  "command": [
+    "dart",
+    "analyze",
+    "--fatal-infos"
+  ],
+  "started_utc": "2026-10-08T12:02:32.894455+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.418
+}

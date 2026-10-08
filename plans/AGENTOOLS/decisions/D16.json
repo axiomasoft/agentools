@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D16",
+  "title": "Решение",
+  "date": "2026-07-11",
+  "status": "accepted",
+  "decision": "Фаза переноса в ERP-контур детализирована заранее с защитой от устаревания: обязательная re-сверка живого состояния Axioma + cross-plan gate-таблица",
+  "rationale": "скелет предписывал детализацию «после среза CRM»; заблаговременное ТЗ + гейт дешевле повторного plan-design _(перенесено в фазу P10)_",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D16\ndate: 2026-07-11\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "Фаза переноса в ERP-контур детализирована заранее с защитой от устаревания: обязательная re-сверка живого состояния Axioma + cross-plan gate-таблица"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "скелет предписывал детализацию «после среза CRM»; заблаговременное ТЗ + гейт дешевле повторного plan-design _(перенесено в фазу P10)_"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "fix-acceptance-verify",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/release_acceptance.py",
+    "validate"
+  ],
+  "started_utc": "2026-10-08T13:46:35.028527+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.064
+}

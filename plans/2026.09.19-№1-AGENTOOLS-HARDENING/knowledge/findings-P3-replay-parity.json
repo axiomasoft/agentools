@@ -1,0 +1,34 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "findings-P3-replay-parity",
+  "title": "P3 replay parity receipt",
+  "sections": [
+    {
+      "id": "P3-replay-parity-receipt",
+      "title": "P3 replay parity receipt",
+      "text": ""
+    },
+    {
+      "id": "Supported-path-wiring",
+      "title": "Supported path wiring",
+      "text": "- PHP and Dart `ConfirmationService` require `TokenKeyProvider`, `ConfirmationTokenStore`, `issuer`, and `audience`.\n- Prepare/commit use `at1` via `TokenEnvelope`; legacy two-segment tokens are rejected at parse.\n- Atomic `consume` runs after P2 binding checks and before policy/approval/authorization; outcomes refine to `authorized`, `authorization_denied`, or `policy_denied`.\n- Production `spentTokens` / `_spentTokens` removed from `ConfirmationProtocol`."
+    },
+    {
+      "id": "Evidence",
+      "title": "Evidence",
+      "text": "| Case | PHP | Dart |\n|------|-----|------|\n| `happy_path_consume` | `ConfirmationTokenStoreTest` | `confirmation_token_store_test.dart` |\n| `empty_returning_spent` | `ConfirmationTokenStoreTest` | `confirmation_token_store_test.dart` |\n| `digest_jti_collision` | `ConfirmationTokenStoreTest` | `confirmation_token_store_test.dart` |\n| `restart_after_consume` | `PdoPostgresConfirmationTokenStoreTest` | PostgreSQL-only (PHP mandatory) |\n| `authorization_denied_then_spent` | `DurableReplayGateTest` | `durable_replay_gate_test.dart` |\n| shared store replay gate | `DurableReplayGateTest` | `durable_replay_gate_test.dart` |"
+    },
+    {
+      "id": "Residual-owners",
+      "title": "Residual owners",
+      "text": "- **P5/P6**: packaging and public docs for store constructors.\n- **P7**: reference contour may use `InMemoryConfirmationTokenStore` only in test/reference namespaces.\n- **P8/P9**: CI matrix for `ext-pdo_pgsql` and ephemeral PostgreSQL jobs."
+    }
+  ],
+  "applies_to": [
+    "P3"
+  ],
+  "provenance": {
+    "path": "findings/P3-replay-parity.md",
+    "sha256": "80c5d564e3923294fa6ba35c0e5df8c06bcd0d95aae30533e3eff18139d70757"
+  }
+}

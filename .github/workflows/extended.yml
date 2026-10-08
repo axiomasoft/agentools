@@ -38,6 +38,7 @@ jobs:
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
           php-version: "8.4"
+          extensions: mbstring, pdo_pgsql
           coverage: pcov
           tools: pcov
       - uses: dart-lang/setup-dart@6afc89df92d6eb3834022f73cd65adc8cdfcb92d # v1
@@ -48,14 +49,10 @@ jobs:
           node-version: "24"
           cache: npm
           cache-dependency-path: conformance/mcp/package-lock.json
-      - name: Install dependencies
-        run: |
-          composer install --working-dir=php --no-interaction --prefer-dist
-          composer install --working-dir=conformance --no-interaction --prefer-dist
-          npm ci --ignore-scripts --prefix conformance/mcp
-          conformance/mcp/node_modules/.bin/conformance --version
-          cd dart/agentools && dart pub get
-          cd ../agentools_mcp_dart && dart pub get
+      - name: Install all verification dependencies
+        run: bash scripts/ci-bootstrap.sh
+      - name: Isolated PostgreSQL test database
+        run: bash scripts/ci-postgres.sh
       - name: Bounded baseline before extended proofs
         run: |
           python3 tools/ci_gate.py --all
@@ -64,6 +61,7 @@ jobs:
         run: |
           python3 tools/adversarial_corpus.py run
           python3 tools/mutation_gate.py run
+          python3 tools/storage_chaos.py run
       - name: Resource envelopes (timing gated by fingerprint)
         run: python3 tools/resource_gate.py run
       - name: Emit CI map receipt

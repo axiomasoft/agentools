@@ -1,0 +1,46 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D186",
+  "title": "Решение",
+  "date": "2026-09-19",
+  "status": "accepted",
+  "decision": "**Agentools и CoreX/Flex — независимые пакеты на время исполнения фазы P9.** План AGENTOOLS **не** ждёт `corex/ai`, AiGateway, FLEX-2 P6.15, `flexcrm/agentic-bridge` и не пишет код в чужих репозиториях. P9.3–P9.7 **ребазлайнены** на автономный референсный вертикальный срез **целиком в** `~/projects/packages/agentools` по контракту `INT-002`. **INT-001** (Flex/CoreX CRM, C2-мост) переведён в статус **deferred** — исторический артефакт P9.2, не исполняемый контракт P9.3+. **D184** (ветка C2, мост в flexcrm) **снят** для исполнения P9; выбор владельца 2026-09-19 отменяет зависимость от чужого контура. Связь с CoreX/FlexCRM — **отдельное будущее решение**, вне текущего scope плана.",
+  "rationale": "Директива владельца 2026-09-19: «текущий проект Agent Tools с Core X напрямую никак не должен быть связан»; интеграционные связи проектируются позже. Блокер P9.3 (AiGateway) — следствие привязки к чужому контуру, а не дефект SDK. `RAG:— (owner decision 2026-09-19; repo-grounded: @plan/knowledge/findings-P9.3-blocker-aigateway-2026-09-19.json; D184; INT-001)`",
+  "applies_to": [
+    "P9",
+    "P9.3",
+    "P9.4",
+    "P9.5",
+    "P9.6",
+    "P9.7"
+  ],
+  "supersedes": [
+    "D184"
+  ],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D186\ndate: 2026-09-19\nstatus: accepted\nitem: P9\nitems: [P9, P9.3, P9.4, P9.5, P9.6, P9.7]\nsupersedes: [D184]\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Agentools и CoreX/Flex — независимые пакеты на время исполнения фазы P9.** План AGENTOOLS **не** ждёт `corex/ai`, AiGateway, FLEX-2 P6.15, `flexcrm/agentic-bridge` и не пишет код в чужих репозиториях. P9.3–P9.7 **ребазлайнены** на автономный референсный вертикальный срез **целиком в** `~/projects/packages/agentools` по контракту `INT-002`. **INT-001** (Flex/CoreX CRM, C2-мост) переведён в статус **deferred** — исторический артефакт P9.2, не исполняемый контракт P9.3+. **D184** (ветка C2, мост в flexcrm) **снят** для исполнения P9; выбор владельца 2026-09-19 отменяет зависимость от чужого контура. Связь с CoreX/FlexCRM — **отдельное будущее решение**, вне текущего scope плана."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Директива владельца 2026-09-19: «текущий проект Agent Tools с Core X напрямую никак не должен быть связан»; интеграционные связи проектируются позже. Блокер P9.3 (AiGateway) — следствие привязки к чужому контуру, а не дефект SDK. `RAG:— (owner decision 2026-09-19; repo-grounded: @plan/knowledge/findings-P9.3-blocker-aigateway-2026-09-19.json; D184; INT-001)`"
+    },
+    {
+      "id": "Consequences",
+      "title": "Consequences",
+      "text": "- P9.3: статус сброшен с 🔴 Blocked → ⬜ Not started; item-spec переписан (без AiGateway/Flex).\n- P9.4–P9.7: item-specs переписаны под дом кода `agentools` (SQLite + reference adapters + CLI consumer).\n- `@plan/knowledge/root-contracts-INT-002_standalone-reference-slice.json` — активный контракт P9.3–P9.7; строка `Exported` в `@plan/plan.json` §7.\n- INT-001: `deferred`; предложения дельт Flex (P2–P6-001) не блокируют P9.\n- Попытки P9.3 attempt 1–3 (blocked) остаются в journal как история; исполнение продолжается по новым ТЗ.\n- Интеграция с Flex/CoreX — новый item/план/решение владельца, не подразумевается P9–P10 без отдельного гейта."
+    }
+  ]
+}

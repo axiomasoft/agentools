@@ -1,0 +1,13 @@
+{
+  "id": "dart-core-tests",
+  "cwd": "dart/agentools",
+  "command": [
+    "dart",
+    "test",
+    "--reporter",
+    "expanded"
+  ],
+  "started_utc": "2026-10-08T12:02:32.186355+00:00",
+  "exit_code": 0,
+  "duration_seconds": 7.768
+}

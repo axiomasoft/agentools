@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/release_consumer_gate.py", line 804, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_consumer_gate.py", line 791, in main
+    return cmd_capture(args)
+           ^^^^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_consumer_gate.py", line 686, in cmd_capture
+    doc = build_receipt(allow_dirty=args.allow_dirty)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_consumer_gate.py", line 543, in build_receipt
+    raise ConsumerGateError("product tree dirty; rebuild P9 subjects first")
+ConsumerGateError: product tree dirty; rebuild P9 subjects first

@@ -36,7 +36,7 @@ final class InMemoryEventLog implements EventLog
         }
 
         $events = [...($this->eventsByAction[$actionId] ?? []), $event];
-        ($this->reducer ?? new ActionReducer())->fold($events);
+        ($this->reducer ?? new ActionReducer($events[0]->specRevision))->fold($events);
 
         $this->eventsByAction[$actionId] = $events;
         $known[$event->eventId] = true;

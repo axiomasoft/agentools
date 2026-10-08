@@ -188,7 +188,7 @@ final class PdoPostgresEventStoreTest extends TestCase
             self::assertSame($chain->hash($events[$i - 1]), $events[$i]->previousHash, 'broken chain at seq ' . $events[$i]->seq);
         }
         self::assertSame(
-            ['2026-09-20T10:00:00.250000+00:00', '2026-09-20T10:00:01+00:00', '2026-09-20T10:00:02.123456+00:00', '2026-09-20T10:00:03+00:00'],
+            ['2026-09-20T10:00:00.25Z', '2026-09-20T12:00:01+02:00', '2026-09-20T10:00:02.1234567Z', '2026-09-20T10:00:03Z'],
             array_map(static fn (ActionEvent $event): string => $event->timestamp, $events),
         );
     }

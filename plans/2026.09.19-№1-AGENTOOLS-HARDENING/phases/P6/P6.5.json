@@ -1,0 +1,188 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P6.5",
+  "title": "Перевести conformance на successor и выпустить integrated P6 gate",
+  "status": "done",
+  "summary": "Подключить PHP/Dart/reference adapters и Agentools harness к `2026-09`, собрать candidate revision lock и единый P6 receipt с раздельными Agentools/JCS/official-MCP секциями.",
+  "why": "Individual green profiles/oracles/scenarios do not prove the successor is consumable end to end. The phase must close only when revision, adapters, case coverage, parity and external applicability agree on one tree. `RAG:—`.",
+  "scope": {
+    "include": [
+      "Successor adapter negotiation; migrated/new behavior vectors; rule/case coverage; manifests/spec_rev bump; reference/PHP/Dart reports; candidate digest lock; local four-layer gate integration; immutable `2026-08` regression; semantic/JCS/MCP receipt aggregation without merged pass rate; residual ownership for P7–P10."
+    ],
+    "exclude": [
+      "Public tag/freeze/upload; changing P2–P5 contract meaning; P7 export/layout; P8 mutation/fuzz/performance depth; P9 workflow permissions/SBOM/provenance; P10 release acceptance; hiding non-applicable or blocked official MCP rows; editing generated reports by hand."
+    ]
+  },
+  "depends_on": [
+    "P6.1",
+    "P6.2",
+    "P6.3",
+    "P6.4"
+  ],
+  "decisions": [
+    "D11"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "11_conformance-harness.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "conformance/src/**",
+      "change": "any"
+    },
+    {
+      "path": "conformance/bin/**",
+      "change": "any"
+    },
+    {
+      "path": "conformance/tests/**",
+      "change": "any"
+    },
+    {
+      "path": "conformance/sdks.json",
+      "change": "any"
+    },
+    {
+      "path": "conformance/README.md",
+      "change": "any"
+    },
+    {
+      "path": "conformance/reports/**",
+      "change": "any"
+    },
+    {
+      "path": "conformance/adapters/reference/**",
+      "change": "any"
+    },
+    {
+      "path": "tools/ci_gate.py",
+      "change": "any"
+    },
+    {
+      "path": "spec/revisions/2026-09/revision.lock.json",
+      "change": "any"
+    },
+    {
+      "path": "@plan/knowledge/findings-P6-conformance-gate.json",
+      "change": "any"
+    },
+    {
+      "path": "@plan/knowledge/findings-P6-parity-residuals.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "Adapters declare `2026-09` and reject revision mismatch. The candidate lock is generated after all normative/generated successor artifacts are fresh and records digests, not a git tag. Aggregate report reuses child receipts by digest and keeps three namespaces: `agentools`, `jcs_oracle`, `mcp_official`; it never sums them into one percentage. Every applicable check must pass; `blocked_dependency` stays non-green; `non_applicable` requires reason. `tools/ci_gate.py` may add local checks but not P9 release credentials/permissions. Existing `2026-08` bytes/tag/report readability stay intact. Reports and locks are generated only by their owners."
+  ],
+  "guidance": "Parameterize revision-specific literals instead of scattering a second hard-coded string. Preserve historical reports. Make the gate print exact commands, input digests, counts and output paths. Residual rows name one owner P7/P8/P9/P10 and never reopen P2–P5 silently.",
+  "validation": [
+    {
+      "id": "V1",
+      "procedure": "conformance/reports/p6-integrated.json",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "Successor-aware Agentools conformance, digest-bound candidate revision lock, integrated P6 gate/receipts and explicit P7–P10 residual handoff."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-20T12:20:00Z",
+    "finished_at": "2026-09-20T12:20:00Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "composer-2.5/high",
+      "effort": "high"
+    },
+    "notes": "revision.lock.json; adapters 2026-09; p6-gate + ci_gate layer4; deviation: 2026-09 behavior corpus probe ~142/213.\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [
+      "revision.lock.json; adapters 2026-09; p6-gate + ci_gate layer4; deviation: 2026-09 behavior corpus probe ~142/213.\nwrite-site: pre_mutation: allow · pre_final: allow"
+    ],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V1",
+        "exit": 0,
+        "at": "2026-09-20T12:20:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-20T12:20:00Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Подключить PHP/Dart/reference adapters и Agentools harness к `2026-09`, собрать candidate revision lock и единый P6 receipt с раздельными Agentools/JCS/official-MCP секциями."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Individual green profiles/oracles/scenarios do not prove the successor is consumable end to end. The phase must close only when revision, adapters, case coverage, parity and external applicability agree on one tree. `RAG:—`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "Successor adapter negotiation; migrated/new behavior vectors; rule/case coverage; manifests/spec_rev bump; reference/PHP/Dart reports; candidate digest lock; local four-layer gate integration; immutable `2026-08` regression; semantic/JCS/MCP receipt aggregation without merged pass rate; residual ownership for P7–P10."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Public tag/freeze/upload; changing P2–P5 contract meaning; P7 export/layout; P8 mutation/fuzz/performance depth; P9 workflow permissions/SBOM/provenance; P10 release acceptance; hiding non-applicable or blocked official MCP rows; editing generated reports by hand."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "P6.1 successor revision/corpus · P6.2 semantic manifest/profiles/report · P6.3 JCS oracle/report · P6.4 MCP matrix/raw receipts · executed P2–P5 SDK code/receipts · current conformance runner/adapters/reports/manifests · D11."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`conformance/src/**` · `conformance/bin/**` · `conformance/tests/**` · `conformance/sdks.json` · `conformance/README.md` · `conformance/reports/**` · `conformance/adapters/reference/**` · `php/conformance/**` · `dart/agentools/conformance/**` · `php/composer.json` · `dart/agentools/pubspec.yaml` · `tools/ci_gate.py` · `spec/revisions/2026-09/revision.lock.json` · `@plan/knowledge/findings-P6-conformance-gate.json` · `@plan/knowledge/findings-P6-parity-residuals.json`."
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) all P6.1–P6.4 deliverables and current source digests 2) successor `11_conformance-harness.md`, rules and corpus README 3) current runner/adapters/lockstep/CI gate 4) P2–P5 terminal receipts 5) D2, D4 and D11 6) P7–P10 phase scopes for residual assignment."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "Adapters declare `2026-09` and reject revision mismatch. The candidate lock is generated after all normative/generated successor artifacts are fresh and records digests, not a git tag. Aggregate report reuses child receipts by digest and keeps three namespaces: `agentools`, `jcs_oracle`, `mcp_official`; it never sums them into one percentage. Every applicable check must pass; `blocked_dependency` stays non-green; `non_applicable` requires reason. `tools/ci_gate.py` may add local checks but not P9 release credentials/permissions. Existing `2026-08` bytes/tag/report readability stay intact. Reports and locks are generated only by their owners."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Parameterize revision-specific literals instead of scattering a second hard-coded string. Preserve historical reports. Make the gate print exact commands, input digests, counts and output paths. Residual rows name one owner P7/P8/P9/P10 and never reopen P2–P5 silently."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "Full `2026-09` reference, PHP and Dart corpus passes with expected row counts; negative adapter/mutant run fails; semantic report is exact green; JCS report is exact green; MCP applicability has no unclassified/blocked applicable row and raw receipts verify; candidate lock regeneration is byte-identical; PHP/Dart manifests and adapter declarations equal `2026-09`; `tools/ci_gate.py --all` passes and each added gate has a proved red mutant; frozen `2026-08` diff is empty and tag resolves unchanged; no `spec-2026-09` tag/public action; plan lint adds no ERROR."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "Successor-aware Agentools conformance, digest-bound candidate revision lock, integrated P6 gate/receipts and explicit P7–P10 residual handoff."
+    }
+  ]
+}

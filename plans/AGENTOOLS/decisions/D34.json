@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D34",
+  "title": "Решение",
+  "date": "2026-07-27",
+  "status": "accepted",
+  "decision": "**Гигиена артефактов bakeoff:** песочницы и логи фазы P2 живут под `bakeoff/`, правила игнорирования — во **вложенном** `bakeoff/.gitignore` (создаёт P2.1): `!results/*.log` переисключает логи из-под корневого `*.log`, `php/vendor/` и `*/.dart_tool/` исключаются явно (корневые правила заякорены `/` и `bakeoff/` не покрывают), lock-файлы песочниц **коммитятся** как доказательство прогнанных версий. Корневой `.gitignore` репозитория не правится",
+  "rationale": "`RAG:— (repo-grounded: ~/projects/packages/agentools/.gitignore — `*.log`, `/php/vendor/`, `/dart/.dart_tool/`; репро вложенного переисключения с наблюдаемым `git status --short` — `@plan/knowledge/findings-P2-bakeoff-recon-2026-07-27.json` §4)`; без этого `git add` логов — молчаливый no-op, Deliverables не попадают в item-коммит при зелёной локальной Validation",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D34\ndate: 2026-07-27\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Гигиена артефактов bakeoff:** песочницы и логи фазы P2 живут под `bakeoff/`, правила игнорирования — во **вложенном** `bakeoff/.gitignore` (создаёт P2.1): `!results/*.log` переисключает логи из-под корневого `*.log`, `php/vendor/` и `*/.dart_tool/` исключаются явно (корневые правила заякорены `/` и `bakeoff/` не покрывают), lock-файлы песочниц **коммитятся** как доказательство прогнанных версий. Корневой `.gitignore` репозитория не правится"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`RAG:— (repo-grounded: ~/projects/packages/agentools/.gitignore — `*.log`, `/php/vendor/`, `/dart/.dart_tool/`; репро вложенного переисключения с наблюдаемым `git status --short` — `@plan/knowledge/findings-P2-bakeoff-recon-2026-07-27.json` §4)`; без этого `git add` логов — молчаливый no-op, Deliverables не попадают в item-коммит при зелёной локальной Validation"
+    }
+  ]
+}

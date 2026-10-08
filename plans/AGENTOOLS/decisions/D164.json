@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D164",
+  "title": "Решение",
+  "date": "2026-08-04",
+  "status": "accepted",
+  "decision": "**F17/Q-28 resolved: ревизия `2026-08` нормирует отмену только на уровне действия; scenario-run cancellation не нормируется и outcome `CANCELLED` не вводится.** Ратифицируется существующая норма LOP-26, normative bytes не меняются. **Consequences:** отменённый шаг не получает придуманного маршрута SCN-6; расширение возможно только новой датированной ревизией.",
+  "rationale": "Owner decision 2026-08-04; `07_long-operations.md` LOP-26; `@plan/plan.json` Q-28. `RAG:— (owner decision + repo-grounded)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D164\ndate: 2026-08-04\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**F17/Q-28 resolved: ревизия `2026-08` нормирует отмену только на уровне действия; scenario-run cancellation не нормируется и outcome `CANCELLED` не вводится.** Ратифицируется существующая норма LOP-26, normative bytes не меняются. **Consequences:** отменённый шаг не получает придуманного маршрута SCN-6; расширение возможно только новой датированной ревизией."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Owner decision 2026-08-04; `07_long-operations.md` LOP-26; `@plan/plan.json` Q-28. `RAG:— (owner decision + repo-grounded)`"
+    }
+  ]
+}

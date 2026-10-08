@@ -1,0 +1,14 @@
+{
+  "id": "php83-lock-install",
+  "cwd": "/tmp/agentools-audit-copy-4tslglh6/repo/php",
+  "command": [
+    "/usr/bin/php8.3",
+    "/home/vostrikov/.config/herd-lite/bin/composer",
+    "install",
+    "--dry-run",
+    "--no-interaction"
+  ],
+  "started_utc": "2026-10-08T12:12:50.706105+00:00",
+  "exit_code": 2,
+  "duration_seconds": 0.164
+}

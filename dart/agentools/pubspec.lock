@@ -114,7 +114,7 @@ packages:
     source: hosted
     version: "7.0.1"
   frontend_server_client:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: frontend_server_client
       sha256: f64a0333a82f30b0cca061bc3d143813a486dc086b574bfb233b7c1372427694
@@ -258,7 +258,7 @@ packages:
     source: hosted
     version: "2.2.1"
   quiver:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: quiver
       sha256: ea0b925899e64ecdfbf9c7becb60d5b50e706ade44a85b2363be2a22d88117d2

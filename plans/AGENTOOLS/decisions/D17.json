@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D17",
+  "title": "Решение",
+  "date": "2026-07-27",
+  "status": "accepted",
+  "decision": "**Право переписать фазы реализации без миграции:** ни один item прежних P1–P5 не был начат (все `⬜`), реализации SDK нет, замороженных контрактов с внешними потребителями нет → фазы переписаны под `DR-01`, история не переписана, закрытая фаза P0 не тронута",
+  "rationale": "`RAG:— (repo-grounded: phases/P1..P5.md — все Status ⬜ Not started на 2026-07-27; ~/projects/packages/agentools — каталоги php/ и dart/ содержат только README)`; директива владельца 2026-07-26",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D17\ndate: 2026-07-27\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Право переписать фазы реализации без миграции:** ни один item прежних P1–P5 не был начат (все `⬜`), реализации SDK нет, замороженных контрактов с внешними потребителями нет → фазы переписаны под `DR-01`, история не переписана, закрытая фаза P0 не тронута"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`RAG:— (repo-grounded: phases/P1..P5.md — все Status ⬜ Not started на 2026-07-27; ~/projects/packages/agentools — каталоги php/ и dart/ содержат только README)`; директива владельца 2026-07-26"
+    }
+  ]
+}

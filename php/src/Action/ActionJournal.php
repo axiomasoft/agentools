@@ -21,13 +21,13 @@ final readonly class ActionJournal
     public function append(ActionEvent $event, ?ActionReducer $reducer = null): self
     {
         $events = [...$this->events, $event];
-        ($reducer ?? new ActionReducer())->fold($events);
+        ($reducer ?? new ActionReducer($events[0]->specRevision))->fold($events);
         return new self($events);
     }
 
     public function state(?ActionReducer $reducer = null): FoldedAction
     {
-        return ($reducer ?? new ActionReducer())->fold($this->events);
+        return ($reducer ?? new ActionReducer($this->events[0]->specRevision ?? '2026-09'))->fold($this->events);
     }
 
     /** @param list<ActionEvent> $tail */

@@ -1,0 +1,208 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P3.3",
+  "title": "Реализовать atomic consume, PostgreSQL adapter и cleanup",
+  "status": "done",
+  "summary": "Ввести в оба SDK порт atomic consume с PostgreSQL adapter на injected SQL и retention cleanup, который нельзя обойти in-memory preset.",
+  "why": "Unique `(tenant_id, jti)` claim is the only proof of CNF-20 across workers. Process-local sets and success-only writes leave restart and concurrent holes. `RAG:—`; SQL semantics — `@plan/knowledge/research-P3-design-rag.json`.",
+  "scope": {
+    "include": [
+      "`ConfirmationTokenStore.consume` / outcome refine / cleanup; versioned SQL schema; PHP PDO PostgreSQL adapter; Dart adapter over injected SQL executor; testkit in-memory store clearly marked non-production; concurrency, restart, cleanup and collision tests."
+    ],
+    "exclude": [
+      "ConfirmationService public API; codec field changes; event journal; idempotency leases; adding Composer/pub driver libraries; applying SQL to an owner production database; CI matrix ownership (P9)."
+    ]
+  },
+  "depends_on": [],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/root-contracts-token-replay-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/hardening/token-replay-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-P3-design.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-P3-design-rag.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "fixtures/hardening/sql/confirmation-consumed-tokens.v1.sql",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "`consume` executes `INSERT ... ON CONFLICT (tenant_id, token_id) DO NOTHING RETURNING token_id` inside the caller transaction if one exists. Empty RETURNING is spent; do not SELECT-after-empty to authorize an effect. Outcome starts as `presented` and may be updated once to `authorized|authorization_denied|policy_denied`; UPDATE must not delete the row. Cleanup is `DELETE WHERE expires_at + retention < :now` using the injected clock; unexpired rows must survive. Partial unique indexes on unexpired rows are forbidden. In-memory implementation lives under test/reference namespaces and cannot be the default production constructor. PHP `suggests` `ext-pdo_pgsql`; Dart does not add a `postgres` dependency. Item cannot close on in-memory evidence alone: PostgreSQL suite is mandatory."
+  ],
+  "guidance": "Shared SQL file is the schema SSOT. Store raw `token_digest` as bytea/hex, never log it. Tenant isolation is part of the primary key, not an application-only WHERE. Two connections/executors in one test process are sufficient to prove the arbiter; a restart test opens a new store instance on the same database.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "cd php && composer analyse",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "cd dart/agentools && dart analyze",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "git diff --exit-code -- spec/revisions/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "procedure": "cd php && composer test -- --filter ConfirmationTokenStoreTest",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "procedure": "cd php && composer test -- --filter PdoPostgresConfirmationTokenStoreTest",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "procedure": "cd dart/agentools && dart test test/confirmation/confirmation_token_store_test.dart",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "procedure": "cd php && composer analyse",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "Durable consume port, PostgreSQL adapter, versioned SQL, cleanup, and concurrency/restart evidence."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-20T06:30:00Z",
+    "finished_at": "2026-09-20T06:30:00Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "grok-4.6/high",
+      "effort": "high"
+    },
+    "notes": "ConfirmationTokenStore port, InMemory + PdoPostgres adapters, shared SQL SSOT; consume/collision/cleanup/restart postgres evidence; Dart in-memory + SqlConfirmationTokenStore.\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V4",
+        "exit": 0,
+        "at": "2026-09-20T06:30:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V5",
+        "exit": 0,
+        "at": "2026-09-20T06:30:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V6",
+        "exit": 0,
+        "at": "2026-09-20T06:30:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V7",
+        "exit": 0,
+        "at": "2026-09-20T06:30:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-20T06:30:00Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Ввести в оба SDK порт atomic consume с PostgreSQL adapter на injected SQL и retention cleanup, который нельзя обойти in-memory preset."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Unique `(tenant_id, jti)` claim is the only proof of CNF-20 across workers. Process-local sets and success-only writes leave restart and concurrent holes. `RAG:—`; SQL semantics — `@plan/knowledge/research-P3-design-rag.json`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "`ConfirmationTokenStore.consume` / outcome refine / cleanup; versioned SQL schema; PHP PDO PostgreSQL adapter; Dart adapter over injected SQL executor; testkit in-memory store clearly marked non-production; concurrency, restart, cleanup and collision tests."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "ConfirmationService public API; codec field changes; event journal; idempotency leases; adding Composer/pub driver libraries; applying SQL to an owner production database; CI matrix ownership (P9)."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/knowledge/root-contracts-token-replay-v1.json` · `fixtures/hardening/token-replay-v1.json` · `@plan/knowledge/research-P3-design.json`"
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`php/src/Contracts/ConfirmationTokenStore.php` · `php/src/Confirmation/PdoPostgresConfirmationTokenStore.php` · `php/src/Confirmation/InMemoryConfirmationTokenStore.php` · `php/tests/Confirmation/ConfirmationTokenStoreTest.php` · `php/tests/Confirmation/PdoPostgresConfirmationTokenStoreTest.php` · `dart/agentools/lib/src/contracts/confirmation_token_store.dart` · `dart/agentools/lib/src/confirmation/sql_confirmation_token_store.dart` · `dart/agentools/lib/src/confirmation/in_memory_confirmation_token_store.dart` · `dart/agentools/test/confirmation/confirmation_token_store_test.dart` · `fixtures/hardening/sql/confirmation-consumed-tokens.v1.sql` · `composer.json` · `dart/agentools/pubspec.yaml`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/root-contracts-token-replay-v1.json` 2) `fixtures/hardening/token-replay-v1.json` 3) `@plan/knowledge/research-P3-design.json` 4) `@plan/knowledge/research-P3-design-rag.json` 5) `php/src/Contracts/IdempotencyStore.php` 6) `php/src/Idempotency/InMemoryDeduplicationStore.php`."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "`consume` executes `INSERT ... ON CONFLICT (tenant_id, token_id) DO NOTHING RETURNING token_id` inside the caller transaction if one exists. Empty RETURNING is spent; do not SELECT-after-empty to authorize an effect. Outcome starts as `presented` and may be updated once to `authorized|authorization_denied|policy_denied`; UPDATE must not delete the row. Cleanup is `DELETE WHERE expires_at + retention < :now` using the injected clock; unexpired rows must survive. Partial unique indexes on unexpired rows are forbidden. In-memory implementation lives under test/reference namespaces and cannot be the default production constructor. PHP `suggests` `ext-pdo_pgsql`; Dart does not add a `postgres` dependency. Item cannot close on in-memory evidence alone: PostgreSQL suite is mandatory."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Shared SQL file is the schema SSOT. Store raw `token_digest` as bytea/hex, never log it. Tenant isolation is part of the primary key, not an application-only WHERE. Two connections/executors in one test process are sufficient to prove the arbiter; a restart test opens a new store instance on the same database."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "Shared SQL applied to ephemeral PostgreSQL; two concurrent consume calls yield exactly one winner; restart denies the winner; jti collision with different digest does not overwrite; cleanup negative test fails if it deletes unexpired rows; PHPUnit postgres group and Dart SQL tests green; in-memory tests exist but a receipt records they are non-production; `cd php && composer analyse`; `cd dart/agentools && dart analyze`; `git diff --exit-code -- spec/revisions/2026-08`; plan lint adds no ERROR."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "Durable consume port, PostgreSQL adapter, versioned SQL, cleanup, and concurrency/restart evidence."
+    }
+  ]
+}

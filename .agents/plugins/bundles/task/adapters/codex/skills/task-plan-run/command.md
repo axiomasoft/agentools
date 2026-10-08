@@ -1,153 +1,78 @@
 <!-- Generated Codex runtime projection; do not edit as source.
 Canonical source: packages/task/commands/plan-run.md
-Canonical SHA-256: sha256:fcec0c67bb951c1d274dc40fed4b2c390f498fa22b22c3f9ae3f02275381b82d
-Adapter: task.codex-command/1.0.16
+Canonical SHA-256: sha256:ea6da7ab23e0ab9e9d1d9640beed2eddf1db823fd874a7f2aca9e8e561724131
+Adapter: task.codex-command/1.0.18
 -->
-## Native Codex launch-block — required only at a real user-facing boundary
+Resolve the installed Task runtime once:
 
-This generated runtime is the Codex provider projection. Render only the Codex-native launch;
-never copy Claude Code slash syntax as the executable invocation and never print both providers.
-`$ task:…` is an invocation inside the **current** Codex session, not a fresh launch.
-When the typed Context is `continue-root`, keep executing the compatible ready successor within
-the owner-authorized scope in this root. If that scope is complete, report the exact successor as a
-recommendation for this chat; a final answer does not require a new `codex` process. A command, phase, directory, local repair, or ordinary test failure is not a session
-boundary.
+```bash
+TASK_CODEX_PLUGIN_ROOT="$(codex plugin marketplace list --json | python3 -c 'import json,sys,pathlib; data=json.load(sys.stdin); roots=[item["root"] for item in data.get("marketplaces", []) if item.get("name")=="swissknifeman" and (pathlib.Path(item["root"])/"packages/task/lib/task").is_dir()]; len(roots)==1 or sys.exit("task runtime unavailable: expected one marketplace root with packages/task/lib/task"); print(roots[0]+"/packages/task")')"
+```
+Use `python3 "$TASK_CODEX_PLUGIN_ROOT/scripts/plan-work.py"` for facade operations.
 
-At a fresh-session boundary, keep Batch/Model/Thinking/Context/Суть in the metadata table,
-but never put the command in a table
-cell or column. Immediately after the table print `**Native Codex command:**` and a fenced `bash`
-block which explicitly pins the repository cwd, mapped model, reasoning effort, approval policy,
-and sandbox:
+## Codex execution binding
 
+`plan-work.py prepare` captures `CODEX_THREAD_ID` and provider-written turn_context through
+`route_evidence_codex.capture_current`; no route export is needed. Resume and the Codex clear command use the current thread. Proof has source="provider-thread-state" and
+source_version="codex-turn-context-v1". The source="cli-flag" compatibility fallback is only
+for an attested fresh launch; doctor output/config/actor prose are forbidden substitutes.
+
+At a genuine cold-start-root/owner-requested-new-session boundary, render the receipt's
+**Native Codex command:** outside the metadata table:
 ```bash
 codex -C <repo-cwd> -m <model-selector> -c 'model_reasoning_effort="<effort-selector>"' -a never -s danger-full-access '$ task:<command> <arguments>'
 ```
+Use the successor's Routing. scope-complete retains continue-root; report its recommendation
+without launching outside owner scope. Same-session completion uses the compact receipt.
 
-Prefer one physical command line. If intentional formatting uses multiple shell lines, terminate
-every continued line except the last with `\`; never rely on Markdown visual wrapping.
+Execute `$ARGUMENTS` in the owner-authorized scope. Use the existing `plan-work` facade;
+its admission/reducers own route proof, checks, review and closure through `task_contract`. Runtime code is the source
+of truth. Load schema, repeat, audit or cross-session references only for a named typed boundary.
 
-**Final-response guard:** continue compatible work inside the admitted owner scope. At an actual
-chat stop, include the exact shared receipt recommendation even when no terminal-admission lease
-is installed. `scope-complete` retains `continue-root`; it does not authorize the successor or
-require a fresh launch. An explicit new-session request updates the persisted decision to
-`cold-start-root: owner-requested-new-session` with a fresh post-close checkpoint. Then include the
-copyable native Codex block after the metadata table. Waiting continuations retain the exact gate;
-never present them as an unconditional command to run now. A completed objective needs no invented
-successor. Render only the active provider.
+1. Call `scripts/plan-work.py prepare --plan-dir <dir> --item <Pn.m> --command plan-run
+   --actor <actor> [--session-id <session>]`. For a phase invocation pass `--phase Pn`; for
+   multiple items pass the admitted `--request` and returned batch receipt. Pass the owner's
+   `--reviewer <provider/model[/context][/effort]> [--review-effort <effort>]` when specified.
+   Prepare captures the current provider-attested route and persists its `route-run-receipt/v1`,
+   base commit, run context and pre-mutation admission. A stronger class/effort is recorded as
+   over; a weaker or unknown route blocks. Do not export another route or reconstruct the contract.
+   Consume the selected item capsule. `PLAN_CONTEXT_TRUNCATED`/`PLAN_CONTEXT_DIGEST_MISMATCH`
+   are errors; open full carriers only for the named ambiguity. Resume reuses the same durable run.
+2. Implement the declared scope and acceptance. Run fast affected checks before expensive checks;
+   finish generation before checking its outputs. Existing dirty changes retain their ownership.
+   For systemic risk, complete the declared invariant-model/self-check. Ordinary low-risk work
+   uses self-check and affected tests. Independent review requires an explicit owner request or a
+   concrete risk: security/auth, destructive migration, irreversible external action,
+   payment/accounting, concurrency/shared state, public API/schema, low-confidence impact,
+   or release authority. A risk does not itself authorize a phase audit.
+3. Call `plan-work.py validate --plan-dir <dir> --item <Pn.m> --attempt-id <unique-id>`.
+   The runtime executes the declared Validation carriers in order, owns candidate-bound logs and
+   contract receipts, stops after RED and returns `qualify` or `repair`. Project check definitions
+   may add dependencies, environment and timeouts through `--checks`; acceptance carriers remain
+   exact. Repair the failure and rerun affected evidence; retain all immutable attempts.
+4. Call `plan-work.py close --plan-dir <dir> --item <Pn.m> [--note <result>]`.
+   The runtime qualifies live bytes, write sites and required review, builds terminal evidence,
+   appends once, regenerates views/continuity, and verifies delivery through `plan_delivery`.
+   It returns `complete`, `repair`, or `review-ready`; do not write terminal JSON or Python helpers.
+   For `review-ready`, call `plan-work.py review --plan-dir <dir> --item <Pn.m>`. Supported Grok
+   transport starts one separate native read-only reviewer session with the exact selected route.
+   Keep the candidate stable. Consume the reducer action: GREEN returns to close; FINDINGS means
+   an owning fix, affected checks and the next review candidate. No unrequested reviewer or silent
+   provider fallback. Other providers use the native independent review/record boundary.
+   Use `review-status`, `review-cancel`, or `review-reconcile` with plan/item for an interrupted job;
+   never launch another prompt while its outcome is unknown. Active review has no elapsed deadline
+   or default turn cap. A cancelled review is not GREEN. Completed-round limits stay in review_policy.
 
-Derive the class and effort from the next item's Routing before rendering it; for `plan-run`,
-do not reuse the preceding session's route. Current Codex mapping: economy=gpt-5.6-luna, implementation=gpt-5.6-terra, frontier=gpt-5.6-sol;
-low=low, medium=medium, high=high, xhigh=xhigh. At a fresh-session boundary, keep the provider-neutral Next too; its
-`$ task:…` form alone or an unpinned `codex` command is not a native fresh launch.
+Close each GREEN item in this invocation. Continue dependency-ready items within the admitted scope;
+then report the receipt's semantic Next as a recommendation. Do not execute outside that scope.
+Use one scoped commit. `finalize` resumes an already appended terminal through the same reducers.
+Phase acceptance uses `phase_audit_policy`; an audit requires candidate/run-bound owner consent.
+`plan-close` is whole-plan-only. Future-item read-budget/bundle debt is non-gating unless it affects
+this item's dependency closure. Full-plan/fleet lint remains a release check.
 
-## Codex current-route binding — provider-specific
-
-Before the first product-journal mutation, capture the effective route for this exact command:
-
-```bash
-export TASK_CODEX_PLUGIN_ROOT="$(codex plugin marketplace list --json | python3 -c 'import json,sys,pathlib; data=json.load(sys.stdin); roots=[item["root"] for item in data.get("marketplaces", []) if item.get("name")=="swissknifeman" and (pathlib.Path(item["root"])/"packages/task/lib/task").is_dir()]; len(roots)==1 or sys.exit("task runtime unavailable: expected one marketplace root with packages/task/lib/task"); print(roots[0]+"/packages/task")')"
-export TASK_CODEX_ROUTE_EVIDENCE="$(PYTHONPATH="${TASK_CODEX_PLUGIN_ROOT}/lib:${TASK_CODEX_PLUGIN_ROOT}/../.."   python3 -m task.route_evidence_codex capture   --expected-invocation '$ task:plan-run <arguments>' --expected-cwd <repo-cwd>)"
-```
-
-Replace `<arguments>` and `<repo-cwd>` with the exact current invocation payload and repository
-cwd. A non-zero exit is `ROUTE-UNVERIFIABLE`; do not start or mutate the product item.
-
-For Codex, `task.route_evidence_codex.capture_current(...)` resolves the current
-`CODEX_THREAD_ID` first and validates the latest provider-written `turn_context`: concrete
-model, reasoning effort, cwd, approval policy, sandbox policy, and the exact current Task
-prompt. The resulting actual-route record carries `source="provider-thread-state"` and
-`source_version="codex-turn-context-v1"`.
-
-This path is valid both after a full native launch and after the Codex clear command, which
-starts a fresh chat inside the same CLI process. A model or reasoning change before product
-journal start is therefore checked from the current chat state, never from stale process argv.
-If persisted thread state is genuinely absent, exact ancestor argv remains a compatibility
-fallback with `source="cli-flag"`. Malformed/mismatched thread state fails closed; config,
-doctor output, actor prose, and self-attestation remain forbidden substitutes.
-
-This provider binding defines how Codex satisfies the D24 write-site checks in the canonical
-command below. The projected contract snippets consume exactly
-`json.loads(os.environ["TASK_CODEX_ROUTE_EVIDENCE"])`; do not recreate route evidence from
-placeholders, `codex doctor`, configuration, or agent prose. Its fresh-native-only wording constrains the `cli-flag` compatibility fallback;
-its private-rollout prohibition forbids manual probing but not this validated adapter-owned
-read; neither rule prohibits a verified cleared chat or overrides current `turn_context`
-evidence.
-
-
-## Codex snapshot transport guard — provider-specific
-
-Run `task.plan_recovery.prepare()` before analysis, then consume its immutable v2 five-carrier
-snapshot. Set both
-the nested `exec_command.max_output_tokens` and the outer `// @exec: {"max_output_tokens": ...}`
-budget high enough for the current immutable byte chunk; never treat a successful shell exit as a
-complete read. Every chunk must retain `snapshot_sha256`, byte `offset`/`next_offset`, and the
-terminal marker. A missing terminal marker, a cursor gap, visible transport truncation, or a
-live/snapshot digest mismatch is `PLAN_CONTEXT_TRUNCATED`/`PLAN_CONTEXT_DIGEST_MISMATCH` before
-the product journal starts. Continue only from the same snapshot; never reread a live carrier to
-replace a lost chunk.
-
-Read `runtime/plan-protocol/references/common-principles.md` and
-`runtime/plan-protocol/references/execution-mode.md` from the configured Task package root.
-The full schema canon and snippets are on-demand references, not mandatory execution context.
-
-Execute `$ARGUMENTS` by the canonical `task:plan-exec` lifecycle. `plan-run` inherits the current
-provider-attested route; it never pins model or effort and it never substitutes config or prose for
-route evidence. Capture five v2 carriers once, admit the Routing group or ready subset of a recommended group, persist one
-`route-run-receipt/v1`, then reuse route/context evidence until `route_change_boundary()` proves change.
-
-After each GREEN item, close the item and any directly closable GREEN phase in this invocation,
-then compute Next from the resulting state. Continue a compatible ready successor inside the
-owner-authorized admitted scope in this root. Local reversible repair stays in this invocation.
-If the owner requested only the completed scope, stop product writes and persist lifecycle
-`scope-complete` with its checkpoint: the reducer retains `continue-root` with reason
-`authorized-scope-complete`. A chat final reports the successor as a recommendation; it grants no
-execution authority and does not require a new process. Never invent work when the objective is done.
-An explicit request for a new session updates lifecycle to `owner-requested-new-session`; persist a
-fresh post-close checkpoint and render exactly one native launch for that successor. A routine
-item/phase transition or test failure does not imply a session boundary. A real external wait keeps
-its time/predicate gate visible. Design-only/review-only requests remain separate deliverables.
-
-Activate only for explicit owner plan intent or an exact cited local workflow policy; use the
-shared [intent routing canon](../references/intent-routing.md). An exact current owner `plan-run`
-is intent to execute the declared item. Before protected writes, an item-declared finite `Authority`
-gate may be materialized through `task_contract.materialize_owner_invocation(plan_dir, item_id)`:
-the builder captures the live provider user message itself, appends its brief/Decision Log carriers,
-and regenerates their bundle. It cannot widen scope, Files, environment or release/fleet authority.
-Ungated prose is `AUTHORITY_CONTRACT_GAP`; route metadata or caller-supplied grants never authorize.
-Run read-only environment preflight autonomously. A real environment failure records `NO-GO`
-with repair evidence and a continuation, rather than repeating an already attested owner question.
-Persist external/calendar waits as `waiting-external` with observation start, `resume_at`, evidence
-fingerprint, runnable-after predicate and exact continuation in a durable checkpoint. Resume the same
-run/evidence chain only after the actual time and predicate evidence; do not restart the observation
-or close a production window using a fixture clock. An unchanged finite scope needs no renewed grant.
-
-Use `task.plan_lifecycle.select(task.plan_lifecycle.LifecycleInput())` for transient change-impact selection: focused validation and one
-commit are normal; declared hard risk widens validation/review; foreign baseline is non-gating unless
-its closure intersects; audit is read-only; only changed projections are generated once; one semantic
-Next is rendered by `plan_delivery`. A declared Validation carrier needs current GREEN evidence, not
-another run at each lifecycle transition: reuse it while relevant product/test/tool/config inputs and
-environment are unchanged, rerun the affected delta after change, and rerun a live check at its live
-boundary. Follow the complete close and delivery gates from `plan-exec`.
-
-After GREEN acceptance, persist evidence and the terminal journal event, run
-`task.plan_reconcile.reconcile_terminal()` to regenerate and verify changed views,
-and close the item in this invocation. If it is the last item of a GREEN phase and no audit is
-explicitly admitted by `phase_audit_policy`, create the phase closure in this invocation too. Compute
-Next only from that post-closure state and dependencies. Never render a launch for `plan-close` of
-this result or for another `plan-run`/`plan-exec` of the current item.
-
-For an installed terminal-admission adapter, arm the lease only after this command's run receipt,
-refresh it only after material progress or typed owner-wait, and use its check verdict before a
-terminal response. It is repository-owned admission evidence, not a claim that an unconfigured
-provider transport is intercepted.
-
-An open durable run is not a response boundary: use commentary for partial progress and continue
-the authorized work. Before final, the enabled Stop adapter runs `check-open` against the current
-provider session even without a lease/request payload. `TASK_OPEN_RUN_FINAL_FORBIDDEN` requires
-continuing or persisting a legitimate terminal block/checkpoint; a green subset of tests is not
-an exception. An explicit owner stop remains binding. The check does not itself close any run.
-
-At every actual final after closure, render the shared receipt fragment through worktree-local
-`plan-delivery.py --plan-dir <plan-dir> --subject <subject> --kind terminal --render-final`
-(or the same command with `--verify <receipt>`). This delivery rule applies even without an optional
-terminal-admission lease. A lease controls transport admission, not whether Next is reported.
+`task.plan_lifecycle.select(task.plan_lifecycle.LifecycleInput())` is advisory; it grants no authority.
+The enabled terminal-admission adapter owns Stop/lease checks. Continue an open authorized run,
+honor an explicit owner stop, and retain actual external-wait evidence. A fresh-session/provider
+handoff uses the returned typed continuity and native launch; ordinary item transitions need none.
+Exceptional repeat and review contracts are in `runtime/plan-protocol/references/` on demand.
+Large logs and manifests stay in artifacts; use compact tool results.

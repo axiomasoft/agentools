@@ -1,0 +1,19 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "findings-P10-residual-risks",
+  "title": "P10 residual risks",
+  "sections": [
+    {
+      "id": "P10-residual-risks",
+      "title": "P10 residual risks",
+      "text": "**Count:** 18\n\n| ID | State | Disposition | Private block | Public block |\n|:--|:--|:--|:--|:--|\n| RR-CAP-HOSTED-ATTEST | capability_unavailable | capability_unavailable | False | True |\n| RR-DEC-D5-PUBLIC-IDENTITY | decision_pending | decision_pending | False | True |\n| RR-G-CI-001 | verified | owner_review | False | True |\n| RR-G-REL-001 | verified | owner_review | False | True |\n| RR-M-014 | verified | owner_review | False | True |\n| RR-M-015 | verified | owner_review | False | True |\n| RR-M-016 | verified | owner_review | False | True |\n| RR-M-017 | verified | owner_review | False | True |\n| RR-NG-SUP-001 | decision_pending | accepted-non-guarantee | False | True |\n| RR-PKG-dart_mcp | verified | owner_review | False | True |\n| RR-SEM-MCP-OFFICIAL | verified | owner_review | False | True |\n| RR-SUBJ-dart-core | verified | owner_review | False | True |\n| RR-SUBJ-dart-mcp-companion | verified | owner_review | False | True |\n| RR-SUBJ-php-sdk | verified | owner_review | False | True |\n| RR-SUP-API | decision_pending | decision_pending | False | True |\n| RR-SUP-CHANGE | decision_pending | decision_pending | False | True |\n| RR-SUP-IDENTITY | decision_pending | decision_pending | False | True |\n| RR-SUP-PLATFORM | decision_pending | decision_pending | False | True |"
+    }
+  ],
+  "applies_to": [
+    "P10"
+  ],
+  "provenance": {
+    "path": "findings/P10-residual-risks.md",
+    "sha256": "0ab861590d69305b56e3b9bc4a615b1d501d6008354750d1ee63c066e842388f"
+  }
+}

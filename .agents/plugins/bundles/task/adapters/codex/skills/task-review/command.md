@@ -1,79 +1,52 @@
 <!-- Generated Codex runtime projection; do not edit as source.
 Canonical source: packages/task/commands/review.md
-Canonical SHA-256: sha256:2a027c9f5d627305927c3ec38525b15858ca2902df082b883ab95b5c367b5c66
-Adapter: task.codex-command/1.0.16
+Canonical SHA-256: sha256:773247933714fd88af3584381ac287f3f86ee25454a71e218b97ec472abc6c42
+Adapter: task.codex-command/1.0.18
 -->
-Это задача РЕВЬЮ (read-only). Ввод пользователя: «$ARGUMENTS».
-Модель/effort запинены (frontier/xhigh) — не переключай вручную. Файлы НЕ меняй.
+This is a read-only review of `$ARGUMENTS`. Do not modify files.
 
-**Зачем оркестратор.** Кейс-мотиватор: атрибуты Laravel-моделей не поймал ни один ревью в 5
-проектах — правило жило в скилле, но ревью его не открывало. Laravel-ревью-паки (P7.5) — частный
-случай; здесь он обобщён: **применимое к изменению правило ⇒ проверка его наблюдаемого результата**,
-без правки этой команды.
+`--reviewer <provider>/<exact-model-id>` is optional; accept `claude-code`, `codex`,
+`cursor`, or `grok`. Without it, perform the requested review on the current captured native
+provider/model/effort route; do not ask for a selector or fabricate route evidence. For an item
+executed by this session, launch a fresh read-only session on that route. An explicit selector
+defaults to `high` effort and selects the reviewer, not the executor.
+The selector also accepts optional context/effort suffixes and a trailing `/`: `grok/grok-4.7/500k/`,
+`grok/grok-4.7/high/`, `grok/grok-4.7/hight/`, `grok/grok-4.7/500k/high/`.
+Use `task.review_packet.invocation_selection`; context is required capacity, not a token-spend cap.
+A suffix sets effort; a conflicting explicit flag fails closed. Only provider evidence proves context.
+Capture the actual provider route and require the chosen model/effort in a fresh non-executor
+session. A declared routing minimum is not evidence that the chosen reviewer ran.
+These review commands do not pin a default model in native frontmatter. If the current route
+differs, return the exact selected review launch; never silently substitute
+the default model or let the executor impersonate a reviewer.
+For a prepared item packet, read
+`runtime/plan-protocol/references/review-mode.md` and use `plan-work.py review-run` for one Grok
+transport attempt, or `review-record` from the independently routed session. Review ends with its
+verdict and owning continuation. Never repair product or recursively launch a re-review.
 
-## Шаг 0 — диспетчер профилей (таксономия `quality/artifact-review`)
+Identify the artifact and observable risk, then select depth:
 
-Определи тип артефакта на входе и профиль:
-- **Код** (дифф / ветка / PR) → профиль **code**, Stage A/B/C ниже целиком.
-- **Документация** (`docs/`, README, гайды) → профиль **doc**: конституция = канон структуры
-  docs (Diátaxis / канон vault); измерения — соответствие канону, staleness против кода
-  (примеры/маршруты/флаги сверить с реальным кодом), миграция план→docs без потерь,
-  wiki-связность/битые ссылки. Stage A/B применяй к doc-скиллам реестра (writing-style и т.п.),
-  Stage C — тот же.
-- **План/спека** → read-only профиль plan/spec из `quality/artifact-review`. Путь `plans/`
-  сам по себе не включает phase lifecycle. `task:plan-audit` нужен при явно запрошенном Task audit;
-  его фазовая admission/authority остаётся обязательной.
-- Смешанный дифф (код + docs) → оба профиля, findings не смешивать — у каждой находки профиль.
+- `quick`: docs, config, or a small local diff; one correctness pass plus applicable project rules.
+- `standard`: an ordinary code diff; correctness, security, and performance in the affected slice, with
+  relevant targeted checks.
+- `adversarial`: security/auth, destructive migration, payments/accounting, concurrency/shared state,
+  irreversible external effects, or public API/schema; test concrete failure scenarios and use one independent
+  finder/verifier only when a separate perspective is justified.
 
-## Stage A — детект стека → резолв скиллов
+Use the invariant model as primary context for systemic risks (concurrency, transactions, auth,
+data integrity); otherwise use the diff. Check affected operations, resources and drivers together,
+including pairwise lock-order cycles and residual invariant races. Classify each finding by
+`risk_class` and stable `area` (subsystem/invariant). A systemic re-review covers the affected
+class/model; a local re-review checks findings and their changed dependency closure.
+Open manifests, local instructions, and skills only when they apply to the
+changed stack or behavior. Do not scan the full registry, glossary, caller graph, or test suite for completeness.
+Check adjacent rules in one pass and handle one or two applicable skills yourself. Verify changing external
+premises against primary sources.
 
-1. **Детект стека** по манифестам корня/затронутых пакетов: `composer.json` → `php`/`laravel`
-   (+пакеты: `filament`, `livewire`…), `pubspec.yaml` → `dart`/`flutter`, `package.json` →
-   `js`/`ts` (+`vue`, `react`…). Из манифестов выведи набор тегов стека + от типа диффа —
-   теги дисциплин (`naming`, `conventions`, `git`, `writing`, `testing`, `security`).
-2. **Резолв применимых скиллов** из реестра по тегам: `skills.json` (в проекте — vendor-копия
-   `.ai/skills`/`.claude/skills`; SSOT — реестр skiller). Матчинг: тег скилла ∈ тегам стека/
-   дисциплин диффа. Теги дают кандидатов: оставь только правила, реально относящиеся к изменению.
+For each confirmed finding, report severity (`Blocker|Major|Minor|Nit`), confidence, `file:line`, the concrete
+failure scenario, and its correctness, security, performance, or project-rule basis. Severity reflects impact,
+not wording strength. Discard matches without reproducible impact. If there are no findings, say so and name
+only material residual risk.
 
-## Stage B — измерения: классика + conformance-finder'ы
-
-1. **Классические измерения** (профиль code): correctness / security / perf. Свежий контекст —
-   суди по диффу (`git diff <base>...<branch>` / `gh pr diff <N>`, slice, не файлы целиком);
-   свой код не «полируй», атакуй дизайн. Глубину масштабируй под РИСК (blast-radius), не размер:
-   на рисковом срезе (transactions / queue / concurrency / data-integrity / connectors) —
-   adversarial: перечисли failure-modes, для каждого построй конкретный сценарий поломки.
-2. **Проверка применимых правил** из Stage A: finder получает секцию
-   `## Conformance` скилла как чек-лист императивов и проверяет дифф против каждой строки.
-   Применимость определяется запросом, принятым контрактом проекта и наблюдаемым влиянием.
-   Рекомендация скилла не становится обязательным gate из-за наличия в каталоге; непринятые
-   style/coverage defaults отмечай как suggestion без выдуманного Major или обязательного repair.
-   Нет секции `## Conformance` — finder берёт свод правил из тела SKILL (чеклист качества /
-   жёсткие запреты). Смежные правила проверяй одним проходом; количество скиллов не задаёт число reviewers.
-   **Кап делегирования:** finder заводится только под скилл, который реально даёт отдельное
-   измерение на ЭТОМ диффе; смежные скиллы, закрываемые одним проходом, объединяй в один finder —
-   хватает одного, запускай один, а не несколько, число спавнов держи низким. Что проверишь сам
-   за несколько тул-вызовов (1–2 применимых скилла) — гони single-agent'ом, без fan-out.
-   Оркестрация мультиагентным `*.js`-скриптом → сначала скилл `general/workflow-craft` (матчинг 4
-   канонических шаблонов + обязательные стадии design vs dev) и конструктор
-   `packages/task/workflows/README.md`, не изобретай оркестрацию с нуля.
-3. **Glossary-conformance** (конституция = `CONTEXT.md` затронутых пакетов + term-index
-   `02-Knowledge/00-Strategy/Ecosystem_Glossary.md` для кросс-пакетных терминов): дифф
-   не вводит термин, конфликтующий с языком `CONTEXT.md` пакета; не использует
-   `_Avoid_`-синоним вместо канона; термин, реально пересёкший 2+ пакетов (Rule of Two),
-   отражён в term-index. Дисциплина и Rule of Two — в `architect/domain-modeling`
-   (не дублируется здесь).
-4. Меняющуюся внешнюю предпосылку проверь по `general/verify-claims`.
-
-## Stage C — adversarial verify
-
-1. Дедуп сырых находок Stage B, затем adversarial-проверка каждой: воспроизводим ли
-   failure_scenario на этом диффе, не ложный ли матч правила. Отсев только с обоснованием.
-2. **Детект ≠ гейтинг.** Репортишь ВСЕ подтверждённые находки. Формат находки (оси —
-   `quality/artifact-review`): `severity ∈ {Blocker,Major,Minor,Nit}` + `confidence ∈
-   {high,med,low}` (уверенность в самой находке — чтобы фильтр ниже по потоку мог ранжировать;
-   низкая уверенность — повод пометить, а не отбросить) + лейбл
-   `issue/suggestion/question/nitpick` + `file:line` + `failure_scenario` +
-   **ссылка скилл→правило** (`<bucket>/<skill> ## Conformance: "<строка правила>"`;
-   для классики — измерение correctness/security/perf). Severity определяется воспроизводимым влиянием; uncertainty укажи отдельно.
-3. Прогони статику/целевые тесты проекта, если уместно. Кода НЕ меняй; существующий dirty baseline сохрани.
-   Фиксы передай исполнителю; связанные исправления можно объединить в scoped commit.
+Run static analysis or tests only when they test a review hypothesis. Preserve the dirty baseline and route
+fixes to the implementer.

@@ -1,0 +1,12 @@
+{
+  "id": "resource-selftests",
+  "cwd": "/tmp/agentools-audit-copy-4tslglh6/repo",
+  "command": [
+    "python3",
+    "tools/resource_gate.py",
+    "test"
+  ],
+  "started_utc": "2026-10-08T12:04:30.935560+00:00",
+  "exit_code": 0,
+  "duration_seconds": 8.533
+}

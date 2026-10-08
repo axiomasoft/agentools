@@ -1,0 +1,11 @@
+{
+  "id": "fix-php83",
+  "cwd": "php",
+  "command": [
+    "/usr/bin/php8.3",
+    "vendor/bin/phpunit"
+  ],
+  "started_utc": "2026-10-08T13:17:00.719790+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.264
+}

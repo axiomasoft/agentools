@@ -23,7 +23,7 @@ from typing import Any
 from urllib.parse import unquote, urlparse
 
 REPO = Path(__file__).resolve().parents[1]
-PLAN = REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING"
+PLAN = REPO / "verification"
 MANIFEST = REPO / "fixtures/hardening/adversarial/manifest.v1.json"
 SCHEDULES = REPO / "fixtures/hardening/adversarial/storage-schedules.v1.json"
 RECEIPT = PLAN / "artifacts/P8-storage-chaos.json"

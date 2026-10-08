@@ -1,0 +1,29 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "findings-P9-supply-chain-evidence",
+  "title": "P9 supply-chain evidence",
+  "sections": [
+    {
+      "id": "P9-supply-chain-evidence",
+      "title": "P9 supply-chain evidence",
+      "text": "**Status:** `green`\n**RC receipt:** `ee4d46ccb1870acca14a1b710aaf5c05a5885c76417f7f6f4768928f004af13c`\n**Syft:** `Application:   syft\nVersion:       1.52.0\nBuildDate:     2026-09-17T14:32:25Z\nGitCommit:     02ba369d13b4248395b20a504eca94b0cab564d8\nGitDescription: v1.52.0\nPlatform:      linux/amd64\nGoVersion:     go1.26.3\nCompiler:      gc\nSchemaVersion: 16.1.10`"
+    },
+    {
+      "id": "Hosted-attestation",
+      "title": "Hosted attestation",
+      "text": "- Capability: `unavailable-plan`\n- Attested: `False` (must stay false unless Enterprise capability proven)\n- Action pin in CI: `False`"
+    },
+    {
+      "id": "Subjects",
+      "title": "Subjects",
+      "text": "- `php-sdk`: SPDX subject `085a3aa59497fe44b3e3a64a8a0e75da35fa4c616cb73cf1f9ae4a10c3f55306` · provenance `statement-verified`\n- `dart-core`: SPDX subject `bb21fe1ced16d020a27610379bea9b2e15d338b0864ddd5b0751f3b1bd63a6a8` · provenance `statement-verified`\n- `dart-mcp-companion`: SPDX subject `d29a69153dc403faf4ae0dcbaedc85e9bf0fa82b6e925f113c1c41b1c7204f69` · provenance `statement-verified`"
+    }
+  ],
+  "applies_to": [
+    "P9"
+  ],
+  "provenance": {
+    "path": "findings/P9-supply-chain-evidence.md",
+    "sha256": "c8fd4f2fc2c8de966567c91a177ca4a3077b92c1da68bb023c45f3adba046388"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D2",
+  "title": "Сначала детализировать все фазы, затем аудитировать, затем исполнять",
+  "date": "2026-09-19",
+  "status": "accepted",
+  "decision": "Lifecycle имеет три последовательные стадии: отдельный `task:plan-design` для каждой P1–P10;\nпосле последней — независимый `task:plan-audit <ID> design`; только после GREEN design audit —\n`task:plan-exec` item'ов. Наличие готового item до завершения стадии 2 не разрешает его исполнение.",
+  "rationale": "Security, durability, parity, package и release contracts пересекаются. Раннее исполнение\nзаставило бы поздние фазы принимать уже реализованный API как факт. Альтернатива «detail/execute\nпо одной фазе» отклонена из-за дорогих cross-language migrations и риска локально зелёного дизайна.",
+  "applies_to": [
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7",
+    "P8",
+    "P9",
+    "P10"
+  ],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "plan-designer/gpt-5.6-sol/high",
+    "effort": "high"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D2\ndate: 2026-09-19\nstatus: accepted\nitem: P1\nitems: [P1, P2, P3, P4, P5, P6, P7, P8, P9, P10]\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "D2",
+      "title": "D2 — Сначала детализировать все фазы, затем аудитировать, затем исполнять",
+      "text": "**Actor:** plan-designer/gpt-5.6-sol/high\n**Evidence:** RAG:— phase dependencies и cross-cutting guarantees этого плана"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "Lifecycle имеет три последовательные стадии: отдельный `task:plan-design` для каждой P1–P10;\nпосле последней — независимый `task:plan-audit <ID> design`; только после GREEN design audit —\n`task:plan-exec` item'ов. Наличие готового item до завершения стадии 2 не разрешает его исполнение."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Security, durability, parity, package и release contracts пересекаются. Раннее исполнение\nзаставило бы поздние фазы принимать уже реализованный API как факт. Альтернатива «detail/execute\nпо одной фазе» отклонена из-за дорогих cross-language migrations и риска локально зелёного дизайна."
+    },
+    {
+      "id": "Consequences",
+      "title": "Consequences",
+      "text": "Текущий master-plan содержит только skeletons. Каждая detail-сессия добавляет item specs и\nRouting; handoff последовательно ведёт P1→P10→whole-design-audit→execution."
+    }
+  ]
+}

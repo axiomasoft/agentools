@@ -1,0 +1,12 @@
+{
+  "id": "fix-dossier-verify",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/release_dossier.py",
+    "validate"
+  ],
+  "started_utc": "2026-10-08T13:46:35.196355+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.064
+}

@@ -1,0 +1,205 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P3.4",
+  "title": "Встроить durable consume в supported path и закрыть replay gate",
+  "status": "done",
+  "summary": "Подключить P3.2 codec и P3.3 store к supported ConfirmationService/protocol path и выпустить проверяемый receipt, что replay больше не живёт в instance memory.",
+  "why": "Codec and store do not close F02 while `ConfirmationProtocol` still writes `$spentTokens` / `_spentTokens` and P2.3 still labels consume baseline-partial. `RAG:—`.",
+  "scope": {
+    "include": [
+      "Constructor wiring of key provider, clock, iss/aud and store; removal of production process-local sets; presentation-consume before current authorization; structured P3 codes on the supported path; restart/multi-worker gate; PHP/Dart parity receipt; residual notes for P6/P7/P8."
+    ],
+    "exclude": [
+      "P2 authorization/policy redesign; event append; new spec revision; final barrel/PSR-4 removals; public docs/release; claiming exactly-once tool side effects."
+    ]
+  },
+  "depends_on": [
+    "P3.2",
+    "P3.3",
+    "P2.3"
+  ],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/root-contracts-token-replay-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/hardening/token-replay-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/phases/P2/P2.3.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/04_confirmation.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/09_idempotency-errors.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "@plan/knowledge/findings-P3-replay-parity.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "Supported constructors require `TokenKeyProvider` and `ConfirmationTokenStore`; omitting them is a construction error, not a silent local set. Spend/consume remains after binding checks and before current authorization. Authorization denial refines outcome and still returns spent on retry. Legacy `TokenSigner` adapters may wrap a one-key provider for focused tests only. Reference tenant signer migrates to the key provider. Receipt derives case/result/code sets from real test output and names P5/P6/P7/P8 residual owners. No safe result claims exactly-once external effect."
+  ],
+  "guidance": "Delete production `$spentTokens`/`_spentTokens`. Keep P2 redaction rules. Do not log raw tokens. Layer tests must fail if a new in-class spent set reappears. PostgreSQL restart test is mandatory for close; in-memory restart is not a substitute.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "cd php && composer test && composer analyse",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "cd dart/agentools && dart analyze && dart test",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "git diff --exit-code -- spec/revisions/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "procedure": "cd php && composer test",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "procedure": "cd dart/agentools && dart test test/confirmation",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "procedure": "python3 tools/validate_token_replay_v1.py --check",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "Durable supported confirmation path, removed production local sets, restart/concurrency receipt and explicit residual boundaries."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-20T06:35:00Z",
+    "finished_at": "2026-09-20T06:35:00Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "grok-4.6/high",
+      "effort": "high"
+    },
+    "notes": "Supported ConfirmationService wired to at1 + durable consume; removed process-local spent sets; DurableReplayGateTest + @plan/knowledge/findings-P3-replay-parity.json; reference TenantTokenKeyProvider.\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V4",
+        "exit": 0,
+        "at": "2026-09-20T06:35:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V5",
+        "exit": 0,
+        "at": "2026-09-20T06:35:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V6",
+        "exit": 0,
+        "at": "2026-09-20T06:35:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-20T06:35:00Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Подключить P3.2 codec и P3.3 store к supported ConfirmationService/protocol path и выпустить проверяемый receipt, что replay больше не живёт в instance memory."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Codec and store do not close F02 while `ConfirmationProtocol` still writes `$spentTokens` / `_spentTokens` and P2.3 still labels consume baseline-partial. `RAG:—`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "Constructor wiring of key provider, clock, iss/aud and store; removal of production process-local sets; presentation-consume before current authorization; structured P3 codes on the supported path; restart/multi-worker gate; PHP/Dart parity receipt; residual notes for P6/P7/P8."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "P2 authorization/policy redesign; event append; new spec revision; final barrel/PSR-4 removals; public docs/release; claiming exactly-once tool side effects."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/knowledge/root-contracts-token-replay-v1.json` · `fixtures/hardening/token-replay-v1.json` · P3.2 PHP/Dart codec and key provider · P3.3 ConfirmationTokenStore and PostgreSQL adapter · P2.3 ConfirmationService · current PHP/Dart confirmation protocols."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`php/src/Confirmation/ConfirmationProtocol.php` · `php/src/Confirmation/ConfirmationService.php` · `php/tests/Confirmation/ConfirmationProtocolTest.php` · `php/tests/Confirmation/ConfirmationServiceTest.php` · `php/tests/Confirmation/DurableReplayGateTest.php` · `dart/agentools/lib/src/confirmation/confirmation_protocol.dart` · `dart/agentools/lib/src/confirmation/confirmation_service.dart` · `dart/agentools/test/confirmation/confirmation_protocol_test.dart` · `dart/agentools/test/confirmation/confirmation_service_test.dart` · `dart/agentools/test/confirmation/durable_replay_gate_test.dart` · `php/reference/Crypto/TenantHmacTokenSigner.php` · `@plan/knowledge/findings-P3-replay-parity.json`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/root-contracts-token-replay-v1.json` 2) `fixtures/hardening/token-replay-v1.json` 3) `php/src/Confirmation/ConfirmationProtocol.php` 4) `dart/agentools/lib/src/confirmation/confirmation_protocol.dart` 5) `@plan/phases/P2/P2.3.json` 6) `spec/revisions/2026-08/04_confirmation.md` 7) `spec/revisions/2026-08/09_idempotency-errors.md`."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "Supported constructors require `TokenKeyProvider` and `ConfirmationTokenStore`; omitting them is a construction error, not a silent local set. Spend/consume remains after binding checks and before current authorization. Authorization denial refines outcome and still returns spent on retry. Legacy `TokenSigner` adapters may wrap a one-key provider for focused tests only. Reference tenant signer migrates to the key provider. Receipt derives case/result/code sets from real test output and names P5/P6/P7/P8 residual owners. No safe result claims exactly-once external effect."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Delete production `$spentTokens`/`_spentTokens`. Keep P2 redaction rules. Do not log raw tokens. Layer tests must fail if a new in-class spent set reappears. PostgreSQL restart test is mandatory for close; in-memory restart is not a substitute."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "Manifest consume/cleanup cases pass on both SDKs; new protocol instance on the same store denies a previously presented token; two concurrent commits yield one winner and one spent; authorization-denied token cannot be retried after a later grant; `cd php && composer test && composer analyse`; `cd dart/agentools && dart analyze && dart test`; shared parity yields `missing=[]`, `extra=[]`, `mismatch=[]`; `git diff --exit-code -- spec/revisions/2026-08`; plan lint adds no ERROR."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "Durable supported confirmation path, removed production local sets, restart/concurrency receipt and explicit residual boundaries."
+    }
+  ]
+}

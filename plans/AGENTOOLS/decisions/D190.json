@@ -1,0 +1,39 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D190",
+  "title": "Решение",
+  "date": "2026-09-19",
+  "status": "accepted",
+  "decision": "**P10.6 закрыт отчётом `@plan/knowledge/artifacts-P10-applicability-report.json` с `ГЕЙТ P10: PASS`.** Зафиксированы исходы открытых вопросов, обновлённых item'ом (фактический текст — в отчёте и ниже в «Следствия»).",
+  "rationale": "Item P10.6 Validation; опора эмпирики P10.3–P10.5 на дереве `fe0612e` / `43500e8`; RAG слой 1 — `@plan/knowledge/findings-P10-offline-rag-2026-09-19.json`. `RAG:✅ 2026-09-19 (perplexity + BFCL primary pages); RAG:— (repo-grounded: research/09 §11; INT-002; airesto-offline-gap)`",
+  "applies_to": [
+    "P10.6"
+  ],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D190\ndate: 2026-09-19\nstatus: accepted\nitem: P10.6\nitems: [P10.6]\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**P10.6 закрыт отчётом `@plan/knowledge/artifacts-P10-applicability-report.json` с `ГЕЙТ P10: PASS`.** Зафиксированы исходы открытых вопросов, обновлённых item'ом (фактический текст — в отчёте и ниже в «Следствия»)."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Item P10.6 Validation; опора эмпирики P10.3–P10.5 на дереве `fe0612e` / `43500e8`; RAG слой 1 — `@plan/knowledge/findings-P10-offline-rag-2026-09-19.json`. `RAG:✅ 2026-09-19 (perplexity + BFCL primary pages); RAG:— (repo-grounded: research/09 §11; INT-002; airesto-offline-gap)`"
+    },
+    {
+      "id": "section-3",
+      "title": "Следствия",
+      "text": "- **Q-1:** остаётся **Decision pending (owner product)** — сценарий отпуска **невыразим** (нет HR-домена); P10.6 назвал это в «что НЕ проверялось» (D114 не переоткрывается).\n- **Q-11:** остаётся **external coordination** — INT-002 `Exported` выполнен (D189); `Consumed` у AIRESTO/ERP не заводился; гейт P10 не блокируется.\n- **Q-17:** **Resolved для фазы P10 → D187** — пересечение пусто; поднятие `declared_level` выше измеренного — owner (D94), в отчёте не заявлялось.\n- **Q-20:** **Resolved → D188 (B)** — demo bridge `erp-sdk/packages/agentools_bridge`; отчёт называет демонстрацию, не production rollout.\n- **Q-21:** **Resolved → D189 (a)** — `at_action_events` + проекции; P10.4 эмпирика на Drift demo.\n- **Q-22:** **owner gate** — пакет INT-002 §7 опубликован; выбор Scenario Runner vs `orchestration/` **не сделан**; named in report R8.\n- **Q-23:** **исполнение ветки (3) зафиксировано P10.3** — in-process, без wire MCP 2026-07-28; owner gate на поднятие пина **остаётся** (E23-001 без ответа).\n- План готов к **`plan-design AGENTOOLS finish`** (reconciliation); исполнение продолжается **P11**; сквозной `plan-audit` — по протоколу в конце волны, не как обязательный `plan-audit … P10`."
+    }
+  ]
+}

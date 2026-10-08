@@ -1,0 +1,304 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P6.1",
+  "title": "Зафиксировать successor `2026-09`, semantic/error contract и migration",
+  "status": "done",
+  "summary": "Создать самодостаточную candidate-ревизию `2026-09`, которая нормативно включает фактически исполненные P2–P5 semantics и имеет один error/state/capability owner с compatibility/migration к `2026-08`.",
+  "why": "P2–P5 intentionally leave frozen `2026-08` unchanged, so their new refusal, replay, fencing and event-store semantics otherwise remain code-and-plan facts rather than a shared SDK contract. `RAG:—`.",
+  "scope": {
+    "include": [
+      "Full successor revision and corpus; base revision/tag/digest; changed-rule IDs and coverage; complete error table with producer/category/default retryability/safe-context contract; action/confirmation/token/idempotency/event states and transitions; bounds/capabilities; schema and fixture migration; `candidate` status and deterministic revision-lock shape; compatibility table for `2026-08` consumers."
+    ],
+    "exclude": [
+      "Editing frozen `2026-08`; SDK implementation/profile exporters; JCS oracle import; official MCP execution; package exports; full public freeze/tag; inventing missing P2–P5 outputs; changing the behavior of a predecessor contract during transcription."
+    ]
+  },
+  "depends_on": [
+    "P2.4",
+    "P3.4",
+    "P4.4",
+    "P5.4"
+  ],
+  "decisions": [
+    "D7",
+    "D11"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/root-contracts-confirmation-security-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-token-replay-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-idempotency-lease-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-event-store-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "fixtures/hardening/confirmation-security-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "fixtures/hardening/token-replay-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "fixtures/hardening/idempotency-lease-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "fixtures/hardening/event-store-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "spec/revisions/2026-08/**",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "fixtures/2026-08/**",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-P6-design.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-P6-design-rag.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/00_overview.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "03_action-lifecycle.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "04_confirmation.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "08_audit-observability.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "09_idempotency-errors.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "10_security.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "11_conformance-harness.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "plans/AGENTOOLS/knowledge/research-02-p3-authoring-conventions-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "@plan/knowledge/root-contracts-semantic-parity-v1.json",
+      "change": "any"
+    },
+    {
+      "path": "@plan/knowledge/findings-P6-semantic-migration.json",
+      "change": "any"
+    },
+    {
+      "path": "spec/revisions/2026-09/**",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/2026-09/**",
+      "change": "any"
+    },
+    {
+      "path": "spec/README.md",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/README.md",
+      "change": "any"
+    },
+    {
+      "path": "tools/spec_lint.py",
+      "change": "any"
+    },
+    {
+      "path": "tools/rules_index.py",
+      "change": "any"
+    },
+    {
+      "path": "tools/close_schema.py",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "`2026-09` is self-contained; unchanged norms may be copied with provenance, but every P2–P5 delta gets a new rule ID and compatibility row. Normative Markdown/schema/cases remain owners. `semantic-manifest.json` and `revision.lock.json` are generated later, never hand-edited. Retryability keeps IDE-28's instance override: the table owns a default, cases own actual values. Context allowlists exclude raw token, key material, actor/tenant/approval identifiers, arguments, prompts and hidden-resource existence unless a predecessor contract explicitly permits a redacted field. Every predecessor case maps to a rule and expected semantic result. Revision status remains `candidate`; no git tag. Missing/digest-mismatched predecessor output is dependency-not-ready. Frozen bytes and `spec-2026-08` are read-only."
+  ],
+  "guidance": "Reuse the existing revision grammar and open-wire/closed-authoring schema policy. Prefer explicit compatibility tables over prose such as “mostly compatible”. New hardening rules use a dedicated non-colliding prefix selected in the revision overview and enforced by the linter. Keep wire schemas tolerant; strict authoring variants stay generated. A changed code spelling is a migration entry, not an alias hidden in an SDK.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "git diff --exit-code -- spec/revisions/2026-08 fixtures/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "procedure": "python3 tools/spec_lint.py spec/revisions/2026-09",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "procedure": "python3 tools/rules_index.py --check spec/revisions/2026-09",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "procedure": "git diff --exit-code -- spec/revisions/2026-08 fixtures/2026-08",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "Candidate successor revision/corpus, normative semantic/error/capability contract, complete migration inventory and executable inputs for P6.2–P6.5."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-20T12:03:12Z",
+    "finished_at": "2026-09-20T12:03:12Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "composer-2.5/high",
+      "effort": "high"
+    },
+    "notes": "Candidate spec/revisions/2026-09 + fixtures/2026-09; HRD-*; IDE-31; parity contract. spec_lint/rules_index/close_schema/fixtures-check green; 2026-08 frozen.\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V2",
+        "exit": 0,
+        "at": "2026-09-20T12:03:12Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V3",
+        "exit": 0,
+        "at": "2026-09-20T12:03:12Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V4",
+        "exit": 0,
+        "at": "2026-09-20T12:03:12Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-20T12:03:12Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Создать самодостаточную candidate-ревизию `2026-09`, которая нормативно включает фактически исполненные P2–P5 semantics и имеет один error/state/capability owner с compatibility/migration к `2026-08`."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "P2–P5 intentionally leave frozen `2026-08` unchanged, so their new refusal, replay, fencing and event-store semantics otherwise remain code-and-plan facts rather than a shared SDK contract. `RAG:—`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "Full successor revision and corpus; base revision/tag/digest; changed-rule IDs and coverage; complete error table with producer/category/default retryability/safe-context contract; action/confirmation/token/idempotency/event states and transitions; bounds/capabilities; schema and fixture migration; `candidate` status and deterministic revision-lock shape; compatibility table for `2026-08` consumers."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Editing frozen `2026-08`; SDK implementation/profile exporters; JCS oracle import; official MCP execution; package exports; full public freeze/tag; inventing missing P2–P5 outputs; changing the behavior of a predecessor contract during transcription."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/knowledge/root-contracts-confirmation-security-v1.json` · `@plan/knowledge/root-contracts-token-replay-v1.json` · `@plan/knowledge/root-contracts-idempotency-lease-v1.json` · `@plan/knowledge/root-contracts-event-store-v1.json` · `fixtures/hardening/confirmation-security-v1.json` · `fixtures/hardening/token-replay-v1.json` · `fixtures/hardening/idempotency-lease-v1.json` · `fixtures/hardening/event-store-v1.json` · P2–P5 parity receipts · frozen `spec/revisions/2026-08/**` and `fixtures/2026-08/**` · D7–D11."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`@plan/knowledge/root-contracts-semantic-parity-v1.json` · `@plan/knowledge/findings-P6-semantic-migration.json` · `spec/revisions/2026-09/**` · `fixtures/2026-09/**` · `spec/README.md` · `fixtures/README.md` · `tools/spec_lint.py` · `tools/rules_index.py` · `tools/close_schema.py`."
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) four executed P2–P5 root contracts and case manifests 2) P2.4/P3.4/P4.4/P5.4 completion receipts 3) `@plan/knowledge/research-P6-design.json` and `@plan/knowledge/research-P6-design-rag.json` 4) D7–D11 5) `spec/revisions/2026-08/00_overview.md`, `03_action-lifecycle.md`, `04_confirmation.md`, `08_audit-observability.md`, `09_idempotency-errors.md`, `10_security.md`, `11_conformance-harness.md` and schemas 6) `plans/AGENTOOLS/research/02-p3-authoring-conventions-2026-08.md` 7) current spec/fixture tooling."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "`2026-09` is self-contained; unchanged norms may be copied with provenance, but every P2–P5 delta gets a new rule ID and compatibility row. Normative Markdown/schema/cases remain owners. `semantic-manifest.json` and `revision.lock.json` are generated later, never hand-edited. Retryability keeps IDE-28's instance override: the table owns a default, cases own actual values. Context allowlists exclude raw token, key material, actor/tenant/approval identifiers, arguments, prompts and hidden-resource existence unless a predecessor contract explicitly permits a redacted field. Every predecessor case maps to a rule and expected semantic result. Revision status remains `candidate`; no git tag. Missing/digest-mismatched predecessor output is dependency-not-ready. Frozen bytes and `spec-2026-08` are read-only."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Reuse the existing revision grammar and open-wire/closed-authoring schema policy. Prefer explicit compatibility tables over prose such as “mostly compatible”. New hardening rules use a dedicated non-colliding prefix selected in the revision overview and enforced by the linter. Keep wire schemas tolerant; strict authoring variants stay generated. A changed code spelling is a migration entry, not an alias hidden in an SDK."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "P2–P5 case IDs map exact-set to successor rules/results; every error code has one category, producer set, default retryability and safe-context policy; schema examples validate; `spec_lint.py`, `rules_index.py --check`, `close_schema.py --check` and fixture coverage pass for `2026-09`; compatibility table covers every changed/removed `2026-08` semantic; mutant missing code/rule/case is red; `git diff --exit-code -- spec/revisions/2026-08 fixtures/2026-08`; no `spec-2026-09` tag exists; plan lint adds no ERROR."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "Candidate successor revision/corpus, normative semantic/error/capability contract, complete migration inventory and executable inputs for P6.2–P6.5."
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "supply-lock",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/ci_policy.py",
+    "check-lock"
+  ],
+  "started_utc": "2026-10-08T12:03:33.978171+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.064
+}

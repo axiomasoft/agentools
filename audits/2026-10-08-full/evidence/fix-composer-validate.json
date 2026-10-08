@@ -1,0 +1,13 @@
+{
+  "id": "fix-composer-validate",
+  "cwd": ".",
+  "command": [
+    "composer",
+    "validate",
+    "--strict",
+    "--working-dir=php"
+  ],
+  "started_utc": "2026-10-08T13:39:06.424393+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.114
+}

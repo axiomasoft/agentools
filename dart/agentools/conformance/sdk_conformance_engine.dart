@@ -234,7 +234,9 @@ final class SdkConformanceEngine {
     }
 
     try {
-      final folded = ActionReducer().fold(events);
+      final folded = ActionReducer(
+        specRevision: events.isEmpty ? '2026-09' : events.first.specRevision,
+      ).fold(events);
       final actionState = _stateFromFolded(folded, last, terminal);
       _journalProbe(probe, id, actionState, journal);
       if (state['append_probe'] is Map) {

@@ -1,0 +1,107 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "root-contracts-INT-001_corex-ai-integration",
+  "title": "INT-001 — интеграция AgenTools SDK в контур Flex/CoreX (срез CRM)",
+  "sections": [
+    {
+      "id": "INT-001-AgenTools-SDK-Flex-CoreX-CRM",
+      "title": "INT-001 — интеграция AgenTools SDK в контур Flex/CoreX (срез CRM)",
+      "text": "**Статус:** deferred (D186 — продуктовая интеграция отложена; исполнение P9.3+ по INT-002)  \n**Версия:** 1.0.0  \n**Дата:** 2026-09-19  \n**План:** AGENTOOLS P9 · **Дом кода (исторический):** D184 ветка **(C2)** — superseded для исполнения D186  \n**Норматив агентной поверхности:** `ADR-022` / `B-32` (чужой SSOT; этот документ — **не** замена)  \n**Норматив протокола:** ревизия `spec/revisions/2026-08/` (frozen)\n\n> Минимальная поверхность среза (`DR-01` §E6). Не является нормативом для FlexStore/FlexCMS/RegHub.\n> Дельты канона Flex — **предложения** с адресатом; правки чужого канона этим документом не производятся.\n\n**Опора измерения:** `@plan/knowledge/findings-P9-flex-state-2026-09-19.json` · `@plan/knowledge/research-08-p9-crm-slice-2026-08.json`\n\n---"
+    },
+    {
+      "id": "1.-PHP-SDK",
+      "title": "1. Карта восьми портов PHP SDK",
+      "text": "Направление зависимости: `flexcrm` (мост) → `agentools/sdk` → `corex/*` / `flex/crm`. Обратной зависимости нет.\n\n| Порт SDK | Реализующий класс (C2 мост) | Таблица / носитель | Статус / примечание |\n|:--|:--|:--|:--|\n| `EventLog` | `FlexCRM\\Agentic\\Persistence\\PgEventLog` | `ai_action_events` (новая) | Источник истины §C1; append-only, `expected_prev_seq`, `prev_hash` |\n| `SessionStore` | `FlexCRM\\Agentic\\Persistence\\PgSessionStore` | `ai_action_snapshots` (новая) + fold | Проекция состояния; `ai_threads`/`ai_turns` — только свёртка |\n| `Clock` | `FlexCRM\\Agentic\\Support\\InjectableClock` | — (in-memory) | Обязателен для детерминированного E2E (P9.7) |\n| `TokenSigner` | `FlexCRM\\Agentic\\Crypto\\TenantHmacTokenSigner` | секрет тенанта (config/KMS) | HMAC/AEAD по §B2; без глобального секрета |\n| `IdempotencyStore` | `FlexCRM\\Agentic\\Persistence\\PgIdempotencyStore` | `ai_tool_dedupe` (канон B-32) | Ключи `at1:`; три состояния, два таймера (§D1–§D3) |\n| `LlmPort` | `FlexCRM\\Agentic\\Adapters\\AiGatewayLlmPort` | `ai_usage` (ledger) | **Заблокирован до фасада AiGateway** (P9.3): прямой вызов драйвера запрещён ADR-020 |\n| `ToolPort` | `FlexCRM\\Agentic\\Adapters\\CorexApiToolPort` | `ai_tool_calls` (аудит-проекция) | Делегат: `CoreX\\Api\\Contracts\\ToolInvoker`; permission-гейт B-32 §3.6 |\n| `AuditSink` | `FlexCRM\\Agentic\\Audit\\GateDecisionAuditSink` | поля `ai_tool_calls` из §I4 | Единственный путь записи решения; опциональный экспорт в `sys_audit_log` |\n\n**Дом пакета:** `~/projects/flexcrm/packages/flexcrm/agentic-bridge/` (регистрация в `bootstrap/providers.php`).\n\n**Пакет `corex/ai`:** отсутствует на 2026-09-19; код моста **переносим** при закрытии FLEX-2 P6.15 (D184).\n\n---"
+    },
+    {
+      "id": "2.-D100",
+      "title": "2. Развод трёх гейтов подтверждения (D100)",
+      "text": "Единственный источник факта «пользователь разрешил» — протокол ревизии `2026-08` (§B2–§B8, событие решения §I4). Вариант «оба/три гейта работают параллельно» **запрещён**.\n\n| # | Гейт | Целевая роль | Как становится проекцией / отключается | Проверка (P9.5) |\n|:--|:--|:--|:--|:--|\n| 1 | **Протокол AgenTools** (`prepare` → `preview` → `commit`, токен §B2, событие §I4) | **Источник истины** | — (механизм) | Отрицательные прогоны: подмена args, просроченный токен, повтор commit |\n| 2 | **Канон Flex** (`ADR-022` п.6 / `B-32` §3.7: `confirmation_token`, `preview_digest`, `approved_by`, `waiting_approval`) | **Проекция** | `GateDecisionAuditSink` + fold пишут `ai_tool_calls.*` и `ai_turns.status` **только из** события §I4 после commit; параллельный расчёт `approved_by` запрещён | Сверка полей `ai_tool_calls` с payload §I4; статус турна без второго пути |\n| 3 | **Нативный HITL `laravel/ai`** | **Отключён** (на дату 2026-09-19 не установлен) | **Не устанавливать** `laravel/ai` в срезе до реализации нашего гейта; при появлении — либо адаптер `Approvable` вызывает наш `prepare/preview/commit`, либо пин без HITL-middleware. Третий вариант «оба» запрещён | `grep -r \"laravel/ai\" composer.json composer.lock` = 0 **и** отрицательный прогон «ровно одно подтверждение» на продуктовом пути |"
+    },
+    {
+      "id": "2.1-preview_digest-Flex",
+      "title": "2.1 `preview_digest` канона Flex",
+      "text": "**Решение:** `preview_digest` — **дополнительное поле витрины**; в допуск к commit **не входит**.\n\n**Основание:** покрытие токена ревизии — `descriptor_digest` + `args_fingerprint` (§B2, CNF-18/23). `preview_digest` канона — другой алгоритм и другое имя; включение в commit создало бы второй носитель допуска.\n\n**Отображение для UI (не для commit):**\n\n```\npreview_digest_display = SHA-256( JCS( { \"descriptor_digest\": <...>, \"args_fingerprint\": <...> } ) )\n```\n\n(канонизация — та же, что для `args_fingerprint` в ревизии `09_idempotency-errors.md`.)"
+    },
+    {
+      "id": "2.2-dual-control-B5-vs-double_confirm-ADR-022-.6",
+      "title": "2.2 `dual control` (§B5) vs `double_confirm` (`ADR-022` п.6)",
+      "text": "| Механизм | Семантика | Применение в срезе |\n|:--|:--|:--|\n| **`dual control`** (§B5) | proposer ≠ approver — **разные принципалы** (four-eyes) | **Обязателен** для класса `irreversible` в Policy Layer среза |\n| **`double_confirm`** (ADR-022 п.6) | второй **токен** того же субъекта | **Не дублируется:** для `irreversible` достаточно `dual control`; второй токен не запрашивается |\n\nИмена похожи; в коде и UI использовать явные термины `dual_control` / `double_confirm`, не «двойное подтверждение» без уточнения.\n\n---"
+    },
+    {
+      "id": "3.-B-32-3.8-1-7-2026-08",
+      "title": "3. Реанкор `B-32` §3.8 (П1–П7) на ревизию `2026-08`",
+      "text": "| П# | Вердикт | Обоснование / действие |\n|:--|:--|:--|\n| **П1** | **Сходится** | `side_effect: read\\|draft\\|write\\|irreversible` = источник; `stake` — алиас (D7) |\n| **П2** | **Дельта канона — предложение** | B-32 смешивает Policy/Protocol; ревизия §B6 разделяет. Предложение P2-001: явный Policy Layer в `B-32` §3.7 |\n| **П3** | **Дельта канона — предложение** | `_meta[\"agentools/v1\"]` → `dev.agentools/action` (DR-01 §A2); токен — подписанный self-contained §B2. Предложение P3-001 |\n| **П4** | **Дельта канона — предложение** | Ключ `at1:` сходится (D5); не хватает трёх состояний и двух таймеров §D1–§D3. Предложение P4-001 |\n| **П5** | **Дельта канона — предложение** | §C1 «журнал — истина» vs B-32 «event-log-first не в БД». Разрешается веткой журнала §4 + предложение P5-001 |\n| **П6** | **Дельта канона — предложение** | MRTR §B1 — единственный биндинг уточнений; elicitation — legacy (D20). Reverb — транспорт UI, не биндинг. Предложение P6-001 |\n| **П7** | **Сходится** | Таргет только MCP 2026-07-28 (DR-01 §A3); «stateless-ready» — факт реализации |\n\n---"
+    },
+    {
+      "id": "4.-Q-19-D185",
+      "title": "4. Размещение журнала (Q-19 → D185)",
+      "text": "**Выбрана ветка (a):** журнал — **новая таблица** в тенантной БД рядом с канонными `ai_*`; `ai_turns` / `ai_threads` / статусы `ai_tool_calls` — **проекция свёртки**, не независимая запись.\n\n**Запрет:** два независимых пути записи состояния запрещены в коде моста и проверяются тестом P9.4 (вектор `expected_prev_seq` + отсутствие прямых `UPDATE ai_turns` вне fold)."
+    },
+    {
+      "id": "4.1-DDL-P9.4",
+      "title": "4.1 Эскиз DDL (не финальная миграция — P9.4)",
+      "text": "**`ai_action_events`** (журнал, истина):\n\n- `id` UUID PK  \n- `action_id` UUID NOT NULL  \n- `seq` BIGINT NOT NULL — монотонный в рамках `action_id`  \n- `expected_prev_seq` BIGINT — optimistic concurrency (§C3)  \n- `event_type` TEXT NOT NULL · `event_version` INT NOT NULL (§C5)  \n- `payload` JSONB NOT NULL (§C2 — недетерминизм внутри)  \n- `prev_hash` TEXT NOT NULL (§C7)  \n- `created_at` TIMESTAMPTZ NOT NULL  \n- UNIQUE (`action_id`, `seq`)\n\n**`ai_action_snapshots`** (§C6): `action_id`, `snapshot_version`, `state` JSONB, `folded_through_seq`.\n\nПроекции: `ai_threads`, `ai_turns`, `ai_messages`, `ai_tool_calls` — обновляются **только** `JournalFoldProjector` после успешного `EventLog::append`.\n\n**Ветка (b)** (журнал вне БД тенанта) для C2 **не выбрана**: в контуре нет audit-tier хранилища; цена split-transaction выше пользы на MVP.\n\n---"
+    },
+    {
+      "id": "5.",
+      "title": "5. Классификация побочного эффекта",
+      "text": "Единственный источник истины на MCP-границе — `side_effect` канона (`ADR-022` п.4). Третий словарь **не вводится**.\n\n| `side_effect` (канон Flex / B-32) | Класс эффекта ревизии (Policy Layer) | `stake` (алиас B-32) | Confirm в срезе |\n|:--|:--|:--|:--|\n| `read` | `read` | `low` | не требуется |\n| `draft` | `draft` | `low` | не требуется |\n| `write` | `write` | `medium` | prepare/preview/commit (§B2) |\n| `irreversible` | `irreversible` | `high` | prepare/preview/commit + **dual_control** (§B5) |\n\nНастройка агента **не может** ослабить объявленный `side_effect` (ADR-022 п.4; §B6).\n\n---"
+    },
+    {
+      "id": "6.",
+      "title": "6. Имя инструмента в покрытии токена",
+      "text": "**Единственное имя** в `tool_name` покрытия токена §B2 и в вычислении `descriptor_digest` — **каноническое внутреннее** `module.verb_noun` (`ADR-022` п.3).\n\nWire-проекция `module_verb_noun` применяется **только** на MCP-границе при вызове; обратное преобразование детерминировано lint'ом B-32. В токен и digest попадает **только** `module.verb_noun`.\n\n---"
+    },
+    {
+      "id": "7.-MRTR-vs",
+      "title": "7. MRTR vs продуктовый транспорт",
+      "text": "**MRTR** (§B1) — единственный биндинг уточнений на MCP-границе.\n\nПродуктовый UI (FlexCRM) **не** MCP-клиент: объекты `ClarificationRequest`, preview, отложенное подтверждение **доставляются** через Reverb private-каналы (`laravel/reverb` в flexcrm). Это **не** elicitation и **не** второй биндинг уточнений.\n\n---"
+    },
+    {
+      "id": "8.-Flex",
+      "title": "8. Предложения дельт канона Flex",
+      "text": "Оформлены по `architect:package-contribution-protocol` (proposal → review → ADR). **Правки канона этим item'ом не производятся.**"
+    },
+    {
+      "id": "P2-001-Policy-Layer-B-32-3.7",
+      "title": "P2-001 — Policy Layer в B-32 §3.7",
+      "text": "| | |\n|:--|:--|\n| **Что** | Разделить политику гейта (нужен ли) и протокол (как устроен prepare/commit) |\n| **Почему нельзя на потребителе** | Смешение в одном слое — источник расхождения с §B6 ревизии |\n| **Минимальный контракт** | Таблица Policy vs Protocol; политика выражается через `side_effect`, не дублируется |\n| **Альтернативы** | (1) Оставить как есть — риск молчаливого расхождения; (2) Документировать только в INT-001 — не масштабируется на FlexCMS |\n| **Адресат** | FLEX-2 **Q59** (носитель декларации agentic) |"
+    },
+    {
+      "id": "P3-001-Vendor-block",
+      "title": "P3-001 — Vendor block и форма токена",
+      "text": "| | |\n|:--|:--|\n| **Что** | `_meta[\"agentools/v1\"]` → `dev.agentools/action`; токен — подписанный §B2 с полным покрытием |\n| **Почему нельзя на потребителе** | Контрагенты не видят блок расширения при старом ключе |\n| **Минимальный контракт** | Грамматика ключа DR-01 §A2; поля токена §B2 |\n| **Альтернативы** | (1) Dual-write обоих ключей — четыре оси версии; (2) Только wire-маппинг без `_meta` — ломает SEP-2133 |\n| **Адресат** | FLEX-2 **Q28** (Deferred; нормативная ссылка на SDK) |"
+    },
+    {
+      "id": "P4-001-ai_tool_dedupe",
+      "title": "P4-001 — `ai_tool_dedupe` и три состояния",
+      "text": "| | |\n|:--|:--|\n| **Что** | Расширить DDL/семантику `ai_tool_dedupe`: три состояния, `args_fingerprint`, два таймера |\n| **Почему нельзя на потребителе** | Идемпотентность — контракт уровня канона; локальный обход ломает межъязыковую сверку |\n| **Минимальный контракт** | §D1–§D3 ревизии; ключ `at1:` сохраняется |\n| **Альтернативы** | (1) Только in-memory dedupe в мосте — не переживает рестарт; (2) Один таймер — ломает misuse-detection |\n| **Адресат** | FLEX-2 **P6.15** (DDL `ai_*`) |"
+    },
+    {
+      "id": "P5-001-Event-log-first-tenant-DB",
+      "title": "P5-001 — Event-log-first в tenant DB",
+      "text": "| | |\n|:--|:--|\n| **Что** | Добавить `ai_action_events` / `ai_action_snapshots`; `ai_*` state tables — проекции |\n| **Почему нельзя на потребителе** | Без канонической таблицы журнала каждый потребитель изобретает свой audit trail |\n| **Минимальный контракт** | §4.1 эскиз; инвариант «один путь записи состояния» |\n| **Альтернативы** | (1) Ветка (b) внешний журнал — см. §4; (2) Только `ai_messages` append-only — нет §C3/§C7 |\n| **Адресат** | FLEX-2 **P6.15** + **Q59** |"
+    },
+    {
+      "id": "P6-001-MRTR-UI",
+      "title": "P6-001 — MRTR и транспорт UI",
+      "text": "| | |\n|:--|:--|\n| **Что** | Зафиксировать: MRTR — единственный биндинг уточнений; Reverb — доставка в UI, не elicitation |\n| **Почему нельзя на потребителе** | Иначе каждый модуль трактует Reverb как второй протокол уточнений |\n| **Минимальный контракт** | Одна строка в B-32 §3.8 П6 + ссылка на ADR-022 |\n| **Альтернативы** | (1) Server-initiated elicitation при появлении в MCP — вне scope modern-only; (2) Только polling UI — хуже UX, не меняет биндинг |\n| **Адресат** | FLEX-2 **Q26** (exploration голосового канала) + владелец CoreX ADR |\n\n---"
+    },
+    {
+      "id": "9.",
+      "title": "9. Границы и эскалации",
+      "text": "| Условие | Исход |\n|:--|:--|\n| `laravel/ai` установлен и не даёт отключить HITL / сделать адаптером нашего гейта | `🔴 Blocked` — решение владельца: отложить срез или пин без HITL |\n| Канон Flex требует ослабить гейт настройкой агента там, где §B4/§B5 не допускают | `🔴 Blocked` — эскалация: правка канона vs новая датированная ревизия |\n| P6.15 закрыл `corex/ai` | Мост переносится по ADR владельца CoreX; INT-001 остаётся историческим контрактом среза |\n\n---"
+    },
+    {
+      "id": "10.",
+      "title": "10. Ссылки",
+      "text": "- `@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §A2, §B1–§B8, §C1–§C7, §E6, §I4  \n- `spec/revisions/2026-08/03_action-lifecycle.md`, `04_confirmation.md`, `09_idempotency-errors.md`  \n- `@plan/knowledge/findings-P9-flex-corex-recon-2026-07-27.json` §5, §7  \n- Решения плана: D100, D101, D103, D108, D184, D185"
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "root/contracts/INT-001_corex-ai-integration.md",
+    "sha256": "c51a75b9825575e7c6e31cc643f16ed494ac9c3f29476430a3bf71a02c1995a2"
+  }
+}

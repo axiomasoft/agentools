@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D81",
+  "title": "Решение",
+  "date": "2026-07-27",
+  "status": "accepted",
+  "decision": "**Форму объявления реализуемой ревизии в `php/composer.json` определяет ЧИТАТЕЛЬ — `conformance/bin/lockstep` (item P6.8), а не фаза P7.** Item P7.1 берёт форму из его фактической реализации и НЕ вводит вторую (второй носитель одного факта запрещён D67); ожидаемый по канону composer носитель — ключ `extra` (свободная форма по определению composer-схемы), но если P6.8 зафиксировал другую — побеждает она. Отсутствие документированной формы для `composer.json` → `🔴 Blocked` + `Возобновление:` с адресатом «фаза P6, item P6.8», а не изобретение своей. Альтернатива «фаза-владелец SDK назначает форму» (допущенная Code Guidance item'а P6.8) отклонена для composer: место в манифесте ЕСТЬ, значит if-then той записи не срабатывает, и решать нечего — надо согласовать",
+  "rationale": "`DR-01` §J8 (объявленная ревизия живёт в манифесте SDK); `RAG:— (repo-grounded: @plan/phases/P6/phase.json P6.8 Implementation Rules — сверка читает объявленную ревизию из манифеста; Code Guidance — if-then только на случай, когда места в манифесте НЕТ; research/06-… §6.3)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D81\ndate: 2026-07-27\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Форму объявления реализуемой ревизии в `php/composer.json` определяет ЧИТАТЕЛЬ — `conformance/bin/lockstep` (item P6.8), а не фаза P7.** Item P7.1 берёт форму из его фактической реализации и НЕ вводит вторую (второй носитель одного факта запрещён D67); ожидаемый по канону composer носитель — ключ `extra` (свободная форма по определению composer-схемы), но если P6.8 зафиксировал другую — побеждает она. Отсутствие документированной формы для `composer.json` → `🔴 Blocked` + `Возобновление:` с адресатом «фаза P6, item P6.8», а не изобретение своей. Альтернатива «фаза-владелец SDK назначает форму» (допущенная Code Guidance item'а P6.8) отклонена для composer: место в манифесте ЕСТЬ, значит if-then той записи не срабатывает, и решать нечего — надо согласовать"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`DR-01` §J8 (объявленная ревизия живёт в манифесте SDK); `RAG:— (repo-grounded: @plan/phases/P6/phase.json P6.8 Implementation Rules — сверка читает объявленную ревизию из манифеста; Code Guidance — if-then только на случай, когда места в манифесте НЕТ; research/06-… §6.3)`"
+    }
+  ]
+}

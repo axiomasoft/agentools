@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 
 REPO = Path(__file__).resolve().parents[1]
-PLAN = REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING"
+PLAN = REPO / "verification"
 CONTRACT = PLAN / "root/contracts/release-acceptance-v1.md"
 SCHEMA = PLAN / "root/contracts/release-acceptance-v1.schema.json"
 ARTIFACT = PLAN / "artifacts/P10-acceptance-matrix.json"
@@ -51,17 +51,17 @@ PRIVATE_OK = frozenset({"verified", "non_applicable", "capability_unavailable", 
 PUBLIC_OK = frozenset({"verified", "non_applicable"})
 
 PHASE_EVIDENCE: dict[str, str] = {
-    "P1": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/findings/P1-contract-coverage.md",
-    "P2": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/findings/P2-confirmation-parity.md",
-    "P3": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/findings/P3-replay-parity.md",
-    "P4": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/findings/P4-fencing-parity.md",
-    "P5": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/findings/P5-event-parity.md",
+    "P1": "verification/findings/P1-contract-coverage.md",
+    "P2": "verification/findings/P2-confirmation-parity.md",
+    "P3": "verification/findings/P3-replay-parity.md",
+    "P4": "verification/findings/P4-fencing-parity.md",
+    "P5": "verification/findings/P5-event-parity.md",
     "P6": "conformance/reports/p6-integrated.json",
-    "P7": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P7-package-gate.json",
-    "P8": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P8-adversarial-gate.json",
-    "P9": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P9-private-rc.json",
-    "P10": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/release-acceptance-v1.md",
-    "phase design": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md",
+    "P7": "verification/artifacts/P7-package-gate.json",
+    "P8": "verification/artifacts/P8-adversarial-gate.json",
+    "P9": "verification/artifacts/P9-private-rc.json",
+    "P10": "verification/root/contracts/release-acceptance-v1.md",
+    "phase design": "verification/root/contracts/hardening-guarantees-v1.md",
     "owner": "LICENSE",
 }
 
@@ -253,7 +253,7 @@ def build_rows() -> list[dict[str, Any]]:
                 "threat",
                 "P1",
                 "verified",
-                "plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/threat-model-v1.md",
+                "verification/root/contracts/threat-model-v1.md",
                 private_blocking=False,
                 public_blocking=False,
             )
@@ -266,7 +266,7 @@ def build_rows() -> list[dict[str, Any]]:
                 "finding",
                 "P1",
                 "verified",
-                "plans/2026.09.19-№1-AGENTOOLS-HARDENING/findings/P1-contract-coverage.md",
+                "verification/findings/P1-contract-coverage.md",
                 private_blocking=False,
                 public_blocking=fid == "F12",
             )
@@ -279,7 +279,7 @@ def build_rows() -> list[dict[str, Any]]:
                 "migration",
                 "P1",
                 "verified",
-                "plans/2026.09.19-№1-AGENTOOLS-HARDENING/findings/P1-migration-inventory.md",
+                "verification/findings/P1-migration-inventory.md",
                 private_blocking=False,
                 public_blocking=mid in {"M-014", "M-015", "M-016", "M-017"},
             )
@@ -298,7 +298,7 @@ def build_rows() -> list[dict[str, Any]]:
                 "support_dimension",
                 "P1",
                 "decision_pending",
-                "plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/compatibility-support-v1.md",
+                "verification/root/contracts/compatibility-support-v1.md",
                 private_blocking=False,
                 public_blocking=True,
             )
@@ -351,7 +351,7 @@ def build_rows() -> list[dict[str, Any]]:
                 "release_subject",
                 "P9",
                 "verified",
-                "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P9-private-rc.json",
+                "verification/artifacts/P9-private-rc.json",
                 private_blocking=False,
                 public_blocking=True,
                 note=subj["archive_digest"]["digest"],
@@ -397,7 +397,7 @@ def build_rows() -> list[dict[str, Any]]:
             "capability",
             "P9",
             "capability_unavailable",
-            "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P9-supply-chain-evidence.json",
+            "verification/artifacts/P9-supply-chain-evidence.json",
             private_blocking=False,
             public_blocking=True,
             note="hosted attestation unavailable-plan",

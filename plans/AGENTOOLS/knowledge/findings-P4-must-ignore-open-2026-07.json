@@ -1,0 +1,34 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "findings-P4-must-ignore-open-2026-07",
+  "title": "must-ignore-open — ре-замер round-trip на ОТКРЫТЫХ схемах + энфорсмент валидатора слоя 1 (P4.6, F3 + T-2)",
+  "sections": [
+    {
+      "id": "P4-must-ignore-open---round-trip-1-P4.6-F3-T-2",
+      "title": "P4-must-ignore-open — ре-замер round-trip на ОТКРЫТЫХ схемах + энфорсмент валидатора слоя 1 (P4.6, F3 + T-2)",
+      "text": "Слой 1 (сырьё исполнения). Метод: открытый вариант корпуса P2.1 (`bakeoff/probes-open/**`,\nвосемь ранее закрытых проб + p03), те же кандидаты, что в P2.2/P2.3 (`wol-soft` 0.26.2,\n`quicktype` 26.0.0 PHP/Dart); прогон валидаторов слоя 1 CI (`opis/json-schema` 2.6.0 — пин D15,\n`json_schema` 5.2.2 — пин D15) по `bakeoff/probes/p03`/`p06` и по закрытой схеме авторинга\nревизии `spec/revisions/2026-08/schema/authoring/audit-event.json`. Вердикт — по наблюдаемому\nвыводу команды. Полная матрица — `bakeoff/results/open-roundtrip.md`; логи —\n`bakeoff/results/open-*.log`, `bakeoff/results/layer1-*.log`."
+    },
+    {
+      "id": "F3-round-trip-must-ignore",
+      "title": "(а) F3 — round-trip must-ignore на открытых схемах",
+      "text": "**Факт.** Сняв `\"additionalProperties\": false` с внешнего уровня документа, `wol-soft`\nпереключается с `REJECTED` на **`SURVIVES`** на ВСЕХ восьми переизмеренных пробах (p01, p02,\np04, p06, p08, p09, p10 — плюс уже открытая p03, перенесённая как есть). `quicktype` (оба языка)\nостаётся `field-lost` на всех 9 — открытие схемы не меняет режим отказа: `from()`/`to()`\nперечисляют поля явным списком независимо от `additionalProperties`.\n\n**Вывод.** Находка F3 аудита фазы P2 подтверждена полностью, не только по единственной пробе\np03: колонка round-trip матрицы P2.2 действительно измеряла закрытость СХЕМЫ (`REJECTED` = схема\nотклонила документ), а не терпимость `wol-soft` к неизвестному свойству. Реальная терпимость\n`wol-soft` — `SURVIVES` универсально; кандидат вообще не реализует проверку закрытости\n(`additionalProperties`/`unevaluatedProperties` сборкой модели не энфорсятся). Ни один из двух\n`crash`/`n/a` (p05, p07) с `additionalProperties` не связан — переизмерение на них не производилось\nнамеренно (Scope Excluded).\n\n**Влияние на вердикт «DTO руками» (D51): нулевое** — вердикт стоит на `crash` p05 и `field-lost`\np08/quicktype, независимых от этого измерения фактах; они этим ре-замером не пересматриваются.\n\n**Адресат при расхождении:** расхождения со Списками A/B `DR-02` §2/§3 не обнаружено — оба списка\nформулируют вывод через закрытость СХЕМЫ (`additionalProperties: false` запрещена в опубликованных\nсхемах, разрешена в схемах авторинга), а не через терпимость конкретного генератора; правка не\nтребуется."
+    },
+    {
+      "id": "T-2-1-CI",
+      "title": "(б) T-2 — энфорсмент валидатора слоя 1 CI",
+      "text": "**Факт.** Оба пинованных валидатора (`opis/json-schema` 2.6.0 PHP, `json_schema` 5.2.2 Dart —\nD15) реально энфорсят `unevaluatedProperties` (проба p03: `unknown-key.json` → `INVALID`,\n`x_unknown_probe_field` назван явно в обоих выводах) и `dependentSchemas` (проба p06:\n`side_effect=write` без `approval` → `INVALID` в обоих выводах). Дополнительно PHP-валидатор\nпрогнан против реальной закрытой схемы авторинга ревизии (`audit-event.json`, композиция `allOf`\n+ `$ref: lifecycle-event.json` + собственный `unevaluatedProperties: false`) — документ с лишним\ntop-level ключом отклонён; сработавшая ветка — `additionalProperties` вложенной\n`lifecycle-event.json` (композиция замыкается на первой сработавшей ветке `allOf`), а не\n`unevaluatedProperties` `audit-event.json` напрямую — закрытие документа тем не менее подтверждено\nфактически, факт зафиксирован как наблюдаемый, не подогнан под ожидание.\n\n**Именованный остаток.** Ни одна закрытая схема авторинга ревизии `2026-08` не использует\n`dependentSchemas` (`grep -rl dependentSchemas spec/ fixtures/` — пусто на дереве этого ре-замера).\nЭнфорсмент этого ключевого слова на реальном содержимом ревизии не измерялся за отсутствием\nматериала; единственное прямое измерение — корпус `bakeoff/probes/p06`, чего для подтверждения T-2\nдостаточно (триггер требует прогона «по тому же корпусу `bakeoff/probes/**`»).\n\n**Вывод.** Список B `DR-02` §3, строка «`unevaluatedProperties: false` … это и есть механизм\nзакрытия», подтверждена эмпирически на ОБОИХ языках (ранее — только на Dart-стороне через\n`json_schema_builder`, не через пинованный `json_schema` 5.2.2; PHP-сторона не проверялась вовсе).\n«Именованный остаток» `DR-02` §3 закрыт. Адресат при расхождении: расхождения нет, правка `DR-02`\nне требуется."
+    },
+    {
+      "id": "section",
+      "title": "Провенанс",
+      "text": "`RAG:— (repo-grounded: @plan/phases/P2/phase.json § Audit P2 — 2026-07-27, находка F3; `DR-02` §3 «Именованный\nостаток» и §7 триггер T-2; bakeoff/results/php.md, dart.md — базовые матрицы P2.2/P2.3;\nbakeoff/results/open-roundtrip.md — полная матрица этого ре-замера; bakeoff/results/layer1-php.log,\nlayer1-dart.log — сырой вывод валидаторов)`."
+    }
+  ],
+  "applies_to": [
+    "P4"
+  ],
+  "provenance": {
+    "path": "findings/P4-must-ignore-open-2026-07.md",
+    "sha256": "da4392f42fd52ba76c86fb05de3b865f1eca8c1a651aa88944281f993270525e"
+  }
+}

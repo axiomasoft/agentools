@@ -1,0 +1,285 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P7.3",
+  "title": "Value objects, валидация против опубликованных схем, JCS, raw-preserving",
+  "status": "done",
+  "summary": "Реализовать типы ревизии РУКАМИ по опубликованным схемам (вердикт `DR-02` §4), слой валидации сообщений против этих схем на `opis/json-schema` и канонизацию JCS (`DR-01` §D4) с явным перечнем инвариантов; плюс носитель «сырое сообщение сохраняется целиком» (`§E3`), на который опираются журнал и must-ignore.",
+  "why": "Это фундамент двух межъязыковых инвариантов сразу. Первый — байтовая идентичность канонизации: на ней стоят `descriptor_digest` (§B7), `args_fingerprint` (§D1) и хеш-цепочка журнала (§C7), то есть расхождение PHP и Dart здесь обесценивает подтверждение, дедупликацию и аудит одновременно. Второй — «DTO руками»: bakeoff показал, что ни один генератор не даёт типа, совместимого с §E3 (round-trip молча теряет неизвестное свойство), поэтому raw-preserving слой пишется руками в любом случае, и его отсутствие обнаружится только на чужом расширении. Пин JCS при этом — пакет с одним релизом 2023 года и нулём зависимых пакетов: доверять его README нельзя, риск гасится собственным прогоном официальных векторов RFC 8785. `RAG:✅ 2026-07-27 (packagist.org/packages/mmccook/php-json-canonicalization-scheme — 1.0.0 от 2023-08-07, 0 dependents, 3 звезды; утверждение о прохождении официальных JCS-тестов принадлежит автору пакета)` · `RAG:— (repo-grounded: DR-01 §D4 — JCS с перечнем инвариантов, §E3 — сырое событие сохраняется целиком, §E5 — схемная гигиена; DR-02 §4 — DTO руками, quicktype теряет неизвестное свойство на всех пробах; @plan/knowledge/findings-P7-php-sdk-recon-2026-07-27.json §4, §5)`.",
+  "scope": {
+    "include": [
+      "(а) value objects ядра по опубликованным схемам ревизии, написанные руками в стиле P2 (`declare(strict_types=1)`, `final`, `readonly`, валидация в конструкторе, `fromArray`/`toArray`), с ОБЯЗАТЕЛЬНЫМ правилом: множество полей типа совпадает с множеством `properties` соответствующей опубликованной схемы; (б) raw-preserving носитель: каждый разобранный документ сохраняет ИСХОДНЫЙ массив целиком (не пересборкой поле-за-полем), `toArray()` возвращает его с наложенными изменениями — round-trip неизвестного свойства обязан быть побайтно точным; (в) слой валидации на `opis/json-schema`: загрузка опубликованных схем ревизии, резолв относительных `$ref` ОФЛАЙН (сетевой `$ref` запрещён §E5), сообщение об ошибке валидации несёт путь и правило; (г) канонизация JCS через пин с инвариантами `DR-01` §D4: ECMAScript-совместимая сериализация чисел, ОТКАЗ при `NaN`/`Infinity`, ОТКАЗ при дублирующихся ключах, никакой скрытой Unicode-нормализации; (д) **прогон официальных векторов RFC 8785** из upstream-набора JCS как тест пакета — доказательство пина, а не доверие его README; (е) фасад канонизации ОДНИМ классом (`Canonicalizer`), чтобы подмена библиотеки была правкой одного файла; (ж) тесты, чьи ожидания взяты из векторов корпуса и из официальных векторов JCS, с перечнем заимствованных `id` в Completion Notes."
+    ],
+    "exclude": [
+      "дескриптор инструмента и `descriptor_digest` (P7.4 — он ПОЛЬЗУЕТСЯ канонизацией этого item'а); журнал (P7.5); открытые перечисления, коды ошибок и must-ignore как правило поведения (P7.9 — здесь только структурный носитель сырых данных); схемы авторинга `schema/authoring/**` (предмет линтера спеки, не SDK); генерация типов любым инструментом (`DR-02` §4 — DTO руками); ЛЮБЫЕ правки ревизии, схем и корпуса; чекер структурной сверки «поле схемы ↔ поле типа» как артефакт слоя 2 CI (P7.12 при ветке (A) owner-gate; здесь — только само совпадение полей)."
+    ]
+  },
+  "depends_on": [
+    "P7.1"
+  ],
+  "decisions": [
+    "D4",
+    "D15"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "spec/revisions/2026-08/schema/tool-descriptor.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/schema/error.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "spec/revisions/2026-08/09_idempotency-errors.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "spec/revisions/2026-08/02_tool-contract-profile.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "fixtures/2026-08/README.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-02_keywords-codegen-dart-transport.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "bakeoff/php/manual/P01OpenEnum.php",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-06-p7-php-sdk-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/findings-P7-php-sdk-recon-2026-07-27.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [],
+  "rules": [
+    "множество полей каждого типа выводится из `properties` ЕГО схемы — расхождение является дефектом типа, а не «упрощением»; сохранение сырых данных делается ЦЕЛИКОМ (модель unknown fields протобуфа, §E3), пересборка поле-за-полем запрещена — именно она теряет неизвестное свойство; канонизация вызывается ТОЛЬКО через фасад `Canonicalizer` — прямые вызовы библиотеки из других модулей запрещены (иначе подмена пина станет правкой всего пакета); официальные векторы RFC 8785 берутся из upstream-набора и коммитятся в `php/tests/` как данные, их правка под реализацию — материальное отклонение; сетевой `$ref` не резолвится ни при каких условиях (§E5), схемы читаются с диска ревизии; расхождение с вектором разбирается сначала прогоном против эталонного адаптера, оба вывода — в отчёте; плановый линтер — командой из Phase Context."
+  ],
+  "guidance": "Стиль — прямое продолжение `bakeoff/php/manual/*.php` (замер 111 строк на 3 типа — это и есть принятая цена ручного пути, `DR-02` §4). Анти-самообман: «JCS подключён» ≠ «JCS корректен» — доказательством считается ЗЕЛЁНЫЙ прогон официальных векторов RFC 8785 плюс три отрицательных (`NaN`, `Infinity`, дублирующийся ключ); «валидация работает» ≠ «валидация ловит» — нужен красный на заведомо невалидном документе. Анти-подгонка: если официальный вектор JCS не проходит — библиотека НЕ патчится и вектор НЕ правится: см. if-then. ЗАПРЕЩЕНО: генерировать типы инструментом; пересобирать документ поле-за-полем; вызывать библиотеку канонизации в обход фасада; резолвить сетевые `$ref`; вводить Unicode-нормализацию «для порядка»; править схемы ревизии, чтобы тип «сошёлся». If-then: пин `mmccook/php-json-canonicalization-scheme` не проходит хотя бы один официальный вектор RFC 8785 → библиотека не патчится и не форкается: факт фиксируется выводом, item закрывается `🔴 Blocked` + `Возобновление:` с адресатом «владелец», в отчёте назван готовый путь — `D15` уже принял «писать JCS самим» для Dart, перенос того же решения на PHP есть новая D-запись владельца, а не самостоятельная замена пина. If-then: опубликованная схема содержит ключевое слово, которого нет в Списке A `DR-02` §2 → это дефект ревизии, а не повод расширить валидатор: `🔴 Blocked` + эскалация (trigger «конфликт правил»).",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "php php/vendor/bin/phpunit -c php/phpunit.xml; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "php/vendor/bin/phpstan analyse -c php/phpstan.neon --no-progress; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "php -r \"...\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "grep -rn 'JsonCanonicalizator\\|CanonicalJson' php/src --include=*.php -l | grep -v 'Schema/Canonicalizer.php' | wc -l",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "procedure": "php php/vendor/bin/phpunit -c php/phpunit.xml",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "procedure": "php/vendor/bin/phpstan analyse -c php/phpstan.neon --no-progress",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "procedure": "RFC 8785 official vectors arrays/structures/values",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V8",
+      "procedure": "JCS negatives NaN/Infinity/duplicate-key",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V9",
+      "procedure": "RawDocument unknown-member byte round-trip",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V10",
+      "procedure": "PublishedSchemaValidator invalid path+rule",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V11",
+      "procedure": "grep direct JCS library bypass php/src",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "ручные value objects, множества полей которых доказанно совпадают с `properties` опубликованных схем + raw-preserving носитель с побайтным round-trip неизвестного свойства + слой валидации на `opis/json-schema` с офлайн-резолвом + фасад канонизации JCS, доказанный официальными векторами RFC 8785 и тремя отрицательными прогонами."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "required",
+    "status": "complete"
+  },
+  "result": {
+    "started_at": "2026-09-18T18:50:00Z",
+    "finished_at": "2026-09-18T18:50:00Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "implementation/high",
+      "effort": "high"
+    },
+    "notes": "Reconciliation anchor 1f5eaf8: Schema/Canonicalizer+RawDocument+PublishedSchemaValidator; RFC8785 vectors×3; AOB-32..37 IDE-41; self-hosted JCS (no mmccook bypass); phpunit Schema 12/12\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V5",
+        "exit": 0,
+        "at": "2026-09-18T18:50:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V6",
+        "exit": 0,
+        "at": "2026-09-18T18:50:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V7",
+        "exit": 0,
+        "at": "2026-09-18T18:50:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V8",
+        "exit": 0,
+        "at": "2026-09-18T18:50:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V9",
+        "exit": 0,
+        "at": "2026-09-18T18:50:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V10",
+        "exit": 0,
+        "at": "2026-09-18T18:50:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V11",
+        "exit": 0,
+        "at": "2026-09-18T18:50:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-18T18:50:00Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Реализовать типы ревизии РУКАМИ по опубликованным схемам (вердикт `DR-02` §4), слой валидации сообщений против этих схем на `opis/json-schema` и канонизацию JCS (`DR-01` §D4) с явным перечнем инвариантов; плюс носитель «сырое сообщение сохраняется целиком» (`§E3`), на который опираются журнал и must-ignore."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Это фундамент двух межъязыковых инвариантов сразу. Первый — байтовая идентичность канонизации: на ней стоят `descriptor_digest` (§B7), `args_fingerprint` (§D1) и хеш-цепочка журнала (§C7), то есть расхождение PHP и Dart здесь обесценивает подтверждение, дедупликацию и аудит одновременно. Второй — «DTO руками»: bakeoff показал, что ни один генератор не даёт типа, совместимого с §E3 (round-trip молча теряет неизвестное свойство), поэтому raw-preserving слой пишется руками в любом случае, и его отсутствие обнаружится только на чужом расширении. Пин JCS при этом — пакет с одним релизом 2023 года и нулём зависимых пакетов: доверять его README нельзя, риск гасится собственным прогоном официальных векторов RFC 8785. `RAG:✅ 2026-07-27 (packagist.org/packages/mmccook/php-json-canonicalization-scheme — 1.0.0 от 2023-08-07, 0 dependents, 3 звезды; утверждение о прохождении официальных JCS-тестов принадлежит автору пакета)` · `RAG:— (repo-grounded: DR-01 §D4 — JCS с перечнем инвариантов, §E3 — сырое событие сохраняется целиком, §E5 — схемная гигиена; DR-02 §4 — DTO руками, quicktype теряет неизвестное свойство на всех пробах; @plan/knowledge/findings-P7-php-sdk-recon-2026-07-27.json §4, §5)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "(а) value objects ядра по опубликованным схемам ревизии, написанные руками в стиле P2 (`declare(strict_types=1)`, `final`, `readonly`, валидация в конструкторе, `fromArray`/`toArray`), с ОБЯЗАТЕЛЬНЫМ правилом: множество полей типа совпадает с множеством `properties` соответствующей опубликованной схемы; (б) raw-preserving носитель: каждый разобранный документ сохраняет ИСХОДНЫЙ массив целиком (не пересборкой поле-за-полем), `toArray()` возвращает его с наложенными изменениями — round-trip неизвестного свойства обязан быть побайтно точным; (в) слой валидации на `opis/json-schema`: загрузка опубликованных схем ревизии, резолв относительных `$ref` ОФЛАЙН (сетевой `$ref` запрещён §E5), сообщение об ошибке валидации несёт путь и правило; (г) канонизация JCS через пин с инвариантами `DR-01` §D4: ECMAScript-совместимая сериализация чисел, ОТКАЗ при `NaN`/`Infinity`, ОТКАЗ при дублирующихся ключах, никакой скрытой Unicode-нормализации; (д) **прогон официальных векторов RFC 8785** из upstream-набора JCS как тест пакета — доказательство пина, а не доверие его README; (е) фасад канонизации ОДНИМ классом (`Canonicalizer`), чтобы подмена библиотеки была правкой одного файла; (ж) тесты, чьи ожидания взяты из векторов корпуса и из официальных векторов JCS, с перечнем заимствованных `id` в Completion Notes."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "дескриптор инструмента и `descriptor_digest` (P7.4 — он ПОЛЬЗУЕТСЯ канонизацией этого item'а); журнал (P7.5); открытые перечисления, коды ошибок и must-ignore как правило поведения (P7.9 — здесь только структурный носитель сырых данных); схемы авторинга `schema/authoring/**` (предмет линтера спеки, не SDK); генерация типов любым инструментом (`DR-02` §4 — DTO руками); ЛЮБЫЕ правки ревизии, схем и корпуса; чекер структурной сверки «поле схемы ↔ поле типа» как артефакт слоя 2 CI (P7.12 при ветке (A) owner-gate; здесь — только само совпадение полей)."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`php/composer.json` + `php/README.md` (скелет P7.1) · `spec/revisions/2026-08/schema/tool-descriptor.json` · `spec/revisions/2026-08/schema/error.json` · `spec/revisions/2026-08/09_idempotency-errors.md` · `spec/revisions/2026-08/02_tool-contract-profile.md` · `fixtures/2026-08/README.md` · `@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §D4, §E3, §E5 · `@plan/knowledge/10_decisions-DR-02_keywords-codegen-dart-transport.json` §2, §4 · `bakeoff/php/manual/P01OpenEnum.php` · `@plan/knowledge/research-06-p7-php-sdk-2026-08.json` §5, §6.5, §8."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`php/src/Schema/**` · `php/tests/Schema/**` · `php/composer.json` (только если ре-верификация потребует уточнить констрейнт JCS — с записью в Completion Notes) (репо-пути — от корня `~/projects/packages/agentools`)"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/research-06-p7-php-sdk-2026-08.json` §5, §6.5, §8 2) `@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §D4, §E3, §E5 3) `@plan/knowledge/10_decisions-DR-02_keywords-codegen-dart-transport.json` §2, §4 4) `spec/revisions/2026-08/schema/tool-descriptor.json` 5) `fixtures/2026-08/README.md` 6) `@plan/knowledge/findings-P7-php-sdk-recon-2026-07-27.json` §4, §5 7) `@plan/plan.json` §2 Execution Rules, §5 (D15, D77, D83)."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "множество полей каждого типа выводится из `properties` ЕГО схемы — расхождение является дефектом типа, а не «упрощением»; сохранение сырых данных делается ЦЕЛИКОМ (модель unknown fields протобуфа, §E3), пересборка поле-за-полем запрещена — именно она теряет неизвестное свойство; канонизация вызывается ТОЛЬКО через фасад `Canonicalizer` — прямые вызовы библиотеки из других модулей запрещены (иначе подмена пина станет правкой всего пакета); официальные векторы RFC 8785 берутся из upstream-набора и коммитятся в `php/tests/` как данные, их правка под реализацию — материальное отклонение; сетевой `$ref` не резолвится ни при каких условиях (§E5), схемы читаются с диска ревизии; расхождение с вектором разбирается сначала прогоном против эталонного адаптера, оба вывода — в отчёте; плановый линтер — командой из Phase Context."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Стиль — прямое продолжение `bakeoff/php/manual/*.php` (замер 111 строк на 3 типа — это и есть принятая цена ручного пути, `DR-02` §4). Анти-самообман: «JCS подключён» ≠ «JCS корректен» — доказательством считается ЗЕЛЁНЫЙ прогон официальных векторов RFC 8785 плюс три отрицательных (`NaN`, `Infinity`, дублирующийся ключ); «валидация работает» ≠ «валидация ловит» — нужен красный на заведомо невалидном документе. Анти-подгонка: если официальный вектор JCS не проходит — библиотека НЕ патчится и вектор НЕ правится: см. if-then. ЗАПРЕЩЕНО: генерировать типы инструментом; пересобирать документ поле-за-полем; вызывать библиотеку канонизации в обход фасада; резолвить сетевые `$ref`; вводить Unicode-нормализацию «для порядка»; править схемы ревизии, чтобы тип «сошёлся». If-then: пин `mmccook/php-json-canonicalization-scheme` не проходит хотя бы один официальный вектор RFC 8785 → библиотека не патчится и не форкается: факт фиксируется выводом, item закрывается `🔴 Blocked` + `Возобновление:` с адресатом «владелец», в отчёте назван готовый путь — `D15` уже принял «писать JCS самим» для Dart, перенос того же решения на PHP есть новая D-запись владельца, а не самостоятельная замена пина. If-then: опубликованная схема содержит ключевое слово, которого нет в Списке A `DR-02` §2 → это дефект ревизии, а не повод расширить валидатор: `🔴 Blocked` + эскалация (trigger «конфликт правил»)."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`php php/vendor/bin/phpunit -c php/phpunit.xml; echo $?` = 0 · `php/vendor/bin/phpstan analyse -c php/phpstan.neon --no-progress; echo $?` = 0 · прогон официальных векторов RFC 8785 зелёный, число прогнанных векторов напечатано и непусто (вывод — в Completion Notes) · три отрицательных прогона канонизации — `NaN`, `Infinity`, дублирующийся ключ — каждый отвергается с названной диагностикой (вывод — в Completion Notes) · round-trip неизвестного свойства побайтно точен: тест подаёт документ с ключом, которого нет ни в одной схеме, и сравнивает выход с входом — зелёный · валидация даёт КРАСНЫЙ на заведомо невалидном документе с указанием пути и правила (вывод — в Completion Notes) · `php -r \"...\"` — сверка множеств «поля типа ↔ properties схемы» по каждому реализованному типу печатает `OK` для всех (точная команда и вывод — в Completion Notes; расхождение = дефект типа) · `grep -rn 'JsonCanonicalizator\\|CanonicalJson' php/src --include=*.php -l | grep -v 'Schema/Canonicalizer.php' | wc -l` = 0 (библиотека вызывается только через фасад; фактическое имя класса библиотеки подставляется исполнителем и приводится в Completion Notes) · прогнать плановый линтер по каталогу плана и опубликовать счёт с атрибуцией, K = 0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "ручные value objects, множества полей которых доказанно совпадают с `properties` опубликованных схем + raw-preserving носитель с побайтным round-trip неизвестного свойства + слой валидации на `opis/json-schema` с офлайн-резолвом + фасад канонизации JCS, доказанный официальными векторами RFC 8785 и тремя отрицательными прогонами."
+    }
+  ]
+}

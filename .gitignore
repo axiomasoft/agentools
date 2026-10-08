@@ -49,3 +49,4 @@ __pycache__/
 /php/tmp/
 /php/infection.json
 /php/infection.html
+.grok/config.toml

@@ -1,0 +1,1211 @@
+['dart', 'test']:
+00:00 +0: loading test/adversarial/postgres_schedule_test.dart
+00:00 +0: test/adversarial/postgres_schedule_test.dart: schedule file has no sleep and covers catalog IDs
+00:00 +1: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +2 -1: loading test/adversarial/audit_regression_test.dart [E]
+  Failed to load "test/adversarial/audit_regression_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +2 -2: loading test/adversarial/adversarial_corpus_test.dart [E]
+  Failed to load "test/adversarial/adversarial_corpus_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +2 -3: loading test/agentools_smoke_test.dart [E]
+  Failed to load "test/agentools_smoke_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +2 -4: loading test/journal/event_store_gate_test.dart [E]
+  Failed to load "test/journal/event_store_gate_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +2 -4: test/adversarial/package_boundary_kill_test.dart: production barrel cannot expose the testkit
+00:00 +2 -5: loading test/journal/action_reducer_test.dart [E]
+  Failed to load "test/journal/action_reducer_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +2 -6: loading test/journal/in_memory_event_store_test.dart [E]
+  Failed to load "test/journal/in_memory_event_store_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -7: loading test/journal/event_store_collision_test.dart [E]
+  Failed to load "test/journal/event_store_collision_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -8: loading test/journal/persistence_contracts_test.dart [E]
+  Failed to load "test/journal/persistence_contracts_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -9: loading test/scenario/scenario_runner_test.dart [E]
+  Failed to load "test/scenario/scenario_runner_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -10: loading test/scenario/clarification_session_test.dart [E]
+  Failed to load "test/scenario/clarification_session_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -11: loading test/scenario/expression_evaluator_test.dart [E]
+  Failed to load "test/scenario/expression_evaluator_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -12: loading test/scenario/llm_port_test.dart [E]
+  Failed to load "test/scenario/llm_port_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -13: loading test/tool/tool_descriptor_test.dart [E]
+  Failed to load "test/tool/tool_descriptor_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -14: loading test/ops/credential_guard_test.dart [E]
+  Failed to load "test/ops/credential_guard_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -15: loading test/ops/long_operation_coordinator_test.dart [E]
+  Failed to load "test/ops/long_operation_coordinator_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -16: loading test/ops/baggage_refs_test.dart [E]
+  Failed to load "test/ops/baggage_refs_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -17: loading test/ops/cost_recorder_test.dart [E]
+  Failed to load "test/ops/cost_recorder_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -18: loading test/ops/journal_appender_store_test.dart [E]
+  Failed to load "test/ops/journal_appender_store_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -19: loading test/ops/audit_event_factory_test.dart [E]
+  Failed to load "test/ops/audit_event_factory_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -20: loading test/ops/principal_triple_test.dart [E]
+  Failed to load "test/ops/principal_triple_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -21: loading test/ops/audit_redaction_test.dart [E]
+  Failed to load "test/ops/audit_redaction_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -22: loading test/idempotency/fencing_gate_test.dart [E]
+  Failed to load "test/idempotency/fencing_gate_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -23: loading test/idempotency/in_memory_deduplication_store_test.dart [E]
+  Failed to load "test/idempotency/in_memory_deduplication_store_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -24: loading test/idempotency/idempotency_coordinator_test.dart [E]
+  Failed to load "test/idempotency/idempotency_coordinator_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -25: loading test/idempotency/lease_fence_test.dart [E]
+  Failed to load "test/idempotency/lease_fence_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -26: loading test/idempotency/sql_idempotency_store_test.dart [E]
+  Failed to load "test/idempotency/sql_idempotency_store_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -27: loading test/schema/canonicalizer_oracle_test.dart [E]
+  Failed to load "test/schema/canonicalizer_oracle_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -28: loading test/schema/schema_alignment_test.dart [E]
+  Failed to load "test/schema/schema_alignment_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -29: loading test/schema/raw_document_test.dart [E]
+  Failed to load "test/schema/raw_document_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -30: loading test/schema/canonicalizer_test.dart [E]
+  Failed to load "test/schema/canonicalizer_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -31: loading test/schema/published_schema_validator_test.dart [E]
+  Failed to load "test/schema/published_schema_validator_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -32: loading test/schema/tool_dto_test.dart [E]
+  Failed to load "test/schema/tool_dto_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -33: loading test/persistence/sql_event_store_test.dart [E]
+  Failed to load "test/persistence/sql_event_store_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -34: loading test/errors/grease_vector_test.dart [E]
+  Failed to load "test/errors/grease_vector_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -35: loading test/errors/tool_execution_error_test.dart [E]
+  Failed to load "test/errors/tool_execution_error_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -36: loading test/errors/must_ignore_test.dart [E]
+  Failed to load "test/errors/must_ignore_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -37: loading test/errors/open_enum_test.dart [E]
+  Failed to load "test/errors/open_enum_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -38: loading test/errors/tool_execution_result_test.dart [E]
+  Failed to load "test/errors/tool_execution_result_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -39: loading test/effects/effect_committer_test.dart [E]
+  Failed to load "test/effects/effect_committer_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -40: loading test/identity/extension_negotiator_test.dart [E]
+  Failed to load "test/identity/extension_negotiator_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -41: loading test/identity/structural_must_ignore_test.dart [E]
+  Failed to load "test/identity/structural_must_ignore_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -42: loading test/identity/extension_identity_test.dart [E]
+  Failed to load "test/identity/extension_identity_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -43: loading test/identity/extension_key_test.dart [E]
+  Failed to load "test/identity/extension_key_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -44: loading test/identity/vendor_meta_key_test.dart [E]
+  Failed to load "test/identity/vendor_meta_key_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -45: loading test/confirmation/confirmation_protocol_test.dart [E]
+  Failed to load "test/confirmation/confirmation_protocol_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -46: loading test/confirmation/layer_boundary_test.dart [E]
+  Failed to load "test/confirmation/layer_boundary_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -47: loading test/confirmation/confirmation_token_store_test.dart [E]
+  Failed to load "test/confirmation/confirmation_token_store_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -48: loading test/confirmation/gate_policy_test.dart [E]
+  Failed to load "test/confirmation/gate_policy_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -49: loading test/confirmation/token_envelope_test.dart [E]
+  Failed to load "test/confirmation/token_envelope_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -50: loading test/confirmation/durable_replay_gate_test.dart [E]
+  Failed to load "test/confirmation/durable_replay_gate_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -51: loading test/confirmation/confirmation_service_test.dart [E]
+  Failed to load "test/confirmation/confirmation_service_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -52: loading test/confirmation/confirmation_security_model_test.dart [E]
+  Failed to load "test/confirmation/confirmation_security_model_test.dart":
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:45:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:49:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator;
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:58:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:742:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get iterator => _AvlTreeIterator._(this);
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:746:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> get reverseIterator =>
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:751:3: Error: Type 'BidirectionalIterator' not found.
+    BidirectionalIterator<V> fromIterator(V anchor,
+    ^^^^^^^^^^^^^^^^^^^^^
+  /home/vostrikov/.pub-cache/hosted/pub.dev/quiver-3.0.0/lib/src/collection/treeset.dart:892:38: Error: Type 'BidirectionalIterator' not found.
+  class _AvlTreeIterator<V> implements BidirectionalIterator<V> {
+                                       ^^^^^^^^^^^^^^^^^^^^^
+00:00 +3 -52: Some tests failed.
+
+Failing tests:
+  test/adversarial/adversarial_corpus_test.dart: loading test/adversarial/adversarial_corpus_test.dart
+  test/adversarial/audit_regression_test.dart: loading test/adversarial/audit_regression_test.dart
+  test/agentools_smoke_test.dart: loading test/agentools_smoke_test.dart
+  test/confirmation/confirmation_protocol_test.dart: loading test/confirmation/confirmation_protocol_test.dart
+  ... and 48 more
+
+

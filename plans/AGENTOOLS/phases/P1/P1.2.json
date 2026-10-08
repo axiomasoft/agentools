@@ -1,0 +1,177 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P1.2",
+  "title": "Построчная сверка нормативного среза `R-11` с опубликованным финалом",
+  "status": "done",
+  "summary": "Пройти чек-лист нормативных утверждений, на которых стоят решения `DR-01`, по опубликованному финалу и составить дельта-таблицу: утверждение → статус → цитата с URL → адрес в `DR-01`.",
+  "why": "Решения `DR-01` §A–§J выведены из формулировок черновика; шесть находок разведки verify-волна уже не подтвердила (`R-11` §13). Сверка построчная, а не «в целом», потому что цена ошибки — нормативный текст ревизии, который потом замораживается гейтом фазы P5. `RAG:✅ 2026-07-26 R-11 §13: REFUTED/UNVERIFIED-строки касаются атрибуции, дат и статуса черновика — содержательные выводы не отменены, но подтверждение требуется`.",
+  "scope": {
+    "include": [
+      "дельта-таблица `@plan/knowledge/findings-P1-mcp-final-delta.json` со строкой на КАЖДЫЙ пункт чек-листа (статус — закрытое перечисление `confirmed` | `changed` | `removed` | `absent`; для `changed`/`removed`/`absent` — дословная цитата финала + URL + влияние «решение `DR-01` §X»). Чек-лист (14 пунктов, `R-11` §1–§5): (1) stateless-ядро: три нормативные формулировки о независимости запросов и явном идентификаторе состояния; (2) таблица per-request `_meta`: `protocolVersion` (required), `clientCapabilities` (required), `clientInfo`, `logLevel` + поведение при отсутствии обязательного (`-32602`/`400`); (3) `server/discover`: «Servers MUST implement it», состав ответа, `ttlMs`/`cacheScope`; (4) `resultType`: обязательность, значения `complete`/`input_required`, трактовка отсутствия и незнакомого значения; (5) политика кодов ошибок: `-32000..-32019` закрыт, `-32020..-32099` зарезервирован спекой, определённые `-32020/-32021/-32022`, ретирование `-32002`/`-32042`, рекомендация «новые прикладные — вне `-32768..-32000`»; (6) транспорт: удаление `Mcp-Session-Id`, GET-стрима, SSE-resumability + требование «переслать запрос с новым id»; (7) SEP-2106: любые ключевые слова JSON Schema 2020-12 в `inputSchema`/`outputSchema`, `structuredContent` — любое JSON-значение, запрет автодереференса сетевых `$ref`, ограничения глубины/композиции; (8) SEP-2133: формат `{vendor-prefix}/{extension-name}`, reverse-DNS SHOULD, категория **Unofficial** и её правовой статус; (9) место объявления расширений: `capabilities.extensions` внутри per-request `_meta`; (10) SEP-2133 graceful degradation + правило версионирования (breaking ⇒ новый идентификатор); (11) грамматика `_meta`-ключа: серия labels через точку + `/`, резерв второго label `modelcontextprotocol`/`mcp`; (12) MRTR (SEP-2322): `InputRequiredResult`, `inputRequests`, непрозрачный `requestState`, требование нового JSON-RPC id, разрешённые методы, отсутствие лимита раундов; (13) Tasks (SEP-2663): статус расширения, статусы задачи, методы, удаление `tasks/list`, отсутствие `notifications/progress` на задачах; (14) W3C Trace Context: `traceparent`/`tracestate`/`baggage` как исключение из правила префикса. Плюс отдельная строка «отсутствие нормы must-ignore для неизвестных `_meta`-ключей» (`R-11` §2 — основание решения E3): подтвердить, что явного MUST в ядре по-прежнему нет."
+    ],
+    "exclude": [
+      "правки `DR-01` и D-записи (это P1.3); правки любых файлов ревизии; исследование зрелости SDK/расширений сверх пунктов чек-листа (зрелость `ext-tasks` — Q-7, владелец-фаза P6); bakeoff и транспорт Dart (фаза P2)."
+    ]
+  },
+  "depends_on": [
+    "P1.1"
+  ],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "spec/vendor/mcp/2026-07-28/PIN.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "schema.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/findings-P1-mcp-final-pin.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/20_research-R-11_design-recon-2026-07.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/20_research-R-10_landscape-2026-07.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "@plan/knowledge/findings-P1-mcp-final-delta.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "каждая строка таблицы несёт URL страницы финала (не `/draft/`) и дату обращения; формулировки статуса — только из закрытого перечисления; сверять с ДВУХ сторон: нормативный текст страниц и вендоренный `schema.json` (там, где утверждение выражено в схеме — `resultType`, состав `_meta`, коды ошибок); расхождение текста и схемы — отдельная строка со статусом `changed` и пометкой «text↔schema»."
+  ],
+  "guidance": "Кода нет — аналитический артефакт. Анти-подгонка: расхождение финала с `R-11` — это ЦЕННЫЙ сигнал, а не помеха; ЗАПРЕЩЕНО округлять формулировку до «в целом совпадает», подменять цитату пересказом или тихо опускать пункт чек-листа (пункт без строки в таблице = дефект item'а). Цитата — дословная, в кавычках, с URL; пересказ помечать явно словом «пересказ». If-then: пункт чек-листа невозможно проверить (страница отсутствует, доступ закрыт) → строка со статусом `absent` + причина + `[UNVERIFIED]`, но НЕ пустая строка и НЕ «confirmed по памяти». If-then: обнаружено, что финал ломает предпосылку решения `DR-01` (например, изменилась грамматика `_meta`-ключа или удалён `server/discover`) — НЕ продолжать самовольно и НЕ править `DR-01` в этом item'е: зафиксировать строку, отметить `Escalation Needed: yes` и передать в P1.3 (это меняет решения §A1/§A2/§A3 — эскалация по `plan-protocol` §10).",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "grep -c '^|' \"$F\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "grep -cE 'confirmed|changed|removed|absent' \"$F\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "grep -c 'https://' \"$F\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "grep -c 'specification/draft' \"$F\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "`@plan/knowledge/findings-P1-mcp-final-delta.json` — дельта-таблица 15 строк со статусами, цитатами, URL и адресами решений `DR-01`."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "medium"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "required",
+    "status": "complete"
+  },
+  "result": {
+    "started_at": "2026-07-27T14:05:51Z",
+    "finished_at": "2026-07-27T14:35:51Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "sonnet/medium",
+      "effort": "medium"
+    },
+    "notes": "P1.2 закрыт: дельта-таблица R-11 vs пин, финал не опубликован — 6 confirmed/6 changed/3 absent",
+    "deviations": [],
+    "pending": [],
+    "checks": []
+  },
+  "updated_at": "2026-07-27T14:35:51Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Пройти чек-лист нормативных утверждений, на которых стоят решения `DR-01`, по опубликованному финалу и составить дельта-таблицу: утверждение → статус → цитата с URL → адрес в `DR-01`."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Решения `DR-01` §A–§J выведены из формулировок черновика; шесть находок разведки verify-волна уже не подтвердила (`R-11` §13). Сверка построчная, а не «в целом», потому что цена ошибки — нормативный текст ревизии, который потом замораживается гейтом фазы P5. `RAG:✅ 2026-07-26 R-11 §13: REFUTED/UNVERIFIED-строки касаются атрибуции, дат и статуса черновика — содержательные выводы не отменены, но подтверждение требуется`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "дельта-таблица `@plan/knowledge/findings-P1-mcp-final-delta.json` со строкой на КАЖДЫЙ пункт чек-листа (статус — закрытое перечисление `confirmed` | `changed` | `removed` | `absent`; для `changed`/`removed`/`absent` — дословная цитата финала + URL + влияние «решение `DR-01` §X»). Чек-лист (14 пунктов, `R-11` §1–§5): (1) stateless-ядро: три нормативные формулировки о независимости запросов и явном идентификаторе состояния; (2) таблица per-request `_meta`: `protocolVersion` (required), `clientCapabilities` (required), `clientInfo`, `logLevel` + поведение при отсутствии обязательного (`-32602`/`400`); (3) `server/discover`: «Servers MUST implement it», состав ответа, `ttlMs`/`cacheScope`; (4) `resultType`: обязательность, значения `complete`/`input_required`, трактовка отсутствия и незнакомого значения; (5) политика кодов ошибок: `-32000..-32019` закрыт, `-32020..-32099` зарезервирован спекой, определённые `-32020/-32021/-32022`, ретирование `-32002`/`-32042`, рекомендация «новые прикладные — вне `-32768..-32000`»; (6) транспорт: удаление `Mcp-Session-Id`, GET-стрима, SSE-resumability + требование «переслать запрос с новым id»; (7) SEP-2106: любые ключевые слова JSON Schema 2020-12 в `inputSchema`/`outputSchema`, `structuredContent` — любое JSON-значение, запрет автодереференса сетевых `$ref`, ограничения глубины/композиции; (8) SEP-2133: формат `{vendor-prefix}/{extension-name}`, reverse-DNS SHOULD, категория **Unofficial** и её правовой статус; (9) место объявления расширений: `capabilities.extensions` внутри per-request `_meta`; (10) SEP-2133 graceful degradation + правило версионирования (breaking ⇒ новый идентификатор); (11) грамматика `_meta`-ключа: серия labels через точку + `/`, резерв второго label `modelcontextprotocol`/`mcp`; (12) MRTR (SEP-2322): `InputRequiredResult`, `inputRequests`, непрозрачный `requestState`, требование нового JSON-RPC id, разрешённые методы, отсутствие лимита раундов; (13) Tasks (SEP-2663): статус расширения, статусы задачи, методы, удаление `tasks/list`, отсутствие `notifications/progress` на задачах; (14) W3C Trace Context: `traceparent`/`tracestate`/`baggage` как исключение из правила префикса. Плюс отдельная строка «отсутствие нормы must-ignore для неизвестных `_meta`-ключей» (`R-11` §2 — основание решения E3): подтвердить, что явного MUST в ядре по-прежнему нет."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "правки `DR-01` и D-записи (это P1.3); правки любых файлов ревизии; исследование зрелости SDK/расширений сверх пунктов чек-листа (зрелость `ext-tasks` — Q-7, владелец-фаза P6); bakeoff и транспорт Dart (фаза P2)."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "пин из P1.1 (`spec/vendor/mcp/2026-07-28/PIN.md` + вендоренный `schema.json`); `R-11` §1–§5 и §13; `R-10` §2 (таблица изменений против 2025-11-25)."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`05-Projects/03-Packages/AgenTools/@plan/knowledge/findings-P1-mcp-final-delta.json`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `05-Projects/03-Packages/AgenTools/@plan/knowledge/findings-P1-mcp-final-pin.json` (пин, URL-источники) 2) `05-Projects/03-Packages/AgenTools/@plan/knowledge/20_research-R-11_design-recon-2026-07.json` §1–§5 и §13 ЦЕЛИКОМ 3) `05-Projects/03-Packages/AgenTools/@plan/knowledge/20_research-R-10_landscape-2026-07.json` §2 4) `05-Projects/03-Packages/AgenTools/@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §A–§J (чтобы каждая дельта получила адрес решения)."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "каждая строка таблицы несёт URL страницы финала (не `/draft/`) и дату обращения; формулировки статуса — только из закрытого перечисления; сверять с ДВУХ сторон: нормативный текст страниц и вендоренный `schema.json` (там, где утверждение выражено в схеме — `resultType`, состав `_meta`, коды ошибок); расхождение текста и схемы — отдельная строка со статусом `changed` и пометкой «text↔schema»."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Кода нет — аналитический артефакт. Анти-подгонка: расхождение финала с `R-11` — это ЦЕННЫЙ сигнал, а не помеха; ЗАПРЕЩЕНО округлять формулировку до «в целом совпадает», подменять цитату пересказом или тихо опускать пункт чек-листа (пункт без строки в таблице = дефект item'а). Цитата — дословная, в кавычках, с URL; пересказ помечать явно словом «пересказ». If-then: пункт чек-листа невозможно проверить (страница отсутствует, доступ закрыт) → строка со статусом `absent` + причина + `[UNVERIFIED]`, но НЕ пустая строка и НЕ «confirmed по памяти». If-then: обнаружено, что финал ломает предпосылку решения `DR-01` (например, изменилась грамматика `_meta`-ключа или удалён `server/discover`) — НЕ продолжать самовольно и НЕ править `DR-01` в этом item'е: зафиксировать строку, отметить `Escalation Needed: yes` и передать в P1.3 (это меняет решения §A1/§A2/§A3 — эскалация по `plan-protocol` §10)."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "пусть `F` = `05-Projects/03-Packages/AgenTools/@plan/knowledge/findings-P1-mcp-final-delta.json`; `grep -c '^|' \"$F\"` ≥ 17 (шапка + разделитель + 15 строк чек-листа); `grep -cE 'confirmed|changed|removed|absent' \"$F\"` ≥ 15; `grep -c 'https://' \"$F\"` ≥ 15; `grep -c 'specification/draft' \"$F\"` = 0 (ни одна ссылка не ведёт на черновик); все 15 пунктов чек-листа присутствуют — перечислить их номера в Completion Notes."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "`@plan/knowledge/findings-P1-mcp-final-delta.json` — дельта-таблица 15 строк со статусами, цитатами, URL и адресами решений `DR-01`."
+    }
+  ]
+}

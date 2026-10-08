@@ -23,7 +23,7 @@ LOCK = ROOT / ".ci/supply-chain-lock.json"
 WORKFLOWS = ROOT / ".github/workflows"
 FINDING = (
     ROOT
-    / "plans/2026.09.19-№1-AGENTOOLS-HARDENING/findings/P9-ci-capabilities.md"
+    / "verification/findings/P9-ci-capabilities.md"
 )
 SHA_RE = re.compile(r"^[0-9a-f]{40}$", re.IGNORECASE)
 MUTABLE_ACTION_RE = re.compile(
@@ -366,7 +366,7 @@ def cmd_check_lock(_: argparse.Namespace) -> int:
 
 def cmd_baseline(args: argparse.Namespace) -> int:
     violations = check_all_workflows()
-    out = Path(args.output) if args.output else ROOT / "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P9-workflow-baseline.json"
+    out = Path(args.output) if args.output else ROOT / "verification/artifacts/P9-workflow-baseline.json"
     write_baseline_report(violations, out)
     for item in violations:
         print(f"{item.rule_id} {item.path}: {item.message}")

@@ -1,0 +1,10 @@
+{"probe":"jcs_large_integer","actual":"{\"n\":9007199254740993}"}
+{"probe":"audit_nested_fields","actual":{"redacted":{"payload":{"trace":{"token":"AUDIT_FAKE_SECRET","email":"audit@example.invalid"}}},"store_validation":"accepted"}}
+{"probe":"snapshot_revision_mismatch","actual":{"snapshot_revision":"2099-01","expected_revision":"2026-09","accepted_seq":1,"full_journal_seq":2}}
+{"probe":"candidate_effect_committer","actual":{"exception":"AgenTools\\Action\\LifecycleException","message":"The event was written by another specification revision."}}
+{"probe":"scenario_compensation_context","actual":{"outcome":"AgenTools\\Scenario\\ExpressionException: Missing path $ctx.resource.","calls":[{"tool":"reserve","arguments":[]},{"tool":"fail","arguments":[]}]}}
+{"probe":"journal_invalid_transition_persisted","actual":{"exception":"AgenTools\\Action\\LifecycleException","stored_events":1}}
+{"probe":"scenario_idempotency_composition","actual":{"exception":"InvalidArgumentException","message":"Idempotency key must match ^at1:[A-Za-z0-9_-]{8,128}$."}}
+{"probe":"invalid_calendar_claim","actual":{"exception":"AgenTools\\Confirmation\\ConfirmationFailure","message":"The confirmation token is invalid."}}
+{"probe":"postgres_hash_chain_roundtrip","actual":{"timestamp_loaded":"2026-10-08T13:00:00+03:00","chain_matches":false,"fold":"AgenTools\\Action\\JournalIntegrityException"}}
+{"probe":"expired_idempotency_key_parity","actual":{"memory":"new","postgres":"AgenTools\\Idempotency\\IdempotencyFailure: The idempotency key was reused with different arguments."}}

@@ -1,0 +1,37 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "research-19-p4.10-counterfactual-reopen-2026-08",
+  "title": "19 — P4.10: адресный реопен после P4.13",
+  "sections": [
+    {
+      "id": "19-P4.10-P4.13",
+      "title": "19 — P4.10: адресный реопен после P4.13",
+      "text": "**Дата:** 2026-08-04\n**Статус:** design input `task:plan-design AGENTOOLS P4.10`\n**Сырьё слоя 1:** незакоммиченный результат P4.13 (`tools/spec_lint.py`, `@plan/plan.json`,\n`@plan/phases/P4/phase.json`) · terminal P4.10 commit `7a3840b` · normative rules `ALC-35`, `CNF-35`,\n`CNF-36`, `AOB-31`, `SEC-11` · terminal P4.15 contract `8919b92`."
+    },
+    {
+      "id": "1.",
+      "title": "1. Фактический диагноз",
+      "text": "`--gate-b-remediation-check` назвал пять rule-pairs без разрешимого stimulus, но класс причин\nнеоднороден. Read-only diff только `given`/`script` показывает:\n\n| Rule | Pair | Фактический input-diff | Вердикт |\n|:--|:--|:--|:--|\n| `ALC-35` | `lifecycleintegrity-006/106` | наличие `given.driver_state.journal[0].prev_hash` | pair корректна: отсутствие поля у первой записи — сама норма |\n| `CNF-35` | `confpolicy-007/107` | `given.driver_state.authorization.permissions`: `[]` ↔ `[\"demo.write\"]` | counterfactual есть, но отсутствует typed proposal/token snapshot P4.15, поэтому не доказана межфазовая предпосылка |\n| `CNF-36` | `confpolicy-008/108` | тот же commit-time permission delta | counterfactual есть, но без typed confirmation input нельзя доказать, что подготовленный token/proposal присутствует и не заменяет authorization |\n| `AOB-31` | `audit-010/110` | длина `given.driver_state.baggage`: `65` ↔ `64` | pair корректна: boundary+1 ↔ boundary — точная норма count limit |\n| `SEC-11` | `security-011/111` | наличие `given.tools[0]._meta[\"dev.agentools/action\"].confirmation` | pair различается, но обе oracle-строки указывают в несуществующий `/given/driver_state/tools/...` |\n\nСледовательно, формулировка эскалации P4.13 «четыре pair не имеют input-diff» слишком широкая.\nЕё нельзя превращать в требование переписать корректные ALC/AOB fixtures. `RAG:—\n(repo-grounded: read-only `jq`/`diff` пяти pair 2026-08-04; нормативные документы ревизии)`."
+    },
+    {
+      "id": "2.-checker",
+      "title": "2. Почему checker дал ложный отказ",
+      "text": "`_input_difference_pointer()` возвращает первый различающий leaf. Для удаления поля либо\nизменения длины массива этот leaf существует только в одной половине pair. Затем\n`build_gate_b_remediation_manifest()` ошибочно проверяет pointer относительно каждого fixture\nотдельно. Поэтому positive ALC-35/AOB-31 и negative CNF-35/CNF-36 отвергаются, хотя общий\nконтейнер и единственный counterfactual существуют. Это долг P4.13: pair-level evidence должно\nописывать операцию `present↔absent`, `length 65↔64` либо `value A↔B`, а не требовать leaf в\nобоих documents. `RAG:— (repo-grounded: tools/spec_lint.py\n`_input_difference_pointer`, `_gate_b_stimulus_oracle`, `build_gate_b_remediation_manifest`)`.\n\nP4.10 не добавляет self-asserted `stimulus_pointer` в runtime `expect.payload` ради обхода\nэтого checker defect: такое поле стало бы лишним требованием к SUT и подгонкой корпуса под\nтест. Исправление pair-level extractor остаётся в P4.13."
+    },
+    {
+      "id": "3.-repair--P4.10",
+      "title": "3. Узкий repair-контракт P4.10",
+      "text": "P4.10 меняет только шесть fixtures:\n\n1. `confpolicy-007/107` и `confpolicy-008/108` получают одинаковый валидный\n   `given.driver_state.confirmation` из terminal P4.15: `proposal_id=proposal-1`,\n   `proposal_version=1`, `token_id=token-1`, `covered_principal_id=user-a`, равные\n   prepared/current descriptor digests и args fingerprints. Единственный различающий input\n   остаётся commit-time `authorization.permissions`; confirmation snapshot не кодирует verdict.\n2. `security-011/111` исправляют evidence address с несуществующего\n   `/given/driver_state/tools/0/_meta/dev.agentools~1action/confirmation` на фактический\n   `/given/tools/0/_meta/dev.agentools~1action/confirmation`. Пара сохраняет absence/presence\n   одного поля и не добавляет driver-only дубль tool descriptor.\n3. `lifecycleintegrity-006/106` и `audit-010/110` остаются побайтно неизменными; Validation\n   отдельно доказывает их единственный input-diff, чтобы следующая P4.13 не выдала checker\n   limitation за carrier defect.\n\n`RAG:— (repo-grounded: fixtures/2026-08/schema/vector.json DriverConfirmation;\nconftoken-001…104; terminal P4.15 Completion Notes)`."
+    },
+    {
+      "id": "4.",
+      "title": "4. Граница закрытия",
+      "text": "P4.10 закрывается только если:\n\n- четыре CNF fixtures валидны через реальную Draft 2020-12 graph и используют одинаковый\n  confirmation snapshot;\n- каждая CNF pair различается только `authorization.permissions` во входе;\n- SEC-11 pointers указывают на `given.tools`, отрицательный leaf отсутствует, положительный\n  существует;\n- ALC-35 и AOB-31 read-only diffs по-прежнему ровно presence/count boundary;\n- общий fixtures/full lint зелёный;\n- P4.13 checker после ремонта P4.10 имеет только собственные остатки: pair-level\n  present/absent/length support и отсутствующий terminal manifest. P4.10 не коммитит\n  незавершённый `tools/spec_lint.py` P4.13.\n\nОткрытых design-вопросов нет. Следом P4.13 исправляет extractor, строит manifest и повторяет A3;\nдо этого P4.13 остаётся `🔴 Blocked`."
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "research/19-p4.10-counterfactual-reopen-2026-08.md",
+    "sha256": "8298dc54d3cb642226b37676bcb5ad585e3064f6226aa0aaea4543d5b56904d0"
+  }
+}

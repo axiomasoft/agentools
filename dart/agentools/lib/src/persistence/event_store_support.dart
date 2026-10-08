@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 
 import '../schema/canonicalizer.dart';
+import '../ops/audit_redaction.dart';
 import 'event_store_failure.dart';
 import 'uncommitted_event.dart';
 
@@ -11,24 +12,6 @@ final class EventStoreSupport {
   static const defaultPage = 500;
   static const maxPage = 1000;
   static const maxBatch = 64;
-
-  static const _auditAllow = {
-    'tool_name',
-    'side_effect',
-    'verdict',
-    'limit_name',
-    'limit_value',
-    'observed',
-    'scenario_id',
-    'outcome',
-    'step_id',
-    'tokens_in',
-    'tokens_out',
-    'amount_minor',
-    'currency',
-    'price_table_version',
-    'trace',
-  };
 
   EventStoreSupport({Canonicalizer? canonicalizer})
     : _canonicalizer = canonicalizer ?? Canonicalizer();
@@ -87,28 +70,6 @@ final class EventStoreSupport {
     if (!event.kind.startsWith('audit.')) {
       return;
     }
-    const denied = {
-      'arguments',
-      'args',
-      'prompt',
-      'prompts',
-      'token',
-      'email',
-      'pii',
-      'password',
-    };
-    for (final entry in event.payload.entries) {
-      final name = entry.key;
-      final allowed =
-          _auditAllow.contains(name) ||
-          name.endsWith('_id') ||
-          name.endsWith('_digest');
-      if (!allowed || denied.contains(name)) {
-        throw EventStoreFailure.auditForbiddenField(name);
-      }
-      if (name == 'amount_minor' && entry.value is double) {
-        throw EventStoreFailure.auditForbiddenField(name);
-      }
-    }
+    AuditRedaction().assertPayload(event.payload, event.kind);
   }
 }

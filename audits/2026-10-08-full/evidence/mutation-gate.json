@@ -1,0 +1,12 @@
+{
+  "id": "mutation-gate",
+  "cwd": "/tmp/agentools-audit-copy-4tslglh6/repo",
+  "command": [
+    "python3",
+    "tools/mutation_gate.py",
+    "run"
+  ],
+  "started_utc": "2026-10-08T12:11:14.602866+00:00",
+  "exit_code": 0,
+  "duration_seconds": 8.679
+}

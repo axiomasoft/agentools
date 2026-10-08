@@ -1,0 +1,57 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "root-contracts-idempotency-lease-v1",
+  "title": "Idempotency lease / fencing contract v1 — AgenTools (PLAN1)",
+  "sections": [
+    {
+      "id": "Idempotency-lease-fencing-contract-v1-AgenTools-PLAN1",
+      "title": "Idempotency lease / fencing contract v1 — AgenTools (PLAN1)",
+      "text": "**Version:** v1\n**Status:** P4 executable contract\n**Evidence date:** 2026-09-20\n**Cases:** `fixtures/hardening/idempotency-lease-v1.json`\n**Decisions:** D9\n**Bounds:** RL-015 (default 30s), RL-016 (hard max 300s), RL-021 (50 concurrent acquire)"
+    },
+    {
+      "id": "Supported-boundary",
+      "title": "Supported boundary",
+      "text": "P4 replaces the supported idempotency port `resolve` / `complete(request)` with\n`acquire` / `heartbeat` / `complete(lease)` / `fail(lease)`. The store fences the\n**idempotency record**. It does not make an arbitrary external tool exactly-once.\n[RAG:✅] [Kleppmann, 2016-02-08](https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html)\na lease timeout does not mean the holder has stopped; a monotonic fence that storage\nchecks is required. Local CAS fences this row only.\n\n`IdempotencyCoordinator` is the supported invoke path for mutation / `idempotent_commit`.\nOmitting store or catalog is a construction error, not a silent unfenced call.\nFrozen `spec/revisions/2026-08/**` stays byte-identical. Exactly-once tool effect is a\nnon-guarantee (NG; capability `native_key` is cooperation, not a wrapper around HTTP)."
+    },
+    {
+      "id": "Observer-vs-storage",
+      "title": "Observer vs storage",
+      "text": "Observer states remain IDE-10. There is no fourth observer state and no “failed, retry\nthe same key” license (IDE-13). `fail` is fenced complete-with-error.\n\n| Observer `DedupState` | Storage row | Caller receives |\n|:--|:--|:--|\n| `new` | `in_progress` with this caller’s lease | `IdempotencyLease` (`takeover` may be true) |\n| `duplicate_completed` | `completed` and `expires_at > now` | stored result + digest (success or error) |\n| `concurrent_in_flight` | `in_progress` and `lease_until > now` | `idempotency_in_flight`, **no** lease |\n\nInternal storage is only `in_progress` | `completed`. Audit-sketch `failed` is\n`completed` with a stored error, not schema (F14). Lease token is **not** ALC epoch\n(ALC-28; epoch is P5).\n\n`in_progress` always has opaque `lease_token` (≥128-bit CSPRNG), `lease_until`, and\n`attempt >= 1`. `completed` always has `result_payload` + `result_digest` and null\nlease fields."
+    },
+    {
+      "id": "Clocks",
+      "title": "Clocks",
+      "text": "Three independent timers:\n\n| Timer | Source | Rule |\n|:--|:--|:--|\n| Record retention `expires_at` | `DeduplicationPolicy.retention` (IDE-18/19/20) | Set on first insert. Cleanup deletes only `completed AND expires_at < :now`. |\n| Confirmation lifetime | `DeduplicationPolicy.confirmationLifetime` | Unchanged; retention still covers confirmation + client retry. |\n| Lease duration | acquire argument | Default **30s** (RL-015), min **1s**, hard max **300s** (RL-016). `lease_until = now + duration`. |\n\nInjected `Clock` supplies `:now` (same testability as P3). Production workers must share a\nclock whose skew is less than half the lease (default assumes skew ≪ 15s). Heartbeat\nperiod is `lease/3`, minimum 1s. Extension is `now + duration` only if the token still\nmatches.\n\nIn-progress rows **survive** record-TTL cleanup. They transition by takeover or\ncapability-aware `fail`, never by silent delete that would hide an unconfirmed effect."
+    },
+    {
+      "id": "Acquire-ordering",
+      "title": "Acquire ordering",
+      "text": "```text\n1. Require caller key (IDE-9) and compute args fingerprint (IDE-6/7).\n2. Coordinator: high-risk + unknown capability → deny before INSERT (no row).\n3. INSERT in_progress (attempt=1, new token, lease_until=now+lease, expires_at=now+retention)\n   ON CONFLICT (tenant_id, tool_name, idempotency_key) DO NOTHING RETURNING *.\n4. Winner → new (lease).\n5. Else SELECT:\n   a. fingerprint mismatch → idempotency_key_reuse.\n   b. completed and expires_at > now → duplicate_completed (replay).\n   c. completed and expires_at <= now → delete completed row, retry from 3 (IDE-21).\n   d. in_progress and lease_until > now → concurrent_in_flight (immediate; IDE-14/15).\n   e. in_progress and lease_until <= now → CAS takeover (new token, attempt=attempt+1).\n6. If takeover and capability forbids re-invoke: fail(lease, ambiguous) without tool call.\n7. Else invoke ToolPort; pass the same durable key when capability is native_key.\n8. Heartbeat while the call runs. complete(lease, result) or fail(lease, error).\n9. Lost-lease on 8 → do not retry the effect; return lost-lease to the caller.\n```\n\n[RAG:✅] PostgreSQL [`INSERT ... ON CONFLICT`](https://www.postgresql.org/docs/current/sql-insert.html)\n`DO NOTHING` + `RETURNING` returns only actually inserted rows. First acquire uses that\narbiter. Do not `DO UPDATE` onto a completed row.\n[RAG:✅] PostgreSQL [`UPDATE`](https://www.postgresql.org/docs/current/sql-update.html)\n`RETURNING` returns rows **actually updated**. Empty RETURNING is lost-lease / lost-takeover.\nDo not SELECT-after-empty to authorize an effect.\n\nTakeover SQL:\n\n```sql\nUPDATE agentools_idempotency_leases\nSET lease_token = :token,\n    attempt = attempt + 1,\n    lease_until = :lease_until\nWHERE tenant_id = :tenant_id\n  AND tool_name = :tool_name\n  AND idempotency_key = :idempotency_key\n  AND state = 'in_progress'\n  AND lease_until <= :now\nRETURNING *;\n```\n\nComplete / fail / heartbeat:\n\n```sql\nUPDATE agentools_idempotency_leases\nSET ...\nWHERE tenant_id = :tenant_id\n  AND tool_name = :tool_name\n  AND idempotency_key = :idempotency_key\n  AND state = 'in_progress'\n  AND lease_token = :token\nRETURNING *;\n```\n\nCleanup:\n\n```sql\nDELETE FROM agentools_idempotency_leases\nWHERE state = 'completed' AND expires_at < :now;\n```\n\nPrimary key is `(tenant_id, tool_name, idempotency_key)` (IDE-5). Partial unique indexes\non unexpired rows are forbidden. Tenant isolation is part of the primary key.\nFifty concurrent acquires against one PostgreSQL arbiter yield exactly one lease (RL-021)."
+    },
+    {
+      "id": "Capability-coordinator-policy-not-store-physics",
+      "title": "Capability (coordinator policy, not store physics)",
+      "text": "The store always fences. `IdempotencyCoordinator` looks up `ToolIdempotencyCapability`\nbefore/after acquire.\n\n| Capability | First acquire | Takeover (`attempt > 1`) |\n|:--|:--|:--|\n| `native_key` | Invoke; pass the same durable key downstream | Invoke again; same key |\n| `read_before_write` | Invoke | Invoke only if injected `ExternalEffectProbe` reports absent; else complete with the probed stored result |\n| `compensatable` | Invoke | No automatic re-invoke; `fail(lease, ambiguous)` |\n| `at_most_once_only` | Invoke | `fail(lease, ambiguous)` without invoke |\n| `unknown` + high-risk (`side_effect` not `read`/`draft`) | Deny before acquire | n/a |\n| `unknown` + not high-risk | Treat as `at_most_once_only` | `fail(lease, ambiguous)` |\n\nMissing probe on `read_before_write` degrades to `at_most_once_only`. Outbox/inbox and\nsaga are not created. [RAG:✅] [AWS Powertools Python idempotency](https://docs.aws.amazon.com/powertools/python/latest/utilities/idempotency/)\nINPROGRESS expiry without a generation token is **not** sufficient as the Agentools\ncomplete primitive. [RAG:✅] [draft-ietf-httpapi-idempotency-key-header-07](https://datatracker.ietf.org/doc/html/draft-ietf-httpapi-idempotency-key-header-07)\naligns with IDE-1/12/14/16 (replay stored success or error; concurrent is immediate\nconflict). The draft does not specify lease fencing or exactly-once side effects."
+    },
+    {
+      "id": "Migration-of-unfenced-complete",
+      "title": "Migration of unfenced complete",
+      "text": "Unfenced `complete(request)` is unsupported after cutover. Dual unfenced+fenced\nproduction complete is forbidden. `resolve` / `complete(request)` are absent from the\nproduction interface. Test helpers may wrap `acquire` for frozen three-state assertions.\nFrozen harnesses may acquire internally so `2026-08` vectors still observe three observer\nstates without new spec bytes. That is an accepted 0.x private-package migration.\n\nIn-memory stores are testkit/reference only and MUST NOT be the default production\nconstructor. PHP `suggests` `ext-pdo_pgsql`. Dart does not add a `postgres` package\ndependency. Production adapters take injected PDO / SQL executor. Versioned SQL is a\npackage artefact; PLAN1 does not migrate an owner production database.\n\nTokens are never logged. Result payloads are not written to default logs."
+    },
+    {
+      "id": "Stable-external-refusals",
+      "title": "Stable external refusals",
+      "text": "Existing `idempotency_key_missing`, `idempotency_key_reuse` and `idempotency_in_flight`\nremain compatible. P4 freezes additional spellings; P6 later registers them in the shared\nerror catalog. Frozen `IDE-31` is unchanged until then.\n\n| Condition | Code | Category | Retryable |\n|:--|:--|:--|:--|\n| missing caller key (IDE-9) | `agentools.validation.idempotency_key_missing` | validation | false |\n| same key, different fingerprint (IDE-16) | `agentools.validation.idempotency_key_reuse` | validation | false |\n| valid foreign lease (IDE-14/15) | `agentools.conflict.idempotency_in_flight` | conflict | true |\n| stale heartbeat/complete/fail (empty RETURNING) | `agentools.conflict.idempotency_lost_lease` | conflict | false |\n| takeover forbidden; stored completed error | `agentools.precondition.idempotency_ambiguous_effect` | precondition | false |\n| high-risk + unknown, deny before INSERT | `agentools.precondition.idempotency_capability_unknown` | precondition | false |\n\nLost-lease after a successful downstream call is an ambiguous effect at the tool; the\nworker MUST NOT publish or retry. The next takeover may invoke again only when capability\nallows (`native_key` / successful `read_before_write` probe-absent)."
+    },
+    {
+      "id": "Source-of-truth-and-staged-ownership",
+      "title": "Source-of-truth and staged ownership",
+      "text": "P1 owns guarantees, clock, and resource policy (RL-015/016/021). P4 owns lease/fencing,\ncapability catalog, and coordinator wiring. P5 owns the event journal and ALC epoch.\nP6 owns shared schema/error revision. P7 owns final exports. P8 owns mutation/fuzz depth\nand multi-host clock chaos beyond this corpus. P9 owns CI PostgreSQL matrix. In-memory\nevidence cannot close P4.3/P4.4."
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "root/contracts/idempotency-lease-v1.md",
+    "sha256": "5f2217f3d693fd762584ca5f4a628e8b71f1e73bfb0c4be7725fe6da58f2fd0d"
+  }
+}

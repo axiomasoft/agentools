@@ -1,0 +1,225 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P5.1",
+  "title": "Заморозить EventStore/audit/observability contract, collision/redaction и adversarial cases",
+  "status": "done",
+  "summary": "Выпустить versioned P5 contract, который задаёт uncommitted/committed envelopes, atomic batch append, storage-assigned seq/global_position, content-hash collision vs identical replay vs partial overlap, keyset pagination, audit allow/deny, metric cardinality, snapshot provenance и общий набор PHP/Dart adversarial cases.",
+  "why": "Current ports append one caller-assembled `ActionEvent`; duplicate `event_id` is a silent no-op; `readFrom` has no limit. F05 is confirmed. Audit SQL/`EventStore` sketches are not the schema (F14). `RAG:—`; внешние ограничения — `@plan/knowledge/research-P5-design-rag.json`.",
+  "scope": {
+    "include": [
+      "Stream identity `(tenant_id, action_id)`; expected_prev_seq=0 empty stream; UncommittedEvent vs committed ALC-5 `ActionEvent`; hash exclusions; batch/page bounds; classify-before-INSERT algorithm; audit payload allow/deny; closed metric labels; snapshot `seq`+`spec_rev`+content hash; PHP/Dart migration of `EventLog.append(ActionEvent)`; machine-readable positive/negative case IDs."
+    ],
+    "exclude": [
+      "Runtime implementation; PostgreSQL driver choice beyond injected SQL; outbox/CQRS platform; editing `spec/revisions/2026-08/**`; token consume; lease/fencing APIs; final exports; public release; OpenTelemetry SDK; exactly-once consumer delivery."
+    ]
+  },
+  "depends_on": [],
+  "decisions": [
+    "D10"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/root-contracts-threat-model-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-hardening-guarantees-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-resource-envelope-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/findings-audit-verdicts.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-P5-design.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-P5-design-rag.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/decisions/D10.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/03_action-lifecycle.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/08_audit-observability.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "@plan/knowledge/root-contracts-event-store-v1.json",
+      "change": "any"
+    },
+    {
+      "path": "@plan/knowledge/findings-P5-eventlog-migration.json",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/hardening/event-store-v1.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "Contract distinguishes uncommitted write DTO from committed ALC-5 envelope. Storage assigns `seq` and `global_position`; callers never supply them. Content hash excludes those fields plus `expected_prev_seq` and `prev_hash`. Identical suffix replay is success; different hash is collision; partial overlap is conflict; empty/`Any` expected-version modes do not exist. Audit events share the journal. Snapshot never truncates the log. Frozen `2026-08` remains byte-identical. Numeric bounds match `@plan/knowledge/research-P5-design.json`. Single-event `EventLog.append(ActionEvent)` is unsupported after cutover; dual uncommitted+caller-seq production append is forbidden."
+  ],
+  "guidance": "Manifest `schema_version=event-store-cases/v1` has unique case IDs, phase (`append|load|collision|replay|pagination|audit|metrics|snapshot`), expected semantic code/category, PHP/Dart applicability and named seam. Include at least: 50-way append one winner; atomic two-event batch rollback; identical replay; payload collision; partial overlap; duplicate id in batch; empty batch; page abut/no-skip; limit>1000 reject; secret/PII audit reject; metric label deny tenant/action; snapshot hash mismatch discard; seq-derived event_id reject. Migration inventory names every `EventLog`/`append(ActionEvent)` consumer and one P5/P6/P7 disposition.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "python3 -m json.tool fixtures/hardening/event-store-v1.json",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "git diff --exit-code -- spec/revisions/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "procedure": "python3 tools/validate_event_store_v1.py",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "procedure": "python3 -m json.tool fixtures/hardening/event-store-v1.json",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "procedure": "git diff --exit-code -- spec/revisions/2026-08",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "Normative event-store/audit/observability contract; EventLog migration inventory; shared adversarial case manifest consumed by P5.2–P5.4 and later P6/P8."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "required",
+    "status": "complete"
+  },
+  "result": {
+    "started_at": "2026-09-20T11:17:16Z",
+    "finished_at": "2026-09-20T11:17:16Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "grok-4.6/high",
+      "effort": "high"
+    },
+    "notes": "Published event-store-v1.md, P5-eventlog-migration.md, event-store-v1.json (21 cases); validate_event_store_v1.py GREEN; spec/revisions/2026-08 unchanged.\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V3",
+        "exit": 0,
+        "at": "2026-09-20T11:17:16Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V4",
+        "exit": 0,
+        "at": "2026-09-20T11:17:16Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V5",
+        "exit": 0,
+        "at": "2026-09-20T11:17:16Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-20T11:17:16Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Выпустить versioned P5 contract, который задаёт uncommitted/committed envelopes, atomic batch append, storage-assigned seq/global_position, content-hash collision vs identical replay vs partial overlap, keyset pagination, audit allow/deny, metric cardinality, snapshot provenance и общий набор PHP/Dart adversarial cases."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Current ports append one caller-assembled `ActionEvent`; duplicate `event_id` is a silent no-op; `readFrom` has no limit. F05 is confirmed. Audit SQL/`EventStore` sketches are not the schema (F14). `RAG:—`; внешние ограничения — `@plan/knowledge/research-P5-design-rag.json`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "Stream identity `(tenant_id, action_id)`; expected_prev_seq=0 empty stream; UncommittedEvent vs committed ALC-5 `ActionEvent`; hash exclusions; batch/page bounds; classify-before-INSERT algorithm; audit payload allow/deny; closed metric labels; snapshot `seq`+`spec_rev`+content hash; PHP/Dart migration of `EventLog.append(ActionEvent)`; machine-readable positive/negative case IDs."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Runtime implementation; PostgreSQL driver choice beyond injected SQL; outbox/CQRS platform; editing `spec/revisions/2026-08/**`; token consume; lease/fencing APIs; final exports; public release; OpenTelemetry SDK; exactly-once consumer delivery."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/knowledge/root-contracts-threat-model-v1.json` · `@plan/knowledge/root-contracts-hardening-guarantees-v1.json` · `@plan/knowledge/root-contracts-resource-envelope-v1.json` · `@plan/knowledge/findings-audit-verdicts.json` · `@plan/knowledge/research-P5-design.json` · `@plan/knowledge/research-P5-design-rag.json` · `@plan/decisions/D10.json` · `spec/revisions/2026-08/03_action-lifecycle.md` · `spec/revisions/2026-08/08_audit-observability.md`"
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`@plan/knowledge/root-contracts-event-store-v1.json` · `@plan/knowledge/findings-P5-eventlog-migration.json` · `fixtures/hardening/event-store-v1.json`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/research-P5-design.json` 2) `@plan/knowledge/research-P5-design-rag.json` 3) `@plan/decisions/D10.json` 4) `@plan/knowledge/findings-audit-verdicts.json` 5) `spec/revisions/2026-08/03_action-lifecycle.md` 6) `spec/revisions/2026-08/08_audit-observability.md` 7) `php/src/Contracts/EventLog.php` 8) `dart/agentools/lib/src/contracts/event_log.dart` 9) `php/src/Persistence/InMemoryEventLog.php` 10) `php/reference/Persistence/SqliteEventLog.php`."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "Contract distinguishes uncommitted write DTO from committed ALC-5 envelope. Storage assigns `seq` and `global_position`; callers never supply them. Content hash excludes those fields plus `expected_prev_seq` and `prev_hash`. Identical suffix replay is success; different hash is collision; partial overlap is conflict; empty/`Any` expected-version modes do not exist. Audit events share the journal. Snapshot never truncates the log. Frozen `2026-08` remains byte-identical. Numeric bounds match `@plan/knowledge/research-P5-design.json`. Single-event `EventLog.append(ActionEvent)` is unsupported after cutover; dual uncommitted+caller-seq production append is forbidden."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Manifest `schema_version=event-store-cases/v1` has unique case IDs, phase (`append|load|collision|replay|pagination|audit|metrics|snapshot`), expected semantic code/category, PHP/Dart applicability and named seam. Include at least: 50-way append one winner; atomic two-event batch rollback; identical replay; payload collision; partial overlap; duplicate id in batch; empty batch; page abut/no-skip; limit>1000 reject; secret/PII audit reject; metric label deny tenant/action; snapshot hash mismatch discard; seq-derived event_id reject. Migration inventory names every `EventLog`/`append(ActionEvent)` consumer and one P5/P6/P7 disposition."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`python3 -m json.tool fixtures/hardening/event-store-v1.json`; independent stdlib check proves unique nonempty IDs, closed phases/categories, required seam and exact minimum mutant set; every contract refusal maps to one manifest case; migration inventory covers PHP/Dart production/reference logs, JournalAppender, AuditEventFactory and conformance engines; `git diff --exit-code -- spec/revisions/2026-08`; primary-source links and `[RAG:✅]` claims resolve; plan lint adds no ERROR."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "Normative event-store/audit/observability contract; EventLog migration inventory; shared adversarial case manifest consumed by P5.2–P5.4 and later P6/P8."
+    }
+  ]
+}

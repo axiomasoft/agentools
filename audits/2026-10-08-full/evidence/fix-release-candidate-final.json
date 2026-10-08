@@ -1,0 +1,12 @@
+{
+  "id": "fix-release-candidate-final",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/release_candidate.py",
+    "run"
+  ],
+  "started_utc": "2026-10-08T13:33:39.540729+00:00",
+  "exit_code": 0,
+  "duration_seconds": 2.118
+}

@@ -1,0 +1,12 @@
+{
+  "id": "fix-dart-analyze-final",
+  "cwd": "dart/agentools",
+  "command": [
+    "dart",
+    "analyze",
+    "--fatal-infos"
+  ],
+  "started_utc": "2026-10-08T13:27:50.149722+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.865
+}

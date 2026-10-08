@@ -1,0 +1,34 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D187",
+  "title": "Решение",
+  "date": "2026-09-19",
+  "status": "accepted",
+  "decision": "**Q-17: измерение P10.1 зафиксировало L1 126/126, L2 56/56, L3 31/31 (fail=0) и пустое пересечение «правила переноса × красные векторы `ГЕЙТ P8`».** Достаточность зрелости Dart SDK для переноса по механике D109 закрыта для фазы P10; реопен P8 не рекомендуется. Поднятие `declared_level` выше измеренного остаётся owner-вопросом (D94), не блокером items P10.2–P10.6.",
+  "rationale": "Item P10.1 (`@plan/knowledge/findings-P10-erp-state-2026-09-19.json` §6) воспроизвёл механику D107/Q-15 на `@plan/knowledge/artifacts-P8-gate.json` и полном наборе правил переноса (SCN/CLR/CNF/ALC/IDE/LOP/SEC/AOB). `RAG:— (repo-grounded: @plan/knowledge/artifacts-P8-gate.json; conformance/reports/dart-levels.md; @plan/knowledge/findings-P10-erp-state-2026-09-19.json §6)`",
+  "applies_to": [
+    "P10.1"
+  ],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D187\ndate: 2026-09-19\nstatus: accepted\nitem: P10.1\nitems: [P10.1]\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Q-17: измерение P10.1 зафиксировало L1 126/126, L2 56/56, L3 31/31 (fail=0) и пустое пересечение «правила переноса × красные векторы `ГЕЙТ P8`».** Достаточность зрелости Dart SDK для переноса по механике D109 закрыта для фазы P10; реопен P8 не рекомендуется. Поднятие `declared_level` выше измеренного остаётся owner-вопросом (D94), не блокером items P10.2–P10.6."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Item P10.1 (`@plan/knowledge/findings-P10-erp-state-2026-09-19.json` §6) воспроизвёл механику D107/Q-15 на `@plan/knowledge/artifacts-P8-gate.json` и полном наборе правил переноса (SCN/CLR/CNF/ALC/IDE/LOP/SEC/AOB). `RAG:— (repo-grounded: @plan/knowledge/artifacts-P8-gate.json; conformance/reports/dart-levels.md; @plan/knowledge/findings-P10-erp-state-2026-09-19.json §6)`"
+    }
+  ]
+}

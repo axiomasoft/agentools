@@ -1,0 +1,37 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "root-contracts-semantic-parity-v1",
+  "title": "Semantic parity contract v1 — AgenTools (PLAN1)",
+  "sections": [
+    {
+      "id": "Semantic-parity-contract-v1-AgenTools-PLAN1",
+      "title": "Semantic parity contract v1 — AgenTools (PLAN1)",
+      "text": "**Version:** v1  \n**Status:** P6 executable contract  \n**Successor revision:** `2026-09` (candidate)  \n**Manifest owner:** `tools/semantic_manifest.py` → `spec/revisions/2026-09/semantic-manifest.json`"
+    },
+    {
+      "id": "Ownership",
+      "title": "Ownership",
+      "text": "| Carrier | Owns |\n|:--|:--|\n| `09_idempotency-errors.md` IDE-31 | code ↔ producer ↔ category |\n| `schema/error.json` | closed code enumeration |\n| `fixtures/hardening/*-v1.json` | case-level retryability and semantic codes |\n| `12_hardening-semantics.md` | P2–P5 normative delta (`HRD-*`) |\n| Generated manifest | digest-qualified `semantic-profile/v1` projection |\n| PHP/Dart profile exporters | actual SDK constants (no codegen) |"
+    },
+    {
+      "id": "Exact-set-gate-P6.2",
+      "title": "Exact-set gate (P6.2)",
+      "text": "Comparator MUST treat `missing`, `extra`, and field-level `mismatch` on\n`code`, `category`, and `default_retryable` as hard failures for both directions\n(normative↔PHP, normative↔Dart, PHP↔Dart). Human titles and localization are out of scope."
+    },
+    {
+      "id": "JCS-gate-P6.3",
+      "title": "JCS gate (P6.3)",
+      "text": "Canonical bytes MUST match independent oracle under `conformance/oracles/jcs/` (pinned\nupstream provenance). Neither SDK may regenerate expected bytes."
+    },
+    {
+      "id": "Compatibility",
+      "title": "Compatibility",
+      "text": "Implementations declaring only `2026-08` are not required to implement `HRD-*` or the\nextended IDE-31 table. Implementations declaring `2026-09` MUST implement both."
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "root/contracts/semantic-parity-v1.md",
+    "sha256": "959c1aa64aa899648771e125e28155964bb62622a06610a789d468e2a84e4eb1"
+  }
+}

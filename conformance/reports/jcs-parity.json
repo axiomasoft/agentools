@@ -1,6 +1,6 @@
 {
     "generated_by": "conformance\/bin\/jcs-differential",
-    "oracle": "\/tmp\/agentools-pr10-review\/conformance\/oracles\/jcs",
+    "oracle": "\/home\/vostrikov\/projects\/packages\/agentools\/conformance\/oracles\/jcs",
     "php_rows": [
         {
             "case_id": "arrays",

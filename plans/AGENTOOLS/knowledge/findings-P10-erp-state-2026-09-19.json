@@ -1,0 +1,89 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "findings-P10-erp-state-2026-09-19",
+  "title": "датированное измерение ERP-контура Axioma (2026-09-19)",
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\ntype: findings\nplan: AGENTOOLS\nphase: P10\ncreated: 2026-09-19\nlayer: 1\n---"
+    },
+    {
+      "id": "P10-ERP--Axioma-2026-09-19",
+      "title": "P10 — датированное измерение ERP-контура Axioma (2026-09-19)",
+      "text": "Слой 1 (`plan-protocol` §16): сырьё item P10.1. Опора сравнения —\n`@plan/knowledge/findings-P10-axioma-erp-recon-2026-07-27.json`. Синтез веток — `@plan/knowledge/research-09-p10-erp-offline-2026-08.json` §3, §8.\n\n**Якоря деревьев на момент измерения:**\n\n| Дерево | Команда | Хеш |\n|:--|:--|:--|\n| монорепо канона/кода `erp-sdk` | `git -C ~/projects/packages/erp-sdk rev-parse --short HEAD` | `43500e8` |\n| agentools (bookkeeping) | `git -C ~/projects/packages/agentools rev-parse --short HEAD` | `fe0612e` |\n| vault Brain | `git -C ~/Vaults/Brain rev-parse --short HEAD` | `616396a` |\n\n**Контроль «чужие репозитории не тронуты»** (зафиксировано ДО работы item'а; сверено ПОСЛЕ — число не изменилось):\n\n```console\n$ git -C ~/projects/packages/erp-sdk status --short | wc -l\n66\n```\n\n```console\n$ git -C ~/Vaults/Brain status --short -- 05-Projects/03-Packages/AxiomaErpSdk 05-Projects/01-Products/AiResto/plans | wc -l\n24\n```\n\n---"
+    },
+    {
+      "id": "1.-axioma_erp_sdk",
+      "title": "1. Путь `axioma_erp_sdk` и фактический дом монорепо",
+      "text": "```console\n$ ls -d ~/projects/packages/axioma_erp_sdk\nls: cannot access '/home/vostrikov/projects/packages/axioma_erp_sdk': No such file or directory\n\n$ ls ~/projects/packages/axioma_erp_sdk/packages 2>&1\nls: cannot access '/home/vostrikov/projects/packages/axioma_erp_sdk/packages': No such file or directory\n```\n\n**Расхождение с разведкой 2026-07-27:** каталог по прежнему имени **по-прежнему отсутствует** (§1 recon без изменений по этому пути).\n\n**Новый факт 2026-09-19 (не было в recon):** исполняемый Dart-монорепо **существует** в репозитории\n`~/projects/packages/erp-sdk` (D13 `ERP-IMPL`: «Home = `erp-sdk`», каркас закладывает P1.1). Это **не**\nотменяет отсутствие отдельного клона `axioma_erp_sdk`, но **снимает интерпретацию «0 строк Dart в контуре»**.\n\n```console\n$ find ~/projects/packages/erp-sdk -name '*.dart' -not -path '*/.git/*' | wc -l\n45\n\n$ find ~/projects/packages/erp-sdk -name 'pubspec.yaml' -not -path '*/.git/*' | wc -l\n22\n\n$ ls ~/projects/packages/erp-sdk/packages/\naxioma_assistant  axioma_authz  axioma_core  axioma_data  axioma_events  axioma_finance\naxioma_fiscal  axioma_mcp  axioma_plugins  axioma_receipt  axioma_regcontent  axioma_router\naxioma_sync  axioma_tax  axioma_ui  axioma_utils\n```\n\n```console\n$ dart analyze ~/projects/packages/erp-sdk/packages/axioma_mcp 2>&1 | tail -2\nAnalyzing axioma_mcp...\nNo issues found!\n\n$ dart analyze ~/projects/packages/erp-sdk/packages/axioma_assistant 2>&1 | tail -2\nAnalyzing axioma_assistant...\nNo issues found!\n```\n\n| Пакет | `lib/` | `dart analyze` |\n|:--|:--|:--|\n| `axioma_mcp` | есть (`axioma_mcp.dart`, `src/`) | 0 issues |\n| `axioma_assistant` | есть (`axioma_assistant.dart`, `src/`) | 0 issues |\n\n---"
+    },
+    {
+      "id": "2.",
+      "title": "2. Стек контура (датированная таблица)",
+      "text": "Источники: корневой `pubspec.yaml` workspace (`environment.sdk`), `plans/ERP-IMPL/findings/RAG-P1-stack-melos.md` (adversarial ✅ 2026-07-12), `CLAUDE.md` репо `erp-sdk`, `plans/erp/00_MASTER_PLAN_V3.md` §6 (стек-локфайл дизайн-канона).\n\n| Параметр | Значение на 2026-09-19 | Команда / носитель |\n|:--|:--|:--|\n| Dart SDK (workspace) | `^3.12.0` | `grep -A1 '^environment:' ~/projects/packages/erp-sdk/pubspec.yaml` |\n| Flutter (канон дизайна) | 3.44.x stable → Dart 3.12.x | `00_MASTER_PLAN_V3.md` §6; RAG-P1 §1.2 |\n| `melos` | `^7.8.2` (конфиг в корневом `pubspec.yaml`, файла `melos.yaml` нет) | корневой `pubspec.yaml` |\n| `mcp_dart` (канон пинов) | **`^2.2.2`** stable (D10, RAG-P1) | `RAG-P1-stack-melos.md` §1.1; `CLAUDE.md` |\n| `mcp_dart` в `packages/*/pubspec.yaml` | **0 зависимостей** (пакет ещё не подключён в scaffold) | `rg 'mcp_dart' ~/projects/packages/erp-sdk/packages -g pubspec.yaml` → пусто |\n| `drift` / `riverpod` (канон RAG) | drift 2.34.x; riverpod/flutter_riverpod 3.3.2 | `RAG-P1-stack-melos.md` root template |\n\n**Расхождения с `@plan/knowledge/findings-P10-axioma-erp-recon-2026-07-27.json` §1, §5 (поимённо):**\n\n| Строка recon | Было (2026-07-27) | Стало (2026-09-19) |\n|:--|:--|:--|\n| §1 число `.dart` в `erp-sdk` | 0 | **45** |\n| §1 число `pubspec.yaml` | 0 | **22** |\n| §1 `axioma_mcp` / `axioma_assistant` | только спеки в `docs/` | **пакеты с `lib/`, analyze зелёный** |\n| §5 пин `mcp_dart ^2.2.2` | канон + D10 | **без изменений**; конфликт эры MCP 2026-07-28 с stable 2.2.2 **сохраняется** (Q-23) |\n| §1 путь `axioma_erp_sdk` | отсутствует | **по-прежнему отсутствует** |\n\nДля остальных полей таблицы стека recon §5: **расхождений нет** (дата сравнения 2026-09-19).\n\n---"
+    },
+    {
+      "id": "3.-AI--git",
+      "title": "3. Канон AI-слоя — git-история (не утверждение)",
+      "text": "```console\n$ git -C ~/projects/packages/erp-sdk log -1 --format='%h %ad %s' --date=short -- \\\n    'docs/03_Dev/ADR/ADR-004 AI via MCP Only.md' \\\n    'docs/03_Dev/ADR/ADR-007 Offline-First Sync.md' \\\n    'docs/03_Dev/ADR/ADR-010 AI Write Tiers.md' \\\n    'docs/03_Dev/ADR/ADR-012 AI Interaction and Provider Strategy.md'\n62e1153 2026-06-13 docs: канон ТЗ, план реализации и регламент агентов (подготовка Фазы 0)\n\n$ git -C ~/projects/packages/erp-sdk log -1 --format='%h %ad %s' --date=short -- \\\n    plans/erp/09_AI_Orchestration_UX.md\n20efaf8 2026-07-28 chore(plan): SSOT ERP-IMPL переезжает в репо (D29)\n```\n\n**Интерпретация:** текст ADR-004/007/010/012 **не менялся** с коммита 2026-06-13 (тот же хеш, что в recon).\nФайл `09_AI_Orchestration_UX.md` получил коммит 2026-07-28 — **переезд SSOT плана (D29)**, не пересмотр\nсодержания лестницы Tier/L0–L2 (сверка по сообщению коммита; содержательный diff этим item'ом не переписывался).\n\n**Расхождение с recon §3:** «канон зрелый и подробный» — **сохраняется**; новых ADR фазы 09 с 2026-07-27 не добавлялось.\n\n---"
+    },
+    {
+      "id": "4.---erp-8",
+      "title": "4. Статус-борд `erp` §8 (дословные строки)",
+      "text": "Источник: `~/projects/packages/erp-sdk/plans/erp/00_MASTER_PLAN_V3.md` §8 (HEAD `43500e8`)."
+    },
+    {
+      "id": "0-Setup-Runbook",
+      "title": "Фаза 0 — Setup Runbook",
+      "text": "| # | Задача | Статус (цитата) |\n|:--|:--|:--|\n| 0.1 | Приватный репо `axioma_erp_sdk` | ☐ |\n| 0.3 | Scaffold `packages/axioma_*` (16 пакетов) | ☐ |"
+    },
+    {
+      "id": "0.5",
+      "title": "Этап 0.5",
+      "text": "| Эпик | Статус (цитата) |\n|:--|:--|\n| H9 Sync Protocol Contract | ☐ |"
+    },
+    {
+      "id": "1-SDK-Core",
+      "title": "Этап 1 — SDK Core (выбранные эпики)",
+      "text": "| Эпик | Статус (цитата) |\n|:--|:--|\n| U `axioma_utils` | ☐ |\n| EV `axioma_events` | ☐ |\n| C `axioma_core` | ☐ |\n| D `axioma_data` | ☐ |\n| AZ `axioma_authz` | ☐ |\n| MCP `axioma_mcp` | ☐ |\n| AS `axioma_assistant` (контракты) | ☐ |\n\n**Расхождение борда с измерением §1:** строки `0.3`, `MCP`, `AS` остаются `☐`, хотя scaffold пакетов и `lib/` для MCP/AS **физически есть** в `erp-sdk` — это **рассинхрон дизайн-борда и кода** (двойная бухгалтерия `ERP-IMPL` ↔ `erp` §8 ещё не отмечена ☑ исполнителем контура).\n\n---"
+    },
+    {
+      "id": "5.---ERP-IMPL-4",
+      "title": "5. Статус-борд `ERP-IMPL` §4 (дословные строки)",
+      "text": "Источник: `~/projects/packages/erp-sdk/plans/ERP-IMPL/status.md` (projection; через journal `1970-01-01`).\n\n| Phase | Title | Items | Status (цитата) |\n|:--|:--|:--|:--|\n| P1 | IT-0: Bootstrap монорепо `axioma_erp_sdk` | 4/12 | 🟡 In progress |\n| P2 | IT-1: Спайки риска | 0/22 | ⬜ Not started |\n| P3 | Ранние сквозные design-контракты | 0/3 | ⬜ Not started |\n| P4 | IT-2: Эпики U / EV / C | 0/3 | ⬜ Not started |\n| P5 | IT-3: Эпики PL / D / AZ | 0/6 | ⬜ Not started |\n| P6 | IT-4: Эпик T `axioma_tax` | 0/4 | ⬜ Not started |\n| P7 | IT-5..IT-12: остаток критпути | 0/8 | ⬜ Not started |\n\n**Расхождение с recon §4 (2026-07-27):** было «P1 — ⬜ Not started (0/10)»; стало **🟡 In progress (4/12)** —\nзакрыты P1.0 (переезд SSOT), P1.1 (каркас), P1.2 (workspace/melos), P1.4; P1.3/P1.5 — 🟠 с отклонениями.\n**P2.1 (SP-1 mcp_dart PoC)** — ⬜ Not started.\n\n---"
+    },
+    {
+      "id": "6.-Dart-SDK-Q-17-P8",
+      "title": "6. Достаточность зрелости Dart SDK (Q-17) — пересечение «правила переноса × красные векторы `ГЕЙТ P8`»",
+      "text": "**Источник уровней:** `@plan/knowledge/artifacts-P8-gate.json`, `conformance/reports/dart-levels.md`, дерево `fe0612e`.\n\n| Уровень | pass | fail | warn |\n|:--|--:|--:|--:|\n| L1 | 126 | **0** | 0 |\n| L2 | 56 | **0** | 0 |\n| L3 | 31 | **0** | 0 |\n\n**Красные векторы отчёта `ГЕЙТ P8`:** множество **пусто** (`fail = 0` на всех уровнях; подтверждено `out/dart-all.json` при наличии — fails 0).\n\n**Правила переноса** (ревизия `2026-08`, подсчёт `rg -o` по `spec/revisions/2026-08/`):\n\n| Класс | Кол-во | Диапазон |\n|:--|--:|:--|\n| `SCN-*` | 30 | SCN-1 … SCN-30 |\n| `CLR-*` | 21 | CLR-1 … CLR-21 |\n| `CNF-*` (ядро) | 41 | CNF-1 … CNF-41 |\n| `ALC-*` (ядро) | 37 | ALC-1 … ALC-37 |\n| `IDE-*` (ядро) | 48 | IDE-1 … IDE-48 |\n| `LOP-*` (синхронный путь) | 27 | LOP-1 … LOP-27 |\n| `SEC-*` | 22 | (security rules, doc 07 + siblings) |\n| `AOB-*` | 57 | (authority boundary family) |\n\n**Пересечение «правила переноса × красные векторы отчёта `ГЕЙТ P8`»:** **пересечение пусто**.\n\n**Следствие для Q-17 (D109, симметрия D107/Q-15):** по измеренным числам P8 (L2 = 56/56, L3 = 31/31) и пустому пересечению —\n**достаточность зрелости Dart SDK для переноса по этой механике закрыта для фазы P10**; поднятие `declared_level`\nвыше измеренного остаётся отдельным owner-вопросом (D94). Known deviation projection-catalog (`@plan/knowledge/artifacts-P8-gate.json`)\nне создаёт красных векторов в отчёте по уровням.\n\n---"
+    },
+    {
+      "id": "7.",
+      "title": "7. Пакет решения владельцу",
+      "text": ""
+    },
+    {
+      "id": "7.1-A-B-C",
+      "title": "7.1 Развилка дома кода (A / B / C)",
+      "text": "| Ветка | Что означает на **2026-09-19** | Цена |\n|:--|:--|:--|\n| **(A)** монорепо + зависимость AI-модулей на `agentools` | Репо `erp-sdk` **есть**, пакеты `axioma_mcp`/`axioma_assistant` **есть**, но **нет** `agentools` в `pubspec` и нет упоминаний в каноне | Согласование с владельцем ERP + правка зависимостей/канона через их процесс; Q-23 (эра MCP) |\n| **(B)** монорепо без SDK-зависимости + тонкий мост | Тот же фактический scaffold; мост `axioma_agentools_bridge` (имя иллюстративно) в `packages/` | Третий пакет; двойная поверхность tools/tier; зато не ждать принятия SDK в ядро |\n| **(C)** монорепо «как в старом имени» не создано | Путь `axioma_erp_sdk` **всё ещё отсутствует**; дом кода = **`erp-sdk`** (D13) | **(C1)** `waiting:` пока чужой борд не отметит вехи MCP/AS · **(C2)** демо-стенд вне контура (pure Dart SDK + in-memory, D13) — «перенос» = демонстрация переносимости |\n\n**Рекомендация автора:** **ветка (B)** — монорепо и AI-пакеты уже в `erp-sdk`, но зависимость на AgenTools не принята и канон автономен; тонкий мост снимает блокер P10.3–P10.5 без ожидания чужих IT-6 вех. Подветка **(C2)** остаётся запасной, если владелец отклонит любой код в `erp-sdk` до закрытия MCP/AS в их борде.\n\n**Выбор ветки — гейт владельца; item его не делает.**"
+    },
+    {
+      "id": "7.2-Dart-SDK",
+      "title": "7.2 Развилка зрелости Dart SDK",
+      "text": "| Ветка | Когда | Цена |\n|:--|:--|:--|\n| **(i) Follow-up item в P8 (реопен)** | Если бы пересечение было непустым | Срыв календаря P10; повторный гейт SDK |\n| **(ii) Сужение Scope переноса** | Если бы пересечение было непустым | Урезанный перенос; запись в отчёт применимости |\n| **(iii) Принятие риска** | Если бы пересечение было непустым | Явная строка риска в `@plan/knowledge/artifacts-P10-applicability-report.json` |\n\n**Факт P10.1:** пересечение **пусто** — ветки (i–iii) **не активированы** по механике Q-17.\n\n**Рекомендация автора:** **не реопенить P8**; зафиксировать L2/L3 = 100 % и пустое пересечение; продолжить P10.2 после owner-gate по Q-20.\n\n---"
+    },
+    {
+      "id": "8.",
+      "title": "8. Команды измерения (воспроизводимость)",
+      "text": "```bash\nls -d ~/projects/packages/axioma_erp_sdk\nls ~/projects/packages/axioma_erp_sdk/packages 2>&1\nfind ~/projects/packages/erp-sdk -name '*.dart' -not -path '*/.git/*' | wc -l\nfind ~/projects/packages/erp-sdk -name 'pubspec.yaml' -not -path '*/.git/*' | wc -l\ngit -C ~/projects/packages/erp-sdk rev-parse --short HEAD\ngit -C ~/projects/packages/erp-sdk status --short | wc -l\ndart analyze ~/projects/packages/erp-sdk/packages/axioma_mcp\ndart analyze ~/projects/packages/erp-sdk/packages/axioma_assistant\ngit -C ~/Vaults/Brain status --short -- 05-Projects/03-Packages/AxiomaErpSdk 05-Projects/01-Products/AiResto/plans | wc -l\n```"
+    }
+  ],
+  "applies_to": [
+    "P10"
+  ],
+  "provenance": {
+    "path": "findings/P10-erp-state-2026-09-19.md",
+    "sha256": "acf3b0b38978422eafe42be5b62b489d41ccdc9716e4a545518441bc6144d1db"
+  }
+}

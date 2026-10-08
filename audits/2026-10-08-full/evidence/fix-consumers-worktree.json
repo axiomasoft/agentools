@@ -1,0 +1,13 @@
+{
+  "id": "fix-consumers-worktree",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/release_consumer_gate.py",
+    "capture",
+    "--allow-dirty"
+  ],
+  "started_utc": "2026-10-08T13:41:01.752883+00:00",
+  "exit_code": 0,
+  "duration_seconds": 9.029
+}

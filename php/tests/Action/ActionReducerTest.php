@@ -49,7 +49,7 @@ final class ActionReducerTest extends TestCase
 
     public function testItPreservesUnknownEventsWithoutChangingState(): void
     {
-        $reducer = new ActionReducer();
+        $reducer = new ActionReducer('2026-08');
         $state = $reducer->fold([
             $this->event(1, 0, 'action_created'),
             $this->event(2, 1, 'vendor.future_event', ['future_member' => ['deep' => true]]),
@@ -64,7 +64,7 @@ final class ActionReducerTest extends TestCase
     public function testGuardOrderReportsVersionConflictBeforeInvalidTransition(): void
     {
         try {
-            (new ActionReducer())->fold([
+            (new ActionReducer('2026-08'))->fold([
                 $this->event(1, 0, 'action_created'),
                 $this->event(2, 0, 'action_completed'),
             ]);
@@ -96,7 +96,7 @@ final class ActionReducerTest extends TestCase
             $this->event(4, 3, 'input_recorded', ['name' => 'prompt', 'value' => 'hello']),
             $this->event(5, 4, 'action_completed'),
         ];
-        $reducer = new ActionReducer();
+        $reducer = new ActionReducer('2026-08');
 
         $first = $this->serializeFoldedState($reducer->fold($events));
         $second = $this->serializeFoldedState($reducer->fold($events));
@@ -107,7 +107,7 @@ final class ActionReducerTest extends TestCase
     public function testItRejectsEventAfterTerminalAction(): void
     {
         $this->expectException(LifecycleException::class);
-        (new ActionReducer())->fold([
+        (new ActionReducer('2026-08'))->fold([
             $this->event(1, 0, 'action_created'),
             $this->event(2, 1, 'action_started'),
             $this->event(3, 2, 'action_completed'),
@@ -131,7 +131,7 @@ final class ActionReducerTest extends TestCase
             }
         };
 
-        $state = (new ActionReducer(upcasters: new EventUpcasterChain([$upcaster])))->fold([$recorded]);
+        $state = (new ActionReducer(specRevision: '2026-08', upcasters: new EventUpcasterChain([$upcaster])))->fold([$recorded]);
 
         self::assertSame(ActionStatus::Created, $state->status);
         self::assertSame(1, $recorded->eventVersion);
@@ -141,7 +141,7 @@ final class ActionReducerTest extends TestCase
     public function testItRejectsATamperedHashChain(): void
     {
         $chain = new JournalHashChain(new Canonicalizer());
-        $reducer = new ActionReducer(hashChain: $chain);
+        $reducer = new ActionReducer(specRevision: '2026-08', hashChain: $chain);
         $first = $this->event(1, 0, 'action_created');
         $state = $reducer->fold([$first]);
         $second = $this->event(2, 1, 'action_started')->withPreviousHash($state->previousHash);
@@ -154,7 +154,7 @@ final class ActionReducerTest extends TestCase
     /** ALC-32, ALC-33; projection plus journal tail restores the same folded state. */
     public function testItRestoresFromSnapshotAndJournalTail(): void
     {
-        $reducer = new ActionReducer();
+        $reducer = new ActionReducer('2026-08');
         $firstTwo = [$this->event(1, 0, 'action_created'), $this->event(2, 1, 'action_started')];
         $snapshot = new ActionSnapshot($reducer->fold($firstTwo), '2026-08');
         $tail = [$this->event(3, 2, 'action_completed')];

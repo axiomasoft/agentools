@@ -1,0 +1,17 @@
+{
+  "id": "merge-cli-lock-final",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests/tools",
+    "-p",
+    "test*.py"
+  ],
+  "started_utc": "2026-10-08T14:22:17.766222+00:00",
+  "exit_code": 0,
+  "duration_seconds": 36.027
+}

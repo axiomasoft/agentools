@@ -1,0 +1,70 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "findings-P6-P7-plan-audit-2026-09-18",
+  "title": "P6/P7 — плановый аудит перед исполнением (Cursor)",
+  "sections": [
+    {
+      "id": "P6-P7-Cursor",
+      "title": "P6/P7 — плановый аудит перед исполнением (Cursor)",
+      "text": "> Снято 2026-09-18 на дереве артефактов `5cc5288` (`git -C ~/projects/packages/agentools rev-parse --short HEAD`).\n> Это **находка плана**, не terminal closure. Исполнение — в новой сессии по runbook.\n\n---"
+    },
+    {
+      "id": "1.-Layout-v2",
+      "title": "1. Порядок доверия (Layout v2)",
+      "text": "| Приоритет | Источник | Когда использовать |\n|:--|:--|:--|\n| 1 | `git log` + живые прогоны на HEAD | Факт кода и зелёных проверок |\n| 2 | `artifacts/migration-source-v1/journal.jsonl` | Хронология до migration (P6.5 `52637fc`, P6.9 escalation) |\n| 3 | `artifacts/migration-source-v1/phases/P6.md` | Реальные Completion Notes P6.1–P6.8 |\n| 4 | `@plan/plan.json` + `@plan/decisions/D163.json` | P7.1–P7.10 = reconciliation pending |\n| 5 | `@plan/plan.json`, `*.state.md` | **Только после** регенерации из journal; до audit — низкое доверие |\n\n**Дефект migration:** `@plan/plan.json` показывает P6.5 = `🟢 Done`, но Validation P6.5 не выполнен (нет negative adapters). Formal reopen — только через `task:plan-design AGENTOOLS P6.5` в сессии исполнения (преждевременный journal-reopen ломает bundle lint).\n**Дефект migration:** `@plan/plan.json` показывает P7 = `Not started`, хотя `@plan/plan.json` + D163 + anchors `b11cf41`…`e232fc5` в git означают reconciliation pending. Journal sync P7 → `in-progress` отложен до сессии исполнения (преждевременная активация ломает read-budget lint).\n\n---"
+    },
+    {
+      "id": "2.-P6-5cc5288",
+      "title": "2. P6 — живые прогоны на `5cc5288`",
+      "text": "| # | Условие | Команда (сокращ.) | Результат |\n|:--|:--|:--|:--|\n| 1 | Полный корпус | `conformance/bin/run` + reference adapter | **PASS** 213/213, exit 0 |\n| 2 | Мутант | `--vectors conformance/tests/fixtures/mutants` | **PASS** exit 1 |\n| 3 | Harness selftest | `harness-selftest --cases fixtures/2026-08/harness` | **PASS** 13/13 |\n| 4 | Levels report | `levels --write --check` | **PASS** |\n| 5 | CI | `python3 tools/ci_gate.py --all` | **PASS** |\n| 6 | Frozen diff | `git diff fixtures spec` | **0** |\n| 7 | Corpus digest | `spec_lint --behavior-executability-check` | `ff797647…` = P6.2 |\n| 8 | Golden negatives | `byte-drift.php`, `struct-drift.php` | **FAIL** — файлов нет |\n\nУровни: L1=126, L2=56, L3=31. Golden в отчёте: 9/9 pass."
+    },
+    {
+      "id": "2.1-research-05-p6-conformance-harness-2026-08.md-7",
+      "title": "2.1 Шесть отрицательных прогонов (`research/05-p6-conformance-harness-2026-08.md` §7)",
+      "text": "| Механизм | Статус |\n|:--|:--|\n| Матчер (P6.1) | PASS |\n| Статусы (P6.4) | PASS |\n| Baseline (P6.4) | PASS |\n| **Golden (P6.5)** | **BLOCKED** |\n| Lockstep (P6.8) | PASS |\n| CI слои (P6.7) | PASS (на зелёном дереве) |"
+    },
+    {
+      "id": "2.2-P6.5",
+      "title": "2.2 P6.5 — ложное закрытие",
+      "text": "| Факт | Доказательство |\n|:--|:--|\n| Item закрыт `52637fc` | `migration-source-v1/journal.jsonl` `2026-08-05T07:01:21Z` |\n| P6.9 эскалирован тем же днём | journal: `P6.5 golden-negative fixture adapters absent` |\n| Validation требует оба адаптера | `@plan/phases/P6/P6.5.json` Validation |\n| Механика сравнения есть | `GoldenComparator.php`, `Runner.php` L102–121 |\n| PHPUnit на comparator | **нет** (отрицательные сигналы — через fixture-adapters) |\n\n**Формальное действие:** `task:plan-design AGENTOOLS P6.5` (reopen), не неформальный side-task."
+    },
+    {
+      "id": "2.3-P6.9",
+      "title": "2.3 P6.9 — что осталось",
+      "text": "1. Доставить adapters (шаг A runbook)\n2. Перепрогнать Validation `@plan/phases/P6/P6.9.json`\n3. Обновить `@plan/knowledge/artifacts-P6-gate.json` → `ГЕЙТ P6: PASS`\n4. Bookkeeping + handoff\n\n---"
+    },
+    {
+      "id": "3.-P7-reconciliation-map-terminal-closure",
+      "title": "3. P7 — reconciliation map (код есть, terminal closure нет)",
+      "text": "**Глобально на HEAD:** PHPUnit **65/65**, PHPStan **0 errors** — evidence существования (D163), не write-site closure.\n\n| Item | Anchor | Аудит | Ключевые gaps vs `phases/P7/P7.N.md` Validation |\n|:--|:--|:--|:--|\n| P7.1 | `b11cf41` | PARTIAL | Нет `extra.agentools.spec_rev` в `php/composer.json` (`lockstep` читает `extra.agentools.spec_rev`) |\n| P7.2 | `c690a67` | PARTIAL | `Identity/` есть; не все тесты с rule-ID docblocks |\n| P7.3 | `1f5eaf8` | **GREEN** | JCS, schema validation — ок |\n| P7.4 | `35afb53` | **GREEN** | `ToolDescriptor`, digest — ок |\n| P7.5 | `62e31c3` | PARTIAL | Код в `Action/`, не `Journal/`; нет портов `EventLog`/`SessionStore`/`Clock`; negative-тесты из Validation отсутствуют |\n| P7.6 | `db8f6d1` | **GREEN** | `Effects/`, epoch — ок |\n| P7.7 | `23be310` | PARTIAL | Нет TTL-on-prepare test; нет hash-mismatch-at-commit; edit→journal supersede не доказан |\n| P7.8 | `f8419f2` | PARTIAL | Порт `DeduplicationStore` в `Idempotency/`, не `Contracts/IdempotencyStore`; нет explicit enum-count test |\n| P7.9 | `6e1ec1d` | PARTIAL | `Error/` не `Errors/`; **нет GREASE-тестов**; нет lifecycle Active→Deprecated→Removed; `ToolErrorTest` без rule IDs |\n| P7.10 | `e232fc5` | PARTIAL | AST/MRTR есть; **1/4 limit-red tests** (только `expression.max_depth`; нет length/collection/visited-nodes) |\n| P7.11 | — | NOT STARTED | `php/src/Ops/` отсутствует |\n| P7.12 | — | NOT STARTED | нет `php/conformance/adapter.php`; `conformance/sdks.json` = `[]`; нет `@plan/knowledge/artifacts-P7-gate.json` |"
+    },
+    {
+      "id": "3.1-research-06-p7-php-sdk-2026-08.md",
+      "title": "3.1 Структурные расхождения с `research/06-p7-php-sdk-2026-08.md`",
+      "text": "| План | Факт на дереве |\n|:--|:--|\n| `php/src/Journal/` | `php/src/Action/` |\n| `php/src/Errors/` | `php/src/Error/` |\n| `php/src/Ops/` | отсутствует |\n| `Contracts/`: EventLog, SessionStore, Clock, IdempotencyStore | только TokenSigner, LlmPort, ToolPort, CommitAuthorizer |\n\n**Правило reconciliation:** не массовый rename без D-record; закрывать gaps Validation, фиксируя Known Deviations где путь осознанно отличается."
+    },
+    {
+      "id": "3.2-Pre-P7-bootstrap",
+      "title": "3.2 Pre-P7 bootstrap",
+      "text": "`ff09c44` — lifecycle/idempotency primitives до формального P7.1; не отменяет gaps P7.5/P7.8.\n\n---"
+    },
+    {
+      "id": "4.",
+      "title": "4. Цепочка исполнения (новая сессия)",
+      "text": "```text\n[A] task:plan-design AGENTOOLS P6.5  → byte-drift + struct-drift\n[B] task:plan-run AGENTOOLS P6.9     → ГЕЙТ P6: PASS\n[C] P7.1…P7.10 reconciliation        → per-item Validation (не blind close)\n[D] task:plan-run AGENTOOLS P7.11\n[E] task:plan-run AGENTOOLS P7.12    → ГЕЙТ P7\n```\n\nRunbook: `@plan/knowledge/research-26-p6-gate-closure-cursor-runbook-2026-09.json`.\n\n---"
+    },
+    {
+      "id": "5.",
+      "title": "5. Связанные артефакты",
+      "text": "| Артефакт | Роль |\n|:--|:--|\n| `@plan/knowledge/artifacts-P6-gate.json` | Вердикт BLOCKED + audit supplement |\n| `@plan/plan.json` | Next → P6.5 reopen |\n| `@plan/decisions/D163.json` | P7 reconciliation rule |\n| `@plan/knowledge/findings-P6-ext-tasks-observation.json` | Q-7 |"
+    }
+  ],
+  "applies_to": [
+    "P6",
+    "P7"
+  ],
+  "provenance": {
+    "path": "findings/P6-P7-plan-audit-2026-09-18.md",
+    "sha256": "0f83fe73f36a14ca2b1b479b0c11496e1d59e5ff2f0390a44d16e2128d144baa"
+  }
+}

@@ -1,0 +1,13 @@
+test_cleanup_refuses_foreign_schema (__main__.StorageChaosTests.test_cleanup_refuses_foreign_schema) ... ok
+test_live_run_matches_receipt_shape (__main__.StorageChaosTests.test_live_run_matches_receipt_shape) ... skipped 'live PostgreSQL run is owned by storage_chaos.py run'
+test_preflight_rejects_missing_dsn (__main__.StorageChaosTests.test_preflight_rejects_missing_dsn) ... ok
+test_preflight_rejects_postgres_db (__main__.StorageChaosTests.test_preflight_rejects_postgres_db) ... ok
+test_preflight_rejects_remote_host (__main__.StorageChaosTests.test_preflight_rejects_remote_host) ... ok
+test_schedule_has_no_sleep (__main__.StorageChaosTests.test_schedule_has_no_sleep) ... ok
+test_sleep_schedule_is_rejected (__main__.StorageChaosTests.test_sleep_schedule_is_rejected) ... ok
+test_worker_sql_matches_stores (__main__.StorageChaosTests.test_worker_sql_matches_stores) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.001s
+
+OK (skipped=1)

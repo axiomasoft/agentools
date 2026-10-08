@@ -1,0 +1,12 @@
+{
+  "id": "fix-private-rc-verify",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/private_rc_gate.py",
+    "verify"
+  ],
+  "started_utc": "2026-10-08T13:46:32.089846+00:00",
+  "exit_code": 0,
+  "duration_seconds": 2.919
+}

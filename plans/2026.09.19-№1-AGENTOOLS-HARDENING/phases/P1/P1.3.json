@@ -1,0 +1,193 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P1.3",
+  "title": "Определить compatibility/support policy и migration inventory",
+  "status": "done",
+  "summary": "Зафиксировать dated compatibility/support contract для spec, PHP, Dart, MCP и package consumers, а также inventory всех ожидаемых breaking/migration surfaces P2–P10.",
+  "why": "Текущие manifests декларируют PHP `>=8.3`, Dart `^3.11.0`, spec `2026-08` и private package identity, но единого контракта «declared vs tested vs release-supported» нет. SemVer требует сначала объявить public API; pre-1.0 не разрешает молчаливую миграцию. `RAG:—` (manifests/baseline); `RAG:✅` (`@plan/knowledge/research-P1-design-rag.json`).",
+  "scope": {
+    "include": [
+      "Matrix of package/spec/MCP/platform/dependency dimensions with `declared`, `observed`, `tested`, `release-supported`, `unsupported`; dated PHP/Dart floors; pre-1.0 change policy; schema/API/data/token/key/storage/fixture migration classes; compatibility test owner; consumer notification map; deprecation/removal decision points."
+    ],
+    "exclude": [
+      "Declaring a platform supported without a green lane; choosing public license/registry; removing symbols; designing storage migrations; promising backward compatibility for accidental current exports."
+    ]
+  },
+  "depends_on": [],
+  "decisions": [
+    "D4",
+    "D5"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/artifacts/P1-baseline.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/findings-P1-baseline.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-P1-design-rag.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "plans/AGENTOOLS/knowledge/root-contracts-package-quality-baseline.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/decisions/D4.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/decisions/D5.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "conformance/sdks.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "README.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "@plan/knowledge/root-contracts-compatibility-support-v1.json",
+      "change": "any"
+    },
+    {
+      "path": "@plan/knowledge/findings-P1-migration-inventory.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "Support is a tuple `(artifact version, spec revision, platform/dependency range, evidence date)`, never a bare version list. `release-supported` requires a named green CI/consumer carrier; absent lanes remain `declared` or `observed`. Current broad PHP PSR-4 and Dart barrel reachability are candidate surface only until P7. Every migration row has owner, compatibility risk, source/target shape, evidence needed, consumer and notification trigger. No migration writes occur in P1."
+  ],
+  "guidance": "Keep one matrix owner and link to it from migration inventory. Include current MCP release pin separately from Agentools spec revision and own conformance scope. Name Composer lowest/highest and `dart pub downgrade` lanes as future P9 proof carriers, not completed evidence. Explicitly state how 0.x breakage is documented and when 1.0 stability begins.",
+  "validation": [
+    {
+      "id": "V1",
+      "procedure": "root/contracts/compatibility-support-v1.md",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "procedure": "findings/P1-migration-inventory.md",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "Versioned compatibility/support policy and complete migration/consumer-notification inventory suitable as inputs to P2–P10 and the final release dossier."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "required",
+    "status": "complete"
+  },
+  "result": {
+    "started_at": "2026-09-20T04:40:30Z",
+    "finished_at": "2026-09-20T04:40:30Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "composer-2.5/high",
+      "effort": "high"
+    },
+    "notes": "Published compatibility-support-v1.md and @plan/knowledge/findings-P1-migration-inventory.json anchored to P1 baseline; no release-supported lanes claimed.\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V1",
+        "exit": 0,
+        "at": "2026-09-20T04:40:30Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V2",
+        "exit": 0,
+        "at": "2026-09-20T04:40:30Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-20T04:40:30Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Зафиксировать dated compatibility/support contract для spec, PHP, Dart, MCP и package consumers, а также inventory всех ожидаемых breaking/migration surfaces P2–P10."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Текущие manifests декларируют PHP `>=8.3`, Dart `^3.11.0`, spec `2026-08` и private package identity, но единого контракта «declared vs tested vs release-supported» нет. SemVer требует сначала объявить public API; pre-1.0 не разрешает молчаливую миграцию. `RAG:—` (manifests/baseline); `RAG:✅` (`@plan/knowledge/research-P1-design-rag.json`)."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "Matrix of package/spec/MCP/platform/dependency dimensions with `declared`, `observed`, `tested`, `release-supported`, `unsupported`; dated PHP/Dart floors; pre-1.0 change policy; schema/API/data/token/key/storage/fixture migration classes; compatibility test owner; consumer notification map; deprecation/removal decision points."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Declaring a platform supported without a green lane; choosing public license/registry; removing symbols; designing storage migrations; promising backward compatibility for accidental current exports."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P1-baseline.json` · `@plan/knowledge/findings-P1-baseline.json` · `@plan/knowledge/research-P1-design-rag.json` · `plans/AGENTOOLS/root/contracts/package-quality-baseline.md` · `php/composer.json` · `php/composer.lock` · `dart/agentools/pubspec.yaml` · `dart/agentools/pubspec.lock` · `dart/agentools_mcp_dart/pubspec.yaml` · `dart/agentools_mcp_dart/pubspec.lock` · `@plan/decisions/D4.json` · `@plan/decisions/D5.json`"
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`@plan/knowledge/root-contracts-compatibility-support-v1.json` · `@plan/knowledge/findings-P1-migration-inventory.json`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P1-baseline.json` 2) `@plan/knowledge/research-P1-design-rag.json` 3) `plans/AGENTOOLS/root/contracts/package-quality-baseline.md` 4) `php/composer.json` 5) `dart/agentools/pubspec.yaml` 6) `dart/agentools_mcp_dart/pubspec.yaml` 7) `conformance/sdks.json` 8) `README.md`."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "Support is a tuple `(artifact version, spec revision, platform/dependency range, evidence date)`, never a bare version list. `release-supported` requires a named green CI/consumer carrier; absent lanes remain `declared` or `observed`. Current broad PHP PSR-4 and Dart barrel reachability are candidate surface only until P7. Every migration row has owner, compatibility risk, source/target shape, evidence needed, consumer and notification trigger. No migration writes occur in P1."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Keep one matrix owner and link to it from migration inventory. Include current MCP release pin separately from Agentools spec revision and own conformance scope. Name Composer lowest/highest and `dart pub downgrade` lanes as future P9 proof carriers, not completed evidence. Explicitly state how 0.x breakage is documented and when 1.0 stability begins."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "Every declared manifest constraint appears in the matrix; every `release-supported` cell links to a baseline/CI receipt; every accepted audit finding that can change API/data/token/storage/package shape has exactly one migration-inventory row and P2–P10 owner; public identity remains `private/proprietary`; no unqualified `MCP compliant`, `all versions`, `backward compatible` or `stable API` claim remains."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "Versioned compatibility/support policy and complete migration/consumer-notification inventory suitable as inputs to P2–P10 and the final release dossier."
+    }
+  ]
+}

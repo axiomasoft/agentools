@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Any
 
 REPO = Path(__file__).resolve().parents[1]
-PLAN = REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING"
+PLAN = REPO / "verification"
 RC_ARTIFACT = PLAN / "artifacts/P9-reproducibility.json"
 RC_CONTRACT = PLAN / "root/contracts/release-candidate-v1.md"
 LOCK_PATH = REPO / ".ci/supply-chain-lock.json"

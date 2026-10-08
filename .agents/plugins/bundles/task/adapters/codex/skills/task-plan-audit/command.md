@@ -1,7 +1,7 @@
 <!-- Generated Codex runtime projection; do not edit as source.
 Canonical source: packages/task/commands/plan-audit.md
-Canonical SHA-256: sha256:08477e5dd99ae24350e8489c70d85028ee97d3d4c0560a8425318a40d853e77d
-Adapter: task.codex-command/1.0.16
+Canonical SHA-256: sha256:2b036b03f36c450e7a119d39cf284efe4247cc31a6089344a5b3d694954679ac
+Adapter: task.codex-command/1.0.18
 -->
 ## Native Codex launch-block — required only at a real user-facing boundary
 
@@ -13,7 +13,7 @@ the owner-authorized scope in this root. If that scope is complete, report the e
 recommendation for this chat; a final answer does not require a new `codex` process. A command, phase, directory, local repair, or ordinary test failure is not a session
 boundary.
 
-At a fresh-session boundary, keep Batch/Model/Thinking/Context/Суть in the metadata table,
+At a fresh-session boundary, keep Batch/Model/Thinking/Context/The bottom line in the metadata table,
 but never put the command in a table
 cell or column. Immediately after the table print `**Native Codex command:**` and a fenced `bash`
 block which explicitly pins the repository cwd, mapped model, reasoning effort, approval policy,
@@ -36,7 +36,7 @@ never present them as an unconditional command to run now. A completed objective
 successor. Render only the active provider.
 
 Derive the class and effort from the next item's Routing before rendering it; for `plan-run`,
-do not reuse the preceding session's route. Current Codex mapping: economy=gpt-5.6-luna, implementation=gpt-5.6-terra, frontier=gpt-5.6-sol;
+do not reuse the preceding session's route. Current Codex mapping: economy=gpt-5.6-luna, implementation=gpt-6-sol, frontier=gpt-6-astra;
 low=low, medium=medium, high=high, xhigh=xhigh. At a fresh-session boundary, keep the provider-neutral Next too; its
 `$ task:…` form alone or an unpinned `codex` command is not a native fresh launch.
 
@@ -75,12 +75,31 @@ evidence.
 
 Invocation payload: `$ARGUMENTS`.
 
+`--reviewer <provider>/<exact-model-id>` is optional. Without it, audit using the actual captured
+native provider/model/effort; do not ask for a selector. Use a fresh non-executor session on that
+route when independence is required. An explicit selector uses a fresh session whose captured
+provider/model matches it; effort defaults to `xhigh`. Native frontmatter does not pin a route.
+On mismatch render the selected review launch and do not audit under another route.
+Historical audit evidence remains readable. This argument never grants phase-audit consent.
+
+A GREEN phase audit returns `plan_completion.successor()` from the actual plan state. It never
+returns a phase-close command or writes acceptance on behalf of the executor.
+Optional `/context` and `select the session effort` suffixes may follow the model, in either order, with a trailing `/`.
+Examples: `grok/grok-4.7/500k/`, `grok/grok-4.7/xhigh/`, `grok/grok-4.7/500k/xhigh/`.
+Normalize through `task.review_packet.invocation_selection`; `hight` is high. A conflicting explicit
+effort flag fails closed. Context is a provider-proven capacity requirement, never a spend budget.
+
 Read `runtime/plan-protocol/references/common-principles.md` and
 `runtime/plan-protocol/references/review-mode.md` from the configured Task package root.
 The full schema canon and snippets are on-demand references, not mandatory review context.
 
 Audit is adversarial and read-only over product work. Read the declared assurance, the Task Contract's
 sole exact executable Routing compiler result, and prior terminal evidence; compare only the changed-risk delta.
+For `design`, first run `scripts/plan-work.py design-gate --plan-dir <dir>`. Require a completed
+`finalize-design --finish` and audit the returned current fingerprint across every declared phase,
+item, dependency and execution-sheet row. Persist the audit journal event with that fingerprint
+using the existing `--fingerprint` field. A changed design input makes the verdict stale; after
+correction, repeat finish and the design audit. GREEN is the only result that satisfies a `Design Audit: required` gate; by default the design audit is optional.
 Before phase audit, consume one accepted, unsuperseded `audit-admission/v2` decision whose bounded
 residual-risk question, target phase, material candidate fingerprint, audit run, owner-message
 provenance, and scope digest all match. Foreign, stale, ambiguous, or already consumed consent does
@@ -109,4 +128,4 @@ typed continuation until a fresh terminal receipt and exact final fragment exist
 Persist a product finding as audit-attention (or audit-red) with decision action
 `return-owning-continuation`, evidence IDs, reason_code, scope_class=<owning item>,
 recovered=false, terminal=false,
-and exact exec-items/run-items owning continuation. Reviewer completion leaves the phase open.
+and exact run-items owning continuation. Reviewer completion leaves the phase open.

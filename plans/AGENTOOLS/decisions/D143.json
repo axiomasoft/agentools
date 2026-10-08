@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D143",
+  "title": "Решение",
+  "date": "2026-08-03",
+  "status": "accepted",
+  "decision": "**Remediation декомпозирована P3.16–P3.19 + P4.9–P4.13; W2 обязателен только для P4.10–P4.12.** P3.17 исполняет explicit owner-ветку Q-5 по inventory 32/35; P3.18 — owner-ветку Q-27 (`measurable` structural contract либо explicit `defer`); P3.19 и P4.13 — terminal gates. После P3.19+P4.9 три P4-предмета независимы и имеют deterministic Validation, поэтому критерий orchestration срабатывает; carrier `workflows/wf-agentools-p4-remediation.js`. Альтернатива «переоткрыть старые items и переписать Completion Notes» отклонена как потеря провенанса; «один mega-item F1–F8» скрывает owner-гейты и не позволяет изолировать регрессии.",
+  "rationale": "`@plan/knowledge/research-12-p3-p4-gate-b-remediation-2026-08.json` §§3–5; `plan-protocol` §7 criterion. `RAG:— (repo-grounded)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D143\ndate: 2026-08-03\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Remediation декомпозирована P3.16–P3.19 + P4.9–P4.13; W2 обязателен только для P4.10–P4.12.** P3.17 исполняет explicit owner-ветку Q-5 по inventory 32/35; P3.18 — owner-ветку Q-27 (`measurable` structural contract либо explicit `defer`); P3.19 и P4.13 — terminal gates. После P3.19+P4.9 три P4-предмета независимы и имеют deterministic Validation, поэтому критерий orchestration срабатывает; carrier `workflows/wf-agentools-p4-remediation.js`. Альтернатива «переоткрыть старые items и переписать Completion Notes» отклонена как потеря провенанса; «один mega-item F1–F8» скрывает owner-гейты и не позволяет изолировать регрессии."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`@plan/knowledge/research-12-p3-p4-gate-b-remediation-2026-08.json` §§3–5; `plan-protocol` §7 criterion. `RAG:— (repo-grounded)`"
+    }
+  ]
+}

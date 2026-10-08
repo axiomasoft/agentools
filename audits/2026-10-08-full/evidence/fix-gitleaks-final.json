@@ -1,0 +1,12 @@
+{
+  "id": "fix-gitleaks-final",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/ci_matrix.py",
+    "gitleaks-scan"
+  ],
+  "started_utc": "2026-10-08T13:39:06.431530+00:00",
+  "exit_code": 0,
+  "duration_seconds": 2.068
+}

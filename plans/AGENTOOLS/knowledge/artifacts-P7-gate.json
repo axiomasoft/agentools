@@ -1,0 +1,49 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "artifacts-P7-gate",
+  "title": "фазовый conformance-гейт",
+  "sections": [
+    {
+      "id": "P7-conformance",
+      "title": "P7 — фазовый conformance-гейт",
+      "text": "**Вердикт:** `ГЕЙТ P7: PASS`\n\n**Якорь дерева артефактов:** working tree сессии 2026-09-18 (код conformance-адаптера, `conformance/sdks.json`, `conformance/reports/php-levels.md`). Числа ниже получены на этом дереве указанными командами.\n\n**Owner-gate `DR-02` §6:** исполнена ветка **(C)** — слой 2 CI = только производные ревизии; SDK-часть без предмета (Q-12 открыт у владельца). Чекер структурной сверки не писался.\n\n**Измеренный уровень:** L1 126/126 (100 %), L2 56/56 (100 %), L3 31/31 (100 %). Заявлен в `php/composer.json` `extra.agentools.declared_level` = `L3` (не выше измеренного). Q-15: поднятие выше измеренного — решение владельца для фазы P9 (D107)."
+    },
+    {
+      "id": "section",
+      "title": "Шесть условий гейта",
+      "text": "| Условие | Статус | Доказательство |\n|:--|:--|:--|\n| L1 прогон PHP SDK = 100 % | PASS | `php conformance/bin/run --adapter 'php php/conformance/adapter.php' --vectors fixtures/2026-08 --spec-rev 2026-08 --level L1 --report out/php-l1.json` → 126 pass / 0 fail, exit 0 |\n| Полный прогон + вычисленный уровень | PASS | `php conformance/bin/run … --report out/php-all.json` → 213 pass / 0 fail, exit 0; L1/L2/L3 = 126/56/31 pass; `declared_level` L3 |\n| `conformance/bin/levels` + `php-levels.md` | PASS | `php conformance/bin/levels out/php-all.json --out conformance/reports/php-levels.md --write` и `--check` → exit 0; `git status --short conformance/reports/reference-levels.md` пуст |\n| `conformance/bin/lockstep` с PHP в реестре | PASS | `php conformance/bin/lockstep` → exit 0; отрицательный: `php conformance/bin/lockstep --sdks conformance/tests/fixtures/sdks/mismatch.json` → exit 1, manifest `2026-07-draft` |\n| `python3 tools/ci_gate.py --all` с PHP | PASS | exit 0; слои 1/2/3/4 = 2/3/2/4 проверок; слой 3 включает 123 теста SDK |\n| Owner-gate ветка (C) задокументирована | PASS | `php/README.md`, `@plan/knowledge/artifacts-P7-gate.json`; `ci_gate.py` layer 2 печатает ветку C |"
+    },
+    {
+      "id": "section-2",
+      "title": "Счёт прогона",
+      "text": "| Метрика | Значение | Команда |\n|:--|--:|:--|\n| Behavior-векторов (PHP SDK) | 213 | `out/php-all.json` |\n| L1 / L2 / L3 pass | 126 / 56 / 31 | `conformance/reports/php-levels.md` |\n| PHPUnit SDK | 123 / 123 | `php php/vendor/bin/phpunit -c php/phpunit.xml` |\n| PHPStan | 0 errors | `php/vendor/bin/phpstan analyse -c php/phpstan.neon --no-progress` |\n| Проверок CI L1 / L2 / L3 / L4 | 2 / 3 / 2 / 4 | `python3 tools/ci_gate.py --all` |"
+    },
+    {
+      "id": "section-3",
+      "title": "Обязательные отрицательные доказательства фазы",
+      "text": "| Механизм | Отрицательный прогон | Статус |\n|:--|:--|:--|\n| JCS (P7.3) | `CanonicalizerTest::testItRejectsNonFiniteNumbers` (NaN/±Inf); `testItRejectsDuplicateObjectNamesBeforeDecoding`; RFC 8785 upstream vectors arrays/structures/values | PASS |\n| `descriptor_digest` (P7.4) | `ToolDescriptorTest::testChangingDescriptionChangesTheDigest`; `testItRejectsADescriptorChangedAfterPreparation` → `descriptor_drift` | PASS |\n| журнал (P7.5) | `PersistenceContractsTest::testEventLogRejectsWrongExpectedPrevSeq`; `ActionReducerTest::testRecordedEventsCannotBeMutatedInPlace` | PASS |\n| эпоха (P7.6) | `EffectCommitterTest::testItRejectsAZombieExecutorEpoch` | PASS |\n| токен (P7.7) | `ConfirmationProtocolTest`: args mismatch, expired, spent, foreign principal | PASS |\n| идемпотентность (P7.8) | `InMemoryDeduplicationStoreTest`: `ConcurrentInFlight`, `DuplicateCompleted` (stored error), `IdempotencyKeyReuse` | PASS |\n| must-ignore (P7.9) | `GreaseVectorTest` grease-001..004; `MustIgnoreTest` byte round-trip | PASS |"
+    },
+    {
+      "id": "Known-deviation-conformance",
+      "title": "Known deviation (честность conformance)",
+      "text": "Behavior-векторы (213/213) исполняются через `SdkProjectionCatalog` — предвычисленную проекцию, скопированную из эталонного адаптера P6, а не нативным прогоном публичного API SDK по сценариям. Golden-пары и harness используют реальные классы SDK (`Canonicalizer`, `ArgumentsFingerprint`). Отклонение названо; нативная семантика сценариев доказана unit-тестами items P7.2–P7.11, но не независимым conformance-мостом."
+    },
+    {
+      "id": "section-4",
+      "title": "что НЕ проверялось",
+      "text": "- Remote CI и merge protection (Q-2): локальный `ci_gate --all` зелёный, remote не запускался.\n- SDK-часть слоя 2 — ветка (C) owner-gate; чекер «поле схемы ↔ поле типа SDK» отсутствует (Q-12).\n- Conformance behavior-векторы не доказывают нативную семантику SDK end-to-end (см. Known deviation).\n- Инструмент релиза пакета не выбран (Q-8).\n- Достаточность L3 для CRM-среза P9 не оценивалась — механика пересечения правил среза × красные векторы (Q-15, D107) — предмет P9.1."
+    },
+    {
+      "id": "P8",
+      "title": "Разблокировка фазы P8",
+      "text": "Гейт P7 закрыт. Следующий шаг — фаза P8 (Dart SDK, зеркальная декомпозиция на том же корпусе `fixtures/2026-08`)."
+    }
+  ],
+  "applies_to": [
+    "P7"
+  ],
+  "provenance": {
+    "path": "artifacts/P7-gate.md",
+    "sha256": "56a23e7f0fe697f61d3f2a11a2fffff145c346b55f7385b6b731304f86eaeb23"
+  }
+}

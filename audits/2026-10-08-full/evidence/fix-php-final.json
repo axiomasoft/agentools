@@ -1,0 +1,12 @@
+{
+  "id": "fix-php-final",
+  "cwd": ".",
+  "command": [
+    "composer",
+    "test",
+    "--working-dir=php"
+  ],
+  "started_utc": "2026-10-08T13:27:50.145991+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.765
+}

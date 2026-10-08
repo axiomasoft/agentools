@@ -1,0 +1,37 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "research-14-p3-open-enum-fail-closed-2026-08",
+  "title": "14 — Fail-closed open-enum gate после второго RED-аудита P3",
+  "sections": [
+    {
+      "id": "14-Fail-closed-open-enum-gate-RED--P3",
+      "title": "14 — Fail-closed open-enum gate после второго RED-аудита P3",
+      "text": "**Статус:** design input для третьего реопена P3  \n**Сырьё:** `../phases/P3.md` → второй блок `## Audit P3 — 2026-08-04`, F1–F5 ·\n`../findings/P3-jsonschema-oracle-2026-08.md` · `13-p3-red-audit-remediation-2026-08.md` ·\n`../../../tools/spec_lint.py` `_matches_open_enum_branch`/`_open_string_definitions`/\n`run_schema_values_selftest`."
+    },
+    {
+      "id": "1.",
+      "title": "1. Диагноз",
+      "text": "P3.20 исправил текущие схемы, но его общий gate не доказал собственную границу. Обходчик\nсначала отбрасывает все ветви, кроме string `const` и string fallback, а мини-интерпретатор\nпонимает только `const`/`enum`/`type`/`minLength`/`pattern`/`not`. Поэтому стандартный keyword\n`maxLength` и дополнительная integer-ветвь меняют исполняемую Draft 2020-12 семантику, но\nдают пустой список ошибок. `RAG:— (repo-grounded: @plan/phases/P3/phase.json Audit P3 заход 2 F1;\ntools/spec_lint.py:600-703)`."
+    },
+    {
+      "id": "2.",
+      "title": "2. Решение",
+      "text": "Gate делится на два слоя с разными обязанностями:\n\n1. **Структурный fail-closed слой (обычный lint, stdlib-only).** Он учитывает каждую ветвь\n   исходного `oneOf`, разрешает только канонические формы текущего open-string контракта и\n   отвергает лишнюю/необъектную/non-string ветвь, неизвестный для канона keyword, неверный тип\n   keyword либо второй fallback. Диагностика содержит файл + JSON pointer + имя ветви/keyword.\n   Отфильтровать неподдержанную ветвь и продолжить запрещено.\n2. **Семантический oracle (только адресный selftest).** Лениво импортированный\n   `jsonschema.Draft202012Validator` проверяет текущие core/vendor/empty probes и две\n   обязательные мутации `maxLength`/integer branch. Отсутствие библиотеки даёт явный exit 2;\n   сетевой install из инструмента запрещён. `RAG:✅ 2026-08-04: @plan/knowledge/findings-P3-jsonschema-oracle-2026-08.json`.\n\nЭто узко сужает D14: production/full lint остаётся stdlib-only, но его специальный\n`--schema-values-selftest` больше не имеет права объявлять семантический PASS без настоящего\nDraft 2020-12 oracle. Цена — отдельная локальная test-зависимость на машинах, где запускают\nэтот selftest; отсутствие зависимости видно как красный prerequisite, а не ложный GREEN."
+    },
+    {
+      "id": "3.",
+      "title": "3. Декомпозиция и границы",
+      "text": "Нужен один item P3.24: checker и его evidence тесно связаны, нормативные source-схемы не\nменяются. Отдельная orchestration не объявляется: один item, одна детерминированная Validation.\nP4.9 остаётся заблокирован до исполнения P3.24, повторного close и третьего аудита P3.\n\nНе меняются `CFH-55`, глоссарий, published/authoring schemas, P4/P6 fixtures, Gate B и\nисторические Completion Notes P3.1–P3.22. Плановая бухгалтерия F2–F5 исправляется самим\ndesign-заходом, а не подмешивается в item-коммит `tools/spec_lint.py`."
+    },
+    {
+      "id": "4.-Pre-mortem",
+      "title": "4. Pre-mortem",
+      "text": "| Причина провала | Ранний сигнал | Mitigation | Owner |\n|:--|:--|:--|:--|\n| Новый keyword снова проигнорирован | branch keys шире allowlist, lint зелёный | точное множество разрешённых ключей + адресный reject | P3.24 / `tools/spec_lint.py` |\n| Extra branch исчезает при классификации | число `7` проходит мутированную схему, gate молчит | считать все исходные ветви и отдельно отвергать non-string | P3.24 |\n| Oracle недоступен, но selftest зелёный | import подавлен fallback-логикой | import failure = exit 2, без stdlib-замены | P3.24 |\n| Evidence снова доказывает только текущий snapshot | в A2 нет двух мутаций и их oracle verdict | таблица maxLength/integer branch с командами и git-anchor | `@plan/knowledge/artifacts-P3-gate-a2.json` |"
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "research/14-p3-open-enum-fail-closed-2026-08.md",
+    "sha256": "1b0dbe6e6f749664dd6352a2e97115f14b83a968cdb817e4a440b2fefeda083a"
+  }
+}

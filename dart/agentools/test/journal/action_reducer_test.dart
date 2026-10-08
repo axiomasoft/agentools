@@ -87,7 +87,7 @@ void main() {
   });
 
   test('preserves unknown events without changing state', () {
-    final reducer = ActionReducer();
+    final reducer = ActionReducer(specRevision: '2026-08');
     final state = reducer.fold([
       event(1, 0, 'action_created'),
       event(
@@ -120,10 +120,9 @@ void main() {
   // ALC-21; a stale expected_prev_seq is a typed version conflict, not a transition error.
   test('guard order reports version conflict before invalid transition', () {
     expect(
-      () => ActionReducer().fold([
-        event(1, 0, 'action_created'),
-        event(2, 0, 'action_completed'),
-      ]),
+      () => ActionReducer(
+        specRevision: '2026-08',
+      ).fold([event(1, 0, 'action_created'), event(2, 0, 'action_completed')]),
       throwsA(
         isA<VersionConflict>().having(
           (error) => error.error.code,
@@ -158,7 +157,7 @@ void main() {
       ),
       event(5, 4, 'action_completed'),
     ];
-    final reducer = ActionReducer();
+    final reducer = ActionReducer(specRevision: '2026-08');
 
     final first = serializeFoldedState(reducer.fold(events));
     final second = serializeFoldedState(reducer.fold(events));
@@ -168,7 +167,7 @@ void main() {
 
   test('rejects event after terminal action', () {
     expect(
-      () => ActionReducer().fold([
+      () => ActionReducer(specRevision: '2026-08').fold([
         event(1, 0, 'action_created'),
         event(2, 1, 'action_started'),
         event(3, 2, 'action_completed'),
@@ -188,6 +187,7 @@ void main() {
     final recorded = event(1, 0, 'action_created');
     final upcaster = _TestUpcaster();
     final state = ActionReducer(
+      specRevision: '2026-08',
       upcasters: EventUpcasterChain([upcaster]),
     ).fold([recorded]);
 
@@ -198,7 +198,7 @@ void main() {
   // ALC-35, ALC-36, ALC-37; a changed record breaks the separate integrity failure.
   test('rejects a tampered hash chain', () {
     final chain = JournalHashChain(Canonicalizer());
-    final reducer = ActionReducer(hashChain: chain);
+    final reducer = ActionReducer(specRevision: '2026-08', hashChain: chain);
     final first = event(1, 0, 'action_created');
     final state = reducer.fold([first]);
     final second = event(
@@ -219,7 +219,7 @@ void main() {
 
   // ALC-32, ALC-33; projection plus journal tail restores the same folded state.
   test('restores from snapshot and journal tail', () {
-    final reducer = ActionReducer();
+    final reducer = ActionReducer(specRevision: '2026-08');
     final firstTwo = [
       event(1, 0, 'action_created'),
       event(2, 1, 'action_started'),

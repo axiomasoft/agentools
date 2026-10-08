@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D2",
+  "title": "Решение",
+  "date": "2026-07-07",
+  "status": "accepted",
+  "decision": "Пакеты: composer `agentools/sdk` (PHP-namespace `AgenTools\\`), pub `agentools`; репо `~/projects/packages/agentools`, приватный, лицензия proprietary («All rights reserved», файл LICENSE)",
+  "rationale": "D13 мастер-плана (всё приватно); слитное написание — D2 мастер-плана",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D2\ndate: 2026-07-07\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "Пакеты: composer `agentools/sdk` (PHP-namespace `AgenTools\\`), pub `agentools`; репо `~/projects/packages/agentools`, приватный, лицензия proprietary («All rights reserved», файл LICENSE)"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "D13 мастер-плана (всё приватно); слитное написание — D2 мастер-плана"
+    }
+  ]
+}

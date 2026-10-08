@@ -1,0 +1,284 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P7.9",
+  "title": "Ошибки и расширяемость: строковые коды, открытые перечисления, must-ignore (§E1–§E3, §E7)",
+  "status": "done",
+  "summary": "Реализовать двухуровневую модель ошибок (protocol errors ↔ tool execution errors) со строковыми кодами в форме, близкой к RFC 7807, и запретом числового диапазона MCP; открытые перечисления как композицию известных значений + fallback-ветка; правило must-ignore с сохранением сырого события ЦЕЛИКОМ; жизненный цикл значений Active → Deprecated → Removed.",
+  "why": "Это место, где «работает» и «правильно» расходятся дальше всего. Числовые коды в диапазоне `-32000..-32099` запрещены не стилистически: `-32020..-32099` зарезервирован спекой MCP, и их использование уже вызывало перенумерацию в чужих SDK. Открытые перечисления существуют, чтобы добавление значения не было breaking-изменением автоматически, — голый `enum` делает его таковым молча. Must-ignore MCP НЕ обязывает: ни JSON-RPC, ни ядро MCP не содержат явного MUST об игнорировании неизвестного, поэтому правило пишем мы — и код must-ignore протухает незамеченным именно потому, что в экосистеме из двух потребителей органических случаев расширения почти не бывает (урок IAB, отсюда GREASE-векторы §E4). `RAG:— (repo-grounded: DR-01 §E1 — два уровня ошибок, строковые коды, запрет диапазона MCP, форма RFC 7807; §E2 — oneOf из const + fallback-ветка с шаблоном; §E3 — сырое событие сохраняется целиком, пересборка поле-за-полем запрещена; §E4 — GREASE с первого релиза; §E7 — Active→Deprecated→Removed; research/06-… §8)`.",
+  "scope": {
+    "include": [
+      "(а) двухуровневая модель: protocol errors (транспортные) и tool execution errors (бизнес/валидационные, возвращаются как результат с признаком ошибки и доступны модели для самокоррекции) — разведение по типам, а не по соглашению; (б) собственные коды — СТРОКОВЫЕ, в структурированном поле, форма объекта ошибки сближена с RFC 7807; числовые коды в `-32768..-32000` не используются вовсе; (в) открытые перечисления: разбор значения по известным `const`-веткам плюс fallback по шаблону `^<product>\\.[a-z0-9_]+$`, неизвестное значение НЕ отклоняется; (г) must-ignore (§E3) как правило поведения: неизвестный вид события, неизвестная категория ошибки, неизвестный ключ под нашим префиксом, неизвестное значение открытого перечисления — сообщение принимается И сырое событие сохраняется ЦЕЛИКОМ (носитель — raw-preserving слой P7.3); (д) жизненный цикл значений Active → Deprecated → Removed (§E7): депрецированное значение продолжает валидироваться, удалённое отвергается после окна; (е) прогон GREASE-векторов корпуса (§E4) как обязательное доказательство, с перечнем прогнанных `id`; (ж) тесты, чьи ожидания взяты из векторов `IDE-*`/`OVR-*`, покрывающих §E1–§E3, §E7."
+    ],
+    "exclude": [
+      "конкретные коды других подсистем (`descriptor_drift` — P7.4, коды дедупликации — P7.8; здесь заводится ФОРМА, в которой они выражены); raw-preserving носитель как структура (P7.3 — здесь правило его применения); аудит (P7.11); продуктовые расширения `crm.*`/`erp.*` (§E2 — вне обязательного покрытия conformance); ЛЮБЫЕ правки ревизии, схем и корпуса."
+    ]
+  },
+  "depends_on": [
+    "P7.3",
+    "P7.5"
+  ],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "spec/revisions/2026-08/09_idempotency-errors.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "00_overview.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "spec/revisions/2026-08/rules.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/2026-08/vectors/**",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-06-p7-php-sdk-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-06-p7-php-sdk-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/2026-08/README.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [],
+  "rules": [
+    "сохранение сырого события делается ЦЕЛИКОМ через носитель P7.3 — пересборка поле-за-полем запрещена (§E3: модель unknown fields протобуфа); открытое перечисление реализуется НЕ голым PHP-enum: известные значения + fallback-ветка, потому что голый enum делает добавление значения breaking-изменением автоматически; числовые коды в диапазоне `-32768..-32000` не появляются в коде ни в каком виде — проверяется грепом; каждая tool execution error возвращается КАК РЕЗУЛЬТАТ с признаком ошибки, а не выбрасывается как протокольная — иначе модель лишается самокоррекции; GREASE-векторы прогоняются раннером фазы P6 против ВРЕМЕННОГО тестового адаптера либо юнит-тестом на тех же данных — способ называется в Completion Notes явно; расхождение с вектором разбирается прогоном против эталонного адаптера, оба вывода — в отчёте; плановый линтер — командой из Phase Context."
+  ],
+  "guidance": "Стиль — как в `bakeoff/php/manual/P01OpenEnum.php` (известные константы + fallback-паттерн — это и есть §E2 в коде). Анти-самообман: «must-ignore реализован» ≠ «неизвестное сохраняется» — доказательством считается ПОБАЙТНЫЙ round-trip документа с неизвестным ключом, а не «не упало»; «модель ошибок есть» ≠ «уровни разведены» — нужен тест, показывающий, что бизнес-ошибка возвращается результатом, а не исключением транспорта. Анти-подгонка: если GREASE-вектор красный, чинится must-ignore, а не «уточняется» вектор. ЗАПРЕЩЕНО: голый `enum` для открытых перечислений; числовые коды в зарезервированном диапазоне; пересборка документа поле-за-полем; отклонение сообщения из-за неизвестного значения; удаление значения из перечисления без окна депрекации. If-then: правило ревизии требует отклонить неизвестное значение там, где §E3 требует его игнорировать → это конфликт нормативного текста с решением: `🔴 Blocked` + эскалация (trigger «конфликт правил») с адресатом «владелец», реализация не выбирает сторону молча.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "php php/vendor/bin/phpunit -c php/phpunit.xml; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "php/vendor/bin/phpstan analyse -c php/phpstan.neon --no-progress; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "grep -rnE '\\-32[0-7][0-9][0-9]' php/src | wc -l",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "grep -rn 'enum ' php/src/Errors | wc -l",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "cmd": "grep -rLE '(IDE|OVR)-[0-9]' php/tests/Errors | wc -l",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "procedure": "php php/vendor/bin/phpunit -c php/phpunit.xml",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "procedure": "php/vendor/bin/phpstan analyse -c php/phpstan.neon --no-progress",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V8",
+      "procedure": "GREASE unit replay grease-001..004",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V9",
+      "procedure": "must-ignore byte round-trip MustIgnoreEnvelope + ToolDescriptor",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V10",
+      "procedure": "lifecycle Active/Deprecated/Removed OpenEnumTest",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V11",
+      "procedure": "grep reserved MCP numeric codes php/src count=0",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V12",
+      "procedure": "grep -rLE '(IDE|OVR)-[0-9]' php/tests/Error | wc -l",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "двухуровневая модель ошибок со строковыми кодами в форме RFC 7807 и доказанным отсутствием зарезервированного числового диапазона + открытые перечисления с fallback-ветвью + must-ignore с побайтным сохранением сырого события + жизненный цикл значений Active→Deprecated→Removed + зелёный GREASE-прогон с перечнем векторов."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-18T17:32:21Z",
+    "finished_at": "2026-09-18T17:32:21Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "implementation/high",
+      "effort": "high"
+    },
+    "notes": "Reconciliation anchor 6e1ec1d+working-tree: Error/ not Errors/; OpenEnum/MustIgnoreEnvelope/ValueLifecycle; GREASE grease-001..004 unit replay; IDE-22..29/39..43/45..47; phpunit 92/92\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V6",
+        "exit": 0,
+        "at": "2026-09-18T17:32:21Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V7",
+        "exit": 0,
+        "at": "2026-09-18T17:32:21Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V8",
+        "exit": 0,
+        "at": "2026-09-18T17:32:21Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V9",
+        "exit": 0,
+        "at": "2026-09-18T17:32:21Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V10",
+        "exit": 0,
+        "at": "2026-09-18T17:32:21Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V11",
+        "exit": 0,
+        "at": "2026-09-18T17:32:21Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V12",
+        "exit": 0,
+        "at": "2026-09-18T17:32:21Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-18T17:32:21Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Реализовать двухуровневую модель ошибок (protocol errors ↔ tool execution errors) со строковыми кодами в форме, близкой к RFC 7807, и запретом числового диапазона MCP; открытые перечисления как композицию известных значений + fallback-ветка; правило must-ignore с сохранением сырого события ЦЕЛИКОМ; жизненный цикл значений Active → Deprecated → Removed."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Это место, где «работает» и «правильно» расходятся дальше всего. Числовые коды в диапазоне `-32000..-32099` запрещены не стилистически: `-32020..-32099` зарезервирован спекой MCP, и их использование уже вызывало перенумерацию в чужих SDK. Открытые перечисления существуют, чтобы добавление значения не было breaking-изменением автоматически, — голый `enum` делает его таковым молча. Must-ignore MCP НЕ обязывает: ни JSON-RPC, ни ядро MCP не содержат явного MUST об игнорировании неизвестного, поэтому правило пишем мы — и код must-ignore протухает незамеченным именно потому, что в экосистеме из двух потребителей органических случаев расширения почти не бывает (урок IAB, отсюда GREASE-векторы §E4). `RAG:— (repo-grounded: DR-01 §E1 — два уровня ошибок, строковые коды, запрет диапазона MCP, форма RFC 7807; §E2 — oneOf из const + fallback-ветка с шаблоном; §E3 — сырое событие сохраняется целиком, пересборка поле-за-полем запрещена; §E4 — GREASE с первого релиза; §E7 — Active→Deprecated→Removed; research/06-… §8)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "(а) двухуровневая модель: protocol errors (транспортные) и tool execution errors (бизнес/валидационные, возвращаются как результат с признаком ошибки и доступны модели для самокоррекции) — разведение по типам, а не по соглашению; (б) собственные коды — СТРОКОВЫЕ, в структурированном поле, форма объекта ошибки сближена с RFC 7807; числовые коды в `-32768..-32000` не используются вовсе; (в) открытые перечисления: разбор значения по известным `const`-веткам плюс fallback по шаблону `^<product>\\.[a-z0-9_]+$`, неизвестное значение НЕ отклоняется; (г) must-ignore (§E3) как правило поведения: неизвестный вид события, неизвестная категория ошибки, неизвестный ключ под нашим префиксом, неизвестное значение открытого перечисления — сообщение принимается И сырое событие сохраняется ЦЕЛИКОМ (носитель — raw-preserving слой P7.3); (д) жизненный цикл значений Active → Deprecated → Removed (§E7): депрецированное значение продолжает валидироваться, удалённое отвергается после окна; (е) прогон GREASE-векторов корпуса (§E4) как обязательное доказательство, с перечнем прогнанных `id`; (ж) тесты, чьи ожидания взяты из векторов `IDE-*`/`OVR-*`, покрывающих §E1–§E3, §E7."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "конкретные коды других подсистем (`descriptor_drift` — P7.4, коды дедупликации — P7.8; здесь заводится ФОРМА, в которой они выражены); raw-preserving носитель как структура (P7.3 — здесь правило его применения); аудит (P7.11); продуктовые расширения `crm.*`/`erp.*` (§E2 — вне обязательного покрытия conformance); ЛЮБЫЕ правки ревизии, схем и корпуса."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "value objects и raw-preserving носитель (P7.3) · журнал (P7.5) · `spec/revisions/2026-08/09_idempotency-errors.md` (раздел ошибок) и `00_overview.md` (глоссарий и уровни) · `spec/revisions/2026-08/rules.json` · `fixtures/2026-08/vectors/**` — GREASE-векторы и векторы §E1–§E3, §E7 · `@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §E1–§E4, §E7 · `@plan/knowledge/research-06-p7-php-sdk-2026-08.json` §8."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`php/src/Errors/**` · `php/tests/Errors/**` (репо-пути — от корня `~/projects/packages/agentools`)"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `05-Projects/03-Packages/AgenTools/@plan/knowledge/research-06-p7-php-sdk-2026-08.json` §8 2) `spec/revisions/2026-08/09_idempotency-errors.md` (раздел ошибок) ЦЕЛИКОМ 3) `spec/revisions/2026-08/rules.json` 4) `fixtures/2026-08/README.md` + GREASE-векторы 5) `05-Projects/03-Packages/AgenTools/@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §E1–§E4, §E7 6) `05-Projects/03-Packages/AgenTools/@plan/plan.json` §2 Execution Rules, §5 (D72)."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "сохранение сырого события делается ЦЕЛИКОМ через носитель P7.3 — пересборка поле-за-полем запрещена (§E3: модель unknown fields протобуфа); открытое перечисление реализуется НЕ голым PHP-enum: известные значения + fallback-ветка, потому что голый enum делает добавление значения breaking-изменением автоматически; числовые коды в диапазоне `-32768..-32000` не появляются в коде ни в каком виде — проверяется грепом; каждая tool execution error возвращается КАК РЕЗУЛЬТАТ с признаком ошибки, а не выбрасывается как протокольная — иначе модель лишается самокоррекции; GREASE-векторы прогоняются раннером фазы P6 против ВРЕМЕННОГО тестового адаптера либо юнит-тестом на тех же данных — способ называется в Completion Notes явно; расхождение с вектором разбирается прогоном против эталонного адаптера, оба вывода — в отчёте; плановый линтер — командой из Phase Context."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Стиль — как в `bakeoff/php/manual/P01OpenEnum.php` (известные константы + fallback-паттерн — это и есть §E2 в коде). Анти-самообман: «must-ignore реализован» ≠ «неизвестное сохраняется» — доказательством считается ПОБАЙТНЫЙ round-trip документа с неизвестным ключом, а не «не упало»; «модель ошибок есть» ≠ «уровни разведены» — нужен тест, показывающий, что бизнес-ошибка возвращается результатом, а не исключением транспорта. Анти-подгонка: если GREASE-вектор красный, чинится must-ignore, а не «уточняется» вектор. ЗАПРЕЩЕНО: голый `enum` для открытых перечислений; числовые коды в зарезервированном диапазоне; пересборка документа поле-за-полем; отклонение сообщения из-за неизвестного значения; удаление значения из перечисления без окна депрекации. If-then: правило ревизии требует отклонить неизвестное значение там, где §E3 требует его игнорировать → это конфликт нормативного текста с решением: `🔴 Blocked` + эскалация (trigger «конфликт правил») с адресатом «владелец», реализация не выбирает сторону молча."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`php php/vendor/bin/phpunit -c php/phpunit.xml; echo $?` = 0 · `php/vendor/bin/phpstan analyse -c php/phpstan.neon --no-progress; echo $?` = 0 · GREASE-прогон зелёный: неизвестный вид события, неизвестная категория ошибки, неизвестный ключ расширения — сообщение принято И сырое событие сохранено ЦЕЛИКОМ, round-trip побайтный (способ прогона и вывод — в Completion Notes) · `grep -rnE '\\-32[0-7][0-9][0-9]' php/src | wc -l` = 0 (зарезервированный числовой диапазон MCP не используется) · тест разведения уровней: бизнес-ошибка приходит как результат с признаком ошибки, а не как протокольное исключение — зелёный (вывод — в Completion Notes) · тест жизненного цикла: депрецированное значение принимается, удалённое после окна отвергается — оба зелёные · `grep -rn 'enum ' php/src/Errors | wc -l` — вывод приводится в Completion Notes с пояснением, что ни один из них не выражает ОТКРЫТОЕ перечисление · `grep -rLE '(IDE|OVR)-[0-9]' php/tests/Errors | wc -l` = 0 · прогнать плановый линтер по каталогу плана и опубликовать счёт с атрибуцией, K = 0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "двухуровневая модель ошибок со строковыми кодами в форме RFC 7807 и доказанным отсутствием зарезервированного числового диапазона + открытые перечисления с fallback-ветвью + must-ignore с побайтным сохранением сырого события + жизненный цикл значений Active→Deprecated→Removed + зелёный GREASE-прогон с перечнем векторов."
+    }
+  ]
+}

@@ -1,0 +1,196 @@
+{
+  "schema": "audit-regressions/v1",
+  "revision": "2026-09",
+  "audit_valid": [
+    {
+      "tool_name": "reserve",
+      "side_effect": "write",
+      "verdict": "allow"
+    },
+    {
+      "tool_name": "reserve",
+      "side_effect": "write",
+      "verdict": "allow",
+      "trace": {
+        "trace_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "span_id": "bbbbbbbbbbbbbbbb"
+      }
+    },
+    {
+      "tool_name": "reserve",
+      "side_effect": "erp.close_period",
+      "verdict": "allow"
+    }
+  ],
+  "audit_invalid": [
+    {
+      "tool_name": "reserve",
+      "side_effect": "write",
+      "verdict": "allow",
+      "trace": {
+        "trace_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "token": "synthetic-private"
+      }
+    },
+    {
+      "tool_name": "reserve",
+      "side_effect": "write",
+      "verdict": "allow",
+      "trace": {
+        "trace_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "nested": {
+          "email": "synthetic@example.invalid"
+        }
+      }
+    },
+    {
+      "tool_name": "reserve",
+      "side_effect": "write",
+      "verdict": "allow",
+      "trace": {
+        "trace_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "span_id": [
+          "aaaaaaaaaaaaaaaa"
+        ]
+      }
+    },
+    {
+      "tool_name": "reserve",
+      "side_effect": "write",
+      "verdict": "allow",
+      "actor_id": {
+        "token": "synthetic-private"
+      }
+    },
+    {
+      "tool_name": [
+        "reserve"
+      ],
+      "side_effect": "write",
+      "verdict": "allow"
+    },
+    {
+      "tool_name": "reserve",
+      "side_effect": "write",
+      "verdict": "allow",
+      "trace": {
+        "trace_id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      }
+    },
+    {
+      "tool_name": "reserve",
+      "side_effect": "write",
+      "verdict": "allow",
+      "trace": []
+    },
+    {},
+    {
+      "tool_name": "reserve",
+      "side_effect": "write",
+      "verdict": "unknown"
+    },
+    {
+      "tool_name": "reserve",
+      "side_effect": "write",
+      "verdict": "allow",
+      "amount_minor": 9007199254740992
+    },
+    {
+      "tool_name": "reserve",
+      "side_effect": "write",
+      "verdict": "allow",
+      "tokens_in": true
+    },
+    {
+      "tool_name": "reserve",
+      "side_effect": "write",
+      "verdict": "allow",
+      "trace": {
+        "trace_id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n"
+      }
+    },
+    {
+      "tool_name": "reserve",
+      "side_effect": "write",
+      "verdict": "allow",
+      "currency": "USD\n"
+    }
+  ],
+  "jcs": [
+    {
+      "raw": "{\"n\":9007199254740991}",
+      "canonical": "{\"n\":9007199254740991}"
+    },
+    {
+      "raw": "{\"n\":9007199254740992}",
+      "canonical": "{\"n\":9007199254740992}"
+    },
+    {
+      "raw": "{\"n\":9007199254740993}",
+      "canonical": "{\"n\":9007199254740992}"
+    },
+    {
+      "raw": "{\"n\":-9007199254740993}",
+      "canonical": "{\"n\":-9007199254740992}"
+    },
+    {
+      "raw": "{\"n\":9223372036854775807}",
+      "canonical": "{\"n\":9223372036854776000}"
+    },
+    {
+      "raw": "{\"n\":-9223372036854775808}",
+      "canonical": "{\"n\":-9223372036854776000}"
+    },
+    {
+      "raw": "{\"n\":1000000000000000000}",
+      "canonical": "{\"n\":1000000000000000000}"
+    },
+    {
+      "raw": "{\"n\":1e21}",
+      "canonical": "{\"n\":1e+21}"
+    },
+    {
+      "raw": "{\"n\":1e-7}",
+      "canonical": "{\"n\":1e-7}"
+    }
+  ],
+  "invalid_times": [
+    "2026-02-30T10:00:00+00:00",
+    "2026-13-01T10:00:00+00:00",
+    "2026-00-01T10:00:00+00:00",
+    "2026-01-00T10:00:00+00:00",
+    "2026-01-01T24:00:00+00:00",
+    "2026-01-01T10:60:00+00:00",
+    "2026-01-01T10:00:60+00:00"
+  ],
+  "timestamps": [
+    "2026-10-08T10:00:00.123456Z",
+    "2026-10-08T13:00:00.123456+03:00",
+    "2026-10-08T10:00:00+00:00"
+  ],
+  "scenario": {
+    "spec_rev": "2026-09",
+    "scenario_id": "audit-regression",
+    "steps": [
+      {
+        "id": "reserve",
+        "tool": "reserve",
+        "compensate": {
+          "tool": "undo",
+          "input_map": {
+            "resource": "$ctx.resource"
+          }
+        }
+      },
+      {
+        "id": "fail",
+        "tool": "fail"
+      }
+    ]
+  },
+  "scenario_keys": [
+    "at1:69840073c8a48765424acc9cb4739beb4fba54ed31c2bd0090339a0795b655ce",
+    "at1:fedfd3b853d17b6ab9c7f8f871f58a5ea4269d6cc3e0261facb01b6edb003511",
+    "at1:ed36b8facc8a7c0ecf39030343a16d5eb60d258b2127f5b58911e9eb679ffd35"
+  ]
+}

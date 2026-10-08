@@ -1,0 +1,12 @@
+{
+  "id": "storage-chaos-live",
+  "cwd": "/tmp/agentools-audit-copy-4tslglh6/repo",
+  "command": [
+    "python3",
+    "tools/storage_chaos.py",
+    "run"
+  ],
+  "started_utc": "2026-10-08T12:06:06.377391+00:00",
+  "exit_code": 0,
+  "duration_seconds": 44.506
+}

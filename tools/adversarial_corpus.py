@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any, Iterator
 
 REPO = Path(__file__).resolve().parents[1]
-PLAN = REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING"
+PLAN = REPO / "verification"
 MANIFEST = REPO / "fixtures/hardening/adversarial/manifest.v1.json"
 CORPUS_DIR = REPO / "fixtures/hardening/adversarial/corpus/v1"
 CASES_PATH = CORPUS_DIR / "cases.jsonl"

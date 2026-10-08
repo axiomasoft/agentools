@@ -1,0 +1,17 @@
+{
+  "id": "fix-python-coherent",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tools",
+    "-p",
+    "*.py"
+  ],
+  "started_utc": "2026-10-08T13:48:55.477186+00:00",
+  "exit_code": 0,
+  "duration_seconds": 33.035
+}

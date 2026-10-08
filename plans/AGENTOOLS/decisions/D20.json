@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D20",
+  "title": "Решение",
+  "date": "2026-07-27",
+  "status": "accepted",
+  "decision": "**Legacy-лексика MCP запрещена как правило авторинга** (не «не рекомендуется»): в ревизии `2026-08` нет `initialize`, `Mcp-Session-Id`, server-initiated запросов, SSE-resumability, Roots/Sampling/Logging/DCR, HTTP+SSE — только раздел «out of scope by design» с явным «запрещено строить на этом». Проверяется грепом в гейте P5",
+  "rationale": "`DR-01` §A3; директива владельца 2026-07-26 «legacy как понятия нет». `RAG:— (repo-grounded: @plan/knowledge/10_decisions-DR-01_architecture-2026-08.json §A3 — раздел «out of scope by design»; @plan/brief.json, блок директивы владельца 2026-07-26)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D20\ndate: 2026-07-27\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Legacy-лексика MCP запрещена как правило авторинга** (не «не рекомендуется»): в ревизии `2026-08` нет `initialize`, `Mcp-Session-Id`, server-initiated запросов, SSE-resumability, Roots/Sampling/Logging/DCR, HTTP+SSE — только раздел «out of scope by design» с явным «запрещено строить на этом». Проверяется грепом в гейте P5"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`DR-01` §A3; директива владельца 2026-07-26 «legacy как понятия нет». `RAG:— (repo-grounded: @plan/knowledge/10_decisions-DR-01_architecture-2026-08.json §A3 — раздел «out of scope by design»; @plan/brief.json, блок директивы владельца 2026-07-26)`"
+    }
+  ]
+}

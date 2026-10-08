@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D38",
+  "title": "Решение",
+  "date": "2026-07-27",
+  "status": "accepted",
+  "decision": "**Роль кодогенерации — «DTO руками» в ОБОИХ языках** (`DR-02` §4). PHP: `wol-soft` 0.26.2 падает на базовой композиции `$defs`+`$ref`+`allOf` (p05 `crash`), `quicktype` теряет данные под `patternProperties` (p08 `field-lost`) и молча теряет неизвестное свойство при round-trip — структурно несовместимо с §E3. Dart: schema-first генератора нет (`json_schema_builder` — валидатор без generate-API), `quicktype` даёт ту же деградацию. Цена ручного пути измерена: 111 строк/3 типа PHP, 87 строк/3 типа Dart. **Следствие вынесено владельцу, а не решено планом:** посылка `DR-01` §J6 («генерация даёт DTO и заглушки») и §J5 слой 2 CI («свежесть кодогенерации») остаются без предмета; предложение — новая D-запись со `supersedes` + переопределение слоя 2 как «свежесть ручных DTO» (структурная сверка схема ↔ тип). Потолок §J6 не нарушается и не переоткрывается",
+  "rationale": "`RAG:— (repo-grounded: @plan/phases/P2/phase.json P2.2/P2.3 Completion Notes — вердикты и замеры на `b803d53`/`b3f164f`; DR-02 §4, §6)`; `@plan/plan.json` §2 Execution Rules запрещает править `DR-01` планом → эскалация владельцу, trigger «конфликт правил»",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D38\ndate: 2026-07-27\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Роль кодогенерации — «DTO руками» в ОБОИХ языках** (`DR-02` §4). PHP: `wol-soft` 0.26.2 падает на базовой композиции `$defs`+`$ref`+`allOf` (p05 `crash`), `quicktype` теряет данные под `patternProperties` (p08 `field-lost`) и молча теряет неизвестное свойство при round-trip — структурно несовместимо с §E3. Dart: schema-first генератора нет (`json_schema_builder` — валидатор без generate-API), `quicktype` даёт ту же деградацию. Цена ручного пути измерена: 111 строк/3 типа PHP, 87 строк/3 типа Dart. **Следствие вынесено владельцу, а не решено планом:** посылка `DR-01` §J6 («генерация даёт DTO и заглушки») и §J5 слой 2 CI («свежесть кодогенерации») остаются без предмета; предложение — новая D-запись со `supersedes` + переопределение слоя 2 как «свежесть ручных DTO» (структурная сверка схема ↔ тип). Потолок §J6 не нарушается и не переоткрывается"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`RAG:— (repo-grounded: @plan/phases/P2/phase.json P2.2/P2.3 Completion Notes — вердикты и замеры на `b803d53`/`b3f164f`; DR-02 §4, §6)`; `@plan/plan.json` §2 Execution Rules запрещает править `DR-01` планом → эскалация владельцу, trigger «конфликт правил»"
+    }
+  ]
+}

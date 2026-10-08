@@ -1,0 +1,47 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "research-25-p6-executable-admission-chain-2026-08",
+  "title": "P6: исполнимый admission-контракт корпуса и жёсткая цепочка P6.2 → P6.3",
+  "sections": [
+    {
+      "id": "P6-admission--P6.2-P6.3",
+      "title": "P6: исполнимый admission-контракт корпуса и жёсткая цепочка P6.2 → P6.3",
+      "text": "Дата: 2026-08-05\nСтатус: repo-grounded design input для D183/P6.2/P6.3."
+    },
+    {
+      "id": "1.",
+      "title": "1. Причина повторных остановок",
+      "text": "Старое P6.2 смешивало три разных результата: исправление frozen-корпуса, достройку harness и\nреализацию reference adapter. Поэтому структурные дефекты входа обнаруживались только внутри\nреализации адаптера. Найденная пара `clarification-004/007` не была единичным доказанным\nисключением: полный SHA-256 inventory проекции `{given, script}` обнаружил 12 equivalence\nclasses с повторяющимся stimulus. Один класс после D180 остаётся логически несовместимым:\n`conftoken-001` требует `final_state=failed`, а `conftoken-102/103/104` на том же stimulus —\n`completed`.\n\nВторая независимая дыра находится на границе runner ↔ adapter:\n\n- `Runner::runVector()` доставляет адаптеру весь vector, включая `expect`, вопреки CFH-8;\n- `tool_calls` сейчас принимаются из `result` адаптера, то есть проверяемая сторона сообщает\n  собственную границу;\n- 76 behavior-векторов несут `expect.observations`, но `Matcher::vector()` их не сравнивает, а\n  harness protocol не имеет сообщения, которым runner-owned probe может обслужить отдельный\n  adapter process.\n\nСледовательно, «formal fixture gate зелёный» ещё не означает «корпус исполним независимым SUT».\nДо adapter work нужен отдельный admission-результат."
+    },
+    {
+      "id": "2.-inventory-semantic-stimuli",
+      "title": "2. Полный inventory одинаковых semantic stimuli",
+      "text": "Projection hash строится как SHA-256 канонического JSON объекта `{given, script}`; `id`,\n`title`, `spec_rule_ids`, `conformance_level` и `expect` исключаются, потому что не являются\nсемантическим входом реализации.\n\n| Группа | Векторы | Совместимость partial expectations |\n|:--|:--|:--|\n| confirmation policy negative | `confpolicy-007/008` | совместимы: общий `failed`, разные частичные события |\n| confirmation policy positive | `confpolicy-101/106` | совместимы: общий `completed`, разные probe expectations |\n| confirmation authorization positive | `confpolicy-107/108` | совместимы |\n| token | `conftoken-001/102/103/104` | **несовместимы:** `failed` против `completed` |\n| lifecycle/result | `lifecycle-001`, `clarification-005` | совместимы после exact D180-style raw-result disambiguation; сам duplicate не обязан удаляться, но correction делает stimulus различимым |\n| clarification round | `clarification-001/006` | совместимы |\n| clarification two rounds | `clarification-002/010` | совместимы |\n| task binding | `clarificationstate-001/102` | совместимы |\n| audit base | `audit-001/002` | совместимы |\n| audit sink | `audit-108/109` | совместимы |\n| dual-control negative | `confdual-001/002` | совместимы |\n| dual-control positive | `confdual-101/102` | совместимы |\n\nСовместимые повторы не требуется сливать: partial matcher допускает один actual trace,\nудовлетворяющий нескольким независимым carrier-векторам. Admission обязан отвергать только\nневозможный общий trace: конфликт exact `final_state` либо несовместимые ограничения единого\n`error`-объекта."
+    },
+    {
+      "id": "3.-Exact-correction-token",
+      "title": "3. Exact correction для token-класса",
+      "text": "`conftoken-001` не только конфликтует с тремя позитивными векторами: он ожидает self-diagnostic\n`gate_rederived_at_commit` от реализации, нарушившей CNF-13. Raw driver input не содержит\nразличающего изменения между prepare и commit, поэтому вектор не способен наблюдать запрет без\nself-report. Его удаление не создаёт coverage hole: `conftoken-101` уже покрывает CNF-13\nпозитивным carrier-ом («зафиксированный proposal используется на commit»).\n\nCorrective delta фиксирован: удалить только `conftoken-001`; `conftoken-101/102/103/104` не\nменять. Вместе с уже одобренным D180 delta `clarification-004` это даёт 213 behavior-векторов:\ncore selector — 121, extension selector — 92, full — 213."
+    },
+    {
+      "id": "4.-Admission-gate",
+      "title": "4. Admission gate",
+      "text": "P6.2 добавляет fail-closed `--behavior-executability-check fixtures/2026-08` в\n`tools/spec_lint.py`. Проверка обязана:\n\n1. строить и печатать все equivalence classes по `{given, script}`;\n2. отвергать в одном классе конфликт exact `expect.final_state` и несовместимые scalar/list\n   constraints единого `expect.error`;\n3. требовать, чтобы каждый ключ `expect` имел исполняемый matcher и независимый observation\n   carrier;\n4. проверять oracle isolation: тело `run.vector` содержит ровно `spec_rev`, `spec_rule_ids`,\n   `conformance_level`, `given`, `script`; `expect`, `id`, `title`, `vector_class` остаются у\n   runner;\n5. фиксировать counts/digest в `conformance/reports/p6.2-admission.md`."
+    },
+    {
+      "id": "5.-Harness-owned-boundary-adapter-work",
+      "title": "5. Harness-owned boundary до adapter work",
+      "text": "Протокол 1.0 не выражает harness-owned probes отдельного процесса. Corrective re-freeze\nподнимает harness protocol до 1.1 и добавляет закрытую пару `probe_call` (adapter → runner) /\n`probe_result` (runner → adapter). `probe_call` выбирает один из шести закрытых kinds observation\nschema и несёт фактическую boundary operation; runner-owned probe исполняет/записывает её и\nвозвращает результат. Runner, а не adapter result, строит `tool_calls` и `observations`.\n`result.tool_calls` и `result.observations` считаются protocol violation. `final_state` становится\nявным полем ResultMessage, а Matcher сравнивает observations как независимые partial matches.\n\nЭто требует согласованного corrective delta в `11_conformance-harness.md`,\n`schema/harness-protocol.json`, authoring schema, harness-кейсах/manifest/coverage и runner tests;\nновых продуктовых правил не вводится — уточняются механические carriers CFH-7/8/10/12."
+    },
+    {
+      "id": "6.-handoff",
+      "title": "6. Жёсткий handoff",
+      "text": "P6.2 производит единственный admission bundle:\n\n- annotated canonical tag на admitted bytes;\n- `p6.2-admission.md` с `core=121`, `extension=92`, `full=213`, нулём incompatible classes и\n  доказанным oracle isolation;\n- runner protocol 1.1, selector, observation matcher и probe fixtures/tests.\n\nP6.3 принимает только этот bundle и не имеет права менять `spec/**` либо `fixtures/**`. Его\nтри последовательных acceptance-точки: core 121 → extension 92 → full 213. P6.4 принимает\nтолько full report 213/213 из P6.3. Таким образом выход каждого item является машинно\nпроверяемым входом следующего, а дефект admission не обнаруживается посреди adapter coding."
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "research/25-p6-executable-admission-chain-2026-08.md",
+    "sha256": "660735afe46e66e90fc29a789a1c1c988fac6d544fd71ccbb066e0d8e7c23bad"
+  }
+}

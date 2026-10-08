@@ -1,0 +1,12 @@
+{
+  "id": "semantic-manifest",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/semantic_manifest.py",
+    "--check"
+  ],
+  "started_utc": "2026-10-08T12:03:34.208993+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.032
+}

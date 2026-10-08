@@ -1,0 +1,50 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D6",
+  "title": "P1 separates measured baseline from normative hardening contracts",
+  "date": "2026-09-19",
+  "status": "accepted",
+  "decision": "P1 состоит из machine-readable clean-worktree baseline и четырёх versioned contract\nlayers: trust/threat, compatibility/migration, guarantees/non-guarantees и resource/benchmark.\nBaseline RED не чинится в P1 и не считается regression. Reachable PHP/Dart symbols не\nсчитаются stable API до P7, а support не заявляется без именного green carrier.",
+  "rationale": "Альтернатива «один prose-report» не даёт freshness/digest checks и смешивает\nнаблюдение с обещанием. Альтернатива «чинить по мере baseline» уничтожает\nдорефакторинговую точку и присваивает P1 API/schema решения owning phases.\nРазделение сохраняет reproducibility и одного владельца каждого факта.",
+  "applies_to": [
+    "P1",
+    "P1.1",
+    "P1.2",
+    "P1.3",
+    "P1.4",
+    "P1.5"
+  ],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "plan-designer/gpt-5.6-sol/high",
+    "effort": "high"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D6\ndate: 2026-09-19\nstatus: accepted\nitem: P1\nitems: [P1, P1.1, P1.2, P1.3, P1.4, P1.5]\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "D6-P1-separates-measured-baseline-from-normative-hardening-contracts",
+      "title": "D6 — P1 separates measured baseline from normative hardening contracts",
+      "text": "**Actor:** plan-designer/gpt-5.6-sol/high\n**Evidence:** RAG:— repository recon in `@plan/knowledge/research-P1-design.json`; RAG:✅ changing premises in `@plan/knowledge/research-P1-design-rag.json`"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "P1 состоит из machine-readable clean-worktree baseline и четырёх versioned contract\nlayers: trust/threat, compatibility/migration, guarantees/non-guarantees и resource/benchmark.\nBaseline RED не чинится в P1 и не считается regression. Reachable PHP/Dart symbols не\nсчитаются stable API до P7, а support не заявляется без именного green carrier."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Альтернатива «один prose-report» не даёт freshness/digest checks и смешивает\nнаблюдение с обещанием. Альтернатива «чинить по мере baseline» уничтожает\nдорефакторинговую точку и присваивает P1 API/schema решения owning phases.\nРазделение сохраняет reproducibility и одного владельца каждого факта."
+    },
+    {
+      "id": "Consequences",
+      "title": "Consequences",
+      "text": "P1 не меняет runtime behavior. P2–P10 должны ссылаться на stable IDs/contracts,\nа не на audit sketches. P1.5 обязан выявить любой unowned finding/threat/guarantee/\nmigration/resource gap до закрытия фазы."
+    }
+  ]
+}

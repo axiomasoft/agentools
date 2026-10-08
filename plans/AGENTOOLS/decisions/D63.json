@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D63",
+  "title": "Решение",
+  "date": "2026-07-27",
+  "status": "accepted",
+  "decision": "**Уведомление потребителей — честная граница, а не декларация:** внутренние потребители замороженной ревизии — фазы P6–P10 этого плана (столбец `Потребители` §7); планы контуров Flex (`05-Projects/01-Products/FlexCRM/plans/`) и Axioma живут в ДРУГИХ корнях `plans/`, поэтому кросс-план-линт их не сверяет — граница фиксируется записью в `@plan/plan.json` и строкой в `@plan/plan.json` Open risks, а строки `Consumed` заводят те планы, когда появятся. Альтернатива «пометить их уведомлёнными в §7» отклонена: уведомление, которого не было, — ложное утверждение в контрактной таблице",
+  "rationale": "`plan-protocol` §11: «A consumer in ANOTHER repo is not checked by the linter — the boundary is named honestly»; прецедент того же раздела: донор поднял замороженный контракт до v2.0.2 при НУЛЕ упоминаний на стороне потребителя. `RAG:— (repo-grounded: @plan/plan.json §7 Contracts — колонка `Уведомлены` = «—»; @plan/plan.json строка Q-11; plan-protocol §11 «граница называется честно»)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D63\ndate: 2026-07-27\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Уведомление потребителей — честная граница, а не декларация:** внутренние потребители замороженной ревизии — фазы P6–P10 этого плана (столбец `Потребители` §7); планы контуров Flex (`05-Projects/01-Products/FlexCRM/plans/`) и Axioma живут в ДРУГИХ корнях `plans/`, поэтому кросс-план-линт их не сверяет — граница фиксируется записью в `@plan/plan.json` и строкой в `@plan/plan.json` Open risks, а строки `Consumed` заводят те планы, когда появятся. Альтернатива «пометить их уведомлёнными в §7» отклонена: уведомление, которого не было, — ложное утверждение в контрактной таблице"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`plan-protocol` §11: «A consumer in ANOTHER repo is not checked by the linter — the boundary is named honestly»; прецедент того же раздела: донор поднял замороженный контракт до v2.0.2 при НУЛЕ упоминаний на стороне потребителя. `RAG:— (repo-grounded: @plan/plan.json §7 Contracts — колонка `Уведомлены` = «—»; @plan/plan.json строка Q-11; plan-protocol §11 «граница называется честно»)`"
+    }
+  ]
+}

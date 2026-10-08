@@ -1,0 +1,12 @@
+{
+  "id": "release-candidate-verify",
+  "cwd": "/tmp/agentools-audit-copy-4tslglh6/repo",
+  "command": [
+    "python3",
+    "tools/release_candidate.py",
+    "verify"
+  ],
+  "started_utc": "2026-10-08T12:11:15.535305+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.064
+}

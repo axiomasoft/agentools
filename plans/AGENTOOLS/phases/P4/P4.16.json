@@ -1,0 +1,178 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P4.16",
+  "title": "Harness-owned observational contract и anti-self-report gate",
+  "status": "done",
+  "summary": "Расширить закрытый формат behavior-вектора harness-owned наблюдениями, которые нельзя сымитировать одним SUT payload, и ввести fail-closed semantic gate против self-report/magic-input shortcuts F9–F15.",
+  "why": "Relation-aware pair доказывает JSON-diff, но не владение наблюдением. Будущий runner обязан различать SUT events и факты, снятые spy/sink/projection harness'а; иначе мутант, печатающий `execution_route=isolated` или `chain_valid=true`, проходит без требуемого поведения. `RAG:— (repo-grounded: @plan/knowledge/artifacts-P5-gate-b.json F9–F15; @plan/knowledge/research-22-p5-round2-observational-remediation-2026-08.json §2)`.",
+  "scope": {
+    "include": [
+      "закрытый `expect.observations[]` с типами `tool_boundary`, `journal_projection`, `audit_sink`, `task_binding`, `credential_boundary`; каждому типу — минимальный закрытый payload и harness-owned semantics в README; schema selftest positive/negative; exact banned shortcut registry; CLI `--observational-carriers-check` и `--observational-carriers-selftest`; mutation cases, заменяющие каждое observation self-report event/payload и ожидающие адресный reject."
+    ],
+    "exclude": [
+      "переписывание 51 carriers (P4.17/P4.18); общий conformance runner P6; normative revision/rules; PHP/Dart SDK; Gate B verdict."
+    ]
+  },
+  "depends_on": [],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/research-22-p5-round2-observational-remediation-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P5-gate-b.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/2026-08/schema/vector.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/2026-08/README.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "tools/spec_lint.py",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "fixtures/2026-08/schema/vector.json",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/2026-08/README.md",
+      "change": "any"
+    },
+    {
+      "path": "tools/spec_lint.py",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "observation собирает harness-owned adapter/sink, не SUT event; schema закрыта `additionalProperties:false`; banned registry exact и покрыт selftest; checker требует observational evidence только для exact 51 round-2 FAIL rules, не меняя исторические 332 PASS. `RAG:— (repo-grounded: research/22… §2)`."
+  ],
+  "guidance": "Один общий валидатор observation ownership; запрет спец-веток по id. Не считать `expect.events.payload` наблюдением route/chain/source. Mutation должна проходить JSON Schema и падать именно на ownership gate. Если класс факта не выражается пятью типами, расширить enum только D-записью, не generic object.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "python3 tools/spec_lint.py --driver-state-selftest fixtures/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "python3 tools/spec_lint.py --observational-carriers-selftest fixtures/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "python3 tools/spec_lint.py --fixtures-check fixtures/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "git diff --check",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "закрытый harness-owned observation contract; fail-closed ownership checker; anti-self-report mutation suite."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-08-04T19:42:16Z",
+    "finished_at": "2026-08-04T19:46:09Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "gpt-5.6-sol/high",
+      "effort": "high"
+    },
+    "notes": "118c6ba: harness-owned observations and mutation gate",
+    "deviations": [],
+    "pending": [],
+    "checks": []
+  },
+  "updated_at": "2026-08-04T19:46:09Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Расширить закрытый формат behavior-вектора harness-owned наблюдениями, которые нельзя сымитировать одним SUT payload, и ввести fail-closed semantic gate против self-report/magic-input shortcuts F9–F15."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Relation-aware pair доказывает JSON-diff, но не владение наблюдением. Будущий runner обязан различать SUT events и факты, снятые spy/sink/projection harness'а; иначе мутант, печатающий `execution_route=isolated` или `chain_valid=true`, проходит без требуемого поведения. `RAG:— (repo-grounded: @plan/knowledge/artifacts-P5-gate-b.json F9–F15; @plan/knowledge/research-22-p5-round2-observational-remediation-2026-08.json §2)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "закрытый `expect.observations[]` с типами `tool_boundary`, `journal_projection`, `audit_sink`, `task_binding`, `credential_boundary`; каждому типу — минимальный закрытый payload и harness-owned semantics в README; schema selftest positive/negative; exact banned shortcut registry; CLI `--observational-carriers-check` и `--observational-carriers-selftest`; mutation cases, заменяющие каждое observation self-report event/payload и ожидающие адресный reject."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "переписывание 51 carriers (P4.17/P4.18); общий conformance runner P6; normative revision/rules; PHP/Dart SDK; Gate B verdict."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "Gate B round 2 F9–F15 · `@plan/knowledge/research-22-p5-round2-observational-remediation-2026-08.json` §§2–3 · текущие vector/static schemas, README и checker branches."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`fixtures/2026-08/schema/vector.json` · `fixtures/2026-08/README.md` · `tools/spec_lint.py`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/research-22-p5-round2-observational-remediation-2026-08.json` 2) `@plan/knowledge/artifacts-P5-gate-b.json` F9–F15 3) `fixtures/2026-08/schema/vector.json` 4) `fixtures/2026-08/README.md` §2 5) `tools/spec_lint.py` gate-b/fixture branches."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "observation собирает harness-owned adapter/sink, не SUT event; schema закрыта `additionalProperties:false`; banned registry exact и покрыт selftest; checker требует observational evidence только для exact 51 round-2 FAIL rules, не меняя исторические 332 PASS. `RAG:— (repo-grounded: research/22… §2)`."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Один общий валидатор observation ownership; запрет спец-веток по id. Не считать `expect.events.payload` наблюдением route/chain/source. Mutation должна проходить JSON Schema и падать именно на ownership gate. Если класс факта не выражается пятью типами, расширить enum только D-записью, не generic object."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`python3 tools/spec_lint.py --driver-state-selftest fixtures/2026-08` = 0 · `python3 tools/spec_lint.py --observational-carriers-selftest fixtures/2026-08` = 0 и каждый тип имеет positive + schema-invalid + self-report mutant reject · `python3 tools/spec_lint.py --fixtures-check fixtures/2026-08` = 0 · full lint = 0 с пятью SHOULD warnings · `git diff --check` = 0 · plan-lint K=0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "закрытый harness-owned observation contract; fail-closed ownership checker; anti-self-report mutation suite."
+    }
+  ]
+}

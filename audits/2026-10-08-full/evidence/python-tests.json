@@ -1,0 +1,16 @@
+{
+  "id": "python-tests",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests/tools",
+    "-v"
+  ],
+  "started_utc": "2026-10-08T12:02:33.338351+00:00",
+  "exit_code": 1,
+  "duration_seconds": 21.999
+}

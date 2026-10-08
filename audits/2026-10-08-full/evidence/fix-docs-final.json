@@ -1,0 +1,12 @@
+{
+  "id": "fix-docs-final",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/docs_gate.py",
+    "run"
+  ],
+  "started_utc": "2026-10-08T13:39:31.610894+00:00",
+  "exit_code": 0,
+  "duration_seconds": 1.115
+}

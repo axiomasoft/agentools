@@ -37,7 +37,7 @@ final class Canonicalizer {
       return _encodeScalar(value);
     }
     if (value is int) {
-      return _encodeScalar(value);
+      return formatJcsNumber(value.toDouble());
     }
     if (value is double) {
       return formatJcsNumber(value);

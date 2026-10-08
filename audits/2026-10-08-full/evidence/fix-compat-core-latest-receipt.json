@@ -1,0 +1,12 @@
+{
+  "id": "fix-compat-core-latest-receipt",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/ci_matrix.py",
+    "disposable-dart_core-latest"
+  ],
+  "started_utc": "2026-10-08T13:31:06.273522+00:00",
+  "exit_code": 0,
+  "duration_seconds": 10.983
+}

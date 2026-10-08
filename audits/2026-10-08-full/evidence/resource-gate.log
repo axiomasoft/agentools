@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/tmp/agentools-audit-copy-4tslglh6/repo/tools/resource_gate.py", line 1101, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/tmp/agentools-audit-copy-4tslglh6/repo/tools/resource_gate.py", line 1093, in main
+    resource, gate = build_receipts()
+                     ^^^^^^^^^^^^^^^^
+  File "/tmp/agentools-audit-copy-4tslglh6/repo/tools/resource_gate.py", line 887, in build_receipts
+    write_findings(resource, gate)
+  File "/tmp/agentools-audit-copy-4tslglh6/repo/tools/resource_gate.py", line 812, in write_findings
+    FINDING_BASELINE.write_text(
+  File "/usr/lib/python3.12/pathlib.py", line 1049, in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/agentools-audit-copy-4tslglh6/repo/plans/2026.09.19-№1-AGENTOOLS-HARDENING/findings/P8-resource-baseline.md'

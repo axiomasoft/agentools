@@ -1,7 +1,7 @@
 import 'dart:convert';
-
 import 'package:crypto/crypto.dart';
-
+import '../ops/journal_appender.dart';
+import '../schema/canonicalizer.dart';
 import '../contracts/tool_port.dart';
 import '../errors/tool_execution_result.dart';
 import '../idempotency/idempotency_key.dart';
@@ -12,27 +12,41 @@ import 'scenario_result.dart';
 
 /// SCN-1–SCN-11 and SCN-20–SCN-29: a linear interpreter with no goto, loops,
 /// or hidden control-flow.
-///
-/// The runner is the caller of its tools, so it generates their idempotency
-/// keys (IDE-1): every step and compensation key is derived from the caller's
-/// run key, the scenario id and the step id. Re-running with the same run key
-/// re-presents the same keys (SCN-8, SCN-25), a new run key is a new intent,
-/// and every derived key satisfies the IDE-4 grammar.
 final class ScenarioRunner {
   ScenarioRunner({ExpressionEvaluator? expressions})
     : _expressions = expressions ?? ExpressionEvaluator();
 
   static const _keyDomain = 'agentools.scenario-step-key.v1';
-
   final ExpressionEvaluator _expressions;
   var _executedSteps = 0;
 
-  /// Runs [scenario]; [runKey] is the caller-generated key of this run (IDE-1).
+  /// Compatible with the caller-provided run key on main; omission starts a new run.
   ScenarioResult run(
     Map<String, dynamic> scenario,
     Map<String, dynamic> context,
+    ToolPort tools, [
+    IdempotencyKey? runKey,
+  ]) => _run(scenario, context, tools, runKey ?? JournalAppender.newEventId());
+
+  /// Explicit arbitrary run identity; persist it before the first side effect.
+  ScenarioResult runWithId(
+    Map<String, dynamic> scenario,
+    Map<String, dynamic> context,
+    ToolPort tools, {
+    String? runId,
+  }) {
+    final identity = runId ?? JournalAppender.newEventId();
+    if (identity.isEmpty) {
+      throw ArgumentError('A scenario run identity must not be empty.');
+    }
+    return _run(scenario, context, tools, identity);
+  }
+
+  ScenarioResult _run(
+    Map<String, dynamic> scenario,
+    Map<String, dynamic> context,
     ToolPort tools,
-    IdempotencyKey runKey,
+    Object identity,
   ) {
     _executedSteps = 0;
     if (!const {'2026-08', '2026-09'}.contains(scenario['spec_rev'])) {
@@ -92,7 +106,7 @@ final class ScenarioRunner {
           tools,
           _stringField(stepMap, 'tool'),
           arguments,
-          _stepKey(runKey, scenarioId, stepId, 'step'),
+          _key(identity, scenarioId, stepId, 'execute'),
           stepMap['on_semantic_fail'],
         );
         if (result.isError) {
@@ -100,8 +114,10 @@ final class ScenarioRunner {
             continue;
           }
           return _handleFailure(
-            runKey: runKey,
+            runId: identity,
+            context: context,
             scenarioId: scenarioId,
+            stepId: stepId,
             step: stepMap,
             compensations: compensations,
             tools: tools,
@@ -119,13 +135,15 @@ final class ScenarioRunner {
             ),
           );
         }
-      } on ExpressionException {
+      } catch (error) {
         if (_failureAction(stepMap, technical: true) == 'continue') {
           continue;
         }
         return _handleFailure(
-          runKey: runKey,
+          runId: identity,
+          context: context,
           scenarioId: scenarioId,
+          stepId: stepId,
           step: stepMap,
           compensations: compensations,
           tools: tools,
@@ -139,8 +157,10 @@ final class ScenarioRunner {
   }
 
   ScenarioResult _handleFailure({
-    required IdempotencyKey runKey,
+    required Object runId,
+    required Map<String, dynamic> context,
     required String scenarioId,
+    required String stepId,
     required Map<String, dynamic> step,
     required List<_CompensationEntry> compensations,
     required ToolPort tools,
@@ -153,19 +173,27 @@ final class ScenarioRunner {
     }
 
     for (final entry in compensations.reversed) {
-      final arguments = _arguments(
-        entry.compensate['input_map'] ?? const <String, dynamic>{},
-        const {},
-        results,
-      );
-      final tool = _stringField(entry.compensate, 'tool');
-      final result = _call(
-        tools,
-        tool,
-        arguments,
-        _stepKey(runKey, scenarioId, entry.id, 'compensation'),
-      );
-      if (result.isError) {
+      try {
+        final arguments = _arguments(
+          entry.compensate['input_map'] ?? const <String, dynamic>{},
+          context,
+          results,
+        );
+        final tool = _stringField(entry.compensate, 'tool');
+        final result = _call(
+          tools,
+          tool,
+          arguments,
+          _key(runId, scenarioId, entry.id, 'compensate'),
+        );
+        if (result.isError) {
+          return ScenarioResult(
+            ScenarioOutcome.compensationFailed,
+            const {},
+            stoppedAtStepId: entry.id,
+          );
+        }
+      } catch (_) {
         return ScenarioResult(
           ScenarioOutcome.compensationFailed,
           const {},
@@ -202,6 +230,23 @@ final class ScenarioRunner {
           : expression;
     }
     return arguments;
+  }
+
+  String _key(
+    Object runId,
+    String scenarioId,
+    String stepId,
+    String operation,
+  ) {
+    if (runId is IdempotencyKey) {
+      return _stepKey(
+        runId,
+        scenarioId,
+        stepId,
+        operation == 'execute' ? 'step' : 'compensation',
+      );
+    }
+    return 'at1:${sha256.convert(utf8.encode(Canonicalizer().canonicalize([runId, scenarioId, stepId, operation])))}';
   }
 
   ToolExecutionResult _invoke(

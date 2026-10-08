@@ -1,0 +1,169 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P1.4",
+  "title": "Заморозить guarantees, non-guarantees и proof ownership",
+  "status": "done",
+  "summary": "Создать normative catalog конкретных security/durability/compatibility guarantees и явных non-guarantees с assumptions, evidence class и owning phase.",
+  "why": "Аудит прямо предупреждает, что process-local replay state, split idempotency completion и external side effects не дают `exactly-once`; без стабильного каталога P2–P10 могут тестировать разные обещания. `RAG:—` (F01–F12, current contracts); external sources constrain wording only, not current status.",
+  "scope": {
+    "include": [
+      "Stable guarantee IDs; statement, trust assumptions, failure boundary, present status, owning phase, required negative/concurrency/crash/consumer proof; non-guarantees for external effects, availability, compromised trusted dependencies, in-memory adapters, cross-version unknown data and official MCP scope; guarantee-to-threat and guarantee-to-migration links."
+    ],
+    "exclude": [
+      "Marking future guarantees delivered; selecting P2–P5 API/DDL; performance thresholds; marketing claims; waiving a red guarantee through prose."
+    ]
+  },
+  "depends_on": [],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/root-contracts-threat-model-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-compatibility-support-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/findings-P1-migration-inventory.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/findings-audit-verdicts.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/03_action-lifecycle.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/04_confirmation.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/09_idempotency-errors.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "@plan/knowledge/root-contracts-hardening-guarantees-v1.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "IDs are `G-<DOMAIN>-###` and `NG-<DOMAIN>-###`; each guarantee has exactly one owning P2–P10 phase and at least one falsifying test scenario. Status enum is `baseline-red`, `baseline-partial`, `designed`, `proved`; only immutable executable evidence can yield `proved`. External-effect wording is limited to admission, replay, fencing and conditional downstream cooperation. Cross-language equality is semantic/machine-readable, not class-name symmetry."
+  ],
+  "guidance": "Write observable postconditions and refusal behavior, not aspirations such as “robust”. Separate atomic token consume from effect execution; lease ownership from exactly-once effect; atomic event append from consumer delivery; Agentools conformance from official MCP conformance; artifact provenance from runtime correctness. Link every assumption to a trust role from P1.2.",
+  "validation": [
+    {
+      "id": "V1",
+      "procedure": "python3 tools/validate_hardening_guarantees_v1.py",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "Normative guarantee/non-guarantee catalog that downstream item specs can cite by stable ID and P10 can reconcile against actual receipts."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-21T09:31:15Z",
+    "finished_at": "2026-09-21T09:31:15Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "composer-2.5/high",
+      "effort": "high"
+    },
+    "notes": "Post-audit reaffirm: hardening-guarantees-v1 single G/NG owners (G-OBS-001/TM-013/M-013 → P5; NG-SUP-001 → P9); validate_hardening_guarantees_v1.py rejects composite owners.\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V1",
+        "exit": 0,
+        "at": "2026-09-21T09:31:15Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-21T09:31:15Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Создать normative catalog конкретных security/durability/compatibility guarantees и явных non-guarantees с assumptions, evidence class и owning phase."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Аудит прямо предупреждает, что process-local replay state, split idempotency completion и external side effects не дают `exactly-once`; без стабильного каталога P2–P10 могут тестировать разные обещания. `RAG:—` (F01–F12, current contracts); external sources constrain wording only, not current status."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "Stable guarantee IDs; statement, trust assumptions, failure boundary, present status, owning phase, required negative/concurrency/crash/consumer proof; non-guarantees for external effects, availability, compromised trusted dependencies, in-memory adapters, cross-version unknown data and official MCP scope; guarantee-to-threat and guarantee-to-migration links."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Marking future guarantees delivered; selecting P2–P5 API/DDL; performance thresholds; marketing claims; waiving a red guarantee through prose."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/knowledge/root-contracts-threat-model-v1.json` · `@plan/knowledge/root-contracts-compatibility-support-v1.json` · `@plan/knowledge/findings-P1-migration-inventory.json` · `@plan/knowledge/findings-audit-verdicts.json` · `spec/revisions/2026-08/03_action-lifecycle.md` · `spec/revisions/2026-08/04_confirmation.md` · `spec/revisions/2026-08/09_idempotency-errors.md`"
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`@plan/knowledge/root-contracts-hardening-guarantees-v1.json`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/root-contracts-threat-model-v1.json` 2) `@plan/knowledge/root-contracts-compatibility-support-v1.json` 3) `@plan/knowledge/findings-P1-migration-inventory.json` 4) `@plan/knowledge/findings-audit-verdicts.json` 5) `spec/revisions/2026-08/03_action-lifecycle.md` 6) `spec/revisions/2026-08/04_confirmation.md` 7) `spec/revisions/2026-08/09_idempotency-errors.md`."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "IDs are `G-<DOMAIN>-###` and `NG-<DOMAIN>-###`; each guarantee has exactly one owning P2–P10 phase and at least one falsifying test scenario. Status enum is `baseline-red`, `baseline-partial`, `designed`, `proved`; only immutable executable evidence can yield `proved`. External-effect wording is limited to admission, replay, fencing and conditional downstream cooperation. Cross-language equality is semantic/machine-readable, not class-name symmetry."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Write observable postconditions and refusal behavior, not aspirations such as “robust”. Separate atomic token consume from effect execution; lease ownership from exactly-once effect; atomic event append from consumer delivery; Agentools conformance from official MCP conformance; artifact provenance from runtime correctness. Link every assumption to a trust role from P1.2."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "Unique IDs and closed statuses; every open `TM-###` is addressed by a guarantee or explicit non-guarantee; every guarantee names one owner, assumptions, failure boundary and proof carrier; every P2–P10 phase owns at least one relevant row or is explicitly `acceptance-only`; forbidden unqualified claims (`exactly-once`, `secure`, `production-ready`, `MCP compliant`) count zero."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "Normative guarantee/non-guarantee catalog that downstream item specs can cite by stable ID and P10 can reconcile against actual receipts."
+    }
+  ]
+}

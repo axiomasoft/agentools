@@ -1,0 +1,12 @@
+{
+  "id": "mcp-selftests",
+  "cwd": "/tmp/agentools-audit-copy-4tslglh6/repo",
+  "command": [
+    "python3",
+    "tools/mcp_applicability.py",
+    "test"
+  ],
+  "started_utc": "2026-10-08T12:04:31.833485+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.064
+}

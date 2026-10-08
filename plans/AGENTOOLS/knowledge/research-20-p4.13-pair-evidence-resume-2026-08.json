@@ -1,0 +1,37 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "research-20-p4.13-pair-evidence-resume-2026-08",
+  "title": "20 — P4.13: pair-level evidence и возобновление A3",
+  "sections": [
+    {
+      "id": "20-P4.13-pair-level-evidence-A3",
+      "title": "20 — P4.13: pair-level evidence и возобновление A3",
+      "text": "**Дата:** 2026-08-04<br>\n**Предмет:** возобновление P4.13 после terminal P4.10 `ea0a08f`<br>\n**Сырьё:** `@plan/knowledge/research-16-p4-w2-dor-reconcile-2026-08.json`,\n`@plan/knowledge/research-17-p4.10-behavior-carrier-dor-2026-08.json`,\n`@plan/knowledge/research-19-p4.10-counterfactual-reopen-2026-08.json`, `@plan/plan.json` D154/D156/D158,\n`@plan/phases/P4/phase.json` P4.10/P4.13, текущий незакоммиченный diff\n`tools/spec_lint.py`/`fixtures/2026-08/coverage.md`."
+    },
+    {
+      "id": "1.",
+      "title": "1. Наблюдаемый вход",
+      "text": "`python3 tools/spec_lint.py --gate-b-remediation-check fixtures/2026-08` сейчас даёт пять\npair-level ошибок и ожидаемое отсутствие ещё не выпущенного\n`fixtures/2026-08/gate-b-remediation.json`. Read-only структурный diff фактических пар:\n\n| Rule | Pair | Единственный input-counterfactual | Класс |\n|:--|:--|:--|:--|\n| ALC-35 | `lifecycleintegrity-106/006` | `/given/driver_state/journal/0/prev_hash`: absent ↔ present | presence |\n| AOB-31 | `audit-010/110` | `/given/driver_state/baggage`: 65 ↔ 64 элемента | length |\n| CNF-35 | `confpolicy-107/007` | `/given/driver_state/authorization/permissions`: 1 ↔ 0 элементов | length |\n| CNF-36 | `confpolicy-008/108` | `/given/driver_state/authorization/permissions`: 0 ↔ 1 элемент | length |\n| SEC-11 | `security-011/111` | `/given/tools/0/_meta/dev.agentools~1action/confirmation`: absent ↔ `double_confirm` | presence |\n\nCNF-пары дополнительно несут одинаковый typed confirmation snapshot terminal P4.15, а\nSEC-11 уже указывает на фактический `given.tools`; carrier-долг D158 закрыт. `RAG:—\n(repo-grounded: P4.10 Completion Notes; фактические десять fixtures на `ea0a08f`)`."
+    },
+    {
+      "id": "2.",
+      "title": "2. Корень ложных отказов",
+      "text": "Текущий `_input_difference_pointer` возвращает адрес отсутствующего leaf для\npresence-counterfactual и адрес первого несуществующего индекса для length-counterfactual.\nЗатем `build_gate_b_remediation_manifest` требует, чтобы этот адрес существовал в КАЖДОМ\nтекущем carrier. Это неверный инвариант: доказательство пары — отношение двух наблюдений, а\nне leaf, обязанный существовать с обеих сторон. Explicit `stimulus_pointer` SEC-11 ломается по\nтой же причине: правильный адрес отсутствия обязан не разрешаться в negative member.\n`RAG:— (repo-grounded: tools/spec_lint.py `_input_difference_pointer`,\n`_gate_b_stimulus_oracle`, `build_gate_b_remediation_manifest`)`.\n\nВторая дыра: `_gate_b_mutation_errors` меняет `stimulus_pointer` в уже построенном dict и\nпроверяет лишь, что canonical JSON стал другим. Это не запускает validator/reject path и\nможет напечатать `expected reject`, даже если испорченный manifest принят. `RAG:—\n(repo-grounded: tools/spec_lint.py `_gate_b_mutation_errors`)`."
+    },
+    {
+      "id": "3.-D159",
+      "title": "3. Выбранный контракт D159",
+      "text": "Behavior evidence хранится один раз на rule-pair как симметричный structured counterfactual:\n\n- `pointer` — адрес свойства либо контейнера;\n- `relation` — закрытый enum `value | presence | length`;\n- два `members`, отсортированные по carrier id, каждый с `id`, наблюдаемым состоянием и\n  минимальным oracle (`expect.final_state`/релевантные events);\n- `presence`: `present=false` против `present=true` (+ hash канонического значения present-side);\n- `length`: pointer указывает на существующий в обеих половинах list-контейнер, наблюдения —\n  разные целые длины;\n- `value`: pointer существует в обеих половинах, canonical value hashes различаются.\n\nДля каждого behavior rule set обязан содержать ровно два pair-member; рекурсивный diff только\nпо `given`/`script` после схлопывания list-tail в container-length обязан дать ровно один\ncounterfactual. Ноль, более одного diff, неизвестная relation или несовпадение explicit\n`stimulus_pointer` с выведенным pointer — fail closed с rule/carrier ids. Manifest не\nдублирует одну пару отдельной «истиной» на каждом member. `RAG:— (repo-grounded: D156 single-rule\npair; D158; exact pair diff §1)`.\n\nАльтернативы отклонены:\n\n1. «Считать leaf валидным, если он существует хотя бы с одной стороны» — не кодирует тип\n   отношения и снова путает missing с list boundary.\n2. Добавить fixture-side verdict/stimulus metadata — self-assertion вместо наблюдаемого input.\n3. Подогнать ALC/AOB/CNF/SEC fixtures так, чтобы leaf существовал везде — уничтожает реальный\n   boundary counterfactual и нарушает D158.\n\nMutation contract: pure validator получает corpus+matrix+candidate manifest и реально\nотвергает каждый мутант. F1–F6 и CFH-55 должны проверять diagnostic/nonzero, а не\n`mutant_json != original_json`; отдельно обязательны presence-mutant ALC-35, length-mutant\nAOB-31 и explicit-pointer mutant SEC-11. `RAG:— (repo-grounded: P4.13 Validation и текущая\nреализация mutation checks)`."
+    },
+    {
+      "id": "4.-resume-pre-mortem",
+      "title": "4. Границы resume и pre-mortem",
+      "text": "Resume продолжает сохранённый P4.13 candidate: `tools/spec_lint.py` и производный\n`coverage.md` не откатываются и не присваиваются закрытым P4.10–P4.12. Carrier fixtures,\nнормативные markdown/schema/rules и закрытые Completion Notes не меняются. После pair repair\nисполнитель выпускает deterministic manifest, обновляет A3 и только затем закрывает item при\nполном green без `--allow-missing`.\n\nPre-mortem (ядро conformance):\n\n| Провал через 6–12 месяцев | Mitigation | Owner |\n|:--|:--|:--|\n| Manifest green на self-asserted evidence | structured observations только из corpus + real reject-path mutations | P4.13 executor |\n| Новый boundary-тип молча классифицирован как value | closed relation enum, unknown/ambiguous diff = fail closed | P4.13 executor |\n| A3 снова выдан за semantic Gate B GREEN | explicit A3 semantic boundary; новый cold-start P5.1 остаётся единственным verdict | P4.13 executor + P5.1 auditor |\n| Dirty candidate захватил чужие carrier-правки | exact Files/write-set и read-only fixture boundary | P4.13 executor |\n\nОткрытых design-вопросов нет. Следующий шаг — manual `task:plan-run AGENTOOLS P4.13` под\n`implementation/high`, затем `plan-close AGENTOOLS P4` и новый cold-start P5.1 round 2."
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "research/20-p4.13-pair-evidence-resume-2026-08.md",
+    "sha256": "6af3cbcdc2b7e14c6018348041078139a9e94ef311e55ad7f03d4c964e9e81d2"
+  }
+}

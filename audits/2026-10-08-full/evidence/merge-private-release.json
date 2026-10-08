@@ -1,0 +1,12 @@
+{
+  "id": "merge-private-release",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/private_release_gate.py",
+    "capture"
+  ],
+  "started_utc": "2026-10-08T14:21:09.148645+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.114
+}

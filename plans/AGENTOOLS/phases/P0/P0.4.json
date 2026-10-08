@@ -1,0 +1,137 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P0.4",
+  "title": "02_action-lifecycle.md + схемы",
+  "status": "done_with_deviations",
+  "summary": "Написать нормативный документ «Action Lifecycle»: FSM сессии, append-only event log, чекпоинты, resume; + схемы `schema/session-state.json`, `schema/lifecycle-event.json`.",
+  "why": "FSM + event log — общий скелет обоих рантаймов; это же аудит и durable-механика (D10).",
+  "scope": {
+    "include": [
+      "(1) состояния СТРОГО: CREATED, RUNNING, WAITING_INPUT, WAITING_APPROVAL, EXECUTING_TOOL, COMPLETED, FAILED_RETRYABLE, FAILED_TERMINAL, CANCELLED, EXPIRED; (2) таблица переходов «из → событие → в» (полная, каждый переход пронумерован `LC-T1…`; переходы вне таблицы MUST быть отвергнуты); (3) событийная модель: конверт события {event_id (ULID), session_id, seq (монотонный, без дыр, старт 1), ts (RFC3339 UTC), actor {type: user|agent|system, id}, kind, payload, spec_rev}; состояние = детерминированная свёртка событий (описать функцию словами + псевдокодом); (4) чекпоинт = (session_id, seq); resume-token = opaque-строка, кодирующая чекпоинт; resume = replay событий до seq + продолжение; (5) инварианты: append-only (никаких update/delete), идемпотентность записи события по event_id, «шаг перезапускается с начала» (урок LangGraph, R-04) → side effects до гейта обязаны быть идемпотентными (ссылка на 06); (6) тайм-ауты: WAITING_* имеют expires_at → EXPIRED; (7) контракты хранения: интерфейсы EventLog (append, readFrom(seq)) и SessionStore (описание, без SQL-обязательств; SQL-скетч — информативное приложение, D13 плана); (8) LLM = decision function внутри RUNNING/EXECUTING_TOOL, не владелец FSM."
+    ],
+    "exclude": [
+      "конкретные kinds аудита сверх lifecycle-минимума (полная таксономия — P0.7); confirmation-детали (P0.5); сценарные шаги (P0.6)."
+    ]
+  },
+  "depends_on": [
+    "P0.3"
+  ],
+  "decisions": [
+    "D10"
+  ],
+  "skills": [],
+  "reads": [],
+  "task_files": [
+    {
+      "path": "spec/revisions/2026-07-draft/02_action-lifecycle.md",
+      "change": "any"
+    },
+    {
+      "path": "schema/session-state.json",
+      "change": "any"
+    },
+    {
+      "path": "schema/lifecycle-event.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "как в P0.3 (нормативные правила `LC-*`, RFC 2119, примеры с привязкой к схемам); таблица переходов — единственный источник допустимых переходов, никаких «и т.п.»; mermaid stateDiagram-v2 диаграмма ОБЯЗАТЕЛЬНА (информативная, таблица нормативна)."
+  ],
+  "guidance": "lifecycle-event.json: `kind` этого дока — закрытый enum лишь lifecycle-событий (session_created, state_changed, checkpoint, session_completed, session_failed, session_cancelled, session_expired, resumed); полная аудит-таксономия расширит его в P0.7 через отдельную схему (audit-event.json ссылается на lifecycle-event.json, НЕ копирует). payload — oneOf по kind с $defs. Псевдокод свёртки — python-подобный, ≤30 строк, без магии.",
+  "validation": [
+    {
+      "id": "V1",
+      "procedure": "spec_lint зелёный; таблица переходов покрывает каждый нетерминальный статус хотя бы одним исходящим переходом; каждый терминальный статус (COMPLETED, FAILED_TERMINAL, CANCELLED, EXPIRED) не имеет исходящих; примеры валидны.",
+      "expect": "Source acceptance condition as written.",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "02_action-lifecycle.md (правила LC-*, диаграмма, таблица переходов) + 2 схемы."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "medium"
+  },
+  "review": {
+    "mode": "none"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "1970-01-01T00:00:04Z",
+    "finished_at": "1970-01-01T00:00:04Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "legacy source"
+    },
+    "notes": "Layout v2 current-state import from legacy status 🟠 Done with deviations; chronology: artifacts/migration-source-v1/journal.jsonl",
+    "deviations": [],
+    "pending": [],
+    "checks": []
+  },
+  "updated_at": "1970-01-01T00:00:04Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Написать нормативный документ «Action Lifecycle»: FSM сессии, append-only event log, чекпоинты, resume; + схемы `schema/session-state.json`, `schema/lifecycle-event.json`."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "FSM + event log — общий скелет обоих рантаймов; это же аудит и durable-механика (D10)."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "(1) состояния СТРОГО: CREATED, RUNNING, WAITING_INPUT, WAITING_APPROVAL, EXECUTING_TOOL, COMPLETED, FAILED_RETRYABLE, FAILED_TERMINAL, CANCELLED, EXPIRED; (2) таблица переходов «из → событие → в» (полная, каждый переход пронумерован `LC-T1…`; переходы вне таблицы MUST быть отвергнуты); (3) событийная модель: конверт события {event_id (ULID), session_id, seq (монотонный, без дыр, старт 1), ts (RFC3339 UTC), actor {type: user|agent|system, id}, kind, payload, spec_rev}; состояние = детерминированная свёртка событий (описать функцию словами + псевдокодом); (4) чекпоинт = (session_id, seq); resume-token = opaque-строка, кодирующая чекпоинт; resume = replay событий до seq + продолжение; (5) инварианты: append-only (никаких update/delete), идемпотентность записи события по event_id, «шаг перезапускается с начала» (урок LangGraph, R-04) → side effects до гейта обязаны быть идемпотентными (ссылка на 06); (6) тайм-ауты: WAITING_* имеют expires_at → EXPIRED; (7) контракты хранения: интерфейсы EventLog (append, readFrom(seq)) и SessionStore (описание, без SQL-обязательств; SQL-скетч — информативное приложение, D13 плана); (8) LLM = decision function внутри RUNNING/EXECUTING_TOOL, не владелец FSM."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "конкретные kinds аудита сверх lifecycle-минимума (полная таксономия — P0.7); confirmation-детали (P0.5); сценарные шаги (P0.6)."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "00_MASTER_PLAN §5.2, D10; R-04 (LangGraph resume-семантика, durable-паттерны, состояния-консенсус)."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`spec/revisions/2026-07-draft/02_action-lifecycle.md`, `schema/session-state.json`, `schema/lifecycle-event.json`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) 05-Projects/03-Packages/AgenTools/@plan/knowledge/00_MASTER_PLAN.json §5.2, §4 (D6, D10) 2) 05-Projects/03-Packages/AgenTools/@plan/knowledge/20_research-R-04_orchestration-hitl.json (Findings: LangGraph, durable-паттерны) 3) готовые 01_* артефакты (P0.3) для согласования терминов."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "как в P0.3 (нормативные правила `LC-*`, RFC 2119, примеры с привязкой к схемам); таблица переходов — единственный источник допустимых переходов, никаких «и т.п.»; mermaid stateDiagram-v2 диаграмма ОБЯЗАТЕЛЬНА (информативная, таблица нормативна)."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "lifecycle-event.json: `kind` этого дока — закрытый enum лишь lifecycle-событий (session_created, state_changed, checkpoint, session_completed, session_failed, session_cancelled, session_expired, resumed); полная аудит-таксономия расширит его в P0.7 через отдельную схему (audit-event.json ссылается на lifecycle-event.json, НЕ копирует). payload — oneOf по kind с $defs. Псевдокод свёртки — python-подобный, ≤30 строк, без магии."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "spec_lint зелёный; таблица переходов покрывает каждый нетерминальный статус хотя бы одним исходящим переходом; каждый терминальный статус (COMPLETED, FAILED_TERMINAL, CANCELLED, EXPIRED) не имеет исходящих; примеры валидны."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "02_action-lifecycle.md (правила LC-*, диаграмма, таблица переходов) + 2 схемы."
+    }
+  ]
+}

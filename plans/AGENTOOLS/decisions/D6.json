@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D6",
+  "title": "Решение",
+  "date": "2026-07-07",
+  "status": "accepted",
+  "decision": "Conformance runner — PHP ≥8.3 CLI без фреймворка; adapter-протокол — JSONL по stdio (`init`/`run`/`event`/`result`)",
+  "rationale": "PHP-first (D14 мастер-плана); нулевая Node-зависимость; JSONL тривиален в обоих SDK _(уточнён `DR-01` §J1: последовательность `start → config → run × N → stop`, фикстуры принадлежат раннеру)_",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D6\ndate: 2026-07-07\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "Conformance runner — PHP ≥8.3 CLI без фреймворка; adapter-протокол — JSONL по stdio (`init`/`run`/`event`/`result`)"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "PHP-first (D14 мастер-плана); нулевая Node-зависимость; JSONL тривиален в обоих SDK _(уточнён `DR-01` §J1: последовательность `start → config → run × N → stop`, фикстуры принадлежат раннеру)_"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "lock_sha256": "2c2cd7e0ec4a55c1d5788ba54c365c23f4955456eda1a3fec93d9c381e8011a8",
+  "schema_version": "agentools.ci-policy-baseline/v1",
+  "verdict": "green",
+  "violations": [],
+  "workflow_count": 3
+}

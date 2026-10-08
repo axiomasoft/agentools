@@ -1,0 +1,221 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P10.5",
+  "title": "Принять private RC и выпустить non-authorizing G-RELEASE decision packet",
+  "status": "done",
+  "summary": "Зафиксировать техническое принятие exact private RC и сформировать immutable decision packet, по которому owner позже может разрешить или отклонить конкретную public release branch.",
+  "why": "Private fitness and public authority answer different questions. A green dossier must not create a tag, registry upload, legal identity or credential grant by implication. `RAG:✅` permanence/channel facts в `@plan/knowledge/research-P10-design-rag.json`.",
+  "scope": {
+    "include": [
+      "Independent dossier verification; private acceptance record; exact subject/checksum/SBOM/provenance/source/tree binding; release notes; final DoD; public eligibility blockers; proposed identities/channels/version/tag/actions; credential/capability prerequisites; rollback/revocation limits; packet digest and expiry/invalidation triggers; offline verifier and negative fixtures."
+    ],
+    "exclude": [
+      "Accepting/superseding D5 on the owner's behalf; minting `[OWNER-GATE:G-RELEASE]`; changing `LICENSE`, visibility or package identity; resolving Dart MCP path dependency; creating/pushing tag; Packagist/pub.dev/GitHub release; credentials/OIDC; modifying repository settings; claiming deletion/rollback of a published version."
+    ]
+  },
+  "depends_on": [
+    "P10.4",
+    "P10.2",
+    "P10.3",
+    "P9.3",
+    "P9.5"
+  ],
+  "decisions": [
+    "D4",
+    "D5",
+    "D12",
+    "D14",
+    "D15"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/research-P10-design-rag.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "tools/private_release_gate.py",
+      "change": "any"
+    },
+    {
+      "path": "@plan/artifacts/P10-private-rc-acceptance.json",
+      "change": "any"
+    },
+    {
+      "path": "@plan/artifacts/P10-g-release-request.json",
+      "change": "any"
+    },
+    {
+      "path": "@plan/knowledge/findings-P10-private-rc-acceptance.json",
+      "change": "any"
+    },
+    {
+      "path": "@plan/knowledge/findings-P10-g-release-decision-packet.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "Private acceptance is a technical record bound to one source tree and exact subject digests; any relevant byte, receipt, risk or capability change invalidates it. G-RELEASE packet is a request, never a grant. It must list a finite branch per public action with exact registry/repository identity, version/tag, subject digests, legal/support decision reference, credential path, preconditions, compensating response and irreversibility warning. Unknown identity/channel/version, unresolved D5, proprietary/public mismatch, `publish_to: none`, MCP path dependency or absent capability leaves public eligibility false without making private acceptance red. A future grant must cite the packet digest and cannot widen it. Public execution requires a separate exact owner invocation; P10 performs none."
+  ],
+  "guidance": "Verify acceptance and request as separate schemas/objects. The verifier must reject `authorized=true` without owner evidence, wildcard channels/actions, mutable subject identity, stale dossier, missing public blocker and any command transcript showing tag/upload/release. Record inability to delete or rewrite published versions as a release consequence, not a promised rollback.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "git tag",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "procedure": "python3 tools/private_release_gate.py test",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "procedure": "python3 tests/tools/test_private_release_gate.py",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "procedure": "python3 tools/private_release_gate.py capture",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "procedure": "python3 tools/private_release_gate.py validate",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "procedure": "python3 tools/private_release_gate.py fixtures",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "Digest-bound accepted private-RC record, final release notes/DoD, explicit public blocker set and immutable non-authorizing G-RELEASE decision packet for optional future owner scope."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "required",
+    "status": "complete"
+  },
+  "result": {
+    "started_at": "2026-09-21T15:44:13Z",
+    "finished_at": "2026-09-21T15:44:13Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "gpt-5.6-sol/high",
+      "effort": "high"
+    },
+    "notes": "WPA-02 repair: private acceptance GREEN; public eligibility RED; G-RELEASE request remains non-authorizing and no release action executed. Recovered terminal receipt with deterministic run identity.\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V2",
+        "exit": 0,
+        "at": "2026-09-21T15:44:13Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V3",
+        "exit": 0,
+        "at": "2026-09-21T15:44:13Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V4",
+        "exit": 0,
+        "at": "2026-09-21T15:44:13Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V5",
+        "exit": 0,
+        "at": "2026-09-21T15:44:13Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V6",
+        "exit": 0,
+        "at": "2026-09-21T15:44:13Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-21T15:44:13Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Зафиксировать техническое принятие exact private RC и сформировать immutable decision packet, по которому owner позже может разрешить или отклонить конкретную public release branch."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Private fitness and public authority answer different questions. A green dossier must not create a tag, registry upload, legal identity or credential grant by implication. `RAG:✅` permanence/channel facts в `@plan/knowledge/research-P10-design-rag.json`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "Independent dossier verification; private acceptance record; exact subject/checksum/SBOM/provenance/source/tree binding; release notes; final DoD; public eligibility blockers; proposed identities/channels/version/tag/actions; credential/capability prerequisites; rollback/revocation limits; packet digest and expiry/invalidation triggers; offline verifier and negative fixtures."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Accepting/superseding D5 on the owner's behalf; minting `[OWNER-GATE:G-RELEASE]`; changing `LICENSE`, visibility or package identity; resolving Dart MCP path dependency; creating/pushing tag; Packagist/pub.dev/GitHub release; credentials/OIDC; modifying repository settings; claiming deletion/rollback of a published version."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "P10.4 dossier/residual ledger · P10.2 release notes/docs · P10.3 consumer receipt · P9 exact subjects/checksums/SBOM/provenance/attestation state · D4, D5, D12, D14, D15 · current source/tree identity."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`tools/private_release_gate.py` · `tests/tools/test_private_release_gate.py` · `plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P10-private-rc-acceptance.json` · `plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P10-g-release-request.json` · `@plan/knowledge/findings-P10-private-rc-acceptance.json` · `@plan/knowledge/findings-P10-g-release-decision-packet.json`."
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) P10.4 machine dossier and residual ledger 2) P10.2 docs/release notes and P10.3 consumer receipt 3) P9.3–P9.5 exact subject/SBOM/provenance/attestation records 4) D4, proposed D5, D12, D14 and D15 5) official Packagist, Dart, SemVer and GitHub release constraints in `@plan/knowledge/research-P10-design-rag.json` 6) current `LICENSE`, manifests, repository visibility/capability observations."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "Private acceptance is a technical record bound to one source tree and exact subject digests; any relevant byte, receipt, risk or capability change invalidates it. G-RELEASE packet is a request, never a grant. It must list a finite branch per public action with exact registry/repository identity, version/tag, subject digests, legal/support decision reference, credential path, preconditions, compensating response and irreversibility warning. Unknown identity/channel/version, unresolved D5, proprietary/public mismatch, `publish_to: none`, MCP path dependency or absent capability leaves public eligibility false without making private acceptance red. A future grant must cite the packet digest and cannot widen it. Public execution requires a separate exact owner invocation; P10 performs none."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Verify acceptance and request as separate schemas/objects. The verifier must reject `authorized=true` without owner evidence, wildcard channels/actions, mutable subject identity, stale dossier, missing public blocker and any command transcript showing tag/upload/release. Record inability to delete or rewrite published versions as a release consequence, not a promised rollback."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "Private acceptance is GREEN only when P10.4 private readiness is GREEN, P10.3 exact subjects pass and required evidence is fresh; packet rehash independently matches all subjects/materials; fixtures reject stale/mutated/wildcard/self-authorized requests; public eligibility is false under current D5/path-dependency/private metadata and does not affect private PASS; `git tag`, GitHub release and Packagist/pub.dev state are unchanged; no publication credential is read; repository diff contains no legal-identity or `publish_to` change; final DoD and plan lint are green."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "Digest-bound accepted private-RC record, final release notes/DoD, explicit public blocker set and immutable non-authorizing G-RELEASE decision packet for optional future owner scope."
+    }
+  ]
+}

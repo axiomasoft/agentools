@@ -1,0 +1,17 @@
+{
+  "id": "merge-python-final",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tools",
+    "-p",
+    "*.py"
+  ],
+  "started_utc": "2026-10-08T14:22:16.590643+00:00",
+  "exit_code": 0,
+  "duration_seconds": 54.358
+}

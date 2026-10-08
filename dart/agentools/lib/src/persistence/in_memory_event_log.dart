@@ -26,7 +26,13 @@ final class InMemoryEventLog implements EventLog {
     }
 
     final events = [...?_eventsByAction[actionId], event];
-    (_reducer ?? ActionReducer()).fold(events);
+    (_reducer ??
+            ActionReducer(
+              specRevision: events.isEmpty
+                  ? '2026-09'
+                  : events.first.specRevision,
+            ))
+        .fold(events);
 
     _eventsByAction[actionId] = events;
     known[event.eventId] = true;

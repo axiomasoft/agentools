@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D4",
+  "title": "Решение",
+  "date": "2026-07-07",
+  "status": "accepted",
+  "decision": "Two-phase confirmation = ОДИН tool: вызов write-tool БЕЗ `confirmation_token` → prepare (preview в `structuredContent`; token + `expires_at` + `preview_digest` в `_meta[\"agentools/v1\"]`); вызов С token → commit. Альтернативы (пара `X`/`X__commit`, generic commit-endpoint) отклонены. _(Запись реконсилирована 2026-07-11 под канон спеки — кросс-аудит M12)_",
+  "rationale": "совместимость с любым MCP-клиентом; не раздувает tools/list; токен несёт всю привязку _(ключ `_meta` пересмотрен `DR-01` §A2: `dev.agentools/action`)_",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D4\ndate: 2026-07-07\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "Two-phase confirmation = ОДИН tool: вызов write-tool БЕЗ `confirmation_token` → prepare (preview в `structuredContent`; token + `expires_at` + `preview_digest` в `_meta[\"agentools/v1\"]`); вызов С token → commit. Альтернативы (пара `X`/`X__commit`, generic commit-endpoint) отклонены. _(Запись реконсилирована 2026-07-11 под канон спеки — кросс-аудит M12)_"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "совместимость с любым MCP-клиентом; не раздувает tools/list; токен несёт всю привязку _(ключ `_meta` пересмотрен `DR-01` §A2: `dev.agentools/action`)_"
+    }
+  ]
+}

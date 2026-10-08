@@ -13,6 +13,31 @@ const canonical =
 void main() {
   final now = DateTime.parse('2026-09-20T11:00:00+00:00');
 
+  test('invalid calendar claims reject at issue and authenticated parse', () {
+    final fixture =
+        jsonDecode(
+              File(
+                '../../fixtures/hardening/audit-regressions-v1.json',
+              ).readAsStringSync(),
+            )
+            as Map<String, dynamic>;
+    for (final value in fixture['invalid_times'] as List) {
+      for (final field in ['iat', 'nbf', 'expires_at']) {
+        final data = claims({field: value as String});
+        expectTokenInvalid(() => TokenEnvelope.issue(data, signing()));
+        expectTokenInvalid(
+          () => TokenEnvelope.parse(
+            token: signRaw(TokenEnvelope.canonicalJson(data)),
+            keys: FakeKeys(),
+            now: now,
+            expectedIss: iss,
+            expectedAud: aud,
+          ),
+        );
+      }
+    }
+  });
+
   test('canonical bytes match PHP fixture', () {
     expect(TokenEnvelope.canonicalJson(claims()), canonical);
   });

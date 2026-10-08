@@ -1,0 +1,36 @@
+{
+  "local_links_checked": 123,
+  "broken_links": [],
+  "tracked_changes_since_start": [],
+  "source_fingerprints": 1250,
+  "integrated_receipt_digest_checks": [
+    {
+      "file": "predecessor-reference.json",
+      "matches": true
+    },
+    {
+      "file": "candidate-reference.json",
+      "matches": true
+    },
+    {
+      "file": "candidate-php.json",
+      "matches": true
+    },
+    {
+      "file": "candidate-dart.json",
+      "matches": true
+    },
+    {
+      "file": "jcs-parity-receipt.json",
+      "matches": true
+    },
+    {
+      "file": "semantic-parity-receipt.json",
+      "matches": true
+    },
+    {
+      "file": "mcp-official-receipt.json",
+      "matches": true
+    }
+  ]
+}

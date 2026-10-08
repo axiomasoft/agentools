@@ -1,0 +1,242 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P9.2",
+  "title": "Реализовать hardened CI matrices и точное отображение P8 evidence tiers",
+  "status": "done",
+  "summary": "Превратить P1 compatibility contract и P8 workload tiers в least-privilege, bounded CI workflows с отдельными supported, lowest/latest и security lanes.",
+  "why": "Один PHP 8.4 job не доказывает заявленную поддержку, а смешивание matrix-resolved locks с release inputs делает candidate неповторимым. `RAG:✅` Composer/Dart semantics в `@plan/knowledge/research-P9-design-rag.json`.",
+  "scope": {
+    "include": [
+      "Hardened primary PR/push CI; extended scheduled/manual workflow; exact P8 `focused`/`bounded`/`extended` mapping; PHP supported runtimes plus fresh `--prefer-lowest --prefer-stable` and latest resolution; Dart supported runtimes plus fresh `pub downgrade` and latest resolution for both packages; generated drift, conformance, package/consumer, OSV and Gitleaks lanes; job timeouts, concurrency cancellation, cache-key isolation, artifact retention; Dependabot action/dependency update configuration where supported; machine-readable CI map."
+    ],
+    "exclude": [
+      "Release-candidate bytes; SBOM/provenance/attestation; mutation of GitHub security settings; claiming unavailable dependency review/secret scanning; matrix-generated lock commits; public publication; universal timing thresholds."
+    ]
+  },
+  "depends_on": [
+    "P9.1"
+  ],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/root-contracts-ci-supply-chain-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": ".ci/supply-chain-lock.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-compatibility-support-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-adversarial-verification-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/artifacts/P8-adversarial-gate.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/decisions/D14.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/phases/P1/phase.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/phases/P8/phase.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/phases/P7/phase.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-P9-design-rag.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "change": "any"
+    },
+    {
+      "path": ".github/workflows/extended.yml",
+      "change": "any"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "change": "any"
+    },
+    {
+      "path": "tools/ci_matrix.py",
+      "change": "any"
+    },
+    {
+      "path": "@plan/artifacts/P9-ci-map.json",
+      "change": "any"
+    },
+    {
+      "path": "@plan/knowledge/findings-P9-ci-map.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "Exact runtime versions come from the executed P1 support contract, not duplicated literals without a generated equality check. Lowest/latest jobs run in fresh disposable copies, discard regenerated locks and can never supply P9.3 inputs. PR uses `focused` plus required bounded semantic/security gates; main uses `bounded`; scheduled/manual uses `extended`. `release-candidate` is not an alias for extended and belongs to P9.5. Timing blocks only on P8 matching fingerprints; mismatch stays explicit `baseline_pending`. OSV scans all three lockfiles with the pinned scanner. Gitleaks scans history and worktree with redacted output. An unavailable GitHub-native feature remains a visible capability gap, not an omitted/pass row."
+  ],
+  "guidance": "Generate matrix rows from the support contract and validate exact set equality. Use separate caches per runtime/lock digest/trust plane; do not save a cache from untrusted fork code for a privileged consumer. Preserve raw child receipts and artifact digests. Keep the quick PR graph bounded and move full mutation/fuzz/storage/benchmark workloads to declared extended/release tiers without silently dropping critical P8 IDs.",
+  "validation": [
+    {
+      "id": "V1",
+      "procedure": "python3 tools/ci_policy.py check-workflows",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "procedure": "python3 tools/ci_matrix.py validate",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "procedure": "python3 tools/ci_matrix.py test",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "procedure": "python3 tools/ci_policy.py baseline",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "Hardened CI/extended workflows, dependency-update configuration, exact generated matrix/tier map and CI receipt inputs for P9.5."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "required",
+    "status": "complete"
+  },
+  "result": {
+    "started_at": "2026-09-21T14:07:19Z",
+    "finished_at": "2026-09-21T14:07:19Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "composer-2.5/high",
+      "effort": "high"
+    },
+    "notes": "Hardened ci.yml/extended.yml, dependabot, tools/ci_matrix.py, P9-ci-map; workflow baseline GREEN (0 SC-* violations). write-site: pre_mutation: allow · pre_final: allow\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V1",
+        "exit": 0,
+        "at": "2026-09-20T16:06:47Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V2",
+        "exit": 0,
+        "at": "2026-09-20T16:06:47Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V3",
+        "exit": 0,
+        "at": "2026-09-20T16:06:47Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V4",
+        "exit": 0,
+        "at": "2026-09-20T16:06:47Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-21T14:07:19Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Превратить P1 compatibility contract и P8 workload tiers в least-privilege, bounded CI workflows с отдельными supported, lowest/latest и security lanes."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Один PHP 8.4 job не доказывает заявленную поддержку, а смешивание matrix-resolved locks с release inputs делает candidate неповторимым. `RAG:✅` Composer/Dart semantics в `@plan/knowledge/research-P9-design-rag.json`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "Hardened primary PR/push CI; extended scheduled/manual workflow; exact P8 `focused`/`bounded`/`extended` mapping; PHP supported runtimes plus fresh `--prefer-lowest --prefer-stable` and latest resolution; Dart supported runtimes plus fresh `pub downgrade` and latest resolution for both packages; generated drift, conformance, package/consumer, OSV and Gitleaks lanes; job timeouts, concurrency cancellation, cache-key isolation, artifact retention; Dependabot action/dependency update configuration where supported; machine-readable CI map."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Release-candidate bytes; SBOM/provenance/attestation; mutation of GitHub security settings; claiming unavailable dependency review/secret scanning; matrix-generated lock commits; public publication; universal timing thresholds."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/knowledge/root-contracts-ci-supply-chain-v1.json` · `.ci/supply-chain-lock.json` · `@plan/knowledge/root-contracts-compatibility-support-v1.json` · `@plan/knowledge/root-contracts-adversarial-verification-v1.json` · `artifacts/P8-adversarial-gate.json` · package manifests/locks."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`.github/workflows/ci.yml` · `.github/workflows/extended.yml` · `.github/dependabot.yml` · `tools/ci_matrix.py` · `tests/tools/test_ci_matrix.py` · `plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P9-ci-map.json` · `@plan/knowledge/findings-P9-ci-map.json`."
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) P9.1 outputs and `@plan/decisions/D14.json` 2) `@plan/phases/P1/phase.json` and executed support/resource contracts 3) `@plan/phases/P8/phase.json` and executed P8 aggregate receipt 4) `@plan/phases/P7/phase.json` and package manifests/locks 5) official Composer `validate`/`--prefer-lowest` and Dart `pub downgrade` evidence in `@plan/knowledge/research-P9-design-rag.json` 6) all existing workflows and local CI scripts."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "Exact runtime versions come from the executed P1 support contract, not duplicated literals without a generated equality check. Lowest/latest jobs run in fresh disposable copies, discard regenerated locks and can never supply P9.3 inputs. PR uses `focused` plus required bounded semantic/security gates; main uses `bounded`; scheduled/manual uses `extended`. `release-candidate` is not an alias for extended and belongs to P9.5. Timing blocks only on P8 matching fingerprints; mismatch stays explicit `baseline_pending`. OSV scans all three lockfiles with the pinned scanner. Gitleaks scans history and worktree with redacted output. An unavailable GitHub-native feature remains a visible capability gap, not an omitted/pass row."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Generate matrix rows from the support contract and validate exact set equality. Use separate caches per runtime/lock digest/trust plane; do not save a cache from untrusted fork code for a privileged consumer. Preserve raw child receipts and artifact digests. Keep the quick PR graph bounded and move full mutation/fuzz/storage/benchmark workloads to declared extended/release tiers without silently dropping critical P8 IDs."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "Workflow policy checker is fully green; event/permission tests prove fork PRs lack secrets/write scopes and no privileged event executes untrusted checkout; matrix validator reports exact supported/lowest/latest rows for PHP and both Dart packages; lowest/latest fixtures demonstrate fresh resolution and no source lock mutation; P8 map has `missing=[]`, `extra=[]` and exact command/input digests per tier; OSV/Gitleaks positive fixtures turn red without leaking secrets; timing mismatch cannot pass/fail; unavailable native features are reported; no release artifact or public side effect occurs."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "Hardened CI/extended workflows, dependency-update configuration, exact generated matrix/tier map and CI receipt inputs for P9.5."
+    }
+  ]
+}

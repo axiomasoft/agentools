@@ -1,0 +1,12 @@
+{
+  "id": "fix-adversarial-final",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/adversarial_corpus.py",
+    "run"
+  ],
+  "started_utc": "2026-10-08T13:30:41.610959+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.665
+}

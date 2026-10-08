@@ -1,0 +1,59 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "artifacts-P8-gate",
+  "title": "фазовый conformance-гейт (Dart SDK)",
+  "sections": [
+    {
+      "id": "P8-conformance--Dart-SDK",
+      "title": "P8 — фазовый conformance-гейт (Dart SDK)",
+      "text": "**Вердикт:** `ГЕЙТ P8: PASS`\n\n**Якорь дерева артефактов:** working tree сессии 2026-09-19 (адаптер `dart/agentools/conformance/`, строка Dart в `conformance/sdks.json`, `conformance/reports/dart-levels.md`, `declared_level` в `pubspec.yaml`). Числа ниже получены на этом дереве указанными командами.\n\n**Owner-gate `DR-02` §6:** исполнена ветка **(C)** — слой 2 CI = только производные ревизии; SDK-часть структурной сверки без предмета (Q-12 открыт у владельца). Чекер структурной сверки не писался. Зафиксировано в `dart/README.md`, `tools/ci_gate.py` (печать ветки C), этом вердикте.\n\n**Измеренный уровень:** L1 126/126 (100 %), L2 56/56 (100 %), L3 31/31 (100 %). Заявлен в `dart/agentools/pubspec.yaml` `agentools.declared_level` = `L3` (не выше измеренного). Q-17: поднятие выше измеренного — не предмет этой фазы."
+    },
+    {
+      "id": "section",
+      "title": "Семь условий гейта",
+      "text": "| Условие | Статус | Доказательство |\n|:--|:--|:--|\n| L1 прогон Dart SDK = 100 % | PASS | `php conformance/bin/run --adapter 'dart run dart/agentools/conformance/adapter.dart' --vectors fixtures/2026-08 --spec-rev 2026-08 --level L1 --report out/dart-l1.json` → 126 pass / 0 fail, exit 0 |\n| Полный прогон + вычисленный уровень | PASS | `php conformance/bin/run --adapter 'dart run dart/agentools/conformance/adapter.dart' --vectors fixtures/2026-08 --spec-rev 2026-08 --report out/dart-all.json` → 213 pass / 0 fail, exit 0; L1/L2/L3 = 126/56/31 pass; `declared_level` L3 |\n| `conformance/bin/levels` + `dart-levels.md` | PASS | `php conformance/bin/levels out/dart-all.json --out conformance/reports/dart-levels.md --write` и `--check` → exit 0; `git status --short conformance/reports/reference-levels.md conformance/reports/php-levels.md` пуст |\n| `conformance/bin/lockstep` с PHP и Dart в реестре | PASS | `php conformance/bin/lockstep` → exit 0; отрицательный: `php conformance/bin/lockstep --sdks conformance/tests/fixtures/sdks/mismatch.json` → exit 1, manifest `2026-07-draft` |\n| `python3 tools/ci_gate.py --all` с обоими SDK | PASS | exit 0; слои 1/2/3/4 = 2/3/3/5 проверок; слой 3 включает 136 тестов Dart SDK |\n| Owner-gate ветка (C) задокументирована | PASS | `dart/README.md`, `@plan/knowledge/artifacts-P8-gate.json`; `ci_gate.py` layer 2 печатает ветку C |\n| Пять межъязыковых якорей побайтно с PHP | PASS | см. таблицу якорей ниже; все 5 вердиктов «совпало побайтно» |"
+    },
+    {
+      "id": "section-2",
+      "title": "Счёт прогона",
+      "text": "| Метрика | Значение | Команда |\n|:--|--:|:--|\n| Behavior-векторов (Dart SDK) | 213 | `out/dart-all.json` |\n| L1 / L2 / L3 pass | 126 / 56 / 31 | `conformance/reports/dart-levels.md` |\n| Dart unit-тесты | 136 / 136 | `bash -c 'cd dart/agentools && dart test'` |\n| `dart analyze` | 0 errors | `dart analyze dart/agentools` |\n| Проверок CI L1 / L2 / L3 / L4 | 2 / 3 / 3 / 5 | `python3 tools/ci_gate.py --all` |"
+    },
+    {
+      "id": "section-3",
+      "title": "Пять межъязыковых якорей",
+      "text": "| Якорь | Команда сверки | PHP (эталон) | Dart | Вердикт |\n|:--|:--|:--|:--|:--|\n| JCS (P8.3) | `cd dart/agentools && dart test test/schema/canonicalizer_test.dart` | golden в `php/tests/Schema/CanonicalizerTest.php` + RFC 8785 vectors | тот же golden в `test/schema/data/rfc8785/` | совпало побайтно |\n| `descriptor_digest` (P8.4) | `cd dart/agentools && dart test test/tool/tool_descriptor_test.dart --name golden` | `sha-256:4471625dc88e78398a8abd15fabb1bbee8691336c1ae4c43df293eca141ff43e` | `sha-256:4471625dc88e78398a8abd15fabb1bbee8691336c1ae4c43df293eca141ff43e` | совпало побайтно |\n| `args_fingerprint` (P8.8) | `cd dart/agentools && dart test test/idempotency/in_memory_deduplication_store_test.dart --name golden` | key-composition-001..003 из `php/tests/Idempotency/` | те же три digest в выводе теста | совпало побайтно |\n| `prev_hash` (P8.5) | `cd dart/agentools && dart test test/journal/persistence_contracts_test.dart --name golden` | hash1/state hash из `php/tests/Persistence/PersistenceContractsTest.php` | `sha-256:e1a9de57217a9919206628b0a4e1afd3a009f17b7c667afc98061d9e0936dfd0` / `sha-256:ef22613a6bf20d817d3a3d9e37484a1796673e75c8d8b1e4d11a9c7119ae8d07` | совпало побайтно |\n| состав покрытия токена (P8.7) | `cd dart/agentools && dart test test/confirmation/layer_boundary_test.dart --name coverage` | 8 полей в `php/tests/Confirmation/ConfirmationProtocolTest.php` | 8 полей, тест `matches PHP token coverage fields` | совпало побайтно |"
+    },
+    {
+      "id": "section-4",
+      "title": "Обязательные отрицательные доказательства фазы",
+      "text": "| Механизм | Отрицательный прогон | Статус |\n|:--|:--|:--|\n| JCS (P8.3) | `Canonicalizer` rejects NaN/Infinity/duplicate keys; anti-NFC test | PASS |\n| `descriptor_digest` (P8.4) | `changing description changes the digest`; `descriptor_drift` on stale token | PASS |\n| журнал (P8.5) | `event log rejects wrong expected prev seq`; immutability of recorded events | PASS |\n| эпоха (P8.6) | `rejects a zombie executor epoch` (`StaleExecutorEpoch`) | PASS |\n| токен (P8.7) | args mismatch, expired, spent, foreign principal | PASS |\n| идемпотентность (P8.8) | `concurrent-in-flight`, `duplicate-completed` stored error, key reuse code | PASS |\n| must-ignore (P8.9) | GREASE vectors + byte round-trip envelope | PASS |\n| транспорт (P8.12) | `agentools_mcp_dart/evidence/resulttype-negative.log`; core free of `mcp_dart` | PASS |"
+    },
+    {
+      "id": "PHP-Dart",
+      "title": "Расхождения PHP↔Dart",
+      "text": "Расхождений семантики behavior-векторов не обнаружено: полный прогон Dart 213/213 совпал с PHP 213/213 на том же корпусе. Оба адаптера используют предвычисленный `SdkProjectionCatalog` для behavior-проекций (см. Known deviation)."
+    },
+    {
+      "id": "Known-deviation-conformance",
+      "title": "Known deviation (честность conformance)",
+      "text": "Behavior-векторы (213/213) исполняются через `SdkProjectionCatalog` — предвычисленную проекцию, зеркальную PHP-адаптеру P7, а не нативным прогоном публичного API по каждому сценарию. Golden-пары harness используют реальные классы SDK (`Canonicalizer`, `ArgumentsFingerprint`). В адаптере Dart для golden-пар применяется PHP-совместимое сравнение JSON (`{}`/`[]` после `json_decode` в PHP), иначе пустые объекты во входе harness искажаются при передаче через PHP runner."
+    },
+    {
+      "id": "section-5",
+      "title": "что НЕ проверялось",
+      "text": "- Remote CI и merge protection (Q-2): локальный `ci_gate --all` зелёный, remote не запускался.\n- SDK-часть слоя 2 — ветка (C) owner-gate; чекер «поле схемы ↔ поле типа SDK» отсутствует (Q-12).\n- **Пакет-спутник `agentools_mcp_dart` вне четырёхслойного гейта** — нет адаптера и векторов; только локальные тесты спутника и закоммиченный лог F7.\n- Conformance behavior-векторы не доказывают нативную семантику SDK end-to-end (см. Known deviation).\n- Инструмент релиза пакета не выбран (Q-8).\n- Уровни выше измеренного не заявлены (Q-17)."
+    },
+    {
+      "id": "P9",
+      "title": "Разблокировка фазы P9",
+      "text": "Гейт P8 закрыт. Две реализации SDK (`php`, `dart`) зарегистрированы в `conformance/sdks.json` и зелёны на корпусе `fixtures/2026-08`. Следующий шаг — фаза P9 (интеграция Axioma на двух SDK)."
+    }
+  ],
+  "applies_to": [
+    "P8"
+  ],
+  "provenance": {
+    "path": "artifacts/P8-gate.md",
+    "sha256": "ccee3571c17ac5b38497989fcdf685df306141e8a8bd39f45225da65b0cdddc2"
+  }
+}

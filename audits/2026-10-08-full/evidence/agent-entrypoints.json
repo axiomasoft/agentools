@@ -1,0 +1,12 @@
+{
+  "id": "agent-entrypoints",
+  "cwd": ".",
+  "command": [
+    "bash",
+    "scripts/build-agent-docs.sh",
+    "--check"
+  ],
+  "started_utc": "2026-10-08T12:03:34.304523+00:00",
+  "exit_code": 1,
+  "duration_seconds": 0.008
+}

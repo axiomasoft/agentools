@@ -1,0 +1,49 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "findings-P9-decouple-corex-2026-09-19",
+  "title": "отвязка от CoreX/Flex и ребазлайн среза (2026-09-19)",
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\ntype: findings\nplan: AGENTOOLS\nphase: P9\nitem: P9\ncreated: 2026-09-19\nlayer: 1\n---"
+    },
+    {
+      "id": "P9-CoreX-Flex-2026-09-19",
+      "title": "P9 — отвязка от CoreX/Flex и ребазлайн среза (2026-09-19)",
+      "text": "Слой 1: решение владельца и проектирование. Опора — D186, INT-002."
+    },
+    {
+      "id": "section",
+      "title": "Вердикт",
+      "text": "**Принято:** фаза P9 исполняется **только** в репозитории `agentools`. CoreX и FlexCRM — независимые пакеты; прямая связь и ожидание чужих артефактов (AiGateway, `agentic-bridge`) **сняты** с плана."
+    },
+    {
+      "id": "section-2",
+      "title": "Что меняется",
+      "text": "| Было (P9.1–P9.2, D184) | Стало (D186, INT-002) |\n|:--|:--|\n| Дом среза = flexcrm C2-мост | Дом среза = `php/reference/**` в agentools |\n| P9.3 blocked на AiGateway | P9.3 = reference adapters, scripted LLM |\n| INT-001 — исполняемый контракт | INT-001 deferred; INT-002 активен |\n| UI Flex + Reverb | CLI demo consumer |\n| БД = тенантские таблицы Flex | SQLite файл среза |\n| Ожидание FLEX-2 P6.15 | Нет внешних блокеров P9 |"
+    },
+    {
+      "id": "section-3",
+      "title": "Что сохраняется",
+      "text": "- P9.1, P9.2 — 🟢 Done (исторические измерения и INT-001 как deferred-спека).\n- Семантика восьми портов SDK (P7) — без изменений.\n- Conformance corpus `fixtures/2026-08/**` — frozen.\n- Цель фазы: доказать сквозной сценарий с записью и отрицательными прогонами — на **референсном** контуре."
+    },
+    {
+      "id": "section-4",
+      "title": "Структура кода (целевая)",
+      "text": "```\nphp/\n  reference/\n    adapters/          # P9.3: Llm, Tool, Delivery, Clock\n    persistence/       # P9.4: SQLite ports\n    scenario/          # P9.5: domain tools + runner wiring\n    bin/               # P9.6: reference-slice-demo\n  tests/reference/\nfixtures/product-slice/  # P9.5: product vectors (new)\n```"
+    },
+    {
+      "id": "section-5",
+      "title": "Следующий шаг исполнения",
+      "text": "`run-items: task:plan-run AGENTOOLS P9.3` — reference behavior adapters по INT-002 §2."
+    }
+  ],
+  "applies_to": [
+    "P9"
+  ],
+  "provenance": {
+    "path": "findings/P9-decouple-corex-2026-09-19.md",
+    "sha256": "b65c235596ae9522ba8bb4dad775789eafc623ac1ce26e1f1889c3ef4fb61293"
+  }
+}

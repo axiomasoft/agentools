@@ -1,0 +1,16 @@
+Starting filesystem walk for root: /
+Scanned /tmp/agentools-audit-copy-4tslglh6/repo/php/composer.lock file and found 65 packages
+Scanned /tmp/agentools-audit-copy-4tslglh6/repo/conformance/composer.lock file and found 27 packages
+Scanned /tmp/agentools-audit-copy-4tslglh6/repo/dart/agentools/pubspec.lock file and found 58 packages
+Scanned /tmp/agentools-audit-copy-4tslglh6/repo/dart/agentools_mcp_dart/pubspec.lock file and found 56 packages
+Scanned /tmp/agentools-audit-copy-4tslglh6/repo/conformance/mcp/package-lock.json file and found 114 packages
+End status: 0 dirs visited, 5 inodes visited, 5 Extract calls, 9.094867ms elapsed, 9.095057ms wall time
+
+Total 1 package affected by 1 known vulnerability (0 Critical, 1 High, 0 Medium, 0 Low, 0 Unknown) from 1 ecosystem.
+1 vulnerability can be fixed.
+
++-------------------------------------+------+-----------+---------------------------------+---------+---------------+-----------------------------------+
+| OSV URL                             | CVSS | ECOSYSTEM | PACKAGE                         | VERSION | FIXED VERSION | SOURCE                            |
++-------------------------------------+------+-----------+---------------------------------+---------+---------------+-----------------------------------+
+| https://osv.dev/GHSA-6qxp-vccf-f47h | 7.5  | npm       | @modelcontextprotocol/sdk (dev) | 1.30.0  | 1.31.0        | conformance/mcp/package-lock.json |
++-------------------------------------+------+-----------+---------------------------------+---------+---------------+-----------------------------------+

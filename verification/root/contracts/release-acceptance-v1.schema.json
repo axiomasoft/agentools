@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentools.local/schemas/release-acceptance-matrix/v1",
+  "title": "Release acceptance matrix",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "source_commit",
+    "contract_digest",
+    "schema_digest",
+    "rows",
+    "coverage",
+    "verdicts"
+  ],
+  "properties": {
+    "schema_version": { "const": "release-acceptance-matrix/v1" },
+    "generated_at": { "type": "string" },
+    "source_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "contract_digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "schema_digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "manifest_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "rows": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/row" }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["missing", "extra", "stale"],
+      "properties": {
+        "missing": { "type": "array", "items": { "type": "string" } },
+        "extra": { "type": "array", "items": { "type": "string" } },
+        "stale": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "verdicts": { "$ref": "#/$defs/verdicts" }
+  },
+  "$defs": {
+    "row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "class",
+        "upstream_owner",
+        "closed_state",
+        "evidence",
+        "private_blocking",
+        "public_blocking"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "class": {
+          "enum": [
+            "guarantee",
+            "non_guarantee",
+            "resource_limit",
+            "threat",
+            "finding",
+            "migration",
+            "support_dimension",
+            "semantic_namespace",
+            "package_surface",
+            "release_subject",
+            "adversarial",
+            "capability",
+            "decision_gate"
+          ]
+        },
+        "upstream_owner": { "type": "string" },
+        "closed_state": {
+          "enum": [
+            "verified",
+            "non_applicable",
+            "baseline_pending",
+            "capability_unavailable",
+            "decision_pending",
+            "failed",
+            "stale"
+          ]
+        },
+        "evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "digest"],
+          "properties": {
+            "path": { "type": "string" },
+            "digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+            "note": { "type": "string" }
+          }
+        },
+        "applicability": { "type": "string" },
+        "private_blocking": { "type": "boolean" },
+        "public_blocking": { "type": "boolean" }
+      }
+    },
+    "verdicts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["private_ready", "public_eligible", "public_authorized"],
+      "properties": {
+        "private_ready": { "enum": ["green", "red"] },
+        "public_eligible": { "enum": ["green", "red"] },
+        "public_authorized": { "const": false }
+      }
+    }
+  }
+}

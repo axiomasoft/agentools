@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "fixtures/hardening/confirmation-security-v1.json"
-PLAN = ROOT / "plans/2026.09.19-№1-AGENTOOLS-HARDENING"
+PLAN = ROOT / "verification"
 CONTRACT = PLAN / "root/contracts/confirmation-security-v1.md"
 MIGRATION = PLAN / "findings/P2-confirmation-migration.md"
 REQUIRED = {

@@ -1,0 +1,11 @@
+{
+  "id": "fix-dart-final",
+  "cwd": "dart/agentools",
+  "command": [
+    "dart",
+    "test"
+  ],
+  "started_utc": "2026-10-08T13:27:50.148212+00:00",
+  "exit_code": 0,
+  "duration_seconds": 2.318
+}

@@ -69,7 +69,7 @@ final class PersistenceContractsTest extends TestCase
     /** ALC-3, ALC-33; snapshot plus tail replay matches a full fold. */
     public function testSnapshotProjectionMatchesFoldedState(): void
     {
-        $reducer = new ActionReducer();
+        $reducer = new ActionReducer('2026-08');
         $events = [
             $this->event(1, 0, 'action_created'),
             $this->event(2, 1, 'action_started'),

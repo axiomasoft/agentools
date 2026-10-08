@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Any
 
 REPO = Path(__file__).resolve().parents[1]
-PLAN = REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING"
+PLAN = REPO / "verification"
 ARTIFACT_PATH = PLAN / "artifacts/P9-private-rc.json"
 FINDING_PATH = PLAN / "findings/P9-private-rc.md"
 WORKFLOW_PATH = REPO / ".github/workflows/private-rc.yml"

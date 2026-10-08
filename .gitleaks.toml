@@ -30,3 +30,10 @@ regexes = ['''^token_replay\":\"[0-9a-f]{64}\"$''']
 [redact]
 description = "Never print matched secret material in CI logs"
 redact = 100
+
+[[allowlists]]
+description = "Migration journal SHA-256 entries for three documented files; exact value shape and path only"
+condition = "AND"
+paths = ['''^plans/2026\.09\.19-№1-AGENTOOLS-HARDENING/log\.jsonl$''']
+regexTarget = "match"
+regexes = ['''^(?:P3-token-migration|P7-api-inventory|token-replay-v1)\.md\"?:\s*\"[0-9a-f]{64}\"$''']

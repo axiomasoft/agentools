@@ -1,6 +1,6 @@
 {
     "generated_by": "conformance\/bin\/semantic-parity",
-    "manifest_path": "\/tmp\/agentools-pr10-review\/spec\/revisions\/2026-09\/semantic-manifest.json",
+    "manifest_path": "\/home\/vostrikov\/projects\/packages\/agentools\/spec\/revisions\/2026-09\/semantic-manifest.json",
     "manifest_digest": "e9140d34a44a14e109587692eb8360f350062cae7ac70ac2631cacaedcfe0d18",
     "families": [
         "error_codes",

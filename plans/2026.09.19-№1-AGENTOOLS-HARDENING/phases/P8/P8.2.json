@@ -1,0 +1,306 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P8.2",
+  "title": "Построить deterministic property, differential и bounded fuzz corpus",
+  "status": "done",
+  "summary": "Реализовать один language-neutral generated corpus с replay/shrink/promotion protocol и доказать PHP/Dart byte/error/state parity на JCS, token/binding, fingerprints, limits and state transitions.",
+  "why": "Два SDK могут согласиться на одном дефекте, а случайный seed без generator/runtime/corpus identity не воспроизводит failure. P6 даёт независимый JCS oracle, но оставляет mutation/fuzz depth P8. `RAG:—` и RFC evidence в `@plan/knowledge/research-P8-design-rag.json`.",
+  "scope": {
+    "include": [
+      "Explicit stable PRNG; versioned generators for valid typed values and hostile raw bytes; boundary partitions; metamorphic relations; P6 independent-oracle reuse; cross-language adapters; deterministic shrinkers; minimized counterexample receipts; immutable promoted regressions; bounded parser/schema/token/fingerprint/state-machine/resource-negative cases."
+    ],
+    "exclude": [
+      "Treating PHP or Dart as sole oracle; indefinite/coverage-guided fuzz service; automatic golden rewrite from SDK output; generating secrets/PII; new protocol codes or bounds; performance timing; storage interleavings owned by P8.4."
+    ]
+  },
+  "depends_on": [],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/root-contracts-adversarial-verification-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/hardening/adversarial/manifest.v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-09/semantic-manifest.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "conformance/reports/jcs-parity.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-confirmation-security-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-token-replay-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-idempotency-lease-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-event-store-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-resource-envelope-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "conformance/sdks.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/findings-P8-risk-proof-matrix.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/phases/P6/P6.2.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/phases/P6/P6.3.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/phases/P6/P6.5.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/hardening/confirmation-security-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/hardening/token-replay-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/hardening/idempotency-lease-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/hardening/event-store-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "conformance/README.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "conformance/tests/RunnerProtocolTest.php",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-P8-design-rag.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/decisions/D13.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "tools/adversarial_corpus.py",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/hardening/adversarial/corpus/**",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/hardening/adversarial/regressions/**",
+      "change": "any"
+    },
+    {
+      "path": "conformance/bin/adversarial-differential",
+      "change": "any"
+    },
+    {
+      "path": "conformance/tests/AdversarialDifferentialTest.php",
+      "change": "any"
+    },
+    {
+      "path": "@plan/artifacts/P8-property-fuzz.json",
+      "change": "any"
+    },
+    {
+      "path": "@plan/knowledge/findings-P8-property-fuzz.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "Generated bytes originate from a repository-owned explicitly versioned PRNG and generator, not host randomness. A run identity includes manifest/generator/corpus digests, seed, case index, PHP/Dart/tool/runtime versions, locale/timezone and input SHA-256. Valid typed generators and hostile raw-byte mutators are separate. PHP/Dart outcomes compare canonical bytes, stable codes and normalized state—not exception text/order. Shrinking preserves the violated predicate; a failure cannot turn green until its minimized input is promoted with provenance or the product/contract owner resolves it. Bounds from P1 are exercised at `limit-1/limit/limit+1`; no generator may allocate past its declared cap."
+  ],
+  "guidance": "Prefer composable stdlib Python generators/shrinkers so both SDKs consume identical bytes. Cover JCS idempotence and formatting invariance, Unicode/duplicate-key/number rejection, token one-bit mutations and time boundaries, binding/fingerprint separation, and legal/illegal state transitions. Stream large corpora. Never normalize raw-invalid input through a permissive parser before the target API sees it. A mismatch report prints case ID, seed, input/output digests and first byte/state delta.",
+  "validation": [
+    {
+      "id": "V1",
+      "procedure": "python3 tools/adversarial_corpus.py",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "procedure": "php conformance/bin/adversarial-differential",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "procedure": "cd php && composer test",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "procedure": "cd dart/agentools && dart test",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "Reproducible cross-language property/fuzz harness, versioned corpus and promoted regressions, minimized failure protocol and digest-bound parity receipt."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-20T14:25:31Z",
+    "finished_at": "2026-09-20T14:25:31Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "grok-4.6/high",
+      "effort": "high"
+    },
+    "notes": "Deterministic corpus+differential GREEN; CRP-JCS-10K/CRP-SEM-213 declared not proved.\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [
+      "Deterministic corpus+differential GREEN; CRP-JCS-10K/CRP-SEM-213 declared not proved.\nwrite-site: pre_mutation: allow · pre_final: allow"
+    ],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V1",
+        "exit": 0,
+        "at": "2026-09-20T14:25:31Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V2",
+        "exit": 0,
+        "at": "2026-09-20T14:25:31Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V3",
+        "exit": 0,
+        "at": "2026-09-20T14:25:31Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V4",
+        "exit": 0,
+        "at": "2026-09-20T14:25:31Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-20T14:25:31Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Реализовать один language-neutral generated corpus с replay/shrink/promotion protocol и доказать PHP/Dart byte/error/state parity на JCS, token/binding, fingerprints, limits and state transitions."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Два SDK могут согласиться на одном дефекте, а случайный seed без generator/runtime/corpus identity не воспроизводит failure. P6 даёт независимый JCS oracle, но оставляет mutation/fuzz depth P8. `RAG:—` и RFC evidence в `@plan/knowledge/research-P8-design-rag.json`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "Explicit stable PRNG; versioned generators for valid typed values and hostile raw bytes; boundary partitions; metamorphic relations; P6 independent-oracle reuse; cross-language adapters; deterministic shrinkers; minimized counterexample receipts; immutable promoted regressions; bounded parser/schema/token/fingerprint/state-machine/resource-negative cases."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Treating PHP or Dart as sole oracle; indefinite/coverage-guided fuzz service; automatic golden rewrite from SDK output; generating secrets/PII; new protocol codes or bounds; performance timing; storage interleavings owned by P8.4."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/knowledge/root-contracts-adversarial-verification-v1.json` · `fixtures/hardening/adversarial/manifest.v1.json` · `spec/revisions/2026-09/semantic-manifest.json` · `conformance/reports/jcs-parity.json` · `@plan/knowledge/root-contracts-confirmation-security-v1.json` · `@plan/knowledge/root-contracts-token-replay-v1.json` · `@plan/knowledge/root-contracts-idempotency-lease-v1.json` · `@plan/knowledge/root-contracts-event-store-v1.json` · `@plan/knowledge/root-contracts-resource-envelope-v1.json` · `conformance/sdks.json`."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`tools/adversarial_corpus.py` · `fixtures/hardening/adversarial/corpus/**` · `fixtures/hardening/adversarial/regressions/**` · `conformance/bin/adversarial-differential` · `conformance/tests/AdversarialDifferentialTest.php` · `php/tests/Adversarial/**` · `dart/agentools/test/adversarial/**` · `plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P8-property-fuzz.json` · `@plan/knowledge/findings-P8-property-fuzz.json`."
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/root-contracts-adversarial-verification-v1.json`, `fixtures/hardening/adversarial/manifest.v1.json` and `@plan/knowledge/findings-P8-risk-proof-matrix.json` 2) `@plan/phases/P6/P6.2.json`, `@plan/phases/P6/P6.3.json`, `@plan/phases/P6/P6.5.json`, `spec/revisions/2026-09/semantic-manifest.json` and `conformance/reports/jcs-parity.json` 3) `fixtures/hardening/confirmation-security-v1.json`, `fixtures/hardening/token-replay-v1.json`, `fixtures/hardening/idempotency-lease-v1.json` and `fixtures/hardening/event-store-v1.json` 4) `@plan/knowledge/root-contracts-resource-envelope-v1.json` 5) `conformance/README.md`, `conformance/sdks.json` and `conformance/tests/RunnerProtocolTest.php` 6) RFC 8785 evidence in `@plan/knowledge/research-P8-design-rag.json` 7) `@plan/decisions/D13.json`."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "Generated bytes originate from a repository-owned explicitly versioned PRNG and generator, not host randomness. A run identity includes manifest/generator/corpus digests, seed, case index, PHP/Dart/tool/runtime versions, locale/timezone and input SHA-256. Valid typed generators and hostile raw-byte mutators are separate. PHP/Dart outcomes compare canonical bytes, stable codes and normalized state—not exception text/order. Shrinking preserves the violated predicate; a failure cannot turn green until its minimized input is promoted with provenance or the product/contract owner resolves it. Bounds from P1 are exercised at `limit-1/limit/limit+1`; no generator may allocate past its declared cap."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Prefer composable stdlib Python generators/shrinkers so both SDKs consume identical bytes. Cover JCS idempotence and formatting invariance, Unicode/duplicate-key/number rejection, token one-bit mutations and time boundaries, binding/fingerprint separation, and legal/illegal state transitions. Stream large corpora. Never normalize raw-invalid input through a permissive parser before the target API sees it. A mismatch report prints case ID, seed, input/output digests and first byte/state delta."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "Same manifest+seed run twice produces byte-identical case order and receipt; replay by `(generator_version, seed, case_index)` reproduces the exact input; injected PHP-only and Dart-only defects each make differential red; malformed raw cases reach both parsers and match stable rejection class; independent JCS expected bytes remain authoritative; shrinker produces a strictly smaller still-failing case and promotion replay runs before new generation; extended corpus is bounded and streaming; full existing conformance/PHP/Dart suites remain green; plan lint adds no ERROR."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "Reproducible cross-language property/fuzz harness, versioned corpus and promoted regressions, minimized failure protocol and digest-bound parity receipt."
+    }
+  ]
+}

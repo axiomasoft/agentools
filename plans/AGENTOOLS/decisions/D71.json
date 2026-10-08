@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D71",
+  "title": "Решение",
+  "date": "2026-07-27",
+  "status": "accepted",
+  "decision": "**Механика вердикта раннера:** перечисление статусов ЗАКРЫТО одним носителем (PHP-enum `AgenTools\\Conformance\\Status`: `pass`/`fail`/`warn`/`not-testable`/`baseline-expected`) — значения «skip» нет как кода; severity читается из `rules.json`, а при невозможности отнести провал к ОДНОМУ правилу берётся МАКСИМАЛЬНАЯ среди `spec_rule_ids` (fail-safe); `not-testable` ставится только по флагу правила и печатает причину ДОСЛОВНО; baseline — две гранулярности, обязательные поля записи, успех ⇔ отказы ⊆ baseline, запись, начавшая проходить, — ошибка; `baseline/reference.json` ПУСТ по определению. Альтернатива «дисциплина без кода» отклонена: пока в перечислении есть «пропущено», оно будет использовано",
+  "rationale": "`DR-01` §J3 («тихого SKIP не существует») и §J4 (анти-эрозия). `RAG:— (repo-grounded: @plan/knowledge/research-05-p6-conformance-harness-2026-08.json §7 — таблица шести лиц «зелёного на пустом» и обязательные отрицательные прогоны)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D71\ndate: 2026-07-27\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Механика вердикта раннера:** перечисление статусов ЗАКРЫТО одним носителем (PHP-enum `AgenTools\\Conformance\\Status`: `pass`/`fail`/`warn`/`not-testable`/`baseline-expected`) — значения «skip» нет как кода; severity читается из `rules.json`, а при невозможности отнести провал к ОДНОМУ правилу берётся МАКСИМАЛЬНАЯ среди `spec_rule_ids` (fail-safe); `not-testable` ставится только по флагу правила и печатает причину ДОСЛОВНО; baseline — две гранулярности, обязательные поля записи, успех ⇔ отказы ⊆ baseline, запись, начавшая проходить, — ошибка; `baseline/reference.json` ПУСТ по определению. Альтернатива «дисциплина без кода» отклонена: пока в перечислении есть «пропущено», оно будет использовано"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`DR-01` §J3 («тихого SKIP не существует») и §J4 (анти-эрозия). `RAG:— (repo-grounded: @plan/knowledge/research-05-p6-conformance-harness-2026-08.json §7 — таблица шести лиц «зелёного на пустом» и обязательные отрицательные прогоны)`"
+    }
+  ]
+}

@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 
 REPO = Path(__file__).resolve().parents[1]
-PLAN = REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING"
+PLAN = REPO / "verification"
 CONTRACT = PLAN / "root/contracts/adversarial-verification-v1.md"
 MANIFEST = REPO / "fixtures/hardening/adversarial/manifest.v1.json"
 SCHEMA = "adversarial-verification-manifest/v1"
@@ -39,7 +39,7 @@ SOURCE_PATHS = {
     "package_boundary": PLAN / "root/contracts/package-boundary-v1.md",
     "package_surface": REPO / "api/package-surface-v1.json",
     "package_gate": PLAN / "artifacts/P7-package-gate.json",
-    "decision_d13": PLAN / "decisions/D13-adversarial-verification-evidence.md",
+    "decision_d13": PLAN / "decisions/D13.json",
     "audit_verdicts": PLAN / "findings/audit-verdicts.md",
 }
 
@@ -226,11 +226,11 @@ def catalog_entries() -> dict[str, list[dict[str, Any]]]:
 
 def rows() -> list[dict[str, Any]]:
     php_dart = ["php:src", "dart:lib"]
-    rc_mut = "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P8-mutation-baseline.json"
-    rc_fuzz = "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P8-property-fuzz.json"
-    rc_sched = "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P8-postgres-schedules.json"
-    rc_res = "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P8-resource-baseline.json"
-    rc_pkg = "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P7-package-gate.json"
+    rc_mut = "verification/artifacts/P8-mutation-baseline.json"
+    rc_fuzz = "verification/artifacts/P8-property-fuzz.json"
+    rc_sched = "verification/artifacts/P8-postgres-schedules.json"
+    rc_res = "verification/artifacts/P8-resource-baseline.json"
+    rc_pkg = "verification/artifacts/P7-package-gate.json"
     all_tiers = ["focused", "bounded", "extended", "release-candidate"]
     return [
         row("AV-001", owner="P2", upstream_ref="G-CNF-001", criticality="critical", surfaces=["php:ConfirmationService", "dart:ConfirmationService"], oracle={"id": "ORC-CNF-FIXTURE", "kind": "fixture"}, proof_classes=["example", "property", "mutation"], mutants=["MUT-CNF-AUTH-BYPASS"], schedules=[], properties=["PROP-CNF-BINDING"], corpora=["CRP-STATE"], tiers=all_tiers, resource_link="RL-010", failure_owner="P2", red_proof="MUT-CNF-AUTH-BYPASS", rc_carrier=rc_mut),
@@ -249,10 +249,10 @@ def rows() -> list[dict[str, Any]]:
         row("AV-014", owner="P5", upstream_ref="G-EVT-001", criticality="ordinary", surfaces=["php:EventStore", "dart:EventStore"], oracle={"id": "ORC-EVT-FIXTURE", "kind": "fixture"}, proof_classes=["example"], mutants=[], schedules=[], properties=[], corpora=[], tiers=["focused", "bounded"], resource_link="RL-011", failure_owner="P5", red_proof=None, rc_carrier=rc_fuzz),
         row("AV-015", owner="P6", upstream_ref="G-SEM-001", criticality="ordinary", surfaces=php_dart, oracle={"id": "ORC-SEM-P6", "kind": "independent"}, proof_classes=["example", "differential"], mutants=[], schedules=[], properties=[], corpora=["CRP-SEM-213"], tiers=["bounded", "extended", "release-candidate"], resource_link=None, failure_owner="P6", red_proof=None, rc_carrier=rc_fuzz),
         row("AV-016", owner="P6", upstream_ref="G-SCP-001", criticality="ordinary", surfaces=["conformance:applicability"], oracle={"id": "ORC-SEM-P6", "kind": "independent"}, proof_classes=["example"], mutants=[], schedules=[], properties=[], corpora=[], tiers=["focused", "release-candidate"], resource_link=None, failure_owner="P6", red_proof=None, rc_carrier="conformance/reports/p6-integrated.json"),
-        row("AV-017", owner="P1", upstream_ref="G-OBS-001", criticality="informational", surfaces=["plans:bookkeeping"], oracle={"id": "ORC-ADV-STRUCT", "kind": "structural"}, proof_classes=["example"], mutants=[], schedules=[], properties=[], corpora=[], tiers=["focused"], resource_link=None, failure_owner="P10", red_proof=None, rc_carrier="plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/threat-model-v1.md"),
+        row("AV-017", owner="P1", upstream_ref="G-OBS-001", criticality="informational", surfaces=["plans:bookkeeping"], oracle={"id": "ORC-ADV-STRUCT", "kind": "structural"}, proof_classes=["example"], mutants=[], schedules=[], properties=[], corpora=[], tiers=["focused"], resource_link=None, failure_owner="P10", red_proof=None, rc_carrier="verification/root/contracts/threat-model-v1.md"),
         row("AV-018", owner="P8", upstream_ref="RL-001", criticality="ordinary", surfaces=["php:ExpressionLimits", "dart:ExpressionLimits"], oracle={"id": "ORC-SEM-P6", "kind": "independent"}, proof_classes=["property", "resource"], mutants=[], schedules=[], properties=["PROP-LIM-BOUNDARY"], corpora=["CRP-LIM-BOUNDARY"], tiers=["focused", "bounded", "release-candidate"], resource_link="RL-001", failure_owner="P8", red_proof=None, rc_carrier=rc_res, random=RANDOM_BOUNDED),
-        row("AV-019", owner="P9", upstream_ref="G-CI-001", criticality="ordinary", surfaces=["ci:trust-plane"], oracle={"id": "ORC-ADV-STRUCT", "kind": "structural"}, proof_classes=["example"], mutants=[], schedules=[], properties=[], corpora=[], tiers=["release-candidate"], resource_link=None, failure_owner="P9", red_proof=None, rc_carrier="plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/ci-supply-chain-v1.md"),
-        row("AV-020", owner="P10", upstream_ref="G-REL-001", criticality="ordinary", surfaces=["release:dossier"], oracle={"id": "ORC-ADV-STRUCT", "kind": "structural"}, proof_classes=["example"], mutants=[], schedules=[], properties=[], corpora=[], tiers=["release-candidate"], resource_link=None, failure_owner="P10", red_proof=None, rc_carrier="plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/release-acceptance-v1.md"),
+        row("AV-019", owner="P9", upstream_ref="G-CI-001", criticality="ordinary", surfaces=["ci:trust-plane"], oracle={"id": "ORC-ADV-STRUCT", "kind": "structural"}, proof_classes=["example"], mutants=[], schedules=[], properties=[], corpora=[], tiers=["release-candidate"], resource_link=None, failure_owner="P9", red_proof=None, rc_carrier="verification/root/contracts/ci-supply-chain-v1.md"),
+        row("AV-020", owner="P10", upstream_ref="G-REL-001", criticality="ordinary", surfaces=["release:dossier"], oracle={"id": "ORC-ADV-STRUCT", "kind": "structural"}, proof_classes=["example"], mutants=[], schedules=[], properties=[], corpora=[], tiers=["release-candidate"], resource_link=None, failure_owner="P10", red_proof=None, rc_carrier="verification/root/contracts/release-acceptance-v1.md"),
         row("AV-021", owner="P8", upstream_ref="NG-AVL-001", criticality="informational", surfaces=php_dart, oracle={"id": "ORC-ADV-STRUCT", "kind": "structural"}, proof_classes=["resource"], mutants=[], schedules=[], properties=[], corpora=[], tiers=["extended"], resource_link="RL-022", failure_owner="P8", red_proof=None, rc_carrier=rc_res),
         row("AV-022", owner="P8", upstream_ref="F10", criticality="ordinary", surfaces=php_dart, oracle={"id": "ORC-ADV-STRUCT", "kind": "independent"}, proof_classes=["example"], mutants=[], schedules=[], properties=[], corpora=[], tiers=all_tiers, resource_link=None, failure_owner="P8", red_proof=None, rc_carrier="fixtures/hardening/adversarial/manifest.v1.json"),
     ]

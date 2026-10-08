@@ -1,0 +1,1 @@
+{"injected_failure": "test infrastructure", "classification": {"id": "MUT-CNF-AUTH-BYPASS", "sdk": "php", "outcome": "killed", "killed": true, "duration_ms": 0, "command": ["php", "vendor/bin/phpunit", "tests/Confirmation/DurableReplayGateTest.php", "tests/Confirmation/ConfirmationProtocolTest.php"], "exit": 2}}

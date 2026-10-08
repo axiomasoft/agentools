@@ -1,0 +1,12 @@
+{
+  "id": "merge-compat-core-latest-receipt",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/ci_matrix.py",
+    "disposable-dart_core-latest"
+  ],
+  "started_utc": "2026-10-08T14:15:34.320968+00:00",
+  "exit_code": 0,
+  "duration_seconds": 8.179
+}

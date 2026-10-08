@@ -1,0 +1,4 @@
+> phpstan analyse -c phpstan.neon --no-progress --memory-limit=1G
+
+ [OK] No errors                                                                 
+

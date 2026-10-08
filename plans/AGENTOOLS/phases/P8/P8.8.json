@@ -1,0 +1,324 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P8.8",
+  "title": "Идемпотентность в Dart: ключ + `args_fingerprint`, три состояния, два таймера (§D1–§D3)",
+  "status": "done",
+  "summary": "Реализовать дедупликацию по документу `09` (правила `IDE-*`): клиентский идемпотентный ключ как ПЕРВИЧНЫЙ идентификатор, `args_fingerprint` как детектор misuse (но не первичный идентификатор), ровно три состояния записи без ожидания завершения параллельного запроса, два независимых таймера с РАЗНЫМИ кодами ошибок, порт `IdempotencyStore` с in-memory реализацией. `args_fingerprint` обязан совпасть с PHP на общих golden-входах.",
+  "why": "MCP не даёт механизма дедупликации вовсе — слой целиком наш, и в нём три ловушки, каждая из которых выглядит как разумное упрощение. Первая: считать ключ серверным хешом аргументов — ломается на легитимных повторах, где изменились несущественные поля (модель IETF-драфта и Stripe разводят ключ и fingerprint именно поэтому). Вторая: добавить четвёртое состояние «ждём завершения параллельного запроса» — драфт IETF и все три эталонных провайдера сходятся на НЕМЕДЛЕННОМ ответе, а ожидание превращает дедупликацию в распределённую блокировку; в Dart эта ловушка ближе, чем в PHP: `await` на завершение чужого `Future` выглядит идиоматично и естественно. Третья: слить два таймера в один — теряется защита от дубля после перезапуска клиента, потому что TTL токена подтверждения (минуты) и TTL записи дедупликации (часы–дни) выражают разный бизнес-риск. `RAG:— (repo-grounded: DR-01 §D1 — ключ генерирует вызывающий, fingerprint ловит misuse; §D2 — три состояния, ожидание запрещено, два разных кода ошибки; §D3 — два независимых таймера, второй ≥ первого + окно повторов; research/07-… §8, §9)`.",
+  "scope": {
+    "include": [
+      "(а) клиентский идемпотентный ключ как первичный идентификатор записи; (б) `args_fingerprint` = хеш канонизированных аргументов через фасад P8.3 — ЕДИНСТВЕННЫЙ способ его посчитать в пакете; (в) три состояния и только три: `new` → выполнять; `duplicate-completed` → вернуть сохранённый результат КАК ЕСТЬ, включая сохранённую ошибку; `concurrent-in-flight` → немедленно вернуть конфликт; (г) два РАЗНЫХ кода ошибки: конфликт по времени (повторяемо позже) и тот же ключ с другими аргументами (ошибка вызывающего) — их слияние запрещено; (д) два независимых таймера: TTL токена подтверждения и TTL записи дедупликации, второй ≥ первого + окно клиентских повторов; значение задаётся по классу действия, а не константой в коде; (е) порт `IdempotencyStore` в `lib/src/contracts/` — минимальная поверхность, плюс in-memory реализация; (ж) **межъязыковой якорь**: `args_fingerprint` на общих golden-входах побайтно равен зафиксированному фазой P7 (`php/tests/Idempotency/**`); (з) тесты, чьи ожидания взяты из векторов `IDE-*`, с перечнем заимствованных `id`."
+    ],
+    "exclude": [
+      "реестр эффектов и эпоха (P8.6 — другой механизм против другого дубля); токен подтверждения и его TTL как механика (P8.7 — здесь только соотношение таймеров); модель ошибок как таковая (P8.9 — здесь заводятся два конкретных кода в её форме); канонизация (P8.3); продуктовое хранилище записей дедупликации (D13 — вне репозитория); ЛЮБЫЕ правки ревизии, схем, корпуса и PHP SDK."
+    ]
+  },
+  "depends_on": [],
+  "decisions": [
+    "D1",
+    "D3",
+    "D71"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "spec/revisions/2026-08/09_idempotency-errors.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/rules.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/2026-08/README.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/2026-08/golden/idempotency/key-composition-001.input.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-07-p8-dart-sdk-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [],
+  "rules": [
+    "перечисление состояний ЗАКРЫТО тремя значениями (`enum`), четвёртое не заводится ни под каким именем — пока в перечислении есть «ждём», оно будет использовано (тот же довод, которым D71 закрыл перечисление статусов раннера); ожидание завершения параллельного запроса запрещено КОДОМ, а не соглашением: в модуле нет ни `await` на чужой `Future`/`Completer` завершения запроса, ни блокирующего цикла — проверяется грепом; `args_fingerprint` считается ТОЛЬКО через фасад канонизации P8.3 и сверяется с золотыми данными PHP; два таймера — два разных параметра с разными единицами конфигурации, соотношение «второй ≥ первого + окно повторов» проверяется тестом; сохранённая ошибка возвращается КАК ЕСТЬ, включая её код и тело — «переигрывать» её запрещено; расхождение с вектором разбирается прогоном против эталонного адаптера И адаптера PHP, все выводы — в отчёте; плановый линтер — командой из Phase Context."
+  ],
+  "guidance": "Стиль — как P8.5, идиоматичный Dart, НЕ транслит PHP; состояние — `sealed class` либо `enum` с исчерпывающим `switch` (компилятор обязан ловить забытую ветку). Анти-самообман: «дедупликация работает» ≠ «дедупликация различает три случая» — доказательством считаются три прогона: повтор завершённого возвращает сохранённый результат (в т.ч. ОШИБКУ), параллельный повтор отвечает НЕМЕДЛЕННО конфликтом, тот же ключ с другими аргументами даёт ОТДЕЛЬНЫЙ код. Анти-подгонка: если вектор ожидает немедленный конфликт, а реализация ждёт — убирается ожидание, а не смягчается вектор. ЗАПРЕЩЕНО: выводить ключ из аргументов на стороне SDK; заводить четвёртое состояние; ждать завершения параллельного запроса любым способом (`await`, `Completer`, `Future.any` по чужому запросу, polling); сливать два кода ошибок в один; сливать два таймера; считать fingerprint вторым способом. If-then: документ `09` не задаёт поведение при повторе с тем же ключом и теми же аргументами, но ИНЫМ инструментом → `🔴 Blocked` + эскалация (trigger «конфликт правил»). If-then: `args_fingerprint` не совпал с золотым значением PHP при зелёном P8.3 → `🔴 Blocked` + эскалация с адресатом «владелец + фазы P3/P7» (расходится СОСТАВ входа хеша, а не канонизация).",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "dart analyze dart/agentools; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "dart test --directory dart/agentools; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "php/tests/Idempotency/**",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "grep -rniE 'await |Completer|Future\\.any|while \\(true|sleep' dart/agentools/lib/src/idempotency | wc -l",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "cmd": "grep -rLE 'IDE-[0-9]' dart/agentools/test/idempotency | wc -l",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "cmd": "git diff --quiet -- php spec/revisions/2026-08 fixtures/2026-08 conformance; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "procedure": "dart analyze dart/agentools",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V8",
+      "procedure": "dart test (cwd dart/agentools)",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V9",
+      "procedure": "duplicate-completed returns stored error as-is",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V10",
+      "procedure": "concurrent-in-flight answers immediately",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V11",
+      "procedure": "same key different args separate code",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V12",
+      "procedure": "enum closed to three values",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V13",
+      "procedure": "cross-language args_fingerprint anchor",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V14",
+      "procedure": "grep await/Completer in idempotency lib",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V15",
+      "procedure": "grep -rLE IDE-[0-9] dart/agentools/test/idempotency | wc -l",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V16",
+      "procedure": "git diff foreign artifacts",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V17",
+      "procedure": "plan-lint AGENTOOLS",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "дедупликация по клиентскому ключу с `args_fingerprint` как детектором misuse + ДОКАЗАННОЕ побайтное совпадение fingerprint'а с PHP + закрытое перечисление трёх состояний без ожидания + два различимых кода ошибки + два независимых таймера с проверяемым соотношением + порт `IdempotencyStore` с in-memory реализацией + три прогона состояний с выводом."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-19T05:14:15Z",
+    "finished_at": "2026-09-19T05:14:15Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "implementation/high",
+      "effort": "high"
+    },
+    "notes": "IDE-3/6/7/9/10/12..16/18/19/21/23; Contracts/IdempotencyStore + in-memory ref; three states no-wait; two error codes; two timers; PHP fingerprint anchor; 79 tests; write-site: pre_mutation: allow · pre_final: allow\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V7",
+        "exit": 0,
+        "at": "2026-09-19T05:14:15Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V8",
+        "exit": 0,
+        "at": "2026-09-19T05:14:15Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V9",
+        "exit": 0,
+        "at": "2026-09-19T05:14:15Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V10",
+        "exit": 0,
+        "at": "2026-09-19T05:14:15Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V11",
+        "exit": 0,
+        "at": "2026-09-19T05:14:15Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V12",
+        "exit": 0,
+        "at": "2026-09-19T05:14:15Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V13",
+        "exit": 0,
+        "at": "2026-09-19T05:14:15Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V14",
+        "exit": 0,
+        "at": "2026-09-19T05:14:15Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V15",
+        "exit": 0,
+        "at": "2026-09-19T05:14:15Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V16",
+        "exit": 0,
+        "at": "2026-09-19T05:14:15Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V17",
+        "exit": 0,
+        "at": "2026-09-19T05:14:15Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-19T05:14:15Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Реализовать дедупликацию по документу `09` (правила `IDE-*`): клиентский идемпотентный ключ как ПЕРВИЧНЫЙ идентификатор, `args_fingerprint` как детектор misuse (но не первичный идентификатор), ровно три состояния записи без ожидания завершения параллельного запроса, два независимых таймера с РАЗНЫМИ кодами ошибок, порт `IdempotencyStore` с in-memory реализацией. `args_fingerprint` обязан совпасть с PHP на общих golden-входах."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "MCP не даёт механизма дедупликации вовсе — слой целиком наш, и в нём три ловушки, каждая из которых выглядит как разумное упрощение. Первая: считать ключ серверным хешом аргументов — ломается на легитимных повторах, где изменились несущественные поля (модель IETF-драфта и Stripe разводят ключ и fingerprint именно поэтому). Вторая: добавить четвёртое состояние «ждём завершения параллельного запроса» — драфт IETF и все три эталонных провайдера сходятся на НЕМЕДЛЕННОМ ответе, а ожидание превращает дедупликацию в распределённую блокировку; в Dart эта ловушка ближе, чем в PHP: `await` на завершение чужого `Future` выглядит идиоматично и естественно. Третья: слить два таймера в один — теряется защита от дубля после перезапуска клиента, потому что TTL токена подтверждения (минуты) и TTL записи дедупликации (часы–дни) выражают разный бизнес-риск. `RAG:— (repo-grounded: DR-01 §D1 — ключ генерирует вызывающий, fingerprint ловит misuse; §D2 — три состояния, ожидание запрещено, два разных кода ошибки; §D3 — два независимых таймера, второй ≥ первого + окно повторов; research/07-… §8, §9)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "(а) клиентский идемпотентный ключ как первичный идентификатор записи; (б) `args_fingerprint` = хеш канонизированных аргументов через фасад P8.3 — ЕДИНСТВЕННЫЙ способ его посчитать в пакете; (в) три состояния и только три: `new` → выполнять; `duplicate-completed` → вернуть сохранённый результат КАК ЕСТЬ, включая сохранённую ошибку; `concurrent-in-flight` → немедленно вернуть конфликт; (г) два РАЗНЫХ кода ошибки: конфликт по времени (повторяемо позже) и тот же ключ с другими аргументами (ошибка вызывающего) — их слияние запрещено; (д) два независимых таймера: TTL токена подтверждения и TTL записи дедупликации, второй ≥ первого + окно клиентских повторов; значение задаётся по классу действия, а не константой в коде; (е) порт `IdempotencyStore` в `lib/src/contracts/` — минимальная поверхность, плюс in-memory реализация; (ж) **межъязыковой якорь**: `args_fingerprint` на общих golden-входах побайтно равен зафиксированному фазой P7 (`php/tests/Idempotency/**`); (з) тесты, чьи ожидания взяты из векторов `IDE-*`, с перечнем заимствованных `id`."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "реестр эффектов и эпоха (P8.6 — другой механизм против другого дубля); токен подтверждения и его TTL как механика (P8.7 — здесь только соотношение таймеров); модель ошибок как таковая (P8.9 — здесь заводятся два конкретных кода в её форме); канонизация (P8.3); продуктовое хранилище записей дедупликации (D13 — вне репозитория); ЛЮБЫЕ правки ревизии, схем, корпуса и PHP SDK."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`dart/agentools/lib/src/schema/canonicalizer.dart` · `dart/agentools/lib/src/idempotency/arguments_fingerprint.dart` · `dart/agentools/lib/src/confirmation/confirmation_protocol.dart` (TTL reference) · `spec/revisions/2026-08/09_idempotency-errors.md` · `spec/revisions/2026-08/rules.json` (правила `IDE-*`) · `fixtures/2026-08/README.md` · `fixtures/2026-08/golden/idempotency/key-composition-001.input.json` · `php/tests/Idempotency/InMemoryDeduplicationStoreTest.php` (золотые входы и значения `args_fingerprint`) · `php/src/Idempotency/InMemoryDeduplicationStore.php` · `@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §D1–§D3 · `@plan/knowledge/research-07-p8-dart-sdk-2026-08.json` §8, §9."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`dart/agentools/lib/src/idempotency/**` · `dart/agentools/lib/src/contracts/**` (порт `IdempotencyStore`) · `dart/agentools/lib/agentools.dart` · `dart/agentools/test/idempotency/**` (репо-пути — от корня `~/projects/packages/agentools`)"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/research-07-p8-dart-sdk-2026-08.json` §8, §9 2) `spec/revisions/2026-08/09_idempotency-errors.md` ЦЕЛИКОМ 3) `spec/revisions/2026-08/rules.json` (строки `IDE-*`) 4) `fixtures/2026-08/README.md` + векторы `IDE-*` 5) `@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §D1–§D3 6) `@plan/plan.json` §2 Execution Rules, §5 (D5, D72, D90)."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "перечисление состояний ЗАКРЫТО тремя значениями (`enum`), четвёртое не заводится ни под каким именем — пока в перечислении есть «ждём», оно будет использовано (тот же довод, которым D71 закрыл перечисление статусов раннера); ожидание завершения параллельного запроса запрещено КОДОМ, а не соглашением: в модуле нет ни `await` на чужой `Future`/`Completer` завершения запроса, ни блокирующего цикла — проверяется грепом; `args_fingerprint` считается ТОЛЬКО через фасад канонизации P8.3 и сверяется с золотыми данными PHP; два таймера — два разных параметра с разными единицами конфигурации, соотношение «второй ≥ первого + окно повторов» проверяется тестом; сохранённая ошибка возвращается КАК ЕСТЬ, включая её код и тело — «переигрывать» её запрещено; расхождение с вектором разбирается прогоном против эталонного адаптера И адаптера PHP, все выводы — в отчёте; плановый линтер — командой из Phase Context."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Стиль — как P8.5, идиоматичный Dart, НЕ транслит PHP; состояние — `sealed class` либо `enum` с исчерпывающим `switch` (компилятор обязан ловить забытую ветку). Анти-самообман: «дедупликация работает» ≠ «дедупликация различает три случая» — доказательством считаются три прогона: повтор завершённого возвращает сохранённый результат (в т.ч. ОШИБКУ), параллельный повтор отвечает НЕМЕДЛЕННО конфликтом, тот же ключ с другими аргументами даёт ОТДЕЛЬНЫЙ код. Анти-подгонка: если вектор ожидает немедленный конфликт, а реализация ждёт — убирается ожидание, а не смягчается вектор. ЗАПРЕЩЕНО: выводить ключ из аргументов на стороне SDK; заводить четвёртое состояние; ждать завершения параллельного запроса любым способом (`await`, `Completer`, `Future.any` по чужому запросу, polling); сливать два кода ошибок в один; сливать два таймера; считать fingerprint вторым способом. If-then: документ `09` не задаёт поведение при повторе с тем же ключом и теми же аргументами, но ИНЫМ инструментом → `🔴 Blocked` + эскалация (trigger «конфликт правил»). If-then: `args_fingerprint` не совпал с золотым значением PHP при зелёном P8.3 → `🔴 Blocked` + эскалация с адресатом «владелец + фазы P3/P7» (расходится СОСТАВ входа хеша, а не канонизация)."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`dart analyze dart/agentools; echo $?` = 0 · `dart test --directory dart/agentools; echo $?` = 0 · три прогона состояний: `duplicate-completed` возвращает сохранённую ОШИБКУ как есть, `concurrent-in-flight` отвечает немедленно, тот же ключ + другие аргументы даёт ОТДЕЛЬНЫЙ код (все три вывода — в Completion Notes) · тест закрытости перечисления: перечисление состояний содержит ровно три значения (вывод — в Completion Notes) · **межъязыковой якорь**: `args_fingerprint` на общем golden-входе побайтно равен значению из `php/tests/Idempotency/**` — сверка выполнена командой (команда и оба значения — в Completion Notes) · `grep -rniE 'await |Completer|Future\\.any|while \\(true|sleep' dart/agentools/lib/src/idempotency | wc -l` — вывод приводится в Completion Notes с пояснением по КАЖДОМУ совпадению, что оно не является ожиданием завершения параллельного запроса (ноль совпадений — предпочтительный результат) · тест соотношения таймеров: конфигурация с TTL записи меньше TTL токена отвергается — зелёный · `grep -rLE 'IDE-[0-9]' dart/agentools/test/idempotency | wc -l` = 0 · `git diff --quiet -- php spec/revisions/2026-08 fixtures/2026-08 conformance; echo $?` = 0 · прогнать плановый линтер по каталогу плана и опубликовать счёт с атрибуцией, K = 0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "дедупликация по клиентскому ключу с `args_fingerprint` как детектором misuse + ДОКАЗАННОЕ побайтное совпадение fingerprint'а с PHP + закрытое перечисление трёх состояний без ожидания + два различимых кода ошибки + два независимых таймера с проверяемым соотношением + порт `IdempotencyStore` с in-memory реализацией + три прогона состояний с выводом."
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P4.3",
+  "title": "Реализовать PostgreSQL lease adapter, takeover и retention",
+  "status": "done",
+  "summary": "Ввести в оба SDK durable PostgreSQL adapter на injected SQL, который атомарно выдаёт один lease, делает takeover по истечении, CAS-complete/fail и чистит только completed rows.",
+  "why": "Unique `(tenant_id, tool_name, idempotency_key)` plus token CAS is the only proof across workers. In-memory and unfenced SQLite leave the crash window open. `RAG:—`; SQL semantics — `@plan/knowledge/research-P4-design-rag.json`.",
+  "scope": {
+    "include": [
+      "Versioned SQL schema; PHP PDO PostgreSQL adapter; Dart adapter over injected SQL executor; takeover/heartbeat SQL; completed-only cleanup; concurrency, stale-worker, fingerprint, TTL and collision tests; SQLite reference store brought to the same CAS contract or clearly marked insufficient for P4.3 close."
+    ],
+    "exclude": [
+      "Coordinator public API; capability catalog behavior beyond storing whatever complete/fail the caller sends; event journal; adding Composer/pub driver libraries; applying SQL to an owner production database; CI matrix ownership (P9)."
+    ]
+  },
+  "depends_on": [],
+  "decisions": [
+    "D8"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/root-contracts-idempotency-lease-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/hardening/idempotency-lease-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-P4-design.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-P4-design-rag.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/phases/P3/P3.3.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "fixtures/hardening/sql/idempotency-lease.v1.sql",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "First acquire is `INSERT … ON CONFLICT (tenant_id, tool_name, idempotency_key) DO NOTHING RETURNING`. Takeover is `UPDATE … SET lease_token, attempt=attempt+1, lease_until WHERE in_progress AND lease_until <= :now RETURNING`. Complete/fail/heartbeat `UPDATE … WHERE in_progress AND lease_token=:token RETURNING`. Empty RETURNING is lost-lease / lost-takeover; do not SELECT-after-empty to authorize an effect. Cleanup is `DELETE WHERE state='completed' AND expires_at < :now`. Partial unique indexes on unexpired rows are forbidden. In-memory cannot close this item. PHP `suggests` `ext-pdo_pgsql`; Dart does not add a `postgres` dependency. Shared SQL file is the schema SSOT. Tenant isolation is part of the primary key."
+  ],
+  "guidance": "Two connections/executors in one test process are sufficient for the arbiter; a stale-worker test keeps the old lease object after takeover. Parameterize `:now` from injected Clock. Do not log tokens or full result payloads. Follow D8’s injected-SQL pattern; do not introduce a second persistence style.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "cd php && composer analyse",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "cd dart/agentools && dart analyze",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "git diff --exit-code -- spec/revisions/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "procedure": "cd php && composer test -- --filter PdoPostgresIdempotencyStoreTest",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "procedure": "cd php && composer test -- --filter SqliteIdempotencyStoreTest",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "procedure": "cd dart/agentools && dart test test/idempotency/sql_idempotency_store_test.dart",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "procedure": "cd php && composer analyse",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "Durable fenced store adapter, versioned SQL, takeover/retention evidence, and an honest SQLite reference disposition."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-20T07:39:05Z",
+    "finished_at": "2026-09-20T07:39:05Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "grok-4.6/high",
+      "effort": "high"
+    },
+    "notes": "PdoPostgresIdempotencyStore unique-arbiter + takeover/retention; shared SQL SSOT; Dart SqlIdempotencyStore injected SQL; SQLite reference CAS marked insufficient for durable close.\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V4",
+        "exit": 0,
+        "at": "2026-09-20T07:39:05Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V5",
+        "exit": 0,
+        "at": "2026-09-20T07:39:05Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V6",
+        "exit": 0,
+        "at": "2026-09-20T07:39:05Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V7",
+        "exit": 0,
+        "at": "2026-09-20T07:39:05Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-20T07:39:05Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Ввести в оба SDK durable PostgreSQL adapter на injected SQL, который атомарно выдаёт один lease, делает takeover по истечении, CAS-complete/fail и чистит только completed rows."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Unique `(tenant_id, tool_name, idempotency_key)` plus token CAS is the only proof across workers. In-memory and unfenced SQLite leave the crash window open. `RAG:—`; SQL semantics — `@plan/knowledge/research-P4-design-rag.json`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "Versioned SQL schema; PHP PDO PostgreSQL adapter; Dart adapter over injected SQL executor; takeover/heartbeat SQL; completed-only cleanup; concurrency, stale-worker, fingerprint, TTL and collision tests; SQLite reference store brought to the same CAS contract or clearly marked insufficient for P4.3 close."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Coordinator public API; capability catalog behavior beyond storing whatever complete/fail the caller sends; event journal; adding Composer/pub driver libraries; applying SQL to an owner production database; CI matrix ownership (P9)."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/knowledge/root-contracts-idempotency-lease-v1.json` · `fixtures/hardening/idempotency-lease-v1.json` · `@plan/knowledge/research-P4-design.json`"
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`php/src/Idempotency/PdoPostgresIdempotencyStore.php` · `php/tests/Idempotency/PdoPostgresIdempotencyStoreTest.php` · `dart/agentools/lib/src/idempotency/sql_idempotency_store.dart` · `dart/agentools/test/idempotency/sql_idempotency_store_test.dart` · `php/reference/Persistence/SqliteIdempotencyStore.php` · `php/tests/Reference/Persistence/SqliteIdempotencyStoreTest.php` · `fixtures/hardening/sql/idempotency-lease.v1.sql` · `composer.json` · `dart/agentools/pubspec.yaml`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/root-contracts-idempotency-lease-v1.json` 2) `fixtures/hardening/idempotency-lease-v1.json` 3) `@plan/knowledge/research-P4-design.json` 4) `@plan/knowledge/research-P4-design-rag.json` 5) `php/src/Contracts/IdempotencyStore.php` 6) `php/reference/Persistence/SqliteIdempotencyStore.php` 7) `@plan/phases/P3/P3.3.json`."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "First acquire is `INSERT … ON CONFLICT (tenant_id, tool_name, idempotency_key) DO NOTHING RETURNING`. Takeover is `UPDATE … SET lease_token, attempt=attempt+1, lease_until WHERE in_progress AND lease_until <= :now RETURNING`. Complete/fail/heartbeat `UPDATE … WHERE in_progress AND lease_token=:token RETURNING`. Empty RETURNING is lost-lease / lost-takeover; do not SELECT-after-empty to authorize an effect. Cleanup is `DELETE WHERE state='completed' AND expires_at < :now`. Partial unique indexes on unexpired rows are forbidden. In-memory cannot close this item. PHP `suggests` `ext-pdo_pgsql`; Dart does not add a `postgres` dependency. Shared SQL file is the schema SSOT. Tenant isolation is part of the primary key."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Two connections/executors in one test process are sufficient for the arbiter; a stale-worker test keeps the old lease object after takeover. Parameterize `:now` from injected Clock. Do not log tokens or full result payloads. Follow D8’s injected-SQL pattern; do not introduce a second persistence style."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "Shared SQL applied to ephemeral PostgreSQL; 50 concurrent acquires yield exactly one lease and 49 in-flight; expired lease yields one takeover; stale complete/fail/heartbeat yield lost-lease; fingerprint mismatch does not overwrite; cleanup negative test fails if it deletes in-progress or unexpired completed rows; PHPUnit postgres group and Dart SQL tests green; `cd php && composer analyse`; `cd dart/agentools && dart analyze`; `git diff --exit-code -- spec/revisions/2026-08`; plan lint adds no ERROR."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "Durable fenced store adapter, versioned SQL, takeover/retention evidence, and an honest SQLite reference disposition."
+    }
+  ]
+}

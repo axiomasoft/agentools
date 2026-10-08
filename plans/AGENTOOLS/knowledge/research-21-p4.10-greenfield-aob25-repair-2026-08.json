@@ -1,0 +1,37 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "research-21-p4.10-greenfield-aob25-repair-2026-08",
+  "title": "21 — P4.10: greenfield repair пары AOB-25",
+  "sections": [
+    {
+      "id": "21-P4.10-greenfield-repair-AOB-25",
+      "title": "21 — P4.10: greenfield repair пары AOB-25",
+      "text": "**Дата:** 2026-08-04<br>\n**Статус:** design input `task:plan-design AGENTOOLS P4.10`<br>\n**Сырьё:** директива владельца «пакет с нуля создаётся» · escalation P4.13 ·\n`spec/revisions/2026-08/08_audit-observability.md` AOB-25 · фактические\n`fixtures/2026-08/vectors/l3/audit-004.json` и `audit-104.json`."
+    },
+    {
+      "id": "1.",
+      "title": "1. Корень повторного отказа",
+      "text": "P4.13 требует от каждой behavior-pair ровно один наблюдаемый counterfactual во входе\n`given`/`script`. У `audit-004/104` их два:\n\n1. `/given/driver_state/audit_export/mapping_version`:\n   `revision-2026-08` ↔ `otel-semconv-1.27`;\n2. `/given/tools/0/description`: различаются строки `Call when`.\n\nПервый diff — предмет AOB-25: версия mapping отдельного export-adapter обязана меняться\nнезависимо от ревизии. Второй diff — посторонний stimulus: модель видит разный tool descriptor,\nпоэтому различие результата нельзя однозначно приписать mapping version. `RAG:—\n(repo-grounded: structural diff audit-004/104; 08_audit-observability.md:201–204)`."
+    },
+    {
+      "id": "2.-Greenfield",
+      "title": "2. Greenfield-инвариант владельца",
+      "text": "AgenTools создаётся с нуля. Коммиты промежуточного корпуса — история разработки, но не\nопубликованный API и не вход миграции. Поэтому корректность текущего тестового контракта имеет\nприоритет над байтовым сохранением случайной формулировки draft-fixture. Здесь не нужны:\n\n- legacy-ветка для старой `description`;\n- alias/migration layer;\n- assertion «файл обязан остаться равен прежнему commit», если прежний байт создаёт второй\n  counterfactual.\n\nСохраняются только уже принятые продуктовые инварианты: single-rule pair D156, exact-one\nstructured evidence D159, замороженная норма AOB-25 и граница write-set текущего P4.13.\n`RAG:— (repo-grounded: owner refinement 2026-08-04; @plan/plan.json D156/D159)`."
+    },
+    {
+      "id": "3.-repair",
+      "title": "3. Выбранный repair",
+      "text": "Обе половины получают одну нейтральную четырехстрочную `description`:\n\n```text\nPurpose: Экспортирует проверяемую запись аудита.\nCall when: Нужно проверить экспорт аудита через отдельный адаптер.\nRequired arguments: value.\nExample: demo_probe({\"value\":\"audit\"})\n```\n\nДругие поля `given.tools` и весь `script` остаются одинаковыми. Negative сохраняет\n`mapping_version=revision-2026-08`, то есть ошибочную привязку mapping к ревизии; positive —\n`mapping_version=otel-semconv-1.27`, то есть отдельно версионированный adapter mapping. `expect`\nостаётся адресным oracle и не участвует в вычислении input-diff. После правки structural diff\nобязан содержать ровно один pointer:\n`/given/driver_state/audit_export/mapping_version`. `RAG:— (repo-grounded:\n08_audit-observability.md AOB-25; fixtures README audit_export contract)`."
+    },
+    {
+      "id": "4.",
+      "title": "4. Границы и следующий шаг",
+      "text": "P4.10 меняет только два fixture-файла. Текущие незакоммиченные `tools/spec_lint.py` и\n`fixtures/2026-08/coverage.md` принадлежат P4.13: их нельзя reset/stash, править или включать в\nitem-коммит P4.10. После item-close P4.13 повторяет relation-aware extractor, выпускает manifest\nи A3. Если exact-one всё ещё не выполняется, исполнитель публикует все оставшиеся JSON Pointer и\nэскалирует; ослабление D159 или special-case по id запрещены.\n\nОткрытых design-вопросов нет. Следующий шаг — `task:plan-run AGENTOOLS P4.10` под\n`implementation/high`."
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "research/21-p4.10-greenfield-aob25-repair-2026-08.md",
+    "sha256": "8757c309d87639d4fb1f4e0e8043c1ee7e236eef345dd6f5d42433c911f16e81"
+  }
+}

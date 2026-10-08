@@ -20,6 +20,32 @@ final class TokenEnvelopeTest extends TestCase
     private const AUD = 'confirmation';
     private const CANONICAL = '{"action_id":"act-1","alg":"HS256","args_fingerprint":"fp","aud":"confirmation","descriptor_digest":"dd","expires_at":"2026-09-20T12:00:00+00:00","iat":"2026-09-20T10:00:00+00:00","iss":"agentools","jti":"00000000000000000000000000000001","kid":"k1","nbf":"2026-09-20T10:00:00+00:00","principal":"user-a","proposal_id":"p-1","proposal_version":1,"purpose":"confirmation","tenant_id":"tenant-a","tool_name":"tool","v":1}';
 
+    public function testInvalidCalendarClaimsRejectAtIssueAndAuthenticatedParse(): void
+    {
+        $raw = file_get_contents(dirname(__DIR__, 3) . '/fixtures/hardening/audit-regressions-v1.json');
+        self::assertIsString($raw);
+        /** @var array{invalid_times: list<string>} $data */
+        $data = json_decode($raw, true, 512, JSON_THROW_ON_ERROR);
+        foreach ($data['invalid_times'] as $time) {
+            foreach (['iat', 'nbf', 'expires_at'] as $field) {
+                $claims = $this->claims();
+                $claims[$field] = $time;
+                foreach (['issue', 'parse'] as $operation) {
+                    try {
+                        if ($operation === 'issue') {
+                            TokenEnvelope::issue($claims, $this->signing());
+                        } else {
+                            TokenEnvelope::parse($this->issueWith([$field => $time]), $this->keys(), new \DateTimeImmutable('2026-09-20T11:00:00+00:00'), self::ISS, self::AUD);
+                        }
+                        self::fail($operation . ' accepted invalid ' . $field . ': ' . $time);
+                    } catch (ConfirmationFailure $failure) {
+                        self::assertSame('agentools.validation.confirmation_token_invalid', $failure->error->code);
+                    }
+                }
+            }
+        }
+    }
+
     public function testManifestParseAndVerifyCases(): void
     {
         $raw = file_get_contents(dirname(__DIR__, 3) . '/fixtures/hardening/token-replay-v1.json');

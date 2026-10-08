@@ -1,0 +1,12 @@
+{
+  "id": "node-number-oracle",
+  "cwd": ".",
+  "command": [
+    "node",
+    "-e",
+    "console.log(JSON.stringify(JSON.parse('{\"n\":9007199254740993}')))"
+  ],
+  "started_utc": "2026-10-08T12:14:15.303713+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.016
+}

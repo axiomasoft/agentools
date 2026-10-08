@@ -247,7 +247,27 @@ final class TokenEnvelope {
       throw ConfirmationFailure.tokenInvalid();
     }
     try {
-      return DateTime.parse(value).toUtc();
+      final parsed = DateTime.parse(value).toUtc();
+      final parts = <int>[
+        int.parse(value.substring(0, 4)),
+        int.parse(value.substring(5, 7)),
+        int.parse(value.substring(8, 10)),
+        int.parse(value.substring(11, 13)),
+        int.parse(value.substring(14, 16)),
+        int.parse(value.substring(17, 19)),
+      ];
+      final actual = <int>[
+        parsed.year,
+        parsed.month,
+        parsed.day,
+        parsed.hour,
+        parsed.minute,
+        parsed.second,
+      ];
+      for (var i = 0; i < parts.length; i++) {
+        if (parts[i] != actual[i]) throw ConfirmationFailure.tokenInvalid();
+      }
+      return parsed;
     } catch (_) {
       throw ConfirmationFailure.tokenInvalid();
     }

@@ -6,12 +6,18 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
+
+try:
+    from .isolated_workspace import copy_workspace
+except ImportError:
+    from isolated_workspace import copy_workspace
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -25,10 +31,8 @@ except ImportError:  # pragma: no cover
 REPO = Path(__file__).resolve().parents[1]
 if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
-
-from tools import locked_cli  # noqa: E402
-
-PLAN = REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING"
+from tools import locked_cli
+PLAN = REPO / "verification"
 COMPAT = PLAN / "root/contracts/compatibility-support-v1.md"
 MANIFEST = REPO / "fixtures/hardening/adversarial/manifest.v1.json"
 P8_GATE = PLAN / "artifacts/P8-adversarial-gate.json"
@@ -419,63 +423,55 @@ def cmd_write_finding(_: argparse.Namespace) -> int:
     return 0
 
 
-def disposable_php_resolution(mode: str) -> tuple[int, str]:
+def _disposable_resolution(package: str, mode: str) -> tuple[int, str]:
     if mode not in {"lowest", "latest"}:
         raise ValueError(mode)
-    source_digest = sha256_file(LOCKFILES["php"])
-    with tempfile.TemporaryDirectory() as tmp:
+    before = {key: sha256_file(path) for key, path in LOCKFILES.items()}
+    with tempfile.TemporaryDirectory(prefix="agentools-compat-") as tmp:
         workspace = Path(tmp) / "tree"
-        shutil.copytree(REPO / "php", workspace / "php")
-        args = ["composer", "update", "--no-interaction", "--prefer-dist"]
-        if mode == "lowest":
-            args = ["composer", "update", "--no-interaction", "--prefer-dist", "--prefer-lowest", "--prefer-stable"]
-        proc = subprocess.run(
-            args,
-            cwd=workspace / "php",
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=300,
-        )
-        if proc.returncode != 0:
-            return proc.returncode, proc.stderr or proc.stdout
-        if sha256_file(LOCKFILES["php"]) != source_digest:
-            return 1, "source php/composer.lock mutated"
-        return 0, "ok"
+        copy_workspace(REPO, workspace)
+        if package == "php":
+            cwd = workspace / "php"
+            resolve = ["composer", "update", "--no-interaction", "--prefer-dist"]
+            if mode == "lowest":
+                resolve += ["--prefer-lowest", "--prefer-stable"]
+            commands = [resolve, ["composer", "test"], ["composer", "analyse"]]
+        else:
+            cwd = workspace / DART_PACKAGES[package].relative_to(REPO)
+            commands = [["dart", "pub", "downgrade" if mode == "lowest" else "upgrade"],
+                        ["dart", "analyze", "--fatal-infos"], ["dart", "test"]]
+        executed = []
+        try:
+            for command in commands:
+                proc = subprocess.run(command, cwd=cwd, check=False, capture_output=True,
+                                      text=True, timeout=600)
+                if proc.returncode != 0:
+                    return proc.returncode, f"{command}:\n{proc.stdout}\n{proc.stderr}"
+                executed.append({"command": command, "exit_code": proc.returncode,
+                                 "output_tail": (proc.stdout + proc.stderr)[-4000:]})
+            resolved = cwd / ("composer.lock" if package == "php" else "pubspec.lock")
+            if package == "php":
+                lock = json.loads(resolved.read_text())
+                versions = {entry["name"]: entry["version"] for group in ("packages", "packages-dev") for entry in lock.get(group, [])}
+            else:
+                lock = load_yaml(resolved.read_text())
+                versions = {name: entry["version"] for name, entry in lock["packages"].items()}
+            receipt = {"schema": "compatibility-execution/v1", "package": package, "resolution": mode,
+                       "resolved_lock_sha256": sha256_file(resolved), "resolved_versions": versions,
+                       "checks": executed, "source_lock_digests": before, "source_locks_unchanged": True}
+        finally:
+            after = {key: sha256_file(path) for key, path in LOCKFILES.items()}
+            if before != after:
+                raise RuntimeError("disposable resolution modified source lockfiles")
+    return 0, canonical_json(receipt)
+
+
+def disposable_php_resolution(mode: str) -> tuple[int, str]:
+    return _disposable_resolution("php", mode)
 
 
 def disposable_dart_resolution(package: str, mode: str) -> tuple[int, str]:
-    if mode not in {"lowest", "latest"}:
-        raise ValueError(mode)
-    root = DART_PACKAGES[package]
-    lock = LOCKFILES[package]
-    source_digest = sha256_file(lock)
-    with tempfile.TemporaryDirectory() as tmp:
-        workspace = Path(tmp) / "tree" / root.name
-        ignore = shutil.ignore_patterns(".dart_tool", "build")
-        shutil.copytree(root, workspace, ignore=ignore)
-        if package == "dart_mcp":
-            # Preserve the companion's ../agentools path dependency in a cold
-            # workspace rather than borrowing the checkout's package config.
-            core = DART_PACKAGES["dart_core"]
-            shutil.copytree(core, workspace.parent / core.name, ignore=ignore)
-        if mode == "lowest":
-            cmd = ["dart", "pub", "downgrade"]
-        else:
-            cmd = ["dart", "pub", "upgrade"]
-        proc = subprocess.run(
-            cmd,
-            cwd=workspace,
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=180,
-        )
-        if proc.returncode != 0:
-            return proc.returncode, proc.stderr or proc.stdout
-        if sha256_file(lock) != source_digest:
-            return 1, f"source {lock.relative_to(REPO)} mutated"
-        return 0, "ok"
+    return _disposable_resolution(package, mode)
 
 
 def cmd_install_scanners(_: argparse.Namespace) -> int:
@@ -507,6 +503,11 @@ def cmd_disposable(raw: str) -> int:
         code, message = disposable_dart_resolution(ecosystem, mode)
     if code != 0:
         print(message, file=sys.stderr)
+    else:
+        receipt_path = PLAN / f"artifacts/P9-compatibility-{ecosystem}-{mode}.json"
+        receipt_path.parent.mkdir(parents=True, exist_ok=True)
+        receipt_path.write_text(message, encoding="utf-8")
+        print(f"Compatibility passed: {receipt_path.relative_to(REPO)}")
     return code
 
 
@@ -711,10 +712,9 @@ class CiMatrixTests(unittest.TestCase):
                 "plans/leak.env",
                 "conformance/reports/leak.env",
             )
-            # Canaries are assembled at runtime so the repository itself carries no key-shaped literal.
-            access_keys = tuple(
-                "AKIA" + suffix for suffix in ("QWERTYUIOPASDFGH", "ZXCVBNMASDFGHJKL", "MNBVCXZLKJHGFDSA")
-            )
+            access_keys = tuple("AK" + "IA" + suffix for suffix in (
+                "QWERTYUIOPASDFGH", "ZXCVBNMASDFGHJKL", "MNBVCXZLKJHGFDSA",
+            ))
             for relative, access_key in zip(paths, access_keys, strict=True):
                 target = root / relative
                 target.parent.mkdir(parents=True, exist_ok=True)

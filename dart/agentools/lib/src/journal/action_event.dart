@@ -15,16 +15,39 @@ final class ActionEvent {
     required Map<String, dynamic> payload,
     this.epoch,
     this.previousHash,
-  }) : payload = Map.unmodifiable(payload),
-       assert(eventId.isNotEmpty),
-       assert(actionId.isNotEmpty),
-       assert(timestamp.isNotEmpty),
-       assert(kind.isNotEmpty),
-       assert(specRevision.isNotEmpty),
-       assert(seq >= 1),
-       assert(expectedPrevSeq >= 0),
-       assert(eventVersion >= 1),
-       assert(epoch == null || epoch >= 1);
+  }) : payload = Map.unmodifiable(payload) {
+    if (!(eventId.isNotEmpty)) {
+      throw ArgumentError('Invalid action_event field: eventId.isNotEmpty');
+    }
+    if (!(actionId.isNotEmpty)) {
+      throw ArgumentError('Invalid action_event field: actionId.isNotEmpty');
+    }
+    if (!(timestamp.isNotEmpty)) {
+      throw ArgumentError('Invalid action_event field: timestamp.isNotEmpty');
+    }
+    if (!(kind.isNotEmpty)) {
+      throw ArgumentError('Invalid action_event field: kind.isNotEmpty');
+    }
+    if (!(specRevision.isNotEmpty)) {
+      throw ArgumentError(
+        'Invalid action_event field: specRevision.isNotEmpty',
+      );
+    }
+    if (!(seq >= 1)) {
+      throw ArgumentError('Invalid action_event field: seq >= 1');
+    }
+    if (!(expectedPrevSeq >= 0)) {
+      throw ArgumentError('Invalid action_event field: expectedPrevSeq >= 0');
+    }
+    if (!(eventVersion >= 1)) {
+      throw ArgumentError('Invalid action_event field: eventVersion >= 1');
+    }
+    if (!(epoch == null || epoch! >= 1)) {
+      throw ArgumentError(
+        'Invalid action_event field: epoch == null || epoch! >= 1',
+      );
+    }
+  }
 
   final String eventId;
   final String actionId;

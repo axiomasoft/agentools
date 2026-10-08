@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D24",
+  "title": "Решение",
+  "date": "2026-07-27",
+  "status": "accepted",
+  "decision": "**Волны `DR-01` §K названы фазами `Pn`, а не `A0/A1/A2/A3/B`.** Альтернатива (литеральные метки) отклонена фактом инструментария: `plan-lint` парсит только `P\\d+`, `plan-exec`/`plan-close`/`plan-audit` — только `P\\d+\\.\\d+` → литеральные фазы были бы нелинтуемы, а команды по ним не работали бы. Метки §K сохранены в заголовках фаз и карте §4",
+  "rationale": "`RAG:— (repo-grounded: plan_lint.py:89 ITEM_HEADER_RE, :101 HANDOFF_TITLE_RE, :107 PLAN_EXEC_RE, :151 PHASE_FILENAME_RE)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D24\ndate: 2026-07-27\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Волны `DR-01` §K названы фазами `Pn`, а не `A0/A1/A2/A3/B`.** Альтернатива (литеральные метки) отклонена фактом инструментария: `plan-lint` парсит только `P\\d+`, `plan-exec`/`plan-close`/`plan-audit` — только `P\\d+\\.\\d+` → литеральные фазы были бы нелинтуемы, а команды по ним не работали бы. Метки §K сохранены в заголовках фаз и карте §4"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`RAG:— (repo-grounded: plan_lint.py:89 ITEM_HEADER_RE, :101 HANDOFF_TITLE_RE, :107 PLAN_EXEC_RE, :151 PHASE_FILENAME_RE)`"
+    }
+  ]
+}

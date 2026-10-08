@@ -162,9 +162,6 @@ SQL;
         if (!is_array($row)) {
             return null;
         }
-        if (($row['fingerprint'] ?? '') !== $request->argumentsFingerprint->value) {
-            throw IdempotencyFailure::keyReuse($request->scope->key->value);
-        }
         if (($row['state'] ?? '') === 'completed') {
             $expires = new \DateTimeImmutable($this->stringField($row, 'expires_at'));
             if ($expires <= $now) {
@@ -173,6 +170,9 @@ SQL;
 
                 return null;
             }
+            if (($row['fingerprint'] ?? '') !== $request->argumentsFingerprint->value) {
+                throw IdempotencyFailure::keyReuse($request->scope->key->value);
+            }
             $decoded = StoredToolResultCodec::decode($this->stringField($row, 'result_json'), $this->stringField($row, 'result_digest'));
 
             return new IdempotencyAcquisition(
@@ -180,6 +180,9 @@ SQL;
                 storedResult: $decoded['result'],
                 storedResultDigest: $decoded['digest'],
             );
+        }
+        if (($row['fingerprint'] ?? '') !== $request->argumentsFingerprint->value) {
+            throw IdempotencyFailure::keyReuse($request->scope->key->value);
         }
         $leaseUntilExisting = new \DateTimeImmutable($this->stringField($row, 'lease_until'));
         if ($leaseUntilExisting > $now) {

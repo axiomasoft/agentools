@@ -15,9 +15,9 @@ from typing import Any
 
 REPO = Path(__file__).resolve().parents[1]
 SCHEMA_VERSION = "package-surface/v1"
-CONTRACT_PATH = REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/package-boundary-v1.md"
+CONTRACT_PATH = REPO / "verification/root/contracts/package-boundary-v1.md"
 SURFACE_PATH = REPO / "api/package-surface-v1.json"
-BASELINE_PATH = REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P1-baseline.json"
+BASELINE_PATH = REPO / "verification/artifacts/P1-baseline.json"
 PHP_COMPOSER = REPO / "php/composer.json"
 
 TIERS = ("stable", "advanced", "testkit", "reference", "internal")
@@ -730,7 +730,7 @@ def cmd_freeze(args: argparse.Namespace) -> int:
     output = Path(args.output) if args.output else SURFACE_PATH
     write_surface(output, surface)
     report = render_inventory_report(surface, baseline_delta(), diff_actual(surface))
-    report_path = Path(args.report) if args.report else REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING/findings/P7-api-inventory.md"
+    report_path = Path(args.report) if args.report else REPO / "verification/findings/P7-api-inventory.md"
     report_path.write_text(report, encoding="utf-8")
     print(f"froze {len(surface['entries'])} entries → {output}")
     return 0

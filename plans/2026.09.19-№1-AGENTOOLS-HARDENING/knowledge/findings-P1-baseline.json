@@ -1,0 +1,44 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "findings-P1-baseline",
+  "title": "P1 pre-refactor baseline",
+  "sections": [
+    {
+      "id": "P1-pre-refactor-baseline",
+      "title": "P1 pre-refactor baseline",
+      "text": "- Recorded commit: `8ce43f47735d827be3872bcb8c01d09dd38ed22d`\n- Captured at (UTC): 2026-09-20T04:38:15Z\n- Manifest digest: `41aa813c817db931b3f8b24ce80a8e0e8b379c5da14f45c70a062d07a76a7ed9`\n- Inventory digest: `f990c2214284c6f32b50446da33b42660e12ed2ef9ff9d8799b482fb5a24f3e9`"
+    },
+    {
+      "id": "Probe-matrix",
+      "title": "Probe matrix",
+      "text": "| probe_id | disposition | exit | duration_ms |\n|:--|:--|:--:|--:|\n| `ci.layer1` | green | 0 | 5549 |\n| `ci.layer2` | green | 0 | 187 |\n| `ci.layer3` | red | 1 | 104 |\n| `ci.layer4` | red | 1 | 138 |\n| `dart.core.analyze` | red | 1 | 693 |\n| `dart.core.pub_get` | green | 0 | 1132 |\n| `dart.core.publish_dry_run` | red | 65 | 1378 |\n| `dart.core.test` | green | 0 | 3791 |\n| `dart.mcp.analyze` | green | 0 | 259 |\n| `dart.mcp.pub_get` | green | 0 | 794 |\n| `dart.mcp.publish_dry_run` | red | 65 | 1683 |\n| `dart.mcp.test` | green | 0 | 3486 |\n| `php.analyse` | green | 0 | 2761 |\n| `php.archive` | green | 0 | 4358 |\n| `php.composer.install` | green | 0 | 55010 |\n| `php.composer.validate` | red | 2 | 89 |\n| `php.test` | green | 0 | 324 |"
+    },
+    {
+      "id": "Inventory",
+      "title": "Inventory",
+      "text": "- PHP reachable classes (candidate surface, not stable API): **133**\n- Fixture JSON files: **344**"
+    },
+    {
+      "id": "Dependency-lock-SHA-256",
+      "title": "Dependency lock SHA-256",
+      "text": "- `conformance/composer.lock`: `3fca1daa7b7b6469c5316cf56c62dacb34e09f3c7ca03c8912fb68165ab36440`\n- `dart/agentools/pubspec.lock`: `bcf37bb4b10622d0315be9d733cb02ece62aa6b2d44773b5e71a8cf3bd33f382`\n- `dart/agentools_mcp_dart/pubspec.lock`: `efc7853cac34edbc7e4f54db6d7bbb0d54da51ab69b8876d4dd6f81f6af3b689`\n- `php/composer.lock`: `8cca16d97219d02a061bee5d671b4429a4b386560013285f7a212cad0e0944c1`"
+    },
+    {
+      "id": "Dart-barrel-exports",
+      "title": "Dart barrel exports",
+      "text": "**dart/agentools** (12 export lines)\n- agentools.dart:src/confirmation/confirmation.dart\n- agentools.dart:src/contracts/contracts.dart\n- agentools.dart:src/effects/effects.dart\n- agentools.dart:src/errors/errors.dart\n- agentools.dart:src/idempotency/idempotency.dart\n- agentools.dart:src/identity/identity.dart\n- agentools.dart:src/journal/journal.dart\n- agentools.dart:src/ops/ops.dart\n- agentools.dart:src/persistence/persistence.dart\n- agentools.dart:src/scenario/scenario.dart\n- agentools.dart:src/smoke.dart\n- agentools.dart:src/tool/tool.dart\n**dart/agentools_mcp_dart** (1 export lines)\n- agentools_mcp_dart.dart:src/mcp_dart_transport.dart"
+    },
+    {
+      "id": "Environmental-limits",
+      "title": "Environmental limits",
+      "text": "- Disposable git worktree at recorded commit.\n- Probe timeouts may mark long jobs unavailable."
+    }
+  ],
+  "applies_to": [
+    "P1"
+  ],
+  "provenance": {
+    "path": "findings/P1-baseline.md",
+    "sha256": "3ed901e4802b1ed3ff096ebab0e15b625c97ce1aa6e192cec1aa951c5ad0c0f1"
+  }
+}

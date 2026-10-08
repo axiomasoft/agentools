@@ -1,0 +1,18 @@
+{
+  "history": "3 synthetic AWS-like samples in a negative test",
+  "working_tree_digest_matches": [
+    {
+      "key": "findings/P3-token-migration.md",
+      "is_sha256_hex": true
+    },
+    {
+      "key": "findings/P7-api-inventory.md",
+      "is_sha256_hex": true
+    },
+    {
+      "key": "root/contracts/token-replay-v1.md",
+      "is_sha256_hex": true
+    }
+  ],
+  "confirmed_real_credentials": 0
+}

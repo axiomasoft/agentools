@@ -44,8 +44,8 @@ final class Canonicalizer
     private function serialize(mixed $value): string
     {
         return match (true) {
-            $value === null, is_bool($value), is_string($value), is_int($value) => $this->encodeScalar($value),
-            is_float($value) => $this->formatNumber($value),
+            $value === null, is_bool($value), is_string($value) => $this->encodeScalar($value),
+            is_int($value), is_float($value) => $this->formatNumber((float) $value),
             is_array($value) => array_is_list($value)
                 ? '[' . implode(',', array_map($this->serialize(...), $value)) . ']'
                 : $this->serializeObject($value),

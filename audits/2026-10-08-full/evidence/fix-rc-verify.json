@@ -1,0 +1,12 @@
+{
+  "id": "fix-rc-verify",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/release_candidate.py",
+    "verify"
+  ],
+  "started_utc": "2026-10-08T13:46:31.916927+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.064
+}

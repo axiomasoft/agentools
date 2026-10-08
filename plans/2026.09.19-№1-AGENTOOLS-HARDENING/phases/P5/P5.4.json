@@ -1,0 +1,240 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P5.4",
+  "title": "Встроить journal/audit wiring, snapshot provenance и collision/cardinality gate",
+  "status": "done",
+  "summary": "Подключить P5.2/P5.3 store к supported journal/audit path, провести redaction и metric-label policy и выпустить проверяемый receipt, что seq больше не назначает caller, а silent event-id no-op больше не скрывает collision.",
+  "why": "Store CAS does not close F05 while `JournalAppender`, `AuditEventFactory`, conformance engines and SQLite still mint `ev-{action}-{seq}` and export the full document. `RAG:—`.",
+  "scope": {
+    "include": [
+      "JournalAppender/AuditEventFactory UncommittedEvent path; redaction validator before append and on AuditSink export; closed metric cardinality helper; snapshot `seq`+`spec_rev`+content hash; consumer migration of reference/conformance paths; restart/multi-worker append gate; PHP/Dart parity receipt; residual notes for P6/P7/P8/P9."
+    ],
+    "exclude": [
+      "P2 authorization redesign; P3 token consume; P4 lease/fencing; new spec revision; final barrel/PSR-4 removals; public docs/release; CQRS/outbox platform; claiming exactly-once consumer delivery; adding an OpenTelemetry SDK."
+    ]
+  },
+  "depends_on": [
+    "P5.2",
+    "P5.3"
+  ],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/root-contracts-event-store-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/hardening/event-store-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/03_action-lifecycle.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/08_audit-observability.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-P5-design.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "@plan/knowledge/findings-P5-event-parity.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "Supported journal append goes through EventStore batch API. Omitting store is a construction error, not a silent in-memory caller-seq write. Event ids are CSPRNG, not seq-derived. AuditSink receives the redacted document or nothing; exporter exceptions do not roll back append. Metric helper rejects forbidden labels. Snapshot restore matches full fold; a mutated hash discards the snapshot without deleting events. Layer tests fail if a new `EventLog.append(ActionEvent)` or seq-derived id bypass reappears on migrated consumers. PostgreSQL concurrent-append test is mandatory for close; in-memory restart is not a substitute. Receipt derives case/result/code sets from real test output and names P6/P7/P8/P9 residual owners. No safe result claims exactly-once projection delivery."
+  ],
+  "guidance": "Keep `ActionEvent` as the committed envelope. Optional `trace` lives in payload (AOB-17). Do not merge executor epoch into event_id or lease token. Redact tokens. Frozen harness may wrap a one-event batch so `2026-08` vectors still observe seq/kind without new spec bytes.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "cd php && composer test && composer analyse",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "cd dart/agentools && dart analyze && dart test",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "git diff --exit-code -- spec/revisions/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "procedure": "cd php && composer test",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "procedure": "cd php && composer analyse",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "procedure": "cd dart/agentools && dart test",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "procedure": "cd dart/agentools && dart analyze",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V8",
+      "procedure": "python3 tools/validate_event_store_v1.py",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V9",
+      "procedure": "git diff --exit-code -- spec/revisions/2026-08",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "Supported EventStore journal path, redaction/cardinality policy, collision/pagination receipt and explicit residual boundaries."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-20T11:48:18Z",
+    "finished_at": "2026-09-20T11:48:18Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "grok-4.6/high",
+      "effort": "high"
+    },
+    "notes": "JournalAppender/AuditEventFactory CSPRNG EventStore path; redaction/cardinality; snapshot hash discard; EventStoreGateTest; P5-event-parity.md. composer test/analyse and dart test green.\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V4",
+        "exit": 0,
+        "at": "2026-09-20T11:48:18Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V5",
+        "exit": 0,
+        "at": "2026-09-20T11:48:18Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V6",
+        "exit": 0,
+        "at": "2026-09-20T11:48:18Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V7",
+        "exit": 0,
+        "at": "2026-09-20T11:48:18Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V8",
+        "exit": 0,
+        "at": "2026-09-20T11:48:18Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V9",
+        "exit": 0,
+        "at": "2026-09-20T11:48:18Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-20T11:48:18Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Подключить P5.2/P5.3 store к supported journal/audit path, провести redaction и metric-label policy и выпустить проверяемый receipt, что seq больше не назначает caller, а silent event-id no-op больше не скрывает collision."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Store CAS does not close F05 while `JournalAppender`, `AuditEventFactory`, conformance engines and SQLite still mint `ev-{action}-{seq}` and export the full document. `RAG:—`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "JournalAppender/AuditEventFactory UncommittedEvent path; redaction validator before append and on AuditSink export; closed metric cardinality helper; snapshot `seq`+`spec_rev`+content hash; consumer migration of reference/conformance paths; restart/multi-worker append gate; PHP/Dart parity receipt; residual notes for P6/P7/P8/P9."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "P2 authorization redesign; P3 token consume; P4 lease/fencing; new spec revision; final barrel/PSR-4 removals; public docs/release; CQRS/outbox platform; claiming exactly-once consumer delivery; adding an OpenTelemetry SDK."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/knowledge/root-contracts-event-store-v1.json` · `fixtures/hardening/event-store-v1.json` · P5.2 PHP/Dart store API · P5.3 PostgreSQL adapter · current PHP/Dart `JournalAppender`, `AuditEventFactory`, `ActionSnapshot`, `SessionStateProjection`."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`php/src/Ops/JournalAppender.php` · `php/src/Ops/AuditEventFactory.php` · `php/src/Ops/AuditRedaction.php` · `php/src/Ops/MetricCardinality.php` · `php/src/Action/ActionSnapshot.php` · `php/src/Action/SessionStateProjection.php` · `php/tests/Ops/JournalAppenderStoreTest.php` · `php/tests/Ops/AuditRedactionTest.php` · `php/tests/Persistence/EventStoreGateTest.php` · `dart/agentools/lib/src/ops/journal_appender.dart` · `dart/agentools/lib/src/ops/audit_event_factory.dart` · `dart/agentools/lib/src/ops/audit_redaction.dart` · `dart/agentools/lib/src/ops/metric_cardinality.dart` · `dart/agentools/lib/src/journal/action_snapshot.dart` · `dart/agentools/test/ops/journal_appender_store_test.dart` · `dart/agentools/test/ops/audit_redaction_test.dart` · `dart/agentools/test/journal/event_store_gate_test.dart` · `@plan/knowledge/findings-P5-event-parity.json`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/root-contracts-event-store-v1.json` 2) `fixtures/hardening/event-store-v1.json` 3) `php/src/Ops/JournalAppender.php` 4) `php/src/Ops/AuditEventFactory.php` 5) `php/src/Action/ActionSnapshot.php` 6) `spec/revisions/2026-08/03_action-lifecycle.md` 7) `spec/revisions/2026-08/08_audit-observability.md` 8) `@plan/knowledge/research-P5-design.json`."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "Supported journal append goes through EventStore batch API. Omitting store is a construction error, not a silent in-memory caller-seq write. Event ids are CSPRNG, not seq-derived. AuditSink receives the redacted document or nothing; exporter exceptions do not roll back append. Metric helper rejects forbidden labels. Snapshot restore matches full fold; a mutated hash discards the snapshot without deleting events. Layer tests fail if a new `EventLog.append(ActionEvent)` or seq-derived id bypass reappears on migrated consumers. PostgreSQL concurrent-append test is mandatory for close; in-memory restart is not a substitute. Receipt derives case/result/code sets from real test output and names P6/P7/P8/P9 residual owners. No safe result claims exactly-once projection delivery."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Keep `ActionEvent` as the committed envelope. Optional `trace` lives in payload (AOB-17). Do not merge executor epoch into event_id or lease token. Redact tokens. Frozen harness may wrap a one-event batch so `2026-08` vectors still observe seq/kind without new spec bytes."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "Manifest wiring/audit/metric/snapshot cases pass on both SDKs; 50 concurrent appends still one winner through JournalAppender; collision still refuses overwrite; `cd php && composer test && composer analyse`; `cd dart/agentools && dart analyze && dart test`; shared parity yields `missing=[]`, `extra=[]`, `mismatch=[]`; `git diff --exit-code -- spec/revisions/2026-08`; plan lint adds no ERROR."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "Supported EventStore journal path, redaction/cardinality policy, collision/pagination receipt and explicit residual boundaries."
+    }
+  ]
+}

@@ -1,0 +1,228 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P7.2",
+  "title": "Отделить PHP core от testkit/reference и закрыть API drift",
+  "status": "done",
+  "summary": "Привести Composer autoload, namespaces, archive contents и PHP docs/tests к P7.1 contract: production dependency получает только core, а test doubles/reference slice доступны только development root.",
+  "why": "`php/composer.json` помещает `AgenTools\\\\Reference\\\\` в production `autoload`, а `InMemory*`/`FixedClock` лежат в `src`; optimized consumer autoload therefore cannot distinguish production contract from examples/testkit. `RAG:—`.",
+  "scope": {
+    "include": [
+      "Stable/advanced PHP namespace allowlist; Composer production vs `autoload-dev`; `AgenTools\\\\TestKit\\\\` and `AgenTools\\\\Reference\\\\` placement; in-memory/fixed/reference implementations; production dependency graph; package archive exclusions; `API.md` and migration examples; actual-vs-target manifest and behavioural consumer tests."
+    ],
+    "exclude": [
+      "Changing safe confirmation, replay, lease, EventStore or semantic behavior; adding framework adapters; designing production databases; Packagist metadata/upload; deleting a proved stable symbol without authorized compatibility path; unrelated source layout cleanup."
+    ]
+  },
+  "depends_on": [
+    "P7.1",
+    "P2.4",
+    "P3.4",
+    "P4.4",
+    "P5.4",
+    "P6.5"
+  ],
+  "decisions": [
+    "D12"
+  ],
+  "skills": [
+    "autoload-dev"
+  ],
+  "reads": [
+    {
+      "path": "@plan/knowledge/research-P7-design-rag.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "api/package-surface-v1.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "Production `autoload` contains no `AgenTools\\\\Reference\\\\` or testkit mapping; dev-only mappings are root-only and archive-excluded. Process-local/in-memory/fixed implementations move to the testkit tier or remain only through an explicitly documented compatibility shim allowed by the target contract; production services never instantiate them by default. `src` has no dependency on testkit/reference. Stable FQNs and signatures remain exact; candidate accidental names may move only with recorded disposition/migration. `composer.lock` changes only if manifest resolution requires it and no new runtime package is introduced."
+  ],
+  "guidance": "Preserve behavior while changing ownership. Use namespaces/Composer mappings rather than runtime environment switches. Keep conformance/reference entrypoints runnable from the repository development root, but prove that `composer install --no-dev --classmap-authoritative` in a clean consumer cannot autoload testkit/reference. Generated actual manifest comes from `tools/package_surface.py`; never hand-edit it to match source.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "composer validate --strict",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "php/",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "composer dump-autoload --no-dev --classmap-authoritative",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "tests/",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "cmd": "testkit/",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "procedure": "cd php && composer validate --strict",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "procedure": "cd php && composer test",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V8",
+      "procedure": "cd php && composer analyse",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V9",
+      "procedure": "composer dump-autoload --no-dev --classmap-authoritative + class_exists probe",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V10",
+      "procedure": "composer archive listing excludes testkit/reference/tests/conformance",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "Intentional PHP stable/advanced surface, dev-only testkit/reference contour, production-clean Composer archive policy, migration guide and exact API-drift evidence."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-20T13:04:20Z",
+    "finished_at": "2026-09-20T13:04:20Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "grok-4.6/high",
+      "effort": "high"
+    },
+    "notes": "PHP production autoload is AgenTools\\\\ → src/ only; TestKit/Reference are autoload-dev + archive-excluded. EventStoreSupport extracted so PdoPostgresEventStore does not instantiate InMemory. composer test 237, phpstan OK, no-dev probe absents TestKit/Reference. Archive 155 files, 145 src, no testkit/reference/tests/conformance.\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V6",
+        "exit": 0,
+        "at": "2026-09-20T13:04:20Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V7",
+        "exit": 0,
+        "at": "2026-09-20T13:04:20Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V8",
+        "exit": 0,
+        "at": "2026-09-20T13:04:20Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V9",
+        "exit": 0,
+        "at": "2026-09-20T13:04:20Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V10",
+        "exit": 0,
+        "at": "2026-09-20T13:04:20Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-20T13:04:20Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Привести Composer autoload, namespaces, archive contents и PHP docs/tests к P7.1 contract: production dependency получает только core, а test doubles/reference slice доступны только development root."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "`php/composer.json` помещает `AgenTools\\\\Reference\\\\` в production `autoload`, а `InMemory*`/`FixedClock` лежат в `src`; optimized consumer autoload therefore cannot distinguish production contract from examples/testkit. `RAG:—`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "Stable/advanced PHP namespace allowlist; Composer production vs `autoload-dev`; `AgenTools\\\\TestKit\\\\` and `AgenTools\\\\Reference\\\\` placement; in-memory/fixed/reference implementations; production dependency graph; package archive exclusions; `API.md` and migration examples; actual-vs-target manifest and behavioural consumer tests."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Changing safe confirmation, replay, lease, EventStore or semantic behavior; adding framework adapters; designing production databases; Packagist metadata/upload; deleting a proved stable symbol without authorized compatibility path; unrelated source layout cleanup."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "P7.1 contract/target/inventory · executed P2–P6 PHP surface and tests · P1 compatibility/migration policy · `php/composer.json`, `php/src/**`, `php/reference/**`, `php/tests/**`, `php/conformance/**` · D12."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`php/composer.json` · `php/src/**` · `php/testkit/**` · `php/reference/**` · `php/tests/**` · `php/conformance/**` · `php/bin/**` · `php/API.md` · `php/UPGRADING.md` · `api/package-surface-v1.json`."
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) P7.1 deliverables 2) P1 compatibility/migration contract 3) P2.4/P3.4/P4.4/P5.4/P6.5 PHP receipts 4) Composer official schema sections `autoload`, `autoload-dev`, `archive` in `@plan/knowledge/research-P7-design-rag.json` 5) current Composer manifest/lock and complete PHP source/reference/tests/conformance graph 6) D12."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "Production `autoload` contains no `AgenTools\\\\Reference\\\\` or testkit mapping; dev-only mappings are root-only and archive-excluded. Process-local/in-memory/fixed implementations move to the testkit tier or remain only through an explicitly documented compatibility shim allowed by the target contract; production services never instantiate them by default. `src` has no dependency on testkit/reference. Stable FQNs and signatures remain exact; candidate accidental names may move only with recorded disposition/migration. `composer.lock` changes only if manifest resolution requires it and no new runtime package is introduced."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Preserve behavior while changing ownership. Use namespaces/Composer mappings rather than runtime environment switches. Keep conformance/reference entrypoints runnable from the repository development root, but prove that `composer install --no-dev --classmap-authoritative` in a clean consumer cannot autoload testkit/reference. Generated actual manifest comes from `tools/package_surface.py`; never hand-edit it to match source."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`composer validate --strict` in `php/`; `composer dump-autoload --no-dev --classmap-authoritative`; PHP unit/static analysis and P6 successor conformance green; target-vs-actual PHP surface exact; core→testkit/reference dependency edges zero; negative clean autoload probes for one testkit and one reference FQN fail while every stable FQN loads; archive listing contains required runtime/docs and excludes `tests/`, `reference/`, `testkit/`, conformance internals and caches; migration snippets compile; an undeclared public FQN mutant makes the surface gate red."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "Intentional PHP stable/advanced surface, dev-only testkit/reference contour, production-clean Composer archive policy, migration guide and exact API-drift evidence."
+    }
+  ]
+}

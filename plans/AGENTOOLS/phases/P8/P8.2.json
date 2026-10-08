@@ -1,0 +1,272 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P8.2",
+  "title": "Идентичность расширения и negotiation в Dart (документ `01`)",
+  "status": "done",
+  "summary": "Реализовать документ `01` ревизии (правила `EXT-*`): объявление расширения AgenTools как unofficial MCP extension, грамматику vendor-ключа `dev.agentools/` и правило «версия НЕ в ключе» (`DR-01` §A1–§A2), negotiation возможностей и таргет только MCP 2026-07-28 без legacy-эры (§A3), отклонение невалидного вендорного ключа с названной диагностикой.",
+  "why": "Идентичность — вход в протокол: если ключ расширения читается или пишется не так, все остальные правила исполняются впустую, потому что контрагент их не увидит. Это же место — первый носитель must-ignore на структурном уровне (`DR-01` §J9: документ с лишним ключом верхнего уровня ПРИНИМАЕТСЯ), и именно здесь легче всего получить ложно-зелёное: реализация, которая ничего не отклоняет, проходит все положительные векторы. Для Dart добавляется своя цена: в зависимости `mcp_dart` физически присутствует dual-era код (27 файлов, D39), и соблазн «поддержать на всякий случай» здесь выше, чем в PHP, — но директива D20 адресована НАШЕЙ кодовой базе, и её нарушение обнаружится только на второй ревизии, то есть дорого. `RAG:— (repo-grounded: DR-01 §A1 — unofficial MCP extension по SEP-2133, §A2 — vendor-префикс dev.agentools/ и версия не в ключе, §A3 — таргет только 2026-07-28, §J9 — лишний ключ верхнего уровня принимается; @plan/plan.json §5 D20 — legacy-лексика запрещена, D39 — dual-era код живёт в зависимости, не в нашем коде; research/07-… §2, §4)`.",
+  "scope": {
+    "include": [
+      "(а) типы и разбор блока расширения: чтение и запись вендорного ключа под префиксом `dev.agentools/` по грамматике документа `01`, имя ключа берётся ИЗ ревизии, а не назначается; (б) валидация вендорного ключа: невалидный префикс, версия внутри ключа, чужой вендорный префикс — каждый со своим отказом и названной диагностикой; (в) объявление расширения и negotiation: состав объявления и порядок согласования — по правилам `EXT-*`, включая поведение при отсутствии поддержки расширения у контрагента; (г) правило §A3 в коде: таргет один, ветки «legacy-совместимости» нет как кода — отсутствие ветки доказывается грепом по запрещённой лексике D20 в `dart/agentools/lib/**`; (д) структурная половина must-ignore: неизвестный ключ ПОД нашим префиксом и лишний ключ верхнего уровня документа не приводят к отказу (поведенческая половина — сохранение сырого события целиком — реализуется P8.9 и здесь только не ломается); (е) тесты, чьи ожидания взяты из векторов корпуса, покрывающих `EXT-*`, с перечнем заимствованных `id` векторов в Completion Notes; (ж) сверка прочтения с PHP SDK: если реализация расходится с `php/src/Identity/**` в НАБЛЮДАЕМОМ поведении на одном векторе, расхождение разбирается по правилу трёх прочтений (Phase Context) и приводится в отчёте — даже если оба варианта зелёные на корпусе."
+    ],
+    "exclude": [
+      "value objects общего назначения, валидация против схем и JCS (P8.3); профиль инструмента (P8.4); всё, что живёт в журнале (P8.5); must-ignore как сохранение сырого события и открытые перечисления (P8.9); транспорт MCP и сеть (P8.12 — и они в ДРУГОМ пакете); conformance-адаптер (P8.13); ЛЮБЫЕ правки ревизии, корпуса, артефактов фазы P6 и PHP SDK."
+    ]
+  },
+  "depends_on": [
+    "P8.1"
+  ],
+  "decisions": [
+    "D20",
+    "D19",
+    "D62"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "spec/revisions/2026-08/01_extension-identity.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/rules.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/schema/extension-declaration.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "fixtures/2026-08/README.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-07-p8-dart-sdk-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [],
+  "rules": [
+    "имена ключей, полей и порядок negotiation берутся ТОЛЬКО из документа `01` и его схем — если нужного правила там нет, это дефект ревизии: остановиться и эскалировать (trigger «конфликт правил»), НЕ изобретать и НЕ подсматривать решение в PHP SDK (там оно было бы таким же додумыванием); ожидания тестов выводятся из ВЕКТОРОВ корпуса, а не из собственной реализации и не из PHP-тестов — каждый тест несёт в имени или в докблоке идентификатор правила (`EXT-…`); запрещённая лексика D20 не появляется в коде даже в комментариях и именах; расхождение реализации с вектором разбирается прогоном ТОГО ЖЕ вектора против эталонного адаптера И против адаптера PHP SDK (`research/07-…` §2), все три вывода приводятся в отчёте; плановый линтер — командой из Phase Context."
+  ],
+  "guidance": "Идиоматичный Dart: разбор ключа — ЧИСТАЯ функция над `String` (единственный способ протестировать грамматику таблицей кейсов), результат — `sealed class`-иерархия либо `Result`-тип, а не исключение на каждый невалидный ввод; валидация в конструкторе фабрики, ошибка называет что и почему не так; `final class` + неизменяемые поля. Анти-самообман: «идентичность реализована» ≠ «невалидный ключ отвергается» — доказательством считается таблица ОТРИЦАТЕЛЬНЫХ кейсов (неверный префикс, версия в ключе, чужой вендор), каждый со своим красным; положительных векторов недостаточно. Анти-подгонка: если вектор не сходится с реализацией, разбирается ПРАВИЛО и вектор, а не «ослабляется» проверка; если реализация не сходится с PHP SDK — разбирается ТЕКСТ ПРАВИЛА, а не «делается как в PHP». ЗАПРЕЩЕНО: транслитерировать `php/src/Identity/**`; править ревизию, корпус и PHP SDK; заводить ветку legacy-совместимости; хардкодить имя ключа в двух местах (одна константа — один носитель); тянуть транспорт или сеть. If-then: документ `01` не описывает поведение при отсутствии поддержки расширения у контрагента → `🔴 Blocked` + эскалация (trigger «конфликт правил») с ценой «ревизия заморожена, правка = новая датированная ревизия» (D19/D62), решение — владельца. If-then: PHP SDK реализует правило `EXT-*` наблюдаемо иначе, и оба варианта зелёные на корпусе → это НЕДОСПЕЦИФИЦИРОВАННОСТЬ текста, а не свобода реализации: факт называется в отчёте, заводится эскалация с адресатом «фаза P3 / владелец», item закрывается `🟠` с записью в Known Deviations.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "dart analyze dart/agentools; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "dart test --directory dart/agentools; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "grep -rniE 'initialize|Mcp-Session-Id|SSE|resumability|roots|sampling|DCR' dart/agentools/lib | wc -l",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "grep -rLE 'EXT-[0-9]' dart/agentools/test/identity | wc -l",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "cmd": "git diff --quiet -- php spec/revisions/2026-08 fixtures/2026-08 conformance; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "procedure": "dart analyze dart/agentools",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "procedure": "dart test (cwd dart/agentools)",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V8",
+      "procedure": "negative extension key table",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V9",
+      "procedure": "grep legacy lexicon D20 dart/agentools/lib",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V10",
+      "procedure": "grep EXT rule refs dart/agentools/test/identity",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V11",
+      "procedure": "git diff foreign artifacts",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V12",
+      "procedure": "plan-lint AGENTOOLS",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "реализация документа `01` (объявление расширения, грамматика vendor-ключа, negotiation, отклонение невалидного ключа, структурная половина must-ignore) + таблица отрицательных кейсов с выводом + доказанное отсутствие legacy-лексики в коде ядра + перечень векторов, из которых взяты ожидания тестов + названные (или явно отсутствующие) расхождения прочтения с PHP SDK."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-18T19:15:52Z",
+    "finished_at": "2026-09-18T19:15:52Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "implementation/high",
+      "effort": "high"
+    },
+    "notes": "vectors extension-001 extidentity-001/002 extnegotiation-001/002; PHP reconciliation aligned; item dc534dd; write-site: pre_mutation: allow · pre_final: allow\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V6",
+        "exit": 0,
+        "at": "2026-09-18T19:15:52Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V7",
+        "exit": 0,
+        "at": "2026-09-18T19:15:52Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V8",
+        "exit": 0,
+        "at": "2026-09-18T19:15:52Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V9",
+        "exit": 0,
+        "at": "2026-09-18T19:15:52Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V10",
+        "exit": 0,
+        "at": "2026-09-18T19:15:52Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V11",
+        "exit": 0,
+        "at": "2026-09-18T19:15:52Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V12",
+        "exit": 0,
+        "at": "2026-09-18T19:15:52Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-18T19:15:52Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Реализовать документ `01` ревизии (правила `EXT-*`): объявление расширения AgenTools как unofficial MCP extension, грамматику vendor-ключа `dev.agentools/` и правило «версия НЕ в ключе» (`DR-01` §A1–§A2), negotiation возможностей и таргет только MCP 2026-07-28 без legacy-эры (§A3), отклонение невалидного вендорного ключа с названной диагностикой."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Идентичность — вход в протокол: если ключ расширения читается или пишется не так, все остальные правила исполняются впустую, потому что контрагент их не увидит. Это же место — первый носитель must-ignore на структурном уровне (`DR-01` §J9: документ с лишним ключом верхнего уровня ПРИНИМАЕТСЯ), и именно здесь легче всего получить ложно-зелёное: реализация, которая ничего не отклоняет, проходит все положительные векторы. Для Dart добавляется своя цена: в зависимости `mcp_dart` физически присутствует dual-era код (27 файлов, D39), и соблазн «поддержать на всякий случай» здесь выше, чем в PHP, — но директива D20 адресована НАШЕЙ кодовой базе, и её нарушение обнаружится только на второй ревизии, то есть дорого. `RAG:— (repo-grounded: DR-01 §A1 — unofficial MCP extension по SEP-2133, §A2 — vendor-префикс dev.agentools/ и версия не в ключе, §A3 — таргет только 2026-07-28, §J9 — лишний ключ верхнего уровня принимается; @plan/plan.json §5 D20 — legacy-лексика запрещена, D39 — dual-era код живёт в зависимости, не в нашем коде; research/07-… §2, §4)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "(а) типы и разбор блока расширения: чтение и запись вендорного ключа под префиксом `dev.agentools/` по грамматике документа `01`, имя ключа берётся ИЗ ревизии, а не назначается; (б) валидация вендорного ключа: невалидный префикс, версия внутри ключа, чужой вендорный префикс — каждый со своим отказом и названной диагностикой; (в) объявление расширения и negotiation: состав объявления и порядок согласования — по правилам `EXT-*`, включая поведение при отсутствии поддержки расширения у контрагента; (г) правило §A3 в коде: таргет один, ветки «legacy-совместимости» нет как кода — отсутствие ветки доказывается грепом по запрещённой лексике D20 в `dart/agentools/lib/**`; (д) структурная половина must-ignore: неизвестный ключ ПОД нашим префиксом и лишний ключ верхнего уровня документа не приводят к отказу (поведенческая половина — сохранение сырого события целиком — реализуется P8.9 и здесь только не ломается); (е) тесты, чьи ожидания взяты из векторов корпуса, покрывающих `EXT-*`, с перечнем заимствованных `id` векторов в Completion Notes; (ж) сверка прочтения с PHP SDK: если реализация расходится с `php/src/Identity/**` в НАБЛЮДАЕМОМ поведении на одном векторе, расхождение разбирается по правилу трёх прочтений (Phase Context) и приводится в отчёте — даже если оба варианта зелёные на корпусе."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "value objects общего назначения, валидация против схем и JCS (P8.3); профиль инструмента (P8.4); всё, что живёт в журнале (P8.5); must-ignore как сохранение сырого события и открытые перечисления (P8.9); транспорт MCP и сеть (P8.12 — и они в ДРУГОМ пакете); conformance-адаптер (P8.13); ЛЮБЫЕ правки ревизии, корпуса, артефактов фазы P6 и PHP SDK."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`dart/agentools/pubspec.yaml` + `dart/README.md` (скелет P8.1) · `spec/revisions/2026-08/01_extension-identity.md` · `spec/revisions/2026-08/rules.json` (нормативные слова и уровни правил `EXT-*`) · `spec/revisions/2026-08/schema/extension-declaration.json` (имена полей блока расширения) · `fixtures/2026-08/README.md` (векторы, ссылающиеся на `EXT-*`) · `php/src/Identity/ExtensionKey.php` + `php/tests/Identity/ExtensionKeyTest.php` (референс прочтения, НЕ источник кода) · `@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §A1–§A3, §J9 · `@plan/knowledge/research-07-p8-dart-sdk-2026-08.json` §2, §3."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`dart/agentools/lib/src/identity/**` · `dart/agentools/lib/agentools.dart` (экспорт публичных типов) · `dart/agentools/test/identity/**` (репо-пути — от корня `~/projects/packages/agentools`)"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/research-07-p8-dart-sdk-2026-08.json` §2–§3, §8 2) `spec/revisions/2026-08/01_extension-identity.md` ЦЕЛИКОМ 3) `spec/revisions/2026-08/rules.json` (строки `EXT-*`) 4) `fixtures/2026-08/README.md` (векторы `EXT-*`) 5) `@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §A1–§A3, §J9 6) `@plan/plan.json` §2 Execution Rules, §5 (D20, D72)."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "имена ключей, полей и порядок negotiation берутся ТОЛЬКО из документа `01` и его схем — если нужного правила там нет, это дефект ревизии: остановиться и эскалировать (trigger «конфликт правил»), НЕ изобретать и НЕ подсматривать решение в PHP SDK (там оно было бы таким же додумыванием); ожидания тестов выводятся из ВЕКТОРОВ корпуса, а не из собственной реализации и не из PHP-тестов — каждый тест несёт в имени или в докблоке идентификатор правила (`EXT-…`); запрещённая лексика D20 не появляется в коде даже в комментариях и именах; расхождение реализации с вектором разбирается прогоном ТОГО ЖЕ вектора против эталонного адаптера И против адаптера PHP SDK (`research/07-…` §2), все три вывода приводятся в отчёте; плановый линтер — командой из Phase Context."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Идиоматичный Dart: разбор ключа — ЧИСТАЯ функция над `String` (единственный способ протестировать грамматику таблицей кейсов), результат — `sealed class`-иерархия либо `Result`-тип, а не исключение на каждый невалидный ввод; валидация в конструкторе фабрики, ошибка называет что и почему не так; `final class` + неизменяемые поля. Анти-самообман: «идентичность реализована» ≠ «невалидный ключ отвергается» — доказательством считается таблица ОТРИЦАТЕЛЬНЫХ кейсов (неверный префикс, версия в ключе, чужой вендор), каждый со своим красным; положительных векторов недостаточно. Анти-подгонка: если вектор не сходится с реализацией, разбирается ПРАВИЛО и вектор, а не «ослабляется» проверка; если реализация не сходится с PHP SDK — разбирается ТЕКСТ ПРАВИЛА, а не «делается как в PHP». ЗАПРЕЩЕНО: транслитерировать `php/src/Identity/**`; править ревизию, корпус и PHP SDK; заводить ветку legacy-совместимости; хардкодить имя ключа в двух местах (одна константа — один носитель); тянуть транспорт или сеть. If-then: документ `01` не описывает поведение при отсутствии поддержки расширения у контрагента → `🔴 Blocked` + эскалация (trigger «конфликт правил») с ценой «ревизия заморожена, правка = новая датированная ревизия» (D19/D62), решение — владельца. If-then: PHP SDK реализует правило `EXT-*` наблюдаемо иначе, и оба варианта зелёные на корпусе → это НЕДОСПЕЦИФИЦИРОВАННОСТЬ текста, а не свобода реализации: факт называется в отчёте, заводится эскалация с адресатом «фаза P3 / владелец», item закрывается `🟠` с записью в Known Deviations."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`dart analyze dart/agentools; echo $?` = 0 · `dart test --directory dart/agentools; echo $?` = 0 · таблица отрицательных кейсов разбора ключа зелёная: неверный префикс, версия внутри ключа, чужой вендорный префикс — каждый отвергается со своей диагностикой (вывод теста — в Completion Notes) · `grep -rniE 'initialize|Mcp-Session-Id|SSE|resumability|roots|sampling|DCR' dart/agentools/lib | wc -l` = 0 (legacy-лексика D20 отсутствует в коде ядра) · `grep -rLE 'EXT-[0-9]' dart/agentools/test/identity | wc -l` = 0 (каждый тест ссылается на правило ревизии) · перечень `id` векторов корпуса, из которых взяты ожидания, приведён в Completion Notes и непуст · `git diff --quiet -- php spec/revisions/2026-08 fixtures/2026-08 conformance; echo $?` = 0 (чужие артефакты не тронуты) · прогнать плановый линтер по каталогу плана и опубликовать счёт с атрибуцией, K = 0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "реализация документа `01` (объявление расширения, грамматика vendor-ключа, negotiation, отклонение невалидного ключа, структурная половина must-ignore) + таблица отрицательных кейсов с выводом + доказанное отсутствие legacy-лексики в коде ядра + перечень векторов, из которых взяты ожидания тестов + названные (или явно отсутствующие) расхождения прочтения с PHP SDK."
+    }
+  ]
+}

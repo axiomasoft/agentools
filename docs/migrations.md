@@ -45,5 +45,10 @@ includes tested reversal steps for your deployment.
 
 ## Inventory
 
-See `plans/2026.09.19-№1-AGENTOOLS-HARDENING/findings/P1-migration-inventory.md` for
+See `verification/findings/P1-migration-inventory.md` for
 class-to-owner mapping (operator-facing summary in package `UPGRADING.md` files).
+
+For exact event timestamps, existing installations must follow the explicit
+[`ts_text` expansion and verified backfill](audit-fixes-2026-10.md#postgresql-event-timestamp-migration)
+before upgrading either SDK. Canonical UTC timestamps previously stored in event
+envelopes must retain their exact original spelling during this backfill.

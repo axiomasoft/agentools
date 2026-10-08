@@ -1,0 +1,109 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "research-P7-design",
+  "title": "P7 design — intentional API, testkit/reference boundaries and artifact consumers",
+  "sections": [
+    {
+      "id": "P7-design-intentional-API-testkit-reference-boundaries-and-artifact-consumers",
+      "title": "P7 design — intentional API, testkit/reference boundaries and artifact consumers",
+      "text": "**Date:** 2026-09-19  \n**Tree anchor:** `3a0fc4de2c57e2d350ffa9ef252eb2162a7579bc` (`main`)  \n**Evidence class:** `RAG:—` unless a row points to `P7-design-rag.md`."
+    },
+    {
+      "id": "Design-question",
+      "title": "Design question",
+      "text": "How can Agentools turn broad PHP autoload reachability and Dart transitive barrels into an\nintentional, testable consumer contract, remove process-local/reference implementations from the\nproduction default, and prove package artifacts in clean consumers without a massive directory\nrewrite, an invented public registry decision, or a second owner for P2–P6 semantics?"
+    },
+    {
+      "id": "Repository-observations",
+      "title": "Repository observations",
+      "text": "| Observation | Evidence | Design consequence |\n|:--|:--|:--|\n| PHP production autoload maps both `AgenTools\\\\` to `src/` and `AgenTools\\\\Reference\\\\` to `reference/`. | `php/composer.json` | Reference slice is reachable by every production dependency today; move its mapping to the root-only development contour and exclude it from the production archive. |\n| PHP in-memory stores and `FixedClock` live below `src/`, while reference SQLite/product-slice code lives below `reference/`. | `php/src/Persistence/**`, `php/src/Idempotency/InMemoryDeduplicationStore.php`, `php/reference/**` | Test doubles need an explicit testkit classification; reference and testkit are distinct tiers even if both are dev-only. |\n| Composer package metadata has no archive exclusions and no API allowlist. | `php/composer.json` | PSR-4 reachability alone cannot define stability. P7 needs a target manifest plus actual classmap/token inventory and real archive listing. |\n| Dart core has one top-level `agentools.dart`, which transitively exports nearly every domain barrel, including `InMemoryEventLog`, `InMemorySessionStore`, `InMemoryDeduplicationStore` and `FixedClock`. | `dart/agentools/lib/agentools.dart`, nested barrels | Keep a narrow core library and expose supported test doubles only from `agentools_testkit.dart`. |\n| Files under Dart `lib/src` can technically be imported, and current package tests sometimes do so for duplicate descriptor DTOs. | `dart/agentools/test/schema/*`, official Dart package guidance | `lib/src` is implementation by contract, not by technical impossibility. External consumer fixtures and analyzer checks must reject implementation imports. |\n| Dart MCP transport is already a separate package and core has no `mcp_dart` dependency. | both Dart pubspecs and `agentools_mcp_dart/lib/**` | Preserve the split. P7 narrows its public wrapper and core import edge; it does not merge MCP into core or grow a full SDK. |\n| The MCP companion depends on core by relative path and both packages use `publish_to: none`. | Dart pubspecs | Paired local artifact testing is valid private evidence, but a path dependency cannot prove pub.dev readiness. P9/P10 retain hosted-source/identity ownership. |\n| P1 explicitly calls current PHP classmap and Dart barrels candidate surface until P7; stable API requires export, production consumer and behavioural proof. | P1.1/P1.3 specs; historical package-quality contract | P7 may reclassify accidental candidates without pretending every reachable class was stable, but may not remove a proved stable entry silently. |\n| P2–P6 will add safe facades, durable ports/adapters and semantic profiles before P7 executes. | PLAN1 dependencies and P2–P6 item specs | Target manifests are finalized from executed predecessor outputs, not today’s source snapshot. Missing predecessor artifacts remain dependency-not-ready. |\n| Historical P11 and the new audit both demand API manifests, archive inspection and clean consumers, but identity/release decisions remain unresolved. | `plans/AGENTOOLS/phases/P11/**`, F09/F12, D4/D5 | P7 owns package boundaries and private artifact consumers. P9 owns automation/supply chain; P10 owns final RC/publication decision. |"
+    },
+    {
+      "id": "Accepted-boundary",
+      "title": "Accepted boundary",
+      "text": ""
+    },
+    {
+      "id": "1.-One-target-contract-three-package-surfaces",
+      "title": "1. One target contract, three package surfaces",
+      "text": "P7.1 creates one policy contract and one exact machine contract covering:\n\n1. PHP `agentools/sdk` core;\n2. Dart `agentools` core plus its separate `agentools_testkit.dart` library;\n3. Dart `agentools_mcp_dart` optional companion.\n\nEach identity has a tier (`stable`, `advanced`, `testkit`, `reference`, `internal`), owning package,\nsupported import/FQN, behavioural consumer, migration state and P6 semantic link where applicable.\nThe tool records current, target and delta separately. It never turns visibility into stability."
+    },
+    {
+      "id": "2.-PHP-uses-Composer-contours-not-a-new-package-graph-by-default",
+      "title": "2. PHP uses Composer contours, not a new package graph by default",
+      "text": "The default target is one Composer core package:\n\n- production `autoload` exposes the supported core namespaces;\n- `AgenTools\\\\Reference\\\\` and `AgenTools\\\\TestKit\\\\` are root-only development mappings;\n- reference/testkit/tests/conformance internals are excluded from the production archive;\n- `src` has no dependency on development contours;\n- in-memory/fixed implementations are testkit, not production presets;\n- stable current FQNs stay compatible; accidental candidates move only under P1 policy with a\n  recorded migration.\n\nA separate published PHP testkit or adapter package is not created unless P7.1 proves a real\nconsumer and dependency reduction that Composer contours cannot provide. No such proof exists in\nthe current tree."
+    },
+    {
+      "id": "3.-Dart-uses-explicit-libraries-inside-core-and-keeps-MCP-separate",
+      "title": "3. Dart uses explicit libraries inside core and keeps MCP separate",
+      "text": "`agentools.dart` becomes the core supported entrypoint. A new `agentools_testkit.dart` is the only\nsupported test-double entrypoint. Implementation stays under `lib/src`; direct cross-package\n`src` imports are rejected by lint/consumer fixtures. The bytes may remain in the same package,\nbecause an extra physical package would create version/publication coupling without reducing core\nruntime dependencies.\n\n`agentools_mcp_dart` stays separate because it has a real optional runtime dependency on\n`mcp_dart`. It imports only supported Agentools libraries. Its local path dependency is preserved\nfor private development and called out as a public-release blocker, never hidden by P7."
+    },
+    {
+      "id": "4.-Stability-and-migration-are-evidence-based",
+      "title": "4. Stability and migration are evidence-based",
+      "text": "An entry is stable only when all three are present: intentional export/autoload classification,\na production consumer and a behavioural test. Exact manifests reject missing and extra actual\nentries. A proved stable removal requires a compatibility shim/deprecation window or a new finite\nowner-gate. Candidate accidental reachability can become internal/testkit only when the P1\ncompatibility record and actual consumer scan support that disposition.\n\nP7 changes packaging/ownership only. P2–P6 behaviour and the semantic manifest remain upstream\nowners; their receipts rerun after moves."
+    },
+    {
+      "id": "5.-Built-artifacts-not-source-trees-decide-the-boundary",
+      "title": "5. Built artifacts, not source trees, decide the boundary",
+      "text": "P7.4 stages artifacts in a disposable directory, records their sorted file lists and digests, then\ninstalls/extracts them into clean PHP, Dart and paired Dart-MCP consumers. Consumers may not import\nworkspace paths or implementation libraries. Mutants prove that a forbidden file, missing stable\nsymbol and direct `src` import each turn the gate red.\n\nThe result is explicitly a private/local package receipt. P9 may wire the gate into CI and add\nmatrices/SBOM/provenance; P10 may form the final RC and request G-RELEASE. P7 does neither."
+    },
+    {
+      "id": "Item-decomposition",
+      "title": "Item decomposition",
+      "text": "| Item | Product | Depends on | Why separate |\n|:--|:--|:--|:--|\n| P7.1 | policy, exact target roster and inventory/diff tool | terminal P1/P6 evidence | One owner before either SDK moves. |\n| P7.2 | PHP core/dev autoload and archive boundary | P7.1 | Composer namespaces/classmaps and compatibility form one ecosystem delta. |\n| P7.3 | Dart core/testkit exports and MCP companion boundary | P7.1 | Dart library privacy/exports and pub dependency rules are distinct from Composer. |\n| P7.4 | built artifacts, migration compilation and clean consumers | P7.2–P7.3 | Evidence must run after both package surfaces settle and outside their source trees. |\n\n```text\nP1 + P6 -> P7.1 -> P7.2 --\\\n                    P7.3 ---> P7.4 -> P8/P9/P10\n```\n\n`api-boundaries` groups P7.1–P7.3 because inventory, target roster and both ecosystem deltas reuse\nthe same semantic/compatibility inputs. P7.4 is `solo`: isolation from the source tree is the\nevidence boundary, so reusing an in-tree implementation session would weaken the claimed proof."
+    },
+    {
+      "id": "Alternatives",
+      "title": "Alternatives",
+      "text": ""
+    },
+    {
+      "id": "A.-Physically-split-every-core-testkit-storage-package-now",
+      "title": "A. Physically split every core/testkit/storage package now",
+      "text": "Rejected. It creates manifests, versions and release ordering without current independent consumers.\nThe observable boundary can be achieved through Composer dev autoload/archive rules and Dart public\nlibraries. A future split needs measured dependency or lifecycle value."
+    },
+    {
+      "id": "B.-Keep-all-reachable-classes-exports-public-and-document-warnings",
+      "title": "B. Keep all reachable classes/exports public and document warnings",
+      "text": "Rejected. Documentation cannot stop accidental production use or detect drift. Exact manifests,\ndependency rules and built-artifact consumers are required."
+    },
+    {
+      "id": "C.-Treat-all-current-reachability-as-stable-API",
+      "title": "C. Treat all current reachability as stable API",
+      "text": "Rejected. P1 intentionally labels the current classmap/barrels candidate surface, and many entries\nare process-local test doubles or reference-project code without production consumers."
+    },
+    {
+      "id": "D.-Hide-Dart-implementation-only-by-moving-files-under-lib-src",
+      "title": "D. Hide Dart implementation only by moving files under `lib/src`",
+      "text": "Rejected. `lib/src` is an ecosystem convention, not a technical access barrier. P7 also needs\nexplicit public libraries, analyzer rules and external consumer tests."
+    },
+    {
+      "id": "E.-Merge-agentools_mcp_dart-into-core",
+      "title": "E. Merge `agentools_mcp_dart` into core",
+      "text": "Rejected. It would add an optional protocol dependency to pure core and contradict P6’s bounded MCP\napplicability decision."
+    },
+    {
+      "id": "F.-Fix-the-companion-path-dependency-by-selecting-pub.dev-now",
+      "title": "F. Fix the companion path dependency by selecting pub.dev now",
+      "text": "Rejected. Registry, legal identity and publication remain D5/P9/P10 decisions. P7 records the\nblocker and tests paired private artifacts."
+    },
+    {
+      "id": "Validation-strategy",
+      "title": "Validation strategy",
+      "text": "1. Inventory every actual reachable FQN/export and require one target disposition.\n2. Compare target and actual exact sets after each ecosystem move; missing and extra are red.\n3. Prove zero production core→testkit/reference/optional-adapter edges.\n4. Rerun PHP/Dart P6 semantics and package-native suites after ownership-only moves.\n5. Build and inspect actual package artifacts twice for deterministic file/content digests.\n6. Install artifacts into clean consumers and compile both supported usage and migration snippets.\n7. Run negative mutants for undeclared API, forbidden archive file and external `src` import.\n8. Keep public publication/hosted dependency checks visibly unresolved rather than manufacturing\n   release readiness."
+    },
+    {
+      "id": "Risks-retained-by-design",
+      "title": "Risks retained by design",
+      "text": "- PHP visibility cannot make every internal class unreachable under a broad namespace; the stable\n  contract is the exact manifest plus consumer tests, not a false language-level privacy claim.\n- Dart `lib/src` remains technically importable. Analyzer and consumer policy make it unsupported,\n  while stable entrypoints remain explicit.\n- A same-package Dart testkit still ships bytes with core. It is acceptable because it adds no core\n  dependency/default export; P9 archive evidence measures actual cost and may justify a later split.\n- The MCP companion cannot be publicly published with its current path dependency. P7 labels this\n  blocker; only D5/P9/P10 may choose hosted identity/version.\n- P7 target entries depend on executed P2–P6 outputs. Design does not guess future class names or\n  turn declared predecessor artifacts into evidence."
+    }
+  ],
+  "applies_to": [
+    "P7"
+  ],
+  "provenance": {
+    "path": "research/P7-design.md",
+    "sha256": "4b960d0b6f8ec74dfbcb43d0ac30c6ed8a28d11a200dc2dce8b1fa33f3d01619"
+  }
+}

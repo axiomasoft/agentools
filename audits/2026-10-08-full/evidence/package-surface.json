@@ -1,0 +1,12 @@
+{
+  "id": "package-surface",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/package_surface.py",
+    "validate-contract"
+  ],
+  "started_utc": "2026-10-08T12:03:34.332448+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.114
+}

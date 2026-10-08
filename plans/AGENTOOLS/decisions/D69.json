@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D69",
+  "title": "Решение",
+  "date": "2026-07-27",
+  "status": "accepted",
+  "decision": "**Q-2 приземлена на item P6.7 честной границей, фазу НЕ блокирует:** remote у репозитория нет, поэтому CI как ГЕЙТ (блокировка merge) неисполним — гейт доказывается ЛОКАЛЬНО (`tools/ci_gate.py --all` зелёный) И отрицательным прогоном КАЖДОГО из четырёх слоёв; `.github/workflows/ci.yml` пишется и остаётся незапущенным, факт называется прямым текстом в `conformance/README.md` и в вердикте гейта. Альтернатива «не писать CI до появления remote» отклонена: слои — это и есть исполняемое выражение §J5, а их отсутствие сделало бы гейт фазы недостижимым; альтернатива «объявить CI работающим» отклонена как ложное утверждение",
+  "rationale": "`plan-protocol` §11 «граница называется честно» (прецедент D63 — уведомление потребителей). `RAG:— (repo-grounded: @plan/knowledge/findings-P6-conformance-recon-2026-07-27.json §1 — `git remote -v` пуст, каталога `.github` нет; @plan/plan.json Q-2)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D69\ndate: 2026-07-27\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Q-2 приземлена на item P6.7 честной границей, фазу НЕ блокирует:** remote у репозитория нет, поэтому CI как ГЕЙТ (блокировка merge) неисполним — гейт доказывается ЛОКАЛЬНО (`tools/ci_gate.py --all` зелёный) И отрицательным прогоном КАЖДОГО из четырёх слоёв; `.github/workflows/ci.yml` пишется и остаётся незапущенным, факт называется прямым текстом в `conformance/README.md` и в вердикте гейта. Альтернатива «не писать CI до появления remote» отклонена: слои — это и есть исполняемое выражение §J5, а их отсутствие сделало бы гейт фазы недостижимым; альтернатива «объявить CI работающим» отклонена как ложное утверждение"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`plan-protocol` §11 «граница называется честно» (прецедент D63 — уведомление потребителей). `RAG:— (repo-grounded: @plan/knowledge/findings-P6-conformance-recon-2026-07-27.json §1 — `git remote -v` пуст, каталога `.github` нет; @plan/plan.json Q-2)`"
+    }
+  ]
+}

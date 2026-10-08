@@ -1,0 +1,16 @@
+{
+  "id": "fix-postgres-stop",
+  "cwd": ".",
+  "command": [
+    "/usr/lib/postgresql/18/bin/pg_ctl",
+    "-D",
+    "/tmp/agentools-audit-pg-2g3w_enl/data",
+    "-m",
+    "fast",
+    "-w",
+    "stop"
+  ],
+  "started_utc": "2026-10-08T13:58:38.039839+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.122
+}

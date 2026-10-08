@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D30",
+  "title": "Решение",
+  "date": "2026-07-27",
+  "status": "accepted",
+  "decision": "**Закрытие code-producing item'а — два коммита в ДВУХ репозиториях:** item-коммит в `~/projects/packages/agentools`, bookkeeping-коммит в vault-репо `Brain`; хеш для handoff берётся из репозитория артефактов. Топология `plan-protocol` §8 не меняется — уточняется её физическая раскладка после переноса дома плана в vault",
+  "rationale": "`RAG:— (repo-grounded: Meta `Home: brain`; git log vault → 88109c9 «дом плана — vault-папка проекта»; git -C ~/projects/packages/agentools log → 83cb540)`; P2 — первая после переноса фаза, производящая артефакты кода",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D30\ndate: 2026-07-27\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Закрытие code-producing item'а — два коммита в ДВУХ репозиториях:** item-коммит в `~/projects/packages/agentools`, bookkeeping-коммит в vault-репо `Brain`; хеш для handoff берётся из репозитория артефактов. Топология `plan-protocol` §8 не меняется — уточняется её физическая раскладка после переноса дома плана в vault"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`RAG:— (repo-grounded: Meta `Home: brain`; git log vault → 88109c9 «дом плана — vault-папка проекта»; git -C ~/projects/packages/agentools log → 83cb540)`; P2 — первая после переноса фаза, производящая артефакты кода"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "fix-osv-final",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/ci_matrix.py",
+    "osv-scan"
+  ],
+  "started_utc": "2026-10-08T13:39:06.428949+00:00",
+  "exit_code": 0,
+  "duration_seconds": 2.02
+}

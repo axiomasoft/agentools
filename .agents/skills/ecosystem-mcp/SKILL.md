@@ -3,74 +3,85 @@ name: ecosystem-mcp
 description: "Use to recall ecosystem decisions, choose memory/code-graph MCP tools, or diagnose missing project connections."
 ---
 
-# Экосистема academici — MCP-инструменты этого проекта
+# Ecosystem academici — MCP-tools for this project
 
-Этот проект (`agentools`) — узел экосистемы **academici**, подключённый к хабу **mAInd**. Через
-хаб проходят два независимых механизма связывания; оба раскатаны сюда как MCP-серверы (см.
-`.mcp.json`). Управляется этот файл из maind (`templates/skills/ecosystem-mcp/SKILL.md`) — правь
-там и `maind sync`, а не в копии проекта.
+This project (`agentools`) — ecosystem node The **academici**, connected to the hub **mAInd**. Via
+hub undergoes two independent binding mechanisms; both are rolled out here like MCP-servers (see
+`.mcp.json`). This file is managed from maind (`templates/skills/ecosystem-mcp/SKILL.md`) — correct
+there and `maind sync`, and not in the copy of the project.
 
-## Инструменты и когда их вызывать
+## Tools and when to call them
 
-| MCP-сервер | Что это | Когда вызывать |
+| MCP-server | What is this | When to call |
 |:--|:--|:--|
-| **agentmemory** | Общая память/контекст экосистемы (факты, поток изменений). Демон mAInd, scope этого проекта — `project:agentools` | В **начале задачи** — поднять контекст прошлых решений по проекту/экосистеме (recall). При **фиксации** значимого решения/факта — записать (store), чтобы он попал в общую историю |
-| **serena** (код-граф) | Граф **кода внутри** проекта: символы, ссылки, реализации, обзор файла (движок Serena) | Для **навигации по коду** — `find_symbol`, `find_referencing_symbols`, `get_symbols_overview` вместо чтения файлов целиком (экономит токены). Доступен, если в `.mcp.json` есть сервер кода (обычно `serena`); нет — навигируй обычным поиском. Не путать с межпроектным maind-графом |
-| **maind** | Сам хаб (топология **между** проектами, статус связи) | Когда нужны связи проекта с другими узлами экосистемы или сводка состояния |
+| **maind memory tools** | Temporary useful context. Default private scope `project:agentools` | Recall only when useful context can affect this task. Store a short unresolved blocker, coordination note, or one replaceable `active-handoff`; decisions/progress stay in the repository |
+| **serena** (code graph) | Graph **code inside** project: symbols, links, implementations, file overview (engine Serena) | For **code navigation** — `find_symbol`, `find_referencing_symbols`, `get_symbols_overview` instead of reading entire files (saves tokens). Available if `.mcp.json` there is a code server (usually `serena`); no - navigate with regular search. Not to be confused with cross-project maind-graph |
+| **maind** | The hub itself (topology **between** projects, connection status) | When you need project connections to other ecosystem nodes or a status summary |
 
-Память **общая внутри namespace** и изолирована между namespace — записанное здесь видно
-связанным проектам той же группы. Не дублируй в память то, что и так есть в коде/гите.
+Normal recall remains private scope project. Graph namespaces do not automatically
+memory access: shared `ns:<name>` is read and written only when explicitly scope and allowed
+`memory_namespaces`. Do not duplicate into memory what is already in the code, plan or git.
 
-**Дайджест на старте сессии — только свой проект.** `maind memory digest` (SessionStart-хук)
-по умолчанию показывает **только приватную память этого проекта** (`shared_max=0` —
-context-economy: чужой ns/global-контекст не течёт в каждую сессию без спроса). Общий
-контекст группы/экосистемы туда НЕ подмешивается — поднимай его явно (см. ниже), когда задача
-реально межпроектная.
+**Autoload is disabled by default (`MODE=manual`).** mAInd remains available via MCP,
+and memory rises upon request. `MODE=maind` with SessionStart digest is enabled only after
+measured evidence of benefit.
 
-## Межпроектная задача (2+ проекта)
+Every record expires: **48 hours by default, at most 72 hours**, including handoffs. Maximum
+800 characters and 8 live entries per scope. Allowed categories: `context` (`fact` is a legacy
+alias), `blocker`, `coordination`, `active-handoff`. Use memory only for temporary information
+another session needs that cannot simply be read from repository artifacts. One `active-handoff`
+per scope points to the repository handoff and names the next action; replace it instead of
+appending a journal, and forget it on completion. Never store plan decisions, audit copies,
+progress/checkpoints, commit/release history or connection seeds. Reading never renews TTL.
+Empty memory is normal. Use `maind memory audit --all` to inspect; administrators use
+`maind memory prune --all --apply` with seven-day local backups and `maind memory gc-install`
+for hourly expiry collection on the memory host.
 
-Задача касается сразу нескольких проектов экосистемы (например «проанализируй X и Y и улучши
-общее между ними») — подними межпроектный контекст явно, тремя шагами:
+## Cross-project task (2+ project)
 
-1. **Связи** — какие проекты вообще связаны: `maind graph --project agentools` (CLI) или
-   `maind_graph_path`/`maind_graph_neighbors` (MCP) — путь/соседи между узлами графа.
-2. **Контекст группы** — поднять общую память namespace явно (её нет в дайджесте по умолчанию):
-   `maind memory recall --scope ns:<имя>` (CLI) или `maind_memory_recall` c этим scope (MCP).
-3. **Вывод пишется в общий scope**, не в приватный проекта — иначе следующий проект группы его
-   не увидит: `maind memory remember --scope ns:<имя> "<факт>"` (CLI, `--scope` = прямой адрес
-   бакета — не путать с `--project --share`, у которого другое назначение: приватный + группа
-   разом) или `maind_memory_store` с `scope: "ns:<имя>"` (MCP).
+The task concerns several ecosystem projects at once (for example «analyze X and Y and improve
+common between them») — raise the cross-project context explicitly, in three steps:
 
-## Правило: сначала граф/символы, потом широкий поиск
+1. **Connections** — what projects are generally related: `maind graph --project agentools` (CLI) or
+   `maind_graph_path`/`maind_graph_neighbors` (MCP) — path/neighbors between graph nodes.
+2. **Group context** — raise shared memory namespace explicit (it is not in the digest by default):
+   `maind memory recall --scope ns:<name>` (CLI) or `maind_memory_recall` c with this scope (MCP).
+3. **Only necessary temporary coordination** may be written to an explicitly authorized shared
+   scope: `maind memory remember --scope ns:<name> --type coordination --ttl-hours 48 "<note>"` (CLI, `--scope` = direct address
+   bucket - not to be confused with `--project --share`, which has a different purpose: private + group
+   at once) or `maind_memory_store` with `scope: "ns:<name>"` (MCP).
 
-Перед широким `grep`/чтением многих файлов — сначала спроси структуру, это дешевле по токенам:
+## Rule: graph first/characters, then broad search
 
-- **навигация по коду** → serena: `get_symbols_overview` (обзор файла), `find_symbol` (тело по имени),
-  `find_referencing_symbols` (кто ссылается) — вместо чтения файлов целиком;
-- **связи между проектами** → `maind graph query`/`neighbors` — соседи узла вместо grep по манифестам.
+Before wide `grep`/reading many files - first ask for the structure, it's cheaper in terms of tokens:
 
-**Оговорка:** maind-граф пересобирается ВРУЧНУЮ (watcher'а нет) — может устареть. Если результат
-выглядит неполным/устаревшим → `maind sync --only graph`, затем повтори; либо фолбэк на обычный поиск.
-serena-код-граф (LSP) актуален на лету — оговорка к нему не относится.
+- **code navigation** → serena: `get_symbols_overview` (file overview), `find_symbol` (body by name),
+  `find_referencing_symbols` (who refers) — instead of reading entire files;
+- **connections between projects** → `maind graph query`/`neighbors` — neighbors of a node instead grep by manifests.
 
-## Связи проекта
+**Disclaimer:** maind-the graph is rebuilt MANUALLY (watcher'but no) — may be out of date. If the result
+looks incomplete/obsolete → `maind sync --only graph`, then repeat; or a fallback to a regular search.
+serena-code graph (LSP) is relevant on the fly - the disclaimer does not apply to it.
 
-- **scope памяти:** `project:agentools`; экосистемные факты — в scope `global`.
-- **namespaces:** `agentools, axioma` (внутри группы — общее, между группами — изолировано).
-- **связан с:** —.
-- посмотреть актуальные связи: `maind graph --project agentools`.
+## Project Communications
 
-Если что-то ломается в связанном проекте — помни, что связь существует: изменения здесь могут
-влиять на соседей по namespace, и об этом стоит предупредить пользователя.
+- **scope memory:** `project:agentools`; shared `ns:*`/`global` only by explicit authorized request.
+- **namespaces:** `agentools, axioma` (within a group - general, between groups - isolated).
+- **linked to:** —.
+- see current connections: `maind graph --project agentools`.
 
-## Если связь сломана
+If something breaks in a linked project, remember that the link exists: changes here can
+influence neighbors namespace, and the user should be warned about this.
 
-Инструменты выше работают только при поднятой связи с хабом. Если MCP-вызовы памяти/графа не
-отвечают или память пустая:
+## If the connection is broken
 
-1. Проверь: `maind health --cwd` (связь этого проекта) или `maind verify` (наполняется ли память/граф
-   по всей экосистеме, или поднято «вхолостую»). Память глазами — вьюер `http://127.0.0.1:3113`.
-2. При статусе `partial` / `standalone` — почини: `maind health --cwd --fix` (поднимет демон
-   памяти и допишет MCP-серверы хаба в проект).
-3. **Сообщи пользователю**: пока статус не `connected`, изменения этой сессии **не попадут** в
-   общую память и граф — в истории экосистемы появится невосстановимый пробел.
+The tools above only work when the connection to the hub is up. If MCP-memory calls/column not
+respond or memory is empty:
+
+1. Check: `maind health --cwd` (read-only) or `maind health --cwd --deep` with a real symptom;
+   `maind verify` checks if memory is full/graph across the entire ecosystem or everything is raised
+   «idle». Memory through the eyes - viewer `http://127.0.0.1:3113`.
+2. When status `partial` / `standalone` — fix: `maind health --cwd --fix` (will raise the demon
+   memory and add MCP-hub servers into the project).
+3. Report the unavailable channel and continue ordinary repository work. Memory is temporary
+   optional context; repository artifacts preserve decisions and history.

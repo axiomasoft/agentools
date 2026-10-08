@@ -1,0 +1,49 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D10",
+  "title": "Storage-assigned atomic batch EventStore; content-hash collision; redacted audit; low-cardinality metrics",
+  "date": "2026-09-19",
+  "status": "accepted",
+  "decision": "P5 заменяет поддерживаемый journal port на `EventStore.append(stream, expectedPrevSeq, UncommittedEvent[])`\nи paginated `load`. Stream identity — `(tenant_id, action_id)`. Пустой журнал — `expected_prev_seq = 0`;\nхранилище назначает непрерывный `seq` с 1 и store-wide `global_position` (`GENERATED ALWAYS AS IDENTITY`).\n`ExpectedVersion.Any` не существует. Батч непустой, максимум 64, атомарный: все события или ни одного.\n\nИдемпотентный retry — тот же набор `event_id` в том же порядке с тем же content hash как уже\nзаписанный суффикс при исходном expected version. Тот же `event_id` с другим hash —\n`event_id_collision`. Частичное пересечение батча — `event_batch_partial_overlap`, не дописывание.\nContent hash — RFC 8785 по uncommitted envelope **без** `seq` / `expected_prev_seq` / `prev_hash` /\n`global_position`. `event_id` задаёт вызывающий (UUID/ULID), не `ev-{action}-{seq}`.\n\n`audit.*` остаётся в том же журнале (AOB-1). Export `AuditSink` — optional redacted derived adapter;\nотказ экспортёра не откатывает append (AOB-18). Payload allow/deny — AOB-14/16. Метки метрик —\nзакрытый low-cardinality набор; `tenant_id` / `action_id` / `event_id` / `trace_id` запрещены.\nOpenTelemetry SDK в runtime dependencies нет.\n\nСнапшот несёт `seq`, `spec_rev` и content hash события на этом `seq`; при расхождении отбрасывается.\nЖурнал не усекается (ALC-32..34). ALC epoch не сливается с P4 lease token и не выводится из `event_id`\n(ALC-28, D9). Production adapter — injected PDO/SQL, как D8/D9. In-memory только testkit.\nFrozen `spec/revisions/2026-08/**` не изменяется. Single-event `EventLog.append(ActionEvent)` на\nsupported path отклоняется.",
+  "rationale": "Caller-assembled seq плюс `lastSeq()`/`append` оставляют гонку; silent event-id no-op скрывает\ncorruption (F05). Kurrent EventId-only match и `ExpectedVersion.Any` слабее ALC-20/21 и F05.\n`ON CONFLICT DO NOTHING RETURNING` не отличает replay от collision. IDENTITY/seq в hash делают\ndigest неподготовимым. Второй audit-журнал или snapshot-as-SoT ломают AOB-1/ALC-1. Tenant/action\nв metric labels — unbounded cardinality (Prometheus/OTel).",
+  "applies_to": [
+    "P5",
+    "P5.1",
+    "P5.2",
+    "P5.3",
+    "P5.4"
+  ],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "plan-designer/cursor-grok-4.6/high",
+    "effort": "high"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D10\ndate: 2026-09-19\nstatus: accepted\nitem: P5\nitems: [P5, P5.1, P5.2, P5.3, P5.4]\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "D10-Storage-assigned-atomic-batch-EventStore-content-hash-collision-redacted-audit-low-cardinality-metrics",
+      "title": "D10 — Storage-assigned atomic batch EventStore; content-hash collision; redacted audit; low-cardinality metrics",
+      "text": "**Actor:** plan-designer/cursor-grok-4.6/high\n**Evidence:** RAG:— repository recon in `@plan/knowledge/research-P5-design.json`; RAG:✅ and Perplexity/web cross-check in `@plan/knowledge/research-P5-design-rag.json`"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "P5 заменяет поддерживаемый journal port на `EventStore.append(stream, expectedPrevSeq, UncommittedEvent[])`\nи paginated `load`. Stream identity — `(tenant_id, action_id)`. Пустой журнал — `expected_prev_seq = 0`;\nхранилище назначает непрерывный `seq` с 1 и store-wide `global_position` (`GENERATED ALWAYS AS IDENTITY`).\n`ExpectedVersion.Any` не существует. Батч непустой, максимум 64, атомарный: все события или ни одного.\n\nИдемпотентный retry — тот же набор `event_id` в том же порядке с тем же content hash как уже\nзаписанный суффикс при исходном expected version. Тот же `event_id` с другим hash —\n`event_id_collision`. Частичное пересечение батча — `event_batch_partial_overlap`, не дописывание.\nContent hash — RFC 8785 по uncommitted envelope **без** `seq` / `expected_prev_seq` / `prev_hash` /\n`global_position`. `event_id` задаёт вызывающий (UUID/ULID), не `ev-{action}-{seq}`.\n\n`audit.*` остаётся в том же журнале (AOB-1). Export `AuditSink` — optional redacted derived adapter;\nотказ экспортёра не откатывает append (AOB-18). Payload allow/deny — AOB-14/16. Метки метрик —\nзакрытый low-cardinality набор; `tenant_id` / `action_id` / `event_id` / `trace_id` запрещены.\nOpenTelemetry SDK в runtime dependencies нет.\n\nСнапшот несёт `seq`, `spec_rev` и content hash события на этом `seq`; при расхождении отбрасывается.\nЖурнал не усекается (ALC-32..34). ALC epoch не сливается с P4 lease token и не выводится из `event_id`\n(ALC-28, D9). Production adapter — injected PDO/SQL, как D8/D9. In-memory только testkit.\nFrozen `spec/revisions/2026-08/**` не изменяется. Single-event `EventLog.append(ActionEvent)` на\nsupported path отклоняется."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Caller-assembled seq плюс `lastSeq()`/`append` оставляют гонку; silent event-id no-op скрывает\ncorruption (F05). Kurrent EventId-only match и `ExpectedVersion.Any` слабее ALC-20/21 и F05.\n`ON CONFLICT DO NOTHING RETURNING` не отличает replay от collision. IDENTITY/seq в hash делают\ndigest неподготовимым. Второй audit-журнал или snapshot-as-SoT ломают AOB-1/ALC-1. Tenant/action\nв metric labels — unbounded cardinality (Prometheus/OTel)."
+    },
+    {
+      "id": "Consequences",
+      "title": "Consequences",
+      "text": "P5 должен доказать 50 concurrent append → один победитель, atomic batch, identical replay,\ncontent collision, partial-overlap отказ, keyset pagination без дыр, secret/PII reject,\ncardinality policy и snapshot≠journal. P5 не обещает exactly-once доставки потребителю, outbox,\nKMS, vendor telemetry SDK и новую spec revision. P6 вносит новые коды в registry; P7 — final\nexports `EventLog`; P8 — chaos/mutation/page-size depth; P9 — PostgreSQL в CI matrix, если её ещё нет."
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:agentools/agentools.dart';
@@ -37,6 +38,48 @@ UncommittedEvent _event(
 }
 
 void main() {
+  test('SQL hydration and inserts preserve exact shared timestamp strings', () {
+    final fixture =
+        jsonDecode(
+              File(
+                '../../fixtures/hardening/audit-regressions-v1.json',
+              ).readAsStringSync(),
+            )
+            as Map<String, dynamic>;
+    for (final ts in fixture['timestamps'] as List) {
+      final executor = _ScriptedExecutor([
+        SqlQueryResult(
+          rows: [
+            {
+              'event_id': 'timestamp-fixture',
+              'action_id': 'action',
+              'seq': 1,
+              'expected_prev_seq': 0,
+              'ts_text': ts,
+              'ts': DateTime.utc(2000),
+              'actor_type': 'user',
+              'actor_id': 'u',
+              'kind': 'action_created',
+              'event_version': 1,
+              'spec_rev': '2026-09',
+              'epoch': null,
+              'prev_hash': null,
+              'payload_json': '{}',
+            },
+          ],
+          affectedRows: 1,
+        ),
+      ]);
+      expect(
+        SqlEventStore(
+          executor,
+        ).load('tenant', 'action').events.single.timestamp,
+        ts,
+      );
+      expect(executor.calls.single.$1, contains('ts_text'));
+    }
+  });
+
   test(
     'SQL constants lock the header, omit caller position, and keyset without OFFSET',
     () {
@@ -112,6 +155,7 @@ void main() {
       expect(executor.calls[4].$1, SqlEventStore.tailHashSql);
       expect(executor.calls[5].$1, SqlEventStore.insertEventSql);
       expect(executor.calls[5].$2.containsKey('global_position'), isFalse);
+      expect(executor.calls[5].$2['ts_text'], executor.calls[5].$2['ts']);
       expect(executor.calls.last.$1, 'COMMIT');
     },
   );
@@ -185,7 +229,7 @@ void main() {
             'action_id': 'action-1',
             'seq': 3,
             'expected_prev_seq': 2,
-            'ts': '2026-09-20T10:00:00+00:00',
+            'ts_text': '2026-09-20T10:00:00+00:00',
             'actor_type': 'user',
             'actor_id': 'u-1',
             'kind': 'action_created',
@@ -229,7 +273,7 @@ void main() {
 
   // The hash chain stays verifiable after reload whatever the input offset,
   // precision or the session time zone of the executor.
-  test('stores, chains and hydrates canonical UTC timestamps', () {
+  test('stores, chains and hydrates exact envelope timestamps', () {
     final executor = _ScriptedExecutor([
       const SqlQueryResult(rows: [], affectedRows: 0),
       const SqlQueryResult(rows: [], affectedRows: 1),
@@ -249,6 +293,7 @@ void main() {
             'seq': 1,
             'expected_prev_seq': 0,
             'ts': '2026-09-20 15:44:59.5+05:45',
+            'ts_text': '2026-09-20T09:59:59.5Z',
             'actor_type': 'user',
             'actor_id': 'u-1',
             'kind': 'action_created',
@@ -292,8 +337,8 @@ void main() {
         .map((call) => call.$2)
         .toList();
     expect(inserts.map((params) => params['ts']), [
-      '2026-09-20T10:00:01+00:00',
-      '2026-09-20T10:00:02.123456+00:00',
+      '2026-09-20T12:00:01+02:00',
+      '2026-09-20T10:00:02.1234567Z',
     ]);
 
     ActionEvent hydrated(String id, int seq, String ts, String? prev) {
@@ -313,12 +358,7 @@ void main() {
     }
 
     final chain = JournalHashChain(Canonicalizer());
-    final tail = hydrated(
-      'ev-tail',
-      1,
-      '2026-09-20T09:59:59.500000+00:00',
-      null,
-    );
+    final tail = hydrated('ev-tail', 1, '2026-09-20T09:59:59.5Z', null);
     expect(inserts[0]['prev_hash'], chain.hash(tail));
     final first = hydrated(
       'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab',

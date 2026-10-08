@@ -1,0 +1,17 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "root-contracts-read-budget-v1",
+  "title": "Layout v2 read-budget contract",
+  "sections": [
+    {
+      "id": "Layout-v2-read-budget-contract",
+      "title": "Layout v2 read-budget contract",
+      "text": "**Version:** `1.1.0`\n\n```text\npass_item(i) = estimated_required_read_tokens(i) <= 100000\n```"
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "root/contracts/read-budget-v1.md",
+    "sha256": "c3f2768f4ce8aa05a41f5525e193599142097d838c050a7156136d0eb206df22"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "fix-storage",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/storage_chaos.py",
+    "run"
+  ],
+  "started_utc": "2026-10-08T13:17:00.711237+00:00",
+  "exit_code": 0,
+  "duration_seconds": 43.994
+}

@@ -1,0 +1,12 @@
+{
+  "id": "fix-phpstan-final",
+  "cwd": ".",
+  "command": [
+    "composer",
+    "analyse",
+    "--working-dir=php"
+  ],
+  "started_utc": "2026-10-08T13:27:50.139907+00:00",
+  "exit_code": 0,
+  "duration_seconds": 3.219
+}

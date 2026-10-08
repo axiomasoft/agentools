@@ -8,8 +8,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CONTRACT = ROOT / "plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md"
-THREAT = ROOT / "plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/threat-model-v1.md"
+CONTRACT = ROOT / "verification/root/contracts/hardening-guarantees-v1.md"
+THREAT = ROOT / "verification/root/contracts/threat-model-v1.md"
 
 STATUSES = {"baseline-red", "baseline-partial", "designed", "proved"}
 OWNER_PHASES = {"P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10"}

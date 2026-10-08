@@ -1,0 +1,211 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P4.4",
+  "title": "Встроить IdempotencyCoordinator, capability policy и crash/fencing gate",
+  "status": "done",
+  "summary": "Подключить P4.2/P4.3 store к supported tool-invoke path, провести capability policy и выпустить проверяемый receipt, что stale worker не публикует результат, а exactly-once не обещается.",
+  "why": "Store CAS does not close F04 while `SliceToolCoordinator`, `ScenarioRunner` and `ToolPort.call` still invoke tools without a lease. `RAG:—`.",
+  "scope": {
+    "include": [
+      "`IdempotencyCoordinator`; capability catalog and high-risk classification from `side_effect`; heartbeat during invoke; native_key key forwarding; probe port for `read_before_write`; fail-closed unknown high-risk; consumer migration of reference/scenario paths; restart/multi-worker gate; PHP/Dart parity receipt; residual notes for P5/P6/P7/P8."
+    ],
+    "exclude": [
+      "P2 authorization redesign; P3 token consume; event append/epoch; new spec revision; final barrel/PSR-4 removals; public docs/release; saga/outbox implementation; claiming exactly-once tool side effects."
+    ]
+  },
+  "depends_on": [
+    "P4.2",
+    "P4.3"
+  ],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/root-contracts-idempotency-lease-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/hardening/idempotency-lease-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/09_idempotency-errors.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/03_action-lifecycle.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "@plan/knowledge/findings-P4-fencing-parity.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "Supported mutation/`idempotent_commit` invoke goes through the coordinator. Omitting store/catalog is a construction error, not a silent unfenced call. High-risk + unknown denies before acquire. Takeover + non-retryable capability calls `fail(lease, ambiguous)` without `ToolPort.call`. Heartbeat uses the lease from acquire. Layer tests fail if a new unfenced `complete(request)` or direct `ToolPort.call` bypass reappears on migrated consumers. PostgreSQL crash/takeover test is mandatory for close; in-memory restart is not a substitute. Receipt derives case/result/code sets from real test output and names P5/P6/P7/P8 residual owners. No safe result claims exactly-once external effect."
+  ],
+  "guidance": "Keep `ToolPort.call` signature; pass the durable key for `native_key`. Do not merge lease attempt into journal epoch. Redact tokens. Frozen harness may acquire internally so `2026-08` vectors still observe three states without new spec bytes.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "cd php && composer test && composer analyse",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "cd dart/agentools && dart analyze && dart test",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "git diff --exit-code -- spec/revisions/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "procedure": "cd php && composer test",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "procedure": "cd php && composer analyse",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "procedure": "cd dart/agentools && dart test",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "procedure": "python3 tools/validate_idempotency_lease_v1.py",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "Supported fenced invoke path, capability policy, crash/fencing receipt and explicit residual boundaries."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-20T07:39:05Z",
+    "finished_at": "2026-09-20T07:39:05Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "grok-4.6/high",
+      "effort": "high"
+    },
+    "notes": "IdempotencyCoordinator wired as supported ToolPort; capability policy; SliceToolCoordinator uses coordinator; FencingGateTest postgres takeover; findings/P4-fencing-parity.md.\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V4",
+        "exit": 0,
+        "at": "2026-09-20T07:39:05Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V5",
+        "exit": 0,
+        "at": "2026-09-20T07:39:05Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V6",
+        "exit": 0,
+        "at": "2026-09-20T07:39:05Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V7",
+        "exit": 0,
+        "at": "2026-09-20T07:39:05Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-20T07:39:05Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Подключить P4.2/P4.3 store к supported tool-invoke path, провести capability policy и выпустить проверяемый receipt, что stale worker не публикует результат, а exactly-once не обещается."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Store CAS does not close F04 while `SliceToolCoordinator`, `ScenarioRunner` and `ToolPort.call` still invoke tools without a lease. `RAG:—`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "`IdempotencyCoordinator`; capability catalog and high-risk classification from `side_effect`; heartbeat during invoke; native_key key forwarding; probe port for `read_before_write`; fail-closed unknown high-risk; consumer migration of reference/scenario paths; restart/multi-worker gate; PHP/Dart parity receipt; residual notes for P5/P6/P7/P8."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "P2 authorization redesign; P3 token consume; event append/epoch; new spec revision; final barrel/PSR-4 removals; public docs/release; saga/outbox implementation; claiming exactly-once tool side effects."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/knowledge/root-contracts-idempotency-lease-v1.json` · `fixtures/hardening/idempotency-lease-v1.json` · P4.2 PHP/Dart store API · P4.3 PostgreSQL adapter · current PHP/Dart `ToolPort`, `SliceToolCoordinator`, `ScenarioRunner`."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`php/src/Idempotency/IdempotencyCoordinator.php` · `php/src/Idempotency/ToolIdempotencyCatalog.php` · `php/src/Contracts/ExternalEffectProbe.php` · `php/src/Scenario/ScenarioRunner.php` · `php/reference/Scenario/SliceToolCoordinator.php` · `php/tests/Idempotency/IdempotencyCoordinatorTest.php` · `php/tests/Idempotency/FencingGateTest.php` · `dart/agentools/lib/src/idempotency/idempotency_coordinator.dart` · `dart/agentools/lib/src/idempotency/tool_idempotency_catalog.dart` · `dart/agentools/lib/src/contracts/external_effect_probe.dart` · `dart/agentools/lib/src/scenario/scenario_runner.dart` · `dart/agentools/test/idempotency/idempotency_coordinator_test.dart` · `dart/agentools/test/idempotency/fencing_gate_test.dart` · `@plan/knowledge/findings-P4-fencing-parity.json`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/root-contracts-idempotency-lease-v1.json` 2) `fixtures/hardening/idempotency-lease-v1.json` 3) `php/src/Contracts/ToolPort.php` 4) `php/reference/Scenario/SliceToolCoordinator.php` 5) `php/src/Scenario/ScenarioRunner.php` 6) `php/src/Tool/ActionProfile.php` 7) `spec/revisions/2026-08/09_idempotency-errors.md` 8) `spec/revisions/2026-08/03_action-lifecycle.md`."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "Supported mutation/`idempotent_commit` invoke goes through the coordinator. Omitting store/catalog is a construction error, not a silent unfenced call. High-risk + unknown denies before acquire. Takeover + non-retryable capability calls `fail(lease, ambiguous)` without `ToolPort.call`. Heartbeat uses the lease from acquire. Layer tests fail if a new unfenced `complete(request)` or direct `ToolPort.call` bypass reappears on migrated consumers. PostgreSQL crash/takeover test is mandatory for close; in-memory restart is not a substitute. Receipt derives case/result/code sets from real test output and names P5/P6/P7/P8 residual owners. No safe result claims exactly-once external effect."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Keep `ToolPort.call` signature; pass the durable key for `native_key`. Do not merge lease attempt into journal epoch. Redact tokens. Frozen harness may acquire internally so `2026-08` vectors still observe three states without new spec bytes."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "Manifest capability/crash cases pass on both SDKs; 50 concurrent acquires still one winner through the coordinator; stale worker cannot complete after takeover; ambiguous path stores completed error and does not invoke; `cd php && composer test && composer analyse`; `cd dart/agentools && dart analyze && dart test`; shared parity yields `missing=[]`, `extra=[]`, `mismatch=[]`; `git diff --exit-code -- spec/revisions/2026-08`; plan lint adds no ERROR."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "Supported fenced invoke path, capability policy, crash/fencing receipt and explicit residual boundaries."
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D4",
+  "title": "Release candidate обязателен, external publication — owner-gated",
+  "date": "2026-09-19",
+  "status": "accepted",
+  "decision": "PLAN1 обязан собрать и принять production-grade local/private PHP/Dart release candidate.\nPublic registry upload, git tag/release, credential use и смена license/legal identity запрещены\nдо явного `[OWNER-GATE:G-RELEASE]` с утверждёнными artifact digests и publication channel.",
+  "rationale": "Техническую готовность archive/consumer/provenance можно доказать обратимо. Внешняя публикация\nнеобратима для package versions и конфликтует с текущей private/proprietary identity без решения\nвладельца. Альтернатива «публикация как обычный CI шаг» расширяет полномочия плана.",
+  "applies_to": [
+    "P9",
+    "P10"
+  ],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "plan-designer/gpt-5.6-sol/high",
+    "effort": "high"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D4\ndate: 2026-09-19\nstatus: accepted\nitem: P10\nitems: [P9, P10]\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "D4-Release-candidate-external-publication-owner-gated",
+      "title": "D4 — Release candidate обязателен, external publication — owner-gated",
+      "text": "**Actor:** plan-designer/gpt-5.6-sol/high\n**Evidence:** RAG:— current README/LICENSE/manifests; RAG:✅ 2026-09-19 Dart publishing immutability and dry-run guidance"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "PLAN1 обязан собрать и принять production-grade local/private PHP/Dart release candidate.\nPublic registry upload, git tag/release, credential use и смена license/legal identity запрещены\nдо явного `[OWNER-GATE:G-RELEASE]` с утверждёнными artifact digests и publication channel."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Техническую готовность archive/consumer/provenance можно доказать обратимо. Внешняя публикация\nнеобратима для package versions и конфликтует с текущей private/proprietary identity без решения\nвладельца. Альтернатива «публикация как обычный CI шаг» расширяет полномочия плана."
+    },
+    {
+      "id": "Consequences",
+      "title": "Consequences",
+      "text": "P9 не получает publish credentials. P10 формирует decision packet; отсутствие G-RELEASE не\nмешает закрыть private RC, но блокирует только публичный publish/tag и публичный release receipt."
+    }
+  ]
+}

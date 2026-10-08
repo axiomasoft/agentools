@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D141",
+  "title": "Решение",
+  "date": "2026-08-03",
+  "status": "accepted",
+  "decision": "**P3 и P4 реопенены по RED Gate B round 1; старые terminal-items сохраняются, незакрытая работа получает новые remediation-items.** Фаза P3 → `🟡` (P3.16–P3.19), P4 → `🟡` (P4.9–P4.13); оба Phase Handoff инвалидированы. Формальные A2/A3 остаются историческими фактами, но больше не разблокируют P5.2/P6. **Consequences:** отменяется практическая достаточность прежнего `ГЕЙТ A3: PASS` (не сам факт его прогона); платим повторным A2/A3, двумя owner-gates и новым round P5.1, зато Completion Notes/anchors P3.1–P3.15/P4.1–P4.8 не переписываются.",
+  "rationale": "`@plan/knowledge/artifacts-P5-gate-b.json`: RED, F1–F8, 32 негодных carriers и 116 sole-carrier MUST; `@plan/knowledge/research-12-p3-p4-gate-b-remediation-2026-08.json`. `RAG:— (repo-grounded)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D141\ndate: 2026-08-03\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**P3 и P4 реопенены по RED Gate B round 1; старые terminal-items сохраняются, незакрытая работа получает новые remediation-items.** Фаза P3 → `🟡` (P3.16–P3.19), P4 → `🟡` (P4.9–P4.13); оба Phase Handoff инвалидированы. Формальные A2/A3 остаются историческими фактами, но больше не разблокируют P5.2/P6. **Consequences:** отменяется практическая достаточность прежнего `ГЕЙТ A3: PASS` (не сам факт его прогона); платим повторным A2/A3, двумя owner-gates и новым round P5.1, зато Completion Notes/anchors P3.1–P3.15/P4.1–P4.8 не переписываются."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`@plan/knowledge/artifacts-P5-gate-b.json`: RED, F1–F8, 32 негодных carriers и 116 sole-carrier MUST; `@plan/knowledge/research-12-p3-p4-gate-b-remediation-2026-08.json`. `RAG:— (repo-grounded)`"
+    }
+  ]
+}

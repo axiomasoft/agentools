@@ -1,0 +1,237 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P3.5",
+  "title": "`03_action-lifecycle.md`: журнал-истина, concurrency, эпоха, снапшот, хеш-цепочка",
+  "status": "done",
+  "summary": "Нормировать жизненный цикл действия по `DR-01` §C1–§C7: FSM и свёртку журнала как модель восстановления, журналирование недетерминированного ввода как immutable payload, `expected_prev_seq` с типизированной ошибкой конфликта, реестр эффектов и монотонную эпоху исполнителя, `event_version` + апкастинг с запретом мутации записей, снапшот отдельно от журнала, хеш-цепочку записей.",
+  "why": "Это общий скелет обоих рантаймов и единственная модель детерминизма, переносимая между языками: строгий replay (модель Temporal) сравнивает команды внутри одного рантайма и двумя независимыми реализациями физически не даётся. Здесь же живут два разных механизма против двух разных дублей — идемпотентный ключ (документ `09`) против дубля запроса и эпоха против дубля исполнителя. `RAG:✅ 2026-07-26 R-11 §6: модель «журналируй шаг и его результат, при retry пропускай завершённые» (Restate/DBOS/Inngest/Cloudflare) переносима между языками; optimistic concurrency для доменного event-лога не даёт ни одна из систем — нормируем сами`.",
+  "scope": {
+    "include": [
+      "(а) правила `ALC-*`: состояния FSM (закрытый перечень) и **полная таблица переходов** `ALC-T<n>` как единственный источник допустимых переходов (переход вне таблицы MUST быть отвергнут); конверт события (идентификатор, `seq` монотонный без дыр, время, актор, вид, payload, `spec_rev`, `event_version`); состояние = детерминированная свёртка журнала (§C1) с псевдокодом ≤30 строк, воспроизводящим ВСЕ нормативные гарды (урок Known Deviations P0.4: информативный псевдокод, расходящийся с нормой, — дефект); журналирование недетерминированного ввода как immutable payload и чтение его при восстановлении (§C2); `expected_prev_seq` + типизированная ошибка конфликта версий и обязанность перечитать (§C3); события реестра эффектов (`effect_requested`/`effect_confirmed`/`effect_failed`) и монотонная эпоха исполнителя с отклонением commit-событий старой эпохи (§C4); `event_version` + цепочка апкастов, запрет мутации записанных событий включая исправления (§C5); снапшот как проекция с иным жизненным циклом (§C6, `L3`); `prev_hash` и нормированный порядок канонизации записи со ссылкой на `08` (§C7, `L3`); (б) схемы `schema/lifecycle-event.json`, `schema/session-state.json`, `schema/effect-registry.json` + производные закрытые; (в) ≥3 примера (создание, конфликт `expected_prev_seq`, отклонение старой эпохи); (г) mermaid-диаграмма FSM как информативная иллюстрация при нормативной таблице; (д) таблица покрытия решений."
+    ],
+    "exclude": [
+      "идемпотентность и дедупликация (документ `09`); подтверждение и его состояния ожидания (документ `04` — здесь только состояние FSM и переход по истечении TTL); таксономия аудита и канонизация (документ `08`); длинные операции (документ `07`); контракты хранения как обязательства по СУБД (остаются рантайму, §C7)."
+    ]
+  },
+  "depends_on": [
+    "P0.4"
+  ],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/20_research-R-11_design-recon-2026-07.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "spec/revisions/2026-08/00_overview.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "02_tool-contract-profile.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/phases/P0/phase.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-02-p3-authoring-conventions-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/20_research-R-11_design-recon-2026-07.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/phases/P0/phase.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-02-p3-authoring-conventions-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "spec/revisions/2026-08/03_action-lifecycle.md",
+      "change": "any"
+    },
+    {
+      "path": "spec/revisions/2026-08/schema/lifecycle-event.json",
+      "change": "any"
+    },
+    {
+      "path": "spec/revisions/2026-08/schema/session-state.json",
+      "change": "any"
+    },
+    {
+      "path": "spec/revisions/2026-08/schema/effect-registry.json",
+      "change": "any"
+    },
+    {
+      "path": "spec/revisions/2026-08/schema/authoring/lifecycle-event.json",
+      "change": "any"
+    },
+    {
+      "path": "spec/revisions/2026-08/schema/authoring/session-state.json",
+      "change": "any"
+    },
+    {
+      "path": "spec/revisions/2026-08/schema/authoring/effect-registry.json",
+      "change": "any"
+    },
+    {
+      "path": "spec/revisions/2026-08/README.md",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "префикс `ALC-`, переходы — `ALC-T<n>` со сплошной нумерацией; уровень `L1`, кроме снапшота (§C6) и хеш-цепочки (§C7) — `L3` с фразой-обоснованием; таблица переходов покрывает каждое нетерминальное состояние хотя бы одним исходящим переходом, терминальные исходящих не имеют; псевдокод свёртки воспроизводит нормативные гарды дословно (несоответствие псевдокода норме — дефект, а не «упрощение»); перечисление видов событий — открытое, формой `oneOf`+`const`+`pattern` (§E2), один узел `$defs`; схемы — Список A, закрытые варианты генерируются; примеры помечаются `// example: <файл схемы>`; таблица покрытия — последним разделом."
+  ],
+  "guidance": "Кода нет — нормативный текст, схемы, информативный псевдокод. Анти-подгонка: FSM пишется под §C1–§C7, а не под то, что проще реализовать; ЗАПРЕЩЕНО добавлять состояние или переход, не следующий ни из одного решения (§E6 — «никаких точек расширения про запас»). Анти-самообман: «свёртка детерминирована» доказывается тем, что КАЖДЫЙ недетерминированный вход назван и журналируется (§C2); список таких входов обязан быть в правиле, а не в прозе. Дефект-прецеденты P0.4, которые ЗАПРЕЩЕНО повторять: (1) псевдокод без гардов нормы; (2) расширение тайм-аутов за пределы Scope без записи; (3) `required` в схеме, которого нет в прозе. If-then: правило требует поля, которого нет ни в одном решении `DR-01` → остановиться и эскалировать (trigger «unclear architecture»), не вводить. If-then: конструкция схемы требует запрещённого ключевого слова → выразить разрешёнными средствами либо эскалация (`DR-02`).",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "python3 tools/spec_lint.py spec/revisions/2026-08 --allow-missing",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "grep -cE '^\\*\\*ALC-[0-9]+ \\((MUST|MUST NOT|SHOULD|SHOULD NOT|MAY), L[123]' spec/revisions/2026-08/03_action-lifecycle.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "grep -cE 'ALC-T[0-9]+' spec/revisions/2026-08/03_action-lifecycle.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "python3 tools/close_schema.py --check spec/revisions/2026-08; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "cmd": "grep -c 'expected_prev_seq' spec/revisions/2026-08/03_action-lifecycle.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "cmd": "grep -c '^| §C' spec/revisions/2026-08/03_action-lifecycle.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "`03_action-lifecycle.md` (правила `ALC-*`, полная таблица переходов `ALC-T*`, псевдокод свёртки с гардами, таблица покрытия §C1–§C7) + 3 опубликованные схемы + 3 производные закрытые + ≥3 примера + mermaid-диаграмма."
+  ],
+  "route": {
+    "class": "frontier",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "required",
+    "status": "complete"
+  },
+  "result": {
+    "started_at": "2026-07-27T16:26:27Z",
+    "finished_at": "2026-07-27T16:37:13Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "opus/high",
+      "effort": "high"
+    },
+    "notes": "03_action-lifecycle.md: 37 правил ALC-*, таблица переходов ALC-T1..ALC-T22, 3 схемы + 3 закрытые",
+    "deviations": [],
+    "pending": [],
+    "checks": []
+  },
+  "updated_at": "2026-07-27T16:37:13Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Нормировать жизненный цикл действия по `DR-01` §C1–§C7: FSM и свёртку журнала как модель восстановления, журналирование недетерминированного ввода как immutable payload, `expected_prev_seq` с типизированной ошибкой конфликта, реестр эффектов и монотонную эпоху исполнителя, `event_version` + апкастинг с запретом мутации записей, снапшот отдельно от журнала, хеш-цепочку записей."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Это общий скелет обоих рантаймов и единственная модель детерминизма, переносимая между языками: строгий replay (модель Temporal) сравнивает команды внутри одного рантайма и двумя независимыми реализациями физически не даётся. Здесь же живут два разных механизма против двух разных дублей — идемпотентный ключ (документ `09`) против дубля запроса и эпоха против дубля исполнителя. `RAG:✅ 2026-07-26 R-11 §6: модель «журналируй шаг и его результат, при retry пропускай завершённые» (Restate/DBOS/Inngest/Cloudflare) переносима между языками; optimistic concurrency для доменного event-лога не даёт ни одна из систем — нормируем сами`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "(а) правила `ALC-*`: состояния FSM (закрытый перечень) и **полная таблица переходов** `ALC-T<n>` как единственный источник допустимых переходов (переход вне таблицы MUST быть отвергнут); конверт события (идентификатор, `seq` монотонный без дыр, время, актор, вид, payload, `spec_rev`, `event_version`); состояние = детерминированная свёртка журнала (§C1) с псевдокодом ≤30 строк, воспроизводящим ВСЕ нормативные гарды (урок Known Deviations P0.4: информативный псевдокод, расходящийся с нормой, — дефект); журналирование недетерминированного ввода как immutable payload и чтение его при восстановлении (§C2); `expected_prev_seq` + типизированная ошибка конфликта версий и обязанность перечитать (§C3); события реестра эффектов (`effect_requested`/`effect_confirmed`/`effect_failed`) и монотонная эпоха исполнителя с отклонением commit-событий старой эпохи (§C4); `event_version` + цепочка апкастов, запрет мутации записанных событий включая исправления (§C5); снапшот как проекция с иным жизненным циклом (§C6, `L3`); `prev_hash` и нормированный порядок канонизации записи со ссылкой на `08` (§C7, `L3`); (б) схемы `schema/lifecycle-event.json`, `schema/session-state.json`, `schema/effect-registry.json` + производные закрытые; (в) ≥3 примера (создание, конфликт `expected_prev_seq`, отклонение старой эпохи); (г) mermaid-диаграмма FSM как информативная иллюстрация при нормативной таблице; (д) таблица покрытия решений."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "идемпотентность и дедупликация (документ `09`); подтверждение и его состояния ожидания (документ `04` — здесь только состояние FSM и переход по истечении TTL); таксономия аудита и канонизация (документ `08`); длинные операции (документ `07`); контракты хранения как обязательства по СУБД (остаются рантайму, §C7)."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §C1–§C7 · `@plan/knowledge/20_research-R-11_design-recon-2026-07.json` §6 (durable-паттерны, epoch/fencing) · `spec/revisions/2026-08/00_overview.md`, `02_tool-contract-profile.md` · `@plan/phases/P0/phase.json` Known Deviations P0.4 (три дефекта прежнего документа жизненного цикла: псевдокод без гардов, тайм-аут вне Scope, схема строже прозы) · `@plan/knowledge/research-02-p3-authoring-conventions-2026-08.json` §4, §7."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`spec/revisions/2026-08/03_action-lifecycle.md` · `spec/revisions/2026-08/schema/lifecycle-event.json` · `spec/revisions/2026-08/schema/session-state.json` · `spec/revisions/2026-08/schema/effect-registry.json` · `spec/revisions/2026-08/schema/authoring/lifecycle-event.json` · `spec/revisions/2026-08/schema/authoring/session-state.json` · `spec/revisions/2026-08/schema/authoring/effect-registry.json` · `spec/revisions/2026-08/README.md`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `05-Projects/03-Packages/AgenTools/@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §C1–§C8 2) `05-Projects/03-Packages/AgenTools/@plan/knowledge/20_research-R-11_design-recon-2026-07.json` §6 3) `05-Projects/03-Packages/AgenTools/@plan/phases/P0/phase.json` (Known Deviations P0.4) 4) `spec/revisions/2026-08/00_overview.md` 5) `05-Projects/03-Packages/AgenTools/@plan/knowledge/research-02-p3-authoring-conventions-2026-08.json` §3–§5."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "префикс `ALC-`, переходы — `ALC-T<n>` со сплошной нумерацией; уровень `L1`, кроме снапшота (§C6) и хеш-цепочки (§C7) — `L3` с фразой-обоснованием; таблица переходов покрывает каждое нетерминальное состояние хотя бы одним исходящим переходом, терминальные исходящих не имеют; псевдокод свёртки воспроизводит нормативные гарды дословно (несоответствие псевдокода норме — дефект, а не «упрощение»); перечисление видов событий — открытое, формой `oneOf`+`const`+`pattern` (§E2), один узел `$defs`; схемы — Список A, закрытые варианты генерируются; примеры помечаются `// example: <файл схемы>`; таблица покрытия — последним разделом."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Кода нет — нормативный текст, схемы, информативный псевдокод. Анти-подгонка: FSM пишется под §C1–§C7, а не под то, что проще реализовать; ЗАПРЕЩЕНО добавлять состояние или переход, не следующий ни из одного решения (§E6 — «никаких точек расширения про запас»). Анти-самообман: «свёртка детерминирована» доказывается тем, что КАЖДЫЙ недетерминированный вход назван и журналируется (§C2); список таких входов обязан быть в правиле, а не в прозе. Дефект-прецеденты P0.4, которые ЗАПРЕЩЕНО повторять: (1) псевдокод без гардов нормы; (2) расширение тайм-аутов за пределы Scope без записи; (3) `required` в схеме, которого нет в прозе. If-then: правило требует поля, которого нет ни в одном решении `DR-01` → остановиться и эскалировать (trigger «unclear architecture»), не вводить. If-then: конструкция схемы требует запрещённого ключевого слова → выразить разрешёнными средствами либо эскалация (`DR-02`)."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`python3 tools/spec_lint.py spec/revisions/2026-08 --allow-missing` → `spec_lint: OK`, exit 0 · `grep -cE '^\\*\\*ALC-[0-9]+ \\((MUST|MUST NOT|SHOULD|SHOULD NOT|MAY), L[123]' spec/revisions/2026-08/03_action-lifecycle.md` ≥ 18 · `grep -cE 'ALC-T[0-9]+' spec/revisions/2026-08/03_action-lifecycle.md` ≥ 20 · `python3 tools/close_schema.py --check spec/revisions/2026-08; echo $?` = 0 · `grep -c 'expected_prev_seq' spec/revisions/2026-08/03_action-lifecycle.md` ≥ 2 · `grep -c '^| §C' spec/revisions/2026-08/03_action-lifecycle.md` ≥ 7 · прогнать плановый линтер по каталогу плана и опубликовать счёт с атрибуцией, K = 0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "`03_action-lifecycle.md` (правила `ALC-*`, полная таблица переходов `ALC-T*`, псевдокод свёртки с гардами, таблица покрытия §C1–§C7) + 3 опубликованные схемы + 3 производные закрытые + ≥3 примера + mermaid-диаграмма."
+    }
+  ]
+}

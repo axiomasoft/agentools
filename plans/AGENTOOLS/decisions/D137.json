@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D137",
+  "title": "Решение",
+  "date": "2026-08-03",
+  "status": "accepted",
+  "decision": "**Качество пакета — отдельный контракт до SDK и terminal release-gate после срезов.** AzGuard/Chatom дают evidence практик, но не становятся интеграциями/зависимостями AgenTools; stable API требует export + production consumer + behavioural test; public package code/docs не несут phase labels.",
+  "rationale": "`@plan/knowledge/findings-R-12-package-quality-reference-2026-08.json`; `@plan/knowledge/research-11-package-quality-and-release-architecture-2026-08.json`. `RAG:— (repo-grounded)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D137\ndate: 2026-08-03\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Качество пакета — отдельный контракт до SDK и terminal release-gate после срезов.** AzGuard/Chatom дают evidence практик, но не становятся интеграциями/зависимостями AgenTools; stable API требует export + production consumer + behavioural test; public package code/docs не несут phase labels."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`@plan/knowledge/findings-R-12-package-quality-reference-2026-08.json`; `@plan/knowledge/research-11-package-quality-and-release-architecture-2026-08.json`. `RAG:— (repo-grounded)`"
+    }
+  ]
+}

@@ -1,0 +1,244 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P4.8",
+  "title": "Артефактные векторы конвенций `00` + harness-кейсы `11` (классы `artifact`/`harness`)",
+  "status": "done",
+  "summary": "Покрыть два документа, чьи правила невыразимы вектором поведения: `00_overview.md` (`OVR-`) — артефактными векторами класса `artifact` (линтер обязан отвергнуть заведомо дефектный вход: дубль перечисления, норма в `description`, сетевой `$ref`, правило без уровня, легаси-термин вне огороженного блока), и `11_conformance-harness.md` (`CFH-`) — harness-кейсами класса `harness` (транскрипт `start → config → run × N → stop`) плюс артефактными векторами на правила CI, чей субъект — артефакт репозитория (свежесть производных, baseline, lockstep).",
+  "why": "Правила `OVR-` нормируют собственные артефакты ревизии, правила `CFH-` — раннер и CI; ни те, ни другие раннер SDK проверить не может, а `Not testable` для них — злоупотребление статусом, заведённым `DR-01` §J3 под недоступную возможность контрагента (это и есть «тихий SKIP», против которого §J3 написан). Артефактный вектор делает проверку честной: он же — регрессионный корпус самого линтера, который до сих пор не имел ни одного отрицательного входа. `RAG:— (repo-grounded: @plan/knowledge/research-03-p4-vector-corpus-2026-08.json §3; DR-01 §J3, §J5, §J8; @plan/knowledge/research-00-user-intent.json §4 №1, №5, №6)`.",
+  "scope": {
+    "include": [
+      "(а) `artifact`-векторы под правила `00_overview.md`: на каждое машинно проверяемое правило конвенции — заведомо дефектный минимальный вход (инлайн-дубль перечисления вместо `$defs`; `MUST` внутри `description` схемы; сетевой `$ref`; строка правила без уровня либо с двумя уровнями; дубль маркера; легаси-термин D20 вне огороженного блока) с ожидаемым `linter: reject` и подстрокой диагностики, плюс парный позитивный вход с `linter: accept`; (б) `harness`-кейсы под `11_conformance-harness.md`: корректная последовательность `start → config → run × N → stop` с объявлением версии протокола в `start`; нарушения — `run` до `config`, отсутствующий `stop`, несовпадение версии протокола; severity из нормативного слова (MUST → провал, SHOULD → предупреждение) и явный статус «Not testable» вместо тихого SKIP; (в) `artifact`-векторы на правила CI, чей субъект — артефакт репозитория: свежесть производных артефактов ревизии (перегенерировать → пустой diff), baseline с защитой от протухания, lockstep-версионирование, канонический вид golden и двухступенчатое сравнение; (г) явная запись в `fixtures/2026-08/README.md` о том, что `harness`-кейсы в фазе P4 НЕ исполняются (исполнитель — самотест раннера, фаза P6), и это не «покрытие на бумаге», а разделение фаз; (д) перечень покрытых маркеров с указанием, какие правила `11` покрыты классом `harness`, а какие — `artifact`."
+    ],
+    "exclude": [
+      "реализация раннера, самотеста и CI-пайплайна (фаза P6) — здесь только данные; правило §J9 и его парный вектор (P4.4); поведенческие документы (P4.2, P4.3, P4.7); формат вектора и схемы классов (P4.1); исполнение `artifact`-векторов линтером как гейта (P4.5); правки нормативного текста ревизии (фаза P3)."
+    ]
+  },
+  "depends_on": [
+    "P4.1"
+  ],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "fixtures/2026-08/README.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "schema/static-check.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "schema/harness-case.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "spec/revisions/2026-08/00_overview.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "11_conformance-harness.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/rules.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-00-user-intent.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "tools/spec_lint.py",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-03-p4-vector-corpus-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-03-p4-vector-corpus-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-00-user-intent.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "fixtures/2026-08/static/**",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/2026-08/harness/**",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/2026-08/README.md",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "дефектный вход `artifact`-вектора — МИНИМАЛЬНЫЙ (один дефект на вектор), иначе `reject` не различает, какое правило сработало; ожидаемая подстрока диагностики берётся из ФАКТИЧЕСКОГО текста сообщения `spec_lint.py`, а не сочиняется — расхождение обнаружится гейтом P4.5; каждый отрицательный вектор несёт парный положительный (тот же вход без дефекта → `accept`); `harness`-кейс описывает только транскрипт и ожидание, никакой логики раннера; версия harness-протокола берётся из `11_conformance-harness.md`, а не назначается; дефектные входы `artifact`-векторов живут ВНУТРИ вектора (инлайн) либо в его подкаталоге — они НЕ кладутся в `spec/revisions/2026-08/`, иначе линтер ревизии покраснеет на собственном корпусе; прочие правила формата — как в P4.2; item НЕ коммитит и НЕ трогает файлы плана при исполнении в оркестрации; плановый линтер — командой из Phase Context."
+  ],
+  "guidance": "Кода нет — данные контракта. Анти-самообман: `artifact`-вектор без подстроки диагностики зелен на ЛЮБОЙ ошибке линтера, включая опечатку в собственном пути — подстрока обязательна и берётся из фактического вывода, полученного прогоном, а не из памяти. ЗАПРЕЩЕНО: класть дефектные входы в каталог ревизии (испортит гейт P3); объявлять правило покрытым `harness`-кейсом, если кейс не содержит ни одного наблюдаемого различия по этому правилу; помечать правило `Not testable` по своей инициативе — статус живёт в `rules.json` и назначается фазой P3. If-then: правило `11` не выражается ни `harness`-кейсом, ни `artifact`-вектором (например, требует живого CI) → НЕ выдумывать суррогат: назвать маркер в Pending Work, вынести в Escalation Needed и передать вопрос в P4.5 как кандидата на `ГЕЙТ A3: BLOCKED` с адресатом «формулировка правила, фаза P3». If-then: фактический текст диагностики линтера меняется правкой P4.5 → подстроки в векторах обновляются в рамках P4.5 (он же ловит расхождение), а не «на всякий случай» здесь.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "python3 tools/spec_lint.py --fixtures-check fixtures/2026-08; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "ls fixtures/2026-08/static/*.json | wc -l",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "ls fixtures/2026-08/harness/*.json | wc -l",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "python3 -c \"import json,glob;print([f for f in glob.glob('fixtures/2026-08/static/*.json') if json.load(open(f))['expect']['linter']=='reject' and not json.load(open(f))['expect'].get('diagnostic_substring')])\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "cmd": "python3 -c \"import json,glob;a=[json.load(open(f))['expect']['linter'] for f in glob.glob('fixtures/2026-08/static/*.json')];print(a.count('accept')>0 and a.count('reject')>0)\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "cmd": "python3 -c \"import json,glob;print([f for f in glob.glob('fixtures/2026-08/harness/*.json') if json.load(open(f))['vector_class']!='harness'])\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "cmd": "grep -c 'не исполняются' fixtures/2026-08/README.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V8",
+      "cmd": "python3 tools/spec_lint.py spec/revisions/2026-08 --allow-missing",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "`artifact`-векторы конвенций `00` (≥10, каждый с парным положительным и подстрокой диагностики) + `harness`-кейсы `11` (≥5) + `artifact`-векторы правил CI + раздел README о неисполняемых в фазе P4 классах; перечень покрытых маркеров с разбивкой по классам — в Completion Notes."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-08-03T17:04:04Z",
+    "finished_at": "2026-08-03T17:07:44Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "frontier/high",
+      "effort": "high"
+    },
+    "notes": "artifact/harness-корпус документов 00/11 покрывает все MUST",
+    "deviations": [],
+    "pending": [],
+    "checks": []
+  },
+  "updated_at": "2026-08-03T17:07:44Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Покрыть два документа, чьи правила невыразимы вектором поведения: `00_overview.md` (`OVR-`) — артефактными векторами класса `artifact` (линтер обязан отвергнуть заведомо дефектный вход: дубль перечисления, норма в `description`, сетевой `$ref`, правило без уровня, легаси-термин вне огороженного блока), и `11_conformance-harness.md` (`CFH-`) — harness-кейсами класса `harness` (транскрипт `start → config → run × N → stop`) плюс артефактными векторами на правила CI, чей субъект — артефакт репозитория (свежесть производных, baseline, lockstep)."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Правила `OVR-` нормируют собственные артефакты ревизии, правила `CFH-` — раннер и CI; ни те, ни другие раннер SDK проверить не может, а `Not testable` для них — злоупотребление статусом, заведённым `DR-01` §J3 под недоступную возможность контрагента (это и есть «тихий SKIP», против которого §J3 написан). Артефактный вектор делает проверку честной: он же — регрессионный корпус самого линтера, который до сих пор не имел ни одного отрицательного входа. `RAG:— (repo-grounded: @plan/knowledge/research-03-p4-vector-corpus-2026-08.json §3; DR-01 §J3, §J5, §J8; @plan/knowledge/research-00-user-intent.json §4 №1, №5, №6)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "(а) `artifact`-векторы под правила `00_overview.md`: на каждое машинно проверяемое правило конвенции — заведомо дефектный минимальный вход (инлайн-дубль перечисления вместо `$defs`; `MUST` внутри `description` схемы; сетевой `$ref`; строка правила без уровня либо с двумя уровнями; дубль маркера; легаси-термин D20 вне огороженного блока) с ожидаемым `linter: reject` и подстрокой диагностики, плюс парный позитивный вход с `linter: accept`; (б) `harness`-кейсы под `11_conformance-harness.md`: корректная последовательность `start → config → run × N → stop` с объявлением версии протокола в `start`; нарушения — `run` до `config`, отсутствующий `stop`, несовпадение версии протокола; severity из нормативного слова (MUST → провал, SHOULD → предупреждение) и явный статус «Not testable» вместо тихого SKIP; (в) `artifact`-векторы на правила CI, чей субъект — артефакт репозитория: свежесть производных артефактов ревизии (перегенерировать → пустой diff), baseline с защитой от протухания, lockstep-версионирование, канонический вид golden и двухступенчатое сравнение; (г) явная запись в `fixtures/2026-08/README.md` о том, что `harness`-кейсы в фазе P4 НЕ исполняются (исполнитель — самотест раннера, фаза P6), и это не «покрытие на бумаге», а разделение фаз; (д) перечень покрытых маркеров с указанием, какие правила `11` покрыты классом `harness`, а какие — `artifact`."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "реализация раннера, самотеста и CI-пайплайна (фаза P6) — здесь только данные; правило §J9 и его парный вектор (P4.4); поведенческие документы (P4.2, P4.3, P4.7); формат вектора и схемы классов (P4.1); исполнение `artifact`-векторов линтером как гейта (P4.5); правки нормативного текста ревизии (фаза P3)."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`fixtures/2026-08/README.md`, `schema/static-check.json`, `schema/harness-case.json` (P4.1) · `spec/revisions/2026-08/00_overview.md`, `11_conformance-harness.md` · `spec/revisions/2026-08/rules.json` · `@plan/knowledge/research-00-user-intent.json` §4 (дефекты №1, №3, №5, №6 — источник дефектных входов) · `@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §J1, §J3, §J4, §J5, §J7, §J8 · `tools/spec_lint.py` (тексты диагностик — источник ожидаемых подстрок) · `@plan/knowledge/research-03-p4-vector-corpus-2026-08.json` §3, §5."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`fixtures/2026-08/static/**` (только файлы этого item'а) · `fixtures/2026-08/harness/**` · `fixtures/2026-08/README.md` (раздел о неисполняемых в P4 классах) (репо-пути — от корня `~/projects/packages/agentools`)"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `05-Projects/03-Packages/AgenTools/@plan/knowledge/research-03-p4-vector-corpus-2026-08.json` §3, §5–§6 2) `fixtures/2026-08/README.md` 3) `spec/revisions/2026-08/00_overview.md`, `11_conformance-harness.md` 4) `spec/revisions/2026-08/rules.json` 5) `05-Projects/03-Packages/AgenTools/@plan/knowledge/research-00-user-intent.json` §4 6) `tools/spec_lint.py` (тексты сообщений об ошибках) 7) `05-Projects/03-Packages/AgenTools/@plan/plan.json` §2 Execution Rules."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "дефектный вход `artifact`-вектора — МИНИМАЛЬНЫЙ (один дефект на вектор), иначе `reject` не различает, какое правило сработало; ожидаемая подстрока диагностики берётся из ФАКТИЧЕСКОГО текста сообщения `spec_lint.py`, а не сочиняется — расхождение обнаружится гейтом P4.5; каждый отрицательный вектор несёт парный положительный (тот же вход без дефекта → `accept`); `harness`-кейс описывает только транскрипт и ожидание, никакой логики раннера; версия harness-протокола берётся из `11_conformance-harness.md`, а не назначается; дефектные входы `artifact`-векторов живут ВНУТРИ вектора (инлайн) либо в его подкаталоге — они НЕ кладутся в `spec/revisions/2026-08/`, иначе линтер ревизии покраснеет на собственном корпусе; прочие правила формата — как в P4.2; item НЕ коммитит и НЕ трогает файлы плана при исполнении в оркестрации; плановый линтер — командой из Phase Context."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Кода нет — данные контракта. Анти-самообман: `artifact`-вектор без подстроки диагностики зелен на ЛЮБОЙ ошибке линтера, включая опечатку в собственном пути — подстрока обязательна и берётся из фактического вывода, полученного прогоном, а не из памяти. ЗАПРЕЩЕНО: класть дефектные входы в каталог ревизии (испортит гейт P3); объявлять правило покрытым `harness`-кейсом, если кейс не содержит ни одного наблюдаемого различия по этому правилу; помечать правило `Not testable` по своей инициативе — статус живёт в `rules.json` и назначается фазой P3. If-then: правило `11` не выражается ни `harness`-кейсом, ни `artifact`-вектором (например, требует живого CI) → НЕ выдумывать суррогат: назвать маркер в Pending Work, вынести в Escalation Needed и передать вопрос в P4.5 как кандидата на `ГЕЙТ A3: BLOCKED` с адресатом «формулировка правила, фаза P3». If-then: фактический текст диагностики линтера меняется правкой P4.5 → подстроки в векторах обновляются в рамках P4.5 (он же ловит расхождение), а не «на всякий случай» здесь."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`python3 tools/spec_lint.py --fixtures-check fixtures/2026-08; echo $?` = 0 · `COV({'00_overview.md','11_conformance-harness.md'})` → `[]` · `ls fixtures/2026-08/static/*.json | wc -l` ≥ 10 · `ls fixtures/2026-08/harness/*.json | wc -l` ≥ 5 · `python3 -c \"import json,glob;print([f for f in glob.glob('fixtures/2026-08/static/*.json') if json.load(open(f))['expect']['linter']=='reject' and not json.load(open(f))['expect'].get('diagnostic_substring')])\"` = `[]` · `python3 -c \"import json,glob;a=[json.load(open(f))['expect']['linter'] for f in glob.glob('fixtures/2026-08/static/*.json')];print(a.count('accept')>0 and a.count('reject')>0)\"` = `True` (есть и парные положительные) · `python3 -c \"import json,glob;print([f for f in glob.glob('fixtures/2026-08/harness/*.json') if json.load(open(f))['vector_class']!='harness'])\"` = `[]` · `grep -c 'не исполняются' fixtures/2026-08/README.md` ≥ 1 · `python3 tools/spec_lint.py spec/revisions/2026-08 --allow-missing` → `spec_lint: OK`, exit 0 · прогнать плановый линтер по каталогу плана и опубликовать счёт с атрибуцией, K = 0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "`artifact`-векторы конвенций `00` (≥10, каждый с парным положительным и подстрокой диагностики) + `harness`-кейсы `11` (≥5) + `artifact`-векторы правил CI + раздел README о неисполняемых в фазе P4 классах; перечень покрытых маркеров с разбивкой по классам — в Completion Notes."
+    }
+  ]
+}

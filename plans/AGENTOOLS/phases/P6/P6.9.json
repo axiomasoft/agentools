@@ -1,0 +1,367 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P6.9",
+  "title": "Гейт фазы: зелёный прогон + заведомо красный мутант + отчёт покрытия по уровням",
+  "status": "done",
+  "summary": "Доказать гейт выхода фазы на ОДНОМ дереве: зелёный прогон всего корпуса против эталонного адаптера, красный прогон вектора-мутанта из `conformance/tests/fixtures/mutants/`, зелёный самотест harness-протокола, детерминированный коммитимый отчёт покрытия по уровням L1/L2/L3 и локально воспроизводимый четырёхслойный CI; вердикт `ГЕЙТ P6: PASS` либо `ГЕЙТ P6: BLOCKED — <причина>` в `@plan/knowledge/artifacts-P6-gate.json`.",
+  "why": "Гейт §K сформулирован как «раннер ДЕТЕРМИНИРОВАННО гоняет все векторы, ВКЛЮЧАЯ заведомо красный прогон»: зелёный прогон без красного не доказывает ничего — он одинаково достижим раннером, который ловит расхождения, и раннером, который их не видит. Отчёт по уровням — заготовка под заявляемую зрелость SDK (пороги D7/SEP-1730 применяются фазами P7/P8), и он обязан быть ПРОИЗВОДНЫМ: рукописный отчёт покрытия молча расходится с прогоном — ровно дефект №4 закрытой ревизии. `RAG:— (repo-grounded: DR-01 §K — формулировка гейта фазы; @plan/plan.json §5 D7 — уровни L1/L2/L3 и пороги зрелости; @plan/knowledge/research-00-user-intent.json §4 №4 — покрытие не измерялось; @plan/knowledge/research-05-p6-conformance-harness-2026-08.json §7, §9)`.",
+  "scope": {
+    "include": [
+      "(а) вектор-мутант: копия ОДНОГО вектора корпуса с одним изменённым ожиданием, живущая в `conformance/tests/fixtures/mutants/` — корпус при этом не правится ни на байт (D72); (б) генератор отчёта покрытия по уровням: из машинного отчёта прогона собирается `conformance/reports/reference-levels.md` — по каждому уровню L1/L2/L3 число векторов, `pass`/`fail`/`warn`/`not-testable`/`baseline-expected`, перечень `not-testable` с причинами; детерминированность (порядок, LF, ровно один завершающий перевод строки), режимы `--write`/`--check`; **путь вывода — ОБЯЗАТЕЛЬНО параметр** (`--out <путь>`, по умолчанию `conformance/reports/reference-levels.md`), потому что этот же генератор — единственный носитель формы отчёта по уровням для SDK: фазы P7 (item P7.12) и P8 (item P8.13) кладут СВОИ отчёты рядом, а форк генератора запрещён вторым носителем факта (D67), перезапись чужого отчёта — молчаливой потерей (Q-14, D82/D94, D118); (в) явное разграничение с `fixtures/2026-08/coverage.md`: тот отчёт — о связи «правило ↔ вектор» (фаза P4), этот — о РЕЗУЛЬТАТЕ прогона по уровням; разграничение записывается в шапку отчёта, чтобы два артефакта не читались как один; (г) `@plan/knowledge/artifacts-P6-gate.json`: строка вердикта `ГЕЙТ P6: PASS` либо `ГЕЙТ P6: BLOCKED — <причина>`, таблица пяти условий гейта со статусом каждого, числа (векторов всего, по уровням, по классам, golden-пар, harness-кейсов, проверок в каждом слое CI) с якорем-коммитом и командой, ПЕРЕЧЕНЬ ШЕСТИ обязательных отрицательных прогонов фазы (`research/05-…` §7) с выводом каждого, раздел «что НЕ проверялось» (границы честности: CI не запускался — Q-2; SDK-часть слоя 2 — по ветке owner-gate; SDK нет — слои 3/4 прогнаны на нашем подмножестве); (д) факт разблокировки фаз P7/P8 — в handoff и строке Update Log."
+    ],
+    "exclude": [
+      "правки раннера, адаптера и механик (items P6.1–P6.8 — недостающее чинится в СВОЁМ item'е, а не заглушкой здесь); правки корпуса и ревизии; применение порогов зрелости 100 %/80 % к SDK (фазы P7/P8 — здесь только числа); протокольный аудит фазы (`task:plan-audit AGENTOOLS P6` — отдельный шаг протокола, этот item его не заменяет); настройка remote и запуск CI (Q-2)."
+    ]
+  },
+  "depends_on": [
+    "P6.1",
+    "P6.8"
+  ],
+  "decisions": [
+    "D7",
+    "D72"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "out/*.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "fixtures/2026-08/coverage.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/rules.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-05-p6-conformance-harness-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P4-gate-a3.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P3-gate-a2.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-05-p6-conformance-harness-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P4-gate-a3.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "conformance/tests/fixtures/mutants/**",
+      "change": "any"
+    },
+    {
+      "path": "conformance/bin/levels",
+      "change": "any"
+    },
+    {
+      "path": "conformance/src/**",
+      "change": "any"
+    },
+    {
+      "path": "conformance/reports/reference-levels.md",
+      "change": "any"
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P6-gate.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "вердикт `PASS` ставится ТОЛЬКО при зелёных ВСЕХ пяти условиях гейта — «остальное зелёное» основанием не является; мутант живёт вне корпуса, любая правка `fixtures/2026-08/**` в диффе item'а = материальное отклонение и провал гейта; отчёт по уровням — ПРОИЗВОДНЫЙ, ручная правка запрещена и ловится `--check`; все числа приводятся с якорем на коммит и командой, которой получены (`plan-protocol` §8 «Tree anchor»): числа по репозиторию артефактов — на его item-коммите, числа по файлам плана — на bookkeeping-коммите; шесть обязательных отрицательных прогонов фазы перечисляются ПОИМЁННО с выводом — перечень без вывода не доказательство; раздел «что НЕ проверялось» обязателен и называет обе структурные границы (Q-2 и ветка owner-gate `DR-02` §6); плановый линтер — командой из Phase Context."
+  ],
+  "guidance": "Кода мало — генератор отчёта и вердикт. Анти-самообман (гейт-item): «прогон зелёный» ≠ «раннер работает» — доказательством считается ПАРА прогонов на одном дереве, зелёный и красный; отчёт без раздела границ честности не сдан. Анти-подгонка: ЗАПРЕЩЕНО добирать зелёный гейт правкой ожиданий мутанта, ослаблением условий или исключением векторов фильтром `--filter`; если условие красное — вердикт `BLOCKED` с адресатом-item'ом. ЗАПРЕЩЕНО: править корпус ради зелёного; объявлять пороги зрелости достигнутыми (их субъект — SDK, которых нет); подменять этот отчёт файлом `coverage.md` фазы P4. If-then: одно из пяти условий красное → `ГЕЙТ P6: BLOCKED — <причина>`, статус item'а `🔴 Blocked`, `Pending Work` несёт `Возобновление:` с точной командой и адресатом-item'ом фазы. If-then: число векторов отчёта меньше числа файлов корпуса класса `behavior` → это НЕ округление: гейт `BLOCKED`, адресат P6.1 (тихий пропуск вектора). If-then: прогон недетерминирован (два запуска дают разные отчёты) → гейт `BLOCKED` независимо от того, зелёные ли оба: §K требует ДЕТЕРМИНИРОВАННОГО прогона.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "php conformance/bin/run --adapter 'php conformance/adapters/reference/adapter.php' --vectors fixtures/2026-08 --spec-rev 2026-08 --baseline conformance/baseline/reference.json --report out/gate.json; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "php conformance/bin/run --adapter 'php conformance/adapters/reference/adapter.php' --vectors conformance/tests/fixtures/mutants --spec-rev 2026-08; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "php conformance/bin/harness-selftest --cases fixtures/2026-08/harness; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "python3 tools/ci_gate.py --all; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "cmd": "php conformance/bin/levels out/gate.json --write && php conformance/bin/levels out/gate.json --check; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "cmd": "php conformance/bin/levels out/gate.json --out out/levels-probe.md --write && test -s out/levels-probe.md && git status --short conformance/reports/reference-levels.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "cmd": "grep -cE '^\\| L[123] \\|' conformance/reports/reference-levels.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V8",
+      "cmd": "grep -c 'coverage.md' conformance/reports/reference-levels.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V9",
+      "cmd": "python3 -c \"import json,glob;r=json.load(open('out/gate.json'));print(len(r['vectors'])==len(glob.glob('fixtures/2026-08/vectors/*/*.json')))\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V10",
+      "cmd": "git diff --quiet -- fixtures/2026-08 spec/revisions/2026-08; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V11",
+      "cmd": "grep -c 'ГЕЙТ P6: PASS' 05-Projects/03-Packages/AgenTools/plans/AGENTOOLS/artifacts/P6-gate.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V12",
+      "cmd": "grep -c 'что НЕ проверялось' 05-Projects/03-Packages/AgenTools/plans/AGENTOOLS/artifacts/P6-gate.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V13",
+      "procedure": "php conformance/bin/run reference 213/213",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V14",
+      "procedure": "php conformance/bin/run mutant lifecycle-001",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V15",
+      "procedure": "php conformance/bin/harness-selftest 13/13",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V16",
+      "procedure": "python3 tools/ci_gate.py --all",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V17",
+      "procedure": "php conformance/bin/levels --write --check",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V18",
+      "procedure": "golden byte-drift + struct-drift negative proofs",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V19",
+      "procedure": "grep ГЕЙТ P6: PASS artifacts/P6-gate.md",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "`@plan/knowledge/artifacts-P6-gate.json` с вердиктом `ГЕЙТ P6`, таблицей пяти условий, числами с якорями и командами, перечнем шести отрицательных прогонов с выводом и разделом границ честности + вектор-мутант вне корпуса + производный `conformance/reports/reference-levels.md` с разбивкой L1/L2/L3 и разграничением с `coverage.md` + названная разблокировка фаз P7/P8."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "owner_gate",
+    "label": "остальное зелёное",
+    "scope": "вердикт `PASS` ставится ТОЛЬКО при зелёных ВСЕХ пяти условиях гейта — «остальное зелёное» основанием не является; мутант живёт вне корпуса, любая правка `fixtures/2026-08/**` в диффе item'а = материальное отклонение и провал гейта; отчёт по уровням — ПРОИЗВОДНЫЙ, ручная правка запрещена и ловится `--check`; все числа приводятся с якорем на коммит и командой, которой получены (`plan-protocol` §8 «Tree anchor»): числа по репозиторию артефактов — на его item-коммите, числа по файлам плана — на bookkeeping-коммите; шесть обязательных отрицательных прогонов фазы перечисляются ПОИМЁННО с выводом — перечень без вывода не доказательство; раздел «что НЕ проверялось» обязателен и называет обе структурные границы (Q-2 и ветка owner-gate `DR-02` §6); плановый линтер — командой из Phase Context."
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-08-05T07:36:08Z",
+    "finished_at": "2026-09-18T15:32:56Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "implementation/high",
+      "effort": "high"
+    },
+    "notes": "ГЕЙТ P6: PASS; item 80cac19; 213/213 ref, 6/6 negative proofs, levels report deterministic\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V13",
+        "exit": 0,
+        "at": "2026-09-18T15:32:56Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V14",
+        "exit": 0,
+        "at": "2026-09-18T15:32:56Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V15",
+        "exit": 0,
+        "at": "2026-09-18T15:32:56Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V16",
+        "exit": 0,
+        "at": "2026-09-18T15:32:56Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V17",
+        "exit": 0,
+        "at": "2026-09-18T15:32:56Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V18",
+        "exit": 0,
+        "at": "2026-09-18T15:32:56Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V19",
+        "exit": 0,
+        "at": "2026-09-18T15:32:56Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-18T15:32:56Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Доказать гейт выхода фазы на ОДНОМ дереве: зелёный прогон всего корпуса против эталонного адаптера, красный прогон вектора-мутанта из `conformance/tests/fixtures/mutants/`, зелёный самотест harness-протокола, детерминированный коммитимый отчёт покрытия по уровням L1/L2/L3 и локально воспроизводимый четырёхслойный CI; вердикт `ГЕЙТ P6: PASS` либо `ГЕЙТ P6: BLOCKED — <причина>` в `@plan/knowledge/artifacts-P6-gate.json`."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Гейт §K сформулирован как «раннер ДЕТЕРМИНИРОВАННО гоняет все векторы, ВКЛЮЧАЯ заведомо красный прогон»: зелёный прогон без красного не доказывает ничего — он одинаково достижим раннером, который ловит расхождения, и раннером, который их не видит. Отчёт по уровням — заготовка под заявляемую зрелость SDK (пороги D7/SEP-1730 применяются фазами P7/P8), и он обязан быть ПРОИЗВОДНЫМ: рукописный отчёт покрытия молча расходится с прогоном — ровно дефект №4 закрытой ревизии. `RAG:— (repo-grounded: DR-01 §K — формулировка гейта фазы; @plan/plan.json §5 D7 — уровни L1/L2/L3 и пороги зрелости; @plan/knowledge/research-00-user-intent.json §4 №4 — покрытие не измерялось; @plan/knowledge/research-05-p6-conformance-harness-2026-08.json §7, §9)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "(а) вектор-мутант: копия ОДНОГО вектора корпуса с одним изменённым ожиданием, живущая в `conformance/tests/fixtures/mutants/` — корпус при этом не правится ни на байт (D72); (б) генератор отчёта покрытия по уровням: из машинного отчёта прогона собирается `conformance/reports/reference-levels.md` — по каждому уровню L1/L2/L3 число векторов, `pass`/`fail`/`warn`/`not-testable`/`baseline-expected`, перечень `not-testable` с причинами; детерминированность (порядок, LF, ровно один завершающий перевод строки), режимы `--write`/`--check`; **путь вывода — ОБЯЗАТЕЛЬНО параметр** (`--out <путь>`, по умолчанию `conformance/reports/reference-levels.md`), потому что этот же генератор — единственный носитель формы отчёта по уровням для SDK: фазы P7 (item P7.12) и P8 (item P8.13) кладут СВОИ отчёты рядом, а форк генератора запрещён вторым носителем факта (D67), перезапись чужого отчёта — молчаливой потерей (Q-14, D82/D94, D118); (в) явное разграничение с `fixtures/2026-08/coverage.md`: тот отчёт — о связи «правило ↔ вектор» (фаза P4), этот — о РЕЗУЛЬТАТЕ прогона по уровням; разграничение записывается в шапку отчёта, чтобы два артефакта не читались как один; (г) `@plan/knowledge/artifacts-P6-gate.json`: строка вердикта `ГЕЙТ P6: PASS` либо `ГЕЙТ P6: BLOCKED — <причина>`, таблица пяти условий гейта со статусом каждого, числа (векторов всего, по уровням, по классам, golden-пар, harness-кейсов, проверок в каждом слое CI) с якорем-коммитом и командой, ПЕРЕЧЕНЬ ШЕСТИ обязательных отрицательных прогонов фазы (`research/05-…` §7) с выводом каждого, раздел «что НЕ проверялось» (границы честности: CI не запускался — Q-2; SDK-часть слоя 2 — по ветке owner-gate; SDK нет — слои 3/4 прогнаны на нашем подмножестве); (д) факт разблокировки фаз P7/P8 — в handoff и строке Update Log."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "правки раннера, адаптера и механик (items P6.1–P6.8 — недостающее чинится в СВОЁМ item'е, а не заглушкой здесь); правки корпуса и ревизии; применение порогов зрелости 100 %/80 % к SDK (фазы P7/P8 — здесь только числа); протокольный аудит фазы (`task:plan-audit AGENTOOLS P6` — отдельный шаг протокола, этот item его не заменяет); настройка remote и запуск CI (Q-2)."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "все Deliverables items P6.1–P6.8 · машинные отчёты прогонов (`out/*.json`) · `fixtures/2026-08/coverage.md` (для разграничения) · `spec/revisions/2026-08/rules.json` (уровни и причины `Not testable`) · `@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §K · `@plan/plan.json` §5 (D7, D72) · `@plan/knowledge/research-05-p6-conformance-harness-2026-08.json` §7, §9 · `@plan/knowledge/artifacts-P4-gate-a3.json` и `@plan/knowledge/artifacts-P3-gate-a2.json` (форма вердикта-гейта)."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`conformance/tests/fixtures/mutants/**` · `conformance/bin/levels` · `conformance/src/**` (генератор отчёта по уровням) · `conformance/reports/reference-levels.md` · `05-Projects/03-Packages/AgenTools/@plan/knowledge/artifacts-P6-gate.json`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `05-Projects/03-Packages/AgenTools/@plan/knowledge/research-05-p6-conformance-harness-2026-08.json` §7, §9 2) `05-Projects/03-Packages/AgenTools/@plan/knowledge/artifacts-P4-gate-a3.json` (форма вердикта) 3) `05-Projects/03-Packages/AgenTools/@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §K 4) `fixtures/2026-08/coverage.md` 5) `spec/revisions/2026-08/rules.json` 6) `05-Projects/03-Packages/AgenTools/@plan/plan.json` §2 Execution Rules, §5 (D7, D72, **D118** — обязательность параметра `--out`), §4 Status Board 7) `05-Projects/03-Packages/AgenTools/@plan/plan.json` строка Q-14."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "вердикт `PASS` ставится ТОЛЬКО при зелёных ВСЕХ пяти условиях гейта — «остальное зелёное» основанием не является; мутант живёт вне корпуса, любая правка `fixtures/2026-08/**` в диффе item'а = материальное отклонение и провал гейта; отчёт по уровням — ПРОИЗВОДНЫЙ, ручная правка запрещена и ловится `--check`; все числа приводятся с якорем на коммит и командой, которой получены (`plan-protocol` §8 «Tree anchor»): числа по репозиторию артефактов — на его item-коммите, числа по файлам плана — на bookkeeping-коммите; шесть обязательных отрицательных прогонов фазы перечисляются ПОИМЁННО с выводом — перечень без вывода не доказательство; раздел «что НЕ проверялось» обязателен и называет обе структурные границы (Q-2 и ветка owner-gate `DR-02` §6); плановый линтер — командой из Phase Context."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Кода мало — генератор отчёта и вердикт. Анти-самообман (гейт-item): «прогон зелёный» ≠ «раннер работает» — доказательством считается ПАРА прогонов на одном дереве, зелёный и красный; отчёт без раздела границ честности не сдан. Анти-подгонка: ЗАПРЕЩЕНО добирать зелёный гейт правкой ожиданий мутанта, ослаблением условий или исключением векторов фильтром `--filter`; если условие красное — вердикт `BLOCKED` с адресатом-item'ом. ЗАПРЕЩЕНО: править корпус ради зелёного; объявлять пороги зрелости достигнутыми (их субъект — SDK, которых нет); подменять этот отчёт файлом `coverage.md` фазы P4. If-then: одно из пяти условий красное → `ГЕЙТ P6: BLOCKED — <причина>`, статус item'а `🔴 Blocked`, `Pending Work` несёт `Возобновление:` с точной командой и адресатом-item'ом фазы. If-then: число векторов отчёта меньше числа файлов корпуса класса `behavior` → это НЕ округление: гейт `BLOCKED`, адресат P6.1 (тихий пропуск вектора). If-then: прогон недетерминирован (два запуска дают разные отчёты) → гейт `BLOCKED` независимо от того, зелёные ли оба: §K требует ДЕТЕРМИНИРОВАННОГО прогона."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`php conformance/bin/run --adapter 'php conformance/adapters/reference/adapter.php' --vectors fixtures/2026-08 --spec-rev 2026-08 --baseline conformance/baseline/reference.json --report out/gate.json; echo $?` = 0 · `php conformance/bin/run --adapter 'php conformance/adapters/reference/adapter.php' --vectors conformance/tests/fixtures/mutants --spec-rev 2026-08; echo $?` = 1 (заведомо красный прогон на том же дереве) · `php conformance/bin/harness-selftest --cases fixtures/2026-08/harness; echo $?` = 0 · `python3 tools/ci_gate.py --all; echo $?` = 0 · `php conformance/bin/levels out/gate.json --write && php conformance/bin/levels out/gate.json --check; echo $?` = 0 (отчёт по уровням производный и детерминированный) · `php conformance/bin/levels out/gate.json --out out/levels-probe.md --write && test -s out/levels-probe.md && git status --short conformance/reports/reference-levels.md` — файл записан по ПЕРЕДАННОМУ пути, а отчёт эталона не изменён (доказательство параметра `--out`, Q-14/D118) · `grep -cE '^\\| L[123] \\|' conformance/reports/reference-levels.md` = 3 (разбивка по трём уровням) · `grep -c 'coverage.md' conformance/reports/reference-levels.md` ≥ 1 (разграничение с отчётом фазы P4 записано) · `python3 -c \"import json,glob;r=json.load(open('out/gate.json'));print(len(r['vectors'])==len(glob.glob('fixtures/2026-08/vectors/*/*.json')))\"` = `True` · `git diff --quiet -- fixtures/2026-08 spec/revisions/2026-08; echo $?` = 0 (замороженные артефакты не тронуты) · `grep -c 'ГЕЙТ P6: PASS' 05-Projects/03-Packages/AgenTools/@plan/knowledge/artifacts-P6-gate.json` = 1 · `grep -c 'что НЕ проверялось' 05-Projects/03-Packages/AgenTools/@plan/knowledge/artifacts-P6-gate.json` ≥ 1 (команды — из корня vault) · прогнать плановый линтер по каталогу плана и опубликовать счёт с атрибуцией, K = 0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "`@plan/knowledge/artifacts-P6-gate.json` с вердиктом `ГЕЙТ P6`, таблицей пяти условий, числами с якорями и командами, перечнем шести отрицательных прогонов с выводом и разделом границ честности + вектор-мутант вне корпуса + производный `conformance/reports/reference-levels.md` с разбивкой L1/L2/L3 и разграничением с `coverage.md` + названная разблокировка фаз P7/P8."
+    }
+  ]
+}

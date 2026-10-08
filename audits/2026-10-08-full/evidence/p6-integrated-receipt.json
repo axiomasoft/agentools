@@ -1,0 +1,35 @@
+{
+    "schema_version": "p6-integrated-receipt\/v1",
+    "spec_revision": "2026-09",
+    "summary_phrase": "P6 integrated gate (namespaces are not merged into one pass rate)",
+    "generated_by": "conformance\/bin\/p6-gate",
+    "namespaces": {
+        "agentools": {
+            "reference_report_2026_08_regression": "out\/ci\/reference-2026-08.json",
+            "reference_digest_sha256": "c9a737bc29907be0bbd5306f20b1669b95a90ca396163c9df79ba57994a9c4a5",
+            "reference_report_2026_09": "out\/ci\/reference-2026-09.json",
+            "reference_2026_09_digest_sha256": "4dee8e274da04e9a08c65de5bc4699e833b032a2ff9598d7e551b1a3ae052573",
+            "php_report_2026_09": "out\/ci\/php-2026-09.json",
+            "php_2026_09_digest_sha256": "1dad6af42522583810bf15f0c50869b161a2675f9b4c7ef15cafa859f3d65b24",
+            "dart_report_2026_09": "out\/ci\/dart-2026-09.json",
+            "dart_2026_09_digest_sha256": "1dad6af42522583810bf15f0c50869b161a2675f9b4c7ef15cafa859f3d65b24"
+        },
+        "jcs_oracle": {
+            "report": "conformance\/reports\/jcs-parity.json",
+            "digest_sha256": "3ccf8d518c36a16f8b8ce8e6e18753f223b9a1e4bff9f5a074933324c4b6799c"
+        },
+        "semantic_profile": {
+            "report": "conformance\/reports\/semantic-parity.json",
+            "digest_sha256": "a2d2a06e6310ebee06629327b7e66ca21410f2230435a2e277bf7d9d418dae5f"
+        },
+        "mcp_official": {
+            "report": "conformance\/reports\/mcp-official\/summary.json",
+            "digest_sha256": "c84bce7a7083ba6c41dd7243f291611c6306c6d829b4dac52bdc7dbddd3031dd"
+        }
+    },
+    "residual_owner": {
+        "public_tag_spec-2026-09": "P9\/P10",
+        "jcs_10k_es6_corpus": "P8",
+        "package_exports": "P7"
+    }
+}

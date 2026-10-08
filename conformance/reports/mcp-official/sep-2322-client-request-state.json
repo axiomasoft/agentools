@@ -6,7 +6,7 @@
       "name": "MRTRClientRequestStateEchoed",
       "description": "Client MUST echo back the exact value of requestState when retrying",
       "status": "SUCCESS",
-      "timestamp": "2026-10-06T13:44:53.234Z",
+      "timestamp": "2026-10-08T14:15:40.946Z",
       "specReferences": [
         {
           "id": "SEP-2322-MRTR",
@@ -14,8 +14,8 @@
         }
       ],
       "details": {
-        "requestStateSent": "{\"nonce\":\"3450b996-06ce-4640-af4f-6bee52d83884\",\"originalId\":3}",
-        "requestStateReceived": "{\"nonce\":\"3450b996-06ce-4640-af4f-6bee52d83884\",\"originalId\":3}",
+        "requestStateSent": "{\"nonce\":\"4e230127-d2f0-4b61-9e75-fada904b08fe\",\"originalId\":3}",
+        "requestStateReceived": "{\"nonce\":\"4e230127-d2f0-4b61-9e75-fada904b08fe\",\"originalId\":3}",
         "originalId": 3
       }
     },
@@ -24,7 +24,7 @@
       "name": "MRTRClientJsonRpcIdDifferent",
       "description": "The JSON-RPC id MUST be different between the initial request and the retry",
       "status": "SUCCESS",
-      "timestamp": "2026-10-06T13:44:53.234Z",
+      "timestamp": "2026-10-08T14:15:40.946Z",
       "specReferences": [
         {
           "id": "SEP-2322-MRTR",
@@ -41,7 +41,7 @@
       "name": "MRTRClientNoStateOmitted",
       "description": "If InputRequiredResult does not contain requestState, client MUST NOT include one in the retry",
       "status": "SUCCESS",
-      "timestamp": "2026-10-06T13:44:53.237Z",
+      "timestamp": "2026-10-08T14:15:40.951Z",
       "specReferences": [
         {
           "id": "SEP-2322-MRTR",
@@ -55,7 +55,7 @@
       "name": "MRTRClientParallelIsolation",
       "description": "inputRequests and requestState MUST NOT be used for any other request the client may be sending",
       "status": "SUCCESS",
-      "timestamp": "2026-10-06T13:44:53.238Z",
+      "timestamp": "2026-10-08T14:15:40.952Z",
       "specReferences": [
         {
           "id": "SEP-2322-MRTR",
@@ -69,7 +69,7 @@
       "name": "DefaultResultTypeComplete",
       "description": "Client MUST assume resultType \"complete\" when not specified",
       "status": "SUCCESS",
-      "timestamp": "2026-10-06T13:44:53.239Z",
+      "timestamp": "2026-10-08T14:15:40.954Z",
       "specReferences": [
         {
           "id": "SEP-2322-MRTR",

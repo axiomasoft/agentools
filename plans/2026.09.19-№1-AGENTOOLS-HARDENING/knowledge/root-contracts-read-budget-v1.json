@@ -1,0 +1,52 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "root-contracts-read-budget-v1",
+  "title": "Контракт read-budget v1",
+  "sections": [
+    {
+      "id": "read-budget-v1",
+      "title": "Контракт read-budget v1",
+      "text": "**Contract ID:** `read-budget`  \n**Версия:** `1.1.0`  \n**Статус:** frozen\n\nЭтот контракт задаёт границы обязательного чтения для executable master plans с\n`Layout | v2`."
+    },
+    {
+      "id": "section",
+      "title": "Квалифицированная единица",
+      "text": "Все пороги измеряются в оценённом верхнем пределе входных токенов от\n`token-estimate-calibration` v2.0.0 для `codex/gpt-5.6-terra`, адаптера\n`codex-exec-jsonl-v1`, протокола `differential-input-total-v2` и семантики\n`provider-reported-input-total-v1`. Значения от другого провайдера, модели или протокола\nне взаимозаменяемы без новой калибровки."
+    },
+    {
+      "id": "section-2",
+      "title": "Пороги",
+      "text": "Для каждого item должен разрешиться полный mandatory read path:\n\n```text\npass_item(i) = resolved(i) AND estimated_required_read_tokens(i) <= 100000\n```\n\nКаждый файл этого пути одновременно должен проходить:\n\n```text\nbytes(f) <= 262144 AND est_tokens(f) <= 25000\n```\n\nНеразрешимый mandatory input fail-closed и не считается нулём. Разбиение item или вынос\nматериала за пределы графа не считается улучшением без уменьшения общего mandatory-read\naggregate."
+    },
+    {
+      "id": "section-3",
+      "title": "Граница верхней оценки",
+      "text": "Свойство верхней оценки установлено на ограниченном корпусе реальной plan prose и dense-ASCII\ninputs, а не статистически доказано для всех файлов. Калибровка v2 добавляет класс\n`dense_ascii` (`[0-9A-Za-z+/=]` runs не менее 32 символов): зафиксированы 8 реальных\nпринятых samples, 0 нарушений верхней границы и\n`max_true_over_estimate = 1.0846677212727815`.\n\nНаблюдаемая недооценка — это failure контракта, а не допуск. Она требует нового\nкалибровочного артефакта, D-record и повторной валидации; те же действия нужны при смене\nпровайдера, модели, probe protocol, classifier или semantics usage."
+    },
+    {
+      "id": "Anti-displacement",
+      "title": "Anti-displacement",
+      "text": "Aggregate — суммарный mandatory-read weight полного закрытого графа плана, включая generated\ncarriers и per-file overhead. Каждый acceptance report печатает aggregate рядом с per-item результатом и\nсравнением с состоянием до реструктурирования. Отчёт обязан ответить, мог ли pass появиться лишь\nиз-за дробления, переноса, cache, defer или исключения работы; положительный либо неразрешённый ответ\nблокирует acceptance."
+    },
+    {
+      "id": "Admission",
+      "title": "Admission",
+      "text": "У layout-v2 item ровно одно состояние admission:\n\n- `historical-pre-v2` — исторический terminal item; его baseline не переписывается.\n- `pending-producer` — отсутствующий input назван в Deliverables более раннего нетерминального\n  producer item; это defer, не pass.\n- `ready` — применяются оба порога; отсутствие или невалидная producer-связь блокируют работу.\n\nОтчёт включает калибровку, максимум на item, aggregate до/после, неразрешимые inputs,\nнарушения обоих лимитов и ответ на вопрос, не достигнут ли pass только переносом или исключением\nработы."
+    },
+    {
+      "id": "section-4",
+      "title": "Изменение контракта",
+      "text": "Изменение порога, единицы, применимости или anti-displacement semantics требует решения\nвладельца, нового D-record, новой калибровки при смене единицы, машинного измерения и\nверсии контракта."
+    },
+    {
+      "id": "Provenance",
+      "title": "Provenance",
+      "text": "Контракт архивирован из плана `2026.08.10-TASK-LEAN-AUTONOMY`; исходный immutable carrier:\n`plans/archive/2026.08.10-TASK-LEAN-AUTONOMY/root/contracts/read-budget-v1.md`."
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "root/contracts/read-budget-v1.md",
+    "sha256": "ce0526ec20f956cccf967dfd0a29627e3913b940d335a3c16030b9aaa521319f"
+  }
+}

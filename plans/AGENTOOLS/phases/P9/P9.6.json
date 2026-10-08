@@ -1,0 +1,264 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P9.6",
+  "title": "CLI-цикл: потребитель доставляемых протокольных объектов",
+  "status": "done",
+  "summary": "Реализовать `php/bin/reference-slice-demo` (или эквивалент): CLI поверх `DeliveryCollector` — статусы, уточнения, превью с confirm/edit/reject; CLI не интерпретирует протокол и не решает за Policy Layer.",
+  "why": "UI — последнее место потери защиты P9.3–P9.5: кэш prepare, правила гейта в клиенте, `edit` как мутация. Референсный CLI доказывает потребление объектов без Flex/Reverb. `RAG:— (repo-grounded: D186; INT-002 §6; DR-01 §B3, §B8)`.",
+  "scope": {
+    "include": [
+      "CLI demo; поток из DeliveryCollector; карточки уточнений as-is; превью + три решения; `edit` → новый prepare; запрет кэша prepare; три отрицательных: чужой tenant, TTL, SUPERSEDED."
+    ],
+    "exclude": [
+      "Flex UI, Reverb, batch-STT (отложено); E2E реальной модели (P9.7); правки адаптеров кроме дефектов прогона."
+    ]
+  },
+  "depends_on": [],
+  "decisions": [
+    "D186"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/root-contracts-INT-002_standalone-reference-slice.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/04_confirmation.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/decisions/D186.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/findings-P9-decouple-corex-2026-09-19.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [],
+  "rules": [
+    "корень agentools; ноль правил гейта в CLI (греп-доказательство); STT не входит в scope — текстовый путь обязателен полностью; плановый линтер из Phase Context."
+  ],
+  "guidance": "ЗАПРЕЩЕНО: классификация эффекта в CLI; кэш prepare; мутация proposal на edit. If-then: объект не хватает для отображения → 🔴 Blocked, правка INT-002/P9.3.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "php/reference/cli",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "git status --short -- php/src spec fixtures/2026-08 | wc -l",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "procedure": "composer test php/",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "procedure": "composer analyse php/",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "procedure": "reference-slice-demo happy path",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "procedure": "negative wrong tenant",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "procedure": "negative TTL preview",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V8",
+      "procedure": "negative SUPERSEDED edit",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V9",
+      "procedure": "grep GatePolicy php/reference/Cli",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V10",
+      "procedure": "git status protected paths",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V11",
+      "procedure": "plan-lint AGENTOOLS",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "CLI-цикл + три отрицательных + греп-доказательство отсутствия протокольной семантики в consumer."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-19T08:58:37Z",
+    "finished_at": "2026-09-19T08:58:37Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "implementation/high",
+      "effort": "high"
+    },
+    "notes": "INT-002 §6: php/bin/reference-slice-demo + php/reference/Cli consumer; confirm/edit/reject via coordinator without gate policy in CLI; write-site: pre_mutation: allow · pre_final: allow\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V3",
+        "exit": 0,
+        "at": "2026-09-19T08:58:37Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V4",
+        "exit": 0,
+        "at": "2026-09-19T08:58:37Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V5",
+        "exit": 0,
+        "at": "2026-09-19T08:58:37Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V6",
+        "exit": 0,
+        "at": "2026-09-19T08:58:37Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V7",
+        "exit": 0,
+        "at": "2026-09-19T08:58:37Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V8",
+        "exit": 0,
+        "at": "2026-09-19T08:58:37Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V9",
+        "exit": 0,
+        "at": "2026-09-19T08:58:37Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V10",
+        "exit": 0,
+        "at": "2026-09-19T08:58:37Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V11",
+        "exit": 0,
+        "at": "2026-09-19T08:58:37Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-19T08:58:37Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Реализовать `php/bin/reference-slice-demo` (или эквивалент): CLI поверх `DeliveryCollector` — статусы, уточнения, превью с confirm/edit/reject; CLI не интерпретирует протокол и не решает за Policy Layer."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "UI — последнее место потери защиты P9.3–P9.5: кэш prepare, правила гейта в клиенте, `edit` как мутация. Референсный CLI доказывает потребление объектов без Flex/Reverb. `RAG:— (repo-grounded: D186; INT-002 §6; DR-01 §B3, §B8)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "CLI demo; поток из DeliveryCollector; карточки уточнений as-is; превью + три решения; `edit` → новый prepare; запрет кэша prepare; три отрицательных: чужой tenant, TTL, SUPERSEDED."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Flex UI, Reverb, batch-STT (отложено); E2E реальной модели (P9.7); правки адаптеров кроме дефектов прогона."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`php/reference/Scenario/DayEndOrchestrator.php` · `php/reference/Conformance/ProductSliceEngine.php` · `php/reference/Adapters/DeliveryCollector.php` · `@plan/knowledge/root-contracts-INT-002_standalone-reference-slice.json` · `spec/revisions/2026-08/04_confirmation.md` · `@plan/decisions/D186.json`."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`php/bin/reference-slice-demo` · `php/reference/cli/**` · `php/tests/reference/cli/**`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/root-contracts-INT-002_standalone-reference-slice.json` §6 2) `spec/revisions/2026-08/04_confirmation.md` 3) `@plan/decisions/D186.json` 4) `@plan/knowledge/findings-P9-decouple-corex-2026-09-19.json` 5) `@plan/plan.json` §2."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "корень agentools; ноль правил гейта в CLI (греп-доказательство); STT не входит в scope — текстовый путь обязателен полностью; плановый линтер из Phase Context."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "ЗАПРЕЩЕНО: классификация эффекта в CLI; кэш prepare; мутация proposal на edit. If-then: объект не хватает для отображения → 🔴 Blocked, правка INT-002/P9.3."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "тесты CLI — 0 · три отрицательных с выводом · греп: нет gate policy в `php/reference/cli` · `git status --short -- php/src spec fixtures/2026-08 | wc -l` = 0 · plan-lint K = 0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "CLI-цикл + три отрицательных + греп-доказательство отсутствия протокольной семантики в consumer."
+    }
+  ]
+}

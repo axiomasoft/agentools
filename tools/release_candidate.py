@@ -28,17 +28,17 @@ from tools import package_gate as pg  # noqa: E402
 
 SCHEMA_VERSION = "release-candidate-receipt/v1"
 CONTRACT_REL = (
-    "plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/release-candidate-v1.md"
+    "verification/root/contracts/release-candidate-v1.md"
 )
 SCHEMA_REL = (
-    "plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/release-candidate-v1.schema.json"
+    "verification/root/contracts/release-candidate-v1.schema.json"
 )
 ARTIFACT_PATH = (
     pg.REPO
-    / "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P9-reproducibility.json"
+    / "verification/artifacts/P9-reproducibility.json"
 )
 FINDING_PATH = (
-    pg.REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING/findings/P9-reproducibility.md"
+    pg.REPO / "verification/findings/P9-reproducibility.md"
 )
 LOCK_PATH = pg.REPO / ".ci/supply-chain-lock.json"
 

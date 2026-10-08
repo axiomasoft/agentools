@@ -1,0 +1,11 @@
+{
+  "id": "mutation-classifier-probe",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "audits/2026-10-08-full/reproduce_mutation_gate.py"
+  ],
+  "started_utc": "2026-10-08T12:26:50.604420+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.064
+}

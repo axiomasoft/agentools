@@ -1,5 +1,6 @@
-# Fingerprints of reviewed false positives in immutable history (gitleaks git).
-# Synthetic AWS canaries in the scanner self-test; the literals were removed in a later commit.
+
+# Three synthetic AWS detector probes from the original negative test only.
+# Reviewed in audits/2026-10-08-full/repository-findings.md (A17); no live credentials.
 87dbb5500eaf48c13ef9160e4ee11afdf2942371:tools/ci_matrix.py:aws-access-token:664
 87dbb5500eaf48c13ef9160e4ee11afdf2942371:tools/ci_matrix.py:aws-access-token:665
 87dbb5500eaf48c13ef9160e4ee11afdf2942371:tools/ci_matrix.py:aws-access-token:666

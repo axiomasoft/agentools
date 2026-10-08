@@ -1,0 +1,55 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D16",
+  "title": "Group execution into 19 single-model batches",
+  "date": "2026-09-20",
+  "status": "accepted",
+  "decision": "Future product execution uses 19 adjacent `task:plan-run` batches rather than 23 separate\nsessions. P2.1–P2.4 become `confirmation`, P3.1–P3.4 `token-replay`, P4.1–P4.4\n`lease-fencing`, and P5.1–P5.4 `event-store`. These four phases are linear contract-to-gate\ncontours whose Required Reads, source graph and validation setup remain useful through the final\nitem. Every item retains its own lifecycle, validation and closure inside the group.\n\nOne Cursor launch model is fixed for every batch. `Composer 2.5/high` owns synthesis-heavy API,\nsemantic, packaging, CI and release batches in P1/P2/P6/P7/P9/P10. `Grok 4.6/high` owns\ncrypto/replay, fencing, event persistence and adversarial verification batches in P3/P4/P5/P8.\nNo batch changes model mid-session.\n\nP7.4, P8.4, P8.5, P9.5 and P10.5 remain `solo`: respectively clean artifact isolation,\ndestructive test-only PostgreSQL safety, post-evidence calibration, independent aggregate re-hash,\nand final authority separation are stronger boundaries than the saved cold start.",
+  "rationale": "Merging P2–P5 removes four cold starts without crossing a phase, changing Exec/Review, weakening\nan item acceptance contract or mixing models. Larger merges in P1/P6/P7/P8/P9/P10 would combine\ndistinct evidence or safety contours and make stale-context failures more likely than the saved\nsession is worth.",
+  "applies_to": [
+    "P0.1",
+    "P1",
+    "P2",
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7",
+    "P8",
+    "P9",
+    "P10"
+  ],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "plan-designer/gpt-5.6-sol/xhigh",
+    "effort": "xhigh"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D16\ndate: 2026-09-20\nstatus: accepted\nitem: P0.1\nitems: [P0.1, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10]\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "D16-Group-execution-into-19-single-model-batches",
+      "title": "D16 — Group execution into 19 single-model batches",
+      "text": "**Actor:** plan-designer/gpt-5.6-sol/xhigh\n**Evidence:** RAG:— owner instruction on 2026-09-20; item dependencies and shared setup in `@plan/plan.json` §3 and `@plan/knowledge/research-P1-design.json`–`@plan/knowledge/research-P10-design.json`"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "Future product execution uses 19 adjacent `task:plan-run` batches rather than 23 separate\nsessions. P2.1–P2.4 become `confirmation`, P3.1–P3.4 `token-replay`, P4.1–P4.4\n`lease-fencing`, and P5.1–P5.4 `event-store`. These four phases are linear contract-to-gate\ncontours whose Required Reads, source graph and validation setup remain useful through the final\nitem. Every item retains its own lifecycle, validation and closure inside the group.\n\nOne Cursor launch model is fixed for every batch. `Composer 2.5/high` owns synthesis-heavy API,\nsemantic, packaging, CI and release batches in P1/P2/P6/P7/P9/P10. `Grok 4.6/high` owns\ncrypto/replay, fencing, event persistence and adversarial verification batches in P3/P4/P5/P8.\nNo batch changes model mid-session.\n\nP7.4, P8.4, P8.5, P9.5 and P10.5 remain `solo`: respectively clean artifact isolation,\ndestructive test-only PostgreSQL safety, post-evidence calibration, independent aggregate re-hash,\nand final authority separation are stronger boundaries than the saved cold start."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Merging P2–P5 removes four cold starts without crossing a phase, changing Exec/Review, weakening\nan item acceptance contract or mixing models. Larger merges in P1/P6/P7/P8/P9/P10 would combine\ndistinct evidence or safety contours and make stale-context failures more likely than the saved\nsession is worth."
+    },
+    {
+      "id": "Consequences",
+      "title": "Consequences",
+      "text": "`@plan/plan.json` remains the canonical provider-neutral Routing source; `@plan/plan.json` renders exact batch\ncommands and the concrete Cursor launch choice. Dependency-safe prefixes of `recommended:` groups\nremain admissible when a later member is not ready.\n\nThe installed Task route-catalog currently verifies Cursor `composer-2.5` as the\n`implementation` selector but does not yet register an exact Grok 4.6 selector. The plan therefore\ndoes not invent a native Grok command. Before the first Grok batch, the Task package owner must\nverify and register the exact selector or this decision must route that whole batch to\n`Composer 2.5`; `auto` is not a substitute."
+    }
+  ]
+}

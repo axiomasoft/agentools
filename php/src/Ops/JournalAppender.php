@@ -26,7 +26,7 @@ final class JournalAppender
         private readonly Actor $actor,
         private readonly Clock $clock,
         private readonly int $epoch = 1,
-        private readonly string $specRevision = '2026-08',
+        private readonly string $specRevision = '2026-09',
         private readonly ?ActionReducer $reducer = null,
         private readonly ?AuditSink $auditSink = null,
         private readonly AuditRedaction $redaction = new AuditRedaction(),
@@ -71,6 +71,16 @@ final class JournalAppender
             payload: $payload,
             epoch: $epoch ?? ($this->needsEpoch($kind) ? $this->epoch : null),
         );
+        $state = $this->journal->state($this->reducer);
+        $candidate = new ActionEvent(
+            eventId: $uncommitted->eventId, actionId: $this->actionId,
+            seq: $expected + 1, expectedPrevSeq: $expected,
+            timestamp: $uncommitted->timestamp, actor: $uncommitted->actor,
+            kind: $kind, eventVersion: $uncommitted->eventVersion,
+            specRevision: $uncommitted->specRevision, payload: $payload,
+            epoch: $uncommitted->epoch, previousHash: $state->previousHash,
+        );
+        $this->journal->append($candidate, $this->reducer);
         $this->store->append($this->tenantId, $this->actionId, $expected, [$uncommitted]);
         $page = $this->store->load($this->tenantId, $this->actionId, $expected, 1);
         foreach ($page->events as $committed) {

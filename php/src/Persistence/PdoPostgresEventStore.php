@@ -39,10 +39,10 @@ SQL;
     private const INSERT_EVENT_SQL = <<<'SQL'
 INSERT INTO agentools_events (
   tenant_id, action_id, seq, event_id, kind, event_version, spec_rev,
-  actor_type, actor_id, ts, payload_json, epoch, prev_hash, content_hash, expected_prev_seq
+  actor_type, actor_id, ts, ts_text, payload_json, epoch, prev_hash, content_hash, expected_prev_seq
 ) VALUES (
   :tenant_id, :action_id, :seq, :event_id, :kind, :event_version, :spec_rev,
-  :actor_type, :actor_id, :ts, :payload_json, :epoch, :prev_hash, :content_hash, :expected_prev_seq
+  :actor_type, :actor_id, :ts, :ts_text, :payload_json, :epoch, :prev_hash, :content_hash, :expected_prev_seq
 )
 RETURNING seq, global_position
 SQL;
@@ -54,7 +54,7 @@ WHERE tenant_id = :tenant_id AND action_id = :action_id
 SQL;
 
     private const LOAD_SQL = <<<'SQL'
-SELECT event_id, action_id, seq, expected_prev_seq, ts, actor_type, actor_id,
+SELECT event_id, action_id, seq, expected_prev_seq, ts_text, actor_type, actor_id,
        kind, event_version, spec_rev, epoch, prev_hash, payload_json
 FROM agentools_events
 WHERE tenant_id = :tenant_id AND action_id = :action_id AND seq > :after_seq
@@ -63,7 +63,7 @@ LIMIT :limit
 SQL;
 
     private const TAIL_HASH_SQL = <<<'SQL'
-SELECT event_id, action_id, seq, expected_prev_seq, ts, actor_type, actor_id,
+SELECT event_id, action_id, seq, expected_prev_seq, ts_text, actor_type, actor_id,
        kind, event_version, spec_rev, epoch, prev_hash, payload_json
 FROM agentools_events
 WHERE tenant_id = :tenant_id AND action_id = :action_id
@@ -76,7 +76,7 @@ SQL;
         private readonly Canonicalizer $canonicalizer = new Canonicalizer(),
     ) {
         if ($this->pdo->getAttribute(PDO::ATTR_ERRMODE) !== PDO::ERRMODE_EXCEPTION) {
-            throw new \InvalidArgumentException('PdoPostgresEventStore requires a PDO connection in ERRMODE_EXCEPTION.');
+            throw new \InvalidArgumentException('PdoPostgresEventStore requires PDO::ERRMODE_EXCEPTION.');
         }
     }
 
@@ -225,13 +225,12 @@ SQL;
         $lastPosition = 0;
         foreach ($events as $index => $event) {
             $seq = $actual + $index + 1;
-            $timestamp = $this->timestamp($event->timestamp);
             $committed = new ActionEvent(
                 eventId: $event->eventId,
                 actionId: $actionId,
                 seq: $seq,
                 expectedPrevSeq: $actual + $index,
-                timestamp: $timestamp,
+                timestamp: $event->timestamp,
                 actor: $event->actor,
                 kind: $event->kind,
                 eventVersion: $event->eventVersion,
@@ -250,7 +249,8 @@ SQL;
                 'spec_rev' => $event->specRevision,
                 'actor_type' => $event->actor->type,
                 'actor_id' => $event->actor->id,
-                'ts' => $timestamp,
+                'ts' => $event->timestamp,
+                'ts_text' => $event->timestamp,
                 'payload_json' => json_encode($event->payload, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),
                 'epoch' => $event->epoch,
                 'prev_hash' => $committed->previousHash,
@@ -309,7 +309,7 @@ SQL;
             actionId: $this->stringField($row, 'action_id'),
             seq: $this->intField($row, 'seq'),
             expectedPrevSeq: $this->intField($row, 'expected_prev_seq'),
-            timestamp: $this->timestamp($this->stringField($row, 'ts')),
+            timestamp: $this->stringField($row, 'ts_text'),
             actor: new Actor($this->stringField($row, 'actor_type'), $this->stringField($row, 'actor_id')),
             kind: $this->stringField($row, 'kind'),
             eventVersion: $this->intField($row, 'event_version'),
@@ -318,19 +318,6 @@ SQL;
             epoch: $epochRaw === null || $epochRaw === '' ? null : $this->intValue($epochRaw, 'epoch'),
             previousHash: is_string($prev) && $prev !== '' ? $prev : null,
         );
-    }
-
-    /**
-     * Canonical lexical form of an event instant: UTC, microsecond precision (the TIMESTAMPTZ
-     * resolution), fraction omitted when zero. The same form is stored, hashed into the chain
-     * and hydrated, so `prev_hash` stays verifiable after reload regardless of the input offset,
-     * input precision or the session time zone.
-     */
-    private function timestamp(string $value): string
-    {
-        $instant = (new \DateTimeImmutable($value))->setTimezone(new \DateTimeZone('UTC'));
-
-        return $instant->format($instant->format('u') === '000000' ? 'Y-m-d\\TH:i:sP' : 'Y-m-d\\TH:i:s.uP');
     }
 
     /** @param array<mixed, mixed> $row

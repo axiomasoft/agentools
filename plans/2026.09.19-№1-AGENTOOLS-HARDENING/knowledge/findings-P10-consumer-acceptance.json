@@ -1,0 +1,34 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "findings-P10-consumer-acceptance",
+  "title": "P10.3 release consumer acceptance",
+  "sections": [
+    {
+      "id": "P10.3-release-consumer-acceptance",
+      "title": "P10.3 release consumer acceptance",
+      "text": "**Verdict:** `green`\n**Generated:** 2026-09-21T17:16:14Z\n**Source commit:** `c540a47737bc8b2c43ad0d971546e7a94c1f599d`\n**P9 RC digest:** `4f8dc5f8b0113289808f5e0762f206e84b74065a88bbd0c86d3cf84d15f5c44d`"
+    },
+    {
+      "id": "Subjects-re-hashed-against-P9-private-rc.json",
+      "title": "Subjects (re-hashed against P9-private-rc.json)",
+      "text": "- `dart-core`: archive `f60e9f1c5f98fc8f…` manifest `932bb4fae147f4d1…`\n- `dart-mcp-companion`: archive `35015fa9c67d3b5a…` manifest `66b40ec64d8053eb…`\n- `php-sdk`: archive `5cd7ef896988acc2…` manifest `6957c83d0d69b175…`"
+    },
+    {
+      "id": "PostgreSQL-drill",
+      "title": "PostgreSQL drill",
+      "text": "- status: `green`"
+    },
+    {
+      "id": "Errors",
+      "title": "Errors",
+      "text": "- none"
+    }
+  ],
+  "applies_to": [
+    "P10"
+  ],
+  "provenance": {
+    "path": "findings/P10-consumer-acceptance.md",
+    "sha256": "5a9df00ef4991334ea2c2e678161d70ec7f6875c80797a241a08b513eb47002f"
+  }
+}

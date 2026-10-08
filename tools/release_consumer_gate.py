@@ -37,7 +37,7 @@ from tools.storage_chaos import (  # noqa: E402
     psql_row,
 )
 
-PLAN = REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING"
+PLAN = REPO / "verification"
 P9_RC = PLAN / "artifacts/P9-private-rc.json"
 P9_REPRO = PLAN / "artifacts/P9-reproducibility.json"
 P10_DOCS = PLAN / "artifacts/P10-docs.json"

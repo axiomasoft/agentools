@@ -1,0 +1,47 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "20_research-R-09_license-check-p3-gate",
+  "title": "R-09 — Лицензионный гейт перед P3: json_schema, ulid (Dart/pub.dev, июль 2026)",
+  "sections": [
+    {
+      "id": "R-09-P3-json_schema-ulid-Dart-pub.dev-2026",
+      "title": "R-09 — Лицензионный гейт перед P3: json_schema, ulid (Dart/pub.dev, июль 2026)",
+      "text": "> RAG-проверка через perplexity-web + WebFetch pub.dev/license, verified прямыми ссылками на страницу лицензии пакета.\n> Критерий: совместимость с приватным коммерческим SDK (AxiomaErpSdk). MIT/BSD/Apache-2.0(-эквивалент) = OK; GPL/AGPL/SSPL = блокер."
+    },
+    {
+      "id": "OK-P3",
+      "title": "Вердикт: OK по обоим пакетам — блокеров нет, P3 разгейчен",
+      "text": "| Пакет | Версия | Лицензия | Источник | Вердикт | Альтернативы |\n|:---|:---|:---|:---|:---|:---|\n| `json_schema` | 5.2.2 | Boost Software License 1.0 (BSL-1.0) | https://pub.dev/packages/json_schema/license | ✅ OK | не требуются |\n| `ulid` | 2.0.1 | BSD-3-Clause | https://pub.dev/packages/ulid/license | ✅ OK | не требуются |"
+    },
+    {
+      "id": "section",
+      "title": "Детали",
+      "text": ""
+    },
+    {
+      "id": "json_schema",
+      "title": "json_schema",
+      "text": "- pub.dev карточка пакета показывает license field как \"unknown (license)\" — это метаданные pub.dev, НЕ отсутствие лицензии. Фактический текст лицензии на вкладке `/license` явно: \"Licensed under the Boost Software License (the \"License\")\", полный текст — `http://www.boost.org/LICENSE_1_0.txt`. Автор — Workiva Inc.\n- BSL-1.0 — пермиссивная лицензия, по духу и юридической силе эквивалентна MIT/BSD для коммерческого закрытого использования (разрешено использование/копирование/модификацию/распространение без copyleft-обязательств, единственное требование — сохранить уведомление о лицензии в исходниках или сопроводить бинарник ссылкой на неё).\n- [src: https://pub.dev/packages/json_schema/license, https://pub.dev/packages/json_schema]"
+    },
+    {
+      "id": "ulid",
+      "title": "ulid",
+      "text": "- pub.dev карточка и вкладка `/license` явно показывают `BSD-3-Clause`.\n- Латест версия 2.0.1, Dart 3 совместим, null safety.\n- [src: https://pub.dev/packages/ulid/license, https://pub.dev/packages/ulid/example, https://fluttergems.dev/packages/ulid/]"
+    },
+    {
+      "id": "section-2",
+      "title": "Примечание — альтернативы не понадобились",
+      "text": "Задание просило также проверить альтернативы (json_schema2, ulid4d и др.) на случай проблемной лицензии. Так как обе целевые лицензии (BSL-1.0, BSD-3-Clause) укладываются в критерий OK, альтернативы НЕ исследовались — нет причины отклоняться от уже выбранных в плане пакетов."
+    },
+    {
+      "id": "section-3",
+      "title": "Метод",
+      "text": "1. `perplexity-web search` — первичный запрос по каждому пакету (лицензия + последняя версия).\n2. `WebFetch` прямой страницы `pub.dev/packages/<pkg>/license` — верификация точной формулировки лицензии (adversarial-verify минимум)."
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "20_research/R-09_license-check-p3-gate.md",
+    "sha256": "3185294fb392b04b44712a40aa3388806598b4af23850c06b2cbd03b36e455f2"
+  }
+}

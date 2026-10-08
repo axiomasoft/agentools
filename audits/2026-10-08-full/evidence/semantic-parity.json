@@ -1,0 +1,11 @@
+{
+  "id": "semantic-parity",
+  "cwd": "/tmp/agentools-audit-copy-4tslglh6/repo",
+  "command": [
+    "php",
+    "conformance/bin/semantic-parity"
+  ],
+  "started_utc": "2026-10-08T12:04:30.929573+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.715
+}

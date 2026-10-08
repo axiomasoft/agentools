@@ -1,0 +1,305 @@
+00:00 +0: loading test/adversarial/postgres_schedule_test.dart
+00:00 +0: test/adversarial/postgres_schedule_test.dart: schedule file has no sleep and covers catalog IDs
+00:00 +1: test/adversarial/audit_regression_test.dart: audit payload cannot persist or export nested arbitrary data
+00:00 +2: test/adversarial/audit_regression_test.dart: audit payload cannot persist or export nested arbitrary data
+00:00 +3: test/adversarial/audit_regression_test.dart: audit payload cannot persist or export nested arbitrary data
+00:00 +4: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +5: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +6: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +7: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +8: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +9: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +10: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +11: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +12: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +13: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +14: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +15: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +16: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +17: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +18: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +19: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +20: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +21: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +22: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +23: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +24: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +25: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +26: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +27: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +28: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +29: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +30: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +31: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +32: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +33: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +33: test/scenario/clarification_session_test.dart: distinguishes multi-round MRTR from an independent retry
+multi-round rounds=4 independent rounds=1
+00:00 +34: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +35: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +36: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +36: test/scenario/scenario_runner_test.dart: reports a separate compensation failure
+compensation failure outcome: COMPENSATION_FAILED
+00:00 +37: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +38: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +39: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +40: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +41: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +42: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +43: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +44: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +45: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +46: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +47: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +48: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +49: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +50: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +51: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +52: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +53: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +54: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +55: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +56: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +57: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +58: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +59: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +60: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +61: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +62: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +63: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +64: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +64: test/journal/persistence_contracts_test.dart: hash chain matches PHP golden anchor
+php golden hash1: sha-256:e1a9de57217a9919206628b0a4e1afd3a009f17b7c667afc98061d9e0936dfd0
+dart actual hash1: sha-256:e1a9de57217a9919206628b0a4e1afd3a009f17b7c667afc98061d9e0936dfd0
+php golden state hash: sha-256:ef22613a6bf20d817d3a3d9e37484a1796673e75c8d8b1e4d11a9c7119ae8d07
+dart actual state hash: sha-256:ef22613a6bf20d817d3a3d9e37484a1796673e75c8d8b1e4d11a9c7119ae8d07
+00:00 +65: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +66: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +67: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +68: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +69: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +70: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +71: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +72: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +73: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +73: test/tool/tool_descriptor_test.dart: calculates the golden descriptor digest from PHP anchor
+php golden: sha-256:4471625dc88e78398a8abd15fabb1bbee8691336c1ae4c43df293eca141ff43e
+dart actual: sha-256:4471625dc88e78398a8abd15fabb1bbee8691336c1ae4c43df293eca141ff43e
+00:00 +74: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +75: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +76: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +77: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +78: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +79: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +80: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +81: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +81: test/tool/tool_descriptor_test.dart: changing description changes the digest
+original: sha-256:4471625dc88e78398a8abd15fabb1bbee8691336c1ae4c43df293eca141ff43e
+changed: sha-256:99d37b97089a5f8861c543d98958690dea4d276ed938b5e2bb58eeffd126789c
+00:00 +82: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +83: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +84: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +85: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +86: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +87: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +88: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +89: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +90: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +91: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +92: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +93: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +94: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +95: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +96: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +97: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +98: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +99: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +100: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +101: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +102: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +103: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +104: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +105: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +106: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +107: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +108: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +109: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +110: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +111: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +112: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +113: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +114: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +115: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +116: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +117: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +118: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +119: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +120: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +121: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +122: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +123: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +124: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +125: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +126: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +127: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +128: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +129: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +130: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +131: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +132: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +133: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +134: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +135: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +136: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +137: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +138: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +139: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +140: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +141: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +142: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +143: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +144: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +145: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +146: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +147: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +148: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +149: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +150: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +151: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +152: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +153: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +154: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +155: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +156: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +157: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +158: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +159: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +160: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +161: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +162: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +163: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +164: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +165: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +166: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +167: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +168: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +169: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +170: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +171: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +172: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +173: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +174: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +174: test/schema/schema_alignment_test.dart: DTO field sets match published schema properties
+ToolDescriptor OK
+00:00 +175: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +175: test/schema/schema_alignment_test.dart: DTO field sets match published schema properties
+ToolError OK
+00:00 +176: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +177: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +178: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +179: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +180: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +180: test/schema/canonicalizer_test.dart: Canonicalizer runs official RFC 8785 vectors
+RFC 8785 vectors run: 5
+00:00 +181: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +182: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +183: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +184: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +185: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +186: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +187: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +188: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +189: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +190: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +191: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +192: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +193: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +194: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +195: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +196: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +197: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +198: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +199: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +200: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +201: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +202: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +203: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +204: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +205: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +206: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +207: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +208: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +209: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +210: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +211: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +211: test/errors/tool_execution_result_test.dart: returns business failure as a tool result
+business failure channel: tool-result error=billing.validation.period_closed
+00:00 +212: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +213: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +214: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +215: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +215: test/errors/tool_execution_result_test.dart: protocol failure is not a tool result
+protocol failure channel: ProtocolException
+00:00 +216: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +217: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +218: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +219: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +220: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +221: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +222: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +223: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +224: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +225: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +226: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +227: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +228: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +229: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +230: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +231: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +232: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +233: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +234: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +235: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +236: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +237: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +238: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +239: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +240: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +241: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +242: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +243: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +244: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +245: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +246: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +247: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +248: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +249: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +250: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +251: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +252: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +253: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +254: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +255: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +256: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +257: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +258: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +259: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +260: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +261: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +262: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +263: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +264: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +265: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +266: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +267: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +268: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +269: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +270: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +271: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +272: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +273: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +274: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +275: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +276: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:00 +277: test/adversarial/audit_regression_test.dart: essential constructor guards work in production without assertions
+00:01 +278: All tests passed!

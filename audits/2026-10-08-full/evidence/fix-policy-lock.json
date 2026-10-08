@@ -1,0 +1,12 @@
+{
+  "id": "fix-policy-lock",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/ci_policy.py",
+    "check-lock"
+  ],
+  "started_utc": "2026-10-08T13:46:31.748096+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.064
+}

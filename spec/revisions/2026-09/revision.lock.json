@@ -12,16 +12,16 @@
     "spec/revisions/2026-09/03_action-lifecycle.md": "211ad9d5268dc5a46dc3ee05d4f3999f3fb530d0f68250109cc6f2cd3bb3ecee",
     "spec/revisions/2026-09/04_confirmation.md": "a33475dc45fa96ac30e790a883bd6707c86407ce0a55bebb4ceebc2b7defb61f",
     "spec/revisions/2026-09/05_clarification-mrtr.md": "e2de8159775c734233c8cd64addd48fc14b75e27923bb5a8bba084c04cab1d31",
-    "spec/revisions/2026-09/06_scenarios.md": "f6b24948778175e02fabd807363799b4ca8b9f687d467e08d9647d0471b6f770",
+    "spec/revisions/2026-09/06_scenarios.md": "ee0f59d744ea72155e63085bc229bbfd999b9bc62658429d7473bfac41319d8a",
     "spec/revisions/2026-09/07_long-operations.md": "5d64bafa4f8119d483d38db27b390fd337bc2e9a7030130d3dd8ac838b09de94",
-    "spec/revisions/2026-09/08_audit-observability.md": "6b676518dea7a41205c2fe35c0fcd7c486751c21758019a6ff2fd2c9137aabcb",
+    "spec/revisions/2026-09/08_audit-observability.md": "dbd991cedd0d16ec50669c39a7e33d442fafd62f25f06512c7418f1c907db1cf",
     "spec/revisions/2026-09/09_idempotency-errors.md": "99efee5aaf61dcbcbe7bbefc61544325bc98aca9386d4e61ee1672f3a89e94a2",
     "spec/revisions/2026-09/10_security.md": "7ec1ddaa895f111847c051200db4ceaf8495ef12f33c42d56979186ea5d3b988",
     "spec/revisions/2026-09/11_conformance-harness.md": "8922aec907418f5a714b8e04433dbc8af3e149fe067ac5ae74e8d831196eb57b",
     "spec/revisions/2026-09/12_hardening-semantics.md": "2e1cfe7de631892783cb3d095bb01d2b5c8f5f6ea640f4d34dcdced168d955ae",
     "spec/revisions/2026-09/README.md": "d0e6b6d4b9973349d02372a72137816483e1e8013fb5c39925ada35a12886973",
-    "spec/revisions/2026-09/schema/audit-event.json": "44e8f0087bebca46be8446472beea62b9d948e6eefa2e58345ee7d90c3b64e2e",
-    "spec/revisions/2026-09/schema/authoring/audit-event.json": "dd78a3950956b4ade52e7199ba84e795c2718a35e1aff84dc9e54572e028ec65",
+    "spec/revisions/2026-09/schema/audit-event.json": "dcc1841b9a2f4978a5b2ae10a367a247a3d91dc0ec8db6e41e54badad4b32283",
+    "spec/revisions/2026-09/schema/authoring/audit-event.json": "9278a37e59699b42aec95e95d51a0ce5c632b20e03bba845ad33658576a03386",
     "spec/revisions/2026-09/schema/authoring/clarification.json": "d635cd5965ed9be844c103ce4b3a0c60630522abc95f69025c57f072d3b4d108",
     "spec/revisions/2026-09/schema/authoring/confirmation.json": "b97dc340773ac4503cff655297e4acfc897a8cb8dcf39cae913dc8554998c834",
     "spec/revisions/2026-09/schema/authoring/decision-audit.json": "632be2365160438c51772b0f70e33cb145326c2db4110d47a6257a52e048cf72",
@@ -409,5 +409,5 @@
     "rules.json": "28c014b99f169709d94fbd57ef605124a45e6a4b119178ce95c74195b943cab6",
     "semantic-manifest.json": "33929fbd8f8bd2bf32a7add872ffd7d7d4b5f5f8ca58487b77f7199aff099a93"
   },
-  "lock_digest": "136b6f67319adc554cee6c2ab8bb5f4ba1e5859dadb9d908b11d3b16d7b62d5d"
+  "lock_digest": "68a02044564675a6aa98c741cadb61a1b5bf4fca7ddb513a568b973892d6b8a7"
 }

@@ -1,0 +1,62 @@
+[
+  {
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/log.jsonl",
+    "StartLine": 106,
+    "EndLine": 106,
+    "Commit": "",
+    "RuleID": "generic-api-key",
+    "Fingerprint": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/log.jsonl:generic-api-key:106",
+    "Match": "P3-token-migration.md\":\"REDACTED\""
+  },
+  {
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/log.jsonl",
+    "StartLine": 106,
+    "EndLine": 106,
+    "Commit": "",
+    "RuleID": "generic-api-key",
+    "Fingerprint": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/log.jsonl:generic-api-key:106",
+    "Match": "P7-api-inventory.md\":\"REDACTED\""
+  },
+  {
+    "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+    "File": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/log.jsonl",
+    "StartLine": 106,
+    "EndLine": 106,
+    "Commit": "",
+    "RuleID": "generic-api-key",
+    "Fingerprint": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/log.jsonl:generic-api-key:106",
+    "Match": "token-replay-v1.md\":\"REDACTED\""
+  },
+  {
+    "Description": "Identified a pattern that may indicate AWS credentials, risking unauthorized cloud resource access and data breaches on AWS platforms.",
+    "File": "tools/ci_matrix.py",
+    "StartLine": 664,
+    "EndLine": 664,
+    "Commit": "",
+    "RuleID": "aws-access-token",
+    "Fingerprint": "tools/ci_matrix.py:aws-access-token:664",
+    "Match": "REDACTED"
+  },
+  {
+    "Description": "Identified a pattern that may indicate AWS credentials, risking unauthorized cloud resource access and data breaches on AWS platforms.",
+    "File": "tools/ci_matrix.py",
+    "StartLine": 665,
+    "EndLine": 665,
+    "Commit": "",
+    "RuleID": "aws-access-token",
+    "Fingerprint": "tools/ci_matrix.py:aws-access-token:665",
+    "Match": "REDACTED"
+  },
+  {
+    "Description": "Identified a pattern that may indicate AWS credentials, risking unauthorized cloud resource access and data breaches on AWS platforms.",
+    "File": "tools/ci_matrix.py",
+    "StartLine": 666,
+    "EndLine": 666,
+    "Commit": "",
+    "RuleID": "aws-access-token",
+    "Fingerprint": "tools/ci_matrix.py:aws-access-token:666",
+    "Match": "REDACTED"
+  }
+]

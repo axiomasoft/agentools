@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D23",
+  "title": "Решение",
+  "date": "2026-07-27",
+  "status": "accepted",
+  "decision": "**`workflows/wf-agentools-drive.js` устарел, запуск запрещён** (скрипт написан под структуру фаз до пересборки: `kindOf()` матчит `P0.*`, ROUTING зеркалит прежний §3). Файл сохранён с баннером-предупреждением, не удалён (история решений). Новый оркестрационный скрипт пишется только той фазой, которая объявит оркестрацию по критерию `plan-protocol` §7 — кандидат P4 (A3)",
+  "rationale": "`RAG:— (repo-grounded: workflows/wf-agentools-drive.js:26–36 — ROUTING/kindOf под прежнюю нумерацию)`; волны A/B оркестрацию не объявляют (обоснование — `@plan/knowledge/research-01-target-structure-2026-08.json` §5)",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D23\ndate: 2026-07-27\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**`workflows/wf-agentools-drive.js` устарел, запуск запрещён** (скрипт написан под структуру фаз до пересборки: `kindOf()` матчит `P0.*`, ROUTING зеркалит прежний §3). Файл сохранён с баннером-предупреждением, не удалён (история решений). Новый оркестрационный скрипт пишется только той фазой, которая объявит оркестрацию по критерию `plan-protocol` §7 — кандидат P4 (A3)"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`RAG:— (repo-grounded: workflows/wf-agentools-drive.js:26–36 — ROUTING/kindOf под прежнюю нумерацию)`; волны A/B оркестрацию не объявляют (обоснование — `@plan/knowledge/research-01-target-structure-2026-08.json` §5)"
+    }
+  ]
+}

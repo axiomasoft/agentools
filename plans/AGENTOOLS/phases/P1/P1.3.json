@@ -1,0 +1,184 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P1.3",
+  "title": "Реконсиляция `DR-01` дельтами + вердикт гейта для фазы P3",
+  "status": "done",
+  "summary": "Внести дельты P1.2 в `DR-01` датированным дополнением (не переписывая принятые решения), завести D-записи в `@plan/plan.json` §5, закрыть Q-6 и выдать вердикт гейта, разблокирующего фазу P3 (авторинг ревизии `2026-08`).",
+  "why": "Гейт §K требует «расхождений нет либо они внесены в `DR-01`»: пока дельты живут только в `findings/`, авторинг фазы P3 читает решения, не знающие о них. `RAG:— (repo-grounded: DR-01 §A3 «Обязательный чекпоинт: после публикации финала сверить нормативные формулировки и schema.json заново, до закрытия авторинга ревизии 2026-08»)`.",
+  "scope": {
+    "include": [
+      "(а) новый раздел `DR-01` §N «Ре-верификация финала MCP 2026-07-28 (фаза P1, <дата>)»: пин (коммит + sha256), сводка дельт по статусам, перечень затронутых решений; (б) для каждого затронутого решения — датированная пометка-дополнение внутри самого решения строкой вида `> **Ре-верификация <дата> (P1):** …` (принятый текст решения НЕ переписывается — правило `plan-protocol` §3 о superseded-цепочках); (в) D-записи в `@plan/plan.json` §5 на каждое изменение основания решения (`supersedes D#` при отмене раннего решения); (г) `@plan/plan.json`: Q-6 → `Resolved → D#`; (д) вердикт гейта отдельным подразделом: `ГЕЙТ A0: PASS` (дельт нет либо все внесены) либо `ГЕЙТ A0: BLOCKED — <причина>`; (е) `@plan/plan.json` §6 Update Log + `@plan/plan.json`."
+    ],
+    "exclude": [
+      "пересмотр решений `DR-01` по существу (архитектурный ре-дизайн — отдельная сессия frontier по эскалации); любые файлы ревизии `2026-08` (фаза P3); фаза P2 и её вердикты."
+    ]
+  },
+  "depends_on": [
+    "P1.2",
+    "P1.1"
+  ],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/findings-P1-mcp-final-delta.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/findings-P1-mcp-final-pin.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/findings-P1-mcp-final-delta.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "change": "any"
+    },
+    {
+      "path": "@plan/plan.json",
+      "change": "any"
+    },
+    {
+      "path": "@plan/plan.json",
+      "change": "any"
+    },
+    {
+      "path": "@plan/plan.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "решения `DR-01` не переписываются — только дополняются датированной пометкой (провенанс «на чём стояло решение» обязан сохраниться); каждая D-запись несёт RAG-маркер (`RAG:✅ <дата/суть>` для внешнего факта); правки vault по `.ai/guidelines/obsidian.md` (wiki-links внутри vault, пути к коду — inline-код). Плановый линтер запускается командой `python3 /home/vostrikov/projects/packages/swissknifeman/packages/task/scripts/plan-lint.py <каталог плана>` — путь машинно-специфичен и живёт здесь, а не в Validation."
+  ],
+  "guidance": "Кода нет — работа над решениями. If-then эскалация к D#: если хотя бы одна дельта **отменяет основание** решения `DR-01` (не уточняет, а делает неверным — например, категория Unofficial исчезла из SEP-2133, изменилась грамматика `_meta`-ключа, `server/discover` больше не MUST) — НЕ продолжать самовольно: остановиться, оставить блок `> 🔴 ESCALATION P1.3: <причина> | trigger: unclear architecture | нужен: plan-design`, статус `🔴 Blocked`, вердикт гейта `BLOCKED`, строка `ESCALATION-REQUIRED: P1.3 — …` в отчёте. Переписывать архитектурное решение моделью уровня исполнения ЗАПРЕЩЕНО (§3 Routing прописал для этой фазы implementation-класс именно под механическую реконсиляцию). Анти-самообман: вердикт `PASS` ставится только когда КАЖДАЯ строка дельта-таблицы со статусом ≠ `confirmed` имеет адрес в `DR-01` и D-запись; «дельты незначительные» — не основание для PASS.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "grep -n 'Ре-верификация' \"$DR\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "grep -c 'ГЕЙТ A0' \"$DR\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "grep -c 'Decision pending' open-questions.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "раздел ре-верификации + датированные пометки в `DR-01`, D-записи, Q-6 закрыт, вердикт гейта A0, синхронизированные `@plan/plan.json`/`@plan/plan.json`."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "medium"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "required",
+    "status": "complete"
+  },
+  "result": {
+    "started_at": "2026-07-27T14:51:09Z",
+    "finished_at": "2026-07-27T14:51:10Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "sonnet/medium",
+      "effort": "medium"
+    },
+    "notes": "P1.3 закрыт: 9 дельт реконсилированы в DR-01, ГЕЙТ A0 PASS",
+    "deviations": [],
+    "pending": [],
+    "checks": []
+  },
+  "updated_at": "2026-07-27T14:51:10Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Внести дельты P1.2 в `DR-01` датированным дополнением (не переписывая принятые решения), завести D-записи в `@plan/plan.json` §5, закрыть Q-6 и выдать вердикт гейта, разблокирующего фазу P3 (авторинг ревизии `2026-08`)."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Гейт §K требует «расхождений нет либо они внесены в `DR-01`»: пока дельты живут только в `findings/`, авторинг фазы P3 читает решения, не знающие о них. `RAG:— (repo-grounded: DR-01 §A3 «Обязательный чекпоинт: после публикации финала сверить нормативные формулировки и schema.json заново, до закрытия авторинга ревизии 2026-08»)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "(а) новый раздел `DR-01` §N «Ре-верификация финала MCP 2026-07-28 (фаза P1, <дата>)»: пин (коммит + sha256), сводка дельт по статусам, перечень затронутых решений; (б) для каждого затронутого решения — датированная пометка-дополнение внутри самого решения строкой вида `> **Ре-верификация <дата> (P1):** …` (принятый текст решения НЕ переписывается — правило `plan-protocol` §3 о superseded-цепочках); (в) D-записи в `@plan/plan.json` §5 на каждое изменение основания решения (`supersedes D#` при отмене раннего решения); (г) `@plan/plan.json`: Q-6 → `Resolved → D#`; (д) вердикт гейта отдельным подразделом: `ГЕЙТ A0: PASS` (дельт нет либо все внесены) либо `ГЕЙТ A0: BLOCKED — <причина>`; (е) `@plan/plan.json` §6 Update Log + `@plan/plan.json`."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "пересмотр решений `DR-01` по существу (архитектурный ре-дизайн — отдельная сессия frontier по эскалации); любые файлы ревизии `2026-08` (фаза P3); фаза P2 и её вердикты."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/knowledge/findings-P1-mcp-final-delta.json` (P1.2), `@plan/knowledge/findings-P1-mcp-final-pin.json` (P1.1)."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`05-Projects/03-Packages/AgenTools/@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` · `05-Projects/03-Packages/AgenTools/@plan/plan.json` (§5, §6) · `05-Projects/03-Packages/AgenTools/@plan/plan.json` · `05-Projects/03-Packages/AgenTools/@plan/plan.json`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `05-Projects/03-Packages/AgenTools/@plan/knowledge/findings-P1-mcp-final-delta.json` 2) `05-Projects/03-Packages/AgenTools/@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` ЦЕЛИКОМ 3) `05-Projects/03-Packages/AgenTools/@plan/plan.json` §5 (форма D-записи, D18–D27) 4) `05-Projects/03-Packages/AgenTools/@plan/plan.json`."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "решения `DR-01` не переписываются — только дополняются датированной пометкой (провенанс «на чём стояло решение» обязан сохраниться); каждая D-запись несёт RAG-маркер (`RAG:✅ <дата/суть>` для внешнего факта); правки vault по `.ai/guidelines/obsidian.md` (wiki-links внутри vault, пути к коду — inline-код). Плановый линтер запускается командой `python3 /home/vostrikov/projects/packages/swissknifeman/packages/task/scripts/plan-lint.py <каталог плана>` — путь машинно-специфичен и живёт здесь, а не в Validation."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Кода нет — работа над решениями. If-then эскалация к D#: если хотя бы одна дельта **отменяет основание** решения `DR-01` (не уточняет, а делает неверным — например, категория Unofficial исчезла из SEP-2133, изменилась грамматика `_meta`-ключа, `server/discover` больше не MUST) — НЕ продолжать самовольно: остановиться, оставить блок `> 🔴 ESCALATION P1.3: <причина> | trigger: unclear architecture | нужен: plan-design`, статус `🔴 Blocked`, вердикт гейта `BLOCKED`, строка `ESCALATION-REQUIRED: P1.3 — …` в отчёте. Переписывать архитектурное решение моделью уровня исполнения ЗАПРЕЩЕНО (§3 Routing прописал для этой фазы implementation-класс именно под механическую реконсиляцию). Анти-самообман: вердикт `PASS` ставится только когда КАЖДАЯ строка дельта-таблицы со статусом ≠ `confirmed` имеет адрес в `DR-01` и D-запись; «дельты незначительные» — не основание для PASS."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "пусть `DR` = `@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` в каталоге плана · `grep -n 'Ре-верификация' \"$DR\"` — непусто · `grep -c 'ГЕЙТ A0' \"$DR\"` ≥ 1 и значение вердикта — ровно `PASS` либо `BLOCKED — …` · число строк дельта-таблицы со статусом ≠ `confirmed` равно числу датированных пометок в `DR-01` (посчитать оба грепа и привести числа с анкором на bookkeeping-коммит) · `grep -c 'Decision pending' @plan/plan.json` в строке Q-6 = 0 · прогнать плановый линтер `plan-lint` по каталогу плана (путь скрипта — в Implementation Rules) и опубликовать счёт с атрибуцией «N ERROR / M WARN — новых от диффа item'а: K», K = 0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "раздел ре-верификации + датированные пометки в `DR-01`, D-записи, Q-6 закрыт, вердикт гейта A0, синхронизированные `@plan/plan.json`/`@plan/plan.json`."
+    }
+  ]
+}

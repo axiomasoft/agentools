@@ -21,7 +21,7 @@ if str(REPO) not in sys.path:
 from tools import release_acceptance as ra  # noqa: E402
 from tools import release_dossier as rd  # noqa: E402
 
-PLAN = REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING"
+PLAN = REPO / "verification"
 DOSSIER_ART = PLAN / "artifacts/P10-release-dossier.json"
 CONSUMER_ART = PLAN / "artifacts/P10-consumer-acceptance.json"
 DOCS_ART = PLAN / "artifacts/P10-docs.json"
@@ -467,8 +467,18 @@ def render_packet_finding(doc: dict[str, Any]) -> str:
 
 def pin_acceptance_matrix() -> None:
     matrix = ra.build_matrix()
+    if ra.ARTIFACT.is_file():
+        existing = load_json(ra.ARTIFACT)
+        comparable = dict(matrix)
+        comparable["generated_at"] = existing.get("generated_at")
+        comparable.pop("manifest_sha256", None)
+        comparable["manifest_sha256"] = sha256_bytes(ra.canonical_json(comparable).encode("utf-8"))
+        if comparable == existing:
+            # Preserve the digest already consumed by the docs and consumer gates.
+            return
     ra.ARTIFACT.parent.mkdir(parents=True, exist_ok=True)
     ra.ARTIFACT.write_text(ra.canonical_json(matrix) + "\n", encoding="utf-8")
+    ra.FINDING.write_text(ra.render_finding(matrix), encoding="utf-8")
 
 
 def cmd_capture(_: argparse.Namespace) -> int:

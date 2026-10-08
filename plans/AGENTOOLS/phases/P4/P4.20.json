@@ -1,0 +1,208 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P4.20",
+  "title": "Semantic preflight corrections перед Gate B round 3",
+  "status": "done",
+  "summary": "Закрыть остаточные semantic gaps, которые exact/ownership manifest P4.19 формально принял, но read-only preflight против нормативных строк опроверг до запуска официального Gate B round 3.",
+  "why": "Owner directive запрещает считать зелёный линтер успехом. P4.19 доказывает ownership канала, но не достаточность его полей: policy carrier не видел token mechanics, mapping version не имела независимого registry, а conflict fixtures предзаписывали невозможный журнал. `RAG:— (repo-grounded: D169; rules TLP-11, ALC-20/22/23/36, CNF-6/8, CLR-8, AOB-25/31, SEC-9/16, CFH-24)`.",
+  "scope": {
+    "include": [
+      "добавить closed `confirmation_boundary`; protocol-operation enum task observation; typed audit mapping registry, provenance derivation, per-call authorization binding и append-adapter probe; исправить названные behavior pairs, wire bytes AOB-31 и every-run baseline checker; усилить semantic builder адресными invariants; пересобрать manifest v2/coverage/A3."
+    ],
+    "exclude": [
+      "новые нормативные правила; остальные 40 target rows без named preflight finding; Gate B verdict; freeze/P7."
+    ]
+  },
+  "depends_on": [
+    "P4.19"
+  ],
+  "decisions": [
+    "D169"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P5-gate-b.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/2026-08/gate-b-remediation.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P4-gate-a3.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "tools/spec_lint.py",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "fixtures/2026-08/schema/vector.json",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/2026-08/README.md",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/2026-08/vectors/l1/confpolicy-*.json",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/2026-08/vectors/l1/lifecyclefold-*.json",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/2026-08/vectors/l1/lifecycleconcurrency-*.json",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/2026-08/vectors/l1/security-*.json",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/2026-08/vectors/l2/clarificationstate-*.json",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/2026-08/vectors/l3/audit-*.json",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/2026-08/vectors/l3/lifecycleintegrity-*.json",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/2026-08/static/cfhbaseline-*.json",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/2026-08/gate-b-remediation.json",
+      "change": "any"
+    },
+    {
+      "path": "fixtures/2026-08/coverage.md",
+      "change": "any"
+    },
+    {
+      "path": "tools/spec_lint.py",
+      "change": "any"
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P4-gate-a3.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "каждый correction содержит raw harness stimulus + boundary fact; никаких owner/verdict полей; append conflict моделирует storage adapter, не уже записанное invalid event; AOB bytes считаются по wire serialization; semantic builder fail-closed проверяет named invariants до выдачи manifest."
+  ],
+  "guidance": "расширять закрытые unions типизированно. Mutation для каждого correction должна переживать schema и падать на semantic invariant или boundary oracle.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "git diff --check",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "terminal exact 51 без preflight gaps; Gate B round 3 получает честный cold-start input."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-08-04T20:15:00Z",
+    "finished_at": "2026-08-04T20:28:56Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "gpt-5.6-sol/high",
+      "effort": "high"
+    },
+    "notes": "7abfd3e: 11/11 semantic preflight checks and exact 51 manifest",
+    "deviations": [],
+    "pending": [],
+    "checks": []
+  },
+  "updated_at": "2026-08-04T20:28:56Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Закрыть остаточные semantic gaps, которые exact/ownership manifest P4.19 формально принял, но read-only preflight против нормативных строк опроверг до запуска официального Gate B round 3."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Owner directive запрещает считать зелёный линтер успехом. P4.19 доказывает ownership канала, но не достаточность его полей: policy carrier не видел token mechanics, mapping version не имела независимого registry, а conflict fixtures предзаписывали невозможный журнал. `RAG:— (repo-grounded: D169; rules TLP-11, ALC-20/22/23/36, CNF-6/8, CLR-8, AOB-25/31, SEC-9/16, CFH-24)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "добавить closed `confirmation_boundary`; protocol-operation enum task observation; typed audit mapping registry, provenance derivation, per-call authorization binding и append-adapter probe; исправить названные behavior pairs, wire bytes AOB-31 и every-run baseline checker; усилить semantic builder адресными invariants; пересобрать manifest v2/coverage/A3."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "новые нормативные правила; остальные 40 target rows без named preflight finding; Gate B verdict; freeze/P7."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/plan.json` (D169) · `@plan/knowledge/artifacts-P5-gate-b.json` (round 2 findings) · `fixtures/2026-08/gate-b-remediation.json` (terminal P4.19 manifest) · exact нормативные строки и текущие target pairs."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`fixtures/2026-08/schema/vector.json` · `fixtures/2026-08/README.md` · `fixtures/2026-08/vectors/l1/confpolicy-*.json` · `fixtures/2026-08/vectors/l1/lifecyclefold-*.json` · `fixtures/2026-08/vectors/l1/lifecycleconcurrency-*.json` · `fixtures/2026-08/vectors/l1/security-*.json` · `fixtures/2026-08/vectors/l2/clarificationstate-*.json` · `fixtures/2026-08/vectors/l3/audit-*.json` · `fixtures/2026-08/vectors/l3/lifecycleintegrity-*.json` · `fixtures/2026-08/static/cfhbaseline-*.json` · `fixtures/2026-08/gate-b-remediation.json` · `fixtures/2026-08/coverage.md` · `tools/spec_lint.py` · `@plan/knowledge/artifacts-P4-gate-a3.json`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/plan.json` (D169) 2) `@plan/knowledge/artifacts-P5-gate-b.json` (F9–F15) 3) `fixtures/2026-08/gate-b-remediation.json` и `@plan/knowledge/artifacts-P4-gate-a3.json` 4) target fixtures и `tools/spec_lint.py`."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "каждый correction содержит raw harness stimulus + boundary fact; никаких owner/verdict полей; append conflict моделирует storage adapter, не уже записанное invalid event; AOB bytes считаются по wire serialization; semantic builder fail-closed проверяет named invariants до выдачи manifest."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "расширять закрытые unions типизированно. Mutation для каждого correction должна переживать schema и падать на semantic invariant или boundary oracle."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "observational selftest/check green · named semantic invariants 11/11 · manifest exact 51, gaps/shortcuts 0, 51 mutants reject · fixtures/full/coverage/rules/closure green · P3 source unchanged · `git diff --check` · plan-lint K=0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "terminal exact 51 без preflight gaps; Gate B round 3 получает честный cold-start input."
+    }
+  ]
+}

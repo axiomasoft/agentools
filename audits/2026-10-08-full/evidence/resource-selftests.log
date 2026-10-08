@@ -1,0 +1,19 @@
+test_aggregate_stale_child_is_red (__main__.ResourceGateTests.test_aggregate_stale_child_is_red) ... ok
+test_baggage_mutant_red (__main__.ResourceGateTests.test_baggage_mutant_red) ... ok
+test_critical_and_expired_quarantine_rejected (__main__.ResourceGateTests.test_critical_and_expired_quarantine_rejected) ... ok
+test_dart_depth_mutant_red (__main__.ResourceGateTests.test_dart_depth_mutant_red) ... ok
+test_depth_bound_green (__main__.ResourceGateTests.test_depth_bound_green) ... ok
+test_depth_mutant_red (__main__.ResourceGateTests.test_depth_mutant_red) ... ok
+test_event_fold_counts_and_digest_match (__main__.ResourceGateTests.test_event_fold_counts_and_digest_match) ... ok
+test_fingerprint_mismatch_refuses_timing (__main__.ResourceGateTests.test_fingerprint_mismatch_refuses_timing) ... ok
+test_growth_mutant_red (__main__.ResourceGateTests.test_growth_mutant_red) ... ok
+test_outcome_taxonomy_matches (__main__.ResourceGateTests.test_outcome_taxonomy_matches) ... ok
+test_package_private_local_receipt_covers_av010 (__main__.ResourceGateTests.test_package_private_local_receipt_covers_av010) ... ok
+test_raw_samples_reproduce_summary (__main__.ResourceGateTests.test_raw_samples_reproduce_summary) ... ok
+test_unexpected_failure_is_safe_internal_error_and_red (__main__.ResourceGateTests.test_unexpected_failure_is_safe_internal_error_and_red) ... ok
+test_workers_export_constants (__main__.ResourceGateTests.test_workers_export_constants) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 8.439s
+
+OK

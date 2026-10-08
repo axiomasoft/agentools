@@ -1,0 +1,11 @@
+{
+  "id": "merge-phpstan",
+  "cwd": "php",
+  "command": [
+    "composer",
+    "analyse"
+  ],
+  "started_utc": "2026-10-08T14:12:59.843596+00:00",
+  "exit_code": 0,
+  "duration_seconds": 3.32
+}

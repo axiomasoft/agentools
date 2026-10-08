@@ -188,7 +188,7 @@ final class SdkConformanceEngine
         }
 
         try {
-            $folded = (new ActionReducer())->fold($events);
+            $folded = (new ActionReducer($events[0]->specRevision ?? '2026-09'))->fold($events);
             $actionState = $this->stateFromFolded($folded, $last, $terminal);
             $this->journalProbe($probe, $id, $actionState, $journal);
             if (is_array($state['append_probe'] ?? null)) {

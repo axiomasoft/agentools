@@ -1,0 +1,89 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "artifacts-P3-gate-a2",
+  "title": "ГЕЙТ A2 — выход фазы P3 (авторинг ревизии `2026-08`)",
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\ntype: gate-artifact\nplan: AGENTOOLS\nitem: P3.14\nphase: P3\ndate: 2026-07-28\n---"
+    },
+    {
+      "id": "A2-P3-2026-08",
+      "title": "ГЕЙТ A2 — выход фазы P3 (авторинг ревизии `2026-08`)",
+      "text": "**Якорь-коммит (репозиторий `~/projects/packages/agentools`):** `bf121cf`\n(`feat(spec): rules_index.py — генератор индекса правил + гейт покрытия решений (P3.14)`).\nВсе числа ниже посчитаны на этом дереве командами, приведёнными в каждой строке —\nвоспроизводимо, не на веру."
+    },
+    {
+      "id": "DR-01-K-phases-P3.md",
+      "title": "Условия гейта (`DR-01` §K, `phases/P3.md` «Гейт выхода»)",
+      "text": "| # | Условие | Команда | Результат | Статус |\n|:--|:--|:--|:--|:--|\n| 1 | Линтер ревизии зелёный **без** `--allow-missing` | `python3 tools/spec_lint.py spec/revisions/2026-08` | `spec_lint: OK` | 🟢 |\n| 2 | `rules.json` сгенерирован детерминированно (повторный прогон — пустой diff) | `python3 tools/rules_index.py --write spec/revisions/2026-08 && python3 tools/rules_index.py --check spec/revisions/2026-08` | `rules_index: OK, расхождений нет (397 правил)`, exit 0 | 🟢 |\n| 3 | Каждая запись индекса несёт ровно один уровень L1/L2/L3 | `python3 -c \"import json;d=json.load(open('spec/revisions/2026-08/rules.json'));print(sum(1 for r in d['rules'] if r['level'] not in ('L1','L2','L3')))\"` | `0` | 🟢 |\n| 4 | Маркер уникален по всей ревизии | `python3 -c \"import json;d=json.load(open('spec/revisions/2026-08/rules.json'));ids=[r['rule_id'] for r in d['rules']];print(len(ids)-len(set(ids)))\"` | `0` | 🟢 |\n| 5 | Покрытие ≥150 нормативных правил | `python3 -c \"import json;d=json.load(open('spec/revisions/2026-08/rules.json'));print(len(d['rules']))\"` | `397` | 🟢 |\n| 6 | Легаси-лексика D20 не встречается вне огороженного блока | `python3 tools/spec_lint.py --legacy-check spec/revisions/2026-08` | `spec_lint: OK (--legacy-check, 2026-08)` | 🟢 |\n| 7 | Закрытые схемы авторинга свежие (единственный автор `close_schema.py`) | `python3 tools/close_schema.py --check spec/revisions/2026-08` | `close_schema: OK (сверено схем: 15)` | 🟢 |\n| 8 | **Сводный гейт покрытия**: объединение таблиц `## Покрытие решений DR-01` 12 документов покрывает матрицу `@plan/knowledge/research-02-p3-authoring-conventions-2026-08.json` §7 целиком | `check_coverage_matrix` (`tools/spec_lint.py`, встроено в общий прогон п. 1) | 0 непокрытых решений (39 записей матрицы, все нашли строку в СВОЁМ документе) | 🟢 |\n| 9 | Регрессия: профиль `2026-07-draft` не сломан переводом линтера на профили | `python3 tools/spec_lint.py spec/revisions/2026-07-draft` | `spec_lint: OK` | 🟢 |\n\n**Все девять условий зелёные** — вердикт см. в конце документа."
+    },
+    {
+      "id": "bf121cf",
+      "title": "Числа ревизии (на якоре `bf121cf`)",
+      "text": "| Метрика | Значение |\n|:--|:--|\n| Правил всего | 397 |\n| Уровень L1 | 272 |\n| Уровень L2 | 83 |\n| Уровень L3 | 42 |\n| `MUST` | 271 |\n| `MUST NOT` | 115 |\n| `SHOULD` | 5 |\n| `MAY` | 6 |\n| `Not testable` (с причиной) | 1 (`LOP-9`) |\n| Документов ревизии | 12 (`00_overview.md` … `11_conformance-harness.md`) |\n\nПравил по документам: `00_overview.md` 27 · `01_extension-identity.md` 17 ·\n`02_tool-contract-profile.md` 32 · `03_action-lifecycle.md` 37 ·\n`04_confirmation.md` 41 · `05_clarification-mrtr.md` 21 · `06_scenarios.md` 30 ·\n`07_long-operations.md` 27 · `08_audit-observability.md` 44 ·\n`09_idempotency-errors.md` 48 · `10_security.md` 19 ·\n`11_conformance-harness.md` 54."
+    },
+    {
+      "id": "section",
+      "title": "Сводный гейт покрытия решений — метод",
+      "text": "`tools/spec_lint.py` несёт константу `COVERAGE_MATRIX_2026_08` (копия матрицы\n`@plan/knowledge/research-02-p3-authoring-conventions-2026-08.json` §7 — решение видно диффом\nфайла, не эвристикой по прозе) и функцию `check_coverage_matrix`: для каждого\nдокумента она вытаскивает labels строк его собственной таблицы `## Покрытие\nрешений DR-01` и проверяет, что КАЖДОЕ решение, приписанное документу матрицей,\nприсутствует СРЕДИ НИХ. Проверка per-документная (не «где-то в объединении по\nвсей ревизии»): приписка решения СВОЕМУ документу — тоже часть контракта, иначе\nрешение могло бы «незаметно» осесть в чужой таблице. На дереве `bf121cf`:\n0 непокрытых решений из 39 записей матрицы (12 документов). Отрицательный\nпрогон (искусственно добавленное несуществующее решение `§Z99` в матрицу)\nподтвердил, что проверка действительно ловит пропуск — см. Completion Notes\nP3.14, `@plan/phases/P3/phase.json`."
+    },
+    {
+      "id": "P3.13-Pending-Work",
+      "title": "Досыл из P3.13 (Pending Work) — рассмотрено, ОТКЛОНЕНО с причиной",
+      "text": "Все четыре пункта, унаследованные из Pending Work P3.9–P3.13, требуют правки\nнормативного текста/схем ВНЕ `Files` P3.14 (`tools/rules_index.py`,\n`tools/spec_lint.py`, `spec/revisions/2026-08/rules.json`, `README.md`, этот\nартефакт) — Scope Excluded P3.14 прямо запрещает точечную правку нормативного\nтекста по существу внутри этого item'а («чинится в своём документе, с записью\nв Pending Work соответствующего item'а», `@plan/phases/P3/phase.json` P3.14). Ни один из\nчетырёх не блокирует ГЕЙТ A2 (все — либо адрес фазы P4/P6, либо самостоятельная\nнаходка, не входящая в матрицу §7 сводного гейта):\n\n1. **Долг глоссария `00_overview.md`** (новые термины документа `11`:\n   «контрольная пара», «слой гейта слияния», «отчёт прогона», «строгость\n   отказа», «раннер»/«адаптер» без своих строк) — правка `00_overview.md` вне\n   `Files`. **Отклонено**, рекомендация без изменений: отдельный fix-item (растёт\n   двенадцатую итерацию, `@plan/plan.json` Open risks).\n2. **`IDE-27`**: обязанность раннера ждать ФАКТИЧЕСКИЕ числовые коды пина\n   (`-32003`/`-32004`), а не коды из текста протокола, не закрыта правилом\n   `CFH-*` — правка `11_conformance-harness.md` вне `Files`. **Отклонено**,\n   рекомендация: `CFH-55` до фазы P6 (раннер это НОРМИРУЕТ, а фаза P6 его\n   реализует).\n3. **Латентный двойной матч `oneOf`** в `clarification.json`\n   (`#/$defs/ResultType`) и `task-binding.json` (`#/$defs/StatusChannel`,\n   `#/$defs/TaskStatus`): ветвь-расширение без `not`-исключения перекрывает\n   каждое значение `const` — с P3.11 это нарушение НОРМЫ `IDE-36`/`IDE-37`, а\n   не только дефект. Правка схем документов `05`/`07` вне `Files`.\n   **Отклонено**, рекомендация: fix-item ДО фазы P4 (иначе линтер `IDE-36`/\n   `IDE-37`, который фаза P4 обязана применить и к этим схемам, унаследует\n   известный красный).\n4. **`SEC-1`** без кода в `error.json#/$defs/ErrorCode`: единственный носитель\n   перечисления кодов закрыт `IDE-30` (P3.11) и лежит вне `Files` P3.12/P3.14.\n   **Отклонено**, рекомендация: добавить\n   `agentools.permission.token_not_issued_for_us` — fix-item к P3.11 либо перед\n   фазой P4.\n\nМолчания нет: все четыре названы явно с причиной отказа и рекомендацией —\nусловие command'а `plan-run` выполнено."
+    },
+    {
+      "id": "section-2",
+      "title": "Вердикт",
+      "text": "**ГЕЙТ A2 (исторический, P3.14): PASS**"
+    },
+    {
+      "id": "P4.4-2026-08-03",
+      "title": "Амендмент P4.4 — 2026-08-03",
+      "text": "Исходный якорь `bf121cf` выше не переписывается. После аддитивного нормативного амендмента\nP4.4 повторный прогон выполнен на item-коммите `4d86009`\n(`test(fixtures): complete P4.4 schema bounds vectors`):\n\n| Условие | Команда | Результат | Статус |\n|:--|:--|:--|:--|\n| Линтер ревизии | `python3 tools/spec_lint.py spec/revisions/2026-08` | `spec_lint: OK`, exit 0 | 🟢 |\n| Производный индекс | `python3 tools/rules_index.py --check spec/revisions/2026-08` | `rules_index: OK, расхождений нет (399 правил)`, exit 0 | 🟢 |\n| Новые правила | выборка `TLP-33`/`TLP-34` из `rules.json` | обе записи `MUST`, `L1` | 🟢 |\n| Целостность fixtures | `python3 tools/spec_lint.py --fixtures-check fixtures/2026-08` | `spec_lint: OK`, exit 0 | 🟢 |\n\nЧисла на `4d86009`: всего 399 правил; L1/L2/L3 = 274/83/42; `MUST*` = 388. Профиль\nсохраняет исторический PASS P3.14; проверка и фактические приговоры новых artifact-векторов принадлежат\nP4.5 и этим амендментом не заявляются."
+    },
+    {
+      "id": "P3.19-D141-2026-08-04",
+      "title": "P3.19 — повторный терминальный прогон после D141 (2026-08-04)",
+      "text": "P3 реопенена решением D141 после RED Gate B round 1. Этот раздел — актуальный A2: он\nпроверяет форму и свежесть нормативного snapshot после P3.16–P3.18, но **не** утверждает\nсодержательный GREEN Gate B; предметные remediation-векторы и новый A3 остаются за P4.9–P4.13.\nЯкорь производного snapshot: item-коммит `6d790fa`\n(`chore(spec): regenerate P3 derived rules index (P3.19)`).\n\n| # | Условие | Команда | Результат | Статус |\n|:--|:--|:--|:--|:--|\n| 1 | Полный линтер ревизии без ослабляющих флагов | `python3 tools/spec_lint.py spec/revisions/2026-08` | `spec_lint: OK` (5 известных предупреждений о SHOULD-векторах) | 🟢 |\n| 2 | `rules.json` детерминирован и свеж | `python3 tools/rules_index.py --write spec/revisions/2026-08 && python3 tools/rules_index.py --check spec/revisions/2026-08` | `rules_index: OK, расхождений нет (399 правил)` | 🟢 |\n| 3 | Закрытые authoring schemas заново выведены и свежи | `python3 tools/close_schema.py --write spec/revisions/2026-08 && python3 tools/close_schema.py --check spec/revisions/2026-08` | `close_schema: OK (сверено схем: 15)` | 🟢 |\n| 4 | Уровни и идентификаторы индекса корректны | Python-проверка `level`/unique `rule_id` | 0 записей вне L1/L2/L3; 0 дубликатов | 🟢 |\n| 5 | Легаси-лексика остаётся огороженной | `python3 tools/spec_lint.py --legacy-check spec/revisions/2026-08` | `spec_lint: OK (--legacy-check, 2026-08)` | 🟢 |\n| 6 | Owner-ветка D144 воспроизводима | `python3 tools/spec_lint.py --namespace-inventory spec/revisions/2026-08` | `agentools.dev`: 32 файла; `dev.agentools`: 6; combined: 35, `matches_expected: true` | 🟢 |\n| 7 | Граница Gate B не подменена формальным PASS | сверка P3.19 Scope Excluded с D141/D143 и отчётом Gate B F1/F7/F8 | Gate B round 2 не запускался; P4 remediation остаётся prerequisite | 🟢 |\n\nЧисла на `6d790fa`, полученные из `rules.json`: всего 399 правил; L1/L2/L3 =\n274/83/42; `MUST`/`MUST NOT`/`SHOULD`/`MAY` = 273/115/5/6; 6 правил имеют\n`not_testable` с причиной; документов — 12. Раскладка по документам: `00` 27 · `01` 17 ·\n`02` 34 · `03` 37 · `04` 41 · `05` 21 · `06` 30 · `07` 27 · `08` 44 · `09` 48 ·\n`10` 19 · `11` 54."
+    },
+    {
+      "id": "P3.19",
+      "title": "Вердикт P3.19",
+      "text": "**ГЕЙТ A2: PASS**\n\nPASS означает только согласованность и проверяемую форму snapshot P3. Он не отменяет RED\nGate B round 1 и не разрешает P5.1 round 2 до завершения P4.9–P4.13."
+    },
+    {
+      "id": "P3.23-A2-RED--2026-08-04",
+      "title": "P3.23 — актуальный повторный A2 после RED-аудита (2026-08-04)",
+      "text": "**Якорь source snapshot:** `fd4a52c`\n(`feat(spec): address pinned MCP codes and glossary debt (P3.22)`). Перед всеми командами ниже\nпроверено `git diff --quiet fd4a52c -- spec/revisions/2026-08`: source-набор ревизии до `HEAD`\nне менялся. Поэтому результаты воспроизводятся на одном source snapshot; сам этот раздел —\nevidence P3.23, а не переписывание исторических verdicts P3.14/P3.19.\n\n| Finding | Команда | Результат на `fd4a52c` | Статус |\n|:--|:--|:--|:--|\n| F1 — core/fallback `oneOf` | `python3 tools/spec_lint.py --schema-values-selftest spec/revisions/2026-08` | `ResultType`/`StatusChannel`/`TaskStatus`: каждый core принят ровно одной ветвью, vendor — только fallback, пустое и negative-probes отклонены | 🟢 |\n| F2 — `EventKind` ↔ lifecycle | `python3 tools/spec_lint.py --schema-values-selftest spec/revisions/2026-08` | `EventKind` содержит полный markdown-набор; lifecycle markdown = schema; `crm.custom` принят только fallback, missing-core negative-probe отклонён | 🟢 |\n| F3 — недостаточность прежней свежести A2 | `python3 tools/close_schema.py --write spec/revisions/2026-08 && python3 tools/close_schema.py --check spec/revisions/2026-08` · `python3 tools/rules_index.py --write spec/revisions/2026-08 && python3 tools/rules_index.py --check spec/revisions/2026-08` | authoring schemas: 15, свежи; `rules.json`: 400 правил, расхождений нет. Это дополняется F1/F2, а не подменяет их | 🟢 |\n| F4 — адрес числовых кодов | exact-set: `python3 tools/spec_lint.py spec/revisions/2026-08` с проверкой return code и полного списка ошибок | exit 1; единственная ошибка: `MUST-правило CFH-55 не имеет покрывающего вектора` | 🟢 |\n| F5 — долг `OVR-25` | Python-проверка шести точных терминов в `00_overview.md` | 6/6 определений присутствуют по одному разу: раннер, адаптер, контрольная пара, слой гейта, отчёт прогона, строгость отказа | 🟢 |"
+    },
+    {
+      "id": "authoring-selftest",
+      "title": "Дополнительные authoring/selftest-гейты",
+      "text": "- `python3 tools/spec_lint.py --legacy-check spec/revisions/2026-08` → `OK`.\n- `python3 tools/spec_lint.py --namespace-inventory spec/revisions/2026-08` → 32 domain /\n  6 vendor / 35 combined, `matches_expected: true`; `--namespace-inventory-selftest` → `OK`.\n- `python3 tools/spec_lint.py --actionable-description-selftest spec/revisions/2026-08` →\n  positive accepted, negative rejected."
+    },
+    {
+      "id": "P3.23",
+      "title": "Вердикт P3.23",
+      "text": "**ГЕЙТ A2: PASS**\n\nPASS относится к согласованному authoring/selftest snapshot P3 и доказанным F1–F5. Он **не**\nутверждает зелёный полный `spec_lint`: единственный coverage debt — `CFH-55 → P4.12`; P4.12\nсоздаёт различающую exact-code positive/negative pair, а P4.13 возвращает полный coverage в\ngreen. **Gate B round 1: RED.**"
+    },
+    {
+      "id": "P3.24-fail-closed-schema-values-gate-RED--2-2026-08-04",
+      "title": "P3.24 — fail-closed schema-values gate после RED-аудита захода 2 (2026-08-04)",
+      "text": "**Якорь item-коммита:** `0279f59`\n(`fix(spec): fail closed open-enum gate (P3.24)`). Source-схемы и `rules.json` не менялись:\n`git diff --exit-code 86395cf..HEAD -- spec/revisions/2026-08/schema spec/revisions/2026-08/rules.json`\n→ exit 0.\n\n| Проверка | Команда | Результат | Статус |\n|:--|:--|:--|:--|\n| Полный структурный охват | inventory через `_open_string_definitions` | 12 extensible `$defs`: `AuditEventKind`, `ResultType`, `Decision`, `ErrorCode`, `ErrorCategory`, `ActorType`, `EventKind`, `SideEffect`, `Confirmation`, `StatusChannel`, `TaskStatus`, `ContentOrigin` | 🟢 |\n| Draft 2020-12 probes | `python3 tools/spec_lint.py --schema-values-selftest spec/revisions/2026-08` | Для каждого из 12 definitions: core принят, vendor принят, пустая строка отклонена; lifecycle markdown = `EventKind` schema | 🟢 |\n| Мутация `maxLength: 1` | тот же selftest, in-memory copy `ResultType` fallback | oracle: `vendor.extension` отклонён; structural gate: unknown keyword отклонён | 🟢 |\n| Мутация extra integer branch | тот же selftest, in-memory copy `ResultType` `oneOf` | oracle: integer `7` принят; structural gate: non-string branch отклонён | 🟢 |\n| Зависимость oracle fail-closed | `python3 -S tools/spec_lint.py --schema-values-selftest spec/revisions/2026-08` | exit 2, stderr содержит prerequisite `python-jsonschema`; fallback PASS отсутствует | 🟢 |\n| Обычный lint без third-party | `python3 -S tools/spec_lint.py spec/revisions/2026-08` | выполнился stdlib-only; exit 1 ровно из-за известного coverage debt `CFH-55` | 🟢 |\n| Exact-set полного lint | P3.22 exact-set Python-команда | exit 1; единственная ошибка — `MUST-правило CFH-55 не имеет покрывающего вектора` | 🟢 |"
+    },
+    {
+      "id": "P3.24",
+      "title": "Вердикт P3.24",
+      "text": "**ГЕЙТ A2: PASS** для fail-closed authoring/selftest gate. Это не меняет source snapshot,\nне объявляет полный coverage зелёным и не снимает **Gate B round 1: RED**. `CFH-55` остаётся\nзакреплён за P4.12; P3 требует штатного close и третьего независимого audit перед запуском P4.9."
+    }
+  ],
+  "applies_to": [
+    "P3"
+  ],
+  "provenance": {
+    "path": "artifacts/P3-gate-a2.md",
+    "sha256": "911b291f9c6bf60d923a377e3ddca082ad5a72cf71a37843d0c0cdf67bdadc9a"
+  }
+}

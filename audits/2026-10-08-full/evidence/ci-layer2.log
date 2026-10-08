@@ -1,0 +1,14 @@
+  → SDK-часть слоя 2 — без предмета, ожидает решения владельца по `DR-02` §6
+  → индекс правил: python3 tools/rules_index.py --check spec/revisions/2026-09
+rules_index: OK, расхождений нет (419 правил)
+  → закрытые схемы авторинга: python3 tools/close_schema.py spec/revisions/2026-09 --check
+close_schema: OK (сверено схем: 15)
+  → отчёт покрытия: python3 tools/spec_lint.py spec/revisions/2026-09 --coverage --check
+spec_lint: 5 предупреждений:
+  - spec/revisions/2026-09/rules.json: SHOULD-правило TLP-3 не имеет покрывающего вектора
+  - spec/revisions/2026-09/rules.json: SHOULD-правило TLP-4 не имеет покрывающего вектора
+  - spec/revisions/2026-09/rules.json: SHOULD-правило TLP-8 не имеет покрывающего вектора
+  - spec/revisions/2026-09/rules.json: SHOULD-правило TLP-15 не имеет покрывающего вектора
+  - spec/revisions/2026-09/rules.json: SHOULD-правило TLP-16 не имеет покрывающего вектора
+spec_lint: OK
+layer 2: свежесть производных артефактов ревизии · проверок: 3

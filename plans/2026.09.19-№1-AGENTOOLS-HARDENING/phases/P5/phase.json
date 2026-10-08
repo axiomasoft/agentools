@@ -1,0 +1,74 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:phase:v1",
+  "id": "P5",
+  "title": "Atomic event store, audit envelope и observability",
+  "design": "detailed",
+  "goal": "P5 заменяет caller-assembled `EventLog.append(ActionEvent)` на storage-assigned atomic batch\n`EventStore`, content-aware event-id collision, paginated load, redacted audit export и\nlow-cardinality operational signals. Журнал остаётся единственным источником истины действия;\nsnapshot — проекция с provenance.\n\n> **Контракт фазы (contract-first).** Потребляет: P1 threat/guarantees/resource policy.\n> Производит: EventStore API, uncommitted/committed envelopes, collision/redaction/cardinality\n> rules, durable PostgreSQL adapter, pagination/snapshot provenance, audit export policy,\n> observability contract и documented guarantees. Границы: metrics не получают unbounded labels;\n> journal не заменяется snapshot; P3 consume и P4 lease не сливаются в event rows; shared\n> spec/error revision — P6; final exports — P7; mutation/fuzz/page-size depth — P8.\n\n> **Phase Assurance | v1.**\n> Impact: public-contract\n> Integration Seams: action-journal · event-store · postgresql-pdo · snapshots · audit-sink · telemetry\n> Live or Irreversible: no\n> Audit Intent: direct-close-eligible\n> Rationale: expected-version, duplicate collision, atomic batch, pagination и redaction\n> доказываются concurrent/integration tests; Review=full.",
+  "context": "P5 заменяет caller-assembled `EventLog.append(ActionEvent)` на storage-assigned atomic batch\n`EventStore`, content-aware event-id collision, paginated load, redacted audit export и\nlow-cardinality operational signals. Журнал остаётся единственным источником истины действия;\nsnapshot — проекция с provenance.\n\n> **Контракт фазы (contract-first).** Потребляет: P1 threat/guarantees/resource policy.\n> Производит: EventStore API, uncommitted/committed envelopes, collision/redaction/cardinality\n> rules, durable PostgreSQL adapter, pagination/snapshot provenance, audit export policy,\n> observability contract и documented guarantees. Границы: metrics не получают unbounded labels;\n> journal не заменяется snapshot; P3 consume и P4 lease не сливаются в event rows; shared\n> spec/error revision — P6; final exports — P7; mutation/fuzz/page-size depth — P8.\n\n> **Phase Assurance | v1.**\n> Impact: public-contract\n> Integration Seams: action-journal · event-store · postgresql-pdo · snapshots · audit-sink · telemetry\n> Live or Irreversible: no\n> Audit Intent: direct-close-eligible\n> Rationale: expected-version, duplicate collision, atomic batch, pagination и redaction\n> доказываются concurrent/integration tests; Review=full.",
+  "depends_on": [
+    "P1"
+  ],
+  "items": [
+    "P5.1",
+    "P5.2",
+    "P5.3",
+    "P5.4"
+  ],
+  "batches": [
+    {
+      "id": "B-event-store",
+      "items": [
+        "P5.1",
+        "P5.2",
+        "P5.3",
+        "P5.4"
+      ],
+      "mode": "recommended"
+    }
+  ],
+  "closed": {
+    "at": "2026-09-20T11:48:18Z",
+    "result": "done",
+    "summary": "<!-- plan-projection\nprojection: phase-closure\nprojection_version: v1\nsource_scope: phase P5 + item states + decisions\nthrough: P5: 🟢 Done\ninputs_sha256: 2bdcb181e16ec7d854bf81ea449950afac325a16fee97c07e6d15f7889ff85fa\ngenerated_by: task plan-views closure\n-->\n\n# Закрытие фазы P5\n\n> Не править руками: это генерируемый вид.\n\n## Контракт фазы\n\n**Контракт фазы (contract-first).** Потребляет: P1 threat/guarantees/resource policy.\nПроизводит: EventStore API, uncommitted/committed envelopes, collision/redaction/cardinality\nrules, durable PostgreSQL adapter, pagination/snapshot provenance, audit export policy,\nobservability contract и documented guarantees. Границы: metrics не получают unbounded labels;\njournal не заменяется snapshot; P3 consume и P4 lease не сливаются в event rows; shared\nspec/error revision — P6; final exports — P7; mutation/fuzz/page-size depth — P8.\n\n## Произведено\n\n- P5.1 — Заморозить EventStore/audit/observability contract, collision/redaction и adversarial cases: Normative event-store/audit/observability contract; EventLog migration inventory; shared adversarial case manifest consumed by P5.2–P5.4 and later P6/P8.\n- P5.2 — Ввести EventStore API и in-memory adapter в PHP/Dart: PHP/Dart EventStore API and in-memory adapter with matched invariants and focused negative evidence.\n- P5.3 — Реализовать PostgreSQL event adapter, IDENTITY position и keyset pagination: Durable EventStore adapter, versioned SQL, concurrency/pagination evidence, and an honest SQLite reference disposition.\n- P5.4 — Встроить journal/audit wiring, snapshot provenance и collision/cardinality gate: Supported EventStore journal path, redaction/cardinality policy, collision/pagination receipt and explicit residual boundaries.\n\n## Known Deviations\n\n- —\n\n## Решения\n\n- [D10](../../decisions/D10-atomic-event-store.md)\n"
+  },
+  "orchestration": {
+    "strategy": "sequential"
+  },
+  "sections": [
+    {
+      "id": "P5-Atomic-event-store-audit-envelope-observability",
+      "title": "P5 — Atomic event store, audit envelope и observability",
+      "text": ""
+    },
+    {
+      "id": "Phase-Context",
+      "title": "Phase Context",
+      "text": "P5 заменяет caller-assembled `EventLog.append(ActionEvent)` на storage-assigned atomic batch\n`EventStore`, content-aware event-id collision, paginated load, redacted audit export и\nlow-cardinality operational signals. Журнал остаётся единственным источником истины действия;\nsnapshot — проекция с provenance.\n\n> **Контракт фазы (contract-first).** Потребляет: P1 threat/guarantees/resource policy.\n> Производит: EventStore API, uncommitted/committed envelopes, collision/redaction/cardinality\n> rules, durable PostgreSQL adapter, pagination/snapshot provenance, audit export policy,\n> observability contract и documented guarantees. Границы: metrics не получают unbounded labels;\n> journal не заменяется snapshot; P3 consume и P4 lease не сливаются в event rows; shared\n> spec/error revision — P6; final exports — P7; mutation/fuzz/page-size depth — P8.\n\n> **Phase Assurance | v1.**\n> Impact: public-contract\n> Integration Seams: action-journal · event-store · postgresql-pdo · snapshots · audit-sink · telemetry\n> Live or Irreversible: no\n> Audit Intent: direct-close-eligible\n> Rationale: expected-version, duplicate collision, atomic batch, pagination и redaction\n> доказываются concurrent/integration tests; Review=full."
+    },
+    {
+      "id": "DoR-Definition-of-Ready",
+      "title": "DoR (Definition of Ready)",
+      "text": "- [x] D10 выбрал storage-assigned atomic batch, content-hash collision, redacted audit и closed metric labels.\n- [x] P5/P3/P4/P6/P7/P8 ownership разведён; P5 не выбирает token consume, lease/fencing, spec revision, exports.\n- [x] Stream identity, expected_prev_seq=0, IDENTITY global_position, page/batch bounds и hash exclusions заданы в `@plan/knowledge/research-P5-design.json`.\n- [x] Migration: single-event `EventLog.append(ActionEvent)` снимается с supported path; seq-derived event_id запрещён.\n- [ ] P1.4/P1.5 execution outputs существуют и digest-qualified; до этого P5 items dependency-not-ready, а не RED."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "Uncommitted/committed event types; batch append; stream expected version; storage-assigned sequence and\nglobal position; identical duplicate success vs different-payload collision vs partial overlap;\nschema version; tenant/actor/trace/correlation/causation metadata placement; paginated load;\nsnapshot provenance; safe audit envelope; redaction; metrics/tracing/logging semantics; PHP/Dart\nparity и durable adapter tests; wiring `JournalAppender` / `AuditEventFactory` through EventStore."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Mandatory event sourcing/CQRS platform; arbitrary projections engine; high-cardinality tenant/action\nlabels; raw tokens/arguments/prompts/PII in audit; replacement of the business database; exactly-once\nconsumer delivery; editing `spec/revisions/2026-08/**`; P3 token consume; P4 lease/fencing; final\npackage exports; public release; live owner-database migration; OpenTelemetry SDK runtime dependency."
+    },
+    {
+      "id": "Dependencies",
+      "title": "Dependencies",
+      "text": "P1.4 and P1.5 are execution predecessors of P5.1. P5.4 waits on P5.2 and P5.3. D2 forbids\nexecution of every P5 item until P1–P10 detail and whole-plan design audit are GREEN.\nВнутри P5 порядок: P5.1 → (P5.2 ∥ P5.3) → P5.4. P8 добавляет mutation/fuzz/page-size depth после\nбазовой корректности.\n\n| ID | Title | Status | Updated |\n|:--|:--|:--|:--|\n| P5.1 | Заморозить EventStore/audit/observability contract, collision/redaction и adversarial cases | ⬜ Not started | 2026-09-19 |\n| P5.2 | Ввести EventStore API и in-memory adapter в PHP/Dart | ⬜ Not started | 2026-09-19 |\n| P5.3 | Реализовать PostgreSQL event adapter, IDENTITY position и keyset pagination | ⬜ Not started | 2026-09-19 |\n| P5.4 | Встроить journal/audit wiring, snapshot provenance и collision/cardinality gate | ⬜ Not started | 2026-09-19 |"
+    },
+    {
+      "id": "Phase-Handoff",
+      "title": "Phase Handoff",
+      "text": "<Заполняется при закрытии фазы.>"
+    }
+  ]
+}

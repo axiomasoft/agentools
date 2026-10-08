@@ -1,0 +1,16 @@
+{
+  "conformance/reports/p6-integrated.json": "p6-integrated-receipt.json",
+  "conformance/reports/semantic-parity.json": "semantic-parity-receipt.json",
+  "conformance/reports/mcp-official/summary.json": "mcp-official-receipt.json",
+  "conformance/reports/jcs-parity.json": "jcs-parity-receipt.json",
+  "out/ci/reference-2026-09.json": "candidate-reference.json",
+  "out/ci/php-2026-09.json": "candidate-php.json",
+  "out/ci/dart-2026-09.json": "candidate-dart.json",
+  "out/ci/reference-2026-08.json": "predecessor-reference.json",
+  "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P8-property-fuzz.json": "P8-property-fuzz.json",
+  "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P8-mutation-baseline.json": "P8-mutation-baseline.json",
+  "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P8-resource-baseline.json": "P8-resource-baseline.json",
+  "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P8-adversarial-gate.json": "P8-adversarial-gate.json",
+  "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P8-storage-chaos.json": "P8-storage-chaos.json",
+  "plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P7-package-gate.json": "P7-package-gate.json"
+}

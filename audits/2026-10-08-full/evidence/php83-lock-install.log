@@ -1,0 +1,24 @@
+Installing dependencies from lock file (including require-dev)
+Verifying lock file contents can be installed on current platform.
+Your lock file does not contain a compatible set of packages. Please run composer update.
+
+  Problem 1
+    - symfony/console is locked to version v8.1.7 and an update of this package was not requested.
+    - symfony/console v8.1.7 requires php >=8.4.1 -> your php version (8.3.35) does not satisfy that requirement.
+  Problem 2
+    - symfony/filesystem is locked to version v8.1.6 and an update of this package was not requested.
+    - symfony/filesystem v8.1.6 requires php >=8.4.1 -> your php version (8.3.35) does not satisfy that requirement.
+  Problem 3
+    - symfony/finder is locked to version v8.1.7 and an update of this package was not requested.
+    - symfony/finder v8.1.7 requires php >=8.4.1 -> your php version (8.3.35) does not satisfy that requirement.
+  Problem 4
+    - symfony/process is locked to version v8.1.7 and an update of this package was not requested.
+    - symfony/process v8.1.7 requires php >=8.4.1 -> your php version (8.3.35) does not satisfy that requirement.
+  Problem 5
+    - symfony/string is locked to version v8.1.7 and an update of this package was not requested.
+    - symfony/string v8.1.7 requires php >=8.4.1 -> your php version (8.3.35) does not satisfy that requirement.
+  Problem 6
+    - infection/infection is locked to version 0.35.4 and an update of this package was not requested.
+    - infection/infection 0.35.4 requires symfony/console ^6.4 || ^7.4 || ^8.0 -> satisfiable by symfony/console[v8.1.7].
+    - symfony/console v8.1.7 requires php >=8.4.1 -> your php version (8.3.35) does not satisfy that requirement.
+

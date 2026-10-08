@@ -13,7 +13,7 @@ import 'version_conflict.dart';
 /// Pure lifecycle fold. Every validation is performed in ALC-16 order.
 final class ActionReducer {
   ActionReducer({
-    this.specRevision = '2026-08',
+    this.specRevision = '2026-09',
     JournalHashChain? hashChain,
     EventUpcasterChain? upcasters,
   }) : _hashChain = hashChain,

@@ -1,0 +1,107 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "20_research-R-03_mcp-protocol",
+  "title": "R-03 — MCP как протокольная основа",
+  "sections": [
+    {
+      "id": "R-03-MCP",
+      "title": "R-03 — MCP как протокольная основа",
+      "text": "> Research Sweep AgentKit #1 (workflow-фанаут, 2026-07-07). RAG: perplexity-web + WebFetch, критичные факты прошли adversarial-verify (см. R-07_verification.md).\n> Факты без источника помечать [UNVERIFIED]."
+    },
+    {
+      "id": "Summary",
+      "title": "Summary",
+      "text": "MCP на июль 2026: текущая стабильная ревизия — 2025-11-25 (спека официально помечена как Current); 28 июля 2026 выходит финал крупнейшей ревизии 2026-07-28 (RC заморожен 21.05.2026, бета-SDK с 29.06.2026) — stateless-ядро без initialize/session-id, Multi Round-Trip Requests вместо SSE для серверных запросов, Tasks и MCP Apps как официальные extensions, и депрекация Roots/Sampling/Logging/DCR. Для AgentKit MCP хорошо закрывает: контракт инструмента (inputSchema/outputSchema JSON Schema 2020-12, structuredContent), аннотации побочных эффектов (readOnly/destructive/idempotent/openWorld — но это untrusted-хинты, не enforcement), и clarification flow — elicitation с формами, titled/multi-select enum, default-значениями и URL-режимом, что напрямую соответствует требованию «AskUserQuestion с вариантами». MCP НЕ содержит: структурированного preview/confirmation протокола (спека лишь требует human-in-the-loop на стороне клиента), RBAC/permissions, идемпотентных ключей, аудит-протокола (только SHOULD log; W3C Trace Context через _meta появится в 2026-07-28) и никакой оркестрации цепочек/сценариев — агентный цикл всегда на стороне хоста. SDK-ландшафт асимметричен: TypeScript — эталон; Dart закрыт mcp_dart 2.2.2 (пиннинг 2025-11-25, elicitation/tasks/annotations, тот же пакет уже запиннен в AxiomaErpSdk); официальный PHP SDK (mcp/sdk, PHP Foundation + Symfony) — Tier 3, experimental, без тегированных релизов, elicitation не задокументирован. Депрекация Sampling означает: строить агентный цикл AgentKit на MCP-sampling нельзя — LLM-вызовы делать напрямую. Кейсы app-embedded/multi-tenant MCP существуют как паттерны (pooled multi-tenant + tenant_id из доверенных claims, фильтрация tools/list по RBAC, RLS в Postgres), но RBAC/tenancy всегда реализуется приложением поверх протокола. Вывод: MCP брать как tool-contract слой (protocol-first), таргетировать 2025-11-25, не завязываться на сессии/Roots/Sampling/Logging из-за грядущего stateless-разворота, а preview+confirm, RBAC, аудит и сценарии-цепочки проектировать как собственный слой AgentKit поверх."
+    },
+    {
+      "id": "Recommendation",
+      "title": "Recommendation",
+      "text": "Брать MCP как протокольную основу tool-contract слоя AgentKit — но ровно в этой роли, не шире. Аргументы: (1) контракт инструмента закрыт полностью — inputSchema/outputSchema (JSON Schema 2020-12) + structuredContent дают типизированные результаты для рендера preview в UI; (2) clarification flow закрыт elicitation'ом — form-mode с enum-вариантами/multi-select/defaults это буквально AskUserQuestion, а поскольку AgentKit контролирует и клиент (Flutter/FlexCRM UI), и сервер, зрелость сторонних клиентов не важна; (3) аннотации побочных эффектов есть, и во внутреннем контуре (свой сервер = trusted) их можно превратить из хинтов в enforcement: gate подтверждения по readOnlyHint=false, обязательный preview по destructiveHint=true; (4) Streamable HTTP + OAuth 2.1 закрывают кейс AiFina «локальная установка → облачный MCP». Что достраивать поверх (это и есть added value AgentKit): preview/confirmation как конвенция two-phase tools (prepare → confirmation token → commit) с preview в structuredContent; RBAC/tenancy — фильтрация tools/list по пользователю + call-level проверки + tenant_id из доверенных claims (паттерн pooled multi-tenant + RLS); идемпотентные ключи на write-tools; аудит-лог трёх идентичностей (tenant/user/invocation) на каждый вызов; и весь оркестрационный слой — интент-матчинг, цепочки tools, сценарии/схемы выполнения, rollback — это хост-сторона, MCP тут ничего не даёт и не мешает. Версионная стратегия: таргетировать 2025-11-25 как stable, но проектировать под stateless-будущее 2026-07-28 (финал через 3 недели): не хранить состояние диалога в MCP-сессии (держать его в БД приложения с requestState-подобными токенами), не использовать deprecated Roots/Sampling/Logging — LLM-вызовы агентного цикла делать напрямую через провайдера, логи через stderr/OTel. По языкам: Dart-ветка готова (mcp_dart 2.2.2, пиннинг 2025-11-25, elicitation+tasks — уже в стеке AxiomaErpSdk); PHP-ветка — главный риск: официальный SDK experimental Tier 3 без релизов и без elicitation, значит для FlexCRM закладывать тонкий собственный MCP-слой поверх официального SDK (или community-альтернативы) с готовностью дописать elicitation-хендлинг самим. Это довод в пользу гибрида protocol-first: единый wire-контракт (MCP) + две нативные реализации, а не Python-мост — протокол как раз и существует, чтобы не тащить общий рантайм; общими между PHP и Dart делать спецификации (схемы tools, конвенцию preview/confirm, формат аудита), а не код."
+    },
+    {
+      "id": "Findings-Facts",
+      "title": "Findings/Facts",
+      "text": ""
+    },
+    {
+      "id": "section",
+      "title": "Актуальная ревизия спеки",
+      "text": "Current = 2025-11-25 (официальная страница versioning). Ревизия 2026-07-28: RC заморожен 21.05.2026, финал — 28.07.2026 (через 3 недели от сегодня); 10-недельное окно валидации, бета-SDK вышли 29.06.2026. Официальный совет: не мигрировать в панике, 2025-11-25 остаётся production-таргетом пока SDK не догонят.\n[src: https://modelcontextprotocol.io/specification/versioning; https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/]"
+    },
+    {
+      "id": "2025-11-25-vs-2025-06-18",
+      "title": "Что добавила 2025-11-25 vs 2025-06-18",
+      "text": "URL-mode elicitation (SEP-1036); переработанные ElicitResult и EnumSchema — titled/untitled/single/multi-select enum (SEP-1330) + default-значения во всех примитивах (SEP-1034); experimental Tasks — долгоживущие запросы с polling (SEP-1686); tools/toolChoice в sampling (SEP-1577); OIDC Discovery, incremental scope consent через WWW-Authenticate, Client ID Metadata Documents вместо DCR; иконки для tools/resources/prompts; JSON Schema 2020-12 как дефолтный диалект; валидационные ошибки инпута = Tool Execution Errors (для self-correction модели); SDK tiering (SEP-1730).\n[src: https://modelcontextprotocol.io/specification/2025-11-25/changelog]"
+    },
+    {
+      "id": "2026-07-28-RC-stateless",
+      "title": "Ревизия 2026-07-28 (RC): stateless-ядро",
+      "text": "Убраны initialize/initialized handshake и Mcp-Session-Id; версия/capabilities едут в _meta каждого запроса; любой запрос может попасть на любой инстанс сервера (обычный round-robin LB без sticky sessions). Multi Round-Trip Requests заменяют SSE: сервер возвращает InputRequiredResult с requestState, клиент собирает ответы и переигрывает вызов с inputResponses — elicitation работает stateless. Tasks и MCP Apps (server-rendered HTML в sandboxed iframe) — официальные extensions с reverse-DNS ID и независимым версионированием. Стандартизация W3C Trace Context (traceparent/tracestate) через _meta. Хардening OAuth/OIDC (валидация iss RFC 9207, привязка credentials к issuer).\n[src: https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/; https://blog.modelcontextprotocol.io/posts/sdk-betas-2026-07-28/]"
+    },
+    {
+      "id": "2026-07-28",
+      "title": "Депрекации в 2026-07-28",
+      "text": "Официальный реестр deprecated: Roots (миграция — передавать пути параметрами tools/URI), Sampling (миграция — прямая интеграция с LLM-провайдером), Logging (stderr/OpenTelemetry), Dynamic Client Registration (→ Client ID Metadata Documents). Deprecated в 2026-07-28, earliest removal — первая ревизия после 2027-07-28. HTTP+SSE transport deprecated ещё с 2025-03-26 → Streamable HTTP.\n[src: https://modelcontextprotocol.io/specification/draft/deprecated]"
+    },
+    {
+      "id": "Tool-annotations",
+      "title": "Tool annotations: семантика",
+      "text": "ToolAnnotations — хинты о поведении: readOnlyHint (default false — не меняет состояние), destructiveHint (default true — деструктивное обновление; осмыслен только при readOnly=false), idempotentHint (default false — повторный вызов с теми же аргументами без доп. эффекта, безопасный retry), openWorldHint (default true — взаимодействие с открытым внешним миром vs закрытый домен). Спека: клиенты MUST считать аннотации untrusted, если сервер не доверенный — это подсказки для UX/политик подтверждения, не механизм безопасности. Дефолты консервативные (не-read-only, деструктивно, open-world); best practice — задавать все четыре явно. Для внутреннего AgentKit, где сервер свой = доверенный, аннотации можно использовать как enforcement-сигнал для gate'ов подтверждения.\n[src: https://modelcontextprotocol.io/specification/2025-11-25/server/tools; https://docs.closient.com/guides/mcp-tool-annotations]"
+    },
+    {
+      "id": "Structured-output-outputSchema",
+      "title": "Structured output / outputSchema",
+      "text": "Tool может декларировать outputSchema (JSON Schema, дефолт 2020-12); сервер MUST возвращать structuredContent, соответствующий схеме, клиент SHOULD валидировать. Для обратной совместимости structured-результат SHOULD дублироваться сериализованным JSON в TextContent. Это даёт типизированный контракт результата — основа для рендера preview в UI FlexCRM/AiFina (таблицы отчётов, карточки).\n[src: https://modelcontextprotocol.io/specification/2025-11-25/server/tools]"
+    },
+    {
+      "id": "Elicitation",
+      "title": "Elicitation: статус и возможности",
+      "text": "Первоклассная фича спеки с 2025-06-18, расширена в 2025-11-25: mode 'form' (JSON Schema: string/number/enum, minLength/format/minimum, defaults, titled enum через oneOf/const/title, multi-select через items.enum) и mode 'url' (браузерный флоу для OAuth/платежей/секретов). Ответ: accept/decline/cancel + content. Это ровно паттерн «правильно ли я понял? выбери вариант» из требований AgentKit. В 2026-07-28 переезжает на MRTR (InputRequiredResult/inputResponses) — семантика сохраняется, транспортный флоу меняется.\n[src: https://modelcontextprotocol.io/specification/2025-11-25/client/elicitation; https://ts.sdk.modelcontextprotocol.io/documents/capabilities.html]"
+    },
+    {
+      "id": "Elicitation-SDK",
+      "title": "Elicitation: поддержка в SDK и клиентах",
+      "text": "TypeScript SDK — полная поддержка (server.elicitInput, form/url, applyDefaults). Python SDK — протокольно возможно, но документация/хелперы тоньше TS. Claude Code получил elicitation в v2.1.76 (март 2026) + хуки Elicitation/ElicitationResult. Cursor — явной поддержки не задокументировано. Dart: mcp_dart 2.2.2 декларирует Elicitation+Tasks в полном наборе capabilities. PHP official SDK — elicitation не упомянут в README/roadmap. Важно для AgentKit: клиент — это ваше же приложение (Flutter UI / FlexCRM frontend), поэтому elicitation-хендлер вы реализуете сами, зависимость от зрелости чужих клиентов нулевая.\n[src: https://ts.sdk.modelcontextprotocol.io/documents/capabilities.html; https://data-espresso.com/claude-code-v2-1-76-mcp-elicitation-effort-reliability/]"
+    },
+    {
+      "id": "PHP-SDK",
+      "title": "PHP SDK",
+      "text": "> ⚠ **ОПРОВЕРГНУТО verify-волной 2 (R-07 #18):** v0.6.0 ТЕГИРОВАН (02.06.2026), default protocol = 2025-11-25, **server-side elicitation ЕСТЬ** (ClientGateway::elicit + SEP-1330 enum-схемы + примеры), MCP Apps extension; отсутствует только client-side обработчик ElicitRequest (PR #371 open). Абзац ниже — исходный (устаревший) текст исследователя.\n\nОфициальный modelcontextprotocol/php-sdk (Composer: mcp/sdk), совместная разработка PHP Foundation + Symfony. Статус на середину 2026: experimental, Tier 3, без тегированных релизов (требует minimum-stability: dev). Есть: #[McpTool]-атрибуты, stdio + Streamable HTTP, schema validation, pagination. Нет/не задокументировано: elicitation, tasks, пиннинг 2025-11-25. Альтернативы: logiscape/mcp-sdk-php (community), Laravel-специфичные обёртки. Для FlexCRM это главный риск-фактор: серверную часть MCP на PHP придётся частично достраивать (elicitation-хендлинг) или пиннить fast-moving dev-зависимость.\n[src: https://github.com/modelcontextprotocol/php-sdk; https://blog.modelcontextprotocol.io/posts/2025-09-05-php-sdk/]"
+    },
+    {
+      "id": "Dart-SDK",
+      "title": "Dart SDK",
+      "text": "mcp_dart 2.2.2 (стабильный, активная поддержка, prerelease 2.3.0-dev.1): пиннинг спеки 2025-11-25 с обратной совместимостью до 2024-10-07; server+client+host роли; stdio/StreamableHTTP/custom transports; полный набор capabilities включая Elicitation, Tasks, Sampling, annotations; OAuth-хуки, DNS rebinding protection; conformance-матрица против TS SDK. Альтернатива dart_mcp (dart-lang/ai, команда Dart) — уже, но официальнее. mcp_dart уже запиннен в стеке AxiomaErpSdk — для AiFina/AiResto путь готов.\n[src: https://pub.dev/packages/mcp_dart]"
+    },
+    {
+      "id": "section-2",
+      "title": "Транспорт и авторизация",
+      "text": "Streamable HTTP — основной remote-транспорт (2025-11-25: обязательный 403 на невалидный Origin, polling SSE-стримов SEP-1699); в 2026-07-28 становится полностью stateless. Авторизация: OAuth 2.1-based framework, ресурс-сервер = MCP-сервер, discovery по RFC 9728 (.well-known fallback), OIDC Discovery, incremental scope consent; Enterprise-Managed Authorization extension (стабильный с 18.06.2026) — централизованный SSO-доступ к MCP-серверам организации. Для AiFina local→cloud MCP это готовый каркас аутентификации.\n[src: https://modelcontextprotocol.io/specification/2025-11-25/changelog; https://blog.modelcontextprotocol.io/ (пост 18.06.2026)]"
+    },
+    {
+      "id": "MCP-Registry",
+      "title": "MCP Registry",
+      "text": "registry.modelcontextprotocol.io: API freeze v0.1 с 24.10.2025, релизы v1.x в 2026 — фактически production-grade. server.json как канонический дескриптор, namespace-верификация через GitHub OIDC / DNS-челленджи, community-модерация с denylist. Для AgentKit (внутренние серверы) значимость низкая; полезен как формат server.json для собственного реестра модулей RegHub.\n[src: https://github.com/modelcontextprotocol/registry]"
+    },
+    {
+      "id": "App-embedded-multi-tenant-MCP",
+      "title": "App-embedded / multi-tenant MCP как внутренний протокол",
+      "text": "Паттерны 2025-2026 устоялись: (A) per-session in-process MCP server внутри приложения; (B) pooled multi-tenant MCP-сервис с tenant_id/user_id/roles из доверенных JWT-claims на каждом вызове + RLS в Postgres (current_setting('app.tenant_id')); (C) hybrid — dedicated инстансы для регулируемых тенантов. RBAC: фильтрация манифеста tools/list по пользователю + call-level проверки + скоупинг параметров; три идентичности на каждый вызов (tenant/user/invocation) для аудита. Публичных детальных кейсов Block/Shopify/Atlassian о ВНУТРЕННЕМ MCP нет — паттерны выводятся из архитектурных гайдов. Ключевое: всё это app-layer поверх MCP, протокол RBAC/tenancy не специфицирует.\n[src: https://workos.com/blog/everything-your-team-needs-to-know-about-mcp-in-2026; https://truto.one/blog/how-to-architect-a-multi-tenant-mcp-server-for-enterprise-b2b-saas/; https://safeguard.sh/resources/blog/mcp-server-multi-tenant-isolation]"
+    },
+    {
+      "id": "MCP-AgentKit",
+      "title": "Чего в MCP НЕТ (гэпы для AgentKit)",
+      "text": "1) Preview/confirmation: спека лишь предписывает клиенту SHOULD 'confirmation prompts' и human-in-the-loop; структурированного протокола preview записи (diff «что будет записано», dry-run, confirmation token) нет — надо строить конвенцию AgentKit (two-phase tools prepare/commit или preview в structuredContent + gate по destructiveHint). 2) RBAC/permissions — нет; identity через OAuth-токен, авторизация на сервере. 3) Идемпотентность — только hint, идемпотентных ключей/dedup нет. 4) Аудит — только SHOULD 'log tool usage for audit purposes' на клиенте; аудит-протокола нет (Trace Context в _meta появится в 2026-07-28). 5) Сценарии/цепочки — MCP это протокол одного tool-вызова; планирование, chains, saga/rollback, интент-матчинг — целиком хост-сторона. 6) Sampling deprecated → агентный LLM-цикл строить на прямых API, не через MCP.\n[src: https://modelcontextprotocol.io/specification/2025-11-25/server/tools; https://modelcontextprotocol.io/specification/draft/deprecated]"
+    },
+    {
+      "id": "Sources",
+      "title": "Sources",
+      "text": "- https://modelcontextprotocol.io/specification/versioning\n- https://modelcontextprotocol.io/specification/2025-11-25/changelog\n- https://modelcontextprotocol.io/specification/2025-11-25/server/tools\n- https://modelcontextprotocol.io/specification/draft/deprecated\n- https://blog.modelcontextprotocol.io/posts/2026-07-28-release-candidate/\n- https://blog.modelcontextprotocol.io/posts/sdk-betas-2026-07-28/\n- https://ts.sdk.modelcontextprotocol.io/documents/capabilities.html\n- https://github.com/modelcontextprotocol/php-sdk\n- https://blog.modelcontextprotocol.io/posts/2025-09-05-php-sdk/\n- https://pub.dev/packages/mcp_dart\n- https://github.com/modelcontextprotocol/registry\n- https://workos.com/blog/everything-your-team-needs-to-know-about-mcp-in-2026\n- https://truto.one/blog/how-to-architect-a-multi-tenant-mcp-server-for-enterprise-b2b-saas/\n- https://safeguard.sh/resources/blog/mcp-server-multi-tenant-isolation\n- https://docs.closient.com/guides/mcp-tool-annotations\n- https://data-espresso.com/claude-code-v2-1-76-mcp-elicitation-effort-reliability/"
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "20_research/R-03_mcp-protocol.md",
+    "sha256": "18865b5c9c32c1a555d88ec685ddb9b57e834bbe5faadba96778b764c9f7d535"
+  }
+}

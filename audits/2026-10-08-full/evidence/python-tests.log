@@ -1,0 +1,432 @@
+test_cursor_memory_scope_uses_versioned_project_metadata (tools.ci_matrix.CiMatrixTests.test_cursor_memory_scope_uses_versioned_project_metadata) ... ok
+test_cursor_registers_only_fail_closed_safe_dirs (tools.ci_matrix.CiMatrixTests.test_cursor_registers_only_fail_closed_safe_dirs) ... ok
+test_dart_downgrade_does_not_mutate_source_lock (tools.ci_matrix.CiMatrixTests.test_dart_downgrade_does_not_mutate_source_lock) ... ok
+test_fork_pr_fixture_has_read_only_permissions (tools.ci_matrix.CiMatrixTests.test_fork_pr_fixture_has_read_only_permissions) ... ok
+test_gitleaks_allows_only_the_known_fake_token_form (tools.ci_matrix.CiMatrixTests.test_gitleaks_allows_only_the_known_fake_token_form) ... /usr/lib/python3.12/tarfile.py:2301: DeprecationWarning: Python 3.14 will, by default, filter extracted tar archives and reject files or modify their metadata. Use the filter argument to control this behavior.
+  warnings.warn(
+ok
+test_gitleaks_detects_secrets_in_formerly_allowlisted_directories (tools.ci_matrix.CiMatrixTests.test_gitleaks_detects_secrets_in_formerly_allowlisted_directories) ... ok
+test_gitleaks_has_no_directory_wide_allowlists (tools.ci_matrix.CiMatrixTests.test_gitleaks_has_no_directory_wide_allowlists) ... ok
+test_gitleaks_redaction_config (tools.ci_matrix.CiMatrixTests.test_gitleaks_redaction_config) ... ok
+test_map_tier_av_exact (tools.ci_matrix.CiMatrixTests.test_map_tier_av_exact) ... ERROR
+test_osv_positive_fixture_would_fail (tools.ci_matrix.CiMatrixTests.test_osv_positive_fixture_would_fail) ... ok
+test_osv_roster_is_exact (tools.ci_matrix.CiMatrixTests.test_osv_roster_is_exact) ... ok
+test_php_lowest_does_not_mutate_source_lock (tools.ci_matrix.CiMatrixTests.test_php_lowest_does_not_mutate_source_lock) ... ok
+test_supported_matrix_exact (tools.ci_matrix.CiMatrixTests.test_supported_matrix_exact) ... ok
+test_timing_mismatch_is_baseline_pending (tools.ci_matrix.CiMatrixTests.test_timing_mismatch_is_baseline_pending) ... ok
+test_current_ci_workflows_are_policy_green (tools.ci_policy.CiPolicyTests.test_current_ci_workflows_are_policy_green) ... ok
+test_duplicate_action_id_is_red (tools.ci_policy.CiPolicyTests.test_duplicate_action_id_is_red) ... ok
+test_dynamic_action_ref_is_red (tools.ci_policy.CiPolicyTests.test_dynamic_action_ref_is_red) ... ok
+test_implicit_permissions_is_red (tools.ci_policy.CiPolicyTests.test_implicit_permissions_is_red) ... ok
+test_invalid_action_source_is_red (tools.ci_policy.CiPolicyTests.test_invalid_action_source_is_red) ... ok
+test_least_privilege_fixture_green (tools.ci_policy.CiPolicyTests.test_least_privilege_fixture_green) ... ok
+test_lock_is_valid (tools.ci_policy.CiPolicyTests.test_lock_is_valid) ... ok
+test_mutable_tag_is_red (tools.ci_policy.CiPolicyTests.test_mutable_tag_is_red) ... ok
+test_privileged_event_is_red (tools.ci_policy.CiPolicyTests.test_privileged_event_is_red) ... ok
+test_sha_from_wrong_repository_is_red (tools.ci_policy.CiPolicyTests.test_sha_from_wrong_repository_is_red) ... ok
+test_stale_action_sha_is_red (tools.ci_policy.CiPolicyTests.test_stale_action_sha_is_red) ... ok
+test_unknown_action_is_red (tools.ci_policy.CiPolicyTests.test_unknown_action_is_red) ... ok
+test_forbidden_mcp_cert_in_fixture (tools.docs_gate.DocsGateTests.test_forbidden_mcp_cert_in_fixture) ... ok
+test_public_docs_list_present (tools.docs_gate.DocsGateTests.test_public_docs_list_present) ... ok
+test_aggregate_turns_red_on_subject_mutation (tools.private_rc_gate.PrivateRcGateTests.test_aggregate_turns_red_on_subject_mutation) ... ok
+test_forbidden_release_command_detected (tools.private_rc_gate.PrivateRcGateTests.test_forbidden_release_command_detected) ... ok
+test_hosted_attestation_not_executed (tools.private_rc_gate.PrivateRcGateTests.test_hosted_attestation_not_executed) ... ok
+test_malicious_pr_target_event (tools.private_rc_gate.PrivateRcGateTests.test_malicious_pr_target_event) ... ok
+test_workflow_file_is_policy_green (tools.private_rc_gate.PrivateRcGateTests.test_workflow_file_is_policy_green) ... ok
+test_build_and_validate_roundtrip (tools.private_release_gate.PrivateReleaseGateTests.test_build_and_validate_roundtrip) ... ERROR
+test_forbidden_self_authorized_packet (tools.private_release_gate.PrivateReleaseGateTests.test_forbidden_self_authorized_packet) ... ok
+test_stale_packet_digest_detected (tools.private_release_gate.PrivateReleaseGateTests.test_stale_packet_digest_detected) ... ERROR
+test_wildcard_channel_rejected (tools.private_release_gate.PrivateReleaseGateTests.test_wildcard_channel_rejected) ... ok
+test_av019_follows_p9_private_rc (tools.release_acceptance.ReleaseAcceptanceTests.test_av019_follows_p9_private_rc) ... ERROR
+test_build_rows_cover_guarantees (tools.release_acceptance.ReleaseAcceptanceTests.test_build_rows_cover_guarantees) ... ERROR
+test_closed_guarantees_use_their_owning_phase_evidence (tools.release_acceptance.ReleaseAcceptanceTests.test_closed_guarantees_use_their_owning_phase_evidence) ... ERROR
+test_extra_row_detected (tools.release_acceptance.ReleaseAcceptanceTests.test_extra_row_detected) ... ERROR
+test_hosted_attestation_cannot_be_verified (tools.release_acceptance.ReleaseAcceptanceTests.test_hosted_attestation_cannot_be_verified) ... ERROR
+test_private_green_does_not_imply_public_auth (tools.release_acceptance.ReleaseAcceptanceTests.test_private_green_does_not_imply_public_auth) ... ERROR
+test_public_authorized_must_stay_false (tools.release_acceptance.ReleaseAcceptanceTests.test_public_authorized_must_stay_false) ... ERROR
+test_stale_digest_detected (tools.release_acceptance.ReleaseAcceptanceTests.test_stale_digest_detected) ... ERROR
+test_validate_live_matrix (tools.release_acceptance.ReleaseAcceptanceTests.test_validate_live_matrix) ... ERROR
+test_byte_mutation_changes_digest (tools.release_candidate.ReleaseCandidateGoldenTests.test_byte_mutation_changes_digest) ... ok
+test_gzip_suppresses_mtime (tools.release_candidate.ReleaseCandidateGoldenTests.test_gzip_suppresses_mtime) ... ok
+test_path_ordering_and_unicode (tools.release_candidate.ReleaseCandidateGoldenTests.test_path_ordering_and_unicode) ... ok
+test_schema_rejects_unknown_algorithm (tools.release_candidate.ReleaseCandidateGoldenTests.test_schema_rejects_unknown_algorithm) ... ok
+test_traversal_rejected (tools.release_candidate.ReleaseCandidateGoldenTests.test_traversal_rejected) ... ok
+test_p9_subject_set (tools.release_consumer_gate.ReleaseConsumerGateTests.test_p9_subject_set) ... ok
+test_validate_fixture_green_minimal (tools.release_consumer_gate.ReleaseConsumerGateTests.test_validate_fixture_green_minimal) ... ok
+test_workspace_leak_fails (tools.release_consumer_gate.ReleaseConsumerGateTests.test_workspace_leak_fails) ... ok
+test_wrong_digest_fails (tools.release_consumer_gate.ReleaseConsumerGateTests.test_wrong_digest_fails) ... ok
+test_build_residuals_nonempty (tools.release_dossier.ReleaseDossierTests.test_build_residuals_nonempty) ... ERROR
+test_corrupt_manifest_detected (tools.release_dossier.ReleaseDossierTests.test_corrupt_manifest_detected) ... ERROR
+test_disposition_vocab (tools.release_dossier.ReleaseDossierTests.test_disposition_vocab) ... ok
+test_omitted_residual_coverage (tools.release_dossier.ReleaseDossierTests.test_omitted_residual_coverage) ... ERROR
+test_promoted_private_ready_without_consumer_fails (tools.release_dossier.ReleaseDossierTests.test_promoted_private_ready_without_consumer_fails) ... ERROR
+test_attestation_not_claimed (tools.sbom_gate.SbomGateTests.test_attestation_not_claimed) ... ERROR
+test_provenance_mutation_detected (tools.sbom_gate.SbomGateTests.test_provenance_mutation_detected) ... ok
+test_provenance_subject_binding (tools.sbom_gate.SbomGateTests.test_provenance_subject_binding) ... ok
+test_spdx_rejects_wrong_namespace (tools.sbom_gate.SbomGateTests.test_spdx_rejects_wrong_namespace) ... ok
+test_coverage_write_targets_requested_revision (test_spec_lint.CoverageCarrierTests.test_coverage_write_targets_requested_revision) ... ok
+
+======================================================================
+ERROR: test_map_tier_av_exact (tools.ci_matrix.CiMatrixTests.test_map_tier_av_exact)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/ci_matrix.py", line 594, in test_map_tier_av_exact
+    document = build_map()
+               ^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/ci_matrix.py", line 268, in build_map
+    "input_digests": tier_carrier_digest(tier),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/ci_matrix.py", line 206, in tier_carrier_digest
+    digests["compat_contract"] = sha256_file(COMPAT)
+                                 ^^^^^^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/ci_matrix.py", line 66, in sha256_file
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+                          ^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1021, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vostrikov/projects/packages/agentools/plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/compatibility-support-v1.md'
+
+======================================================================
+ERROR: test_build_and_validate_roundtrip (tools.private_release_gate.PrivateReleaseGateTests.test_build_and_validate_roundtrip)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/private_release_gate.py", line 557, in test_build_and_validate_roundtrip
+    dossier = rd.build_dossier()
+              ^^^^^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_dossier.py", line 161, in build_dossier
+    live_matrix = ra.build_matrix()
+                  ^^^^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 437, in build_matrix
+    rows = build_rows()
+           ^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 181, in build_rows
+    g_text = GUARANTEES.read_text(encoding="utf-8")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vostrikov/projects/packages/agentools/plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md'
+
+======================================================================
+ERROR: test_stale_packet_digest_detected (tools.private_release_gate.PrivateReleaseGateTests.test_stale_packet_digest_detected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/private_release_gate.py", line 569, in test_stale_packet_digest_detected
+    dossier = rd.build_dossier()
+              ^^^^^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_dossier.py", line 161, in build_dossier
+    live_matrix = ra.build_matrix()
+                  ^^^^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 437, in build_matrix
+    rows = build_rows()
+           ^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 181, in build_rows
+    g_text = GUARANTEES.read_text(encoding="utf-8")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vostrikov/projects/packages/agentools/plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md'
+
+======================================================================
+ERROR: test_av019_follows_p9_private_rc (tools.release_acceptance.ReleaseAcceptanceTests.test_av019_follows_p9_private_rc)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 555, in test_av019_follows_p9_private_rc
+    rows = build_rows()
+           ^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 181, in build_rows
+    g_text = GUARANTEES.read_text(encoding="utf-8")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vostrikov/projects/packages/agentools/plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md'
+
+======================================================================
+ERROR: test_build_rows_cover_guarantees (tools.release_acceptance.ReleaseAcceptanceTests.test_build_rows_cover_guarantees)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 544, in test_build_rows_cover_guarantees
+    g_text = GUARANTEES.read_text(encoding="utf-8")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vostrikov/projects/packages/agentools/plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md'
+
+======================================================================
+ERROR: test_closed_guarantees_use_their_owning_phase_evidence (tools.release_acceptance.ReleaseAcceptanceTests.test_closed_guarantees_use_their_owning_phase_evidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 562, in test_closed_guarantees_use_their_owning_phase_evidence
+    rows = {r["id"]: r for r in build_rows()}
+                                ^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 181, in build_rows
+    g_text = GUARANTEES.read_text(encoding="utf-8")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vostrikov/projects/packages/agentools/plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md'
+
+======================================================================
+ERROR: test_extra_row_detected (tools.release_acceptance.ReleaseAcceptanceTests.test_extra_row_detected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 582, in test_extra_row_detected
+    doc = build_matrix()
+          ^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 437, in build_matrix
+    rows = build_rows()
+           ^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 181, in build_rows
+    g_text = GUARANTEES.read_text(encoding="utf-8")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vostrikov/projects/packages/agentools/plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md'
+
+======================================================================
+ERROR: test_hosted_attestation_cannot_be_verified (tools.release_acceptance.ReleaseAcceptanceTests.test_hosted_attestation_cannot_be_verified)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 592, in test_hosted_attestation_cannot_be_verified
+    doc = build_matrix()
+          ^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 437, in build_matrix
+    rows = build_rows()
+           ^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 181, in build_rows
+    g_text = GUARANTEES.read_text(encoding="utf-8")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vostrikov/projects/packages/agentools/plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md'
+
+======================================================================
+ERROR: test_private_green_does_not_imply_public_auth (tools.release_acceptance.ReleaseAcceptanceTests.test_private_green_does_not_imply_public_auth)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 601, in test_private_green_does_not_imply_public_auth
+    doc = build_matrix()
+          ^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 437, in build_matrix
+    rows = build_rows()
+           ^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 181, in build_rows
+    g_text = GUARANTEES.read_text(encoding="utf-8")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vostrikov/projects/packages/agentools/plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md'
+
+======================================================================
+ERROR: test_public_authorized_must_stay_false (tools.release_acceptance.ReleaseAcceptanceTests.test_public_authorized_must_stay_false)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 587, in test_public_authorized_must_stay_false
+    doc = build_matrix()
+          ^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 437, in build_matrix
+    rows = build_rows()
+           ^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 181, in build_rows
+    g_text = GUARANTEES.read_text(encoding="utf-8")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vostrikov/projects/packages/agentools/plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md'
+
+======================================================================
+ERROR: test_stale_digest_detected (tools.release_acceptance.ReleaseAcceptanceTests.test_stale_digest_detected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 577, in test_stale_digest_detected
+    doc = build_matrix()
+          ^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 437, in build_matrix
+    rows = build_rows()
+           ^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 181, in build_rows
+    g_text = GUARANTEES.read_text(encoding="utf-8")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vostrikov/projects/packages/agentools/plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md'
+
+======================================================================
+ERROR: test_validate_live_matrix (tools.release_acceptance.ReleaseAcceptanceTests.test_validate_live_matrix)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 551, in test_validate_live_matrix
+    doc = build_matrix()
+          ^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 437, in build_matrix
+    rows = build_rows()
+           ^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 181, in build_rows
+    g_text = GUARANTEES.read_text(encoding="utf-8")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vostrikov/projects/packages/agentools/plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md'
+
+======================================================================
+ERROR: test_build_residuals_nonempty (tools.release_dossier.ReleaseDossierTests.test_build_residuals_nonempty)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/release_dossier.py", line 307, in test_build_residuals_nonempty
+    matrix = ra.build_matrix()
+             ^^^^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 437, in build_matrix
+    rows = build_rows()
+           ^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 181, in build_rows
+    g_text = GUARANTEES.read_text(encoding="utf-8")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vostrikov/projects/packages/agentools/plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md'
+
+======================================================================
+ERROR: test_corrupt_manifest_detected (tools.release_dossier.ReleaseDossierTests.test_corrupt_manifest_detected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/release_dossier.py", line 312, in test_corrupt_manifest_detected
+    doc = build_dossier()
+          ^^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_dossier.py", line 161, in build_dossier
+    live_matrix = ra.build_matrix()
+                  ^^^^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 437, in build_matrix
+    rows = build_rows()
+           ^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 181, in build_rows
+    g_text = GUARANTEES.read_text(encoding="utf-8")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vostrikov/projects/packages/agentools/plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md'
+
+======================================================================
+ERROR: test_omitted_residual_coverage (tools.release_dossier.ReleaseDossierTests.test_omitted_residual_coverage)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/release_dossier.py", line 325, in test_omitted_residual_coverage
+    doc = build_dossier()
+          ^^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_dossier.py", line 161, in build_dossier
+    live_matrix = ra.build_matrix()
+                  ^^^^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 437, in build_matrix
+    rows = build_rows()
+           ^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 181, in build_rows
+    g_text = GUARANTEES.read_text(encoding="utf-8")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vostrikov/projects/packages/agentools/plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md'
+
+======================================================================
+ERROR: test_promoted_private_ready_without_consumer_fails (tools.release_dossier.ReleaseDossierTests.test_promoted_private_ready_without_consumer_fails)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/release_dossier.py", line 319, in test_promoted_private_ready_without_consumer_fails
+    doc = build_dossier()
+          ^^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_dossier.py", line 161, in build_dossier
+    live_matrix = ra.build_matrix()
+                  ^^^^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 437, in build_matrix
+    rows = build_rows()
+           ^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/release_acceptance.py", line 181, in build_rows
+    g_text = GUARANTEES.read_text(encoding="utf-8")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vostrikov/projects/packages/agentools/plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/hardening-guarantees-v1.md'
+
+======================================================================
+ERROR: test_attestation_not_claimed (tools.sbom_gate.SbomGateTests.test_attestation_not_claimed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/vostrikov/projects/packages/agentools/tools/sbom_gate.py", line 628, in test_attestation_not_claimed
+    att = hosted_attestation_status()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/vostrikov/projects/packages/agentools/tools/sbom_gate.py", line 399, in hosted_attestation_status
+    if "Artifact attestations (private) | unavailable-plan" in CAPABILITY_FINDING.read_text(
+                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vostrikov/projects/packages/agentools/plans/2026.09.19-№1-AGENTOOLS-HARDENING/findings/P9-ci-capabilities.md'
+
+----------------------------------------------------------------------
+Ran 65 tests in 21.856s
+
+FAILED (errors=17)

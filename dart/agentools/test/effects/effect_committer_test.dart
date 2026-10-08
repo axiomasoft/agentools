@@ -100,7 +100,7 @@ void main() {
   // ALC-26, ALC-27; after failover an executor from the old epoch is rejected.
   test('rejects a zombie executor epoch', () {
     expect(
-      () => ActionReducer().fold([
+      () => ActionReducer(specRevision: '2026-08').fold([
         event(1, 0, 'action_created'),
         event(2, 1, 'epoch_started', epoch: 1),
         event(3, 2, 'action_started'),

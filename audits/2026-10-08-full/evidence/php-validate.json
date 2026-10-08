@@ -1,0 +1,12 @@
+{
+  "id": "php-validate",
+  "cwd": "php",
+  "command": [
+    "composer",
+    "validate",
+    "--strict"
+  ],
+  "started_utc": "2026-10-08T12:02:32.045725+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.114
+}

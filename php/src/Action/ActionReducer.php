@@ -19,7 +19,7 @@ final class ActionReducer
     ];
 
     public function __construct(
-        private readonly string $specRevision = '2026-08',
+        private readonly string $specRevision = '2026-09',
         private readonly ?JournalHashChain $hashChain = null,
         private readonly EventUpcasterChain $upcasters = new EventUpcasterChain(),
     ) {

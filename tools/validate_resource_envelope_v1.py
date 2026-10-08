@@ -8,8 +8,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CONTRACT = ROOT / "plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/resource-envelope-v1.md"
-COVERAGE = ROOT / "plans/2026.09.19-№1-AGENTOOLS-HARDENING/findings/P1-contract-coverage.md"
+CONTRACT = ROOT / "verification/root/contracts/resource-envelope-v1.md"
+COVERAGE = ROOT / "verification/findings/P1-contract-coverage.md"
 
 REQUIRED_RL = tuple(f"RL-{n:03d}" for n in range(1, 26))
 RL_OWNER_RE = re.compile(r"^\| (RL-\d{3}) \|(?:[^|]+\|){9} (P\d+(?:/P\d+)?) \|", re.MULTILINE)

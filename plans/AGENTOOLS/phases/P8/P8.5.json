@@ -1,0 +1,343 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P8.5",
+  "title": "Журнал действия + контракты персистентности в Dart (§C1–§C3, §C5–§C7, D13)",
+  "status": "done",
+  "summary": "Реализовать документ `03` (правила `ALC-*`): журнал как источник истины — append с `expected_prev_seq` и типизированной ошибкой конфликта, детерминированная свёртка состояния и полный набор состояний FSM, журналирование недетерминированного ввода как immutable payload, версионирование событий с апкастингом, снапшот отдельно от журнала, хеш-цепочка записей; плюс порты персистентности `EventLog`/`SessionStore`/`Clock` с in-memory реализациями (D13). Хеш-цепочка обязана совпасть с PHP побайтно на одном списке событий.",
+  "why": "«Журнал — истина, replay — проекция» (§C1) — выбор, сделанный именно потому, что строгий replay физически не переносится между языками: две реализации сойдутся только на чтении и свёртке журнала. Отсюда цена ошибки в Dart: недетерминированная свёртка или пропущенное журналирование недетерминированного ввода дают расхождение с PHP, которое проявится не тестом, а разными результатами на одном векторе. Отдельная ловушка языка: в Dart легко получить недетерминизм бесплатно — порядок обхода `Map` зависит от порядка вставки, а не от ключа, и свёртка, опирающаяся на него, будет зелёной локально и разойдётся с PHP на другом порядке событий. `expected_prev_seq` — единственное место, где спека нормирует гонку (§C3: ни Temporal, ни Restate, ни DBOS не дают этого готовым для доменного лога), а хеш-цепочка (§C7) — единственная часть аудита, требующая согласия МЕЖДУ реализациями. Порты персистентности — контракт, который в контуре Axioma будет реализован поверх реальной БД: спроектированный под массив в памяти, он не ляжет. `RAG:— (repo-grounded: DR-01 §C1–§C3, §C5–§C7 — модель детерминизма, immutable payload, optimistic concurrency, апкастинг, снапшот, хеш-цепочка «единственная часть, требующая согласия между реализациями»; §C8 — память агента вне спеки; @plan/plan.json §5 D13, D90; research/07-… §8, §9, §12)`.",
+  "scope": {
+    "include": [
+      "(а) типы событий журнала и их сериализация по документу `03` и его схемам; (б) `append` с обязательным `expected_prev_seq` и ТИПИЗИРОВАННОЙ ошибкой конфликта версий (обязанность вызывающего — перечитать и повторить); (в) детерминированная свёртка журнала в состояние + полный набор состояний FSM и переходов ровно по таблице документа `03`; (г) журналирование недетерминированного ввода как immutable payload (§C2): результат LLM-вызова, метка времени, случайные значения, идемпотентные ключи попадают В ТЕЛО события и при восстановлении ЧИТАЮТСЯ, а не вычисляются заново; (д) `event_version` и цепочка апкастов по типу события; мутация записанных событий запрещена ТИПАМИ (`final` поля, неизменяемые коллекции), а не соглашением; (е) снапшот как отдельная сущность с собственным жизненным циклом (§C6); (ж) хеш-цепочка: каждая запись несёт `prev_hash`, формат канонизации — фасад P8.3; **побайтное совпадение цепочки с PHP** на одном списке событий (межъязыковой якорь, `research/07-…` §9); (з) порты `EventLog`, `SessionStore`, `Clock` в `lib/src/contracts/` — МИНИМАЛЬНАЯ поверхность, выведенная из семантики документа `03`, идиоматичная Dart (`Future`-возвращающие операции там, где реализация будет асинхронной), плюс in-memory реализации (D13); (и) детерминированные идентификаторы событий по правилу, ЗАПИСАННОМУ в ревизии; (к) тесты, чьи ожидания взяты из векторов `ALC-*`, с перечнем заимствованных `id`."
+    ],
+    "exclude": [
+      "реестр эффектов и fencing-эпоха (P8.6 — расширяет журнал следующим item'ом); подтверждение и его событие решения (P8.7); идемпотентность (P8.8); сценарии (P8.10); долгие операции (P8.11); ПРОДУКТОВЫЕ реализации персистентности — БД, файлы, очереди (D13: вне репозитория, контур Axioma); память/контекст агента (§C8 — вне спеки by design); retention, хранилище и доступ к журналу (§C7 — не нормируются); ЛЮБЫЕ правки ревизии, схем, корпуса и PHP SDK."
+    ]
+  },
+  "depends_on": [
+    "P8.3"
+  ],
+  "decisions": [
+    "D13",
+    "D19",
+    "D62"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "spec/revisions/2026-08/03_action-lifecycle.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/rules.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/schema/lifecycle-event.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "fixtures/2026-08/README.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/2026-08/vectors/l1/lifecyclefold-001.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-07-p8-dart-sdk-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [],
+  "rules": [
+    "порт выводится из СЕМАНТИКИ документа `03` (optimistic concurrency, снапшот отдельно, неизменяемость записей), а не из удобства in-memory реализации и не из сигнатур PHP-порта: метод, осмысленный только для массива в памяти, запрещён; расширения «про запас» запрещены (`DR-01` §E6); свёртка ДЕТЕРМИНИРОВАНА: системные часы и случайность в ней не читаются (время — из порта `Clock`), а любой обход `Map` в логике свёртки и канонизации идёт по ОТСОРТИРОВАННЫМ ключам — порядок вставки не является порядком (это тихий источник расхождения с PHP); мутация записанного события запрещена типами (`final` поля, `List.unmodifiable`/`Map.unmodifiable`), а не комментарием; хеш-цепочка считается через фасад канонизации P8.3, второй канонизатор запрещён; побайтная сверка цепочки с PHP делается против золотых данных `php/tests/Journal/**` командой; форма идентификатора события берётся из документа `03`; расхождение с вектором разбирается прогоном против эталонного адаптера И адаптера PHP, все выводы — в отчёте; плановый линтер — командой из Phase Context."
+  ],
+  "guidance": "Идиоматичный Dart, НЕ транслит PHP: свёртка — ЧИСТАЯ функция «список событий → состояние» (единственный способ доказать детерминизм таблицей кейсов); состояния FSM — `enum` либо `sealed class` по таблице документа `03`; события — `final class` с `final` полями и неизменяемыми коллекциями. Анти-самообман: «журнал реализован» ≠ «журнал защищает инварианты» — доказательством считаются ТРИ отрицательных прогона: append с неверным `expected_prev_seq` даёт типизированную ошибку конфликта, попытка мутации записанного события отвергается, свёртка одного и того же списка событий дважды даёт побайтно равный результат; «цепочка считается» ≠ «цепочка та же, что в PHP» — нужен побайтный якорь. Анти-подгонка: если вектор не сходится, разбирается таблица переходов документа `03`, а не «дополняется» состояние FSM; если цепочка не сходится с PHP — сначала проверяется P8.3 на векторах RFC 8785, затем состав входа хеша по §C7, и только потом эскалация. ЗАПРЕЩЕНО: читать системные часы в логике свёртки; вычислять недетерминированный ввод заново при восстановлении; полагаться на порядок вставки `Map`; заводить в порту метод без потребителя; мутировать записанные события; складывать снапшот в тот же поток, что журнал; транслитерировать `php/src/Journal/**`. If-then: документ `03` не задаёт форму детерминированного идентификатора события либо формат канонизации хеш-цепочки → `🔴 Blocked` + эскалация (trigger «конфликт правил») с ценой «новая датированная ревизия» (D19/D62): это ровно та часть, которая требует согласия МЕЖДУ реализациями (§C7). If-then: цепочка расходится с золотыми данными PHP при зелёном P8.3 → `🔴 Blocked` + эскалация с адресатом «владелец + фазы P3/P7», оба байтовых выхода и вход — в отчёте.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "dart analyze dart/agentools; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "dart test --directory dart/agentools; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "php/tests/Journal/**",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "grep -rnE 'DateTime\\.now|Stopwatch|Random\\(' dart/agentools/lib/src/journal | wc -l",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "cmd": "grep -rLE 'ALC-[0-9]' dart/agentools/test/journal | wc -l",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "cmd": "git diff --quiet -- php spec/revisions/2026-08 fixtures/2026-08 conformance; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "procedure": "dart analyze dart/agentools",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V8",
+      "procedure": "dart test (cwd dart/agentools)",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V9",
+      "procedure": "append with wrong expected_prev_seq -> VersionConflict",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V10",
+      "procedure": "recorded event immutability",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V11",
+      "procedure": "fold determinism",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V12",
+      "procedure": "upcast on read only",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V13",
+      "procedure": "hash chain tamper",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V14",
+      "procedure": "snapshot + tail restore",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V15",
+      "procedure": "cross-language prev_hash anchor vs php/tests/Action",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V16",
+      "procedure": "grep system clocks in dart/agentools/lib/src/journal | wc -l",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V17",
+      "procedure": "grep -rLE ALC-[0-9] dart/agentools/test/journal | wc -l",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V18",
+      "procedure": "git diff foreign artifacts",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "журнал действия как источник истины (`expected_prev_seq` с типизированным конфликтом, детерминированная свёртка, полный набор состояний FSM, immutable payload недетерминированного ввода, `event_version` с апкастингом, снапшот отдельно, хеш-цепочка через единственный фасад канонизации) + ДОКАЗАННОЕ побайтное совпадение цепочки с PHP + минимальные порты `EventLog`/`SessionStore`/`Clock` с in-memory реализациями + шесть тестов инвариантов, из них три отрицательных с выводом."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-19T02:55:00Z",
+    "finished_at": "2026-09-19T02:55:00Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "implementation/high",
+      "effort": "high"
+    },
+    "notes": "hash-chain sha-256:e1a9de57217a9919206628b0a4e1afd3a009f17b7c667afc98061d9e0936dfd0 + sha-256:ef22613a6bf20d817d3a3d9e37484a1796673e75c8d8b1e4d11a9c7119ae8d07; ALC-3/7/21/31/32/33/36; 55 tests; write-site: pre_mutation: allow · pre_final: allow\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V7",
+        "exit": 0,
+        "at": "2026-09-19T02:55:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V8",
+        "exit": 0,
+        "at": "2026-09-19T02:55:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V9",
+        "exit": 0,
+        "at": "2026-09-19T02:55:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V10",
+        "exit": 0,
+        "at": "2026-09-19T02:55:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V11",
+        "exit": 0,
+        "at": "2026-09-19T02:55:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V12",
+        "exit": 0,
+        "at": "2026-09-19T02:55:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V13",
+        "exit": 0,
+        "at": "2026-09-19T02:55:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V14",
+        "exit": 0,
+        "at": "2026-09-19T02:55:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V15",
+        "exit": 0,
+        "at": "2026-09-19T02:55:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V16",
+        "exit": 0,
+        "at": "2026-09-19T02:55:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V17",
+        "exit": 0,
+        "at": "2026-09-19T02:55:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V18",
+        "exit": 0,
+        "at": "2026-09-19T02:55:00Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-19T02:55:00Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Реализовать документ `03` (правила `ALC-*`): журнал как источник истины — append с `expected_prev_seq` и типизированной ошибкой конфликта, детерминированная свёртка состояния и полный набор состояний FSM, журналирование недетерминированного ввода как immutable payload, версионирование событий с апкастингом, снапшот отдельно от журнала, хеш-цепочка записей; плюс порты персистентности `EventLog`/`SessionStore`/`Clock` с in-memory реализациями (D13). Хеш-цепочка обязана совпасть с PHP побайтно на одном списке событий."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "«Журнал — истина, replay — проекция» (§C1) — выбор, сделанный именно потому, что строгий replay физически не переносится между языками: две реализации сойдутся только на чтении и свёртке журнала. Отсюда цена ошибки в Dart: недетерминированная свёртка или пропущенное журналирование недетерминированного ввода дают расхождение с PHP, которое проявится не тестом, а разными результатами на одном векторе. Отдельная ловушка языка: в Dart легко получить недетерминизм бесплатно — порядок обхода `Map` зависит от порядка вставки, а не от ключа, и свёртка, опирающаяся на него, будет зелёной локально и разойдётся с PHP на другом порядке событий. `expected_prev_seq` — единственное место, где спека нормирует гонку (§C3: ни Temporal, ни Restate, ни DBOS не дают этого готовым для доменного лога), а хеш-цепочка (§C7) — единственная часть аудита, требующая согласия МЕЖДУ реализациями. Порты персистентности — контракт, который в контуре Axioma будет реализован поверх реальной БД: спроектированный под массив в памяти, он не ляжет. `RAG:— (repo-grounded: DR-01 §C1–§C3, §C5–§C7 — модель детерминизма, immutable payload, optimistic concurrency, апкастинг, снапшот, хеш-цепочка «единственная часть, требующая согласия между реализациями»; §C8 — память агента вне спеки; @plan/plan.json §5 D13, D90; research/07-… §8, §9, §12)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "(а) типы событий журнала и их сериализация по документу `03` и его схемам; (б) `append` с обязательным `expected_prev_seq` и ТИПИЗИРОВАННОЙ ошибкой конфликта версий (обязанность вызывающего — перечитать и повторить); (в) детерминированная свёртка журнала в состояние + полный набор состояний FSM и переходов ровно по таблице документа `03`; (г) журналирование недетерминированного ввода как immutable payload (§C2): результат LLM-вызова, метка времени, случайные значения, идемпотентные ключи попадают В ТЕЛО события и при восстановлении ЧИТАЮТСЯ, а не вычисляются заново; (д) `event_version` и цепочка апкастов по типу события; мутация записанных событий запрещена ТИПАМИ (`final` поля, неизменяемые коллекции), а не соглашением; (е) снапшот как отдельная сущность с собственным жизненным циклом (§C6); (ж) хеш-цепочка: каждая запись несёт `prev_hash`, формат канонизации — фасад P8.3; **побайтное совпадение цепочки с PHP** на одном списке событий (межъязыковой якорь, `research/07-…` §9); (з) порты `EventLog`, `SessionStore`, `Clock` в `lib/src/contracts/` — МИНИМАЛЬНАЯ поверхность, выведенная из семантики документа `03`, идиоматичная Dart (`Future`-возвращающие операции там, где реализация будет асинхронной), плюс in-memory реализации (D13); (и) детерминированные идентификаторы событий по правилу, ЗАПИСАННОМУ в ревизии; (к) тесты, чьи ожидания взяты из векторов `ALC-*`, с перечнем заимствованных `id`."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "реестр эффектов и fencing-эпоха (P8.6 — расширяет журнал следующим item'ом); подтверждение и его событие решения (P8.7); идемпотентность (P8.8); сценарии (P8.10); долгие операции (P8.11); ПРОДУКТОВЫЕ реализации персистентности — БД, файлы, очереди (D13: вне репозитория, контур Axioma); память/контекст агента (§C8 — вне спеки by design); retention, хранилище и доступ к журналу (§C7 — не нормируются); ЛЮБЫЕ правки ревизии, схем, корпуса и PHP SDK."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`dart/agentools/lib/src/schema/schema.dart` · `dart/agentools/lib/src/schema/canonicalizer.dart` (канонизация P8.3) · `spec/revisions/2026-08/03_action-lifecycle.md` · `spec/revisions/2026-08/rules.json` (правила `ALC-*`) · `spec/revisions/2026-08/schema/lifecycle-event.json` · `fixtures/2026-08/README.md` · `fixtures/2026-08/vectors/l1/lifecyclefold-001.json` · `php/tests/Action/ActionReducerTest.php` · `php/tests/Persistence/PersistenceContractsTest.php` (золотые данные хеш-цепочки) · `php/src/Contracts/EventLog.php` · `php/src/Contracts/SessionStore.php` · `php/src/Contracts/Clock.php` · `@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §C1–§C8 · `@plan/plan.json` §5 D13 · `@plan/knowledge/research-07-p8-dart-sdk-2026-08.json` §6.4, §8, §9, §12."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`dart/agentools/lib/src/journal/**` · `dart/agentools/lib/src/contracts/**` (порты `EventLog`, `SessionStore`, `Clock`) · `dart/agentools/lib/agentools.dart` · `dart/agentools/test/journal/**` (репо-пути — от корня `~/projects/packages/agentools`)"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/research-07-p8-dart-sdk-2026-08.json` §6.4, §8, §9 2) `spec/revisions/2026-08/03_action-lifecycle.md` ЦЕЛИКОМ 3) `spec/revisions/2026-08/rules.json` (строки `ALC-*`) 4) `fixtures/2026-08/README.md` + векторы `ALC-*` 5) `@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §C1–§C8 6) `@plan/plan.json` §2 Execution Rules, §5 (D13, D72, D90)."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "порт выводится из СЕМАНТИКИ документа `03` (optimistic concurrency, снапшот отдельно, неизменяемость записей), а не из удобства in-memory реализации и не из сигнатур PHP-порта: метод, осмысленный только для массива в памяти, запрещён; расширения «про запас» запрещены (`DR-01` §E6); свёртка ДЕТЕРМИНИРОВАНА: системные часы и случайность в ней не читаются (время — из порта `Clock`), а любой обход `Map` в логике свёртки и канонизации идёт по ОТСОРТИРОВАННЫМ ключам — порядок вставки не является порядком (это тихий источник расхождения с PHP); мутация записанного события запрещена типами (`final` поля, `List.unmodifiable`/`Map.unmodifiable`), а не комментарием; хеш-цепочка считается через фасад канонизации P8.3, второй канонизатор запрещён; побайтная сверка цепочки с PHP делается против золотых данных `php/tests/Journal/**` командой; форма идентификатора события берётся из документа `03`; расхождение с вектором разбирается прогоном против эталонного адаптера И адаптера PHP, все выводы — в отчёте; плановый линтер — командой из Phase Context."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Идиоматичный Dart, НЕ транслит PHP: свёртка — ЧИСТАЯ функция «список событий → состояние» (единственный способ доказать детерминизм таблицей кейсов); состояния FSM — `enum` либо `sealed class` по таблице документа `03`; события — `final class` с `final` полями и неизменяемыми коллекциями. Анти-самообман: «журнал реализован» ≠ «журнал защищает инварианты» — доказательством считаются ТРИ отрицательных прогона: append с неверным `expected_prev_seq` даёт типизированную ошибку конфликта, попытка мутации записанного события отвергается, свёртка одного и того же списка событий дважды даёт побайтно равный результат; «цепочка считается» ≠ «цепочка та же, что в PHP» — нужен побайтный якорь. Анти-подгонка: если вектор не сходится, разбирается таблица переходов документа `03`, а не «дополняется» состояние FSM; если цепочка не сходится с PHP — сначала проверяется P8.3 на векторах RFC 8785, затем состав входа хеша по §C7, и только потом эскалация. ЗАПРЕЩЕНО: читать системные часы в логике свёртки; вычислять недетерминированный ввод заново при восстановлении; полагаться на порядок вставки `Map`; заводить в порту метод без потребителя; мутировать записанные события; складывать снапшот в тот же поток, что журнал; транслитерировать `php/src/Journal/**`. If-then: документ `03` не задаёт форму детерминированного идентификатора события либо формат канонизации хеш-цепочки → `🔴 Blocked` + эскалация (trigger «конфликт правил») с ценой «новая датированная ревизия» (D19/D62): это ровно та часть, которая требует согласия МЕЖДУ реализациями (§C7). If-then: цепочка расходится с золотыми данными PHP при зелёном P8.3 → `🔴 Blocked` + эскалация с адресатом «владелец + фазы P3/P7», оба байтовых выхода и вход — в отчёте."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`dart analyze dart/agentools; echo $?` = 0 · `dart test --directory dart/agentools; echo $?` = 0 · отрицательный прогон: `append` с неверным `expected_prev_seq` даёт ТИПИЗИРОВАННУЮ ошибку конфликта (вывод — в Completion Notes) · отрицательный прогон: попытка изменить записанное событие отвергается (вывод — в Completion Notes) · тест детерминизма свёртки: два прогона над одним списком событий дают побайтно равный результат — зелёный · **межъязыковой якорь**: `prev_hash` цепочки на общем списке событий побайтно равен золотому значению из `php/tests/Journal/**` — сверка выполнена командой (команда и оба значения — в Completion Notes) · тест апкастинга: событие старшей `event_version` читается через цепочку апкастов и даёт то же состояние — зелёный · тест хеш-цепочки: подмена одного события ломает проверку цепочки — красный ожидаемо (вывод — в Completion Notes) · тест снапшота: восстановление из снапшота + хвоста журнала равно свёртке полного журнала — зелёный · `grep -rnE 'DateTime\\.now|Stopwatch|Random\\(' dart/agentools/lib/src/journal | wc -l` = 0 (системные часы и случайность в логике журнала не читаются; время — через порт `Clock`) · `grep -rLE 'ALC-[0-9]' dart/agentools/test/journal | wc -l` = 0 · `git diff --quiet -- php spec/revisions/2026-08 fixtures/2026-08 conformance; echo $?` = 0 · прогнать плановый линтер по каталогу плана и опубликовать счёт с атрибуцией, K = 0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "журнал действия как источник истины (`expected_prev_seq` с типизированным конфликтом, детерминированная свёртка, полный набор состояний FSM, immutable payload недетерминированного ввода, `event_version` с апкастингом, снапшот отдельно, хеш-цепочка через единственный фасад канонизации) + ДОКАЗАННОЕ побайтное совпадение цепочки с PHP + минимальные порты `EventLog`/`SessionStore`/`Clock` с in-memory реализациями + шесть тестов инвариантов, из них три отрицательных с выводом."
+    }
+  ]
+}

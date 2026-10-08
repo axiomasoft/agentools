@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D118",
+  "title": "Решение",
+  "date": "2026-07-27",
+  "status": "accepted",
+  "decision": "**Q-14 закрыта нормированием: путь вывода генератора `conformance/bin/levels` — обязательный параметр `--out <путь>`** (умолчание `conformance/reports/reference-levels.md`), внесён в Scope (б) и Validation item'а P6.9 вместе с доказывающим прогоном «записан по переданному пути, отчёт эталона не изменён». **Consequences:** отменяет ветку «P7.12 и P8.13 встают `🔴` с адресатом закрытой фазы P6» решений D82 и D94 — supersedes их в части «дешёвая точка починки — до закрытия фазы P6»: починка перенесена в сам item P6.9; платим одним параметром CLI и одним лишним прогоном в его Validation. Оставить как было нельзя: к фазе P8 за один фиксированный путь конкурируют ТРИ отчёта (эталон, PHP, Dart), форк генератора запрещён вторым носителем факта (D67), а перезапись чужого отчёта — молчаливая потеря; то есть штатным исходом фазы P7 был бы блок на закрытой фазе, а реопен P6 после закрытия — четыре шага `plan-protocol` §3",
+  "rationale": "`plan-protocol` §5 (reconcile: `Потребляет` P7/P8 — «генератор отчёта по уровням `conformance/bin/levels`» — производится P6.9 в форме, не допускающей второго потребителя); `RAG:— (repo-grounded: @plan/phases/P6/phase.json P6.9 Scope (б) и Validation до правки — фиксированный `conformance/reports/reference-levels.md`, флаги только `--write`/`--check`; @plan/phases/P7/phase.json Phase Context — Q-14 названа «дешёвая точка починки до закрытия P6»)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D118\ndate: 2026-07-27\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Q-14 закрыта нормированием: путь вывода генератора `conformance/bin/levels` — обязательный параметр `--out <путь>`** (умолчание `conformance/reports/reference-levels.md`), внесён в Scope (б) и Validation item'а P6.9 вместе с доказывающим прогоном «записан по переданному пути, отчёт эталона не изменён». **Consequences:** отменяет ветку «P7.12 и P8.13 встают `🔴` с адресатом закрытой фазы P6» решений D82 и D94 — supersedes их в части «дешёвая точка починки — до закрытия фазы P6»: починка перенесена в сам item P6.9; платим одним параметром CLI и одним лишним прогоном в его Validation. Оставить как было нельзя: к фазе P8 за один фиксированный путь конкурируют ТРИ отчёта (эталон, PHP, Dart), форк генератора запрещён вторым носителем факта (D67), а перезапись чужого отчёта — молчаливая потеря; то есть штатным исходом фазы P7 был бы блок на закрытой фазе, а реопен P6 после закрытия — четыре шага `plan-protocol` §3"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`plan-protocol` §5 (reconcile: `Потребляет` P7/P8 — «генератор отчёта по уровням `conformance/bin/levels`» — производится P6.9 в форме, не допускающей второго потребителя); `RAG:— (repo-grounded: @plan/phases/P6/phase.json P6.9 Scope (б) и Validation до правки — фиксированный `conformance/reports/reference-levels.md`, флаги только `--write`/`--check`; @plan/phases/P7/phase.json Phase Context — Q-14 названа «дешёвая точка починки до закрытия P6»)`"
+    }
+  ]
+}

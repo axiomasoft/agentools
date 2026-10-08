@@ -1,0 +1,2 @@
+{"probe":"expression","actual":"Error: Call to undefined function AgenTools\\Scenario\\mb_strlen()"}
+{"probe":"canonicalizer","actual":"AgenTools\\Schema\\CanonicalizationException: Call to undefined function AgenTools\\Schema\\mb_convert_encoding()"}

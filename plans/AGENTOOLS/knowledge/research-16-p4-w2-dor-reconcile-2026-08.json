@@ -1,0 +1,42 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "research-16-p4-w2-dor-reconcile-2026-08",
+  "title": "16 — P4 W2: reconcile исполнимости и exact remediation inventory",
+  "sections": [
+    {
+      "id": "16-P4-W2-reconcile-exact-remediation-inventory",
+      "title": "16 — P4 W2: reconcile исполнимости и exact remediation inventory",
+      "text": "**Дата:** 2026-08-04  \n**Статус:** design input повторного захода `task:plan-design AGENTOOLS P4`  \n**Сырьё слоя 1:** `../artifacts/P5-gate-b.md` (round 1, F1–F8 и матрица 382 правил) ·\nфактический precheck репозитория на `26220f4` · закрытые P4.14/P4.9."
+    },
+    {
+      "id": "1.-W2",
+      "title": "1. Фактическая точка старта W2",
+      "text": "P3 терминальна как `🟠 Done with deviations`: последний item P3.24 закрыт, а outer-shape долг\nего третьего аудита исправлен отдельным terminal P4.14. P4.9 также terminal и передал W2\nформальный driver-state. На дереве `26220f4` полный `spec_lint` имеет ровно одну ошибку —\nнепокрытый `CFH-55`; `--fixtures-check` зелёный; рабочее дерево чисто. Следовательно, готовность\nW2 проверяется состояниями **P3 terminal + P4.14 terminal + P4.9 terminal** и exact debt\n`[CFH-55]`, а не исторической точкой P3.19. `RAG:— (repo-grounded: @plan/plan.json §4; @plan/phases/P3/phase.json\nP3.24/Audit заход 3; @plan/phases/P4/phase.json P4.14/P4.9; команды precheck 2026-08-04)`."
+    },
+    {
+      "id": "2.-Reconcile-headline-32-carriers-exact-set",
+      "title": "2. Reconcile headline `32 carriers` с воспроизводимым exact-set",
+      "text": "`@plan/knowledge/artifacts-P5-gate-b.json` сообщает headline «32 поимённо разобранных носителя», но не публикует\nреестр из 32 идентификаторов и не задаёт онтологию счёта (fixture id, schema carrier и checker\nbranch смешаны в находках). Число поэтому нельзя использовать как exact-set acceptance gate:\nисполнитель мог бы получить `32` только изобретением пяти неназванных строк.\n\nВоспроизводимые множества отчёта:\n\n- приложение матрицы содержит **116** строк `FAIL F1`…`FAIL F6` и **24** уникальных sole-carrier\n  id; команда: `sed -n '55,470p' @plan/knowledge/artifacts-P5-gate-b.json | awk -F'|' '/FAIL\n  F[1-6]/{n++; gsub(/^ +| +$/, \"\", $4); c[$4]=1} END{print n, length(c)}'` → `116 24`;\n- union матричных id со всеми fixture-id, явно названными в F1–F6, даёт **27** round-1 fixture\n  carriers. Три не-sole, но всё равно вырожденных кейса — `longop-002`, `scnnocode-003`,\n  `scenario-004`; они входят в remediation по самим находкам F2/F5;\n- `fixtures/2026-08/schema/vector.json` и checker branches `tools/spec_lint.py` — причины\n  вырождения/исполнительские механизмы, но не fixture carriers и потому живут отдельными полями\n  evidence-map, не добивают счёт до headline.\n\nКанонический exact inventory W2 — следующие 27 исходных fixture id:\n\n```text\naudit-004\ncfhbaseline-001\ncfhgrease-001\ncfhreport-001\nclarificationstate-001\nconfdual-001\nconfpolicy-001\nconftoken-001\nextidentity-001\nextnegotiation-001\nlifecycleconcurrency-001\nlifecyclefold-001\nlifecycleindex-001\nlifecycleintegrity-001\nlongop-002\novrdev-001\nprofileuntrusted-001\nscenario-004\nscnnocode-003\nscnorder-002\nsecurity-001\nsecurity-002\nsecurity-003\nsecurity-004\ntoolauthoring-001\ntoolcontract-001\ntooldigest-001\n```\n\nРазбиение без пересечения: P4.10 — 14 behavior id; P4.11 — 3 scenario id; P4.12 — 10 static\nid. Manifest P4.13 обязан хранить `reported_carrier_count: 32` как исторический факт отчёта и\nотдельно exact `round1_fixture_carriers` из 27 id, `round1_fail_rules` из 116 rule id,\n`driver_schema_subject` и checker predicates. Gate применяется к точным множествам 27/116, не к\nневосстановимому headline. `RAG:— (repo-grounded: @plan/knowledge/artifacts-P5-gate-b.json §§Почему RED,\nЛинза 3, Находки F1–F6)`."
+    },
+    {
+      "id": "3.-Workflow-W2",
+      "title": "3. Workflow W2: безопасная граница параллелизма",
+      "text": "Параллельны только authoring write-sets P4.10/P4.11/P4.12. P4.12 обязан владеть не только\n`static/**` и `tools/spec_lint.py`, но и `schema/harness-case.json` плюс двумя harness-case\nфайлами `CFH-55`; иначе D149 неисполняем. Авторы не коммитят и не меняют план. Общие\n`spec_lint`/coverage gates не считаются окончательными во время параллельной записи: после join\nони перепроверяются последовательным closer'ом. Read-only review выполняется после join;\nдопускается максимум одна fix-итерация с обязательным повторным review, затем workflow\nостанавливается и возвращает находки main loop.\n\nCloser исполняется тем же минимумом `implementation/high`, что и item Routing. Пин\n`implementation/low` годится для механического `plan-close`, но не для проверки/коммита ещё не\nзакрытого scope: это был бы route undershoot. Чтобы до закрытия P4.10/P4.11 устранить единственный\nглобальный debt `CFH-55`, порядок close фиксируется `P4.12 → P4.10 → P4.11`; P4.13 затем\nинтеграционно перепроверяет весь join. `RAG:— (repo-grounded: @plan/plan.json §3 P4.10–P4.12;\n@plan/phases/P4/phase.json items; workflows/wf-agentools-p4-remediation.js до D154; D149)`."
+    },
+    {
+      "id": "4.-Pre-mortem-mitigations",
+      "title": "4. Pre-mortem и mitigations",
+      "text": "| Причина провала | Ранний сигнал | Mitigation/owner |\n|:--|:--|:--|\n| Author P4.12 не может создать CFH-55 pair | write outside declared workflow files | exact P4.12 write-set включает schema+harness; owner W2 |\n| Валидация одного автора читает наполовину изменённый checker | параллельный `spec_lint` даёт плавающий вывод | общие gates только после join; sequential closer |\n| Low closer фактически исполняет high item | Task Contract route mismatch или нет доказуемого executor route | closer = implementation/high; фактический route в Completion Notes/journal |\n| Evidence-map «достигает 32» фиктивными строками | отсутствует source row для carrier | exact 27 fixture ids + 116 rule ids; headline хранится отдельно |\n| P4.13 объявляет Gate B GREEN | A3 artifact содержит содержательный verdict | P4.13 только evidence/A3; единственный semantic verdict — cold-start P5.1 round 2 |"
+    },
+    {
+      "id": "5.-Interrupted-state-recovery-D155",
+      "title": "5. Interrupted-state recovery (D155)",
+      "text": "После parallel authoring в рабочем дереве появился незакоммиченный candidate всех трёх scopes\nW2, но carrier не дошёл до последовательных review/close стадий. На этом дереве\n`python3 tools/spec_lint.py --fixtures-check fixtures/2026-08`, полный\n`python3 tools/spec_lint.py spec/revisions/2026-08` и `git diff --check` зелёные; изменённые и\nновые пути ограничены `Files` P4.10–P4.12, plan files до этого design-захода чисты.\n`RAG:— (repo-grounded: git status/diff и три команды 2026-08-04)`.\n\nFresh-only перезапуск невозможен по построению: старый precheck требует `git clean`, а обход\nпроверки либо повторный authoring рискуют затереть готовый candidate. Resume-контракт поэтому\nдвухрежимный:\n\n1. `fresh` сохраняет прежний exact precheck D154: clean tree, fixtures-check green, единственный\n   full-lint debt `CFH-55`;\n2. `resume` разрешён только при W2-only dirty-set, наличии изменений во всех трёх item scopes,\n   чистых plan files и зелёных joined-tree fixtures/full gates;\n3. author results восстанавливаются read-only по item scope, после чего выполняются неизменные\n   adversarial review, максимум одна fix-итерация и close `P4.12 → P4.10 → P4.11`;\n4. любой чужой path, неполный scope или красный gate останавливает carrier без reset/stash,\n   коммита или solo-fallback.\n\nАльтернативы отклонены: удалить/откатить candidate — потеря уже выполненной работы; повторить\nparallel authoring — неидемпотентная подмена provenance; закоммитить без восстановления review\nконтекста — обход D154 и `Review=full`. Цена resume — дополнительный read-only проход по трём\nscope, но единственная мутация до review остаётся явно ограниченной fix-итерацией."
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "research/16-p4-w2-dor-reconcile-2026-08.md",
+    "sha256": "8492f9d7691febe2e7d80a7fb4b3ea894b60574518ffd2ed0df5e09181da07f3"
+  }
+}

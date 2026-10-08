@@ -1,0 +1,12 @@
+{
+  "id": "fix-policy-workflows",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/ci_policy.py",
+    "check-workflows"
+  ],
+  "started_utc": "2026-10-08T13:46:31.663632+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.064
+}

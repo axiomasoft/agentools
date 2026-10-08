@@ -1,0 +1,313 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P6.5",
+  "title": "Golden-механика: канонический вид + двухступенчатое сравнение",
+  "status": "done",
+  "summary": "Реализовать golden-механику по `DR-01` §J7 и правилам `CFH-*` ревизии: канонический вид golden-файла (UTF-8 без BOM, LF, сортированные ключи, фиксированный отступ, метаполя ревизии спеки и версии фикстуры) и ДВУХСТУПЕНЧАТОЕ сравнение — сначала структурное после разбора, затем байтовое как вторичный сигнал; прогон golden-пар корпуса (`golden/jcs` — официальные векторы RFC 8785 и ключи вне BMP, `golden/idempotency`) против эталонного адаптера.",
+  "why": "Канонизация — общий корень детерминизма PHP и Dart: ключ идемпотентности считается по JCS, и расхождение сериализации чисел или порядка ключей вне BMP разводит реализации МОЛЧА. Одноступенчатое сравнение эту молчаливость сохраняет: структурное равенство прячет дрейф сериализатора, а чисто байтовое даёт ложные красные на шуме — §J7 требует именно пары, где второй шаг вторичный сигнал. `RAG:— (repo-grounded: DR-01 §D4 — официальные векторы RFC 8785 и отдельно ключи вне BMP, §J7 — канонический вид и двухступенчатое сравнение; @plan/phases/P4/phase.json P4.3 — golden-пары корпуса и их конвенция имён)`.",
+  "scope": {
+    "include": [
+      "(а) канонический вид golden-файла по §J7 и правилу ревизии: кодировка, перевод строки, порядок ключей, отступ, обязательные метаполя (ревизия спеки, версия фикстуры) — форма читается из `11_conformance-harness.md`, не назначается; (б) двухступенчатое сравнение: шаг 1 — структурное после разбора (расхождение = провал с человекочитаемым указанием пути в документе), шаг 2 — байтовое (расхождение при структурном равенстве = ВТОРИЧНЫЙ сигнал с отдельной формулировкой «дрейф сериализации», а не «провал протокола»); (в) прогон golden-пар корпуса `fixtures/2026-08/golden/{jcs,idempotency}` против адаптера ТЕМ способом доставки, который нормирован документом `11` (см. if-then); (г) отчёт: строка на каждую golden-пару со статусом и, при расхождении, обоими сигналами раздельно; (д) отрицательные прогоны: пара, отличающаяся ТОЛЬКО байтами (порядок ключей либо экранирование) при структурном равенстве — вторичный сигнал обязан сработать; пара с реальным структурным отличием — провал."
+    ],
+    "exclude": [
+      "написание и правка golden-пар (фаза P4, корпус заморожен); реализация JCS в SDK (P7/P8) — здесь сравнивается вывод адаптера; severity/baseline (P6.4), самотест harness (P6.6), CI (P6.7), lockstep (P6.8), отчёт по уровням (P6.9); правки нормативного текста."
+    ]
+  },
+  "depends_on": [
+    "P6.1",
+    "P6.2",
+    "P6.3"
+  ],
+  "decisions": [
+    "D4"
+  ],
+  "skills": [
+    "golden:jcs",
+    "golden:idempotency"
+  ],
+  "reads": [
+    {
+      "path": "spec/revisions/2026-08/11_conformance-harness.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/09_idempotency-errors.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "08_audit-observability.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "fixtures/2026-08/golden/**",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "fixtures/2026-08/golden/README.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-05-p6-conformance-harness-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-05-p6-conformance-harness-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "conformance/src/**",
+      "change": "any"
+    },
+    {
+      "path": "conformance/tests/**",
+      "change": "any"
+    },
+    {
+      "path": "conformance/tests/fixtures/golden/**",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "канонический вид и способ доставки golden-пары адаптеру берутся ИЗ `11_conformance-harness.md` — изобретать сообщение протокола либо «прогнать golden через собственный канонизатор раннера» ЗАПРЕЩЕНО: во втором случае субъект проверки подменяется (проверялся бы раннер, а не SDK), и вся golden-механика становится декорацией; порядок шагов сравнения ЖЁСТКИЙ — структурное, затем байтовое; байтовое расхождение при структурном равенстве формулируется отдельным текстом и НЕ приравнивается к провалу протокола; официальные векторы RFC 8785 не «нормализуются» под удобство разбора — сравнение идёт с байтами файла как есть; отрицательные прогоны обязательны для ОБОИХ сигналов; плановый линтер — командой из Phase Context."
+  ],
+  "guidance": "Стиль — чистые функции сравнения, отдельные от транспорта. Анти-самообман: «golden сравнивается» ≠ «golden различает» — доказательством считается пара, где структурно равно, а байтово нет: если такой прогон не приведён, вторичный сигнал не проверен вовсе. ЗАПРЕЩЕНО подменять субъект: канонизирует АДАПТЕР, раннер только сравнивает. ЗАПРЕЩЕНО: править golden-пары корпуса; ослаблять сравнение до «структурного достаточно»; молча приводить перевод строки или кодировку golden-файла перед сравнением. If-then: `11_conformance-harness.md` НЕ описывает, как golden-пара доставляется адаптеру (нет сообщения протокола либо вида вектора для этого) → это дефект ревизии, а не повод изобрести: `🔴 Blocked`, `Возобновление:` с адресатом (фаза P3 — формулировка правила), эскалация владельцу с явной ценой «ревизия заморожена, правка = новая датированная ревизия» (Q-13 заведён именно под этот риск; детектор — линза 4 аудита P5.1, и до freeze цена этой правки минимальна). If-then: байтовое расхождение массовое и системное (каждая пара) → это НЕ повод отключить второй шаг: назвать причину (сериализатор PHP), зафиксировать в Completion Notes и, если причина в нашем коде, починить его, а не проверку.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "php conformance/bin/run --adapter 'php conformance/adapters/reference/adapter.php' --vectors fixtures/2026-08 --spec-rev 2026-08 --report out/golden.json; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "python3 -c \"import json;r=json.load(open('out/golden.json'));print(len(r['golden']))\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "python3 -c \"import json;r=json.load(open('out/golden.json'));print([g['id'] for g in r['golden'] if g['status']!='pass'])\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "php conformance/bin/run --adapter 'php conformance/tests/fixtures/adapters/byte-drift.php' --vectors fixtures/2026-08 --spec-rev 2026-08 --report out/drift.json; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "cmd": "php conformance/bin/run --adapter 'php conformance/tests/fixtures/adapters/struct-drift.php' --vectors fixtures/2026-08 --spec-rev 2026-08; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "cmd": "python3 -c \"import glob;print([f for f in glob.glob('fixtures/2026-08/golden/**/*.golden.txt',recursive=True) if open(f,'rb').read().startswith(b'\\\\xef\\\\xbb\\\\xbf') or b'\\\\r\\\\n' in open(f,'rb').read()])\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "cmd": "git diff --quiet -- fixtures/2026-08; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V8",
+      "procedure": "conformance/vendor/bin/phpunit -c conformance/phpunit.xml",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V9",
+      "procedure": "php conformance/bin/run --adapter reference --vectors fixtures/2026-08 --spec-rev 2026-08 --report out/golden.json",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V10",
+      "procedure": "php conformance/bin/run --adapter byte-drift --vectors fixtures/2026-08 --spec-rev 2026-08 --report out/drift.json",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V11",
+      "procedure": "php conformance/bin/run --adapter struct-drift --vectors fixtures/2026-08 --spec-rev 2026-08",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V12",
+      "procedure": "test -f conformance/tests/fixtures/adapters/byte-drift.php && test -f conformance/tests/fixtures/adapters/struct-drift.php",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V13",
+      "procedure": "git diff --quiet -- fixtures/2026-08",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "golden-механика (канонический вид + двухступенчатое сравнение со вторичным байтовым сигналом) + зелёный прогон всех golden-пар корпуса против эталона + два отрицательных прогона (байтовый дрейф при структурном равенстве; структурное расхождение) + перечень пар со статусами — в Completion Notes."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-18T15:22:38Z",
+    "finished_at": "2026-09-18T15:23:59Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "implementation/high",
+      "effort": "high"
+    },
+    "notes": "Reopen closure: byte-drift.php + struct-drift.php; golden 9/9 ref; byte/struct negative proofs.\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V8",
+        "exit": 0,
+        "at": "2026-09-18T15:22:57Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V9",
+        "exit": 0,
+        "at": "2026-09-18T15:22:57Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V10",
+        "exit": 0,
+        "at": "2026-09-18T15:22:57Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V11",
+        "exit": 0,
+        "at": "2026-09-18T15:22:57Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V12",
+        "exit": 0,
+        "at": "2026-09-18T15:22:57Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V13",
+        "exit": 0,
+        "at": "2026-09-18T15:22:57Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-18T15:23:59Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Реализовать golden-механику по `DR-01` §J7 и правилам `CFH-*` ревизии: канонический вид golden-файла (UTF-8 без BOM, LF, сортированные ключи, фиксированный отступ, метаполя ревизии спеки и версии фикстуры) и ДВУХСТУПЕНЧАТОЕ сравнение — сначала структурное после разбора, затем байтовое как вторичный сигнал; прогон golden-пар корпуса (`golden/jcs` — официальные векторы RFC 8785 и ключи вне BMP, `golden/idempotency`) против эталонного адаптера."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Канонизация — общий корень детерминизма PHP и Dart: ключ идемпотентности считается по JCS, и расхождение сериализации чисел или порядка ключей вне BMP разводит реализации МОЛЧА. Одноступенчатое сравнение эту молчаливость сохраняет: структурное равенство прячет дрейф сериализатора, а чисто байтовое даёт ложные красные на шуме — §J7 требует именно пары, где второй шаг вторичный сигнал. `RAG:— (repo-grounded: DR-01 §D4 — официальные векторы RFC 8785 и отдельно ключи вне BMP, §J7 — канонический вид и двухступенчатое сравнение; @plan/phases/P4/phase.json P4.3 — golden-пары корпуса и их конвенция имён)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "(а) канонический вид golden-файла по §J7 и правилу ревизии: кодировка, перевод строки, порядок ключей, отступ, обязательные метаполя (ревизия спеки, версия фикстуры) — форма читается из `11_conformance-harness.md`, не назначается; (б) двухступенчатое сравнение: шаг 1 — структурное после разбора (расхождение = провал с человекочитаемым указанием пути в документе), шаг 2 — байтовое (расхождение при структурном равенстве = ВТОРИЧНЫЙ сигнал с отдельной формулировкой «дрейф сериализации», а не «провал протокола»); (в) прогон golden-пар корпуса `fixtures/2026-08/golden/{jcs,idempotency}` против адаптера ТЕМ способом доставки, который нормирован документом `11` (см. if-then); (г) отчёт: строка на каждую golden-пару со статусом и, при расхождении, обоими сигналами раздельно; (д) отрицательные прогоны: пара, отличающаяся ТОЛЬКО байтами (порядок ключей либо экранирование) при структурном равенстве — вторичный сигнал обязан сработать; пара с реальным структурным отличием — провал."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "написание и правка golden-пар (фаза P4, корпус заморожен); реализация JCS в SDK (P7/P8) — здесь сравнивается вывод адаптера; severity/baseline (P6.4), самотест harness (P6.6), CI (P6.7), lockstep (P6.8), отчёт по уровням (P6.9); правки нормативного текста."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "раннер (P6.1) · эталонный адаптер (P6.2, P6.3) · `spec/revisions/2026-08/11_conformance-harness.md` (правила `CFH-*` о golden и способ доставки) · `spec/revisions/2026-08/09_idempotency-errors.md` (формула ключа) и `08_audit-observability.md` (JCS) · `fixtures/2026-08/golden/**` + `fixtures/2026-08/golden/README.md` (происхождение официальных векторов) · `@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §D4, §J7 · `@plan/knowledge/research-05-p6-conformance-harness-2026-08.json` §7 · `@plan/plan.json` строка Q-13."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`conformance/src/**` · `conformance/tests/**` · `conformance/tests/fixtures/golden/**` (репо-пути — от корня `~/projects/packages/agentools`)"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `05-Projects/03-Packages/AgenTools/@plan/knowledge/research-05-p6-conformance-harness-2026-08.json` §7 2) `spec/revisions/2026-08/11_conformance-harness.md` (разделы golden и harness-протокола) 3) `fixtures/2026-08/golden/README.md` + состав `golden/jcs` и `golden/idempotency` 4) `05-Projects/03-Packages/AgenTools/@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §D4, §J7 5) `05-Projects/03-Packages/AgenTools/@plan/plan.json` строка Q-13 6) `05-Projects/03-Packages/AgenTools/@plan/plan.json` §2 Execution Rules, §5 (D73)."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "канонический вид и способ доставки golden-пары адаптеру берутся ИЗ `11_conformance-harness.md` — изобретать сообщение протокола либо «прогнать golden через собственный канонизатор раннера» ЗАПРЕЩЕНО: во втором случае субъект проверки подменяется (проверялся бы раннер, а не SDK), и вся golden-механика становится декорацией; порядок шагов сравнения ЖЁСТКИЙ — структурное, затем байтовое; байтовое расхождение при структурном равенстве формулируется отдельным текстом и НЕ приравнивается к провалу протокола; официальные векторы RFC 8785 не «нормализуются» под удобство разбора — сравнение идёт с байтами файла как есть; отрицательные прогоны обязательны для ОБОИХ сигналов; плановый линтер — командой из Phase Context."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Стиль — чистые функции сравнения, отдельные от транспорта. Анти-самообман: «golden сравнивается» ≠ «golden различает» — доказательством считается пара, где структурно равно, а байтово нет: если такой прогон не приведён, вторичный сигнал не проверен вовсе. ЗАПРЕЩЕНО подменять субъект: канонизирует АДАПТЕР, раннер только сравнивает. ЗАПРЕЩЕНО: править golden-пары корпуса; ослаблять сравнение до «структурного достаточно»; молча приводить перевод строки или кодировку golden-файла перед сравнением. If-then: `11_conformance-harness.md` НЕ описывает, как golden-пара доставляется адаптеру (нет сообщения протокола либо вида вектора для этого) → это дефект ревизии, а не повод изобрести: `🔴 Blocked`, `Возобновление:` с адресатом (фаза P3 — формулировка правила), эскалация владельцу с явной ценой «ревизия заморожена, правка = новая датированная ревизия» (Q-13 заведён именно под этот риск; детектор — линза 4 аудита P5.1, и до freeze цена этой правки минимальна). If-then: байтовое расхождение массовое и системное (каждая пара) → это НЕ повод отключить второй шаг: назвать причину (сериализатор PHP), зафиксировать в Completion Notes и, если причина в нашем коде, починить его, а не проверку."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`conformance/vendor/bin/phpunit -c conformance/phpunit.xml` — зелёный · `php conformance/bin/run --adapter 'php conformance/adapters/reference/adapter.php' --vectors fixtures/2026-08 --spec-rev 2026-08 --report out/golden.json; echo $?` = 0 · `python3 -c \"import json;r=json.load(open('out/golden.json'));print(len(r['golden']))\"` — число golden-пар отчёта совпадает с числом пар корпуса (обе величины публикуются в Completion Notes) · `python3 -c \"import json;r=json.load(open('out/golden.json'));print([g['id'] for g in r['golden'] if g['status']!='pass'])\"` = `[]` · `php conformance/bin/run --adapter 'php conformance/tests/fixtures/adapters/byte-drift.php' --vectors fixtures/2026-08 --spec-rev 2026-08 --report out/drift.json; echo $?` — вывод содержит вторичный сигнал дрейфа сериализации при структурном равенстве (строка отчёта приводится в Completion Notes) · `php conformance/bin/run --adapter 'php conformance/tests/fixtures/adapters/struct-drift.php' --vectors fixtures/2026-08 --spec-rev 2026-08; echo $?` = 1 (структурное расхождение — провал) · `python3 -c \"import glob;print([f for f in glob.glob('fixtures/2026-08/golden/**/*.golden.txt',recursive=True) if open(f,'rb').read().startswith(b'\\\\xef\\\\xbb\\\\xbf') or b'\\\\r\\\\n' in open(f,'rb').read()])\"` = `[]` (канонический вид корпуса подтверждён, корпус не правился) · `git diff --quiet -- fixtures/2026-08; echo $?` = 0 · прогнать плановый линтер по каталогу плана и опубликовать счёт с атрибуцией, K = 0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "golden-механика (канонический вид + двухступенчатое сравнение со вторичным байтовым сигналом) + зелёный прогон всех golden-пар корпуса против эталона + два отрицательных прогона (байтовый дрейф при структурном равенстве; структурное расхождение) + перечень пар со статусами — в Completion Notes."
+    }
+  ]
+}

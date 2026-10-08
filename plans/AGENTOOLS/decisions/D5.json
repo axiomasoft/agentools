@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D5",
+  "title": "Решение",
+  "date": "2026-07-07",
+  "status": "accepted",
+  "decision": "Canonical JSON = RFC 8785 (JCS); idempotency key = `at1:` + sha256hex(JCS({tenant_id, session_id, step_id, tool, args})); голден-файлы аудита сериализуются JCS",
+  "rationale": "детерминизм между PHP/Dart; версия-префикс `at1:` позволяет сменить формулу",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D5\ndate: 2026-07-07\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "Canonical JSON = RFC 8785 (JCS); idempotency key = `at1:` + sha256hex(JCS({tenant_id, session_id, step_id, tool, args})); голден-файлы аудита сериализуются JCS"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "детерминизм между PHP/Dart; версия-префикс `at1:` позволяет сменить формулу"
+    }
+  ]
+}

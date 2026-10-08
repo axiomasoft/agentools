@@ -1,0 +1,215 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P4.2",
+  "title": "Ввести acquire/heartbeat/CAS API и in-memory adapter в PHP/Dart",
+  "status": "done",
+  "summary": "Добавить в оба SDK семантически одинаковые lease types, `acquire`/`heartbeat`/`complete(lease)`/`fail(lease)` и testkit in-memory store без PostgreSQL.",
+  "why": "Current ports finish by request identity; types and local CAS can be proved before durable SQL. `RAG:—`.",
+  "scope": {
+    "include": [
+      "`IdempotencyLease`, `IdempotencyAcquisition`, capability/error types; new store methods; in-memory adapter with token CAS and completed-only expiry; mapping onto three observer states; PHP/Dart tests driven by the P4.1 manifest (non-PostgreSQL cases)."
+    ],
+    "exclude": [
+      "PostgreSQL adapter; coordinator/tool wiring; package export removal; changing frozen schemas; JCS oracle ownership; KMS; live DB."
+    ]
+  },
+  "depends_on": [],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/root-contracts-idempotency-lease-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/hardening/idempotency-lease-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/findings-P4-idempotency-migration.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-P4-design-rag.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [],
+  "rules": [
+    "`new` acquisition carries the lease; `duplicate_completed` carries stored result/digest; `concurrent_in_flight` carries the existing in-flight error and no lease. `complete`/`fail`/`heartbeat` require the lease object, not the request alone. In-memory CAS is still required so unit tests fail if they ignore the token. `resolve`/`complete(request)` are absent from the production interface; test helpers may wrap acquire for frozen three-state assertions. Tokens are CSPRNG; `attempt` starts at 1. In-memory is testkit/reference-only and cannot be a production constructor default. Do not log tokens."
+  ],
+  "guidance": "Keep `IdempotencyScope` as tenant+tool+key. Advance injected clock in takeover tests rather than sleeping. Shared error spellings come from P4.1. Prefer ULID/UUID for tokens. Test fakes live only in test files.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "cd php && composer test -- --filter LeaseFenceTest",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "cd php && composer analyse",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "cd dart/agentools && dart analyze",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "cd dart/agentools && dart test test/idempotency/lease_fence_test.dart test/idempotency/in_memory_deduplication_store_test.dart",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "cmd": "git diff --exit-code -- spec/revisions/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "procedure": "cd php && composer test -- --filter LeaseFenceTest",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "procedure": "cd php && composer analyse",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V8",
+      "procedure": "cd dart/agentools && dart test test/idempotency/lease_fence_test.dart test/idempotency/in_memory_deduplication_store_test.dart",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V9",
+      "procedure": "cd dart/agentools && dart analyze",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "PHP/Dart fenced store API and in-memory adapter with matched invariants and focused negative evidence."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-20T07:39:05Z",
+    "finished_at": "2026-09-20T07:39:05Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "grok-4.6/high",
+      "effort": "high"
+    },
+    "notes": "PHP/Dart fenced acquire/heartbeat/complete(lease)/fail API + in-memory CAS; LeaseFenceTest and dart lease_fence_test green; composer analyse / dart analyze green.\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V6",
+        "exit": 0,
+        "at": "2026-09-20T07:39:05Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V7",
+        "exit": 0,
+        "at": "2026-09-20T07:39:05Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V8",
+        "exit": 0,
+        "at": "2026-09-20T07:39:05Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V9",
+        "exit": 0,
+        "at": "2026-09-20T07:39:05Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-20T07:39:05Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Добавить в оба SDK семантически одинаковые lease types, `acquire`/`heartbeat`/`complete(lease)`/`fail(lease)` и testkit in-memory store без PostgreSQL."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Current ports finish by request identity; types and local CAS can be proved before durable SQL. `RAG:—`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "`IdempotencyLease`, `IdempotencyAcquisition`, capability/error types; new store methods; in-memory adapter with token CAS and completed-only expiry; mapping onto three observer states; PHP/Dart tests driven by the P4.1 manifest (non-PostgreSQL cases)."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "PostgreSQL adapter; coordinator/tool wiring; package export removal; changing frozen schemas; JCS oracle ownership; KMS; live DB."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/knowledge/root-contracts-idempotency-lease-v1.json` · `fixtures/hardening/idempotency-lease-v1.json` · `@plan/knowledge/findings-P4-idempotency-migration.json` · existing PHP/Dart idempotency types and in-memory stores."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`php/src/Contracts/IdempotencyStore.php` · `php/src/Idempotency/IdempotencyLease.php` · `php/src/Idempotency/IdempotencyAcquisition.php` · `php/src/Idempotency/ToolIdempotencyCapability.php` · `php/src/Idempotency/InMemoryDeduplicationStore.php` · `php/src/Idempotency/DeduplicationResolution.php` · `php/tests/Idempotency/InMemoryDeduplicationStoreTest.php` · `php/tests/Idempotency/LeaseFenceTest.php` · `dart/agentools/lib/src/contracts/idempotency_store.dart` · `dart/agentools/lib/src/idempotency/idempotency_lease.dart` · `dart/agentools/lib/src/idempotency/idempotency_acquisition.dart` · `dart/agentools/lib/src/idempotency/tool_idempotency_capability.dart` · `dart/agentools/lib/src/idempotency/in_memory_deduplication_store.dart` · `dart/agentools/lib/src/idempotency/deduplication_resolution.dart` · `dart/agentools/test/idempotency/in_memory_deduplication_store_test.dart` · `dart/agentools/test/idempotency/lease_fence_test.dart`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/root-contracts-idempotency-lease-v1.json` 2) `fixtures/hardening/idempotency-lease-v1.json` 3) `php/src/Contracts/IdempotencyStore.php` 4) `dart/agentools/lib/src/contracts/idempotency_store.dart` 5) `php/src/Idempotency/InMemoryDeduplicationStore.php` 6) `dart/agentools/lib/src/idempotency/in_memory_deduplication_store.dart` 7) `php/src/Idempotency/DeduplicationPolicy.php` 8) `@plan/knowledge/research-P4-design-rag.json`."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "`new` acquisition carries the lease; `duplicate_completed` carries stored result/digest; `concurrent_in_flight` carries the existing in-flight error and no lease. `complete`/`fail`/`heartbeat` require the lease object, not the request alone. In-memory CAS is still required so unit tests fail if they ignore the token. `resolve`/`complete(request)` are absent from the production interface; test helpers may wrap acquire for frozen three-state assertions. Tokens are CSPRNG; `attempt` starts at 1. In-memory is testkit/reference-only and cannot be a production constructor default. Do not log tokens."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Keep `IdempotencyScope` as tenant+tool+key. Advance injected clock in takeover tests rather than sleeping. Shared error spellings come from P4.1. Prefer ULID/UUID for tokens. Test fakes live only in test files."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`cd php && composer test -- --filter LeaseFenceTest`; `cd php && composer analyse`; `cd dart/agentools && dart analyze`; `cd dart/agentools && dart test test/idempotency/lease_fence_test.dart test/idempotency/in_memory_deduplication_store_test.dart`; a field/case parity check reports `missing=[]`, `extra=[]`, `semantic_mismatch=[]`; negative tests cover every non-SQL manifest case; `git diff --exit-code -- spec/revisions/2026-08`; plan lint adds no ERROR."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "PHP/Dart fenced store API and in-memory adapter with matched invariants and focused negative evidence."
+    }
+  ]
+}

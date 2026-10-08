@@ -1,0 +1,11 @@
+  → нормативный lint: python3 tools/spec_lint.py spec/revisions/2026-09
+spec_lint: 5 предупреждений:
+  - spec/revisions/2026-09/rules.json: SHOULD-правило TLP-3 не имеет покрывающего вектора
+  - spec/revisions/2026-09/rules.json: SHOULD-правило TLP-4 не имеет покрывающего вектора
+  - spec/revisions/2026-09/rules.json: SHOULD-правило TLP-8 не имеет покрывающего вектора
+  - spec/revisions/2026-09/rules.json: SHOULD-правило TLP-15 не имеет покрывающего вектора
+  - spec/revisions/2026-09/rules.json: SHOULD-правило TLP-16 не имеет покрывающего вектора
+spec_lint: OK
+  → структура фикстур: python3 tools/spec_lint.py --fixtures-check fixtures/2026-09
+spec_lint: OK (--fixtures-check, fixtures/2026-09)
+layer 1: lint и структура ревизии · проверок: 2

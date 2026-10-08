@@ -1,0 +1,239 @@
+00:00 +0: loading test/adversarial/postgres_schedule_test.dart
+00:00 +0: test/adversarial/postgres_schedule_test.dart: schedule file has no sleep and covers catalog IDs
+00:00 +1: test/adversarial/postgres_schedule_test.dart: storage_chaos offline tests are green
+00:00 +2: test/adversarial/adversarial_corpus_test.dart: oracle and typed JCS cases are idempotent
+00:00 +3: test/adversarial/adversarial_corpus_test.dart: oracle and typed JCS cases are idempotent
+00:00 +4: test/journal/event_store_gate_test.dart: journal appender fifty appends one winner
+00:00 +5: test/journal/event_store_gate_test.dart: journal appender fifty appends one winner
+00:00 +6: test/journal/event_store_gate_test.dart: journal appender fifty appends one winner
+00:00 +7: test/journal/action_reducer_test.dart: folds lifecycle from journal only
+00:00 +8: test/journal/action_reducer_test.dart: folds lifecycle from journal only
+00:00 +9: test/journal/in_memory_event_store_test.dart: production interface has no caller-seq append
+00:00 +10: test/journal/action_reducer_test.dart: preserves unknown events without changing state
+00:00 +11: test/journal/in_memory_event_store_test.dart: empty stream starts at seq one
+00:00 +12: test/journal/in_memory_event_store_test.dart: empty stream starts at seq one
+00:00 +13: test/journal/in_memory_event_store_test.dart: empty stream starts at seq one
+00:00 +14: test/journal/persistence_contracts_test.dart: event log rejects wrong expected prev seq
+00:00 +15: test/journal/persistence_contracts_test.dart: event log rejects wrong expected prev seq
+00:00 +16: test/journal/in_memory_event_store_test.dart: default page is 500
+00:00 +17: test/journal/action_reducer_test.dart: rejects event after terminal action
+00:00 +18: test/journal/persistence_contracts_test.dart: event log append is idempotent by event id
+00:00 +19: test/journal/in_memory_event_store_test.dart: tenant isolation
+00:00 +20: test/journal/in_memory_event_store_test.dart: tenant isolation
+00:00 +21: test/journal/in_memory_event_store_test.dart: tenant isolation
+00:00 +22: test/journal/action_reducer_test.dart: rejects a tampered hash chain
+00:00 +23: test/journal/action_reducer_test.dart: rejects a tampered hash chain
+00:00 +24: test/journal/persistence_contracts_test.dart: snapshot projection matches folded state
+00:00 +25: test/journal/action_reducer_test.dart: restores from snapshot and journal tail
+00:00 +26: test/journal/persistence_contracts_test.dart: hash chain matches PHP golden anchor
+php golden hash1: sha-256:e1a9de57217a9919206628b0a4e1afd3a009f17b7c667afc98061d9e0936dfd0
+dart actual hash1: sha-256:e1a9de57217a9919206628b0a4e1afd3a009f17b7c667afc98061d9e0936dfd0
+php golden state hash: sha-256:ef22613a6bf20d817d3a3d9e37484a1796673e75c8d8b1e4d11a9c7119ae8d07
+dart actual state hash: sha-256:ef22613a6bf20d817d3a3d9e37484a1796673e75c8d8b1e4d11a9c7119ae8d07
+00:00 +27: test/journal/event_store_collision_test.dart: fifty appends yield one winner
+00:00 +28: test/scenario/clarification_session_test.dart: records a request and a reply with a different call id
+00:00 +29: test/scenario/scenario_runner_test.dart: runs compensations in reverse order
+00:00 +30: test/scenario/scenario_runner_test.dart: runs compensations in reverse order
+00:00 +31: test/scenario/scenario_runner_test.dart: runs compensations in reverse order
+00:00 +31: test/scenario/clarification_session_test.dart: distinguishes multi-round MRTR from an independent retry
+multi-round rounds=4 independent rounds=1
+00:00 +32: test/scenario/scenario_runner_test.dart: runs compensations in reverse order
+00:00 +33: test/scenario/scenario_runner_test.dart: runs compensations in reverse order
+00:00 +34: test/scenario/scenario_runner_test.dart: runs compensations in reverse order
+00:00 +35: test/scenario/scenario_runner_test.dart: runs compensations in reverse order
+00:00 +36: test/scenario/scenario_runner_test.dart: runs compensations in reverse order
+00:00 +37: test/scenario/scenario_runner_test.dart: runs compensations in reverse order
+00:00 +38: test/scenario/scenario_runner_test.dart: runs compensations in reverse order
+00:00 +39: test/scenario/scenario_runner_test.dart: runs compensations in reverse order
+00:00 +40: test/scenario/scenario_runner_test.dart: runs compensations in reverse order
+00:00 +41: test/scenario/scenario_runner_test.dart: runs compensations in reverse order
+00:00 +42: test/scenario/scenario_runner_test.dart: runs compensations in reverse order
+00:00 +43: test/scenario/scenario_runner_test.dart: runs compensations in reverse order
+00:00 +44: test/scenario/scenario_runner_test.dart: runs compensations in reverse order
+00:00 +45: test/scenario/scenario_runner_test.dart: runs compensations in reverse order
+00:00 +46: test/scenario/llm_port_test.dart: scripted LLM port returns deterministic responses
+00:00 +47: test/scenario/llm_port_test.dart: scripted LLM port returns deterministic responses
+00:00 +48: test/scenario/llm_port_test.dart: scripted LLM port returns deterministic responses
+00:00 +49: test/scenario/llm_port_test.dart: scripted LLM port returns deterministic responses
+00:00 +49: test/scenario/scenario_runner_test.dart: reports a separate compensation failure
+compensation failure outcome: COMPENSATION_FAILED
+00:00 +50: test/scenario/llm_port_test.dart: scripted LLM port returns deterministic responses
+00:00 +51: test/scenario/llm_port_test.dart: scripted LLM port returns deterministic responses
+00:00 +52: test/scenario/llm_port_test.dart: scripted LLM port returns deterministic responses
+00:00 +53: test/scenario/llm_port_test.dart: scripted LLM port returns deterministic responses
+00:00 +54: test/journal/event_store_collision_test.dart: batch over 64 rejected
+00:00 +55: test/journal/event_store_collision_test.dart: missing stream identity
+00:00 +56: test/journal/event_store_collision_test.dart: cross-stream event id reuse denied
+00:00 +57: test/tool/tool_descriptor_test.dart: calculates the golden descriptor digest from PHP anchor
+php golden: sha-256:4471625dc88e78398a8abd15fabb1bbee8691336c1ae4c43df293eca141ff43e
+dart actual: sha-256:4471625dc88e78398a8abd15fabb1bbee8691336c1ae4c43df293eca141ff43e
+00:00 +58: test/ops/credential_guard_test.dart: rejects foreign audience tokens
+00:00 +58: test/tool/tool_descriptor_test.dart: changing description changes the digest
+original: sha-256:4471625dc88e78398a8abd15fabb1bbee8691336c1ae4c43df293eca141ff43e
+changed: sha-256:99d37b97089a5f8861c543d98958690dea4d276ed938b5e2bb58eeffd126789c
+00:00 +59: test/ops/credential_guard_test.dart: rejects foreign audience tokens
+00:00 +60: test/ops/credential_guard_test.dart: rejects foreign audience tokens
+00:00 +61: test/ops/long_operation_coordinator_test.dart: supports task and synchronous paths
+00:00 +62: test/ops/long_operation_coordinator_test.dart: supports task and synchronous paths
+00:00 +63: test/ops/long_operation_coordinator_test.dart: supports task and synchronous paths
+00:00 +64: test/ops/long_operation_coordinator_test.dart: supports task and synchronous paths
+00:00 +65: test/ops/long_operation_coordinator_test.dart: supports task and synchronous paths
+00:00 +66: test/ops/long_operation_coordinator_test.dart: supports task and synchronous paths
+00:00 +67: test/ops/long_operation_coordinator_test.dart: supports task and synchronous paths
+00:00 +68: test/ops/long_operation_coordinator_test.dart: records task binding before first observation
+00:00 +69: test/ops/baggage_refs_test.dart: accepts opaque identifiers
+00:00 +70: test/ops/baggage_refs_test.dart: accepts opaque identifiers
+00:00 +71: test/ops/cost_recorder_test.dart: calculates cost from token usage
+00:00 +72: test/ops/cost_recorder_test.dart: calculates cost from token usage
+00:00 +73: test/ops/cost_recorder_test.dart: calculates cost from token usage
+00:00 +74: test/ops/baggage_refs_test.dart: rejects baggage over item limit
+00:00 +75: test/ops/baggage_refs_test.dart: rejects baggage over item limit
+00:00 +76: test/ops/long_operation_coordinator_test.dart: binding loss with unresolved effect requires reconciliation
+00:00 +77: test/ops/long_operation_coordinator_test.dart: cancellation request leaves action running
+00:00 +78: test/ops/long_operation_coordinator_test.dart: rejects fractional progress claims
+00:00 +79: test/ops/journal_appender_store_test.dart: journal appender assigns storage seq and CSPRNG event ids
+00:00 +80: test/ops/journal_appender_store_test.dart: fifty appenders yield one winner
+00:00 +81: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:00 +82: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:00 +83: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:00 +84: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:00 +85: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:00 +86: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:00 +87: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:00 +88: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:00 +89: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +90: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +91: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +92: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +93: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +94: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +95: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +96: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +97: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +98: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +99: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +100: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +101: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +102: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +103: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +104: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +105: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +106: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +107: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +108: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +109: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +110: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +111: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +112: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +113: test/ops/audit_event_factory_test.dart: builds policy evaluated audit event
+00:01 +114: test/idempotency/sql_idempotency_store_test.dart: SQL constants encode unique arbiter takeover CAS and completed-only cleanup
+00:01 +115: test/idempotency/sql_idempotency_store_test.dart: SQL constants encode unique arbiter takeover CAS and completed-only cleanup
+00:01 +116: test/ops/audit_event_factory_test.dart: builds cost recorded audit event
+00:01 +117: test/idempotency/sql_idempotency_store_test.dart: insert returning yields a new lease
+00:01 +118: test/idempotency/sql_idempotency_store_test.dart: insert returning yields a new lease
+00:01 +119: test/schema/canonicalizer_oracle_test.dart: independent oracle vectors match bytes
+00:01 +120: test/schema/canonicalizer_oracle_test.dart: independent oracle vectors match bytes
+00:01 +121: test/schema/canonicalizer_oracle_test.dart: independent oracle vectors match bytes
+00:01 +122: test/schema/canonicalizer_oracle_test.dart: independent oracle vectors match bytes
+00:01 +123: test/schema/canonicalizer_oracle_test.dart: independent oracle vectors match bytes
+00:01 +124: test/schema/raw_document_test.dart: RawDocument round-trips unknown members byte for byte
+00:01 +125: test/schema/schema_alignment_test.dart: DTO field sets match published schema properties
+ToolDescriptor OK
+ToolError OK
+00:01 +126: test/schema/canonicalizer_test.dart: Canonicalizer runs official RFC 8785 vectors
+RFC 8785 vectors run: 5
+00:01 +127: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +128: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +129: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +130: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +131: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +132: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +133: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +134: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +135: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +136: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +137: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +138: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +139: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +140: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +141: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +142: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +143: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +144: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +145: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +146: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +147: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +148: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +149: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +150: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +151: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +151: test/errors/tool_execution_result_test.dart: returns business failure as a tool result
+business failure channel: tool-result error=billing.validation.period_closed
+00:01 +152: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +152: test/errors/tool_execution_result_test.dart: protocol failure is not a tool result
+protocol failure channel: ProtocolException
+00:01 +153: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +154: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +155: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator validates a published idempotency document offline
+00:01 +156: test/schema/tool_dto_test.dart: ToolDescriptor round-trips fixture with unknown member
+00:01 +157: test/schema/tool_dto_test.dart: ToolDescriptor round-trips fixture with unknown member
+00:01 +158: test/schema/tool_dto_test.dart: ToolDescriptor round-trips fixture with unknown member
+00:01 +159: test/schema/tool_dto_test.dart: ToolDescriptor round-trips fixture with unknown member
+00:01 +160: test/schema/tool_dto_test.dart: ToolDescriptor round-trips fixture with unknown member
+00:01 +161: test/schema/tool_dto_test.dart: ToolDescriptor round-trips fixture with unknown member
+00:01 +162: test/schema/tool_dto_test.dart: ToolDescriptor round-trips fixture with unknown member
+00:01 +163: test/schema/tool_dto_test.dart: ToolDescriptor round-trips fixture with unknown member
+00:01 +164: test/schema/tool_dto_test.dart: ToolDescriptor round-trips fixture with unknown member
+00:01 +165: test/schema/tool_dto_test.dart: ToolDescriptor round-trips fixture with unknown member
+00:01 +166: test/schema/tool_dto_test.dart: ToolDescriptor round-trips fixture with unknown member
+00:01 +167: test/schema/tool_dto_test.dart: ToolDescriptor round-trips fixture with unknown member
+00:01 +168: test/schema/tool_dto_test.dart: ToolDescriptor round-trips fixture with unknown member
+00:01 +169: test/schema/tool_dto_test.dart: ToolDescriptor round-trips fixture with unknown member
+00:01 +170: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator uses draft 2020-12 via prefixItems
+00:01 +171: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator uses draft 2020-12 via prefixItems
+00:01 +172: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator uses draft 2020-12 via prefixItems
+00:01 +173: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator uses draft 2020-12 via prefixItems
+00:01 +174: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator uses draft 2020-12 via prefixItems
+00:01 +175: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator uses draft 2020-12 via prefixItems
+00:01 +176: test/schema/published_schema_validator_test.dart: PublishedSchemaValidator uses draft 2020-12 via prefixItems
+00:01 +177: test/schema/tool_dto_test.dart: ToolError parses a valid published error object
+00:01 +178: test/identity/extension_key_test.dart: ExtensionKey.parseOwn parses the single declared data key
+00:01 +179: test/identity/vendor_meta_key_test.dart: accepts a valid own vendor meta key
+00:01 +180: test/identity/vendor_meta_key_test.dart: accepts a valid own vendor meta key
+00:01 +181: test/identity/vendor_meta_key_test.dart: accepts a valid own vendor meta key
+00:01 +182: test/confirmation/confirmation_protocol_test.dart: rejects changed arguments
+00:01 +183: test/confirmation/confirmation_protocol_test.dart: rejects changed arguments
+00:01 +184: test/confirmation/confirmation_protocol_test.dart: rejects changed arguments
+00:01 +185: test/confirmation/confirmation_protocol_test.dart: rejects changed arguments
+00:01 +186: test/confirmation/confirmation_protocol_test.dart: rejects changed arguments
+00:01 +187: test/confirmation/confirmation_protocol_test.dart: rejects changed arguments
+00:01 +188: test/confirmation/layer_boundary_test.dart: keeps policy and protocol mechanics in separate layers
+00:01 +189: test/confirmation/layer_boundary_test.dart: keeps policy and protocol mechanics in separate layers
+00:01 +190: test/confirmation/layer_boundary_test.dart: keeps policy and protocol mechanics in separate layers
+00:01 +191: test/confirmation/layer_boundary_test.dart: keeps policy and protocol mechanics in separate layers
+00:01 +192: test/confirmation/layer_boundary_test.dart: keeps policy and protocol mechanics in separate layers
+00:01 +193: test/confirmation/layer_boundary_test.dart: keeps policy and protocol mechanics in separate layers
+00:01 +194: test/confirmation/layer_boundary_test.dart: keeps policy and protocol mechanics in separate layers
+00:01 +195: test/confirmation/layer_boundary_test.dart: keeps policy and protocol mechanics in separate layers
+00:01 +196: test/confirmation/confirmation_protocol_test.dart: an edit supersedes the prior proposal
+00:01 +197: test/confirmation/layer_boundary_test.dart: matches PHP token coverage fields
+00:01 +198: test/confirmation/confirmation_protocol_test.dart: decision audit carries matched approval fingerprints
+00:01 +199: test/confirmation/confirmation_protocol_test.dart: rejects commit when decision audit hashes mismatch
+00:01 +200: test/confirmation/confirmation_token_store_test.dart: happy path consume and spent
+00:01 +201: test/confirmation/gate_policy_test.dart: uses the closed precedence over the effect baseline
+00:01 +202: test/confirmation/gate_policy_test.dart: uses the closed precedence over the effect baseline
+00:01 +203: test/confirmation/gate_policy_test.dart: uses the closed precedence over the effect baseline
+00:01 +204: test/confirmation/token_envelope_test.dart: canonical bytes match PHP fixture
+00:01 +205: test/confirmation/token_envelope_test.dart: happy round trip
+00:01 +206: test/confirmation/durable_replay_gate_test.dart: new protocol instance shares store and denies replay
+00:01 +207: test/confirmation/durable_replay_gate_test.dart: new protocol instance shares store and denies replay
+00:01 +208: test/confirmation/durable_replay_gate_test.dart: new protocol instance shares store and denies replay
+00:01 +209: test/confirmation/durable_replay_gate_test.dart: new protocol instance shares store and denies replay
+00:01 +210: test/confirmation/durable_replay_gate_test.dart: new protocol instance shares store and denies replay
+00:01 +211: test/confirmation/confirmation_service_test.dart: passes a bare SHA-256 hex digest to the durable token store
+00:01 +212: test/confirmation/confirmation_service_test.dart: passes a bare SHA-256 hex digest to the durable token store
+00:01 +213: test/confirmation/confirmation_service_test.dart: passes a bare SHA-256 hex digest to the durable token store
+00:01 +214: test/confirmation/confirmation_service_test.dart: passes a bare SHA-256 hex digest to the durable token store
+00:01 +215: test/confirmation/confirmation_service_test.dart: passes a bare SHA-256 hex digest to the durable token store
+00:01 +216: test/confirmation/confirmation_service_test.dart: passes a bare SHA-256 hex digest to the durable token store
+00:01 +217: All tests passed!

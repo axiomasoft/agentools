@@ -1,0 +1,47 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "root-contracts-package-quality-baseline",
+  "title": "AgenTools package-quality baseline",
+  "sections": [
+    {
+      "id": "AgenTools-package-quality-baseline",
+      "title": "AgenTools package-quality baseline",
+      "text": "**Статус:** обязательный pre-release контракт P5.3 для PHP и Dart SDK.\n\nЭтот baseline определяет качество пакетов, но не дублирует семантику ревизии `2026-08`.\nChatom и AzGuard — только reference evidence инженерных практик: они не являются зависимостями,\nintegration targets, compatibility promises или частью публичного API AgenTools."
+    },
+    {
+      "id": "Artifact-taxonomy",
+      "title": "Artifact taxonomy",
+      "text": "- `spec/`, `fixtures/`, `conformance/`, `bakeoff/`, `plans/` и findings — инженерные evidence-\n  артефакты. В них допустим phase-ID.\n- Публичная поверхность — PHP `php/src`, package README/Composer metadata и Dart\n  `dart/agentools/lib`, pub metadata/docs. В namespace, exports, package names и user docs\n  phase-ID запрещён.\n- Generated/build/cache файлы не становятся публичным контрактом и не входят в release candidate."
+    },
+    {
+      "id": "PHP-core",
+      "title": "PHP core",
+      "text": "- `agentools/sdk` — framework-neutral core. Зависимости от Laravel/Illuminate, Eloquent,\n  ServiceProvider, CoreX, Chatom и AzGuard запрещены.\n- Публичны только явно экспортированные contracts/value objects. Реализация по умолчанию internal.\n- Laravel bridge допустим лишь отдельным owner-approved планом, собственным manifest, lifecycle и\n  consumer test; он не добавляется в core по аналогии с reference-проектами."
+    },
+    {
+      "id": "Dart-core",
+      "title": "Dart core",
+      "text": "- `agentools` — pure Dart: Flutter и MCP transport dependency в core запрещены.\n- `agentools_mcp_dart` — отдельный optional companion package; он не расширяет семантику core.\n- Публичные barrel exports явны; внутренние типы не становятся API только из-за размещения в `lib/`."
+    },
+    {
+      "id": "Stable-public-API",
+      "title": "Stable public API",
+      "text": "Контракт считается stable API только если одновременно:\n\n1. он явно экспортирован или маркирован public;\n2. существует production consuming path;\n3. behavioural test доказывает наблюдаемое обязательство.\n\nSpeculative ports/interfaces без реального потребителя запрещены. Изменение stable API подчиняется\nSemVer и API manifest/snapshot; breaking change требует major-плана, а не скрытой правки."
+    },
+    {
+      "id": "Release-truth",
+      "title": "Release truth",
+      "text": "- README, license/metadata, public exports, changelog/release notes и CI обязаны описывать один\n  фактический продукт. Противоречие блокирует release.\n- Проверка начинается с clean checkout и включает formatter, static analysis, unit/architecture\n  tests, conformance и package-consumer smoke tests.\n- Один `tools/ci_gate.py` оркестрирует репозиторные слои. Package-native команды PHP/Dart остаются\n  видимыми в выводе и воспроизводимыми отдельно; зелёный wrapper без выполненных native checks запрещён.\n- P7/P8 доказывают чистоту соответствующего SDK и conformance; P11 доказывает согласованность\n  публичных артефактов и двух независимых consumer smoke на release candidate."
+    },
+    {
+      "id": "Owner-decisions-applied",
+      "title": "Owner decisions applied",
+      "text": "- Q-30: текущая identity — proprietary/internal, согласно tracked `LICENSE`. Внешняя публикация в\n  Packagist/pub.dev и объявление OSS запрещены до отдельного owner decision, согласованной лицензии\n  и обновления всех metadata одним release-item. Устаревшая project-card категория `oss` не является\n  разрешением на публикацию.\n- Q-31: решения DR-01 ратифицированы как authority для ревизии `2026-08`, потому что P3/P4 уже\n  реализовали и проверили их, а Gate B завершён GREEN. Любое последующее изменение frozen semantics —\n  новая датированная ревизия; текст DR-01 этим item не переписывается."
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "root/contracts/package-quality-baseline.md",
+    "sha256": "cdafddafdc51bb1c26109f8950cbb164e0f281b397326e8092f4512a590cf70e"
+  }
+}

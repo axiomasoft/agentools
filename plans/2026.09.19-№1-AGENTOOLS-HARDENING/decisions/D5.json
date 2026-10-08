@@ -1,0 +1,45 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D5",
+  "title": "Канал публикации и legal identity",
+  "date": "2026-09-19",
+  "status": "proposed",
+  "decision": "Предлагается сначала принять private/local release candidate, а public Packagist/pub.dev/GitHub\nrelease рассматривать только после отдельного owner-решения о license, vendor/package identity,\nsupport channel и exact registries.",
+  "rationale": "Рекомендованный вариант сохраняет обратимость и не блокирует технический hardening.\nАльтернатива — сразу public release — требует legal/product решений, которых нет в аудите.",
+  "applies_to": [
+    "P10"
+  ],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "plan-designer/gpt-5.6-sol/high",
+    "effort": "high"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D5\ndate: 2026-09-19\nstatus: proposed\nitem: P10\nitems: [P10]\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "D5-legal-identity",
+      "title": "D5 — Канал публикации и legal identity",
+      "text": "**Actor:** plan-designer/gpt-5.6-sol/high\n**Evidence:** RAG:— current proprietary license/private package metadata"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "Предлагается сначала принять private/local release candidate, а public Packagist/pub.dev/GitHub\nrelease рассматривать только после отдельного owner-решения о license, vendor/package identity,\nsupport channel и exact registries."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Рекомендованный вариант сохраняет обратимость и не блокирует технический hardening.\nАльтернатива — сразу public release — требует legal/product решений, которых нет в аудите."
+    },
+    {
+      "id": "Consequences",
+      "title": "Consequences",
+      "text": "Вопрос не блокирует P1–P9 и private RC в P10. Он должен быть accepted/rejected/superseded\nдо выдачи G-RELEASE на публичную публикацию."
+    }
+  ]
+}

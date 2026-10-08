@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D146",
+  "title": "Решение",
+  "date": "2026-08-04",
+  "status": "accepted",
+  "decision": "**P3 повторно реопенена после RED-аудита: старые terminal-items P3.1–P3.19 сохраняются, ремедиация живёт в P3.20–P3.23.** Phase Status и Status Board переведены в `🟡`, версия 0.21.0 → 0.22.0, прежний Phase Handoff инвалидирован. **Consequences:** supersedes D141 только в части утверждения, что P3-remediation исчерпывается P3.16–P3.19; платим повторным A2 и задержкой P4.9, зато не переписываем исторические Completion Notes и не передаём известный schema-дефект в P4/P6–P8.",
+  "rationale": "`@plan/phases/P3/phase.json` Audit P3 F1–F6; `@plan/knowledge/research-13-p3-red-audit-remediation-2026-08.json`. `RAG:— (repo-grounded)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D146\ndate: 2026-08-04\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**P3 повторно реопенена после RED-аудита: старые terminal-items P3.1–P3.19 сохраняются, ремедиация живёт в P3.20–P3.23.** Phase Status и Status Board переведены в `🟡`, версия 0.21.0 → 0.22.0, прежний Phase Handoff инвалидирован. **Consequences:** supersedes D141 только в части утверждения, что P3-remediation исчерпывается P3.16–P3.19; платим повторным A2 и задержкой P4.9, зато не переписываем исторические Completion Notes и не передаём известный schema-дефект в P4/P6–P8."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`@plan/phases/P3/phase.json` Audit P3 F1–F6; `@plan/knowledge/research-13-p3-red-audit-remediation-2026-08.json`. `RAG:— (repo-grounded)`"
+    }
+  ]
+}

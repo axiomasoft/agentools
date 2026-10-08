@@ -1,0 +1,226 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P0.1",
+  "title": "Детализировать P1–P10 и получить GREEN whole-plan design audit",
+  "status": "done",
+  "summary": "Провести stage-1/stage-2 lifecycle D2: отдельной routed сессией детализировать каждую P1–P10, затем независимым cold-start аудитом проверить весь дизайн до любого product execution.",
+  "why": "Security, durability, parity, package и release contracts пересекаются; committed carrier не даёт сессиям потерять owner brief, audit verdicts, external foundations и запрет раннего исполнения.",
+  "scope": {
+    "include": [
+      "P1→P10 `task:plan-design`; обновление phase research/items/Routing/handoff/generated views; независимый `task:plan-audit <ID> design`; закрытие P0.1 после GREEN receipt."
+    ],
+    "exclude": [
+      "Любая реализация PHP/Dart/spec/CI; `task:plan-exec` product items; public registry upload/tag; изменение исторического `AGENTOOLS`."
+    ]
+  },
+  "depends_on": [],
+  "decisions": [
+    "D3"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/brief.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/findings-audit-verdicts.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-external-foundations-2026-09-19.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "**",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "Выполнять ровно одну phase-design сессию за запуск; применять назначенную D3 модель; проверять external claims первичными источниками; после P10 запускать independent design audit; не запускать successor из terminal design root."
+  ],
+  "guidance": "Product code не изменять. Каждый detail-проход заменяет skeleton marker target phase item-спеками, создаёт `research/Pn-design.md`/`research/Pn-design-rag.md`, расширяет exact Routing и перезаписывает один handoff на следующую фазу.",
+  "validation": [
+    {
+      "id": "V1",
+      "procedure": "python3 packages/task/scripts/plan-lint.py --gate all <PLAN1>",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "procedure": "bash packages/task/scripts/validate.sh --plan <PLAN1>",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "procedure": "bash packages/skiller/scripts/test.sh && bash packages/skiller/scripts/validate.sh",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "procedure": "journal-migrations/2026-09-21-p0.1-repair/receipt.json",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "procedure": "findings/audit-verdicts.md",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "procedure": "python3 tools/private_release_gate.py validate && python3 tools/private_release_gate.py fixtures",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "Полностью детализированный и независимо проаудированный PLAN1, готовый открыть стадию 3 через новый execution handoff."
+  ],
+  "route": {
+    "class": "frontier",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-21T14:00:27Z",
+    "finished_at": "2026-09-21T15:57:42Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "gpt-5.6-sol/high",
+      "effort": "high"
+    },
+    "notes": "P0.1 GREEN: D17 migrated exact sealed-journal defects; lint 0/0; repeat independent design audit GREEN; WPA-02 repaired and private RC accepted. Public eligibility remains RED and authorization false.\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V1",
+        "exit": 0,
+        "at": "2026-09-21T15:57:42Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V2",
+        "exit": 0,
+        "at": "2026-09-21T15:57:42Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V3",
+        "exit": 0,
+        "at": "2026-09-21T15:57:42Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V4",
+        "exit": 0,
+        "at": "2026-09-21T15:57:42Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V5",
+        "exit": 0,
+        "at": "2026-09-21T15:57:42Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V6",
+        "exit": 0,
+        "at": "2026-09-21T15:57:42Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-21T15:57:42Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Провести stage-1/stage-2 lifecycle D2: отдельной routed сессией детализировать каждую P1–P10, затем независимым cold-start аудитом проверить весь дизайн до любого product execution."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Security, durability, parity, package и release contracts пересекаются; committed carrier не даёт сессиям потерять owner brief, audit verdicts, external foundations и запрет раннего исполнения."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "P1→P10 `task:plan-design`; обновление phase research/items/Routing/handoff/generated views; независимый `task:plan-audit <ID> design`; закрытие P0.1 после GREEN receipt."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Любая реализация PHP/Dart/spec/CI; `task:plan-exec` product items; public registry upload/tag; изменение исторического `AGENTOOLS`."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/brief.json` · `@plan/knowledge/findings-audit-verdicts.json` · `@plan/knowledge/research-external-foundations-2026-09-19.json` · `@plan/plan.json` · `@plan/plan.json`"
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`plans/2026.09.19-№1-AGENTOOLS-HARDENING/**` — только design carriers до открытия стадии 3."
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "`@plan/plan.json` · `@plan/plan.json` · `@plan/plan.json` · `@plan/brief.json` · `@plan/knowledge/findings-audit-verdicts.json` · `@plan/knowledge/research-external-foundations-2026-09-19.json`."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "Выполнять ровно одну phase-design сессию за запуск; применять назначенную D3 модель; проверять external claims первичными источниками; после P10 запускать independent design audit; не запускать successor из terminal design root."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Product code не изменять. Каждый detail-проход заменяет skeleton marker target phase item-спеками, создаёт `research/Pn-design.md`/`research/Pn-design-rag.md`, расширяет exact Routing и перезаписывает один handoff на следующую фазу."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "P1–P10 не содержат `СКЕЛЕТ`; каждое созданное item ID встречается ровно в одной executable Routing row; decisions/status/state/bundles свежи; independent audit GREEN; `plan-lint --gate all` = 0 ошибок/0 предупреждений."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "Полностью детализированный и независимо проаудированный PLAN1, готовый открыть стадию 3 через новый execution handoff."
+    }
+  ]
+}

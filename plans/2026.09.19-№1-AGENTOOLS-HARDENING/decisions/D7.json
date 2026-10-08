@@ -1,0 +1,49 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D7",
+  "title": "Additive safe confirmation facade with staged legacy retirement",
+  "date": "2026-09-19",
+  "status": "accepted",
+  "decision": "P2 вводит `ConfirmationService` как единственную поддерживаемую application boundary. На одном\nвызове caller передаёт только intent/actual arguments либо token/actual arguments; actor, time,\ndescriptor, policy, proposal/approval evidence, authorization context и separation/quorum\nполучаются из доверенных constructor dependencies. `ConfirmationProtocol` сохраняется временно\nкак deprecated expert/legacy primitive для совместимости и focused tests, но reference consumers\nне вправе вызывать его напрямую.\n\nПолный binding tuple фиксируется логически в P2. P3 выбирает token/durable representation, P5 —\njournal storage, P6 — новую shared spec/error revision, P7 — final exports/removal. Frozen\n`spec/revisions/2026-08/**` в P2 не изменяется.",
+  "rationale": "Локальный patch `dualControl`/`proposerId` оставляет caller-controlled clock, principal,\ndescriptor и authorizer. Facade без ограничения legacy call graph оставляет обход. Немедленное\nудаление low-level API смешивает security fix с package-breaking решением P7. Additive facade плюс\nизмеримая миграция закрывает runtime bypass и сохраняет отдельные representation/compatibility owners.",
+  "applies_to": [
+    "P2",
+    "P2.1",
+    "P2.2",
+    "P2.3",
+    "P2.4"
+  ],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "plan-designer/gpt-5.6-sol/high",
+    "effort": "high"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D7\ndate: 2026-09-19\nstatus: accepted\nitem: P2\nitems: [P2, P2.1, P2.2, P2.3, P2.4]\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "D7-Additive-safe-confirmation-facade-with-staged-legacy-retirement",
+      "title": "D7 — Additive safe confirmation facade with staged legacy retirement",
+      "text": "**Actor:** plan-designer/gpt-5.6-sol/high\n**Evidence:** RAG:— repository recon in `@plan/knowledge/research-P2-design.json`; RAG:✅ and Perplexity/web cross-check in `@plan/knowledge/research-P2-design-rag.json`"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "P2 вводит `ConfirmationService` как единственную поддерживаемую application boundary. На одном\nвызове caller передаёт только intent/actual arguments либо token/actual arguments; actor, time,\ndescriptor, policy, proposal/approval evidence, authorization context и separation/quorum\nполучаются из доверенных constructor dependencies. `ConfirmationProtocol` сохраняется временно\nкак deprecated expert/legacy primitive для совместимости и focused tests, но reference consumers\nне вправе вызывать его напрямую.\n\nПолный binding tuple фиксируется логически в P2. P3 выбирает token/durable representation, P5 —\njournal storage, P6 — новую shared spec/error revision, P7 — final exports/removal. Frozen\n`spec/revisions/2026-08/**` в P2 не изменяется."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Локальный patch `dualControl`/`proposerId` оставляет caller-controlled clock, principal,\ndescriptor и authorizer. Facade без ограничения legacy call graph оставляет обход. Немедленное\nудаление low-level API смешивает security fix с package-breaking решением P7. Additive facade плюс\nизмеримая миграция закрывает runtime bypass и сохраняет отдельные representation/compatibility owners."
+    },
+    {
+      "id": "Consequences",
+      "title": "Consequences",
+      "text": "P2 должен доказать отсутствие security-critical per-call параметров, exact approval/policy binding,\ndeny-by-default context-rich authorization и PHP/Dart parity. P2 не заявляет durable replay safety,\nproduction event persistence или final stable API. Если P7 решит сохранить expert API, он обязан\nэкспортировать его как явно unsafe/advanced surface, а не как равноправную альтернативу facade."
+    }
+  ]
+}

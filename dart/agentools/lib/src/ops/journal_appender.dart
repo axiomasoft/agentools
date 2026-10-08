@@ -20,7 +20,7 @@ final class JournalAppender {
     required this.actor,
     required this.clock,
     this.epoch = 1,
-    this.specRevision = '2026-08',
+    this.specRevision = '2026-09',
     ActionReducer? reducer,
     AuditSink? auditSink,
     AuditRedaction? redaction,
@@ -79,6 +79,22 @@ final class JournalAppender {
       payload: payload,
       epoch: eventEpoch ?? (_needsEpoch(kind) ? epoch : null),
     );
+    final state = _journal.state(_reducer);
+    final candidate = ActionEvent(
+      eventId: uncommitted.eventId,
+      actionId: actionId,
+      seq: expected + 1,
+      expectedPrevSeq: expected,
+      timestamp: uncommitted.timestamp,
+      actor: uncommitted.actor,
+      kind: kind,
+      eventVersion: uncommitted.eventVersion,
+      specRevision: uncommitted.specRevision,
+      payload: payload,
+      epoch: uncommitted.epoch,
+      previousHash: state.previousHash,
+    );
+    _journal.append(candidate, _reducer);
     _store.append(tenantId, actionId, expected, [uncommitted]);
     final page = _store.load(tenantId, actionId, afterSeq: expected, limit: 1);
     for (final committed in page.events) {

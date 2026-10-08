@@ -1,0 +1,44 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "artifacts-P6-gate",
+  "title": "фазовый conformance-гейт",
+  "sections": [
+    {
+      "id": "P6-conformance",
+      "title": "P6 — фазовый conformance-гейт",
+      "text": "**Вердикт:** `ГЕЙТ P6: PASS`\n\n**Якорь дерева артефактов:** `80cac19` (`git rev-parse --short HEAD`). Все числа ниже получены на этом коммите указанными командами."
+    },
+    {
+      "id": "section",
+      "title": "Пять условий гейта",
+      "text": "| Условие | Статус | Доказательство |\n|:--|:--|:--|\n| Эталонный адаптер прогоняет весь корпус | PASS | `php conformance/bin/run --adapter 'php conformance/adapters/reference/adapter.php' --vectors fixtures/2026-08 --spec-rev 2026-08 --baseline conformance/baseline/reference.json --report out/gate.json` → 213 pass / 0 fail, exit 0; `len(report.vectors) == len(fixtures/2026-08/vectors/*/*.json)` → `True` |\n| Мутант фиксирует расхождение | PASS | `php conformance/bin/run … --vectors conformance/tests/fixtures/mutants --spec-rev 2026-08 --report out/p6.9-mutant.json` → exit 1; `lifecycle-001`: `final_state: ожидалось \"failed\", получено \"completed\"` |\n| Harness-протокол проверяется вместе с нарушениями | PASS | `php conformance/bin/harness-selftest --cases fixtures/2026-08/harness` → 13/13 cases pass, включая ожидаемые нарушения `CFH-38`, `CFH-55`, `CFH-3`, `CFH-11`, `CFH-47`, `CFH-6`, `CFH-4` |\n| Производный отчёт по уровням детерминирован | PASS | `php conformance/bin/levels out/gate.json --write && php conformance/bin/levels out/gate.json --check` → exit 0; `--out out/levels-probe.md --write` записывает только переданный путь, `conformance/reports/reference-levels.md` не изменён |\n| Локальный четырёхслойный CI зелёный | PASS | `python3 tools/ci_gate.py --all` → exit 0; слои 1/2/3/4 выполнили 2/3/1/3 проверки соответственно |"
+    },
+    {
+      "id": "section-2",
+      "title": "Счёт прогона",
+      "text": "| Метрика | Значение | Команда |\n|:--|--:|:--|\n| Behavior-векторов | 213 | `python3 -c \"import json; print(len(json.load(open('out/gate.json'))['vectors']))\"` |\n| L1 / L2 / L3 | 126 / 56 / 31 | `python3 -c \"import json; r=json.load(open('out/gate.json')); print(*[sum(v['level']==l for v in r['vectors']) for l in ('L1','L2','L3')])\"` |\n| Классы корпуса: behavior / artifact / harness / golden | 213 / 89 / 13 / 10 | `fixtures/2026-08/coverage.md` §«По классам корпуса» |\n| Golden-пар в отчёте | 9 | `python3 -c \"import json; print(len(json.load(open('out/gate.json'))['golden']))\"` |\n| Harness-кейсов | 13 | `find fixtures/2026-08/harness -name '*.json' -type f \\| wc -l` |\n| Проверок CI L1 / L2 / L3 / L4 | 2 / 3 / 1 / 3 | `python3 tools/ci_gate.py --all` |"
+    },
+    {
+      "id": "section-3",
+      "title": "Обязательные отрицательные прогоны",
+      "text": "| Механизм | Вывод | Статус |\n|:--|:--|:--|\n| Матчер | Мутант `lifecycle-001` даёт `fail` и mismatch `final_state` | PASS |\n| Статусы | `php -r 'require \"conformance/vendor/autoload.php\"; …Status::cases()…'` → `baseline-expected,fail,not-testable,pass,warn`; `skip` отсутствует | PASS |\n| Baseline | `… --baseline conformance/tests/fixtures/baseline/stale.json` → exit 1: проходящая baseline-запись отвергнута | PASS |\n| Golden | `byte-drift.php` → exit 1, сигнал «дрейф сериализации: структура равна, байты отличаются» (6 jcs-пар); `struct-drift.php` → exit 1 (структурное расхождение) | PASS |\n| Lockstep | `php conformance/bin/lockstep --sdks conformance/tests/fixtures/sdks/mismatch.json` → exit 1: manifest `2026-07-draft`, требуется `2026-08` | PASS |\n| CI | P6.7 Completion Notes фиксируют по одному красному входу на каждый слой, каждый `--layer N` → exit 1; локальный `--all` повторно зелёный | PASS |"
+    },
+    {
+      "id": "section-4",
+      "title": "что НЕ проверялось",
+      "text": "- Remote CI и merge protection не запускались: Q-2 остаётся внешней границей.\n- SDK-часть слоя 2 не имеет предмета без решения владельца по `DR-02` §6; CI прямо печатает ветку C.\n- SDK ещё не зарегистрированы, поэтому слои 3/4 доказывались непустым собственным подмножеством раннера и эталонного адаптера.\n- Пороги зрелости D7 (100 %/80 %) к SDK здесь не применялись — субъект заявления уровня фазы P7/P8."
+    },
+    {
+      "id": "P7-P8",
+      "title": "Разблокировка фаз P7 и P8",
+      "text": "Гейт P6 закрыт: фазы P7 и P8 разблокированы (`@plan/phases/P6/phase.json` Phase Context). Следующий шаг — reconciliation P7.1–P7.10 по `@plan/knowledge/findings-P6-P7-plan-audit-2026-09-18.json`."
+    }
+  ],
+  "applies_to": [
+    "P6"
+  ],
+  "provenance": {
+    "path": "artifacts/P6-gate.md",
+    "sha256": "39f159effd009f98ba1cac979fbd91006ae8d8a24bb2032e37d88c4335251382"
+  }
+}

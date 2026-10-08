@@ -1,0 +1,304 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P8.4",
+  "title": "Доказать PostgreSQL invariants multi-process crash schedules",
+  "status": "done",
+  "summary": "Выполнить versioned deterministic schedules против реального PostgreSQL через отдельные PHP/Dart worker processes и доказать replay, lease/fencing and EventStore invariants при blocking, rollback, crash, takeover and skew.",
+  "why": "Two connections in one test process prove базовую arbitration, но не гарантируют, что gates различают blocked backend, killed client, stale worker and ambiguous post-commit result. Sleeps and SQLite cannot establish those states. `RAG:✅` PostgreSQL semantics in `@plan/knowledge/research-P8-design-rag.json`.",
+  "scope": {
+    "include": [
+      "Language-neutral schedule DSL; controller/worker line protocol; one physical connection per actor; application-name/PID observation; explicit IPC barriers; `pg_stat_activity`/`pg_blocking_pids` evidence; bounded lock/statement timeouts; client crash, query cancel and backend termination classes; consume commit/rollback races; lease takeover/stale CAS/clock-skew; event batch/version/collision/pagination schedules; invariant verifier and cleanup receipt."
+    ],
+    "exclude": [
+      "Owner/production database; in-memory/SQLite substitute; sleep-based ordering proof; arbitrary network partition simulator; server/power-loss WAL certification; exactly-once external effect claim; CI service/container wiring; changing P3–P5 contracts to fit the harness."
+    ]
+  },
+  "depends_on": [],
+  "decisions": [
+    "D8",
+    "D9",
+    "D10",
+    "D13"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "fixtures/hardening/adversarial/manifest.v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-token-replay-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-idempotency-lease-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-event-store-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/hardening/token-replay-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "fixtures/hardening/idempotency-lease-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "fixtures/hardening/event-store-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "fixtures/hardening/sql/confirmation-consumed-tokens.v1.sql",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/hardening/sql/idempotency-lease.v1.sql",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/hardening/sql/event-store.v1.sql",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-resource-envelope-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/decisions/D8.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/decisions/D9.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/decisions/D10.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/decisions/D13.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/root-contracts-adversarial-verification-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/findings-P3-replay-parity.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/findings-P4-fencing-parity.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/findings-P5-event-parity.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-P8-design.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-P8-design-rag.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "fixtures/hardening/adversarial/storage-schedules.v1.json",
+      "change": "any"
+    },
+    {
+      "path": "tools/storage_chaos.py",
+      "change": "any"
+    },
+    {
+      "path": "@plan/artifacts/P8-storage-chaos.json",
+      "change": "any"
+    },
+    {
+      "path": "@plan/knowledge/findings-P8-storage-chaos.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "Preflight accepts only an explicitly configured isolated test database, verifies its identity, creates a run-qualified namespace and deletes only that namespace. Every actor is a separate process and connection with `application_name=agentools-p8:<run>:<scenario>:<actor>`. Ordering comes from acknowledged controller barriers plus observed backend/lock state, never elapsed sleep. Receipt distinguishes `client_crash`, `query_cancel`, `backend_terminate` and normal rollback. Replay schedules cover conflicting uncommitted insert commit and rollback; lease schedules cover simultaneous acquire, expiry/takeover and stale heartbeat/complete/fail under the P4 clock contract; event schedules cover expected-version race, atomic batch rollback, identical replay, content collision, partial overlap and keyset pages. After every fault, a fresh verifier connection checks durable invariants. A failed upstream guarantee returns to its declared owner; P8 does not weaken it."
+  ],
+  "guidance": "Use structured JSON-lines over pipes/sockets, process groups and bounded teardown. Discover worker PIDs through acknowledgements and PostgreSQL backend PIDs through the connection; observe waits with `pg_stat_activity` and blockers with `pg_blocking_pids`. Set `lock_timeout`, `statement_timeout` and `idle_in_transaction_session_timeout` for bounded failure, not latency evidence. Capture SQLSTATE and durable row digests without token/result/event secrets. Test clearly-before/after expiry and declared skew bounds; do not assert sub-millisecond wall-clock edges.",
+  "validation": [
+    {
+      "id": "V1",
+      "procedure": "python3 tools/storage_chaos.py test",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "procedure": "python3 tools/storage_chaos.py run",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "procedure": "php vendor/bin/phpunit tests/Adversarial/PostgresScheduleTest.php",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "procedure": "cd php && composer analyse",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "procedure": "cd dart/agentools && dart analyze && dart test test/adversarial/postgres_schedule_test.dart",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "Deterministic PostgreSQL schedule corpus, safe multi-process controller/workers, crash/concurrency traces and digest-bound replay/lease/event invariant receipt."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "required",
+    "status": "complete"
+  },
+  "result": {
+    "started_at": "2026-09-20T14:48:00Z",
+    "finished_at": "2026-09-20T15:10:06Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "grok-4.6/high",
+      "effort": "high"
+    },
+    "notes": "19 PG schedules PHP/Dart invariant-parity GREEN; unfenced/non-atomic mutants red. write-site: pre_mutation: allow · pre_final: allow\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V1",
+        "exit": 0,
+        "at": "2026-09-20T15:05:48Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V2",
+        "exit": 0,
+        "at": "2026-09-20T15:05:48Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V3",
+        "exit": 0,
+        "at": "2026-09-20T15:05:48Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V4",
+        "exit": 0,
+        "at": "2026-09-20T15:05:48Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V5",
+        "exit": 0,
+        "at": "2026-09-20T15:05:48Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-20T15:10:06Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Выполнить versioned deterministic schedules против реального PostgreSQL через отдельные PHP/Dart worker processes и доказать replay, lease/fencing and EventStore invariants при blocking, rollback, crash, takeover and skew."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Two connections in one test process prove базовую arbitration, но не гарантируют, что gates различают blocked backend, killed client, stale worker and ambiguous post-commit result. Sleeps and SQLite cannot establish those states. `RAG:✅` PostgreSQL semantics in `@plan/knowledge/research-P8-design-rag.json`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "Language-neutral schedule DSL; controller/worker line protocol; one physical connection per actor; application-name/PID observation; explicit IPC barriers; `pg_stat_activity`/`pg_blocking_pids` evidence; bounded lock/statement timeouts; client crash, query cancel and backend termination classes; consume commit/rollback races; lease takeover/stale CAS/clock-skew; event batch/version/collision/pagination schedules; invariant verifier and cleanup receipt."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Owner/production database; in-memory/SQLite substitute; sleep-based ordering proof; arbitrary network partition simulator; server/power-loss WAL certification; exactly-once external effect claim; CI service/container wiring; changing P3–P5 contracts to fit the harness."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`fixtures/hardening/adversarial/manifest.v1.json` · `@plan/knowledge/root-contracts-token-replay-v1.json` · `@plan/knowledge/root-contracts-idempotency-lease-v1.json` · `@plan/knowledge/root-contracts-event-store-v1.json` · `fixtures/hardening/token-replay-v1.json` · `fixtures/hardening/idempotency-lease-v1.json` · `fixtures/hardening/event-store-v1.json` · `fixtures/hardening/sql/confirmation-consumed-tokens.v1.sql` · `fixtures/hardening/sql/idempotency-lease.v1.sql` · `fixtures/hardening/sql/event-store.v1.sql` · `@plan/knowledge/root-contracts-resource-envelope-v1.json` · `@plan/decisions/D8.json` · `@plan/decisions/D9.json` · `@plan/decisions/D10.json` · `@plan/decisions/D13.json`."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`fixtures/hardening/adversarial/storage-schedules.v1.json` · `tools/storage_chaos.py` · `php/tests/Adversarial/storage_worker.php` · `dart/agentools/test/adversarial/storage_worker.dart` · `php/tests/Adversarial/PostgresScheduleTest.php` · `dart/agentools/test/adversarial/postgres_schedule_test.dart` · `plans/2026.09.19-№1-AGENTOOLS-HARDENING/artifacts/P8-storage-chaos.json` · `@plan/knowledge/findings-P8-storage-chaos.json`."
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/root-contracts-adversarial-verification-v1.json` and `fixtures/hardening/adversarial/manifest.v1.json` 2) `@plan/knowledge/root-contracts-token-replay-v1.json`, `@plan/knowledge/root-contracts-idempotency-lease-v1.json`, `@plan/knowledge/root-contracts-event-store-v1.json`, `fixtures/hardening/sql/confirmation-consumed-tokens.v1.sql`, `fixtures/hardening/sql/idempotency-lease.v1.sql`, `fixtures/hardening/sql/event-store.v1.sql`, `@plan/knowledge/findings-P3-replay-parity.json`, `@plan/knowledge/findings-P4-fencing-parity.json` and `@plan/knowledge/findings-P5-event-parity.json` 3) `@plan/knowledge/research-P8-design.json` and PostgreSQL primary sources in `@plan/knowledge/research-P8-design-rag.json` 4) `@plan/knowledge/root-contracts-resource-envelope-v1.json` 5) `php/phpunit.xml`, `php/composer.json`, `dart/agentools/pubspec.yaml` and `dart/agentools/pubspec.lock` 6) `@plan/decisions/D8.json`, `@plan/decisions/D9.json`, `@plan/decisions/D10.json` and `@plan/decisions/D13.json`."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "Preflight accepts only an explicitly configured isolated test database, verifies its identity, creates a run-qualified namespace and deletes only that namespace. Every actor is a separate process and connection with `application_name=agentools-p8:<run>:<scenario>:<actor>`. Ordering comes from acknowledged controller barriers plus observed backend/lock state, never elapsed sleep. Receipt distinguishes `client_crash`, `query_cancel`, `backend_terminate` and normal rollback. Replay schedules cover conflicting uncommitted insert commit and rollback; lease schedules cover simultaneous acquire, expiry/takeover and stale heartbeat/complete/fail under the P4 clock contract; event schedules cover expected-version race, atomic batch rollback, identical replay, content collision, partial overlap and keyset pages. After every fault, a fresh verifier connection checks durable invariants. A failed upstream guarantee returns to its declared owner; P8 does not weaken it."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Use structured JSON-lines over pipes/sockets, process groups and bounded teardown. Discover worker PIDs through acknowledgements and PostgreSQL backend PIDs through the connection; observe waits with `pg_stat_activity` and blockers with `pg_blocking_pids`. Set `lock_timeout`, `statement_timeout` and `idle_in_transaction_session_timeout` for bounded failure, not latency evidence. Capture SQLSTATE and durable row digests without token/result/event secrets. Test clearly-before/after expiry and declared skew bounds; do not assert sub-millisecond wall-clock edges."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "Safety preflight rejects non-test/ambiguous DSN and cleanup cannot cross the run namespace; no schedule file contains a sleep step; same schedule/seed yields the same acknowledged trace; replay commit/rollback races preserve exactly the P3 contract; one lease owner/takeover token wins and every stale CAS fails; event batch is all-or-nothing and replay/collision/partial-overlap classifications remain exact; observed blocked edges match expected `pg_blocking_pids`; killed worker leaves no committed partial state and post-commit ambiguity is reconciled from fresh durable state; PHP and Dart workers produce equivalent invariant sets; injected unfenced/non-atomic mutants turn schedules red; plan lint adds no ERROR."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "Deterministic PostgreSQL schedule corpus, safe multi-process controller/workers, crash/concurrency traces and digest-bound replay/lease/event invariant receipt."
+    }
+  ]
+}

@@ -10,10 +10,24 @@ final class SessionStateProjection {
     required this.specRevision,
     this.epoch = 0,
     this.projectedAt,
-  }) : assert(actionId.isNotEmpty),
-       assert(specRevision.isNotEmpty),
-       assert(seq >= 1),
-       assert(epoch >= 0);
+  }) {
+    if (!(actionId.isNotEmpty)) {
+      throw ArgumentError(
+        'Invalid session_state_projection field: actionId.isNotEmpty',
+      );
+    }
+    if (!(specRevision.isNotEmpty)) {
+      throw ArgumentError(
+        'Invalid session_state_projection field: specRevision.isNotEmpty',
+      );
+    }
+    if (!(seq >= 1)) {
+      throw ArgumentError('Invalid session_state_projection field: seq >= 1');
+    }
+    if (!(epoch >= 0)) {
+      throw ArgumentError('Invalid session_state_projection field: epoch >= 0');
+    }
+  }
 
   final String actionId;
   final ActionStatus status;

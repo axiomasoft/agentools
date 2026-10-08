@@ -1,0 +1,28 @@
+Traceback (most recent call last):
+  File "/tmp/agentools-audit-copy-4tslglh6/repo/tools/private_rc_gate.py", line 575, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/tmp/agentools-audit-copy-4tslglh6/repo/tools/private_rc_gate.py", line 566, in main
+    return cmd_verify(args)
+           ^^^^^^^^^^^^^^^^
+  File "/tmp/agentools-audit-copy-4tslglh6/repo/tools/private_rc_gate.py", line 482, in cmd_verify
+    live = build_aggregate(
+           ^^^^^^^^^^^^^^^^
+  File "/tmp/agentools-audit-copy-4tslglh6/repo/tools/private_rc_gate.py", line 326, in build_aggregate
+    errors.extend(independent_subject_rehash(repro))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/agentools-audit-copy-4tslglh6/repo/tools/private_rc_gate.py", line 195, in independent_subject_rehash
+    live = run_repro_fingerprints()
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/agentools-audit-copy-4tslglh6/repo/tools/private_rc_gate.py", line 206, in run_repro_fingerprints
+    payload = run_reproducibility(REPO, require_clean=False)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/agentools-audit-copy-4tslglh6/repo/tools/release_candidate.py", line 362, in run_reproducibility
+    "builder_a": build_receipt(
+                 ^^^^^^^^^^^^^^
+  File "/tmp/agentools-audit-copy-4tslglh6/repo/tools/release_candidate.py", line 286, in build_receipt
+    "contract_sha256": digest_file(contract_path),
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/agentools-audit-copy-4tslglh6/repo/tools/release_candidate.py", line 268, in digest_file
+    raise RcError(f"missing file for digest: {path}")
+tools.release_candidate.RcError: missing file for digest: /tmp/agentools-audit-copy-4tslglh6/repo/plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/release-candidate-v1.md

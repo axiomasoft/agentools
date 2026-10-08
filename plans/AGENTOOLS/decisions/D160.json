@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D160",
+  "title": "Решение",
+  "date": "2026-08-04",
+  "status": "accepted",
+  "decision": "**AgenTools — greenfield-пакет: промежуточные draft-fixtures не являются legacy API. P4.10 снова реопенится и нормализует `audit-004/104` против текущей AOB-25: tool description одинакова, единственный input-counterfactual — independently versioned `audit_export.mapping_version`.** Supersedes D156 только в неявном требовании сохранять байты уже собранного candidate, когда они противоречат различающей силе pair; exact 65 single-rule pairs и D159 exact-one predicate сохраняются. **Consequences:** платим ещё одним узким source+bookkeeping циклом и откладываем P4.13; взамен не заводим legacy/migration слой в невыпущенном пакете и убираем ложную вторую причину исхода.",
+  "rationale": "Директива владельца 2026-08-04 «пакет с нуля создаётся»; `@plan/knowledge/research-21-p4.10-greenfield-aob25-repair-2026-08.json`; фактический diff `audit-004/104`; `08_audit-observability.md` AOB-25. `RAG:— (repo-grounded)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D160\ndate: 2026-08-04\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**AgenTools — greenfield-пакет: промежуточные draft-fixtures не являются legacy API. P4.10 снова реопенится и нормализует `audit-004/104` против текущей AOB-25: tool description одинакова, единственный input-counterfactual — independently versioned `audit_export.mapping_version`.** Supersedes D156 только в неявном требовании сохранять байты уже собранного candidate, когда они противоречат различающей силе pair; exact 65 single-rule pairs и D159 exact-one predicate сохраняются. **Consequences:** платим ещё одним узким source+bookkeeping циклом и откладываем P4.13; взамен не заводим legacy/migration слой в невыпущенном пакете и убираем ложную вторую причину исхода."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Директива владельца 2026-08-04 «пакет с нуля создаётся»; `@plan/knowledge/research-21-p4.10-greenfield-aob25-repair-2026-08.json`; фактический diff `audit-004/104`; `08_audit-observability.md` AOB-25. `RAG:— (repo-grounded)`"
+    }
+  ]
+}

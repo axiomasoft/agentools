@@ -1,0 +1,74 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:phase:v1",
+  "id": "P4",
+  "title": "Lease/fencing idempotency и external-effect guarantees",
+  "design": "detailed",
+  "goal": "P4 заменяет split `resolve/complete(request)` на acquire/heartbeat/complete(lease)/fail(lease)\nс opaque fencing token, monotonic attempt, takeover и compare-and-swap. Она явно ограничивает\nобещание: arbitrary external effect не становится exactly-once из-за local store. Наблюдаемые\nIDE-10 состояния остаются тремя; capability policy живёт в coordinator, не в физике строки.\n\n> **Контракт фазы (contract-first).** Потребляет: P1 guarantees/clock/resource policy.\n> Производит: lease/fencing contract, PHP/Dart API, durable PostgreSQL adapter,\n> takeover/heartbeat/failure semantics, `IdempotencyCoordinator`, downstream capability model\n> и documented guarantees. Границы: outbox/inbox не встраиваются; ALC epoch — P5;\n> shared spec/error revision — P6; final exports — P7; mutation/fuzz depth — P8.\n\n> **Phase Assurance | v1.**\n> Impact: public-contract\n> Integration Seams: coordinator · idempotency-store · downstream-tool · postgresql-pdo · result-replay\n> Live or Irreversible: no\n> Audit Intent: direct-close-eligible\n> Rationale: фаза изменяет durability promise; crash/takeover/stale-worker tests и full review обязательны.",
+  "context": "P4 заменяет split `resolve/complete(request)` на acquire/heartbeat/complete(lease)/fail(lease)\nс opaque fencing token, monotonic attempt, takeover и compare-and-swap. Она явно ограничивает\nобещание: arbitrary external effect не становится exactly-once из-за local store. Наблюдаемые\nIDE-10 состояния остаются тремя; capability policy живёт в coordinator, не в физике строки.\n\n> **Контракт фазы (contract-first).** Потребляет: P1 guarantees/clock/resource policy.\n> Производит: lease/fencing contract, PHP/Dart API, durable PostgreSQL adapter,\n> takeover/heartbeat/failure semantics, `IdempotencyCoordinator`, downstream capability model\n> и documented guarantees. Границы: outbox/inbox не встраиваются; ALC epoch — P5;\n> shared spec/error revision — P6; final exports — P7; mutation/fuzz depth — P8.\n\n> **Phase Assurance | v1.**\n> Impact: public-contract\n> Integration Seams: coordinator · idempotency-store · downstream-tool · postgresql-pdo · result-replay\n> Live or Irreversible: no\n> Audit Intent: direct-close-eligible\n> Rationale: фаза изменяет durability promise; crash/takeover/stale-worker tests и full review обязательны.",
+  "depends_on": [
+    "P1"
+  ],
+  "items": [
+    "P4.1",
+    "P4.2",
+    "P4.3",
+    "P4.4"
+  ],
+  "batches": [
+    {
+      "id": "B-lease-fencing",
+      "items": [
+        "P4.1",
+        "P4.2",
+        "P4.3",
+        "P4.4"
+      ],
+      "mode": "recommended"
+    }
+  ],
+  "closed": {
+    "at": "2026-09-20T07:39:05Z",
+    "result": "done",
+    "summary": "<!-- plan-projection\nprojection: phase-closure\nprojection_version: v1\nsource_scope: phase P4 + item states + decisions\nthrough: P4: 🟢 Done\ninputs_sha256: d6a0c81146c6233059ca266ee0418b3f407ec612396ebf520e693de3bd768379\ngenerated_by: task plan-views closure\n-->\n\n# Закрытие фазы P4\n\n> Не править руками: это генерируемый вид.\n\n## Контракт фазы\n\n**Контракт фазы (contract-first).** Потребляет: P1 guarantees/clock/resource policy.\nПроизводит: lease/fencing contract, PHP/Dart API, durable PostgreSQL adapter,\ntakeover/heartbeat/failure semantics, `IdempotencyCoordinator`, downstream capability model\nи documented guarantees. Границы: outbox/inbox не встраиваются; ALC epoch — P5;\nshared spec/error revision — P6; final exports — P7; mutation/fuzz depth — P8.\n\n## Произведено\n\n- P4.1 — Заморозить lease/fencing contract, capability model и adversarial cases: Normative lease/fencing contract; unfenced-complete migration inventory; shared adversarial case manifest consumed by P4.2–P4.4 and later P6/P8.\n- P4.2 — Ввести acquire/heartbeat/CAS API и in-memory adapter в PHP/Dart: PHP/Dart fenced store API and in-memory adapter with matched invariants and focused negative evidence.\n- P4.3 — Реализовать PostgreSQL lease adapter, takeover и retention: Durable fenced store adapter, versioned SQL, takeover/retention evidence, and an honest SQLite reference disposition.\n- P4.4 — Встроить IdempotencyCoordinator, capability policy и crash/fencing gate: Supported fenced invoke path, capability policy, crash/fencing receipt and explicit residual boundaries.\n\n## Known Deviations\n\n- —\n\n## Решения\n\n- [D9](../../decisions/D9-fenced-lease-capability.md)\n"
+  },
+  "orchestration": {
+    "strategy": "sequential"
+  },
+  "sections": [
+    {
+      "id": "P4-Lease-fencing-idempotency-external-effect-guarantees",
+      "title": "P4 — Lease/fencing idempotency и external-effect guarantees",
+      "text": ""
+    },
+    {
+      "id": "Phase-Context",
+      "title": "Phase Context",
+      "text": "P4 заменяет split `resolve/complete(request)` на acquire/heartbeat/complete(lease)/fail(lease)\nс opaque fencing token, monotonic attempt, takeover и compare-and-swap. Она явно ограничивает\nобещание: arbitrary external effect не становится exactly-once из-за local store. Наблюдаемые\nIDE-10 состояния остаются тремя; capability policy живёт в coordinator, не в физике строки.\n\n> **Контракт фазы (contract-first).** Потребляет: P1 guarantees/clock/resource policy.\n> Производит: lease/fencing contract, PHP/Dart API, durable PostgreSQL adapter,\n> takeover/heartbeat/failure semantics, `IdempotencyCoordinator`, downstream capability model\n> и documented guarantees. Границы: outbox/inbox не встраиваются; ALC epoch — P5;\n> shared spec/error revision — P6; final exports — P7; mutation/fuzz depth — P8.\n\n> **Phase Assurance | v1.**\n> Impact: public-contract\n> Integration Seams: coordinator · idempotency-store · downstream-tool · postgresql-pdo · result-replay\n> Live or Irreversible: no\n> Audit Intent: direct-close-eligible\n> Rationale: фаза изменяет durability promise; crash/takeover/stale-worker tests и full review обязательны."
+    },
+    {
+      "id": "DoR-Definition-of-Ready",
+      "title": "DoR (Definition of Ready)",
+      "text": "- [x] D9 выбрал fenced acquire/CAS, три observer-состояния, coordinator capability и injected SQL.\n- [x] P4/P3/P5/P6/P7/P8 ownership разведён; P4 не выбирает token consume, event-batch, spec revision, exports.\n- [x] Lease clock (`:now`), expiry boundary, attempt/token monotonicity и completed-only cleanup заданы в `@plan/knowledge/research-P4-design.json`.\n- [x] Migration: unfenced `complete(request)` снимается с supported path; stale worker не может complete новой версии.\n- [ ] P1.4/P1.5 execution outputs существуют и digest-qualified; до этого P4 items dependency-not-ready, а не RED."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "Acquire/in-progress/completed storage; request fingerprint collision; opaque fencing token/attempt;\nheartbeat; lease expiry/takeover; CAS complete/fail; deterministic result replay; retention of\ncompleted rows; native-key/read-before-write/compensatable/at-most-once-only/unknown capability\npolicy; ambiguous failure handling; PHP/Dart parity и storage contract tests; wiring supported\ninvoke path through `IdempotencyCoordinator`."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Exactly-once claim; orchestration/saga engine; automatic retries для unknown high-risk tool;\ndownstream product-specific compensation logic; editing `spec/revisions/2026-08/**`; P3 token\nconsume; P5 event journal/epoch; final package exports; public release; live owner-database\nmigration."
+    },
+    {
+      "id": "Dependencies",
+      "title": "Dependencies",
+      "text": "P1.4 and P1.5 are execution predecessors of P4.1. P4.4 waits on P4.2 and P4.3. D2 forbids\nexecution of every P4 item until P1–P10 detail and whole-plan design audit are GREEN.\nВнутри P4 порядок: P4.1 → (P4.2 ∥ P4.3) → P4.4. P8 добавляет mutation/fuzz depth после\nбазовой корректности.\n\n| ID | Title | Status | Updated |\n|:--|:--|:--|:--|\n| P4.1 | Заморозить lease/fencing contract, capability model и adversarial cases | ⬜ Not started | 2026-09-19 |\n| P4.2 | Ввести acquire/heartbeat/CAS API и in-memory adapter в PHP/Dart | ⬜ Not started | 2026-09-19 |\n| P4.3 | Реализовать PostgreSQL lease adapter, takeover и retention | ⬜ Not started | 2026-09-19 |\n| P4.4 | Встроить IdempotencyCoordinator, capability policy и crash/fencing gate | ⬜ Not started | 2026-09-19 |"
+    },
+    {
+      "id": "Phase-Handoff",
+      "title": "Phase Handoff",
+      "text": "<Заполняется при закрытии фазы.>"
+    }
+  ]
+}

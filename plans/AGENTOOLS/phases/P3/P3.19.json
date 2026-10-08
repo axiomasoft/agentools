@@ -1,0 +1,180 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P3.19",
+  "title": "Повторный A2 после нормативной ремедиации",
+  "status": "done",
+  "summary": "Регенерировать все производные артефакты P3 после P3.16–P3.18, перепроверить A2 и обновить gate-артефакт без заявления о содержательном GREEN Gate B. `RAG:— (repo-grounded: @plan/knowledge/artifacts-P5-gate-b.json §Перепрогнанные команды)`.",
+  "why": "P4 обязан читать один согласованный `rules.json`/schema snapshot; запуск на частично обновлённой P3 повторит ложный PASS и смешает owner-ветки. `RAG:— (repo-grounded: @plan/phases/P4/phase.json контракт фазы; @plan/knowledge/research-12-p3-p4-gate-b-remediation-2026-08.json §4)`.",
+  "scope": {
+    "include": [
+      "`rules_index --write`, `close_schema --write`, затем `--check`; полный spec/legacy/namespace lint; обновление `@plan/knowledge/artifacts-P3-gate-a2.json` с D141-remediation и точными counts; снятие stale Phase Handoff только при plan-close P3."
+    ],
+    "exclude": [
+      "векторы P4; Gate B round 2; freeze/tag; новые нормы сверх P3.16–P3.18; правка решений."
+    ]
+  },
+  "depends_on": [
+    "P3.16",
+    "P3.17",
+    "P3.18"
+  ],
+  "decisions": [
+    "D43",
+    "D58"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/research-12-p3-p4-gate-b-remediation-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P5-gate-b.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P3-gate-a2.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "spec/revisions/2026-08/rules.json",
+      "change": "any"
+    },
+    {
+      "path": "spec/revisions/2026-08/schema/authoring/**",
+      "change": "any"
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P3-gate-a2.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "терминальность всех трёх входных items и owner D# — hard gate; производные только генераторами, не руками; A2 PASS означает форму спеки, не содержательность корпуса. `RAG:— (repo-grounded: @plan/plan.json D43/D58; @plan/knowledge/artifacts-P5-gate-b.json §Линза 5)`."
+  ],
+  "guidance": "Анти-самообман: не обновлять gate-артефакт, пока `--check` красный; не подменять full lint `--allow-missing`; counts публиковать с git-anchor и командами. Расхождение генератора с источником чинится в source item P3.16–P3.18 через ре-дизайн, не правкой JSON.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "python3 tools/rules_index.py --write spec/revisions/2026-08 && python3 tools/rules_index.py --check spec/revisions/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "python3 tools/close_schema.py --write spec/revisions/2026-08 && python3 tools/close_schema.py --check spec/revisions/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "python3 tools/spec_lint.py spec/revisions/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "python3 tools/spec_lint.py --legacy-check spec/revisions/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "согласованный snapshot P3; обновлённый A2 evidence; вход P4.9/W2."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-08-04T03:52:16Z",
+    "finished_at": "2026-08-04T03:55:19Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "gpt-5/high",
+      "effort": "high"
+    },
+    "notes": "Повторный A2: rules index и authoring schemas согласованы; Gate B не заявлен GREEN",
+    "deviations": [],
+    "pending": [],
+    "checks": []
+  },
+  "updated_at": "2026-08-04T03:55:19Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Регенерировать все производные артефакты P3 после P3.16–P3.18, перепроверить A2 и обновить gate-артефакт без заявления о содержательном GREEN Gate B. `RAG:— (repo-grounded: @plan/knowledge/artifacts-P5-gate-b.json §Перепрогнанные команды)`."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "P4 обязан читать один согласованный `rules.json`/schema snapshot; запуск на частично обновлённой P3 повторит ложный PASS и смешает owner-ветки. `RAG:— (repo-grounded: @plan/phases/P4/phase.json контракт фазы; @plan/knowledge/research-12-p3-p4-gate-b-remediation-2026-08.json §4)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "`rules_index --write`, `close_schema --write`, затем `--check`; полный spec/legacy/namespace lint; обновление `@plan/knowledge/artifacts-P3-gate-a2.json` с D141-remediation и точными counts; снятие stale Phase Handoff только при plan-close P3."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "векторы P4; Gate B round 2; freeze/tag; новые нормы сверх P3.16–P3.18; правка решений."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "терминальные P3.16/P3.17/P3.18 + их owner D# · вся ревизия · `@plan/knowledge/research-12-p3-p4-gate-b-remediation-2026-08.json`."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`spec/revisions/2026-08/rules.json` · `spec/revisions/2026-08/schema/authoring/**` (детерминированные производные) · `@plan/knowledge/artifacts-P3-gate-a2.json`."
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) Completion Notes P3.16–P3.18 2) `@plan/knowledge/research-12-p3-p4-gate-b-remediation-2026-08.json` §§3–5 3) `@plan/knowledge/artifacts-P5-gate-b.json` F1/F7/F8 4) `@plan/knowledge/artifacts-P3-gate-a2.json` 5) `@plan/plan.json` §2."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "терминальность всех трёх входных items и owner D# — hard gate; производные только генераторами, не руками; A2 PASS означает форму спеки, не содержательность корпуса. `RAG:— (repo-grounded: @plan/plan.json D43/D58; @plan/knowledge/artifacts-P5-gate-b.json §Линза 5)`."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Анти-самообман: не обновлять gate-артефакт, пока `--check` красный; не подменять full lint `--allow-missing`; counts публиковать с git-anchor и командами. Расхождение генератора с источником чинится в source item P3.16–P3.18 через ре-дизайн, не правкой JSON."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`python3 tools/rules_index.py --write spec/revisions/2026-08 && python3 tools/rules_index.py --check spec/revisions/2026-08` = 0 · `python3 tools/close_schema.py --write spec/revisions/2026-08 && python3 tools/close_schema.py --check spec/revisions/2026-08` = 0 · `python3 tools/spec_lint.py spec/revisions/2026-08` = 0 · `python3 tools/spec_lint.py --legacy-check spec/revisions/2026-08` = 0 · namespace inventory согласован с owner D# · `@plan/knowledge/artifacts-P3-gate-a2.json` содержит один `ГЕЙТ A2: PASS` и оговорку Gate B · plan-lint K=0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "согласованный snapshot P3; обновлённый A2 evidence; вход P4.9/W2."
+    }
+  ]
+}

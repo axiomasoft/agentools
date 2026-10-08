@@ -1,0 +1,12 @@
+{
+  "id": "fix-private-rc-final",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/private_rc_gate.py",
+    "run"
+  ],
+  "started_utc": "2026-10-08T13:38:24.949327+00:00",
+  "exit_code": 0,
+  "duration_seconds": 2.818
+}

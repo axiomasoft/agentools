@@ -1,0 +1,12 @@
+{
+  "id": "fix-sbom-final",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/sbom_gate.py",
+    "run"
+  ],
+  "started_utc": "2026-10-08T13:36:20.527755+00:00",
+  "exit_code": 0,
+  "duration_seconds": 14.44
+}

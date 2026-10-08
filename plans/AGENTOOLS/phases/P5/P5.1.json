@@ -1,0 +1,418 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P5.1",
+  "title": "Адверсариальный аудит согласования волны A (вердикт GREEN обязателен)",
+  "status": "done",
+  "summary": "Провести адверсариальный аудит свежим контекстом по ШЕСТИ линзам (`@plan/knowledge/research-04-p5-audit-gate-2026-08.json` §3): спека ↔ решения `DR-01`/`DR-02`; спека ↔ ADR контуров Flex и Axioma; правила ↔ векторы СОДЕРЖАТЕЛЬНО с полной энумерацией MUST-маркеров; фазы плана между собой; no-op, дыры и anti-regression список; остаточная legacy-лексика, терминологический дрейф и ИЗМЕРЕНИЕ цены смены домена (проверка утверждения D46). Выдать вердикт строкой-литералом в `@plan/knowledge/artifacts-P5-gate-b.json`; при ≠ GREEN — scope-payload ремедиации и статус `🔴 Blocked` со строкой `Возобновление:`.",
+  "why": "Это единственное место, где содержательность проверяется суждением, а не машиной: гейт A3 видит ССЫЛКУ вектора на правило, а не то, различает ли вектор это правило — ложная ссылка проходит зелёной и обесценивает «100 % покрытия» (оговорка честности D26). Цена пропуска необратима: вердикт GREEN одновременно размораживает 32 items волны реализации и открывает freeze контракта, который начнут пинить оба контура экосистемы. `RAG:— (repo-grounded: @plan/plan.json §5 D26 «линтер видит ссылку, а не содержательность»; @plan/knowledge/research-03-p4-vector-corpus-2026-08.json §3 «Оговорка честности» и §6 — 11 машинных проверок, ни одна не о смысле; @plan/knowledge/research-04-p5-audit-gate-2026-08.json §2 — десять дыр, зелёных на гейте A3; DR-01 §K — «волна B — обязательный гейт, её вердикт блокирует переход к реализации»)`.",
+  "scope": {
+    "include": [
+      "(а) **линза 1 — спека ↔ решения:** таблица «решение `DR-01` §A–§J и `DR-02` → правило-адрес в ревизии» против матриц `@plan/knowledge/research-00-user-intent.json` §2 и `research/02-…` §7 — каждое решение имеет ≥1 правило, ни одно правило не противоречит решению; отдельно проверяются пересмотры (§J9 против §E5/§J6 — D22; вердикт «DTO руками» — D38; owner-gate `DR-02` §6) на отсутствие висящих формулировок; (б) **линза 2 — спека ↔ ADR обоих контуров:** ЖИВОЕ состояние канонов Flex (`corex/ai`, `ADR-020 AiGateway`, блюпринты B-13/B-16) и Axioma (`ADR-004`, `ADR-005`, `ADR-010`, `ADR-012`, модули `axioma_mcp`, `axioma_assistant`) сверяется заново, `R-00` (2026-07-07) — база сравнения, а не источник истины; выход — таблица «правило ревизии ↔ ADR контура ↔ вердикт `совместимо`/`конфликт`/`нужен адаптер`» + выжимка в `@plan/knowledge/findings-P5-adr-contours.json`; (в) **линза 3 — правила ↔ векторы содержательно:** ПОЛНАЯ энумерация правил `MUST`/`MUST NOT` из `rules.json` — для каждого маркера назван покрывающий вектор и его РАЗЛИЧАЮЩИЙ признак; отдельно перечислены поимённо вырожденные векторы (негативный без парного позитивного и без `expect.error`; GREASE без наблюдаемого отличия от базового; `artifact` без подстроки диагностики; `spec_rule_ids` «про запас» — ссылка на правило, которое вектор не различает); для `SHOULD` допустима выборка с ОБЪЯВЛЕННЫМ правилом отбора и размером; (г) **линза 4 — фазы плана между собой:** контракт-блоки P1–P10 (`Потребляет` каждого производится РАНЬШЕ по порядку), `Required Reads` указывают на существующие файлы, гейты выхода фаз проверяемы (не «сделано»), Status Board ↔ `## Phase Status` ↔ §3 Routing согласованы построчно; (д) **линза 5 — no-op, дыры и anti-regression:** нормы, которые не может провалить ни одна реализация; гейты с непроверяемым условием; решения `DR-01` без адреса; семь дефектов `@plan/knowledge/research-00-user-intent.json` §4 перепроверены по НАПИСАННОЙ ревизии поимённо; вердикты `ГЕЙТ A0`/`A1`/`A2`/`A3` перепрогнаны на закоммиченных деревьях (числа сходятся, команды воспроизводятся); (е) **линза 6 — лексика и цена домена:** греп легаси-терминов D20 по ревизии с вырезанием огороженного блока (D45), сверка употребления терминов в 11 документах с глоссарием `00_overview.md`, ИЗМЕРЕНИЕ числа носителей строки `agentools.dev`/vendor-префикса и их перечень — вход пакета решения владельца item'а P5.2; (ж) **отчёт `@plan/knowledge/artifacts-P5-gate-b.json`:** строка-литерал вердикта, раздел «почему не RED», шесть разделов `### Линза N` с доказательством прохождения каждой, таблица находок (id, линза, severity ∈ `blocker`/`major`/`minor`/`editorial`, файл:строка, `failure_scenario`, адресат-фаза), перечень перепрогнанных команд с наблюдаемыми числами и якорем-коммитом, **раздел `### Вменённая детекция` — перекличка реестра: КАЖДАЯ строка `@plan/plan.json`, вменившая детекцию линзам этого аудита (её текст ссылается на `P5.1`), названа по идентификатору с вердиктом «детекция исполнена — <чем> / не исполнена — <почему>»; строки реестра, чей владелец объявлен вне плана либо вне фаз, в перекличку НЕ входят (D124), но общий свип реестра `Required Reads` 10а от этого не отменяется — его находки идут обычными строками таблицы находок**, раздел «что НЕ проверялось» (границы честности), при ≠ GREEN — `### Что запускать` со scope-payload."
+    ],
+    "exclude": [
+      "ЛЮБЫЕ правки нормативного текста ревизии, её схем, `rules.json`, корпуса `fixtures/2026-08/**` и инструментов — аудит read-only, находки уходят ремедиацией в фазы-владельцы (P3 — текст и индекс правил, P4 — корпус и линтер); freeze ревизии, тег и `## 7. Contracts` (P5.2); РЕШЕНИЕ по Q-5/Q-10 (владелец, пакет собирает P5.2 — этот item только ИЗМЕРЯЕТ цену); пересмотр решений `DR-01`/`DR-02` (расхождение решения с фактом — эскалация владельцу, `@plan/plan.json` §2); правки закрытых фаз P0/P2 по существу; реализация раннера и SDK (P6–P8); ревизия `spec/revisions/2026-07-draft` и её корпус; протокольные аудиты закрытых фаз (`task:plan-audit AGENTOOLS P3` / `P4`) — отдельные шаги протокола, этот item их не заменяет."
+    ]
+  },
+  "depends_on": [],
+  "decisions": [
+    "D119",
+    "D26",
+    "D46"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/research-04-p5-audit-gate-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-00-user-intent.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-02-p3-authoring-conventions-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-03-p4-vector-corpus-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-02_keywords-codegen-dart-transport.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/**",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "rules.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "schema/",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "schema/authoring/",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "fixtures/2026-08/**",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "coverage.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "README.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P3-gate-a2.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P4-gate-a3.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/20_research-R-00_internal-recon.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/phases/P1/phase.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/phases/P10/phase.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/phases/P2/phase.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-04-p5-audit-gate-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-00-user-intent.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-03-p4-vector-corpus-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/00_overview.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "11_conformance-harness.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/2026-08/README.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/2026-08/coverage.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "vectors/",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "static/",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "harness/",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P3-gate-a2.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/20_research-R-00_internal-recon.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "05-Projects/03-Packages/AxiomaErpSdk/docs/03_Dev/modules/axioma_mcp.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "modules/axioma_assistant.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "05-Projects/01-Products/FlexCRM/plans/flex/30_blueprints/B-13_crm.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "B-16_satellite-contracts.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/phases/P2/phase.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "@plan/knowledge/artifacts-P5-gate-b.json",
+      "change": "any"
+    },
+    {
+      "path": "@plan/knowledge/findings-P5-adr-contours.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "аудит **READ-ONLY по артефактам**: ни один файл ревизии, корпуса, инструментов и решений не правится — находка = строка отчёта с адресатом-фазой, а не правка (правка = материальное отклонение `plan-protocol` §6 и уничтожение независимости гейта); **свежий контекст обязателен** (`cold-start — plan-step`) — контекст исполнителей фаз P3/P4 не наследуется, иначе аудит унаследует их слепые зоны; каждая находка несёт `failure_scenario` (конкретный вход/состояние → неверный исход), severity по таксономии `research/04-…` §4 и адресата — находка без `failure_scenario` не находка, а вкусовщина, и в таблицу не попадает; каждая находка проходит ОПРОВЕРЖЕНИЕ до публикации: явно назван факт на дереве, который её подтверждает; неопровергнутая гипотеза публикуется отдельным списком как `PLAUSIBLE`, а не как находка; **полная энумерация MUST — выборка запрещена**, для `SHOULD` выборка объявляется правилом отбора и размером в разделе «что НЕ проверялось»; каждое число отчёта приводится с якорем на коммит и командой, которой получено (`plan-protocol` §8 «Tree anchor»), числа по репозиторию артефактов — на его HEAD, числа по файлам плана — на bookkeeping-коммите; живое состояние чужих контуров сверяется заново, расхождение с `R-00` фиксируется фактом с путём и датой; вердикт — по правилу `research/04-…` §4 (`GREEN` ⇔ ноль `blocker` И ноль незакрытых `major`); потолок раундов — 2, третий подряд ≠ GREEN → эскалация владельцу; строка вердикта пишется ДОСЛОВНО `**Вердикт: GREEN**` (значения латиницей — литерал `plan-protocol` §8), ровно одна на заход, повторный заход дописывает датированный блок и НЕ переписывает прежний; плановый линтер — командой из Phase Context."
+  ],
+  "guidance": "Кода нет — суждение и отчёт. Стиль отчёта — как блок `## Audit P2 — 2026-07-27` в `@plan/phases/P2/phase.json`: вердикт-литерал → «почему не RED» → нумерованные находки с `failure_scenario` и адресатом → перепрогнанные команды с якорями. Анти-самообман: «прочитал 12 документов» ≠ «проверил 150 правил» — прохождение линзы 3 доказывается ПЕРЕЧНЕМ разобранных маркеров, а не утверждением о проделанной работе; отчёт без перечня не сдан. Анти-подгонка: зелёный `spec_lint` и 100 % в `coverage.md` — НЕ доказательство содержательности, это ровно то, чего машина не проверяет (D26); ссылаться на них как на аргумент за GREEN запрещено. ЗАПРЕЩЕНО: ставить GREEN при непройденной линзе под предлогом «остальное зелёное»; чинить найденное по месту; подменять энумерацию MUST выборкой; публиковать находку без `failure_scenario`; править `DR-01`/`DR-02` (решения плана не пересматриваются — `@plan/plan.json` §2). If-then: линза невыполнима (недоступен живой канон чужого контура, файл ADR исчез/переименован) → НЕ проходить её молча: вердикт `ATTENTION`, строка в разделе «что НЕ проверялось» с названным адресатом, а не GREEN. If-then: найден `blocker` → вердикт ≠ GREEN, статус `🔴 Blocked`, `Pending Work` несёт `Возобновление: <точная команда ремедиации>`, отчёт — `### Что запускать` со всеми четырьмя строками payload'а. If-then: расхождение спеки с решением `DR-01` → адресат ремедиации — фаза P3 (правка нормативного текста), НЕ правка решения; если противоречит сам факт, а не текст, — эскалация владельцу (trigger «конфликт правил»). If-then: конфликт с ADR чужого контура → это НЕ автоматически дефект ревизии: названы обе стороны, severity — по влиянию на интеграционный контракт, адресат — фазы P9/P10 либо владелец, если требуется пересмотр чужого ADR. If-then: измеренное число носителей домена больше объявленного D46 (одно правило + один ключ профиля) → это находка класса `blocker` (утверждение решения опровергнуто фактом), адресат — фаза P3 и владелец. If-then: объём субъекта не берётся одним заходом → НЕ молчаливая выборка: `ATTENTION` с названной границей и предложением по декомпозиции (`plan-protocol` §8 C3 — предложение по починке обязательно).",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "grep -cE '^\\*\\*Вердикт: (GREEN|ATTENTION|RED)\\*\\*' artifacts/P5-gate-b.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "grep -cE '^### Линза [1-6]' artifacts/P5-gate-b.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "python3 -c \"import re;t=open('artifacts/P5-gate-b.md',encoding='utf-8').read();print(len(set(re.findall(r'\\b(?:OVR|EXT|TLP|ALC|CNF|CLR|SCN|LOP|AOB|IDE|SEC|CFH)-T?[0-9]+\\b',t))))\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "grep -c 'что НЕ проверялось' artifacts/P5-gate-b.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "cmd": "python3 -c \"import re;t=open('artifacts/P5-gate-b.md',encoding='utf-8').read();rows=[l for l in t.splitlines() if re.match(r'^\\| *F[0-9]+ *\\|',l)];print(len(rows), sum(1 for l in rows if 'failure_scenario' in l or l.count('|')>=6))\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "cmd": "grep -cE '^(РЕЖИМ|ВХОД|СКОУП|НЕ ТРОГАТЬ):' artifacts/P5-gate-b.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "cmd": "grep -c '### Что запускать' artifacts/P5-gate-b.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V8",
+      "cmd": "grep -c 'ADR-' findings/P5-adr-contours.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V9",
+      "cmd": "python3 -c \"import re;q=open('open-questions.md',encoding='utf-8').read();ids=[m[0] for m in re.findall(r'^\\| (Q-[0-9]+) \\|(.*)$',q,re.M) if 'P5.1' in m[1]];rep=open('artifacts/P5-gate-b.md',encoding='utf-8').read();print(len(ids), [i for i in ids if i not in rep])\"",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V10",
+      "cmd": "grep -c '### Вменённая детекция' artifacts/P5-gate-b.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V11",
+      "cmd": "python3 tools/spec_lint.py spec/revisions/2026-08; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V12",
+      "cmd": "python3 tools/spec_lint.py spec/revisions/2026-08 --coverage --check; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V13",
+      "cmd": "python3 tools/spec_lint.py --legacy-check spec/revisions/2026-08; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V14",
+      "cmd": "grep -rl 'agentools\\.dev' spec/revisions/2026-08 | wc -l",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "`@plan/knowledge/artifacts-P5-gate-b.json` — вердикт-литерал, шесть разделов линз с доказательствами, таблица находок с `failure_scenario`/severity/адресатом, перепрогнанные числа гейтов с якорями, раздел границ честности, при ≠ GREEN — `### Что запускать` со scope-payload; `@plan/knowledge/findings-P5-adr-contours.json` — живая сверка ADR обоих контуров с датой; измеренная цена смены домена (число носителей + перечень) как вход owner-гейта item'а P5.2; перечень разобранных MUST-маркеров в отчёте.\n> Историческая эскалация round 1 закрыта remediation D141–D160; исход RED сохранён в отчёте.\n> Историческая эскалация round 2 закрыта явным owner decision D161 и remediation D162–D172; исход RED сохранён в отчёте."
+  ],
+  "route": {
+    "class": "frontier",
+    "effort": "xhigh"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-08-03T18:18:24Z",
+    "finished_at": "2026-08-04T20:50:00Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "gpt-5.6-sol/xhigh",
+      "effort": "xhigh"
+    },
+    "notes": "f810d62: Gate B round 3 GREEN; exact 51 observational carriers and 51+11 mutants",
+    "deviations": [],
+    "pending": [],
+    "checks": []
+  },
+  "updated_at": "2026-08-04T20:50:00Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Провести адверсариальный аудит свежим контекстом по ШЕСТИ линзам (`@plan/knowledge/research-04-p5-audit-gate-2026-08.json` §3): спека ↔ решения `DR-01`/`DR-02`; спека ↔ ADR контуров Flex и Axioma; правила ↔ векторы СОДЕРЖАТЕЛЬНО с полной энумерацией MUST-маркеров; фазы плана между собой; no-op, дыры и anti-regression список; остаточная legacy-лексика, терминологический дрейф и ИЗМЕРЕНИЕ цены смены домена (проверка утверждения D46). Выдать вердикт строкой-литералом в `@plan/knowledge/artifacts-P5-gate-b.json`; при ≠ GREEN — scope-payload ремедиации и статус `🔴 Blocked` со строкой `Возобновление:`."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Это единственное место, где содержательность проверяется суждением, а не машиной: гейт A3 видит ССЫЛКУ вектора на правило, а не то, различает ли вектор это правило — ложная ссылка проходит зелёной и обесценивает «100 % покрытия» (оговорка честности D26). Цена пропуска необратима: вердикт GREEN одновременно размораживает 32 items волны реализации и открывает freeze контракта, который начнут пинить оба контура экосистемы. `RAG:— (repo-grounded: @plan/plan.json §5 D26 «линтер видит ссылку, а не содержательность»; @plan/knowledge/research-03-p4-vector-corpus-2026-08.json §3 «Оговорка честности» и §6 — 11 машинных проверок, ни одна не о смысле; @plan/knowledge/research-04-p5-audit-gate-2026-08.json §2 — десять дыр, зелёных на гейте A3; DR-01 §K — «волна B — обязательный гейт, её вердикт блокирует переход к реализации»)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "(а) **линза 1 — спека ↔ решения:** таблица «решение `DR-01` §A–§J и `DR-02` → правило-адрес в ревизии» против матриц `@plan/knowledge/research-00-user-intent.json` §2 и `research/02-…` §7 — каждое решение имеет ≥1 правило, ни одно правило не противоречит решению; отдельно проверяются пересмотры (§J9 против §E5/§J6 — D22; вердикт «DTO руками» — D38; owner-gate `DR-02` §6) на отсутствие висящих формулировок; (б) **линза 2 — спека ↔ ADR обоих контуров:** ЖИВОЕ состояние канонов Flex (`corex/ai`, `ADR-020 AiGateway`, блюпринты B-13/B-16) и Axioma (`ADR-004`, `ADR-005`, `ADR-010`, `ADR-012`, модули `axioma_mcp`, `axioma_assistant`) сверяется заново, `R-00` (2026-07-07) — база сравнения, а не источник истины; выход — таблица «правило ревизии ↔ ADR контура ↔ вердикт `совместимо`/`конфликт`/`нужен адаптер`» + выжимка в `@plan/knowledge/findings-P5-adr-contours.json`; (в) **линза 3 — правила ↔ векторы содержательно:** ПОЛНАЯ энумерация правил `MUST`/`MUST NOT` из `rules.json` — для каждого маркера назван покрывающий вектор и его РАЗЛИЧАЮЩИЙ признак; отдельно перечислены поимённо вырожденные векторы (негативный без парного позитивного и без `expect.error`; GREASE без наблюдаемого отличия от базового; `artifact` без подстроки диагностики; `spec_rule_ids` «про запас» — ссылка на правило, которое вектор не различает); для `SHOULD` допустима выборка с ОБЪЯВЛЕННЫМ правилом отбора и размером; (г) **линза 4 — фазы плана между собой:** контракт-блоки P1–P10 (`Потребляет` каждого производится РАНЬШЕ по порядку), `Required Reads` указывают на существующие файлы, гейты выхода фаз проверяемы (не «сделано»), Status Board ↔ `## Phase Status` ↔ §3 Routing согласованы построчно; (д) **линза 5 — no-op, дыры и anti-regression:** нормы, которые не может провалить ни одна реализация; гейты с непроверяемым условием; решения `DR-01` без адреса; семь дефектов `@plan/knowledge/research-00-user-intent.json` §4 перепроверены по НАПИСАННОЙ ревизии поимённо; вердикты `ГЕЙТ A0`/`A1`/`A2`/`A3` перепрогнаны на закоммиченных деревьях (числа сходятся, команды воспроизводятся); (е) **линза 6 — лексика и цена домена:** греп легаси-терминов D20 по ревизии с вырезанием огороженного блока (D45), сверка употребления терминов в 11 документах с глоссарием `00_overview.md`, ИЗМЕРЕНИЕ числа носителей строки `agentools.dev`/vendor-префикса и их перечень — вход пакета решения владельца item'а P5.2; (ж) **отчёт `@plan/knowledge/artifacts-P5-gate-b.json`:** строка-литерал вердикта, раздел «почему не RED», шесть разделов `### Линза N` с доказательством прохождения каждой, таблица находок (id, линза, severity ∈ `blocker`/`major`/`minor`/`editorial`, файл:строка, `failure_scenario`, адресат-фаза), перечень перепрогнанных команд с наблюдаемыми числами и якорем-коммитом, **раздел `### Вменённая детекция` — перекличка реестра: КАЖДАЯ строка `@plan/plan.json`, вменившая детекцию линзам этого аудита (её текст ссылается на `P5.1`), названа по идентификатору с вердиктом «детекция исполнена — <чем> / не исполнена — <почему>»; строки реестра, чей владелец объявлен вне плана либо вне фаз, в перекличку НЕ входят (D124), но общий свип реестра `Required Reads` 10а от этого не отменяется — его находки идут обычными строками таблицы находок**, раздел «что НЕ проверялось» (границы честности), при ≠ GREEN — `### Что запускать` со scope-payload."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "ЛЮБЫЕ правки нормативного текста ревизии, её схем, `rules.json`, корпуса `fixtures/2026-08/**` и инструментов — аудит read-only, находки уходят ремедиацией в фазы-владельцы (P3 — текст и индекс правил, P4 — корпус и линтер); freeze ревизии, тег и `## 7. Contracts` (P5.2); РЕШЕНИЕ по Q-5/Q-10 (владелец, пакет собирает P5.2 — этот item только ИЗМЕРЯЕТ цену); пересмотр решений `DR-01`/`DR-02` (расхождение решения с фактом — эскалация владельцу, `@plan/plan.json` §2); правки закрытых фаз P0/P2 по существу; реализация раннера и SDK (P6–P8); ревизия `spec/revisions/2026-07-draft` и её корпус; протокольные аудиты закрытых фаз (`task:plan-audit AGENTOOLS P3` / `P4`) — отдельные шаги протокола, этот item их не заменяет."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/knowledge/research-04-p5-audit-gate-2026-08.json` (линзы, таксономия, правило вердикта) · `@plan/knowledge/research-00-user-intent.json` §2–§4 · `@plan/knowledge/research-02-p3-authoring-conventions-2026-08.json` §7 · `@plan/knowledge/research-03-p4-vector-corpus-2026-08.json` §3, §5, §6 · `@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §A–§L · `@plan/knowledge/10_decisions-DR-02_keywords-codegen-dart-transport.json` · `spec/revisions/2026-08/**` (12 документов, `rules.json`, `schema/`, `schema/authoring/`) · `fixtures/2026-08/**` (корпус трёх классов, `coverage.md`, `README.md`) · `@plan/knowledge/artifacts-P3-gate-a2.json` и `@plan/knowledge/artifacts-P4-gate-a3.json` (числа гейтов — база перепрогона) · `@plan/knowledge/20_research-R-00_internal-recon.json` (база сравнения по контурам) · живые каноны контуров (пути — в `Required Reads`) · `@plan/phases/P1/phase.json`…`@plan/phases/P10/phase.json` (контракт-блоки) · `@plan/plan.json` §3, §4, §5, §7 · **`@plan/plan.json` ЦЕЛИКОМ** (реестр вменяет линзам 4/5 детекцию поимённо: Q-13, Q-14, Q-16 названы «детектор — линза 4/5 аудита P5.1»; без этого входа вменённая проверка не исполняется — D119) · `@plan/phases/P2/phase.json` блок `## Audit P2 — 2026-07-27` (форма отчёта)."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`@plan/knowledge/artifacts-P5-gate-b.json` · `@plan/knowledge/findings-P5-adr-contours.json` (оба — от каталога плана в vault-репозитории `Brain`; артефакты репозитория `~/projects/packages/agentools` этим item'ом НЕ изменяются)"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `05-Projects/03-Packages/AgenTools/@plan/knowledge/research-04-p5-audit-gate-2026-08.json` ЦЕЛИКОМ 2) `05-Projects/03-Packages/AgenTools/@plan/knowledge/research-00-user-intent.json` §2, §3, §4 3) `05-Projects/03-Packages/AgenTools/@plan/knowledge/research-03-p4-vector-corpus-2026-08.json` §3, §5, §6 и `@plan/knowledge/research-02-p3-authoring-conventions-2026-08.json` §7 4) `05-Projects/03-Packages/AgenTools/@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §A–§L и `@plan/knowledge/10_decisions-DR-02_keywords-codegen-dart-transport.json` 5) `spec/revisions/2026-08/00_overview.md` … `11_conformance-harness.md` (все 12) + `rules.json` 6) `fixtures/2026-08/README.md` + `fixtures/2026-08/coverage.md` + корпус `vectors/`, `static/`, `harness/`, `golden/` 7) `05-Projects/03-Packages/AgenTools/@plan/knowledge/artifacts-P3-gate-a2.json` и `@plan/knowledge/artifacts-P4-gate-a3.json` 8) `05-Projects/03-Packages/AgenTools/@plan/knowledge/20_research-R-00_internal-recon.json` ЦЕЛИКОМ, затем живые каноны: `05-Projects/03-Packages/AxiomaErpSdk/docs/03_Dev/ADR/ADR-004 AI via MCP Only.md`, `ADR-005 Finance Immutability.md`, `ADR-010 AI Write Tiers.md`, `ADR-012 AI Interaction and Provider Strategy.md`, `05-Projects/03-Packages/AxiomaErpSdk/docs/03_Dev/modules/axioma_mcp.md`, `modules/axioma_assistant.md`, `05-Projects/03-Packages/CoreX/docs/03_Dev/ADR/ADR-020 AiGateway.md`, `05-Projects/01-Products/FlexCRM/plans/flex/30_blueprints/B-13_crm.md`, `B-16_satellite-contracts.md` 9) `05-Projects/03-Packages/AgenTools/@plan/phases/P2/phase.json` блок `## Audit P2 — 2026-07-27` (форма отчёта) 10) контракт-блоки `@plan/phases/P1/phase.json`…`@plan/phases/P10/phase.json` 10а) `05-Projects/03-Packages/AgenTools/@plan/plan.json` ЦЕЛИКОМ (каждая строка со статусом ≠ `Resolved` проверяется линзой 4 либо 5 на предмет «вменена ли кому-то её детекция и исполнима ли она» — D119) 11) `05-Projects/03-Packages/AgenTools/@plan/plan.json` §2 Execution Rules, §3, §4, §5, §7."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "аудит **READ-ONLY по артефактам**: ни один файл ревизии, корпуса, инструментов и решений не правится — находка = строка отчёта с адресатом-фазой, а не правка (правка = материальное отклонение `plan-protocol` §6 и уничтожение независимости гейта); **свежий контекст обязателен** (`cold-start — plan-step`) — контекст исполнителей фаз P3/P4 не наследуется, иначе аудит унаследует их слепые зоны; каждая находка несёт `failure_scenario` (конкретный вход/состояние → неверный исход), severity по таксономии `research/04-…` §4 и адресата — находка без `failure_scenario` не находка, а вкусовщина, и в таблицу не попадает; каждая находка проходит ОПРОВЕРЖЕНИЕ до публикации: явно назван факт на дереве, который её подтверждает; неопровергнутая гипотеза публикуется отдельным списком как `PLAUSIBLE`, а не как находка; **полная энумерация MUST — выборка запрещена**, для `SHOULD` выборка объявляется правилом отбора и размером в разделе «что НЕ проверялось»; каждое число отчёта приводится с якорем на коммит и командой, которой получено (`plan-protocol` §8 «Tree anchor»), числа по репозиторию артефактов — на его HEAD, числа по файлам плана — на bookkeeping-коммите; живое состояние чужих контуров сверяется заново, расхождение с `R-00` фиксируется фактом с путём и датой; вердикт — по правилу `research/04-…` §4 (`GREEN` ⇔ ноль `blocker` И ноль незакрытых `major`); потолок раундов — 2, третий подряд ≠ GREEN → эскалация владельцу; строка вердикта пишется ДОСЛОВНО `**Вердикт: GREEN**` (значения латиницей — литерал `plan-protocol` §8), ровно одна на заход, повторный заход дописывает датированный блок и НЕ переписывает прежний; плановый линтер — командой из Phase Context."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Кода нет — суждение и отчёт. Стиль отчёта — как блок `## Audit P2 — 2026-07-27` в `@plan/phases/P2/phase.json`: вердикт-литерал → «почему не RED» → нумерованные находки с `failure_scenario` и адресатом → перепрогнанные команды с якорями. Анти-самообман: «прочитал 12 документов» ≠ «проверил 150 правил» — прохождение линзы 3 доказывается ПЕРЕЧНЕМ разобранных маркеров, а не утверждением о проделанной работе; отчёт без перечня не сдан. Анти-подгонка: зелёный `spec_lint` и 100 % в `coverage.md` — НЕ доказательство содержательности, это ровно то, чего машина не проверяет (D26); ссылаться на них как на аргумент за GREEN запрещено. ЗАПРЕЩЕНО: ставить GREEN при непройденной линзе под предлогом «остальное зелёное»; чинить найденное по месту; подменять энумерацию MUST выборкой; публиковать находку без `failure_scenario`; править `DR-01`/`DR-02` (решения плана не пересматриваются — `@plan/plan.json` §2). If-then: линза невыполнима (недоступен живой канон чужого контура, файл ADR исчез/переименован) → НЕ проходить её молча: вердикт `ATTENTION`, строка в разделе «что НЕ проверялось» с названным адресатом, а не GREEN. If-then: найден `blocker` → вердикт ≠ GREEN, статус `🔴 Blocked`, `Pending Work` несёт `Возобновление: <точная команда ремедиации>`, отчёт — `### Что запускать` со всеми четырьмя строками payload'а. If-then: расхождение спеки с решением `DR-01` → адресат ремедиации — фаза P3 (правка нормативного текста), НЕ правка решения; если противоречит сам факт, а не текст, — эскалация владельцу (trigger «конфликт правил»). If-then: конфликт с ADR чужого контура → это НЕ автоматически дефект ревизии: названы обе стороны, severity — по влиянию на интеграционный контракт, адресат — фазы P9/P10 либо владелец, если требуется пересмотр чужого ADR. If-then: измеренное число носителей домена больше объявленного D46 (одно правило + один ключ профиля) → это находка класса `blocker` (утверждение решения опровергнуто фактом), адресат — фаза P3 и владелец. If-then: объём субъекта не берётся одним заходом → НЕ молчаливая выборка: `ATTENTION` с названной границей и предложением по декомпозиции (`plan-protocol` §8 C3 — предложение по починке обязательно)."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`grep -cE '^\\*\\*Вердикт: (GREEN|ATTENTION|RED)\\*\\*' @plan/knowledge/artifacts-P5-gate-b.json` = 1 (ровно один вердикт-литерал на заход) · `grep -cE '^### Линза [1-6]' @plan/knowledge/artifacts-P5-gate-b.json` = 6 (все шесть линз имеют раздел-доказательство) · `python3 -c \"import re;t=open('@plan/knowledge/artifacts-P5-gate-b.json',encoding='utf-8').read();print(len(set(re.findall(r'\\b(?:OVR|EXT|TLP|ALC|CNF|CLR|SCN|LOP|AOB|IDE|SEC|CFH)-T?[0-9]+\\b',t))))\"` — число разобранных маркеров, публикуется и сверяется в Completion Notes с числом MUST-правил из `@plan/knowledge/artifacts-P4-gate-a3.json` (для GREEN обязано быть не меньше) · `grep -c 'что НЕ проверялось' @plan/knowledge/artifacts-P5-gate-b.json` ≥ 1 (границы честности названы) · `python3 -c \"import re;t=open('@plan/knowledge/artifacts-P5-gate-b.json',encoding='utf-8').read();rows=[l for l in t.splitlines() if re.match(r'^\\| *F[0-9]+ *\\|',l)];print(len(rows), sum(1 for l in rows if 'failure_scenario' in l or l.count('|')>=6))\"` — число находок и число строк с заполненным `failure_scenario` совпадают · при вердикте ≠ GREEN: `grep -cE '^(РЕЖИМ|ВХОД|СКОУП|НЕ ТРОГАТЬ):' @plan/knowledge/artifacts-P5-gate-b.json` = 4 и `grep -c '### Что запускать' @plan/knowledge/artifacts-P5-gate-b.json` = 1 · `grep -c 'ADR-' @plan/knowledge/findings-P5-adr-contours.json` ≥ 4 (живая сверка обоих контуров зафиксирована) · `python3 -c \"import re;q=open('@plan/plan.json',encoding='utf-8').read();ids=[m[0] for m in re.findall(r'^\\| (Q-[0-9]+) \\|(.*)$',q,re.M) if 'P5.1' in m[1]];rep=open('@plan/knowledge/artifacts-P5-gate-b.json',encoding='utf-8').read();print(len(ids), [i for i in ids if i not in rep])\"` — первое число > 0 (множество вменённой детекции не пусто — иначе реестр или отчёт прочитаны не те), второе значение = `[]` (КАЖДАЯ строка реестра, вменившая детекцию линзам этого аудита, названа в отчёте — вменённая детекция исполнена, а не пропущена; D119, множество сужено D124) · `grep -c '### Вменённая детекция' @plan/knowledge/artifacts-P5-gate-b.json` = 1 · перепрогон гейтов аудитором на закоммиченном дереве репозитория артефактов: `python3 tools/spec_lint.py spec/revisions/2026-08; echo $?` = 0 БЕЗ `--allow-missing` · `python3 tools/spec_lint.py spec/revisions/2026-08 --coverage --check; echo $?` = 0 · `python3 tools/spec_lint.py --legacy-check spec/revisions/2026-08; echo $?` = 0 · `grep -rl 'agentools\\.dev' spec/revisions/2026-08 | wc -l` — измеренное число носителей домена публикуется в отчёте и в Completion Notes · прогнать плановый линтер по каталогу плана и опубликовать счёт с атрибуцией «N ERROR / M WARN — новых от диффа item'а: K», K = 0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "`@plan/knowledge/artifacts-P5-gate-b.json` — вердикт-литерал, шесть разделов линз с доказательствами, таблица находок с `failure_scenario`/severity/адресатом, перепрогнанные числа гейтов с якорями, раздел границ честности, при ≠ GREEN — `### Что запускать` со scope-payload; `@plan/knowledge/findings-P5-adr-contours.json` — живая сверка ADR обоих контуров с датой; измеренная цена смены домена (число носителей + перечень) как вход owner-гейта item'а P5.2; перечень разобранных MUST-маркеров в отчёте.\n> Историческая эскалация round 1 закрыта remediation D141–D160; исход RED сохранён в отчёте.\n> Историческая эскалация round 2 закрыта явным owner decision D161 и remediation D162–D172; исход RED сохранён в отчёте."
+    }
+  ]
+}

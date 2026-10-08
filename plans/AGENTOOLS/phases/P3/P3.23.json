@@ -1,0 +1,196 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P3.23",
+  "title": "Повторный A2 после RED-аудита P3",
+  "status": "done",
+  "summary": "Регенерировать производные после P3.20–P3.22, исполнить усиленный A2 и переиздать evidence только при доказанном закрытии F1–F5; F6 уже закрыт D148.",
+  "why": "Source-fixes без отдельного terminal gate оставят P4/P6–P8 без единого согласованного snapshot, а прежние P3.14/P3.19 доказали, что свежесть производных сама по себе не обнаруживает schema-value противоречия. `RAG:— (repo-grounded: Audit P3 F3; @plan/knowledge/artifacts-P3-gate-a2.json; @plan/knowledge/research-13-p3-red-audit-remediation-2026-08.json §3)`.",
+  "scope": {
+    "include": [
+      "hard gate на терминальность P3.20–P3.22; регенерация/check `schema/authoring/**` и `rules.json`; полный authoring/legacy/namespace/actionable/schema-values lint; точная фиксация единственного coverage-gap `[CFH-55 → P4.12]`; evidence-таблица F1–F5 с командой, результатом и git-anchor; ровно один актуальный `ГЕЙТ A2: PASS` с явной строкой, что полный coverage восстанавливает P4.12 и Gate B round 1 остаётся RED."
+    ],
+    "exclude": [
+      "новые нормы/схемы; правка source-файлов P3.20–P3.22 вместо эскалации; fixtures/checker P4.12; Gate B round 2; freeze/tag; переписывание исторических A2 evidence/Completion Notes."
+    ]
+  },
+  "depends_on": [
+    "P3.20",
+    "P3.21",
+    "P3.22"
+  ],
+  "decisions": [
+    "D146",
+    "D149",
+    "D147"
+  ],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/research-13-p3-red-audit-remediation-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P3-gate-a2.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-13-p3-red-audit-remediation-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/phases/P3/phase.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P3-gate-a2.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/phases/P4/phase.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "spec/revisions/2026-08/rules.json",
+      "change": "any"
+    },
+    {
+      "path": "spec/revisions/2026-08/schema/authoring/**",
+      "change": "any"
+    },
+    {
+      "path": "@plan/knowledge/artifacts-P3-gate-a2.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "три source-items терминальны и их item commits существуют до мутации; производные пишутся только генераторами; любой schema-values/markdown delta оставляет item незакрытым; полный линтер имеет ровно один coverage-gap `CFH-55`, любой иной gap/error блокирует item; evidence различает authoring A2, отложенный coverage P4.12 и содержательный Gate B. `RAG:— (repo-grounded: D146/D147/D149; Audit P3 F3)`."
+  ],
+  "guidance": "Анти-самообман: запрещено переиздавать A2 по одному `spec_lint: OK`; обязательны адресные результаты `ResultType`/`StatusChannel`/`TaskStatus`/`EventKind`, negative probes, F1–F5 map и точный debt-carrier CFH-55. Не подгонять evidence вручную под PASS, не добавлять ложную fixture-ссылку и не объявлять полный линтер зелёным: неизвестная ошибка → re-design соответствующего source-item. Counts публиковать с git-anchor; authoring/rules JSON руками не редактировать.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "python3 tools/close_schema.py --write spec/revisions/2026-08 && python3 tools/close_schema.py --check spec/revisions/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "python3 tools/rules_index.py --write spec/revisions/2026-08 && python3 tools/rules_index.py --check spec/revisions/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "python3 tools/spec_lint.py --schema-values-selftest spec/revisions/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "python3 tools/spec_lint.py --legacy-check spec/revisions/2026-08",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "согласованный post-audit authoring snapshot P3; усиленный воспроизводимый A2 evidence; точный coverage debt для P4.12; честный вход P4.9."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-08-04T08:53:32Z",
+    "finished_at": "2026-08-04T08:56:35Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "gpt-5.6/high",
+      "effort": "high"
+    },
+    "notes": "A2 evidence reissued; sole CFH-55 debt remains with P4.12",
+    "deviations": [],
+    "pending": [],
+    "checks": []
+  },
+  "updated_at": "2026-08-04T08:56:35Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Регенерировать производные после P3.20–P3.22, исполнить усиленный A2 и переиздать evidence только при доказанном закрытии F1–F5; F6 уже закрыт D148."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Source-fixes без отдельного terminal gate оставят P4/P6–P8 без единого согласованного snapshot, а прежние P3.14/P3.19 доказали, что свежесть производных сама по себе не обнаруживает schema-value противоречия. `RAG:— (repo-grounded: Audit P3 F3; @plan/knowledge/artifacts-P3-gate-a2.json; @plan/knowledge/research-13-p3-red-audit-remediation-2026-08.json §3)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "hard gate на терминальность P3.20–P3.22; регенерация/check `schema/authoring/**` и `rules.json`; полный authoring/legacy/namespace/actionable/schema-values lint; точная фиксация единственного coverage-gap `[CFH-55 → P4.12]`; evidence-таблица F1–F5 с командой, результатом и git-anchor; ровно один актуальный `ГЕЙТ A2: PASS` с явной строкой, что полный coverage восстанавливает P4.12 и Gate B round 1 остаётся RED."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "новые нормы/схемы; правка source-файлов P3.20–P3.22 вместо эскалации; fixtures/checker P4.12; Gate B round 2; freeze/tag; переписывание исторических A2 evidence/Completion Notes."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "терминальные P3.20/P3.21/P3.22 · D146–D149 · `@plan/knowledge/research-13-p3-red-audit-remediation-2026-08.json` · Audit P3 F1–F6 · текущий `@plan/knowledge/artifacts-P3-gate-a2.json`."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`spec/revisions/2026-08/rules.json` · `spec/revisions/2026-08/schema/authoring/**` · `@plan/knowledge/artifacts-P3-gate-a2.json`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) Completion Notes P3.20–P3.22 2) `@plan/knowledge/research-13-p3-red-audit-remediation-2026-08.json` §§3–7 3) `@plan/phases/P3/phase.json` Audit P3 F1–F6 4) `@plan/knowledge/artifacts-P3-gate-a2.json` 5) `@plan/plan.json` D146–D149 6) `@plan/phases/P4/phase.json` P4.12/P4.13 7) `@plan/plan.json` §2 close protocol."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "три source-items терминальны и их item commits существуют до мутации; производные пишутся только генераторами; любой schema-values/markdown delta оставляет item незакрытым; полный линтер имеет ровно один coverage-gap `CFH-55`, любой иной gap/error блокирует item; evidence различает authoring A2, отложенный coverage P4.12 и содержательный Gate B. `RAG:— (repo-grounded: D146/D147/D149; Audit P3 F3)`."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Анти-самообман: запрещено переиздавать A2 по одному `spec_lint: OK`; обязательны адресные результаты `ResultType`/`StatusChannel`/`TaskStatus`/`EventKind`, negative probes, F1–F5 map и точный debt-carrier CFH-55. Не подгонять evidence вручную под PASS, не добавлять ложную fixture-ссылку и не объявлять полный линтер зелёным: неизвестная ошибка → re-design соответствующего source-item. Counts публиковать с git-anchor; authoring/rules JSON руками не редактировать."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "P3.20–P3.22 в Phase Status = `🟢`/`🟠` · `python3 tools/close_schema.py --write spec/revisions/2026-08 && python3 tools/close_schema.py --check spec/revisions/2026-08` = 0 · `python3 tools/rules_index.py --write spec/revisions/2026-08 && python3 tools/rules_index.py --check spec/revisions/2026-08` = 0 · `python3 tools/spec_lint.py --schema-values-selftest spec/revisions/2026-08` = 0 · exact-set команда P3.22 доказывает exit 1 полного линтера и единственную ошибку `[CFH-55]` · `python3 tools/spec_lint.py --legacy-check spec/revisions/2026-08` = 0 · namespace/actionable selftests = 0 · `@plan/knowledge/artifacts-P3-gate-a2.json` содержит один актуальный `ГЕЙТ A2: PASS`, таблицу F1–F5, `coverage debt: CFH-55 → P4.12`, `Gate B round 1: RED` и не утверждает полный `spec_lint` зелёным · plan-lint K=0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "согласованный post-audit authoring snapshot P3; усиленный воспроизводимый A2 evidence; точный coverage debt для P4.12; честный вход P4.9."
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D145",
+  "title": "Решение",
+  "date": "2026-08-04",
+  "status": "accepted",
+  "decision": "**Q-27 закрыт веткой `measurable`: actionable-description имеет четыре непустых компонента в фиксированном порядке — назначение, условия вызова, обязательные аргументы и пример.** Published/authoring schema и stdlib-linter проверяют только эту структуру; эффективность конкретной малой модели остаётся отдельным измерением P10.6. Альтернативы отклонены: `defer` ослабляет прямое требование брифа; длина/NLP-скоринг выдаёт эвристику за качество модели.",
+  "rationale": "Ответ владельца в сессии P3.18: `measurable`; `@plan/brief.json` §3; `@plan/knowledge/artifacts-P5-gate-b.json` F8; `@plan/knowledge/research-12-p3-p4-gate-b-remediation-2026-08.json` §3. `RAG:— (owner decision + repo-grounded)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D145\ndate: 2026-08-04\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Q-27 закрыт веткой `measurable`: actionable-description имеет четыре непустых компонента в фиксированном порядке — назначение, условия вызова, обязательные аргументы и пример.** Published/authoring schema и stdlib-linter проверяют только эту структуру; эффективность конкретной малой модели остаётся отдельным измерением P10.6. Альтернативы отклонены: `defer` ослабляет прямое требование брифа; длина/NLP-скоринг выдаёт эвристику за качество модели."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Ответ владельца в сессии P3.18: `measurable`; `@plan/brief.json` §3; `@plan/knowledge/artifacts-P5-gate-b.json` F8; `@plan/knowledge/research-12-p3-p4-gate-b-remediation-2026-08.json` §3. `RAG:— (owner decision + repo-grounded)`"
+    }
+  ]
+}

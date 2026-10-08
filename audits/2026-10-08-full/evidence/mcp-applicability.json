@@ -1,0 +1,12 @@
+{
+  "id": "mcp-applicability",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/mcp_applicability.py",
+    "--check"
+  ],
+  "started_utc": "2026-10-08T12:03:34.276916+00:00",
+  "exit_code": 0,
+  "duration_seconds": 1.667
+}

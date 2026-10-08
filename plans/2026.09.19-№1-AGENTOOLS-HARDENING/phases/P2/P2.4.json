@@ -1,0 +1,170 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P2.4",
+  "title": "Мигрировать consumers и закрыть cross-language bypass gate",
+  "status": "done",
+  "summary": "Перевести repository consumers на safe facade и выпустить проверяемый P2 receipt, что supported call graph и PHP/Dart behavior больше не обходят trusted boundary.",
+  "why": "Наличие safe service не устраняет bypass, пока reference coordinator, examples или top-level imports продолжают учить прямому `ConfirmationProtocol::commit`; одновременно P7, а не P2, владеет окончательным export removal. `RAG:—`.",
+  "scope": {
+    "include": [
+      "PHP reference slice composition/migration; constructor wiring through trusted adapters; package-level layer-boundary checks; exact allowlist прямых legacy usages; PHP/Dart adversarial parity report; migration/deprecation evidence for P7; full package regression."
+    ],
+    "exclude": [
+      "Production identity/policy/storage adapters; physical package split; deleting legacy protocol/export; new spec revision; P3 durable consume; P5 audit/event work; public documentation/release."
+    ]
+  },
+  "depends_on": [
+    "P2.1",
+    "P2.2",
+    "P2.3"
+  ],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/findings-P2-confirmation-migration.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/hardening/confirmation-security-v1.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "tools/validate_confirmation_boundary.py",
+      "change": "any"
+    },
+    {
+      "path": "@plan/knowledge/findings-P2-confirmation-parity.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "Reference composition injects trusted adapters once and invokes only `ConfirmationService` for prepare/commit. Validator scans production/reference/package examples and permits direct low-level calls only in the two focused protocol implementation/test boundaries named in its versioned allowlist; an unknown new call is RED. It reports exports separately: P2 may add/deprecate but may not remove PHP PSR-4/Dart barrel compatibility. Parity receipt derives exact case/result/code sets from real test outputs, not prose, and names P3/P5/P6/P7 deferred owners. No safe result claims durable one-shot until P3 evidence exists."
+  ],
+  "guidance": "Keep trusted test adapters local to reference/test namespaces; no allow-all production authorizer. Map authenticated actor/tenant/resource from bound reference port state, not constants passed per invocation. Validator is stdlib-only, deterministic, path-rooted, and outputs machine-readable JSON plus concise human summary. Report raw tokens, subject identifiers and policy internals only as redacted digests/counts.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "python3 tools/validate_confirmation_boundary.py --check",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "cd php && composer test && composer analyse",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "cd dart/agentools && dart analyze && dart test",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "procedure": "python3 tools/validate_confirmation_boundary.py --check",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "Migrated reference consumers, deterministic bypass/layer validator, cross-language receipt, explicit residual boundaries and P7-compatible deprecation handoff."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-21T14:05:49Z",
+    "finished_at": "2026-09-21T14:05:49Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "composer-2.5/high",
+      "effort": "high"
+    },
+    "notes": "Reference slice on ConfirmationService; validate_confirmation_boundary.py GREEN; P2-confirmation-parity.md.\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V4",
+        "exit": 0,
+        "at": "2026-09-20T05:36:24Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-21T14:05:49Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Перевести repository consumers на safe facade и выпустить проверяемый P2 receipt, что supported call graph и PHP/Dart behavior больше не обходят trusted boundary."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Наличие safe service не устраняет bypass, пока reference coordinator, examples или top-level imports продолжают учить прямому `ConfirmationProtocol::commit`; одновременно P7, а не P2, владеет окончательным export removal. `RAG:—`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "PHP reference slice composition/migration; constructor wiring through trusted adapters; package-level layer-boundary checks; exact allowlist прямых legacy usages; PHP/Dart adversarial parity report; migration/deprecation evidence for P7; full package regression."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Production identity/policy/storage adapters; physical package split; deleting legacy protocol/export; new spec revision; P3 durable consume; P5 audit/event work; public documentation/release."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "P2.1 migration inventory/manifest · P2.2 model · P2.3 safe services/tests · current PHP reference slice and Dart public barrels."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`php/reference/Scenario/SliceToolCoordinator.php` · `php/reference/Cli/SliceToolCoordinatorFactory.php` · `php/reference/Scenario/DayEndOrchestrator.php` · `php/tests/Reference/Scenario/SliceConfirmationGatesTest.php` · `php/tests/Confirmation/LayerBoundaryTest.php` · `dart/agentools/test/confirmation/layer_boundary_test.dart` · `tools/validate_confirmation_boundary.py` · `@plan/knowledge/findings-P2-confirmation-parity.json`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/findings-P2-confirmation-migration.json` 2) `fixtures/hardening/confirmation-security-v1.json` 3) `php/src/Confirmation/ConfirmationService.php` 4) `dart/agentools/lib/src/confirmation/confirmation_service.dart` 5) `php/reference/Scenario/SliceToolCoordinator.php` 6) `php/reference/Cli/SliceToolCoordinatorFactory.php` 7) `php/reference/Scenario/DayEndOrchestrator.php` 8) `dart/agentools/lib/agentools.dart` 9) `php/composer.json`."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "Reference composition injects trusted adapters once and invokes only `ConfirmationService` for prepare/commit. Validator scans production/reference/package examples and permits direct low-level calls only in the two focused protocol implementation/test boundaries named in its versioned allowlist; an unknown new call is RED. It reports exports separately: P2 may add/deprecate but may not remove PHP PSR-4/Dart barrel compatibility. Parity receipt derives exact case/result/code sets from real test outputs, not prose, and names P3/P5/P6/P7 deferred owners. No safe result claims durable one-shot until P3 evidence exists."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Keep trusted test adapters local to reference/test namespaces; no allow-all production authorizer. Map authenticated actor/tenant/resource from bound reference port state, not constants passed per invocation. Validator is stdlib-only, deterministic, path-rooted, and outputs machine-readable JSON plus concise human summary. Report raw tokens, subject identifiers and policy internals only as redacted digests/counts."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`python3 tools/validate_confirmation_boundary.py --check`; its negative self-probe in a temporary copied file catches each forbidden parameter/direct call without touching repository files; `cd php && composer test && composer analyse`; `cd dart/agentools && dart analyze && dart test`; shared manifest parity yields identical passed/denied semantic sets and `missing=[]`, `extra=[]`, `mismatch=[]`; reference slice negative tests cover caller `dualControl=false`, null proposer, permissive authorizer, stale time/descriptor, actor spoof, policy/approval mismatch and revoked authorization; frozen spec delta empty; plan lint adds no ERROR."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "Migrated reference consumers, deterministic bypass/layer validator, cross-language receipt, explicit residual boundaries and P7-compatible deprecation handoff."
+    }
+  ]
+}

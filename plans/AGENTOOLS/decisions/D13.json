@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D13",
+  "title": "Решение",
+  "date": "2026-07-07",
+  "status": "accepted",
+  "decision": "Хранение состояния сессии — контракт `SessionStore`/`EventLog` (интерфейсы в SDK) + референс-реализации in-memory; продуктовые реализации вне репо",
+  "rationale": "D8/D10 мастер-плана: SDK тонкий, персистентность — дело потребителя",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D13\ndate: 2026-07-07\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "Хранение состояния сессии — контракт `SessionStore`/`EventLog` (интерфейсы в SDK) + референс-реализации in-memory; продуктовые реализации вне репо"
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "D8/D10 мастер-плана: SDK тонкий, персистентность — дело потребителя"
+    }
+  ]
+}

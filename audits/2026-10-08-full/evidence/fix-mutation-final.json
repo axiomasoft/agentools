@@ -1,0 +1,12 @@
+{
+  "id": "fix-mutation-final",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/mutation_gate.py",
+    "run"
+  ],
+  "started_utc": "2026-10-08T13:31:06.292991+00:00",
+  "exit_code": 0,
+  "duration_seconds": 24.507
+}

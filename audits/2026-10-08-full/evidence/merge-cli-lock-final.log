@@ -1,0 +1,11 @@
+...............5:22PM INF scanned ~39 bytes (39 bytes) in 3.03ms
+5:22PM WRN leaks found: 1
+5:22PM INF scanned ~45 bytes (45 bytes) in 3.11ms
+5:22PM WRN leaks found: 1
+5:22PM INF scanned ~6 bytes (6 bytes) in 721µs
+5:22PM INF no leaks found
+................................................................
+----------------------------------------------------------------------
+Ran 79 tests in 35.907s
+
+OK

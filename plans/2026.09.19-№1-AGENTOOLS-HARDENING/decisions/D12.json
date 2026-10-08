@@ -1,0 +1,49 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D12",
+  "title": "Intentional package surfaces without speculative physical split",
+  "date": "2026-09-19",
+  "status": "accepted",
+  "decision": "P7 defines one normative package-boundary policy and one exact machine-readable target roster for\nPHP core, Dart core/testkit and the Dart MCP companion. Reachability is candidate inventory, not a\nstability promise. A stable entry requires intentional export/autoload classification, a production\nconsumer and behavioural proof; missing or extra actual entries fail the gate.\n\nPHP remains one production Composer package by default. `AgenTools\\\\Reference\\\\` and\n`AgenTools\\\\TestKit\\\\` are root-only development contours and are excluded from the production\narchive. Process-local in-memory/fixed implementations are testkit, never production defaults.\nStable current FQNs remain compatible; an accidental candidate may move only with a recorded P1\ncompatibility disposition.\n\nDart core remains one package with two intentional libraries: `agentools.dart` for supported core\nand `agentools_testkit.dart` for test doubles. `lib/src` is implementation and external imports are\nunsupported and linted, but it is not described as technically inaccessible. `agentools_mcp_dart`\nstays a separate optional package and imports only supported core libraries.\n\nNo public registry or hosted dependency is selected in P7. The companion’s path dependency is tested\nonly as a paired private artifact and stays an explicit P9/P10 public-release blocker. Every P7\nartifact claim is proved from actual archives and disposable consumers; publication remains behind\nD4/D5/G-RELEASE.",
+  "rationale": "A full physical package split would add manifests, versions and release ordering without a current\nindependent consumer or measured dependency reduction. Documentation alone cannot detect accidental\nautoload/exports. Composer development mappings/archive rules and Dart explicit libraries give a\nsmaller observable boundary now, while preserving the already-real MCP companion split. Exact\nmanifests plus clean artifact consumers distinguish supported API from implementation without\nrewriting P2–P6 semantics or pretending current private packages are public releases.",
+  "applies_to": [
+    "P7",
+    "P7.1",
+    "P7.2",
+    "P7.3",
+    "P7.4"
+  ],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "plan-designer/gpt-5.6-sol/high",
+    "effort": "high"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D12\ndate: 2026-09-19\nstatus: accepted\nitem: P7\nitems: [P7, P7.1, P7.2, P7.3, P7.4]\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "D12-Intentional-package-surfaces-without-speculative-physical-split",
+      "title": "D12 — Intentional package surfaces without speculative physical split",
+      "text": "**Actor:** plan-designer/gpt-5.6-sol/high\n**Evidence:** RAG:— repository recon in `@plan/knowledge/research-P7-design.json`; RAG:✅ official Composer and Dart sources in `@plan/knowledge/research-P7-design-rag.json`"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "P7 defines one normative package-boundary policy and one exact machine-readable target roster for\nPHP core, Dart core/testkit and the Dart MCP companion. Reachability is candidate inventory, not a\nstability promise. A stable entry requires intentional export/autoload classification, a production\nconsumer and behavioural proof; missing or extra actual entries fail the gate.\n\nPHP remains one production Composer package by default. `AgenTools\\\\Reference\\\\` and\n`AgenTools\\\\TestKit\\\\` are root-only development contours and are excluded from the production\narchive. Process-local in-memory/fixed implementations are testkit, never production defaults.\nStable current FQNs remain compatible; an accidental candidate may move only with a recorded P1\ncompatibility disposition.\n\nDart core remains one package with two intentional libraries: `agentools.dart` for supported core\nand `agentools_testkit.dart` for test doubles. `lib/src` is implementation and external imports are\nunsupported and linted, but it is not described as technically inaccessible. `agentools_mcp_dart`\nstays a separate optional package and imports only supported core libraries.\n\nNo public registry or hosted dependency is selected in P7. The companion’s path dependency is tested\nonly as a paired private artifact and stays an explicit P9/P10 public-release blocker. Every P7\nartifact claim is proved from actual archives and disposable consumers; publication remains behind\nD4/D5/G-RELEASE."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "A full physical package split would add manifests, versions and release ordering without a current\nindependent consumer or measured dependency reduction. Documentation alone cannot detect accidental\nautoload/exports. Composer development mappings/archive rules and Dart explicit libraries give a\nsmaller observable boundary now, while preserving the already-real MCP companion split. Exact\nmanifests plus clean artifact consumers distinguish supported API from implementation without\nrewriting P2–P6 semantics or pretending current private packages are public releases."
+    },
+    {
+      "id": "Consequences",
+      "title": "Consequences",
+      "text": "P7 has four items: shared contract/inventory, PHP boundary, Dart/MCP boundary and isolated artifact\nconsumer gate. P8 owns adversarial depth, P9 owns CI/matrices/SBOM/provenance and P10 owns final\ndocs/RC/publication decisions. A future physical split needs new measured evidence and a decision;\nit is not an implicit cleanup permitted by D12."
+    }
+  ]
+}

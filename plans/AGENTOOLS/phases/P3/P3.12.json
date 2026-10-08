@@ -1,0 +1,205 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P3.12",
+  "title": "`10_security.md`: запрет проброса токенов, тройка принципалов, происхождение аргумента",
+  "status": "done",
+  "summary": "Нормировать безопасность контракта: MUST NOT принимать токены, выпущенные не для нас (`DR-01` §I1), различимую тройку принципалов в аудите без фиксации claim-схемы (§I3), изолированный маршрут для недоверенного происхождения аргумента (§I2), привязку правил к OWASP MCP Top 10 как обоснование.",
+  "why": "Оба SDK архитектурно являются посредниками к нижележащим API — тот же confused-deputy риск, что описан для MCP-прокси; при этом механизмы делегирования (RFC 8693 и драфты для агентов) ещё не ратифицированы, поэтому фиксировать claim-схему рано, а различимость принципалов в аудите — обязательна уже сейчас. `RAG:✅ 2026-07-26 R-11 §11: OWASP MCP07 требует per-tool scope enforcement на каждом вызове; MCP формулирует «scope minimization + re-validate on every request»; RFC 8693 и драфты делегирования для агентов не ратифицированы`.",
+  "scope": {
+    "include": [
+      "(а) правила `SEC-*`: MUST NOT принимать токены, выпущенные не для нас (§I1), с явным перечнем того, что считается «выпущен не для нас»; изолированный маршрут для аргумента с меткой недоверенного происхождения (§I2) — что рантайм обязан сделать и что запрещено (передача такого аргумента в инструмент класса `irreversible` без гейта); различимая тройка принципалов (конечный пользователь, агент как принципал, область действия на конкретный вызов) в каждой записи о действии агента, без фиксации механизма токенов делегирования (§I3); ссылка на схему аудита решения (§I4, документ `04`) как на обязательное следствие; (б) раздел привязки правил к OWASP MCP Top 10 (MCP03 — пиннинг дескриптора, MCP07 — повторная авторизация, MCP08 — хеш-цепочка) как ОБОСНОВАНИЕ, а не как нормативная зависимость; (в) таблица покрытия решений."
+    ],
+    "exclude": [
+      "собственные схемы (документ схем не вводит — правила ссылаются на схемы `02`/`04`/`03`); реализация изоляции маршрута (рантайм, P7/P8); модель прав продукта (вне ревизии); фиксация claim-схемы делегирования (явно out of scope, §I3 — назвать в `00_overview.md`)."
+    ]
+  },
+  "depends_on": [],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/20_research-R-11_design-recon-2026-07.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "spec/revisions/2026-08/02_tool-contract-profile.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "04_confirmation.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "03_action-lifecycle.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-02-p3-authoring-conventions-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/20_research-R-11_design-recon-2026-07.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/04_confirmation.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/research-02-p3-authoring-conventions-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "spec/revisions/2026-08/10_security.md",
+      "change": "any"
+    },
+    {
+      "path": "spec/revisions/2026-08/README.md",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "префикс `SEC-`, уровень `L1`; правило безопасности формулируется как проверяемое поведение (что именно отвергается), а не как принцип; привязка к OWASP — отдельный информативный раздел, нормативные слова в нём не используются (иначе внешний документ становится нормой ревизии); дублирование правил документов `02`/`04` запрещено — только ссылки на маркеры; таблица покрытия — последним разделом."
+  ],
+  "guidance": "Кода нет — нормативный текст. Анти-подгонка: ЗАПРЕЩЕНО превращать раздел в перечень «лучших практик» — каждое правило обязано иметь наблюдаемое следствие и быть выразимым вектором (например, «токен чужого аудитора отвергнут с кодом X»). Анти-самообман: «тройка принципалов различима» проверяется тем, что схема аудита (`04`) несёт три ОТДЕЛЬНЫХ поля, а не одно поле актора — сверить и при расхождении оставить Pending Work на `04`. If-then: правило требует зафиксировать механизм делегирования (claim-схему) → НЕ фиксировать (§I3 прямо запрещает), сформулировать требование к различимости и назвать это ограничение в out of scope. If-then: обнаружено, что правило `10` противоречит правилу `02`/`04` → остановиться, привести в соответствие через Pending Work и D-запись, а не вводить исключение по месту.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "python3 tools/spec_lint.py spec/revisions/2026-08 --allow-missing",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "grep -cE '^\\*\\*SEC-[0-9]+ \\((MUST|MUST NOT|SHOULD|SHOULD NOT|MAY), L[123]' spec/revisions/2026-08/10_security.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "grep -c 'MUST NOT' spec/revisions/2026-08/10_security.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "grep -ciE 'OWASP' spec/revisions/2026-08/10_security.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "cmd": "grep -c '^| §I' spec/revisions/2026-08/10_security.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "`10_security.md` (правила `SEC-*`, изолированный маршрут, тройка принципалов, информативная привязка к OWASP MCP Top 10, таблица покрытия §I1–§I4)."
+  ],
+  "route": {
+    "class": "frontier",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "required",
+    "status": "complete"
+  },
+  "result": {
+    "started_at": "2026-07-27T18:42:30Z",
+    "finished_at": "2026-07-27T18:46:46Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "opus/high",
+      "effort": "high"
+    },
+    "notes": "документ 10: 19 правил SEC-*, батч B6 закрыт, своих схем документ не вводит",
+    "deviations": [],
+    "pending": [],
+    "checks": []
+  },
+  "updated_at": "2026-07-27T18:46:46Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Нормировать безопасность контракта: MUST NOT принимать токены, выпущенные не для нас (`DR-01` §I1), различимую тройку принципалов в аудите без фиксации claim-схемы (§I3), изолированный маршрут для недоверенного происхождения аргумента (§I2), привязку правил к OWASP MCP Top 10 как обоснование."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Оба SDK архитектурно являются посредниками к нижележащим API — тот же confused-deputy риск, что описан для MCP-прокси; при этом механизмы делегирования (RFC 8693 и драфты для агентов) ещё не ратифицированы, поэтому фиксировать claim-схему рано, а различимость принципалов в аудите — обязательна уже сейчас. `RAG:✅ 2026-07-26 R-11 §11: OWASP MCP07 требует per-tool scope enforcement на каждом вызове; MCP формулирует «scope minimization + re-validate on every request»; RFC 8693 и драфты делегирования для агентов не ратифицированы`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "(а) правила `SEC-*`: MUST NOT принимать токены, выпущенные не для нас (§I1), с явным перечнем того, что считается «выпущен не для нас»; изолированный маршрут для аргумента с меткой недоверенного происхождения (§I2) — что рантайм обязан сделать и что запрещено (передача такого аргумента в инструмент класса `irreversible` без гейта); различимая тройка принципалов (конечный пользователь, агент как принципал, область действия на конкретный вызов) в каждой записи о действии агента, без фиксации механизма токенов делегирования (§I3); ссылка на схему аудита решения (§I4, документ `04`) как на обязательное следствие; (б) раздел привязки правил к OWASP MCP Top 10 (MCP03 — пиннинг дескриптора, MCP07 — повторная авторизация, MCP08 — хеш-цепочка) как ОБОСНОВАНИЕ, а не как нормативная зависимость; (в) таблица покрытия решений."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "собственные схемы (документ схем не вводит — правила ссылаются на схемы `02`/`04`/`03`); реализация изоляции маршрута (рантайм, P7/P8); модель прав продукта (вне ревизии); фиксация claim-схемы делегирования (явно out of scope, §I3 — назвать в `00_overview.md`)."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "`@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §I1–§I4, §B7, §B8 · `@plan/knowledge/20_research-R-11_design-recon-2026-07.json` §11 · `spec/revisions/2026-08/02_tool-contract-profile.md`, `04_confirmation.md`, `03_action-lifecycle.md` · `@plan/knowledge/research-02-p3-authoring-conventions-2026-08.json` §7."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`spec/revisions/2026-08/10_security.md` · `spec/revisions/2026-08/README.md`"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `05-Projects/03-Packages/AgenTools/@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §I1–§I4 2) `05-Projects/03-Packages/AgenTools/@plan/knowledge/20_research-R-11_design-recon-2026-07.json` §11 3) `spec/revisions/2026-08/02_tool-contract-profile.md` 4) `spec/revisions/2026-08/04_confirmation.md` 5) `05-Projects/03-Packages/AgenTools/@plan/knowledge/research-02-p3-authoring-conventions-2026-08.json` §7."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "префикс `SEC-`, уровень `L1`; правило безопасности формулируется как проверяемое поведение (что именно отвергается), а не как принцип; привязка к OWASP — отдельный информативный раздел, нормативные слова в нём не используются (иначе внешний документ становится нормой ревизии); дублирование правил документов `02`/`04` запрещено — только ссылки на маркеры; таблица покрытия — последним разделом."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Кода нет — нормативный текст. Анти-подгонка: ЗАПРЕЩЕНО превращать раздел в перечень «лучших практик» — каждое правило обязано иметь наблюдаемое следствие и быть выразимым вектором (например, «токен чужого аудитора отвергнут с кодом X»). Анти-самообман: «тройка принципалов различима» проверяется тем, что схема аудита (`04`) несёт три ОТДЕЛЬНЫХ поля, а не одно поле актора — сверить и при расхождении оставить Pending Work на `04`. If-then: правило требует зафиксировать механизм делегирования (claim-схему) → НЕ фиксировать (§I3 прямо запрещает), сформулировать требование к различимости и назвать это ограничение в out of scope. If-then: обнаружено, что правило `10` противоречит правилу `02`/`04` → остановиться, привести в соответствие через Pending Work и D-запись, а не вводить исключение по месту."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`python3 tools/spec_lint.py spec/revisions/2026-08 --allow-missing` → `spec_lint: OK`, exit 0 · `grep -cE '^\\*\\*SEC-[0-9]+ \\((MUST|MUST NOT|SHOULD|SHOULD NOT|MAY), L[123]' spec/revisions/2026-08/10_security.md` ≥ 6 · `grep -c 'MUST NOT' spec/revisions/2026-08/10_security.md` ≥ 2 · `grep -ciE 'OWASP' spec/revisions/2026-08/10_security.md` ≥ 1 · `grep -c '^| §I' spec/revisions/2026-08/10_security.md` ≥ 3 · прогнать плановый линтер по каталогу плана и опубликовать счёт с атрибуцией, K = 0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "`10_security.md` (правила `SEC-*`, изолированный маршрут, тройка принципалов, информативная привязка к OWASP MCP Top 10, таблица покрытия §I1–§I4)."
+    }
+  ]
+}

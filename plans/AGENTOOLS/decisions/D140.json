@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D140",
+  "title": "Решение",
+  "date": "2026-08-03",
+  "status": "accepted",
+  "decision": "**Имена трёх DoS artifact-проб P4.4 — `dosdepth-001`, `dossubschemas-001`, `dosnetwork-001`.** P4.1 уже заморозил id класса artifact как `<область>-<NNN>` с ровно одним разделительным дефисом; прежние `dos-depth-001`, `dos-subschemas-001`, `dos-network-ref-001` были несовместимы с самим форматом и не могли пройти `--fixtures-check`. Однотокенные области сохраняют предмет пробы, избегают изменения контракта формата и изолированы каталогом `static/`. **Consequences:** supersedes D139 только в примерах имён DoS-проб; P4.4 обязан переименовать три уже созданных P4.4-owned файла и их поля `id`, а P4.5 читает только новые пути. Платим меньшей визуальной разделимостью составных слов; семантика остаётся в `title`, `spec_rule_ids` и точной диагностике.",
+  "rationale": "Альтернатива «расширить schema/static-check.json до нескольких дефисов» отклонена: переоткрыла бы терминальный P4.1 и изменила бы общий контракт ради трёх локальных имён. Альтернатива «оставить старые имена» отклонена: противоречит regex `^[a-z][a-z0-9]*-[0-9]{3}$`. `RAG:— (repo-grounded: fixtures/2026-08/schema/static-check.json:14–16; @plan/phases/P4/phase.json P4.4 escalation; три P4.4-owned файла fixtures/2026-08/static/dos-*.json)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D140\ndate: 2026-08-03\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Имена трёх DoS artifact-проб P4.4 — `dosdepth-001`, `dossubschemas-001`, `dosnetwork-001`.** P4.1 уже заморозил id класса artifact как `<область>-<NNN>` с ровно одним разделительным дефисом; прежние `dos-depth-001`, `dos-subschemas-001`, `dos-network-ref-001` были несовместимы с самим форматом и не могли пройти `--fixtures-check`. Однотокенные области сохраняют предмет пробы, избегают изменения контракта формата и изолированы каталогом `static/`. **Consequences:** supersedes D139 только в примерах имён DoS-проб; P4.4 обязан переименовать три уже созданных P4.4-owned файла и их поля `id`, а P4.5 читает только новые пути. Платим меньшей визуальной разделимостью составных слов; семантика остаётся в `title`, `spec_rule_ids` и точной диагностике."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Альтернатива «расширить schema/static-check.json до нескольких дефисов» отклонена: переоткрыла бы терминальный P4.1 и изменила бы общий контракт ради трёх локальных имён. Альтернатива «оставить старые имена» отклонена: противоречит regex `^[a-z][a-z0-9]*-[0-9]{3}$`. `RAG:— (repo-grounded: fixtures/2026-08/schema/static-check.json:14–16; @plan/phases/P4/phase.json P4.4 escalation; три P4.4-owned файла fixtures/2026-08/static/dos-*.json)`"
+    }
+  ]
+}

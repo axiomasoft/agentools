@@ -1,0 +1,9 @@
+{"probe":"jcs_large_integer","actual":"{\"n\":9007199254740993}"}
+{"probe":"audit_nested_fields","actual":{"redacted":{"payload":{"trace":{"token":"AUDIT_FAKE_SECRET","email":"audit@example.invalid"}}},"store_validation":"accepted"}}
+{"probe":"snapshot_revision_mismatch","actual":{"snapshot_revision":"2099-01","expected_revision":"2026-09","accepted_seq":1,"full_journal_seq":2}}
+{"probe":"candidate_effect_committer","actual":{"exception":"LifecycleException: The event was written by another specification revision."}}
+{"probe":"scenario_compensation_context","actual":{"outcome":"Missing path $ctx.resource.","calls":[{"tool":"reserve","arguments":{},"key":"audit:first"},{"tool":"fail","arguments":{},"key":"audit:second"}]}}
+{"probe":"scenario_idempotency_composition","actual":{"exception":"Invalid argument(s): Idempotency key must match ^at1:[A-Za-z0-9_-]{8,128}$."}}
+{"probe":"journal_invalid_transition_persisted","actual":{"exception":"LifecycleException: The first known event must create the action.","stored_events":1}}
+{"probe":"invalid_calendar_claim","actual":"accepted"}
+{"probe":"invalid_event_without_assertions","actual":{"exception":"'package:agentools/src/journal/action_event.dart': Failed assertion: line 19 pos 15: 'eventId.isNotEmpty': is not true."}}

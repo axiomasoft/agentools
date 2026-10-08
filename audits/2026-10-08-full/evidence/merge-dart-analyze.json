@@ -1,0 +1,12 @@
+{
+  "id": "merge-dart-analyze",
+  "cwd": "dart/agentools",
+  "command": [
+    "dart",
+    "analyze",
+    "--fatal-infos"
+  ],
+  "started_utc": "2026-10-08T14:13:02.239806+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.516
+}

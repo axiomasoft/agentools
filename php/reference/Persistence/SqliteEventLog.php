@@ -38,7 +38,7 @@ final class SqliteEventLog implements EventLog
             }
 
             $events = [...$this->readFromWithinTransaction($event->actionId, 1), $event];
-            ($this->reducer ?? new ActionReducer())->fold($events);
+            ($this->reducer ?? new ActionReducer($events[0]->specRevision))->fold($events);
 
             $row = ActionEventCodec::toRow($event);
             $insert = $this->pdo->prepare(

@@ -18,7 +18,7 @@ if str(REPO) not in sys.path:
 
 from tools import release_acceptance as ra  # noqa: E402
 
-PLAN = REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING"
+PLAN = REPO / "verification"
 MATRIX_ART = PLAN / "artifacts/P10-acceptance-matrix.json"
 DOCS_ART = PLAN / "artifacts/P10-docs.json"
 CONSUMER_ART = PLAN / "artifacts/P10-consumer-acceptance.json"

@@ -1,0 +1,12 @@
+{
+  "id": "package-isolated-diagnostic",
+  "cwd": "/tmp/agentools-audit-copy-4tslglh6/repo",
+  "command": [
+    "python3",
+    "/home/vostrikov/projects/packages/agentools/audits/2026-10-08-full/diagnose_package_gate.py",
+    "/tmp/agentools-audit-copy-4tslglh6/repo"
+  ],
+  "started_utc": "2026-10-08T12:18:09.504207+00:00",
+  "exit_code": 0,
+  "duration_seconds": 12.141
+}

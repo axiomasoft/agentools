@@ -1,3 +1,4 @@
+import '../schema/canonicalizer.dart';
 import 'action_journal.dart';
 import 'action_reducer.dart';
 import 'action_event.dart';
@@ -34,7 +35,20 @@ final class ActionSnapshot {
     List<ActionEvent> tail = const [],
     ActionReducer? reducer,
   }) {
-    if (!snapshot.matches(expectedHash)) {
+    final events = journal.events;
+    final seq = snapshot.state.seq;
+    final checkpoint = seq <= events.length ? events[seq - 1] : null;
+    final canonicalizer = Canonicalizer();
+    final validCheckpoint =
+        checkpoint != null &&
+        checkpoint.seq == seq &&
+        checkpoint.actionId == snapshot.state.actionId &&
+        checkpoint.specRevision == snapshot.specRevision &&
+        canonicalizer.canonicalize(
+              events.skip(seq).map((e) => e.toMap()).toList(),
+            ) ==
+            canonicalizer.canonicalize(tail.map((e) => e.toMap()).toList());
+    if (!snapshot.matches(expectedHash) || !validCheckpoint) {
       return journal.state(reducer);
     }
     return ActionJournal.restore(snapshot, tail, reducer);

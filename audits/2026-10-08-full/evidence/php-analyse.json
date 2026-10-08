@@ -1,0 +1,11 @@
+{
+  "id": "php-analyse",
+  "cwd": "php",
+  "command": [
+    "composer",
+    "analyse"
+  ],
+  "started_utc": "2026-10-08T12:02:32.054184+00:00",
+  "exit_code": 0,
+  "duration_seconds": 4.739
+}

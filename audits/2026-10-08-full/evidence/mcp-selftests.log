@@ -1,0 +1,12 @@
+test_applicable_receipt_is_required (__main__.ApplicabilityTests.test_applicable_receipt_is_required) ... ok
+test_driver_scenario_set_is_exact (__main__.ApplicabilityTests.test_driver_scenario_set_is_exact) ... ok
+test_failed_receipt_stays_failed_without_mutating_applicability (__main__.ApplicabilityTests.test_failed_receipt_stays_failed_without_mutating_applicability) ... ok
+test_inventory_drift_is_rejected (__main__.ApplicabilityTests.test_inventory_drift_is_rejected) ... ok
+test_missing_local_binary_is_actionable (__main__.ApplicabilityTests.test_missing_local_binary_is_actionable) ... ok
+test_mixed_axes_are_rejected (__main__.ApplicabilityTests.test_mixed_axes_are_rejected) ... ok
+test_non_applicable_reason_names_boundary (__main__.ApplicabilityTests.test_non_applicable_reason_names_boundary) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.002s
+
+OK

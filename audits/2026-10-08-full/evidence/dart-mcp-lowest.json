@@ -1,0 +1,12 @@
+{
+  "id": "dart-mcp-lowest",
+  "cwd": "/tmp/agentools-audit-copy-4tslglh6/repo",
+  "command": [
+    "python3",
+    "tools/ci_matrix.py",
+    "disposable-dart_mcp-lowest"
+  ],
+  "started_utc": "2026-10-08T12:06:12.301692+00:00",
+  "exit_code": 66,
+  "duration_seconds": 1.667
+}

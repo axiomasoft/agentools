@@ -1,0 +1,49 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D8",
+  "title": "Custom at1 envelope, presentation-consume, injected PostgreSQL adapter",
+  "date": "2026-09-19",
+  "status": "accepted",
+  "decision": "P3 использует компактный собственный envelope `at1.` + canonical JSON + HMAC-SHA256, а не JWT\nкак требование. Подпись покрывает `v`, `alg`, `kid`, `iss`, `aud`, `jti`, `tenant_id`,\n`purpose` и существующие CNF-15 поля. `TokenKeyProvider` разделяет ключи по tenant и purpose\nсо состояниями `active` / `verify_only` / `compromised` / `retired`.\n\nОдноразовость — свойство предъявления (CNF-20): после integrity/time/P2-binding атомарный\n`INSERT ... ON CONFLICT DO NOTHING RETURNING` пишет `(tenant_id, jti)` с `outcome=presented`.\nПустой RETURNING есть spent. Отказ authorization не оживляет token. Pre-presentation ошибки\nstore не пишут.\n\nProduction adapter принимает внедрённый PDO (PHP) или SQL executor (Dart); новых Composer/pub\nruntime-библиотек нет; `ext-pdo_pgsql` — suggest. In-memory store только testkit. Versioned SQL\nпоставляется артефактом пакета; PLAN1 не выполняет live migration чужой базы, owner-gate на\nP3 items не требуется. Frozen `spec/revisions/2026-08/**` не изменяется. Старый двухсегментный\ntoken без `at1.` после cutover отклоняется.",
+  "rationale": "Process-local set не переживает worker/restart (F02). JWT не выбран F06 и добавил бы unsigned\n`alg` header, который RFC 8725 как раз описывает как вектор. Success-only consume противоречит\nCNF-20. Event store P5 не является unique consume arbiter. `DO UPDATE` скрыл бы победителя.",
+  "applies_to": [
+    "P3",
+    "P3.1",
+    "P3.2",
+    "P3.3",
+    "P3.4"
+  ],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "plan-designer/cursor-grok-4.6/high",
+    "effort": "high"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D8\ndate: 2026-09-19\nstatus: accepted\nitem: P3\nitems: [P3, P3.1, P3.2, P3.3, P3.4]\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "D8-Custom-at1-envelope-presentation-consume-injected-PostgreSQL-adapter",
+      "title": "D8 — Custom at1 envelope, presentation-consume, injected PostgreSQL adapter",
+      "text": "**Actor:** plan-designer/cursor-grok-4.6/high\n**Evidence:** RAG:— repository recon in `@plan/knowledge/research-P3-design.json`; RAG:✅ and Perplexity/web cross-check in `@plan/knowledge/research-P3-design-rag.json`"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "P3 использует компактный собственный envelope `at1.` + canonical JSON + HMAC-SHA256, а не JWT\nкак требование. Подпись покрывает `v`, `alg`, `kid`, `iss`, `aud`, `jti`, `tenant_id`,\n`purpose` и существующие CNF-15 поля. `TokenKeyProvider` разделяет ключи по tenant и purpose\nсо состояниями `active` / `verify_only` / `compromised` / `retired`.\n\nОдноразовость — свойство предъявления (CNF-20): после integrity/time/P2-binding атомарный\n`INSERT ... ON CONFLICT DO NOTHING RETURNING` пишет `(tenant_id, jti)` с `outcome=presented`.\nПустой RETURNING есть spent. Отказ authorization не оживляет token. Pre-presentation ошибки\nstore не пишут.\n\nProduction adapter принимает внедрённый PDO (PHP) или SQL executor (Dart); новых Composer/pub\nruntime-библиотек нет; `ext-pdo_pgsql` — suggest. In-memory store только testkit. Versioned SQL\nпоставляется артефактом пакета; PLAN1 не выполняет live migration чужой базы, owner-gate на\nP3 items не требуется. Frozen `spec/revisions/2026-08/**` не изменяется. Старый двухсегментный\ntoken без `at1.` после cutover отклоняется."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Process-local set не переживает worker/restart (F02). JWT не выбран F06 и добавил бы unsigned\n`alg` header, который RFC 8725 как раз описывает как вектор. Success-only consume противоречит\nCNF-20. Event store P5 не является unique consume arbiter. `DO UPDATE` скрыл бы победителя."
+    },
+    {
+      "id": "Consequences",
+      "title": "Consequences",
+      "text": "P3 должен доказать parser mutants, key isolation, один победитель из двух concurrent INSERT,\nrestart deny и cleanup без replay window. P3 не обещает exactly-once tool effect, KMS и новую\nspec revision. P6 вносит коды/поля в shared registry; P7 решает final exports; P8 углубляет\nfuzz; P9 включает PostgreSQL в CI matrix, если её ещё нет."
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "merge-mcp",
+  "cwd": "dart/agentools_mcp_dart",
+  "command": [
+    "dart",
+    "test"
+  ],
+  "started_utc": "2026-10-08T14:15:24.141048+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.765
+}

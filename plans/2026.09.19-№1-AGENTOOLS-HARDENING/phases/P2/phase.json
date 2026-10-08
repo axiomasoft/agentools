@@ -1,0 +1,74 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:phase:v1",
+  "id": "P2",
+  "title": "Safe confirmation boundary и context-rich authorization",
+  "design": "detailed",
+  "goal": "P2 заменяет поддерживаемый per-call security API на additive `ConfirmationService`: вызывающий\nпередаёт только token и фактические аргументы, а actor, clock, descriptor, policy, proposal,\napproval evidence и authorization context приходят из внедрённых доверенных портов. Текущий\n`ConfirmationProtocol` остаётся временным expert/legacy primitive для совместимости, но перестаёт\nбыть рекомендуемой integration boundary и не может использоваться reference consumers.\n\n> **Контракт фазы (contract-first).** Потребляет: P1 threat/compatibility/guarantee contracts,\n> frozen `2026-08` и current PHP/Dart call surface. Производит: versioned confirmation-security\n> contract, общий adversarial case manifest, typed trusted-context model, safe service в PHP/Dart,\n> migrated reference consumers и parity receipt. Границы: P3 владеет token wire, durable consume\n> и key lifecycle; P5 — journal/event persistence; P6 — новой spec revision/error registry;\n> P7 — окончательным public export/removal решением.\n\n> **Phase Assurance | v1.**\n> Impact: security-external\n> Integration Seams: authentication-provider · policy-store · descriptor-registry · action-journal-projections · confirmation-coordinator · php-dart-parity\n> Live or Irreversible: no\n> Audit Intent: direct-close-eligible\n> Rationale: shared adversarial cases, package-level negative tests и migrated consumers проверяют\n> обход safe facade; Review=full из-за изменения authorization/public-contract semantics.",
+  "context": "P2 заменяет поддерживаемый per-call security API на additive `ConfirmationService`: вызывающий\nпередаёт только token и фактические аргументы, а actor, clock, descriptor, policy, proposal,\napproval evidence и authorization context приходят из внедрённых доверенных портов. Текущий\n`ConfirmationProtocol` остаётся временным expert/legacy primitive для совместимости, но перестаёт\nбыть рекомендуемой integration boundary и не может использоваться reference consumers.\n\n> **Контракт фазы (contract-first).** Потребляет: P1 threat/compatibility/guarantee contracts,\n> frozen `2026-08` и current PHP/Dart call surface. Производит: versioned confirmation-security\n> contract, общий adversarial case manifest, typed trusted-context model, safe service в PHP/Dart,\n> migrated reference consumers и parity receipt. Границы: P3 владеет token wire, durable consume\n> и key lifecycle; P5 — journal/event persistence; P6 — новой spec revision/error registry;\n> P7 — окончательным public export/removal решением.\n\n> **Phase Assurance | v1.**\n> Impact: security-external\n> Integration Seams: authentication-provider · policy-store · descriptor-registry · action-journal-projections · confirmation-coordinator · php-dart-parity\n> Live or Irreversible: no\n> Audit Intent: direct-close-eligible\n> Rationale: shared adversarial cases, package-level negative tests и migrated consumers проверяют\n> обход safe facade; Review=full из-за изменения authorization/public-contract semantics.",
+  "depends_on": [
+    "P1"
+  ],
+  "items": [
+    "P2.1",
+    "P2.2",
+    "P2.3",
+    "P2.4"
+  ],
+  "batches": [
+    {
+      "id": "B-confirmation",
+      "items": [
+        "P2.1",
+        "P2.2",
+        "P2.3",
+        "P2.4"
+      ],
+      "mode": "recommended"
+    }
+  ],
+  "closed": {
+    "at": "2026-09-21T14:05:49Z",
+    "result": "done",
+    "summary": "Derived from authentic terminal item states during migration; no new phase checks claimed."
+  },
+  "orchestration": {
+    "strategy": "sequential"
+  },
+  "sections": [
+    {
+      "id": "P2-Safe-confirmation-boundary-context-rich-authorization",
+      "title": "P2 — Safe confirmation boundary и context-rich authorization",
+      "text": ""
+    },
+    {
+      "id": "Phase-Context",
+      "title": "Phase Context",
+      "text": "P2 заменяет поддерживаемый per-call security API на additive `ConfirmationService`: вызывающий\nпередаёт только token и фактические аргументы, а actor, clock, descriptor, policy, proposal,\napproval evidence и authorization context приходят из внедрённых доверенных портов. Текущий\n`ConfirmationProtocol` остаётся временным expert/legacy primitive для совместимости, но перестаёт\nбыть рекомендуемой integration boundary и не может использоваться reference consumers.\n\n> **Контракт фазы (contract-first).** Потребляет: P1 threat/compatibility/guarantee contracts,\n> frozen `2026-08` и current PHP/Dart call surface. Производит: versioned confirmation-security\n> contract, общий adversarial case manifest, typed trusted-context model, safe service в PHP/Dart,\n> migrated reference consumers и parity receipt. Границы: P3 владеет token wire, durable consume\n> и key lifecycle; P5 — journal/event persistence; P6 — новой spec revision/error registry;\n> P7 — окончательным public export/removal решением.\n\n> **Phase Assurance | v1.**\n> Impact: security-external\n> Integration Seams: authentication-provider · policy-store · descriptor-registry · action-journal-projections · confirmation-coordinator · php-dart-parity\n> Live or Irreversible: no\n> Audit Intent: direct-close-eligible\n> Rationale: shared adversarial cases, package-level negative tests и migrated consumers проверяют\n> обход safe facade; Review=full из-за изменения authorization/public-contract semantics."
+    },
+    {
+      "id": "DoR-Definition-of-Ready",
+      "title": "DoR (Definition of Ready)",
+      "text": "- [x] D7 выбрал additive safe facade и staged deprecation без изменения frozen `2026-08`.\n- [x] P2/P3/P5/P6/P7 ownership разведён; P2 не выбирает token envelope, DDL или final exports.\n- [x] Trusted composition root назван предпосылкой, а caller/application adapter остаётся partially trusted.\n- [x] Binding tuple, fail-closed policy, approval/quorum и authorization context имеют общие PHP/Dart cases.\n- [x] External premises проверены Perplexity и primary-source web search; four-eyes не выдан за универсальную внешнюю норму.\n- [ ] P1.2–P1.4 execution outputs существуют и digest-qualified; до этого P2 items dependency-not-ready, а не RED."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "Safe prepare/commit facade; authenticated actor and authorization-context providers; current descriptor\nregistry; authoritative policy resolver; journal-backed proposal/approval read ports; immutable binding\ntuple for tenant, proposal/version, action/tool, arguments, descriptor, policy revision, required approvals\nand commit principal; policy-selected dual control/quorum; stable refusal codes; additive deprecation and\nmigration for PHP/Dart; shared adversarial cases and reference-consumer migration."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "Token serialization/algorithm/key rotation; cross-process atomic consume; production storage adapters/DDL;\natomic event append and audit export; general error registry/JCS oracle; final package split/export removal;\npublic release; claim that dependency injection protects against a malicious trusted composition root."
+    },
+    {
+      "id": "Dependencies",
+      "title": "Dependencies",
+      "text": "P1.2, P1.3 and P1.4 are execution predecessors. D2 additionally forbids execution of every P2 item\nuntil P1–P10 detail and whole-plan design audit are GREEN. Внутри P2 порядок:\nP2.1 → P2.2 → P2.3 → P2.4.\n\n| ID | Title | Status | Updated |\n|:--|:--|:--|:--|\n| P2.1 | Заморозить confirmation-security contract, migration и adversarial cases | ⬜ Not started | 2026-09-19 |\n| P2.2 | Ввести typed trusted-context и binding model в PHP/Dart | ⬜ Not started | 2026-09-19 |\n| P2.3 | Реализовать safe ConfirmationService в PHP/Dart | ⬜ Not started | 2026-09-19 |\n| P2.4 | Мигрировать consumers и закрыть cross-language bypass gate | ⬜ Not started | 2026-09-19 |"
+    },
+    {
+      "id": "Phase-Handoff",
+      "title": "Phase Handoff",
+      "text": "<Заполняется при закрытии фазы.>"
+    }
+  ]
+}

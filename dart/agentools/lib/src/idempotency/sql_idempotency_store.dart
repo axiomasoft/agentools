@@ -170,9 +170,6 @@ WHERE state = 'completed' AND expires_at < @now
       return null;
     }
     final row = selected.rows.first;
-    if (row['fingerprint']?.toString() != request.argumentsFingerprint.value) {
-      throw IdempotencyFailure.keyReuse(request.scope.key.value);
-    }
     if (row['state']?.toString() == 'completed') {
       final expires = DateTime.parse(row['expires_at']!.toString());
       if (!expires.isAfter(now)) {
@@ -182,12 +179,19 @@ WHERE state = 'completed' AND expires_at < @now
         });
         return null;
       }
+      if (row['fingerprint']?.toString() !=
+          request.argumentsFingerprint.value) {
+        throw IdempotencyFailure.keyReuse(request.scope.key.value);
+      }
       final decoded = _decodeResult(row);
       return IdempotencyAcquisition(
         DeduplicationState.duplicateCompleted,
         storedResult: decoded.result,
         storedResultDigest: decoded.digest,
       );
+    }
+    if (row['fingerprint']?.toString() != request.argumentsFingerprint.value) {
+      throw IdempotencyFailure.keyReuse(request.scope.key.value);
     }
     final existingUntil = DateTime.parse(row['lease_until']!.toString());
     if (existingUntil.isAfter(now)) {

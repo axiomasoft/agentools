@@ -1,0 +1,19 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "findings-P7-migration-residuals",
+  "title": "P7 migration residuals",
+  "sections": [
+    {
+      "id": "P7-migration-residuals",
+      "title": "P7 migration residuals",
+      "text": "**Status:** snippets compile in isolated consumers; registry publication deferred.\n\n| Topic | Owner | Notes |\n|:--|:--|:--|\n| PHP TestKit FQN moves | P7.2 | Documented in `php/UPGRADING.md`; dev consumer proves contour |\n| Dart testkit library split | P7.3 | `agentools_testkit.dart`; snippet compiles via `dart analyze` |\n| MCP path dependency | P9/P10 | Paired private artifact only; label `public-release-blocked` |\n| Dart conformance tree | P7.4 | Excluded via `.pubignore` (parity with PHP `archive.exclude`) |\n| Packagist / pub.dev upload | P9/P10 | Out of P7 scope per D4/D5 |"
+    }
+  ],
+  "applies_to": [
+    "P7"
+  ],
+  "provenance": {
+    "path": "findings/P7-migration-residuals.md",
+    "sha256": "940aee851217a2ab3120b1b8575b1157a45b2828b9972900b954aaa38a6c4de4"
+  }
+}

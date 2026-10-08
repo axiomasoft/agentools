@@ -1,0 +1,628 @@
+{
+  "schema": "agentools.audit-fix-verification/v1",
+  "generated_at": "2026-10-08T13:58:38.304477+00:00",
+  "source_commit": "87dbb5500eaf48c13ef9160e4ee11afdf2942371",
+  "scope": "Current uncommitted source; hosted CI and existing-database migration were not executed.",
+  "closed_findings": [
+    "A01",
+    "A02",
+    "A03",
+    "A04",
+    "A05",
+    "A06",
+    "A07",
+    "A08",
+    "A09",
+    "A10",
+    "A11",
+    "A12",
+    "A13",
+    "A14",
+    "A15",
+    "A16",
+    "A17",
+    "A18",
+    "A19",
+    "A20"
+  ],
+  "commands": [
+    {
+      "id": "fix-php-final",
+      "cwd": ".",
+      "command": [
+        "composer",
+        "test",
+        "--working-dir=php"
+      ],
+      "started_utc": "2026-10-08T13:27:50.145991+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.765,
+      "record_sha256": "4114690607dbfaaaaa009f0dceb61caeebb3df7d343963e0c7db3f1260829330",
+      "log_sha256": "44436f8abd5f5a778df9eb17be2c7f81a03e25c172ed8c7af20c10602b09dc33"
+    },
+    {
+      "id": "fix-php83-live-final",
+      "cwd": "php",
+      "command": [
+        "/usr/bin/php8.3",
+        "vendor/bin/phpunit"
+      ],
+      "started_utc": "2026-10-08T13:33:39.539201+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.514,
+      "record_sha256": "923f8acc6a1c378bf98424fa8e3384568954525b867418c7e5a52f65c13e3416",
+      "log_sha256": "73f2441b76910522b4c2f1238f67e1b122e4f1b0b44a3025f20d5b20bead1d20"
+    },
+    {
+      "id": "fix-php83-install",
+      "cwd": ".",
+      "command": [
+        "/usr/bin/php8.3",
+        "/home/vostrikov/.config/herd-lite/bin/composer",
+        "install",
+        "--working-dir=php",
+        "--dry-run",
+        "--no-interaction"
+      ],
+      "started_utc": "2026-10-08T13:39:06.442973+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.114,
+      "record_sha256": "52bc878fc2bd1e6175ec74e89714650d50630c7c2bd66d789592eca5c19329e2",
+      "log_sha256": "d775c22f9f9657bc7508c8ac6b5564174b31c6775eb5ea63855c6ea09bebaacc"
+    },
+    {
+      "id": "fix-phpstan-final",
+      "cwd": ".",
+      "command": [
+        "composer",
+        "analyse",
+        "--working-dir=php"
+      ],
+      "started_utc": "2026-10-08T13:27:50.139907+00:00",
+      "exit_code": 0,
+      "duration_seconds": 3.219,
+      "record_sha256": "c8dd135d583996d4a2bcb5884d1a3e569e1fa844cfc1b520755f77f52d3c7c14",
+      "log_sha256": "a359b1ab5bae1b9626900e4857dbf0be72708288a07de8bc65a75adbbe51098c"
+    },
+    {
+      "id": "fix-composer-validate",
+      "cwd": ".",
+      "command": [
+        "composer",
+        "validate",
+        "--strict",
+        "--working-dir=php"
+      ],
+      "started_utc": "2026-10-08T13:39:06.424393+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.114,
+      "record_sha256": "ee7e89aeaf5cbd54ad581c477f316cf7d660f4f43253cfa6737536d8a82184c9",
+      "log_sha256": "43add299dc97ecbd90ec2dc456ef5a0bd824bb9abdae2a3d7cdb520e21f8e86d"
+    },
+    {
+      "id": "fix-dart-analyze-final",
+      "cwd": "dart/agentools",
+      "command": [
+        "dart",
+        "analyze",
+        "--fatal-infos"
+      ],
+      "started_utc": "2026-10-08T13:27:50.149722+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.865,
+      "record_sha256": "8637ca810d085e2b527b6b901467020321c0552d455e317ef494a33e179ba642",
+      "log_sha256": "cc1af4b3cfe265a66e1dc4f788437d4c43da4d2296c21780793e2ef9a4bd19a9"
+    },
+    {
+      "id": "fix-dart-format",
+      "cwd": ".",
+      "command": [
+        "dart",
+        "format",
+        "--output=none",
+        "--set-exit-if-changed",
+        "dart/agentools/conformance/sdk_conformance_engine.dart",
+        "dart/agentools/lib/src/confirmation/token_envelope.dart",
+        "dart/agentools/lib/src/idempotency/sql_idempotency_store.dart",
+        "dart/agentools/lib/src/journal/action_event.dart",
+        "dart/agentools/lib/src/journal/action_journal.dart",
+        "dart/agentools/lib/src/journal/action_reducer.dart",
+        "dart/agentools/lib/src/journal/action_snapshot.dart",
+        "dart/agentools/lib/src/journal/session_state_projection.dart",
+        "dart/agentools/lib/src/ops/audit_redaction.dart",
+        "dart/agentools/lib/src/ops/journal_appender.dart",
+        "dart/agentools/lib/src/persistence/event_store_support.dart",
+        "dart/agentools/lib/src/persistence/event_stream_page.dart",
+        "dart/agentools/lib/src/persistence/in_memory_event_log.dart",
+        "dart/agentools/lib/src/persistence/sql_event_store.dart",
+        "dart/agentools/lib/src/persistence/uncommitted_event.dart",
+        "dart/agentools/lib/src/scenario/scenario_runner.dart",
+        "dart/agentools/lib/src/schema/canonicalizer.dart",
+        "dart/agentools/test/adversarial/storage_worker.dart",
+        "dart/agentools/test/confirmation/token_envelope_test.dart",
+        "dart/agentools/test/effects/effect_committer_test.dart",
+        "dart/agentools/test/idempotency/sql_idempotency_store_test.dart",
+        "dart/agentools/test/journal/action_reducer_test.dart",
+        "dart/agentools/test/journal/persistence_contracts_test.dart",
+        "dart/agentools/test/persistence/sql_event_store_test.dart",
+        "dart/agentools/test/adversarial/audit_regression_test.dart",
+        "dart/agentools/test/adversarial/runtime_guards_probe.dart"
+      ],
+      "started_utc": "2026-10-08T13:46:31.681622+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.114,
+      "record_sha256": "795ba14f059d868f3d81eebd930931efb51df63cf377194e867a74f14a7521e9",
+      "log_sha256": "46ca853159cdcd3bdcacd0ed0471cb092f449a1ebec501f51d414750b552d8f0"
+    },
+    {
+      "id": "fix-mcp-tests-final",
+      "cwd": "dart/agentools_mcp_dart",
+      "command": [
+        "dart",
+        "test"
+      ],
+      "started_utc": "2026-10-08T13:27:50.143022+00:00",
+      "exit_code": 0,
+      "duration_seconds": 1.466,
+      "record_sha256": "82a1f51d60ff4bc374bcf48c6cfdec380b849e24c2bcd80eae8b820b85cbc5d5",
+      "log_sha256": "ad8225c0da2e95735745e970458aa52338402c531f423eec56040bb8c296b2f0"
+    },
+    {
+      "id": "fix-mcp-analyze-final",
+      "cwd": "dart/agentools_mcp_dart",
+      "command": [
+        "dart",
+        "analyze",
+        "--fatal-infos"
+      ],
+      "started_utc": "2026-10-08T13:27:50.148539+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.314,
+      "record_sha256": "1e5cd64b9c7e6e0b1cb8c0c69c615f281a332abe285f373320a385dcbbba156f",
+      "log_sha256": "5406b5e1e54b4ef0dfddf4f0c17fa2bee8b3ce3c2f4cb9d40aa431348115a947"
+    },
+    {
+      "id": "fix-python-coherent",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools",
+        "-p",
+        "*.py"
+      ],
+      "started_utc": "2026-10-08T13:48:55.477186+00:00",
+      "exit_code": 0,
+      "duration_seconds": 33.035,
+      "record_sha256": "850f5eeada98e3407bfc41818d29a30912769a8ea8d72201855825770449d9e8",
+      "log_sha256": "678dcbe6456d0359652dfd0d6bc415967f7d6d69ada95c8fe8d641aa15971de9"
+    },
+    {
+      "id": "fix-agent-docs",
+      "cwd": ".",
+      "command": [
+        "bash",
+        "scripts/build-agent-docs.sh",
+        "--check"
+      ],
+      "started_utc": "2026-10-08T13:39:06.443401+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.064,
+      "record_sha256": "9c64590758c029324b605a262ab19ff4072157268d616b8688ac73780f4c5aae",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "fix-clean-bootstrap",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "audits/2026-10-08-full/verify_clean_bootstrap.py"
+      ],
+      "started_utc": "2026-10-08T13:35:07.054963+00:00",
+      "exit_code": 0,
+      "duration_seconds": 19.448,
+      "record_sha256": "23e4ab318d0ab08d6d4b1e4aa1ac6bb33e79893f7a60af159020f63e7348e887",
+      "log_sha256": "1f8ef0356a7f8cdf71636eef781aa7f4591d512a85ba18db0768b63804537102"
+    },
+    {
+      "id": "fix-compat-php-lowest-receipt",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "disposable-php-lowest"
+      ],
+      "started_utc": "2026-10-08T13:33:39.544097+00:00",
+      "exit_code": 0,
+      "duration_seconds": 9.429,
+      "record_sha256": "59257f98c5d75ae2a16e862bcf7ec12d5dfeeb91cddddc3259da29c7fd4c9a12",
+      "log_sha256": "632fa527b26d8d8cb1711957c32322ccd7aadb1671680dbb1d0fd71ba7e41515"
+    },
+    {
+      "id": "fix-compat-php-latest-final",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "disposable-php-latest"
+      ],
+      "started_utc": "2026-10-08T13:37:11.319996+00:00",
+      "exit_code": 0,
+      "duration_seconds": 12.698,
+      "record_sha256": "76e8974fd9cce26e9d3c0a0f533871234fc1b1e80b1226910924bbb970a4a2b6",
+      "log_sha256": "d3b2d9ff69ef9fbbb946192dbff6480fe8b541b5d5cf11f0883219d6f257c773"
+    },
+    {
+      "id": "fix-compat-core-lowest-receipt",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "disposable-dart_core-lowest"
+      ],
+      "started_utc": "2026-10-08T13:31:06.293343+00:00",
+      "exit_code": 0,
+      "duration_seconds": 9.283,
+      "record_sha256": "1d362199be8314d44639dde173f09679a2596c63a377719d93bafbb02bb50ea5",
+      "log_sha256": "9c758b3b2bc750b4e0504e9f31cde220faea5b1addc2fdb92eee7e1b61b245db"
+    },
+    {
+      "id": "fix-compat-core-latest-receipt",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "disposable-dart_core-latest"
+      ],
+      "started_utc": "2026-10-08T13:31:06.273522+00:00",
+      "exit_code": 0,
+      "duration_seconds": 10.983,
+      "record_sha256": "b6949a836cd7aea7242ce8cebca272bc480e2769ede150e26b0e5c84e4cf142f",
+      "log_sha256": "33a53ae6a1b4cb630330d56c7670906a895a80b3e5c2b1ae5ca6cecb70cb3b77"
+    },
+    {
+      "id": "fix-compat-dart-mcp-lowest-final",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "disposable-dart_mcp-lowest"
+      ],
+      "started_utc": "2026-10-08T13:24:48.245943+00:00",
+      "exit_code": 0,
+      "duration_seconds": 6.074,
+      "record_sha256": "4f29d6f96a3123153417b40296ae0b60cbaa5d1071f8ec5586580956b26c80a2",
+      "log_sha256": "6016a735f332151c8e3203a26f9d5b633b3691085faf5a0de19b51b79b5b6fd8"
+    },
+    {
+      "id": "fix-compat-mcp-latest-receipt",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "disposable-dart_mcp-latest"
+      ],
+      "started_utc": "2026-10-08T13:33:39.536831+00:00",
+      "exit_code": 0,
+      "duration_seconds": 6.726,
+      "record_sha256": "64e896f7b7f03f29ea87d4cbdc435bfe0ee4c3337137b945d585dbd0154763f7",
+      "log_sha256": "078890a0fe7d5a090ef07756d9b955bc6cf25b21971af1a5b4b5722776f2f96d"
+    },
+    {
+      "id": "fix-conformance-final",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_gate.py",
+        "--all"
+      ],
+      "started_utc": "2026-10-08T13:31:06.285317+00:00",
+      "exit_code": 0,
+      "duration_seconds": 25.11,
+      "record_sha256": "a70b5110a7a6a10f2e112914d2d58f920e8b4fe36a226317ad636fd1e8a4b953",
+      "log_sha256": "79077e87c7c0285ad9dad7e21d6451e64a1a56d2c8413c0bf10b3253ac21b142"
+    },
+    {
+      "id": "fix-adversarial-final",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/adversarial_corpus.py",
+        "run"
+      ],
+      "started_utc": "2026-10-08T13:30:41.610959+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.665,
+      "record_sha256": "4190e1915fd1dc7cb27e730d695d984e3713daca4e9ff8253920b7aded9ffe22",
+      "log_sha256": "c1a5445401fdb65ccf51402b25794df4367ab1fff86513a1643f36ab31bdcdec"
+    },
+    {
+      "id": "fix-mutation-final",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/mutation_gate.py",
+        "run"
+      ],
+      "started_utc": "2026-10-08T13:31:06.292991+00:00",
+      "exit_code": 0,
+      "duration_seconds": 24.507,
+      "record_sha256": "37951f4f228f5500adb92f740820d4026416e3787625534ad7624ec08134ad98",
+      "log_sha256": "d1769f97771cbd9cc1e5157829267fb5676abb18abd6936643fc4e930c677420"
+    },
+    {
+      "id": "fix-storage-final",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/storage_chaos.py",
+        "run"
+      ],
+      "started_utc": "2026-10-08T13:31:06.292990+00:00",
+      "exit_code": 0,
+      "duration_seconds": 47.751,
+      "record_sha256": "a1075128bd4fe7b7b61b662e3ca3398649810cb4de2394586a14751d5bd54be1",
+      "log_sha256": "3f6df52fc07fae59ef5cf8fbfca5bdd2dc78c538aa08d93237f49af6ef33923e"
+    },
+    {
+      "id": "fix-resource-final",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/resource_gate.py",
+        "run"
+      ],
+      "started_utc": "2026-10-08T13:33:11.496629+00:00",
+      "exit_code": 0,
+      "duration_seconds": 37.226,
+      "record_sha256": "06c22d0680da9baad9f501a7e0a72e97aea8d603cedbd1d9cc7181f549eadf79",
+      "log_sha256": "895019aa35813bdbf31ce558259830976f4dc5a8059b98bfbd81838c7ff06d8d"
+    },
+    {
+      "id": "fix-packages-final",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/package_gate.py",
+        "run"
+      ],
+      "started_utc": "2026-10-08T13:26:54.491336+00:00",
+      "exit_code": 0,
+      "duration_seconds": 12.495,
+      "record_sha256": "3a38d2054d57a8c322cf0a6dc22e802f79740ec9f0b27ace147b11e22eba1a9a",
+      "log_sha256": "dffe06aef81d58a37468439304f66253620cb7d37487508a1c58fa05a7258f87"
+    },
+    {
+      "id": "fix-osv-final",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "osv-scan"
+      ],
+      "started_utc": "2026-10-08T13:39:06.428949+00:00",
+      "exit_code": 0,
+      "duration_seconds": 2.02,
+      "record_sha256": "65bd1a59060b4a7150af2f0450be4a2b4f981ef68df238dee4d766c4b27d7b11",
+      "log_sha256": "d461d12a30238b37bd143617790e0bb7590e4b3ae8dcad859d4940eee63f2266"
+    },
+    {
+      "id": "fix-gitleaks-complete",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "gitleaks-scan"
+      ],
+      "started_utc": "2026-10-08T13:57:45.882420+00:00",
+      "exit_code": 0,
+      "duration_seconds": 2.219,
+      "record_sha256": "6cce489c14735b81b9027f0e509e6c6790812dd20bbcebb438848835e76a2379",
+      "log_sha256": "e47158c00b6b180e978fa980304f5408d7e83b3eeb60f3151ed09aeb6d8b1ada"
+    },
+    {
+      "id": "fix-policy-workflows",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_policy.py",
+        "check-workflows"
+      ],
+      "started_utc": "2026-10-08T13:46:31.663632+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.064,
+      "record_sha256": "8f2f9e8a328fbb31226108eddc495a2ac844f4a9ea841df4852148feae809fef",
+      "log_sha256": "2688264482599fdb8063d07c419ed4797b7951d0855e27e2eed5ed7e26594ffd"
+    },
+    {
+      "id": "fix-policy-lock",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_policy.py",
+        "check-lock"
+      ],
+      "started_utc": "2026-10-08T13:46:31.748096+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.064,
+      "record_sha256": "0e32a67834bace555c2e668ecf2a52eddb2d4b64eb089996e66804d7b836dc08",
+      "log_sha256": "a13a912958f0164e2a447cdb9b92d70eac988e80337d51f7f3cfb085df21d347"
+    },
+    {
+      "id": "fix-ci-matrix",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "validate"
+      ],
+      "started_utc": "2026-10-08T13:46:31.832343+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.064,
+      "record_sha256": "c4e04a1f62a9aa6c8260bfcc5e9b1f0963786ae7efa0530b0e709a972e8fe2bf",
+      "log_sha256": "05ad7e2b2cd2a7ab85735af4936a7ec3887769b9dba4fbf1460d5984391c4bb2"
+    },
+    {
+      "id": "fix-release-candidate-final",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/release_candidate.py",
+        "run"
+      ],
+      "started_utc": "2026-10-08T13:33:39.540729+00:00",
+      "exit_code": 0,
+      "duration_seconds": 2.118,
+      "record_sha256": "70518b175ea8e10dfc454bc4e4e5ea69f29f4fca455de025818d1b8ada8b6f91",
+      "log_sha256": "dffe06aef81d58a37468439304f66253620cb7d37487508a1c58fa05a7258f87"
+    },
+    {
+      "id": "fix-sbom-final",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/sbom_gate.py",
+        "run"
+      ],
+      "started_utc": "2026-10-08T13:36:20.527755+00:00",
+      "exit_code": 0,
+      "duration_seconds": 14.44,
+      "record_sha256": "fef6299aec3859993e39c259ce87dddde562a7108812c5dbe260cc78804780f7",
+      "log_sha256": "dffe06aef81d58a37468439304f66253620cb7d37487508a1c58fa05a7258f87"
+    },
+    {
+      "id": "fix-private-rc-complete",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/private_rc_gate.py",
+        "verify"
+      ],
+      "started_utc": "2026-10-08T13:55:54.320286+00:00",
+      "exit_code": 0,
+      "duration_seconds": 2.919,
+      "record_sha256": "3c11617da95e1f78be57418590ed9c8e59f7dab465fbe92e8359342e16f43eba",
+      "log_sha256": "2a3823c439c85e2d22add86797990d2a0be6b73135b13c7dcff050afb1a56674"
+    },
+    {
+      "id": "fix-docs-coherent",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/docs_gate.py",
+        "run"
+      ],
+      "started_utc": "2026-10-08T13:48:22.563867+00:00",
+      "exit_code": 0,
+      "duration_seconds": 1.316,
+      "record_sha256": "e2c1d853caedba4d2c5386fb4bb6caf7e51d95442103ce1be25c47478f9ae561",
+      "log_sha256": "2a3823c439c85e2d22add86797990d2a0be6b73135b13c7dcff050afb1a56674"
+    },
+    {
+      "id": "fix-consumers-coherent",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/release_consumer_gate.py",
+        "capture",
+        "--allow-dirty"
+      ],
+      "started_utc": "2026-10-08T13:48:54.267651+00:00",
+      "exit_code": 0,
+      "duration_seconds": 9.579,
+      "record_sha256": "b1709c4dfba2102b0a999eeafa4d15716f589bd3bc41e6720457a8d5971e1e1b",
+      "log_sha256": "2a3823c439c85e2d22add86797990d2a0be6b73135b13c7dcff050afb1a56674"
+    },
+    {
+      "id": "fix-private-release-coherent",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/private_release_gate.py",
+        "capture"
+      ],
+      "started_utc": "2026-10-08T13:55:12.463177+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.114,
+      "record_sha256": "d16787010c308b7ed8583960d804823e8fbe30880d6fd9597f61592121eb4354",
+      "log_sha256": "c9e88a2c48582ccb8731e6b1ebebe2c9d97b0d501b7dabe1d751e0543fa1ee4f"
+    },
+    {
+      "id": "fix-consumers-complete",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/release_consumer_gate.py",
+        "validate"
+      ],
+      "started_utc": "2026-10-08T13:55:57.277583+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.064,
+      "record_sha256": "b1b41dc8c31ecbbe440991c52336fbd8c707043b841b11411842c347d11e1dd8",
+      "log_sha256": "2a3823c439c85e2d22add86797990d2a0be6b73135b13c7dcff050afb1a56674"
+    },
+    {
+      "id": "fix-dossier-complete",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/release_dossier.py",
+        "validate"
+      ],
+      "started_utc": "2026-10-08T13:55:57.378213+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.065,
+      "record_sha256": "2ef1bdaa6671db84a5b5d2fe4d51f17a6c529f33f29f8e6360da87a1b86f300c",
+      "log_sha256": "1c255890491e2e29700350df06988e781a2df6c83849c3784134fd14f91184d8"
+    },
+    {
+      "id": "fix-acceptance-complete",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/private_release_gate.py",
+        "validate"
+      ],
+      "started_utc": "2026-10-08T13:55:57.472176+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.064,
+      "record_sha256": "d387e688fa289d10c79b25b3761956ff38d6e7b9cab5b4649553ca286a45c91d",
+      "log_sha256": "7471eb7ce98b9b90d5acc0c8641c692b22f61ab0d2175d1ae05c7e8a723ed185"
+    }
+  ],
+  "receipt_coherence": {
+    "docs_to_matrix": true,
+    "consumer_to_docs": true,
+    "consumer_to_rc": true,
+    "acceptance_to_dossier": true,
+    "dossier_to_P10_consumer": true,
+    "dossier_to_P10_docs": true,
+    "dossier_to_P10_matrix": true,
+    "dossier_to_P9_private_rc": true,
+    "P9-compatibility-dart_core-lowest.json": true,
+    "P9-compatibility-php-lowest.json": true,
+    "P9-compatibility-dart_mcp-latest.json": true,
+    "P9-compatibility-php-latest.json": true,
+    "P9-compatibility-dart_mcp-lowest.json": true,
+    "P9-compatibility-dart_core-latest.json": true,
+    "reference_report_2026_08_regression": true,
+    "reference_report_2026_09": true,
+    "php_report_2026_09": true,
+    "dart_report_2026_09": true,
+    "jcs_oracle": true,
+    "semantic_profile": true,
+    "mcp_official": true
+  },
+  "preexisting_work": {
+    "initial_dirty_tracked_paths_checked": 796,
+    "changed": []
+  },
+  "frozen_revision_changes": [],
+  "private_ready": "green",
+  "public_authorized": false,
+  "errors": [],
+  "verdict": "green"
+}

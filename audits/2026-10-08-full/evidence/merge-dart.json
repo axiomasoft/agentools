@@ -1,0 +1,11 @@
+{
+  "id": "merge-dart",
+  "cwd": "dart/agentools",
+  "command": [
+    "dart",
+    "test"
+  ],
+  "started_utc": "2026-10-08T14:13:01.035763+00:00",
+  "exit_code": 0,
+  "duration_seconds": 1.867
+}

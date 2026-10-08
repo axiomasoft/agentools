@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D161",
+  "title": "Решение",
+  "date": "2026-08-04",
+  "status": "accepted",
+  "decision": "**После Gate B round 2 RED владелец выбрал адресный реопен P3/P4 и замену exact 51 негодного carrier настоящими observational carriers; новая ревизия тестируемости отклонена.** Лимит аудитов снимается только для одного post-remediation Gate B round 3; история round 1/2 append-only. **Consequences:** supersedes D152/D154/D156/D159 только в утверждении о достаточности прежних repair/evidence gates; платим P3.25 + P4.16–P4.19 и повторным close/audit, зато freeze не закрепляет self-report контракт.",
+  "rationale": "Owner directive 2026-08-04; `@plan/knowledge/artifacts-P5-gate-b.json` F9–F15; `@plan/knowledge/research-22-p5-round2-observational-remediation-2026-08.json`. `RAG:— (owner decision + repo-grounded)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D161\ndate: 2026-08-04\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**После Gate B round 2 RED владелец выбрал адресный реопен P3/P4 и замену exact 51 негодного carrier настоящими observational carriers; новая ревизия тестируемости отклонена.** Лимит аудитов снимается только для одного post-remediation Gate B round 3; история round 1/2 append-only. **Consequences:** supersedes D152/D154/D156/D159 только в утверждении о достаточности прежних repair/evidence gates; платим P3.25 + P4.16–P4.19 и повторным close/audit, зато freeze не закрепляет self-report контракт."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Owner directive 2026-08-04; `@plan/knowledge/artifacts-P5-gate-b.json` F9–F15; `@plan/knowledge/research-22-p5-round2-observational-remediation-2026-08.json`. `RAG:— (owner decision + repo-grounded)`"
+    }
+  ]
+}

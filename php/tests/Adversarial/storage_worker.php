@@ -48,10 +48,10 @@ SQL;
     private const INSERT_EVENT_SQL = <<<'SQL'
 INSERT INTO agentools_events (
   tenant_id, action_id, seq, event_id, kind, event_version, spec_rev,
-  actor_type, actor_id, ts, payload_json, epoch, prev_hash, content_hash, expected_prev_seq
+  actor_type, actor_id, ts, ts_text, payload_json, epoch, prev_hash, content_hash, expected_prev_seq
 ) VALUES (
   :tenant_id, :action_id, :seq, :event_id, :kind, :event_version, :spec_rev,
-  :actor_type, :actor_id, :ts, :payload_json, :epoch, :prev_hash, :content_hash, :expected_prev_seq
+  :actor_type, :actor_id, :ts, :ts_text, :payload_json, :epoch, :prev_hash, :content_hash, :expected_prev_seq
 )
 RETURNING seq, global_position
 SQL;
@@ -379,6 +379,7 @@ SQL;
                 'actor_type' => $event->actor->type,
                 'actor_id' => $event->actor->id,
                 'ts' => $event->timestamp,
+                'ts_text' => $event->timestamp,
                 'payload_json' => json_encode($event->payload, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),
                 'epoch' => $event->epoch,
                 'prev_hash' => null,

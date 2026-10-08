@@ -1,0 +1,37 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "research-18-p4-driver-contract-remediation-2026-08",
+  "title": "18 — P4.15: typed driver-only contract before W2",
+  "sections": [
+    {
+      "id": "18-P4.15-typed-driver-only-contract-before-W2",
+      "title": "18 — P4.15: typed driver-only contract before W2",
+      "text": "**Дата:** 2026-08-04  \n**Статус:** design input P4.15  \n**Сырьё слоя 1:** сохранённый W2 candidate · `@plan/knowledge/artifacts-P5-gate-b.json` F1/F2/F4 ·\n`04_confirmation.md` CNF-2–CNF-8/CNF-13/CNF-21/CNF-23 · `08_audit-observability.md`\nAOB-25/AOB-27–AOB-31."
+    },
+    {
+      "id": "1.",
+      "title": "1. Наблюдение",
+      "text": "P4.9 формально закрыл девять driver-state sections, но `given.policy` несёт только\n`allowed_tools`; отсутствуют применимые policy verdict/scope. Не выражены bindings proposal,\ntoken, descriptor digest и fingerprints prepare/commit. Audit carrier умеет задать baggage,\nно не сам export adapter, его mapping version, boundary и attributes. В результате broad pairs\nможно сделать структурно валидными, однако нельзя доказать CNF-3–6/CNF-13/CNF-21/CNF-23 или\nAOB-25/AOB-27–30 единственным меняемым стимулом. `RAG:— (repo-grounded: vector.json;\n@plan/knowledge/research-17-p4.10-behavior-carrier-dor-2026-08.json §1; W2 review 2026-08-04)`."
+    },
+    {
+      "id": "2.",
+      "title": "2. Граница решения",
+      "text": "Новый input остаётся fixture-driver-only и не изменяет MCP wire, published schema либо\nнормативный текст. Он не хранит ожидаемый verdict: реализация должна применить typed state и\nнаблюдаемый oracle. Поля в `journal.payload`, title, free-form context или `expect` не заменяют\ninput: они не проходят один закрытый contract и создают скрытый stub. `RAG:— (repo-grounded:\nfixtures/2026-08/README.md §2; P4.9 Code Guidance)`."
+    },
+    {
+      "id": "3.",
+      "title": "3. Точный минимальный контракт",
+      "text": "| Место | Поля | Различает |\n|:--|:--|:--|\n| `given.policy.rules[]` | `scope: system|tenant|user|tool`, `verdict: deny|ask|allow` | CNF-3–6 и TLP-11 без неявного precedence/scope |\n| `given.driver_state.confirmation` | `proposal_id`, `proposal_version`, `token_id`, `covered_principal_id`, `prepared_descriptor_digest`, `current_descriptor_digest`, `prepared_args_fingerprint`, `commit_args_fingerprint` | CNF-13/CNF-21/CNF-23 и token/proposal bindings |\n| `given.driver_state.audit_export` | `adapter_id`, `mapping_version`, `boundary: external`, `attributes[]`, `audit_fields[]` | AOB-25/AOB-27–30; attributes остаются adapter-side data |\n\nВсе объекты closed; массивы содержат непустые строки. `attributes` и `audit_fields` — вход\nнаблюдаемого экспорта/аудита, а не claim о conformance. AOB-26 остаётся статическим P4.12.\n`RAG:— (repo-grounded: 04_confirmation.md:56-80,104-152; 08_audit-observability.md:201-236)`."
+    },
+    {
+      "id": "4.",
+      "title": "4. Последовательность",
+      "text": "1. P4.15 добавляет schema, README и real-schema selftest, коммитит source и bookkeeping.\n2. Workflow W2 требует terminal P4.15; его plan files чисты, candidate снова состоит только\n   из P4.10–P4.12 paths.\n3. Sharded P4.10 fix нормализует existing broad pairs через typed inputs; не меняет contract\n   локально и не получает второй fix-loop.\n\nЭто сохраняет D155 resume и D156 exact 65/65; изменение contract после W2 review без отдельного\nitem было бы обходом их fail-closed границы. `RAG:— (repo-grounded: D155–D157; workflow W2)`."
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "research/18-p4-driver-contract-remediation-2026-08.md",
+    "sha256": "8c3bea2a49741cd046363b4f3cf3bc83ab6db7a31fea1feac38c01724f29612e"
+  }
+}

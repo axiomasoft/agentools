@@ -1,0 +1,12 @@
+{
+  "id": "fix-acceptance-final",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/release_acceptance.py",
+    "capture"
+  ],
+  "started_utc": "2026-10-08T13:39:31.521942+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.064
+}

@@ -1,0 +1,72 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "root-contracts-event-store-v1",
+  "title": "Event store / audit / observability contract v1 — AgenTools (PLAN1)",
+  "sections": [
+    {
+      "id": "Event-store-audit-observability-contract-v1-AgenTools-PLAN1",
+      "title": "Event store / audit / observability contract v1 — AgenTools (PLAN1)",
+      "text": "**Version:** v1\n**Status:** P5 executable contract\n**Evidence date:** 2026-09-20\n**Cases:** `fixtures/hardening/event-store-v1.json`\n**Decisions:** D10\n**Bounds:** RL-012 (default page 500), RL-013 (hard max 1000), RL-014 (batch max 64), RL-020 (50 concurrent append)"
+    },
+    {
+      "id": "Supported-boundary",
+      "title": "Supported boundary",
+      "text": "P5 replaces the supported journal persistence port `EventLog.append(ActionEvent)` /\nunbounded `readFrom` with `EventStore.append(stream, expectedPrevSeq, UncommittedEvent[])`\nand paginated `load`. Storage assigns `seq` and `global_position`. Callers never supply\nthem. Dual uncommitted+caller-seq production append is forbidden.\n\n[RAG:✅] [Kurrent TCP appending](https://docs.kurrent.io/clients/tcp/dotnet/21.2/appending)\none operation appends one or more events atomically; numeric expected version plus\nidentical EventIds can be idempotent. `ExpectedVersion.Any` does **not** guarantee\nidempotence and is not an Agentools API. Agentools strengthens EventId-only match with a\ncontent hash (F05). Frozen `spec/revisions/2026-08/**` stays byte-identical. Exactly-once\nconsumer delivery is a non-guarantee.\n\nStream identity is `(tenant_id, action_id)`. Empty stream `expected_prev_seq = 0`; first\ncommitted `seq` is 1 (ALC-6/20). Tenant is stream identity, not a new ALC-5 envelope field."
+    },
+    {
+      "id": "Uncommitted-vs-committed",
+      "title": "Uncommitted vs committed",
+      "text": "| Field | UncommittedEvent | Committed `ActionEvent` (ALC-5) |\n|:--|:--|:--|\n| `event_id` | caller, ≥128-bit CSPRNG UUID/ULID | same |\n| `kind`, `event_version`, `spec_rev`, `actor`, `ts`, `payload` | caller | same |\n| `epoch` | optional | optional; ALC epoch, **not** a P4 lease token |\n| `seq` | absent | storage-assigned, consecutive from 1 |\n| `expected_prev_seq` | append argument (stream), not per event | storage-written per row |\n| `prev_hash` | absent | ALC-36 chain on committed envelope |\n| `global_position` | absent | store-wide `GENERATED ALWAYS AS IDENTITY` |\n| `tenant_id` / `action_id` | stream id | `action_id` in envelope; tenant in store key |\n\n`event_id` is not `ev-{action}-{seq}`. Seq-derived ids are validation. Trace / causation /\nspan ids live in `payload` (AOB-17), never as envelope columns or metric labels."
+    },
+    {
+      "id": "Append-API",
+      "title": "Append API",
+      "text": "```text\nappend(stream=(tenant_id, action_id), expected_prev_seq, UncommittedEvent[1..64])\n  -> AppendResult { first_seq, last_seq, last_global_position, outcome }\n```\n\n`outcome` is `appended` or `idempotent_replay`. There is no `ExpectedVersion.Any`, empty\nbatch, or single-event `append(ActionEvent)` on the production port. Test helpers may wrap\na one-event batch so frozen `2026-08` vectors still observe seq/kind without new spec bytes."
+    },
+    {
+      "id": "Classify-before-INSERT-normative",
+      "title": "Classify-before-INSERT (normative)",
+      "text": "```text\n1. Reject empty batch, batch > 64, duplicate event_id in the batch, seq-derived event_id,\n   missing tenant/action, audit-forbidden payload fields.\n2. Canonicalize each uncommitted envelope (stream identity + uncommitted fields).\n   content_hash = \"sha-256:\" + hex(SHA-256(RFC 8785 bytes)).\n   Hash exclusions: seq, expected_prev_seq, prev_hash, global_position.\n3. BEGIN; lock stream header (INSERT header ON CONFLICT DO NOTHING, then SELECT … FOR UPDATE).\n4. actual = header.current_seq (0 if empty).\n5. Lookup existing rows by (tenant_id, event_id) for the batch ids.\n6. Classify:\n   a. none exist and expected == actual → INSERT all, seq = actual+1 … actual+n,\n      expected_prev_seq of event i = actual+i-1, prev_hash from previous committed/new row,\n      update header.current_seq, COMMIT, return appended.\n   b. all exist as the exact committed suffix at expected+1, same order, same hashes\n      → COMMIT, return idempotent_replay (zero new rows).\n   c. any id exists with a different hash → ROLLBACK, event_id_collision.\n   d. partial overlap → ROLLBACK, event_batch_partial_overlap.\n   e. expected != actual and not case b → ROLLBACK, version_conflict.\n7. Unique(tenant, action, seq) and Unique(tenant, event_id) are safety nets, not the classifier.\n8. RETURNING supplies assigned seq and global_position. Never hash those columns.\n```\n\n[RAG:✅] PostgreSQL [`INSERT`](https://www.postgresql.org/docs/current/sql-insert.html)\n`RETURNING` returns only rows **actually inserted or updated**. `ON CONFLICT DO NOTHING`\ndoes not return the conflicting row and MUST NOT be the collision detector.\n[RAG:✅] [Identity columns](https://www.postgresql.org/docs/18/ddl-identity-columns.html)\nand [RETURNING](https://www.postgresql.org/docs/18/dml-returning.html): `global_position`\nis `GENERATED ALWAYS AS IDENTITY`; callers omit it.\n[RAG:✅] [RFC 8785 JCS](https://www.rfc-editor.org/rfc/rfc8785.html) is the collision\ndigest serialization. P6 still owns the cross-language JCS oracle.\n\n[RAG:✅] [Kurrent Python appending](https://docs.kurrent.io/clients/python/v1.2/appending-events.md)\ndoes not enforce unique EventIds; reuse across streams can record duplicates. Agentools\nunique `(tenant_id, event_id)` is intentional and stricter. Retry MUST keep the same ids\n**and** the original expected version. A new id on retry duplicates facts; the store cannot\ninfer “same intent, new id”.\n\nFifty concurrent appends at one expected version yield exactly one winner and 49\n`version_conflict` (RL-020). A two-event batch is all-or-nothing: conflict rolls back\nevery row of that batch.\n\nApplication path MUST NOT DELETE events (ALC-31). P3 consume rows and P4 lease rows stay\nseparate tables. `epoch_started` may share a batch with later effect-registry events;\nthat epoch is not a lease token (ALC-28, D9)."
+    },
+    {
+      "id": "Load-pagination",
+      "title": "Load / pagination",
+      "text": "```text\nload(stream, after_seq=0, limit=500) -> EventStreamPage { events, last_seq, has_more }\n```\n\nKeyset only: `seq > after_seq ORDER BY seq ASC LIMIT limit`. `OFFSET` is forbidden.\nDefault 500 (RL-012), min 1, hard max 1000 (RL-013). Larger `limit` is\n`agentools.budget.event_page_limit`. Page N+1 `after_seq` equals last `seq` of page N;\npages MUST NOT skip events. `lastSeq` may remain a convenience; it is not required to append\nand is not an atomic pair with append.\n\n`readFrom` without a limit is unsupported after cutover (RL-025)."
+    },
+    {
+      "id": "Audit-envelope",
+      "title": "Audit envelope",
+      "text": "`audit.*` kinds occupy the **same** journal and `seq` chain (AOB-1). Journal remains the\nsource of truth. `AuditSink` is an optional redacted derived export; exporter exceptions\nMUST NOT roll back append (AOB-18). Absence of a sink MUST NOT fail append.\n\nSecret/PII fixtures are rejected **before** persist, not masked after write.\n\n**Audit allow:** `tool_name`, `side_effect`, `verdict`, `limit_name`, `limit_value`,\n`observed`, `scenario_id`, `outcome`, `step_id`, `tokens_in`, `tokens_out`,\n`amount_minor`, `currency`, `price_table_version`, opaque ids, digests, closed enums,\noptional `trace` block of opaque trace/span ids (AOB-17).\n\n**Audit deny:** raw arguments, prompts, tokens or token parts, PII, unbounded text,\nfloating-point money (AOB-14/15/16). Forbidden fields →\n`agentools.validation.audit_forbidden_field`."
+    },
+    {
+      "id": "Observability",
+      "title": "Observability",
+      "text": "No OpenTelemetry SDK runtime dependency. Span-link rules stay AOB-20..22 (do not hold a\nspan across confirmation wait).\n\n[RAG:✅] [Prometheus instrumentation](https://prometheus.io/docs/practices/instrumentation/)\neach labelset is a time series; unbounded identifiers must not be labels.\n[RAG:✅] [OpenTelemetry Metrics SDK](https://opentelemetry.io/docs/specs/otel/metrics/sdk/)\ndefault cardinality limit is a memory guardrail (`otel.metric.overflow`); Agentools\nfail-closes the label set instead of relying on overflow.\n\n**Metric allow:** `event_kind_class` (`lifecycle` / `audit` / `effect`),\n`append_result` (`appended` / `idempotent_replay` / `conflict` / `validation`),\n`conflict_class` (`version` / `collision` / `partial`).\n\n**Metric deny:** `tenant_id`, `action_id`, `event_id`, `trace_id`, `span_id`, `user_id`,\nraw unbounded `kind` strings, exception messages. Forbidden labels →\n`agentools.validation.metric_label_forbidden`."
+    },
+    {
+      "id": "Snapshot-provenance",
+      "title": "Snapshot provenance",
+      "text": "Optional `ActionSnapshot` / session projection carries `seq`, `spec_rev`, and the content\nhash of the committed event at that `seq`. Restore is snapshot+tail fold. On hash or\n`spec_rev` mismatch the snapshot is discarded and the caller folds the journal; events are\nnot deleted. The journal is never truncated and never replaced by a snapshot (ALC-32..34)."
+    },
+    {
+      "id": "Production-adapters",
+      "title": "Production adapters",
+      "text": "Production adapter is injected PDO/SQL (same as D8/D9). In-memory is testkit/reference-only\nand MUST NOT be a production constructor default. PHP `suggests` `ext-pdo_pgsql`. Dart does\nnot add a `postgres` package. Versioned SQL is a package artefact; PLAN1 does not migrate\nan owner production database. SQLite may implement the same methods but cannot close\nP5.3/P5.4 without PostgreSQL IDENTITY/lock evidence.\n\nPayloads, tokens, and PII are never written to default logs."
+    },
+    {
+      "id": "Stable-external-refusals",
+      "title": "Stable external refusals",
+      "text": "Existing `agentools.conflict.version_conflict` remains ALC-21. P5 freezes additional\nspellings; P6 later registers them in the shared error catalog. Frozen `2026-08` error\ntables stay byte-identical until then.\n\n| Condition | Code | Category | Retryable |\n|:--|:--|:--|:--|\n| expected ≠ actual and not exact suffix replay (ALC-21) | `agentools.conflict.version_conflict` | conflict | true |\n| same `event_id`, different content hash | `agentools.conflict.event_id_collision` | conflict | false |\n| some but not all batch ids already committed | `agentools.conflict.event_batch_partial_overlap` | conflict | false |\n| empty batch | `agentools.validation.event_batch_empty` | validation | false |\n| batch length > 64 | `agentools.validation.event_batch_limit` | validation | false |\n| duplicate `event_id` inside the batch | `agentools.validation.event_id_duplicate_in_batch` | validation | false |\n| seq-derived `event_id` (`ev-{action}-{seq}`) | `agentools.validation.event_id_seq_derived` | validation | false |\n| missing tenant/action | `agentools.validation.event_stream_identity` | validation | false |\n| audit payload deny-list hit | `agentools.validation.audit_forbidden_field` | validation | false |\n| metric label deny-list hit | `agentools.validation.metric_label_forbidden` | validation | false |\n| `load` limit > 1000 or < 1 | `agentools.budget.event_page_limit` | budget | false |"
+    },
+    {
+      "id": "Source-of-truth-and-staged-ownership",
+      "title": "Source-of-truth and staged ownership",
+      "text": "P1 owns guarantees, threat, and resource policy (RL-011..014, RL-020, RL-023, RL-025).\nP5 owns EventStore, collision/redaction/cardinality, snapshot provenance, and journal\nwiring. P3 consume and P4 lease/fencing stay out of event rows. P6 owns shared schema/error\nrevision. P7 owns final `EventLog` export removal. P8 owns mutation/fuzz/page-size depth.\nP9 owns CI PostgreSQL matrix. In-memory evidence cannot close P5.3/P5.4."
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "root/contracts/event-store-v1.md",
+    "sha256": "df5d0c8d5e97b148e1345259ab6a28239cf4ad41e80322e30488f4115321da0b"
+  }
+}

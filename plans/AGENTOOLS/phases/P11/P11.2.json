@@ -1,0 +1,123 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P11.2",
+  "title": "Явная публичная API-поверхность и документация",
+  "status": "todo",
+  "summary": "Сформировать PHP/Dart API manifests и привести README/usage examples к фактическим exports без phase labels или внутренних reference-проектов.",
+  "why": "Conformance доказывает поведение, но не доказывает, что пользователь видит маленькую намеренную API. `RAG:— (repo-grounded: @plan/knowledge/research-11-package-quality-and-release-architecture-2026-08.json)`.",
+  "scope": {
+    "include": [
+      "manifest экспортов для PHP и Dart; проверка каждого stable API по правилу «export + production consumer + behavioural test»; документация установки, минимального использования, совместимости и границ core/transport."
+    ],
+    "exclude": [
+      "новые stable contracts без потребителя; изменение протокольной семантики; публикация пакета."
+    ]
+  },
+  "depends_on": [
+    "P11.1",
+    "P7.12",
+    "P8.13"
+  ],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "@plan/knowledge/root-contracts-package-quality-baseline.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [
+    {
+      "path": "@plan/knowledge/artifacts-P11-public-api.json",
+      "change": "any"
+    }
+  ],
+  "rules": [
+    "В manifest попадает только реально экспортируемое. Каждый пункт содержит путь consumer-теста; отсутствующий consumer означает internal/remove/escalate, не «задокументировать позже». Phase IDs не попадают в публичные package docs or API names."
+  ],
+  "guidance": "Examples используют только public API и не импортируют internal `src` paths.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "rg -n \"P[0-9]+\\\\.|phase [0-9]|Chatom|AzGuard\" php/README.md php/API.md dart/README.md dart/agentools/API.md",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "API manifests, truthful public docs and executable examples."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "updated_at": "1970-01-01T00:00:00Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Сформировать PHP/Dart API manifests и привести README/usage examples к фактическим exports без phase labels или внутренних reference-проектов."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Conformance доказывает поведение, но не доказывает, что пользователь видит маленькую намеренную API. `RAG:— (repo-grounded: @plan/knowledge/research-11-package-quality-and-release-architecture-2026-08.json)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "manifest экспортов для PHP и Dart; проверка каждого stable API по правилу «export + production consumer + behavioural test»; документация установки, минимального использования, совместимости и границ core/transport."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "новые stable contracts без потребителя; изменение протокольной семантики; публикация пакета."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "P7/P8 source/tests · conformance reports · `@plan/knowledge/root-contracts-package-quality-baseline.json` · P11.1 identity evidence."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`php/API.md` · `dart/agentools/API.md` · package README/examples · `artifacts/P11-public-api.md`."
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `@plan/knowledge/root-contracts-package-quality-baseline.json` 2) P7.12/P8.13 gate reports 3) package public source and tests."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "В manifest попадает только реально экспортируемое. Каждый пункт содержит путь consumer-теста; отсутствующий consumer означает internal/remove/escalate, не «задокументировать позже». Phase IDs не попадают в публичные package docs or API names."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Examples используют только public API и не импортируют internal `src` paths."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "каждый manifest entry имеет consumer-test path и существует · `rg -n \"P[0-9]+\\\\.|phase [0-9]|Chatom|AzGuard\" php/README.md php/API.md dart/README.md dart/agentools/API.md` = 0 · examples собираются/тестируются package-native командами · плановый линтер, K = 0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "API manifests, truthful public docs and executable examples."
+    }
+  ]
+}

@@ -13,11 +13,17 @@ import sys
 import tempfile
 import time
 import unittest
+import xml.etree.ElementTree as ET
+
+try:
+    from .isolated_workspace import copy_workspace, source_fingerprints
+except ImportError:
+    from isolated_workspace import copy_workspace, source_fingerprints
 from pathlib import Path
 from typing import Any
 
 REPO = Path(__file__).resolve().parents[1]
-PLAN = REPO / "plans/2026.09.19-№1-AGENTOOLS-HARDENING"
+PLAN = REPO / "verification"
 MANIFEST = REPO / "fixtures/hardening/adversarial/manifest.v1.json"
 MUTATION_DIR = REPO / "fixtures/hardening/adversarial/mutations"
 CATALOG_PATH = MUTATION_DIR / "catalog.v1.json"
@@ -64,10 +70,10 @@ def patches() -> list[dict[str, Any]]:
         {"id": "MUT-SCN-RELAX-DEPTH", "sdk": "dart", "path": "dart/agentools/lib/src/scenario/expression_parser.dart", "search": "      if (_parseDepth > _limits.maxDepth) {", "replace": "      if (false && _parseDepth > _limits.maxDepth) {", "dart_test": ["test/scenario/expression_evaluator_test.dart"]},
         {"id": "MUT-OPS-RELAX-BAGGAGE", "sdk": "php", "path": "php/src/Ops/BaggageRefs.php", "search": "    public const MAX_ITEMS = 64;", "replace": "    public const MAX_ITEMS = 128;", "phpunit": ["tests/Ops/BaggageRefsTest.php", "tests/Adversarial/AdversarialCorpusTest.php"]},
         {"id": "MUT-OPS-RELAX-BAGGAGE", "sdk": "dart", "path": "dart/agentools/lib/src/ops/baggage_refs.dart", "search": "  static const maxItems = 64;", "replace": "  static const maxItems = 128;", "dart_test": ["test/ops/baggage_refs_test.dart", "test/adversarial/adversarial_corpus_test.dart"]},
-        {"id": "MUT-OPS-SKIP-REDACTION", "sdk": "php", "path": "php/src/Ops/AuditEventFactory.php", "search": "        $this->redaction->assertPayload($payload);\n        $event = new ActionEvent(\n            eventId: JournalAppender::newEventId(),", "replace": "        if (false) $this->redaction->assertPayload($payload);\n        $event = new ActionEvent(\n            eventId: JournalAppender::newEventId(),", "phpunit": ["tests/Ops/AuditEventFactoryTest.php"]},
-        {"id": "MUT-OPS-SKIP-REDACTION", "sdk": "dart", "path": "dart/agentools/lib/src/ops/audit_event_factory.dart", "search": "    _redaction.assertPayload(Map<String, dynamic>.from(payload));", "replace": "    if (false) _redaction.assertPayload(Map<String, dynamic>.from(payload));", "dart_test": ["test/ops/audit_event_factory_test.dart"]},
+        {"id": "MUT-OPS-SKIP-REDACTION", "sdk": "php", "path": "php/src/Ops/AuditRedaction.php", "search": "    public function assertPayload(array $payload, ?string $kind = null): void\n    {\n", "replace": "    public function assertPayload(array $payload, ?string $kind = null): void\n    {\n        return; // mutant bypasses the shared persistence/export validator\n", "phpunit": ["tests/Ops/AuditEventFactoryTest.php"]},
+        {"id": "MUT-OPS-SKIP-REDACTION", "sdk": "dart", "path": "dart/agentools/lib/src/ops/audit_redaction.dart", "search": "  void assertPayload(Map<String, dynamic> payload, [String? kind]) {\n", "replace": "  void assertPayload(Map<String, dynamic> payload, [String? kind]) {\n    return; // mutant bypasses the shared persistence/export validator\n", "dart_test": ["test/ops/audit_event_factory_test.dart"]},
         {"id": "MUT-PKG-EXPORT-TESTKIT", "sdk": "php", "path": "php/composer.json", "search": "      \"AgenTools\\\\\": \"src/\"\n    }\n  },\n  \"autoload-dev\": {\n    \"psr-4\": {\n      \"AgenTools\\\\Reference\\\\\": \"reference/\",\n      \"AgenTools\\\\TestKit\\\\\": \"testkit/\",", "replace": "      \"AgenTools\\\\\": \"src/\",\n      \"AgenTools\\\\TestKit\\\\\": \"testkit/\"\n    }\n  },\n  \"autoload-dev\": {\n    \"psr-4\": {\n      \"AgenTools\\\\Reference\\\\\": \"reference/\",", "phpunit": ["tests/Adversarial/PackageBoundaryKillTest.php"]},
-        {"id": "MUT-PKG-EXPORT-TESTKIT", "sdk": "dart", "path": "dart/agentools/lib/agentools.dart", "search": "export 'src/smoke.dart';", "replace": "export 'src/smoke.dart';\nexport 'agentools_testkit.dart';", "dart_test": ["test/agentools_smoke_test.dart"], "extra": ["python3", "tools/package_surface.py", "diff", "--actual", "--strict"]},
+        {"id": "MUT-PKG-EXPORT-TESTKIT", "sdk": "dart", "path": "dart/agentools/lib/agentools.dart", "search": "export 'src/smoke.dart';", "replace": "export 'src/smoke.dart';\nexport 'agentools_testkit.dart';", "dart_test": ["test/adversarial/package_boundary_kill_test.dart"]},
     ]
 
 
@@ -98,88 +104,107 @@ def run_cmd(command: list[str], cwd: Path, timeout: int = 120) -> subprocess.Com
     return subprocess.run(command, cwd=str(cwd), text=True, capture_output=True, timeout=timeout, check=False)
 
 
+def test_command(patch: dict[str, Any], workspace: Path) -> tuple[list[str], Path, Path | None]:
+    if patch['sdk'] == 'php':
+        report = workspace / 'mutation-junit.xml'
+        report.unlink(missing_ok=True)
+        return ['php', 'vendor/bin/phpunit', '--log-junit', str(report), *patch['phpunit']], workspace / 'php', report
+    return ['dart', 'test', '--reporter=json', *patch['dart_test']], workspace / 'dart/agentools', None
+
+
+def assertion_failure(proc: subprocess.CompletedProcess[str], report: Path | None) -> bool:
+    # Exit status alone is never proof of a killed mutant.
+    if report is not None:
+        if proc.returncode != 1 or not report.is_file():
+            return False
+        try:
+            root = ET.parse(report).getroot()
+            return bool(root.findall('.//testcase/failure')) and not root.findall('.//testcase/error')
+        except ET.ParseError:
+            return False
+    if proc.returncode != 1:
+        return False
+    events = []
+    for line in proc.stdout.splitlines():
+        try:
+            events.append(json.loads(line))
+        except json.JSONDecodeError:
+            continue
+    errors = [event for event in events if event.get('type') == 'error']
+    return (any(event.get('isFailure') is True for event in errors)
+            and all(event.get('isFailure') is True for event in errors)
+            and any(event.get('type') == 'done' and event.get('success') is False for event in events))
+
+
 def run_patch(patch: dict[str, Any], *, workspace: Path) -> dict[str, Any]:
     started = time.time()
-    src = workspace / patch["path"]
+    src = workspace / patch['path']
     original = src.read_bytes()
-    if sha256_bytes(original) != patch["anchor_sha256"]:
-        return {"id": patch["id"], "sdk": patch["sdk"], "outcome": "stale-anchor", "killed": False}
+    result = {'id': patch['id'], 'sdk': patch['sdk'], 'killed': False}
+    if sha256_bytes(original) != patch['anchor_sha256']:
+        return result | {'outcome': 'stale-anchor'}
     try:
-        mutated = apply_patch(original.decode("utf-8"), patch["search"], patch["replace"])
+        mutated = apply_patch(original.decode('utf-8'), patch['search'], patch['replace'])
     except ValueError as exc:
-        return {"id": patch["id"], "sdk": patch["sdk"], "outcome": "ambiguous-patch", "killed": False, "error": str(exc)}
-    src.write_text(mutated, encoding="utf-8")
+        return result | {'outcome': 'ambiguous-patch', 'error': str(exc)}
+    if src.resolve().is_relative_to(REPO.resolve()):
+        raise ValueError('Mutation execution requires a disposable workspace')
     try:
-        if patch["sdk"] == "php":
-            cmd = ["php", "vendor/bin/phpunit", *patch["phpunit"]]
-            proc = run_cmd(cmd, workspace / "php")
-        else:
-            cmd = ["dart", "test", *patch["dart_test"]]
-            proc = run_cmd(cmd, workspace / "dart/agentools")
-            extra = patch.get("extra")
-            if extra and proc.returncode == 0:
-                extra_proc = run_cmd(extra, workspace)
-                if extra_proc.returncode != 0:
-                    proc = extra_proc
-        duration_ms = int((time.time() - started) * 1000)
-        stderr = (proc.stderr or "") + (proc.stdout or "")
-        compile_invalid = any(token in stderr for token in ("Parse error", "syntax error", "Error: Unexpected", "compile-time error"))
-        if compile_invalid:
-            return {"id": patch["id"], "sdk": patch["sdk"], "outcome": "compile-invalid", "killed": False, "duration_ms": duration_ms, "command": cmd}
-        if proc.returncode == 0:
-            return {"id": patch["id"], "sdk": patch["sdk"], "outcome": "survived", "killed": False, "duration_ms": duration_ms, "command": cmd}
-        return {"id": patch["id"], "sdk": patch["sdk"], "outcome": "killed", "killed": True, "duration_ms": duration_ms, "command": cmd, "exit": proc.returncode}
+        cmd, cwd, report = test_command(patch, workspace)
+        baseline = run_cmd(cmd, cwd)
+        if baseline.returncode != 0:
+            return result | {'outcome': 'baseline-failed', 'exit': baseline.returncode}
+        src.write_text(mutated, encoding='utf-8')
+        cmd, cwd, report = test_command(patch, workspace)
+        proc = run_cmd(cmd, cwd)
+        killed = assertion_failure(proc, report)
+        return result | {
+            'outcome': 'killed' if killed else ('survived' if proc.returncode == 0 else 'harness-error'),
+            'killed': killed, 'duration_ms': int((time.time() - started) * 1000),
+            'command': [part.replace(str(workspace), '<workspace>') for part in cmd],
+            'exit': proc.returncode, 'baseline_exit': baseline.returncode,
+        }
     except subprocess.TimeoutExpired:
-        return {"id": patch["id"], "sdk": patch["sdk"], "outcome": "timeout", "killed": False}
+        return result | {'outcome': 'timeout'}
     finally:
         src.write_bytes(original)
 
 
 def workspace_copy() -> Path:
-    tmp = Path(tempfile.mkdtemp(prefix="agentools-mut-"))
-    for rel in ("php", "dart", "tools", "api", "fixtures", "spec", "plans"):
-        src = REPO / rel
-        dst = tmp / rel
-        if rel == "php":
-            dst.mkdir(parents=True)
-            for name in ("src", "tests", "testkit", "reference", "composer.json", "composer.lock", "phpunit.xml", "phpstan.neon", "infection.json5"):
-                item = src / name
-                if item.is_dir():
-                    shutil.copytree(item, dst / name, ignore=shutil.ignore_patterns("vendor", ".phpunit.cache"))
-                elif item.exists():
-                    shutil.copy2(item, dst / name)
-            os.symlink(src / "vendor", dst / "vendor")
-        elif rel == "dart":
-            shutil.copytree(src, dst, ignore=shutil.ignore_patterns(".dart_tool", "build"))
-            dart_tool = src / "agentools" / ".dart_tool"
-            if dart_tool.exists():
-                os.symlink(dart_tool, dst / "agentools" / ".dart_tool")
-        else:
-            shutil.copytree(src, dst, ignore=shutil.ignore_patterns(".git"))
+    tmp = Path(tempfile.mkdtemp(prefix='agentools-mut-'))
+    try:
+        copy_workspace(REPO, tmp)
+    except BaseException:
+        shutil.rmtree(tmp)
+        raise
     return tmp
 
 
 def run_all() -> dict[str, Any]:
     emit_catalog()
-    catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
-    fingerprint_path = REPO / "php/src/Confirmation/TokenEnvelope.php"
-    before = sha256_file(fingerprint_path)
-    results = [run_patch(patch, workspace=REPO) for patch in catalog["patches"]]
-    after = sha256_file(fingerprint_path)
-    killed = [row for row in results if row["killed"]]
-    survivors = [row for row in results if not row["killed"]]
+    catalog = json.loads(CATALOG_PATH.read_text(encoding='utf-8'))
+    before = source_fingerprints(REPO)
+    workspace = workspace_copy()
+    try:
+        results = [run_patch(patch, workspace=workspace) for patch in catalog['patches']]
+    finally:
+        shutil.rmtree(workspace)
+    after = source_fingerprints(REPO)
+    killed = [row for row in results if row['killed']]
+    survivors = [row for row in results if not row['killed']]
     receipt = {
-        "schema": "p8-mutation-baseline/v1",
-        "manifest_sha256": sha256_file(MANIFEST),
-        "catalog_sha256": sha256_file(CATALOG_PATH),
-        "workspace_unchanged": before == after,
-        "results": results,
-        "killed": len(killed),
-        "survived": [f"{row['id']}:{row['sdk']}:{row['outcome']}" for row in survivors],
-        "verdict": "green" if not survivors and before == after else "red",
+        'schema': 'p8-mutation-baseline/v1',
+        'manifest_sha256': sha256_file(MANIFEST),
+        'catalog_sha256': sha256_file(CATALOG_PATH),
+        'workspace_unchanged': before == after,
+        'source_files_checked': len(before),
+        'results': results,
+        'killed': len(killed),
+        'survived': [f"{row['id']}:{row['sdk']}:{row['outcome']}" for row in survivors],
+        'verdict': 'green' if not survivors and before == after else 'red',
     }
     RECEIPT.parent.mkdir(parents=True, exist_ok=True)
-    RECEIPT.write_text(canonical_json(receipt), encoding="utf-8")
+    RECEIPT.write_text(canonical_json(receipt), encoding='utf-8')
     return receipt
 
 
@@ -209,7 +234,11 @@ class MutationGateTests(unittest.TestCase):
         patch = dict(patch)
         patch["phpunit"] = ["tests/Ops/BaggageRefsTest.php", "--filter", "testItAcceptsOpaqueIdentifiers"]
         patch["anchor_sha256"] = sha256_file(REPO / patch["path"])
-        row = run_patch(patch, workspace=REPO)
+        workspace = workspace_copy()
+        try:
+            row = run_patch(patch, workspace=workspace)
+        finally:
+            shutil.rmtree(workspace)
         self.assertEqual(row["outcome"], "survived")
         self.assertFalse(row["killed"])
 

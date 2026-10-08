@@ -1,0 +1,154 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "findings-P10-axioma-erp-recon-2026-07-27",
+  "title": "разведка живого канона и кодовой базы ERP-контура Axioma (2026-07-27)",
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\ntype: findings\nplan: AGENTOOLS\nphase: P10\ncreated: 2026-07-27\nlayer: 1\n---"
+    },
+    {
+      "id": "P10-ERP--Axioma-2026-07-27",
+      "title": "P10 — разведка живого канона и кодовой базы ERP-контура Axioma (2026-07-27)",
+      "text": "Слой 1 (`plan-protocol` §16): сырьё, полученное прогоном команд и RAG в ходе детализации фазы P10.\nСинтез и вердикты — `@plan/knowledge/research-09-p10-erp-offline-2026-08.json`. Все числа сняты на деревьях:\nvault `Brain` — `16e1ec6`, `~/projects/packages/erp-sdk` — `62e1153`,\n`~/projects/packages/agentools` — `4344265`. Каталога `~/projects/packages/axioma_erp_sdk` не\nсуществует (§1).\n\n**Дисциплина повторного применения.** Фаза P10 исполняется ПОСЛЕ фаз P1–P9, то есть заведомо\nпозже даты этой разведки, и зависит от чужой цепочки вех, которая между делом двигается. Файл —\nне источник истины на дату исполнения, а **опора сравнения**: item P10.1 обязан снять те же\nизмерения заново и назвать каждое расхождение отдельной строкой. Разведка, поданная как\n«состояние на момент исполнения», — тот же класс лжи, из-за которого прежняя детализация фазы\n(2026-07-11) строилась на допущениях о контуре, которого нет.\n\n---"
+    },
+    {
+      "id": "1.-axioma_erp_sdk-erp-sdk",
+      "title": "1. Монорепо `axioma_erp_sdk` НЕ СУЩЕСТВУЕТ; репозиторий `erp-sdk` — только документация",
+      "text": "```console\n$ ls -d ~/projects/packages/axioma_erp_sdk\nls: cannot access '/home/vostrikov/projects/packages/axioma_erp_sdk': No such file or directory\n\n$ ls ~/projects/packages/erp-sdk\nAGENTS.md  CLAUDE.md  docs  README.md\n\n$ find ~/projects/packages/erp-sdk -name '*.dart' -not -path '*/.git/*' | wc -l\n0\n$ find ~/projects/packages/erp-sdk -name 'pubspec.yaml' -not -path '*/.git/*' | wc -l\n0\n$ git -C ~/projects/packages/erp-sdk rev-parse --short HEAD\n62e1153\n$ git -C ~/projects/packages/erp-sdk log -1 --format='%ad %s' --date=short\n2026-06-13 docs: канон ТЗ, план реализации и регламент агентов (подготовка Фазы 0)\n$ git -C ~/projects/packages/erp-sdk status --short | wc -l\n17\n```\n\nВывод: в контуре ERP **нет ни одной строки Dart-кода** — ни ядра, ни модулей, ни приложения.\nСуществующий репозиторий `erp-sdk` держит только канон (`docs/01_Business`, `docs/03_Dev` с 12 ADR\nи 16 спеками модулей); 17 файлов в нём не закоммичены (правки канона от 2026-07).\n\n**Сравнение с фазой P9 — разрыв качественно другой.** У контура Flex кодовая база ЖИВАЯ\n(монорепо CoreX с шестью пакетами + приложение на Laravel 13), отсутствовал ОДИН пакет `corex/ai`\n(`findings/P9-…` §1). У контура ERP отсутствует ВЕСЬ контур: монорепо создаёт item `P1.1` плана\n`ERP-IMPL`, статус фазы — `⬜ Not started` (§4).\n\n---"
+    },
+    {
+      "id": "2.-ERP-16-AI",
+      "title": "2. Реестр модулей ERP: 16 модулей, AI-слой — ДВА модуля, оба только спеки",
+      "text": "```console\n$ ls ~/projects/packages/erp-sdk/docs/03_Dev/modules/ | grep -v _index | sed 's/.md//'\naxioma_assistant axioma_authz axioma_core axioma_data axioma_events axioma_finance\naxioma_fiscal axioma_mcp axioma_plugins axioma_receipt axioma_regcontent axioma_router\naxioma_sync axioma_tax axioma_ui axioma_utils\n```\n\n| Модуль | Роль в AI-слое | Статус реализации по канону |\n|:--|:--|:--|\n| `axioma_mcp` | серверная сторона: `AxiomaMcpServer`, реестр типизированных tools, `ToolTier`, права, аудит | спека `module-spec` от 2026-06-11; кода нет |\n| `axioma_assistant` | клиентская сторона: `InputChannel` / `SpeechProvider` / `LLMProvider` / `IntentRouter` / `AssistantOrchestrator` + сублой `orchestration/` (Δ02-7) | спека прямо пишет: «контракты — Этап 1; реализации провайдеров и pipeline — Этап 2 (M2.4)»; кода нет |\n\nКлючевые сигнатуры `axioma_assistant` (модуль-спека, §C–§E) — кандидаты на отображение наших\nпортов: `LLMProvider.complete(List<LlmMessage>, List<ToolDefinition>) → LlmResponse{text?, toolCall?}`,\n`IntentRouter.route(ToolCall, AxiomaContext) → ToolResult`, `SpeechProvider.recognize(Stream<List<int>>) → Stream<String>`.\n\nКлючевые сигнатуры `axioma_mcp` (§B): `AxiomaTool{name, tier: ToolTier, requiredPermission, argsSchema: JsonSchema, execute(ToolArgs, AxiomaContext)}`;\n«нет права — tool **не виден модели вовсе** (не „виден, но падает“)» (§D) — тот же двухуровневый\npermission-паттерн, что в контуре Flex (`ADR-022` п.5).\n\n---"
+    },
+    {
+      "id": "3.-AI--ERP-ADR-004-010-012-09-ADR-068..073-INV-ASSIST-1..7",
+      "title": "3. Живой канон AI-слоя ERP: ADR-004/010/012 + фаза 09 (ADR-068..073, INV-ASSIST-1..7)",
+      "text": "Канон существует и он **зрелый и подробный** — это не пробел, который мы заполняем, а\nсамостоятельная замороженная дизайн-программа с собственными инвариантами.\n\n| Документ | Дата | Что нормирует |\n|:--|:--|:--|\n| `ADR-004 AI via MCP Only` | 2026-06-11 | единственный канал AI — MCP-сервер ядра; типизированные tools; запрет прямого доступа к БД |\n| `ADR-010 AI Write Tiers` | 2026-06-11 | Tier 0 read / Tier 1 draft-write / Tier 2 operational-write; «прямой постинг в финансовое ядро для AI запрещён всегда» |\n| `ADR-012 AI Interaction and Provider Strategy` | 2026-06-13 | `axioma_assistant`; runtime-LLM только российский (GigaChat/YandexGPT); ASR — Yandex SpeechKit; провайдеры подключаемые |\n| `ADR-007 Offline-First Sync` | 2026-06-11 | `SyncQueue`, **идемпотентный ключ у каждого `SyncItem`**, доставка до `markSynced`, LWW + уведомление админа; финансы — append-only, сторно вместо правок |\n| `plans/erp/09_AI_Orchestration_UX.md` | фаза 09 (RV-9) | лестница автономии Tier 0–3, `ConfirmationPackage`, trace-grounded объяснимость, оркестрация как control-layer, **offline-лестница L0/L1/L2**, untrusted-boundary, `ai_*`-таблицы |\n\nНовые ADR фазы 09 (проекты, зарегистрированы в `00_MASTER_PLAN_V3.md §3.3): **ADR-068**\nOrchestration as Control-Layer · **ADR-069** Autonomy Ladder Tier 0–3 (per-ability, money-excluded)\n· **ADR-070** Structured Confirmation Contract · **ADR-071** Trace-Grounded Explainability ·\n**ADR-072** Offline AI Degradation Ladder · **ADR-073** AI Authority Boundary. Плюс амендмент\n`ADR-010`. Семейство инвариантов — `INV-ASSIST-1..7` (09 §10.1)."
+    },
+    {
+      "id": "3.1-Tier-0-3-09-3.1",
+      "title": "3.1 Лестница автономии Tier 0–3 (09 §3.1) — дословные факты",
+      "text": "| Tier | Что | Гейт по канону ERP |\n|:--|:--|:--|\n| 0 | read/explain/simulate | всегда доступен, ответ помечен «не проведено» |\n| 1 | create-**draft** | без confirmation, **заперт `resource.state==draft`** |\n| 2 | провести/мутировать финсостояние (кроме денег) | **obligation `confirm`** — интерактивный pre-confirm ДО исполнения |\n| 3 | auto-act | obligation `confirm` удовлетворяется **standing pre-authorization**: org-opt-in `subject.org.ai_tier3_enabled` + потолок `ai_max_tier[ability]` + **обязательная post-hoc review-очередь** + обратимость |\n\n- **Money-exclusion (INV-ASSIST-3, AP10):** abilities **исполнения** денег\n  (`payment.execute` / `bank.transfer.*` / `payment.settle`) исключены из AI-набора **на всех\n  tier, включая Tier 3**; draft платежа (`payment.create`, заперт `draft`) — Tier 1. Носитель —\n  флаг `ai_forbidden` в `authz_ability` (06 §2.2) + SDK-guard `context.actor_kind != 'ai'`, **НЕ\n  tier-значение**.\n- **Tier не выбирает planner** (INV-ASSIST-5): per-action `context.ai_tier` — детерминированная\n  функция {ability-class, `ai_max_tier[ability]`, `ai_tier3_enabled`}, вычисляется PEP/executor'ом\n  ДО чтения какого-либо контента.\n- **Tier-матрица выражена политиками PDP, не кодом** (06 §6.3)."
+    },
+    {
+      "id": "3.2-ConfirmationPackage-09-4.1-ERP",
+      "title": "3.2 `ConfirmationPackage` (09 §4.1) — состав по канону ERP",
+      "text": "```\nConfirmationPackage { summary · scopes[] · diffs[] · warnings[] · tier(2|3) ·\n                      facts_hash · obligations[] (confirm + dualControl) · commands[] }\n```\n\n- **`facts_hash`** — «hash фактов diff-сущностей (по образцу 01 §3.7) — анти-TOCTOU»;\n  command-bus при dispatch **пересчитывает** `facts_hash`, расхождение → отклонение команды +\n  **re-confirmation с новым package**; «устаревший signoff не исполняется» (09 §4.2).\n- **`dualControl`** — «крупные суммы → второй approve **другим пользователем**» (06 §7.5,\n  `authz_approval`).\n- Signoff — immutable-артефакт в `sys_audit_record` + `ai_action_trace`."
+    },
+    {
+      "id": "3.3-Offline--L0-L1-L2-09-7-ADR-072",
+      "title": "3.3 Offline-лестница L0/L1/L2 (09 §7, ADR-072) — терминология-первоисточник",
+      "text": "| Уровень | Условие | Что доступно |\n|:--|:--|:--|\n| **L0** full cloud | `connected` | полная оркестрация, все tools, retrieval, long-context (росс. LLM) |\n| **L1** local model | `!connected` + on-device small-model | drafting/summarization/command-palette/cached workflows · **deferred (UV-5)** |\n| **L2** deterministic (**MVP-degrade**) | `!connected`, модели нет | command-palette, шаблоны, поиск по локальным индексам, macro/replay, **queued-actions** |\n\n- **Silent fallback запрещён** (INV-ASSIST-6): `ShellRuntimeState.connected` перевычисляется\n  непрерывно, capability-banner отражает уровень явно.\n- **LLM — инжектируемая capability, НЕ ядро цикла** (F-09.2/ADR-068): planner/router/executor/\n  verifier — детерминированный control-layer, поэтому «L2-degrade выживает».\n- **Queued-actions (прямая релевантность нашему §B4 TTL):** команды, сформированные но не\n  исполненные из-за `!connected`, уходят в очередь синка (ADR-007), исполнение — по возврату\n  связи, **с повторным confirmation**; «immutable-артефакт §4.2 **не переиспользуется через\n  разрыв**».\n- **UV-5** (`00_MASTER_PLAN_V3.md §12.3): «Зрелость on-device / локальной small-model 2026 для\n  offline-L1 AI-degrade …; точность росс. STT/TTS для финкоманд (voice)» — помечено\n  `[UNVERIFIED]` самим чужим каноном."
+    },
+    {
+      "id": "3.4-control-layer-09-2-6-ADR-068",
+      "title": "3.4 Оркестрация как control-layer (09 §2, §6; ADR-068)",
+      "text": "`axioma_assistant` += сублой `orchestration/` (planner / router / executor / verifier / ux_state),\n**НЕ новый модуль** (16 = 16, D54). Sequencing: `classify → decide(answer|retrieve|tool-call|\nverify|stop) → tools` с явными stop-conditions; shallow planner строит компактный task-DAG;\nexecutor — parallelizable tool-batch; verifier — constraint/redundancy.\n**Idempotency (09 §6.3):** «idempotency key на каждый tool-call (повтор при обрыве не двоит\nзапись)»; `ai_action_trace.correlation_id` обязателен из envelope command-bus; **idempotency-key —\nОТДЕЛЬНЫЙ dedup-ключ, деривируется от `correlation_id` + tool-call**."
+    },
+    {
+      "id": "3.5-ai_---01-9",
+      "title": "3.5 `ai_*`-семейство таблиц (Δ01-9) — второй кандидат-носитель факта",
+      "text": "`ai_conversation` (org_id, initiator_user_id, ui_language) · `ai_turn` (role, uttered_text,\n`tier_decisions` JSON) · `ai_action_trace` (tool_key, `args_hash`, plan_step, verdict,\n`authz_trace_ref` FK→`sys_audit_record`, `explanation_ref`, **`correlation_id` NOT NULL**,\n`override_reason`). Все — **append-only, audit-class**, ULID-ключи (ADR-023).\n`ai_turn.uttered_text` — sensitivity `sensitive`, чтение через ability `ai.trace.read` +\nobligation `auditRead`; retention 152-ФЗ — открытый держатель PF-1.\n\n---"
+    },
+    {
+      "id": "4.---ERP-plans",
+      "title": "4. Кросс-план: контур ERP принадлежит ДВУМ чужим планам в ДРУГИХ корнях `plans/`",
+      "text": "| План | Корень | Роль | Состояние на 2026-07-27 |\n|:--|:--|:--|:--|\n| `erp` (дизайн-программа) | `05-Projects/03-Packages/AxiomaErpSdk/plans/erp/` | SSOT дизайна: 14 доков, статус-борды §8 (строки `0.1`…`0.10`, `H1`…`H10`, `U`/`EV`/`C`/`D`/`AZ`/`T`/`F`/`R`/`UI`/**`MCP`**/**`AS`**/`RC`, вехи `M2.*`/`M3.*`) | дизайн закрыт (GATE-2 READY, 2026-07-08); ВСЕ строки статус-бордов `☐` |\n| `ERP-IMPL` (кодовая волна) | `05-Projects/03-Packages/AxiomaErpSdk/plans/ERP-IMPL/` | исполнимый мастер-план IT-0+ | `🟡 In progress`, Version 0.1.1; **P1 (IT-0 bootstrap) — 0/10 `⬜`**; P4–P7 — скелеты |\n\n`ERP-IMPL` Status Board (снимок 2026-07-27):\n\n| Phase | Title | Items | Status |\n|:--|:--|:--|:--|\n| P1 | IT-0 — Bootstrap монорепо `axioma_erp_sdk` | 0/10 | ⬜ Not started |\n| P2 | IT-1 — спайки риска SP-1..20 + SP-UI-1 + SP-27 | 0/22 | ⬜ Not started |\n| P3 | Ранние сквозные design-контракты (H9 Sync / H10 Test-Perf) | 0/3 | ⬜ Not started |\n| P4 | IT-2 — эпики U/EV/C | 0/3 | ⬜ Not started |\n| P5 | IT-3 — эпики PL/D/AZ | 0/3 | ⬜ Not started |\n| P6 | IT-4 — эпик T (`axioma_tax`) | 0/4 | ⬜ Not started |\n| P7 | IT-5..IT-12 — остаток критпути (finance → продукты → RegCloud) | 0/8 | ⬜ Not started |\n\n`ERP-IMPL` D1: «Home=brain — программный план: репо `axioma_erp_sdk` не существует, создаёт item\nP1.1». `ERP-IMPL` D2: дизайн-программа `plans/erp/` заморожена — D1–D89 + ADR-001..096 +\nI1–I12/INV-* **неприкосновенны**; конфликт → `@plan/plan.json` + эскалация, не правка канона.\n\n**Ни `axioma_mcp`, ни `axioma_assistant` не входят в фазы P1–P6 плана `ERP-IMPL`.** По критпути\n`utils → events → core → data → tax → finance` (`erp` §8, Этап 1) строки `MCP` и `AS` идут ПОСЛЕ\n`AZ`; в `ERP-IMPL` они попадают в фазу **P7** — скелет-индекс `IT-5..IT-12`, 0/8, `⬜`."
+    },
+    {
+      "id": "4.1-cross-plan-gate",
+      "title": "4.1 Прецедент формы cross-plan gate-таблицы существует и работает",
+      "text": "`05-Projects/01-Products/AiResto/plans/AIRESTO/10_decisions/ERP-GATE-01_dependency_gate.md`\n(2026-07-08) — готовый образец `plan-protocol` §11 в этой же экосистеме:\n\n- таблица `Предусловие | erp-источник (строка §8) | Слой AiResto, который разблокирует | Статус`;\n- каждая строка ссылается на КОНКРЕТНУЮ строку статус-борда чужого плана (`Фаза 0, строка 0.1`;\n  `Этап 1, строка MCP`; `Этап 1, строка AS`);\n- governance-правило дословно: «Правка `plans/erp` из плана `AIRESTO` **запрещена** (только\n  чтение-ссылка)»; «расхождение с каноном/статусом erp во время exec = не повод импровизировать\n  заглушки против выдуманного API — эскалация»;\n- статусы — снимок с датой, закрытие строк — акт будущего исполнителя, сверяющегося с чужим\n  бордом НАПРЯМУЮ, а не переносящего его сюда построчно."
+    },
+    {
+      "id": "4.2-ERP-AgenTools",
+      "title": "4.2 Канон ERP не знает про AgenTools вовсе",
+      "text": "```console\n$ grep -rniE 'agentools|agen tools' 05-Projects/03-Packages/AxiomaErpSdk/ ~/projects/packages/erp-sdk/docs\n(нет совпадений)\n```\n\nНоль упоминаний в дизайн-программе `erp`, в `ERP-IMPL` и в репозитории канона. То есть чужой\nконтур спроектировал **собственную** агентную программу (09 + ADR-068..073 + INV-ASSIST-1..7),\nне ссылающуюся на нашу ревизию. Это сильнее ситуации фазы P9, где `B-32` §3.8 хотя бы разрешал\nстык (пусть и против отменённой ревизии)."
+    },
+    {
+      "id": "4.3",
+      "title": "4.3 Обратный канал СУЩЕСТВУЕТ и уже направлен на эту фазу",
+      "text": "`05-Projects/01-Products/AiResto/docs/03_Dev/AI_Offline_Strategy (AiResto).md` (2026-07-08) в\nшапке пишет: «Синхронизирована передачей в\n`05-Projects/03-Packages/AgenTools/@plan/knowledge/90_inbox-airesto-offline-gap.json` (**их P5.3 —\nпустой получатель гэп-анализа**)». Файл `@plan/knowledge/90_inbox-airesto-offline-gap.json` (8364 байта) лежит в\nэтом плане с 2026-07-15 и содержит адресные требования к нашему отчёту применимости — то есть у\nвыхода фазы P10 есть НАЗВАННЫЙ чужой потребитель, ждущий вердикта. Прежний номер их адресата\n(`P5.3`) читается по карте переименования `@plan/plan.json` §4 как **P10.3** скелета.\n\nЧто чужой план просит (дословный смысл, `@plan/knowledge/90_inbox-airesto-offline-gap.json`):\n\n1. Scenario Runner работает без изменений на L0 — доп. требований нет.\n2. **L1 — не блокер MVP**; наш отчёт может не проектировать L1 детально, «важно, чтобы контракт\n   Scenario Runner допускал расширение локальным router-веткой ПОЗЖЕ без слома текущего API».\n3. **MVP-деградация = L2** — «AI выключен, control-logic жива»; можно принять как целевую\n   MVP-семантику Dart-контура.\n4. Митигации слабого function calling (RetryingStructuredOutput, confidence-порог → уточнение)\n   применяются на уровне Scenario Schema; доп. требований к SDK нет.\n5. STT вне нашего контракта; онлайн-провайдер — Yandex SpeechKit gRPC; offline-кандидаты\n   (Vosk / Whisper-класс) выбирает AiResto сама.\n\nЧего чужой план НЕ просит: завершать L1, выбирать offline-STT модель, менять Scenario Schema или\nConfirmation Protocol.\n\n**Оговорка о ревизии.** Заметка написана 2026-07-08 против `@plan/knowledge/00_MASTER_PLAN.json` (§5.4 Scenario\nSchema v1, §5.5, §8) и ревизии `2026-07-draft`, объявленной историей (D18–D20). Её требования\nобязаны быть **реанкорены** на ревизию `2026-08` item'ом P10.2, а не приняты как есть.\n\n---"
+    },
+    {
+      "id": "5.-mcp_dart-ERP-2026-07-28",
+      "title": "5. Пин `mcp_dart` в стеке ERP — стабильная ветка, НЕ знающая эры 2026-07-28",
+      "text": "```console\n$ grep -rn 'mcp_dart' 05-Projects/03-Packages/AxiomaErpSdk/plans/erp/\n00_MASTER_PLAN_V3.md:339: … mcp_dart 2.2.0 …            (стек-локфайл §6)\n02_Codebase_Architecture.md:493: `axioma_mcp` → server/ (mcp_dart 2.2) …\n```\n\n`ERP-IMPL` D10 (2026-07-12) закрепил: «`mcp_dart` пиннить **`^2.2.2`** (pub.dev детерминированно,\nadversarial ✅); „0.6.1“ из раннего RAG = путаница с официальным-но-экспериментальным `dart_mcp`\n0.5.2 (labs.dart.dev) — не пиннить, радар миграции».\n\n**Конфликт с нашей ревизией — измеренный, не предполагаемый.** Разведка фазы P8\n(`@plan/knowledge/findings-P8-dart-sdk-recon-2026-07-27.json` §5, тот же день) грепом по исходникам обеих версий\nпоказала: в **stable `mcp_dart` 2.2.2 нет НИ `McpProtocol.require2026`, НИ энфорсмента\n`resultType`** (0 совпадений), обе возможности есть только в prerelease `2.3.0-dev.3`\n(`lib/src/types/json_rpc.dart:48,68,73,83,90`, `lib/src/shared/protocol.dart:790`). Ревизия\n`2026-08` таргетирует **только** MCP 2026-07-28 без legacy-эры (`DR-01` §A3, D20).\n\nСледствие: запиннутый стек чужого контура физически не говорит на эре, которую требует наша\nревизия. Разрешение — не действие исполнителя: либо дельта чужого канона (поднять пин),\nлибо пакет-спутник `agentools_mcp_dart` (D86) со своим констрейнтом как единственный носитель\nтранспорта, либо принятие того, что перенос идёт без MCP-транспорта вовсе (порты in-memory).\nВетку выбирает владелец — см. `research/09-…` §4 и вопрос Q-23.\n\n---"
+    },
+    {
+      "id": "6.-Q-1-HR",
+      "title": "6. Q-1 (HR-домен) — измерение, а не мнение",
+      "text": "Сценарий миссии `@plan/knowledge/00_MASTER_PLAN.json:16`: «главбух спрашивает **„кто ходил в отпуск в этом месяце“**,\n„сформируй отчёт по параметрам“».\n\n```console\n$ grep -rnowiE 'HR|отпуск|отпуска|vacation|payroll|зарплата|кадры|кадровый' \\\n    05-Projects/03-Packages/AxiomaErpSdk/plans/erp/00_MASTER_PLAN_V3.md \\\n    ~/projects/packages/erp-sdk/docs/03_Dev/modules/_index.md \\\n    'MCP_Tools (AiResto).md' 'MCP_Tools (AiFina).md'\n00_MASTER_PLAN_V3.md:162: | D36 | Payroll — отдельный продукт-плагин с отдельным решением\n                                  (считать vs импортировать); наивный расчёт запрещён.\n                                  Ядро в MVP держит только импорт проводок ЗП | ADR-021 |\n00_MASTER_PLAN_V3.md:230: | 021 | Payroll Strategy | ☐ deferred (D36) | plugin_salary |\n00_MASTER_PLAN_V3.md:373: | Зарплата-лайт | импорт проводок ЗП + зарплатные статьи | MVP (импорт) /\n                                  расчёт — v2-плагин | D36/ADR-021 |\n00_MASTER_PLAN_V3.md:523: | M3.4 AiFina app | … зарплата-импорт … |\n```\n\nНи одного совпадения в реестре 16 модулей и ни одного в каталогах инструментов обоих продуктов\n(`MCP_Tools (AiResto)` — 13 инструментов, `MCP_Tools (AiFina)` — 15; ни один не про кадры).\nБлижайшее, что есть в каноне ERP, — **зарплата-лайт как ИМПОРТ проводок** и отдельный\ndeferred-плагин `plugin_salary` (D36 / ADR-021 `☐ deferred`); учёта отпусков, табеля и кадровых\nсобытий в каноне нет вовсе.\n\nВывод факта (не решения): сценарий про отпуск **невыразим** ни одним существующим инструментом\nконтура; чтобы он стал выразимым, продукту нужен новый домен — а это решение владельца продукта\nAiFina/AiResto, лежащее вне плана AGENTOOLS. Разбор — `research/09-…` §6.\n\n---"
+    },
+    {
+      "id": "7.-RAG-2026-07-27",
+      "title": "7. RAG: внешние факты на 2026-07-27",
+      "text": "Ре-верифицируются item'ом P10.6 на дату исполнения (лестница `context7 → perplexity → WebSearch`,\n`plan-protocol` §7). Без источника — `[UNVERIFIED]`."
+    },
+    {
+      "id": "7.1-function-calling",
+      "title": "7.1 Надёжность function-calling малых локальных моделей",
+      "text": "`RAG:✅ 2026-07-27 (perplexity-web: BFCL V4 / Gorilla leaderboard, последнее обновление\n2026-04-12; тред r/LocalLLaMA «I tested 11 small LLMs on tool-calling judgment»)`:\n\n| Класс модели | Вердикт источников | Практическое следствие |\n|:--|:--|:--|\n| топ фронтир (`Qwen3.7 Max`) | ≈75 % на BFCL V4 — верхняя планка публичного борда | «надёжного tool-calling» нет даже наверху: 25 % ошибок в агентных под-категориях |\n| **< 4B** | «часто уверенно ошибаются в РЕШЕНИИ, звать ли инструмент, даже когда выдают синтаксически корректный JSON»; 1.5–3B пригодны для triage, не для маршрутизации | валидный JSON ≠ верный вызов — метрика приёмки обязана быть end-to-end |\n| **7B** | «первый размер, где локальный tool-calling становится рабочим», особенно с constrained decoding (сообщается скачок до mid-80 % на структурированной генерации); всё ещё хрупок на многошаговых потоках | L1 без constrained decoding и repair-слоя нереалистичен |\n| квантизация | Q3 и ниже «роняет надёжность tool-call РАНЬШЕ, чем видимое качество чата»; практический пол — `Q4_K_M` | деградация незаметна по чату — ловится только tool-метрикой |\n\nИсточник (первичный, приведён движком): `https://www.reddit.com/r/LocalLLaMA/comments/1qyg10z/i_tested_11_small_llms_on_toolcalling_judgment_on/`\n— **социальный источник, не рецензируемый**; числа BFCL V4 приведены движком без прямой ссылки на\nснимок борда. Поэтому конкретные проценты помечаются `[UNVERIFIED]` до ре-верификации по\nпервоисточнику `gorilla.cs.berkeley.edu/leaderboard.html` в item'е P10.6; **направление вывода**\n(<4B непригодны для маршрутизации, 7B — порог, тяжёлая квантизация бьёт по tool-call первой)\nподтверждено двумя независимыми свидетельствами и является достаточным основанием для матрицы."
+    },
+    {
+      "id": "7.2-On-device-inference-Dart-Flutter-L1",
+      "title": "7.2 On-device inference в Dart/Flutter — путь для L1 существует",
+      "text": "`RAG:✅ 2026-07-27 (perplexity-web: pub.dev/packages/llama_cpp_dart,\npub.dev/documentation/mediapipe_genai/latest/, pub.dev/packages/flutter_mediapipe_chat)`:\n\n- **`flutter_gemma`** — кросс-платформенный фреймворк on-device inference (Android/iOS/Web/macOS/\n  Windows/Linux) с бэкендами `flutter_gemma_mediapipe` (`.task`/`.bin`) и `flutter_gemma_litertlm`\n  (`.litertlm`); метаданные пакета **явно перечисляют function calling** и offline-исполнение как\n  first-class возможности; есть opt-in `flutter_gemma_agent` для offline agent-skills поверх\n  function-calling-цикла.\n- **`llama_cpp_dart`** — FFI-биндинг llama.cpp (GGUF), managed-isolate режим; tool calling\n  first-class **не заявлен** — реализуется самим потребителем на уровне промпта/протокола.\n- Низкоуровневый мост MediaPipe — `mediapipe_genai`; Google публикует LLM Inference API как\n  полностью on-device.\n\nСледствие для отчёта: `[UNVERIFIED]` чужого канона (UV-5, «зрелость on-device small-model 2026»)\nна 2026-07-27 **частично снимается по инфраструктуре** (runtime и биндинги в Dart существуют,\nfunction calling у одного из стеков заявлен) и **НЕ снимается по надёжности** (§7.1: <4B не\nмаршрутизируют, 7B хрупки, квантизация бьёт по tool-call). Оба факта — вход матрицы P10.6, и оба\nподлежат ре-верификации на дату исполнения."
+    },
+    {
+      "id": "7.3-RAG",
+      "title": "7.3 Что RAG'ом НЕ проверялось этим ходом",
+      "text": "- Русскоязычные малые модели с function calling (входящее от AIRESTO содержит RAG 2026-07-08 с\n  тремя источниками и вердиктом «ни одна RU-модель не подтверждена как production-grade on-device\n  tool-use движок»); ре-проверка — item P10.6, дублировать сейчас незачем.\n- Offline-STT для русского (Vosk / Whisper-класс) — вне контракта нашего SDK\n  (`90_inbox/…` п. 5), измеряет AiResto.\n- Актуальность `mcp_dart` на дату исполнения — предмет фазы P8 (триггер T-1), фаза P10 читает её\n  вердикт, а не перемеряет.\n\n---"
+    },
+    {
+      "id": "8.",
+      "title": "8. Команды, которыми снята эта разведка",
+      "text": "```console"
+    },
+    {
+      "id": "section",
+      "title": "репозитории и деревья",
+      "text": "ls -d ~/projects/packages/axioma_erp_sdk\nls ~/projects/packages/erp-sdk\nfind ~/projects/packages/erp-sdk -name '*.dart' -not -path '*/.git/*' | wc -l\nfind ~/projects/packages/erp-sdk -name 'pubspec.yaml' -not -path '*/.git/*' | wc -l\ngit -C ~/projects/packages/erp-sdk rev-parse --short HEAD\ngit -C ~/projects/packages/erp-sdk log -1 --format='%ad %s' --date=short\ngit -C ~/projects/packages/erp-sdk status --short | wc -l\ngit -C ~/Vaults/Brain rev-parse --short HEAD\ngit -C ~/projects/packages/agentools rev-parse --short HEAD"
+    },
+    {
+      "id": "section-2",
+      "title": "канон и модули",
+      "text": "ls ~/projects/packages/erp-sdk/docs/03_Dev/modules/\ncat ~/projects/packages/erp-sdk/docs/03_Dev/ADR/'ADR-004 AI via MCP Only.md'\ncat ~/projects/packages/erp-sdk/docs/03_Dev/ADR/'ADR-010 AI Write Tiers.md'\ncat ~/projects/packages/erp-sdk/docs/03_Dev/ADR/'ADR-012 AI Interaction and Provider Strategy.md'\ncat ~/projects/packages/erp-sdk/docs/03_Dev/ADR/'ADR-007 Offline-First Sync.md'\ncat ~/projects/packages/erp-sdk/docs/03_Dev/modules/axioma_assistant.md\ncat ~/projects/packages/erp-sdk/docs/03_Dev/modules/axioma_mcp.md\nsed -n '156,545p' 05-Projects/03-Packages/AxiomaErpSdk/plans/erp/09_AI_Orchestration_UX.md"
+    },
+    {
+      "id": "section-3",
+      "title": "чужие планы",
+      "text": "grep -n '^## 4\\.' -A 20 05-Projects/03-Packages/AxiomaErpSdk/plans/ERP-IMPL/plan.md\ngrep -n '^| D10 ' 05-Projects/03-Packages/AxiomaErpSdk/plans/ERP-IMPL/plan.md\nsed -n '/^## 8\\./,/^## 9\\./p' 05-Projects/03-Packages/AxiomaErpSdk/plans/erp/00_MASTER_PLAN_V3.md\nhead -70 05-Projects/01-Products/AiResto/plans/AIRESTO/10_decisions/ERP-GATE-01_dependency_gate.md\ngrep -n '^## 4\\.' -A 20 05-Projects/01-Products/AiResto/plans/AIRESTO/plan.md"
+    },
+    {
+      "id": "section-4",
+      "title": "осведомлённость чужого канона о нас + обратный канал",
+      "text": "grep -rniE 'agentools|agen tools' 05-Projects/03-Packages/AxiomaErpSdk/ ~/projects/packages/erp-sdk/docs\nhead -60 '05-Projects/01-Products/AiResto/docs/03_Dev/AI_Offline_Strategy (AiResto).md'\ncat 05-Projects/03-Packages/AgenTools/@plan/knowledge/90_inbox-airesto-offline-gap.json"
+    },
+    {
+      "id": "Q-1",
+      "title": "Q-1",
+      "text": "grep -rnowiE 'HR|отпуск|отпуска|vacation|payroll|зарплата|кадры|кадровый' <канон ERP и каталоги инструментов>\ngrep -n 'отпуск' 05-Projects/03-Packages/AgenTools/@plan/knowledge/00_MASTER_PLAN.json"
+    },
+    {
+      "id": "section-5",
+      "title": "пин транспорта",
+      "text": "grep -rn 'mcp_dart' 05-Projects/03-Packages/AxiomaErpSdk/plans/erp/"
+    },
+    {
+      "id": "RAG-perplexity-web-search-2-7.1-7.2",
+      "title": "RAG (perplexity-web search, 2 запроса — §7.1, §7.2)",
+      "text": "```\n\nКоманды над vault запускались из `~/Vaults/Brain`, над репозиториями — из их корней."
+    }
+  ],
+  "applies_to": [
+    "P10"
+  ],
+  "provenance": {
+    "path": "findings/P10-axioma-erp-recon-2026-07-27.md",
+    "sha256": "e62e0cc43cb17295e546754061d9e1be8e59d2ab2552528fcc1f219faab8178f"
+  }
+}

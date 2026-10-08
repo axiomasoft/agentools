@@ -1,0 +1,314 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:item:v1",
+  "id": "P7.7",
+  "title": "Подтверждение: Policy/Protocol Layer, подписанный токен, TTL, dual control, событие решения",
+  "status": "done",
+  "summary": "Реализовать документ `04` (правила `CNF-*`) двумя раздельными слоями: Policy Layer (нужен ли гейт, precedence решений) и Protocol Layer (prepare/preview/commit одним инструментом, подписанный одноразовый self-contained токен с покрытием полей §B2, обязательный TTL §B4, `edit` порождает НОВЫЙ prepare §B3, dual control для необратимых §B5, повторная авторизация на commit §B8, обязательное событие решения по схеме §I4).",
+  "why": "Здесь сходятся деньги и доказуемость. Анти-tampering между preview и commit не даёт нативно ни один из шести разобранных agent-фреймворков — слой целиком наш, и его дефект не ловится ничем снаружи. Четыре отказа токена (подмена аргумента, повтор, просрочка, чужой субъект) обязаны быть РАЗНЫМИ: слитые в один, они не дают вызывающему понять, повторять ли prepare, — а просрочка нормирована как **tool execution error**, а не протокольная ошибка, именно чтобы модель могла повторить сама. Повторная авторизация на commit — защита от классического TOCTOU: между preview и commit проходит произвольное время. Событие решения — единственное, что делает решение по гейту доказуемым постфактум, и его схема §I4 требует ОБА хеша аргументов, совпадение которых является рантаймовым инвариантом допуска к commit. `RAG:— (repo-grounded: DR-01 §B2 — состав покрытия токена и четыре отказа, просрочка = tool execution error; §B3 — edit порождает новый prepare, прежнее SUPERSEDED; §B4 — TTL обязательное поле; §B5 — dual control proposer ≠ approver; §B6 — Policy отделён от Protocol; §B8 — повторная авторизация; §I4 — схема события решения и инвариант двух хешей; research/06-… §8)`.",
+  "scope": {
+    "include": [
+      "(а) Policy Layer: нужен ли гейт для вызова, precedence `deny → ask → allow`, вход — профиль инструмента и контекст, выход — решение о необходимости гейта; НИКАКОЙ протокольной механики внутри; (б) Protocol Layer: prepare/preview/commit ОДНИМ инструментом (вызов без токена → prepare, с токеном → commit), состав preview — по документу `04`; (в) подписанный self-contained токен: непрозрачный, одноразовый, integrity-protected, покрывает `action_id`, `principal`, `tool_name`, `descriptor_digest`, `args_fingerprint`, `expires_at`, `proposal_version`; порт `TokenSigner` в `src/Contracts/` (HMAC-реализация по умолчанию), токен передаётся ТОЛЬКО обычным аргументом вызова; (г) четыре РАЗНЫХ отказа commit: несовпавший fingerprint аргументов, просроченный (как **tool execution error**), повторно использованный, предъявленный другим субъектом; (д) обязательный TTL (§B4) — поле, а не опция: отсутствие = ошибка; (е) `edit` не является решением (§B3): правка аргументов создаёт НОВОЕ предложение с новым токеном и новым preview, прежнее помечается `SUPERSEDED` в журнале; токен версионируется на ПРЕДЛОЖЕНИЕ; (ж) dual control для необратимых действий: proposer ≠ approver, нарушение — отказ; (з) повторная авторизация на commit (§B8): результат prepare НЕ кэшируется как разрешение; (и) событие решения по схеме §I4 — обязательное, с `args_hash_at_decision` и `args_hash_at_commit`, совпадение которых проверяется как рантаймовый инвариант допуска; (к) тесты, чьи ожидания взяты из векторов `CNF-*`, с перечнем заимствованных `id`."
+    ],
+    "exclude": [
+      "вычисление `descriptor_digest` (P7.4 — здесь оно ПОТРЕБЛЯЕТСЯ); `args_fingerprint` как механизм дедупликации (P7.8 — здесь используется как поле покрытия токена); журнал как таковой (P7.5); уточнения MRTR (P7.10); полная схема аудита и её экспорт (P7.11 — здесь только событие решения §I4); конкретная политика прав потребителя — Policy Layer принимает решение по предоставленному контексту, а не реализует RBAC; ЛЮБЫЕ правки ревизии, схем и корпуса."
+    ]
+  },
+  "depends_on": [
+    "P7.4",
+    "P7.5"
+  ],
+  "decisions": [],
+  "skills": [],
+  "reads": [
+    {
+      "path": "spec/revisions/2026-08/04_confirmation.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/rules.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "spec/revisions/2026-08/schema/*.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "fixtures/2026-08/vectors/**",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-06-p7-php-sdk-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": false
+    },
+    {
+      "path": "@plan/knowledge/research-06-p7-php-sdk-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "fixtures/2026-08/README.md",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    },
+    {
+      "path": "@plan/plan.json",
+      "why": "Source input; exact context is preserved in item sections.",
+      "required": true
+    }
+  ],
+  "task_files": [],
+  "rules": [
+    "Policy и Protocol — РАЗНЫЕ классы в разных каталогах (§B6): протокольная механика внутри политики и наоборот запрещены, границу проверяет тест; состав покрытия токена берётся ДОСЛОВНО из §B2 и правила ревизии — «на всякий случай» лишнее поле ломает межъязыковую совместимость токена так же, как недостающее; подпись считается через порт `TokenSigner`, ключ приходит извне — захардкоженный секрет либо секрет по умолчанию ЗАПРЕЩЕНЫ; четыре отказа — четыре РАЗНЫХ строковых кода в модели §E1, просрочка отдаётся как tool execution error, а не как протокольная ошибка; одноразовость токена доказывается тестом повторного предъявления, а не хранением «до перезапуска»; `args_fingerprint` берётся из механики P7.8/P7.3 (канонизация), второй способ считать хеш аргументов запрещён; расхождение с вектором разбирается прогоном против эталонного адаптера, оба вывода — в отчёте; плановый линтер — командой из Phase Context."
+  ],
+  "guidance": "Стиль — как P7.5. Анти-самообман: «токен проверяется» ≠ «токен защищает» — доказательством считаются ЧЕТЫРЕ отдельных красных (подмена аргумента, повтор, просрочка, чужой субъект), каждый со своим кодом и выводом; проверка «токен непустой» доказательством не является. «Dual control реализован» без теста proposer = approver → отказ не считается сданным. Анти-подгонка: если вектор ожидает tool execution error, а реализация даёт протокольную — исправляется КЛАСС ошибки, а не ожидание вектора. ЗАПРЕЩЕНО: передавать токен в обход обычного аргумента вызова; кэшировать результат prepare как разрешение; мутировать предложение по `edit` вместо создания нового; хардкодить секрет подписи; считать `args_fingerprint` вторым способом; сливать четыре отказа в один код. If-then: документ `04` не задаёт, что делать при `edit` уже подтверждённого предложения → `🔴 Blocked` + эскалация (trigger «конфликт правил»). If-then: правило ревизии противоречит §B2 в составе покрытия токена → побеждает РЕВИЗИЯ (она нормативна, `DR-01` — решение о её содержании), расхождение называется в отчёте и эскалируется как дефект согласования с адресатом «владелец», реализация не выбирает сторону молча.",
+  "validation": [
+    {
+      "id": "V1",
+      "cmd": "php php/vendor/bin/phpunit -c php/phpunit.xml; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V2",
+      "cmd": "php/vendor/bin/phpstan analyse -c php/phpstan.neon --no-progress; echo $?",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V3",
+      "cmd": "grep -rn 'hash_hmac\\|sodium_crypto' php/src --include=*.php -l | grep -v 'Contracts/\\|Confirmation/' | wc -l",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V4",
+      "cmd": "grep -rLE 'CNF-[0-9]' php/tests/Confirmation | wc -l",
+      "expect": "Source acceptance condition preserved in Validation section.",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V5",
+      "procedure": "php php/vendor/bin/phpunit -c php/phpunit.xml",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V6",
+      "procedure": "php php/vendor/bin/phpstan analyse -c php/phpstan.neon --no-progress",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V7",
+      "procedure": "four distinct token rejections",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V8",
+      "procedure": "edit supersedes prior proposal in journal payloads",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V9",
+      "procedure": "dual control proposer equals approver",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V10",
+      "procedure": "reauthorization at commit",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V11",
+      "procedure": "TTL required on prepare",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V12",
+      "procedure": "decision audit hash mismatch denies commit",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V13",
+      "procedure": "grep -rn 'hash_hmac\\|sodium_crypto' php/src --include=*.php -l | grep -v 'Contracts/\\|Confirmation/' | wc -l",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    },
+    {
+      "id": "V14",
+      "procedure": "grep -rLE 'CNF-[0-9]' php/tests/Confirmation | wc -l",
+      "expect": "Source evidence status: green",
+      "kind": "acceptance"
+    }
+  ],
+  "deliverables": [
+    "разделённые Policy и Protocol Layer + подписанный одноразовый self-contained токен с покрытием полей §B2 через порт `TokenSigner` + четыре различимых отказа commit (просрочка — tool execution error) + обязательный TTL + `edit` как новый цикл prepare с `SUPERSEDED` + dual control + повторная авторизация на commit + обязательное событие решения со сверкой двух хешей аргументов; семь отрицательных прогонов приведены выводом."
+  ],
+  "route": {
+    "class": "implementation",
+    "effort": "high"
+  },
+  "review": {
+    "mode": "requested"
+  },
+  "authority": {
+    "kind": "routine"
+  },
+  "rag": {
+    "need": "none",
+    "status": "not_needed"
+  },
+  "result": {
+    "started_at": "2026-09-18T16:43:32Z",
+    "finished_at": "2026-09-18T16:43:32Z",
+    "executor": {
+      "provider": "legacy",
+      "model": "implementation/high",
+      "effort": "high"
+    },
+    "notes": "Reconciliation anchor 23be310: Confirmation Policy/Protocol; CNF-18..22/29/38; journal supersede; phpunit 75/75\nwrite-site: pre_mutation: allow · pre_final: allow",
+    "deviations": [],
+    "pending": [],
+    "checks": [
+      {
+        "id": "V5",
+        "exit": 0,
+        "at": "2026-09-18T16:43:32Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V6",
+        "exit": 0,
+        "at": "2026-09-18T16:43:32Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V7",
+        "exit": 0,
+        "at": "2026-09-18T16:43:32Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V8",
+        "exit": 0,
+        "at": "2026-09-18T16:43:32Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V9",
+        "exit": 0,
+        "at": "2026-09-18T16:43:32Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V10",
+        "exit": 0,
+        "at": "2026-09-18T16:43:32Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V11",
+        "exit": 0,
+        "at": "2026-09-18T16:43:32Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V12",
+        "exit": 0,
+        "at": "2026-09-18T16:43:32Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V13",
+        "exit": 0,
+        "at": "2026-09-18T16:43:32Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      },
+      {
+        "id": "V14",
+        "exit": 0,
+        "at": "2026-09-18T16:43:32Z",
+        "summary": "Authentic terminal evidence recorded green in the source journal."
+      }
+    ]
+  },
+  "updated_at": "2026-09-18T16:43:32Z",
+  "sections": [
+    {
+      "id": "Intent",
+      "title": "Intent",
+      "text": "Реализовать документ `04` (правила `CNF-*`) двумя раздельными слоями: Policy Layer (нужен ли гейт, precedence решений) и Protocol Layer (prepare/preview/commit одним инструментом, подписанный одноразовый self-contained токен с покрытием полей §B2, обязательный TTL §B4, `edit` порождает НОВЫЙ prepare §B3, dual control для необратимых §B5, повторная авторизация на commit §B8, обязательное событие решения по схеме §I4)."
+    },
+    {
+      "id": "Why",
+      "title": "Why",
+      "text": "Здесь сходятся деньги и доказуемость. Анти-tampering между preview и commit не даёт нативно ни один из шести разобранных agent-фреймворков — слой целиком наш, и его дефект не ловится ничем снаружи. Четыре отказа токена (подмена аргумента, повтор, просрочка, чужой субъект) обязаны быть РАЗНЫМИ: слитые в один, они не дают вызывающему понять, повторять ли prepare, — а просрочка нормирована как **tool execution error**, а не протокольная ошибка, именно чтобы модель могла повторить сама. Повторная авторизация на commit — защита от классического TOCTOU: между preview и commit проходит произвольное время. Событие решения — единственное, что делает решение по гейту доказуемым постфактум, и его схема §I4 требует ОБА хеша аргументов, совпадение которых является рантаймовым инвариантом допуска к commit. `RAG:— (repo-grounded: DR-01 §B2 — состав покрытия токена и четыре отказа, просрочка = tool execution error; §B3 — edit порождает новый prepare, прежнее SUPERSEDED; §B4 — TTL обязательное поле; §B5 — dual control proposer ≠ approver; §B6 — Policy отделён от Protocol; §B8 — повторная авторизация; §I4 — схема события решения и инвариант двух хешей; research/06-… §8)`."
+    },
+    {
+      "id": "Scope-Included",
+      "title": "Scope Included",
+      "text": "(а) Policy Layer: нужен ли гейт для вызова, precedence `deny → ask → allow`, вход — профиль инструмента и контекст, выход — решение о необходимости гейта; НИКАКОЙ протокольной механики внутри; (б) Protocol Layer: prepare/preview/commit ОДНИМ инструментом (вызов без токена → prepare, с токеном → commit), состав preview — по документу `04`; (в) подписанный self-contained токен: непрозрачный, одноразовый, integrity-protected, покрывает `action_id`, `principal`, `tool_name`, `descriptor_digest`, `args_fingerprint`, `expires_at`, `proposal_version`; порт `TokenSigner` в `src/Contracts/` (HMAC-реализация по умолчанию), токен передаётся ТОЛЬКО обычным аргументом вызова; (г) четыре РАЗНЫХ отказа commit: несовпавший fingerprint аргументов, просроченный (как **tool execution error**), повторно использованный, предъявленный другим субъектом; (д) обязательный TTL (§B4) — поле, а не опция: отсутствие = ошибка; (е) `edit` не является решением (§B3): правка аргументов создаёт НОВОЕ предложение с новым токеном и новым preview, прежнее помечается `SUPERSEDED` в журнале; токен версионируется на ПРЕДЛОЖЕНИЕ; (ж) dual control для необратимых действий: proposer ≠ approver, нарушение — отказ; (з) повторная авторизация на commit (§B8): результат prepare НЕ кэшируется как разрешение; (и) событие решения по схеме §I4 — обязательное, с `args_hash_at_decision` и `args_hash_at_commit`, совпадение которых проверяется как рантаймовый инвариант допуска; (к) тесты, чьи ожидания взяты из векторов `CNF-*`, с перечнем заимствованных `id`."
+    },
+    {
+      "id": "Scope-Excluded",
+      "title": "Scope Excluded",
+      "text": "вычисление `descriptor_digest` (P7.4 — здесь оно ПОТРЕБЛЯЕТСЯ); `args_fingerprint` как механизм дедупликации (P7.8 — здесь используется как поле покрытия токена); журнал как таковой (P7.5); уточнения MRTR (P7.10); полная схема аудита и её экспорт (P7.11 — здесь только событие решения §I4); конкретная политика прав потребителя — Policy Layer принимает решение по предоставленному контексту, а не реализует RBAC; ЛЮБЫЕ правки ревизии, схем и корпуса."
+    },
+    {
+      "id": "Inputs",
+      "title": "Inputs",
+      "text": "профиль инструмента и `descriptor_digest` (P7.4) · журнал (P7.5) · `spec/revisions/2026-08/04_confirmation.md` · `spec/revisions/2026-08/rules.json` (правила `CNF-*`) · `spec/revisions/2026-08/schema/*.json` (схема события решения) · `fixtures/2026-08/vectors/**` — векторы `CNF-*` · `@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §B2–§B8, §I4 · `@plan/knowledge/research-06-p7-php-sdk-2026-08.json` §8."
+    },
+    {
+      "id": "Files",
+      "title": "Files",
+      "text": "`php/src/Confirmation/**` · `php/src/Contracts/**` (порт `TokenSigner`) · `php/tests/Confirmation/**` (репо-пути — от корня `~/projects/packages/agentools`)"
+    },
+    {
+      "id": "Required-Reads",
+      "title": "Required Reads",
+      "text": "1) `05-Projects/03-Packages/AgenTools/@plan/knowledge/research-06-p7-php-sdk-2026-08.json` §8 2) `spec/revisions/2026-08/04_confirmation.md` ЦЕЛИКОМ 3) `spec/revisions/2026-08/rules.json` (строки `CNF-*`) 4) `fixtures/2026-08/README.md` + векторы `CNF-*` 5) `05-Projects/03-Packages/AgenTools/@plan/knowledge/10_decisions-DR-01_architecture-2026-08.json` §B2–§B8, §I4 6) `05-Projects/03-Packages/AgenTools/@plan/plan.json` §2 Execution Rules, §5 (D4, D72, D83)."
+    },
+    {
+      "id": "Implementation-Rules",
+      "title": "Implementation Rules",
+      "text": "Policy и Protocol — РАЗНЫЕ классы в разных каталогах (§B6): протокольная механика внутри политики и наоборот запрещены, границу проверяет тест; состав покрытия токена берётся ДОСЛОВНО из §B2 и правила ревизии — «на всякий случай» лишнее поле ломает межъязыковую совместимость токена так же, как недостающее; подпись считается через порт `TokenSigner`, ключ приходит извне — захардкоженный секрет либо секрет по умолчанию ЗАПРЕЩЕНЫ; четыре отказа — четыре РАЗНЫХ строковых кода в модели §E1, просрочка отдаётся как tool execution error, а не как протокольная ошибка; одноразовость токена доказывается тестом повторного предъявления, а не хранением «до перезапуска»; `args_fingerprint` берётся из механики P7.8/P7.3 (канонизация), второй способ считать хеш аргументов запрещён; расхождение с вектором разбирается прогоном против эталонного адаптера, оба вывода — в отчёте; плановый линтер — командой из Phase Context."
+    },
+    {
+      "id": "Code-Guidance",
+      "title": "Code Guidance",
+      "text": "Стиль — как P7.5. Анти-самообман: «токен проверяется» ≠ «токен защищает» — доказательством считаются ЧЕТЫРЕ отдельных красных (подмена аргумента, повтор, просрочка, чужой субъект), каждый со своим кодом и выводом; проверка «токен непустой» доказательством не является. «Dual control реализован» без теста proposer = approver → отказ не считается сданным. Анти-подгонка: если вектор ожидает tool execution error, а реализация даёт протокольную — исправляется КЛАСС ошибки, а не ожидание вектора. ЗАПРЕЩЕНО: передавать токен в обход обычного аргумента вызова; кэшировать результат prepare как разрешение; мутировать предложение по `edit` вместо создания нового; хардкодить секрет подписи; считать `args_fingerprint` вторым способом; сливать четыре отказа в один код. If-then: документ `04` не задаёт, что делать при `edit` уже подтверждённого предложения → `🔴 Blocked` + эскалация (trigger «конфликт правил»). If-then: правило ревизии противоречит §B2 в составе покрытия токена → побеждает РЕВИЗИЯ (она нормативна, `DR-01` — решение о её содержании), расхождение называется в отчёте и эскалируется как дефект согласования с адресатом «владелец», реализация не выбирает сторону молча."
+    },
+    {
+      "id": "Validation",
+      "title": "Validation",
+      "text": "`php php/vendor/bin/phpunit -c php/phpunit.xml; echo $?` = 0 · `php/vendor/bin/phpstan analyse -c php/phpstan.neon --no-progress; echo $?` = 0 · четыре отрицательных прогона токена — подмена аргумента, повтор, просрочка, чужой субъект — каждый даёт СВОЙ код, просрочка приходит как tool execution error (все четыре вывода — в Completion Notes) · тест `edit`: правка аргументов даёт новый токен и новое предложение, прежнее помечено `SUPERSEDED` в журнале — зелёный · тест dual control: proposer = approver для необратимого действия → отказ (вывод — в Completion Notes) · тест повторной авторизации: отзыв прав между prepare и commit → commit отвергается (вывод — в Completion Notes) · тест TTL: предложение без TTL отвергается на prepare — зелёный · тест события решения: `args_hash_at_decision` ≠ `args_hash_at_commit` → допуск к commit НЕ выдан (вывод — в Completion Notes) · `grep -rn 'hash_hmac\\|sodium_crypto' php/src --include=*.php -l | grep -v 'Contracts/\\|Confirmation/' | wc -l` = 0 (подпись живёт только за портом) · `grep -rLE 'CNF-[0-9]' php/tests/Confirmation | wc -l` = 0 · прогнать плановый линтер по каталогу плана и опубликовать счёт с атрибуцией, K = 0."
+    },
+    {
+      "id": "Deliverables",
+      "title": "Deliverables",
+      "text": "разделённые Policy и Protocol Layer + подписанный одноразовый self-contained токен с покрытием полей §B2 через порт `TokenSigner` + четыре различимых отказа commit (просрочка — tool execution error) + обязательный TTL + `edit` как новый цикл prepare с `SUPERSEDED` + dual control + повторная авторизация на commit + обязательное событие решения со сверкой двух хешей аргументов; семь отрицательных прогонов приведены выводом."
+    }
+  ]
+}

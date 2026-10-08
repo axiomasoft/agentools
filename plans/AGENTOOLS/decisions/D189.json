@@ -1,0 +1,39 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D189",
+  "title": "Решение",
+  "date": "2026-09-19",
+  "status": "accepted",
+  "decision": "**INT-002_axioma-erp-integration опубликован:** cross-plan gate-таблица против `erp` §8 и `ERP-IMPL` (D112) со снимком 2026-09-19; карта **девяти** портов Dart SDK; реконсиляция **R1–R10** с вердиктом по каждому; развод носителей согласия (источник §I4 / проекции `ConfirmationPackage`+trace); развод **трёх** слоёв дедупликации; журнал — **ветка (a)** `at_action_events` + проекции `ai_*` (**Q-21 закрыт**); **Q-22** — пакет решения владельцу (§7 INT-002, не молчаливый выбор); **Q-23** — три ветки в gate-строке пина `mcp_dart` (owner gate сохранён); пять предложений дельт канона E2/E6/E7/E23/E8; реанкор пяти пунктов `@plan/knowledge/90_inbox-airesto-offline-gap.json`. **Q-11:** строка `Exported` на INT-002_axioma-erp-integration заведена (D108).",
+  "rationale": "Item P10.2 Validation; опора `@plan/knowledge/findings-P10-erp-state-2026-09-19.json`; дом переноса документирован под гипотезой D188 (B), без выбора Q-20 исполнителем. `RAG:— (repo-grounded: @plan/knowledge/research-09-p10-erp-offline-2026-08.json §4, §6; INT-002_axioma-erp-integration.md)`",
+  "applies_to": [
+    "P10.2"
+  ],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D189\ndate: 2026-09-19\nstatus: accepted\nitem: P10.2\nitems: [P10.2]\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**INT-002_axioma-erp-integration опубликован:** cross-plan gate-таблица против `erp` §8 и `ERP-IMPL` (D112) со снимком 2026-09-19; карта **девяти** портов Dart SDK; реконсиляция **R1–R10** с вердиктом по каждому; развод носителей согласия (источник §I4 / проекции `ConfirmationPackage`+trace); развод **трёх** слоёв дедупликации; журнал — **ветка (a)** `at_action_events` + проекции `ai_*` (**Q-21 закрыт**); **Q-22** — пакет решения владельцу (§7 INT-002, не молчаливый выбор); **Q-23** — три ветки в gate-строке пина `mcp_dart` (owner gate сохранён); пять предложений дельт канона E2/E6/E7/E23/E8; реанкор пяти пунктов `@plan/knowledge/90_inbox-airesto-offline-gap.json`. **Q-11:** строка `Exported` на INT-002_axioma-erp-integration заведена (D108)."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Item P10.2 Validation; опора `@plan/knowledge/findings-P10-erp-state-2026-09-19.json`; дом переноса документирован под гипотезой D188 (B), без выбора Q-20 исполнителем. `RAG:— (repo-grounded: @plan/knowledge/research-09-p10-erp-offline-2026-08.json §4, §6; INT-002_axioma-erp-integration.md)`"
+    },
+    {
+      "id": "section-3",
+      "title": "Следствия",
+      "text": "- Q-21: `Resolved → D189` (ветка a).\n- Q-22: остаётся **owner gate** — альтернативы A/B в INT-002 §7; статус open-questions — «пакет опубликован, выбор не сделан».\n- Q-23: остаётся **owner gate** — ветки (1)(2)(3) в INT-002 §1; статус — «развилка названа».\n- Q-11: третий экспортируемый контракт (INT-002 ERP) в §7 `@plan/plan.json`."
+    }
+  ]
+}

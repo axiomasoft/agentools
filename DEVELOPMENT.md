@@ -118,3 +118,21 @@ python3 tools/private_rc_gate.py run
 Do not commit, push, open a PR, create a tag, publish a package, or modify GitHub
 settings, secrets, or environments unless the owner explicitly authorizes that
 separate operation.
+
+
+## Verification independent of plans
+
+Executable hardening contracts and reports live in `verification/`; the original
+plans may use JSON without changing gate inputs. See `verification/README.md` and
+its extraction provenance. Run the same owner commands above to refresh current
+receipts. Historical findings are not fresh execution evidence.
+
+`bash scripts/ci-bootstrap.sh` installs all PHP, Dart and MCP verification dependencies.
+Extended/private RC CI jobs create a disposable PostgreSQL cluster with
+`bash scripts/ci-postgres.sh` and require live storage schedules. Local storage
+checks must set an explicit isolated `AGENTOOLS_TEST_PG_DSN`.
+
+The entrypoint generator replaces its own prefix and preserves trailing managed
+swissknifeman/mAInd sections. Changes to those external sections remain owned by
+their respective tools. SDK changes from the October audit and the explicit
+PostgreSQL timestamp migration are described in `docs/audit-fixes-2026-10.md`.

@@ -1,0 +1,281 @@
+{
+  "note": "Contracts extracted byte-for-byte from migrated document provenance. Decisions copied from JSON. Historical findings and copied receipts are baselines, not current execution evidence. Owner commands regenerate receipts.",
+  "documents": [
+    {
+      "path": "verification/decisions/D13.json",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/decisions/D13.json",
+      "sha256": "bea46d8faf4cdead0d1b1b0d4721ccb0df5e29a67badbfe744112dc4edc33da8",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P1-contract-coverage.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P1-contract-coverage.json",
+      "sha256": "d12132c4a36173285fd2c931801266a7088a07e069f4a468bdd1af97566906ba",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P1-migration-inventory.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P1-migration-inventory.json",
+      "sha256": "64bffe9a974a61311da04ffa23933fc81e99963a2270089afd36d28fba23c895",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P10-acceptance-matrix.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P10-acceptance-matrix.json",
+      "sha256": "1a29ca07e955a9cd47906f75796df6275b305e18312c07b9952118cb95a888b5",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P10-consumer-acceptance.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P10-consumer-acceptance.json",
+      "sha256": "5a9df00ef4991334ea2c2e678161d70ec7f6875c80797a241a08b513eb47002f",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P10-docs.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P10-docs.json",
+      "sha256": "a5c5809a0cc8674e98788cf9ab8631a14c5061efdec6ef7affd76c146d6c8b4e",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P10-g-release-decision-packet.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P10-g-release-decision-packet.json",
+      "sha256": "1961c9b023bc17fc85e655cf13d552a00aaa4351b8098c273e32fbe74b234eea",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P10-private-rc-acceptance.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P10-private-rc-acceptance.json",
+      "sha256": "ef88680a188e747732ce8c04d543ec8b740a2d102904cebca2ca801471d71970",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P10-release-dossier.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P10-release-dossier.json",
+      "sha256": "81a863d6574284e29ea265059d2a6c99b0b4d837d02344fb8595eef2d72cf6bf",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P10-residual-risks.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P10-residual-risks.json",
+      "sha256": "0ab861590d69305b56e3b9bc4a615b1d501d6008354750d1ee63c066e842388f",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P2-confirmation-migration.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P2-confirmation-migration.json",
+      "sha256": "68a86e28d8e406907caf3691e2556f35b4360e237cd92ef2a899b162d6e037c2",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P2-confirmation-parity.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P2-confirmation-parity.json",
+      "sha256": "fbae1d329eaa1ea61161af0cf5166508dd9a7108ece60de76e1bcde64024110b",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P3-replay-parity.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P3-replay-parity.json",
+      "sha256": "80c5d564e3923294fa6ba35c0e5df8c06bcd0d95aae30533e3eff18139d70757",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P3-token-migration.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P3-token-migration.json",
+      "sha256": "cee6bfbf535aab13b9109f9ca4518767e1b9e0b9f6d39e69e4d26468ae348e27",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P4-fencing-parity.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P4-fencing-parity.json",
+      "sha256": "cf292832799c7e53c87e262557a3ed6fe5fca529e949d2ef8fc27b5bc696975c",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P4-idempotency-migration.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P4-idempotency-migration.json",
+      "sha256": "a1cc0803cf686db19a3a3dd333da6b6156112af24d2c77926d105c36214a7835",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P5-event-parity.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P5-event-parity.json",
+      "sha256": "ed7bcccf1e5e8d6945db82fb06994b5425ccc79d23131631654a90e7fd15912c",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P5-eventlog-migration.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P5-eventlog-migration.json",
+      "sha256": "6f3f341dae9821b0bf0c5b2e9dbbf57543661bef9c8e23a0b965baccf083c505",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P7-api-inventory.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P7-api-inventory.json",
+      "sha256": "d9f93123e3ff2fa2e6c632746a9acb7008152a22652dcaf4e563eab346c07773",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P7-migration-residuals.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P7-migration-residuals.json",
+      "sha256": "940aee851217a2ab3120b1b8575b1157a45b2828b9972900b954aaa38a6c4de4",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P7-package-gate.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P7-package-gate.json",
+      "sha256": "b5111bcd8c89f0facb819700d03b01a206340a9e85905b352402e532361ffa5f",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P8-adversarial-gate.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P8-adversarial-gate.json",
+      "sha256": "517666d65b497672b2a5030f6d4ca0a9774f8660b83e74bd9efd19bc23517f80",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P8-resource-baseline.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P8-resource-baseline.json",
+      "sha256": "cbf31957acc27045549e285f7f2062340b63d7264699c58d9f93223f90634aaf",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P9-ci-capabilities.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P9-ci-capabilities.json",
+      "sha256": "e3b9708eef2b326f3788c65ff7f9faef484b362e58562efbc21f901d40a72015",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P9-ci-map.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P9-ci-map.json",
+      "sha256": "6413296005ab90c364fcf15ca41a4aebb81b4256ae85bb5d8278df3acdf23e9b",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P9-private-rc.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P9-private-rc.json",
+      "sha256": "29880d624807653be737e39e59502ff8a9972a1c1dc85be71d77a9a0c90c3693",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P9-reproducibility.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P9-reproducibility.json",
+      "sha256": "beef382fdb0b5d7443c49845b36b28ff6437a5dc6c176997cdb8113c5ea8dcae",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/P9-supply-chain-evidence.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-P9-supply-chain-evidence.json",
+      "sha256": "c8fd4f2fc2c8de966567c91a177ca4a3077b92c1da68bb023c45f3adba046388",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/findings/audit-verdicts.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/findings-audit-verdicts.json",
+      "sha256": "aaefd4a711c98f3de69260149fd109d8f3b7531d39be121f32a611bfe5f9832a",
+      "role": "historical-baseline"
+    },
+    {
+      "path": "verification/root/contracts/adversarial-verification-v1.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/root-contracts-adversarial-verification-v1.json",
+      "sha256": "dafa67135bf7a0356de95e5ba1d10621eb1b3ac00b3f93e99a082345826fe250",
+      "role": "contract"
+    },
+    {
+      "path": "verification/root/contracts/ci-supply-chain-v1.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/root-contracts-ci-supply-chain-v1.json",
+      "sha256": "65b9d269093c736899e6a8cafe653e40aa2dd005e3c37e2d63f789299affe998",
+      "role": "contract"
+    },
+    {
+      "path": "verification/root/contracts/compatibility-support-v1.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/root-contracts-compatibility-support-v1.json",
+      "sha256": "e7d6874ce5646de455efccf1c237528a71508eded24b1cfe957fccc93a20cc92",
+      "role": "contract"
+    },
+    {
+      "path": "verification/root/contracts/confirmation-security-v1.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/root-contracts-confirmation-security-v1.json",
+      "sha256": "1a38d397fdd75fc1f9977ca6a118df6c18ad70cf24c326b0abe66d221a4d0479",
+      "role": "contract"
+    },
+    {
+      "path": "verification/root/contracts/event-store-v1.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/root-contracts-event-store-v1.json",
+      "sha256": "df5d0c8d5e97b148e1345259ab6a28239cf4ad41e80322e30488f4115321da0b",
+      "role": "contract"
+    },
+    {
+      "path": "verification/root/contracts/hardening-guarantees-v1.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/root-contracts-hardening-guarantees-v1.json",
+      "sha256": "2a215bb33d295425717a0320a788ccd97e1e4b0e975de189eb6ace0e38bd62f1",
+      "role": "contract"
+    },
+    {
+      "path": "verification/root/contracts/idempotency-lease-v1.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/root-contracts-idempotency-lease-v1.json",
+      "sha256": "5f2217f3d693fd762584ca5f4a628e8b71f1e73bfb0c4be7725fe6da58f2fd0d",
+      "role": "contract"
+    },
+    {
+      "path": "verification/root/contracts/package-boundary-v1.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/root-contracts-package-boundary-v1.json",
+      "sha256": "b566520fb2ab56e9ef6d3ccf275bf983fd4ec1aa9398741dcfeed13818a2b3e8",
+      "role": "contract"
+    },
+    {
+      "path": "verification/root/contracts/read-budget-v1.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/root-contracts-read-budget-v1.json",
+      "sha256": "ce0526ec20f956cccf967dfd0a29627e3913b940d335a3c16030b9aaa521319f",
+      "role": "contract"
+    },
+    {
+      "path": "verification/root/contracts/release-acceptance-v1.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/root-contracts-release-acceptance-v1.json",
+      "sha256": "3c7febca8222a86b1e593e07a4516e4daa5566fed7b733bfbae19fbe9ebdafb8",
+      "role": "contract"
+    },
+    {
+      "path": "verification/root/contracts/release-acceptance-v1.schema.json",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/release-acceptance-v1.schema.json",
+      "sha256": "f23bc66de53e5c8f125e602d261770b34dee64eae75e3cdf7402b2834423b464",
+      "role": "contract"
+    },
+    {
+      "path": "verification/root/contracts/release-candidate-v1.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/root-contracts-release-candidate-v1.json",
+      "sha256": "edb9c947b5b1a8dbf95e8ef29807bd60875c3485aacde76601cd7f6e88ff3121",
+      "role": "contract"
+    },
+    {
+      "path": "verification/root/contracts/release-candidate-v1.schema.json",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/root/contracts/release-candidate-v1.schema.json",
+      "sha256": "820cdc963f9dd2b861ca75596895d8220cd7804c8663aa57a2b3ceb458160adb",
+      "role": "contract"
+    },
+    {
+      "path": "verification/root/contracts/resource-envelope-v1.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/root-contracts-resource-envelope-v1.json",
+      "sha256": "058e9d75d1f67e635f49688cc0ee9efaa3462718be0232545672a7674a7f7690",
+      "role": "contract"
+    },
+    {
+      "path": "verification/root/contracts/semantic-parity-v1.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/root-contracts-semantic-parity-v1.json",
+      "sha256": "959c1aa64aa899648771e125e28155964bb62622a06610a789d468e2a84e4eb1",
+      "role": "contract"
+    },
+    {
+      "path": "verification/root/contracts/threat-model-v1.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/root-contracts-threat-model-v1.json",
+      "sha256": "0e08677b5ab329f5bf67ed52b8cd55534f69a9d6452de8ad24692d0066d5697d",
+      "role": "contract"
+    },
+    {
+      "path": "verification/root/contracts/token-replay-v1.md",
+      "source": "plans/2026.09.19-№1-AGENTOOLS-HARDENING/knowledge/root-contracts-token-replay-v1.json",
+      "sha256": "0701adc8987a6c8a95722b1f2f8c4e836c65a54b33c77467ab9a4f75566f4853",
+      "role": "contract"
+    }
+  ]
+}

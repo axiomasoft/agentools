@@ -32,7 +32,7 @@ final class SqliteSessionStoreTest extends TestCase
             $log->append($event);
         }
 
-        $reducer = new ActionReducer();
+        $reducer = new ActionReducer('2026-08');
         $head = $reducer->fold([$events[0], $events[1]]);
         $projection = SessionStateProjection::fromFoldedAction($head, '2026-08', '2026-08-03T09:14:22.118Z');
         $store->save($projection);

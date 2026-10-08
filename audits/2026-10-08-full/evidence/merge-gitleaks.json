@@ -1,0 +1,12 @@
+{
+  "id": "merge-gitleaks",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/ci_matrix.py",
+    "gitleaks-scan"
+  ],
+  "started_utc": "2026-10-08T14:16:35.821097+00:00",
+  "exit_code": 1,
+  "duration_seconds": 10.987
+}

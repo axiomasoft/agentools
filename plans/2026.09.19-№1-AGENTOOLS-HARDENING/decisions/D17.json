@@ -1,0 +1,44 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D17",
+  "title": "Digest-bound migration of invalid sealed journal rows",
+  "date": "2026-09-21",
+  "status": "accepted",
+  "decision": "Разрешить одну точную `journal-migration/v1` для PLAN1. Миграция обязана\nсохранить исходные bytes `@plan/log.jsonl`, зафиксировать SHA-256 каждой\nизменённой строки и всего preimage/target, а также оставить постоянный\nmanifest и receipt в `journal-migrations/2026-09-21-p0.1-repair/`.\n\nДопустимы только нейтральный backfill пропущенных sealed-полей и\nточное восстановление `terminal-evidence/v1`. Миграция не может менять\n`ts`, item identity, command, attempt, result, actor и note; не может трогать product\ncode, historical `AGENTOOLS`, release verdict или G-RELEASE authority.",
+  "rationale": "Обычный append не может сделать невалидную историческую строку валидной,\nа D51 exception намеренно разрешает только exact `friction`. Полный preimage и\nдигестно-связанный manifest устраняют schema/terminal defects без потери\nфорензической восстанавливаемости и без общего механизма waiver.",
+  "applies_to": [
+    "P0.1"
+  ],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "owner"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D17\ndate: 2026-09-21\nstatus: accepted\nitem: P0.1\nitems: [P0.1]\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "D17-Digest-bound-migration-of-invalid-sealed-journal-rows",
+      "title": "D17 — Digest-bound migration of invalid sealed journal rows",
+      "text": "**Actor:** owner\n**Evidence:** direct owner instruction on 2026-09-21: «исправь все дефекты в этой сессии»; P0.1 escalation `SEALED_JOURNAL_MIGRATION_AUTHORITY_REQUIRED`; `plan-lint --gate all` 24 ERROR / 0 WARN pre-migration."
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "Разрешить одну точную `journal-migration/v1` для PLAN1. Миграция обязана\nсохранить исходные bytes `@plan/log.jsonl`, зафиксировать SHA-256 каждой\nизменённой строки и всего preimage/target, а также оставить постоянный\nmanifest и receipt в `journal-migrations/2026-09-21-p0.1-repair/`.\n\nДопустимы только нейтральный backfill пропущенных sealed-полей и\nточное восстановление `terminal-evidence/v1`. Миграция не может менять\n`ts`, item identity, command, attempt, result, actor и note; не может трогать product\ncode, historical `AGENTOOLS`, release verdict или G-RELEASE authority."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "Обычный append не может сделать невалидную историческую строку валидной,\nа D51 exception намеренно разрешает только exact `friction`. Полный preimage и\nдигестно-связанный manifest устраняют schema/terminal defects без потери\nфорензической восстанавливаемости и без общего механизма waiver."
+    },
+    {
+      "id": "Consequences",
+      "title": "Consequences",
+      "text": "`plan-lint --gate all` обязан стать 0 ERROR / 0 WARN на мигрированном журнале.\nЛюбое расхождение live bytes, manifest, preimage или receipt отклоняет операцию.\nНовые journal events по-прежнему только append-only."
+    }
+  ]
+}

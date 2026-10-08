@@ -14,12 +14,19 @@ final class ActionJournal {
 
   ActionJournal append(ActionEvent event, [ActionReducer? reducer]) {
     final nextEvents = [..._events, event];
-    (reducer ?? ActionReducer()).fold(nextEvents);
+    (reducer ?? ActionReducer(specRevision: nextEvents.first.specRevision))
+        .fold(nextEvents);
     return ActionJournal(nextEvents);
   }
 
   FoldedAction state([ActionReducer? reducer]) {
-    return (reducer ?? ActionReducer()).fold(_events);
+    return (reducer ??
+            ActionReducer(
+              specRevision: _events.isEmpty
+                  ? '2026-09'
+                  : _events.first.specRevision,
+            ))
+        .fold(_events);
   }
 
   static FoldedAction restore(

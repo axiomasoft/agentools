@@ -1,0 +1,37 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "root-contracts-release-candidate-v1",
+  "title": "Release candidate subject contract v1 — AgenTools hardening (PLAN1)",
+  "sections": [
+    {
+      "id": "Release-candidate-subject-contract-v1-AgenTools-hardening-PLAN1",
+      "title": "Release candidate subject contract v1 — AgenTools hardening (PLAN1)",
+      "text": "**Version:** v1  \n**Status:** draft contract (P9.3)  \n**Decision anchor:** D14 · **Depends on:** P7.4 package-gate inventories"
+    },
+    {
+      "id": "1.-Scope",
+      "title": "1. Scope",
+      "text": "This contract defines the repository-owned **exact private release subject** format and the\n**reproducibility receipt** that binds three subjects:\n\n| Subject ID | Package | Paired status |\n|:--|:--|:--|\n| `php-sdk` | PHP SDK (`php/`) | `standalone` |\n| `dart-core` | Dart core (`dart/agentools/`) | `standalone` |\n| `dart-mcp-companion` | Dart MCP (`dart/agentools_mcp_dart/`) | `private-paired` |\n\nNo public semver, registry upload, or tag is implied. The MCP companion remains\n`public_release_blocked` while it carries a `path:` dependency on core."
+    },
+    {
+      "id": "2.-Canonical-archive-format",
+      "title": "2. Canonical archive format",
+      "text": "Normative transport: **POSIX ustar/GNU tar** serialized with fixed metadata, wrapped in **gzip** with\n`mtime=0` and no `FNAME`/`FCOMMENT` fields.\n\n| Field | Normative value |\n|:--|:--|\n| Path order | Bytewise ascending relative path |\n| Path rules | No `..`, absolute paths, symlinks, or special files |\n| Owner / group | `0` / `root` |\n| File mode | `0644` default; `0755` for `bin/**` and `bin/reference-slice-demo` |\n| mtime | `SOURCE_DATE_EPOCH` from source commit |\n| Build roots | Never embedded in archive paths |\n\nContent selection MUST match the executed P7 package-gate allowlists exactly (no missing/extra files)."
+    },
+    {
+      "id": "3.-Receipt-schema",
+      "title": "3. Receipt schema",
+      "text": "Machine schema: `release-candidate-v1.schema.json` (`release-candidate-receipt/v1`).\n\nEach builder block records:\n\n- `source_commit`, `source_date_epoch`\n- digests of this contract, JSON schema, and `.ci/supply-chain-lock.json`\n- per-subject `content_manifest_digest` and `archive_digest` (`algorithm` = `sha256` only)\n\nTwo independent clean builders MUST produce identical fingerprints before P9.4 binds metadata."
+    },
+    {
+      "id": "4.-Non-goals",
+      "title": "4. Non-goals",
+      "text": "- Composer `archive` / `dart pub publish --dry-run` byte identity\n- SBOM, SLSA provenance, or GitHub attestation (P9.4)\n- Workflow transport or aggregate RC receipt (P9.5)"
+    }
+  ],
+  "applies_to": [],
+  "provenance": {
+    "path": "root/contracts/release-candidate-v1.md",
+    "sha256": "edb9c947b5b1a8dbf95e8ef29807bd60875c3485aacde76601cd7f6e88ff3121"
+  }
+}

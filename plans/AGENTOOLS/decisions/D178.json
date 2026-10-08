@@ -1,0 +1,32 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:decision:v1",
+  "id": "D178",
+  "title": "Решение",
+  "date": "2026-08-04",
+  "status": "accepted",
+  "decision": "**Audit P5 исправляет устаревшую Q-2 premise: remote `origin=https://github.com/axiomasoft/agentools.git` настроен; visibility, branch protection и запуск CI не доказаны, push/tag publish не выполнялись.** **Consequences:** исторические наблюдения D69/P6-recon сохраняют дату 2026-07-27, но активный P6.7 обязан проверять фактический CI run/merge protection либо честно доказать только локальный gate; наличие remote само по себе не означает работающий CI.",
+  "rationale": "`git remote -v` на audit tree; P5 Audit F1. `RAG:— (repo-grounded)`",
+  "applies_to": [],
+  "supersedes": [],
+  "actor": {
+    "provider": "legacy",
+    "model": "frontier (design/спека), исполнение по §3 Routing"
+  },
+  "sections": [
+    {
+      "id": "Preamble",
+      "title": "Preamble",
+      "text": "---\nid: D178\ndate: 2026-08-04\nstatus: accepted\nitem: ''\nitems: []\nsupersedes: []\nsuperseded_by: null\n---"
+    },
+    {
+      "id": "section",
+      "title": "Решение",
+      "text": "**Audit P5 исправляет устаревшую Q-2 premise: remote `origin=https://github.com/axiomasoft/agentools.git` настроен; visibility, branch protection и запуск CI не доказаны, push/tag publish не выполнялись.** **Consequences:** исторические наблюдения D69/P6-recon сохраняют дату 2026-07-27, но активный P6.7 обязан проверять фактический CI run/merge protection либо честно доказать только локальный gate; наличие remote само по себе не означает работающий CI."
+    },
+    {
+      "id": "section-2",
+      "title": "Почему",
+      "text": "`git remote -v` на audit tree; P5 Audit F1. `RAG:— (repo-grounded)`"
+    }
+  ]
+}

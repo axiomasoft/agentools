@@ -1,0 +1,39 @@
+{
+  "$schema": "urn:swissknifeman:task:plan:document:v1",
+  "id": "findings-P2-dart-transport",
+  "title": "dart-transport — smoke-прототип транспорта Dart (P2.4)",
+  "sections": [
+    {
+      "id": "P2-dart-transport-smoke--Dart-P2.4",
+      "title": "P2-dart-transport — smoke-прототип транспорта Dart (P2.4)",
+      "text": "Слой 1 (сырьё исполнения). Метод: smoke-прототип против локального мок-сервера с\nфиксированными JSON-RPC ответами (`bakeoff/dart-transport/mock/mock_server.dart`, детерминизм —\n`fixtures/*.json`), симметричный сценарий на ОБОИХ вариантах (`server/discover` + один\n`tools/call`). Вердикт — по наблюдаемому выводу прогона, не по README `mcp_dart`."
+    },
+    {
+      "id": "section",
+      "title": "Окружение",
+      "text": "Dart 3.12.2 stable. `mcp_dart` версия из `dart pub add \"mcp_dart:>=2.3.0-dev.0 <2.4.0\"` →\n**зафиксирована `2.3.0-dev.3`** (`bakeoff/dart-transport/pubspec.lock`), лицензия MIT (та же, что\nу stable 2.2.2). Мок слушает `localhost` (порт передаётся аргументом), отвечает ТОЛЬКО\n`server/discover` и `tools/call`; любой другой метод (в т.ч. `initialize`) — JSON-RPC error\n`-32601`, чтобы зафиксировать факт, если клиент всё же его пошлёт."
+    },
+    {
+      "id": "research-01-target-structure-2026-08.md-4",
+      "title": "Критерии (`research/01-target-structure-2026-08.md` §4) — заполнены фактами",
+      "text": "| Критерий | `mcp_dart` 2.3.0-dev.3 | Тонкий клиент против `schema.json` |\n|:--|:--|:--|\n| Эра | **Подтверждено:** с `McpClientOptions(protocol: McpProtocol.require2026)` клиент шлёт РОВНО `server/discover`, `initialize` не вызывается НИ РАЗУ (мок логировал только 2 метода за весь прогон — `mock-server.stderr.log`) | ровно modern по построению (сам пишешь только 2 метода) |\n| Лицензия | MIT (prerelease `2.3.0-dev.3` — та же лицензия, что stable 2.2.2) | своя (нет внешней лицензии) |\n| Стабильность | prerelease, но **функционально прошёл smoke на 100%** (discover + tools/call зелёные с первого структурно верного фикстур-ответа) | наша, эквивалент по функционалу smoke-сценария |\n| Инъекция per-request `_meta` (`protocolVersion`/`clientCapabilities`) | **Подтверждено эмпирически** — мок залогировал `_meta.io.modelcontextprotocol/protocolVersion=2026-07-28`, `clientInfo`, `clientCapabilities` в ОБОИХ запросах (`server/discover` и `tools/call`) | реализовано руками (14 строк — функция `meta()`), тривиально |\n| `resultType`/`input_required` на уровне API | **`resultType` — ОБЯЗАТЕЛЕН и энфорсится клиентом**: первый прогон упал (`FormatException: MCP stateless responses must include resultType`) на фикстуре БЕЗ этого поля — библиотека поймала дефект мока raньше, чем мы; после добавления `\"resultType\":\"complete\"` — зелёный. `input_required` виден как `TaskStatus.inputRequired` — первоклассный enum на публичном API `TaskClient` (структурный факт, P2.3 recon) | реализовано руками: ручная проверка `result['resultType'] != 'complete'` (3 строки) |\n| `server/discover` | **Подтверждено** — `DiscoverResult` (`resultType`, `supportedVersions`, `capabilities`, `ttlMs`, `cacheScope`) распарсен корректно, `Protocol: 2026-07-28` залогирован клиентом | реализовано руками, тот же JSON |\n| Отсутствие принудительного `initialize` | **Подтверждено** — см. «Эра» выше; альтернатива без `require2026` НЕ проверялась (не нужна — modern-only, D20) | по построению |\n| Цена | зависимость на 0.x-prerelease **43 926 строк** пакета (`find lib -name '*.dart' \\| xargs wc -l`); клиентский код прогона — **26 строк** (`client-mcp-dart/main.dart`) | **60 строк** (`client-thin/main.dart`) — в 2.3× больше `mcp_dart`-варианта на ТОЧНО том же двухвызовом сценарии; полнофункциональный клиент (переподключение, ошибки, будущие методы протокола, elicitation/sampling/tasks) потребовал бы кратно больше |\n| Риск | **27 файлов** пакета упоминают `initialize`/`Mcp-Session-Id`/legacy (`grep -rl`) — dual-era код физически присутствует в зависимости (директива D20 «legacy как понятия нет» относится к НАШЕЙ кодовой базе, не к байтам зависимости), но `require2026` НЕ исполняет эти пути в рантайме — подтверждено логом мока (0 legacy-запросов) | самим держать соответствие пину `2026-07-28`; риск дрейфа при финале MCP (P1) — тот же для обоих вариантов, т.к. оба используют `schema.json` только как форму сообщений |"
+    },
+    {
+      "id": "Smoke",
+      "title": "Smoke-прототип — что прогнано",
+      "text": "- `bakeoff/dart-transport/mock/mock_server.dart` — `shelf`-сервер, фикстуры\n  `fixtures/discover-result.json` + `fixtures/call-tool-result.json`, лог каждого входящего\n  запроса в stderr (`mock-server.stderr.log`).\n- `bakeoff/dart-transport/client-mcp-dart/main.dart` (26 строк) — `McpClient` +\n  `StreamableHttpClientTransport`, `protocol: McpProtocol.require2026` → `connect()` +\n  `callTool()`. Результат: `results-mcp-dart-run.log` — `CONNECT OK` + `CALLTOOL OK`.\n- `bakeoff/dart-transport/client-thin/main.dart` (60 строк) — голый `http.post` с ручной сборкой\n  JSON-RPC конверта + `_meta` + проверкой `resultType`. Результат: `results-thin-run.log` —\n  `DISCOVER OK` + `CALLTOOL OK`.\n- `dart analyze` в `bakeoff/dart-transport` — «No issues found!» (`dart-transport-analyze.log` в\n  `bakeoff/results/` репозитория артефактов)."
+    },
+    {
+      "id": "mcp_dart",
+      "title": "ВЕРДИКТ: mcp_dart",
+      "text": "**Обоснование:** ВСЕ критерии таблицы `@plan/knowledge/research-01-target-structure-2026-08.json` §4 заполнены\nфактами (не «вероятно поддерживает» — Code Guidance item'а прямо запрещает такой вердикт), smoke\nпрошёл на 100% для обоих вызовов сценария. `mcp_dart` даёт готовую реализацию discover-хендшейка,\n`_meta`-инъекции, `resultType`-энфорсмента и task-моделей (`input_required`) за цену одной\n0.x-prerelease зависимости; тонкий клиент воспроизводит те же 2 вызова в 2.3× большем объёме\nкода — и это МИНИМАЛЬНЫЙ сценарий, полный набор методов протокола (elicitation, sampling, tasks,\nresubscribe) кратно увеличил бы этот разрыв. Dual-era код зависимости — факт присутствия в\nдереве зависимостей, не факт исполнения (`require2026` наблюдаемо не шлёт `initialize`).\n\n**Триггер: ре-проверка после P1** (пин финала MCP) — зафиксировать точную стабильную версию\n`mcp_dart`, поддерживающую MCP `2026-07-28` (на дату этого прогона — только prerelease\n`2.3.0-dev.x`); ре-проверка после P1 обязана подтвердить (а) существование stable-релиза с той же\nподдержкой ИЛИ (б) риск, что prerelease API поменяется до релиза. Адресат — фаза **P8** (Dart SDK)\nперед выбором точного пина версии для реализации транспортного слоя."
+    }
+  ],
+  "applies_to": [
+    "P2"
+  ],
+  "provenance": {
+    "path": "findings/P2-dart-transport.md",
+    "sha256": "ad0846e14571bd86b26f0011b30494ad23dc43fc5e94e5a6fb0e26d9e7202327"
+  }
+}

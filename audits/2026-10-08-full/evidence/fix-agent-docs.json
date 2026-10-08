@@ -1,0 +1,12 @@
+{
+  "id": "fix-agent-docs",
+  "cwd": ".",
+  "command": [
+    "bash",
+    "scripts/build-agent-docs.sh",
+    "--check"
+  ],
+  "started_utc": "2026-10-08T13:39:06.443401+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.064
+}
