@@ -1,0 +1,12 @@
+{
+  "id": "push-acceptance-matrix",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/release_acceptance.py",
+    "capture"
+  ],
+  "started_utc": "2026-10-08T14:25:24.286411+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.064
+}

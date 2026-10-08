@@ -1,0 +1,12 @@
+{
+  "id": "push-sbom",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/sbom_gate.py",
+    "run"
+  ],
+  "started_utc": "2026-10-08T14:25:06.152393+00:00",
+  "exit_code": 0,
+  "duration_seconds": 15.0
+}

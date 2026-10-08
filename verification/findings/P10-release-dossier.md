@@ -1,7 +1,7 @@
 # P10.4 release dossier
 
-**Generated:** 2026-10-08T14:21:09Z
-**Source commit:** `4b7b40f86657bf5743c6c6c6cc7d1da417dc0ead`
+**Generated:** 2026-10-08T14:25:35Z
+**Source commit:** `5b03b666f9b346852a2bf05f26835d13f13d92ba`
 
 ## Verdicts (non-authorizing)
 
@@ -11,8 +11,8 @@
 
 ## Child receipts
 
-- P10_consumer: `verification/artifacts/P10-consumer-acceptance.json` digest `f2a58daab97e22ac…`
-- P10_docs: `verification/artifacts/P10-docs.json` digest `50f01bfe4c3b57ff…`
-- P10_matrix: `verification/artifacts/P10-acceptance-matrix.json` digest `687d52b55b0bb6ad…`
-- P9_private_rc: `verification/artifacts/P9-private-rc.json` digest `c8055eb78b8d0076…`
+- P10_consumer: `verification/artifacts/P10-consumer-acceptance.json` digest `99a66ee9ac04e736…`
+- P10_docs: `verification/artifacts/P10-docs.json` digest `bc9b12eb015e0b0c…`
+- P10_matrix: `verification/artifacts/P10-acceptance-matrix.json` digest `493d002082c3add6…`
+- P9_private_rc: `verification/artifacts/P9-private-rc.json` digest `c5c1337d1c6f1f8b…`
 

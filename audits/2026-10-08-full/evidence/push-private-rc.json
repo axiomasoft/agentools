@@ -1,0 +1,12 @@
+{
+  "id": "push-private-rc",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/private_rc_gate.py",
+    "run"
+  ],
+  "started_utc": "2026-10-08T14:25:21.177726+00:00",
+  "exit_code": 0,
+  "duration_seconds": 3.07
+}

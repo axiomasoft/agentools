@@ -1,7 +1,7 @@
 # P10.1 release acceptance matrix
 
-**Generated:** 2026-10-08T14:20:57Z
-**Source commit:** `4b7b40f86657bf5743c6c6c6cc7d1da417dc0ead`
+**Generated:** 2026-10-08T14:25:24Z
+**Source commit:** `5b03b666f9b346852a2bf05f26835d13f13d92ba`
 **Rows:** 102
 
 ## Verdicts

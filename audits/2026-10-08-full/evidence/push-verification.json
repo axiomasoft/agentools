@@ -1,0 +1,432 @@
+{
+  "schema": "agentools.main-integration-verification/v1",
+  "generated_at": "2026-10-08T14:26:13.273197+00:00",
+  "product_commit": "5b03b666f9b346852a2bf05f26835d13f13d92ba",
+  "integrated_origin_main": "3dfca7979d647eafdb07fed96be6f2e77d8a98d1",
+  "commands": [
+    {
+      "id": "merge-php",
+      "cwd": "php",
+      "command": [
+        "composer",
+        "test"
+      ],
+      "started_utc": "2026-10-08T14:12:58.742848+00:00",
+      "exit_code": 0,
+      "duration_seconds": 1.016,
+      "log_sha256": "be8904bd37f73edf85a0b5b52460828c8e693907e865b63a9aebebec82ddbf1c"
+    },
+    {
+      "id": "merge-phpstan-api",
+      "cwd": "php",
+      "command": [
+        "composer",
+        "analyse"
+      ],
+      "started_utc": "2026-10-08T14:15:24.978239+00:00",
+      "exit_code": 0,
+      "duration_seconds": 1.617,
+      "log_sha256": "a359b1ab5bae1b9626900e4857dbf0be72708288a07de8bc65a75adbbe51098c"
+    },
+    {
+      "id": "merge-dart",
+      "cwd": "dart/agentools",
+      "command": [
+        "dart",
+        "test"
+      ],
+      "started_utc": "2026-10-08T14:13:01.035763+00:00",
+      "exit_code": 0,
+      "duration_seconds": 1.867,
+      "log_sha256": "1cb8d4023418e2c96ce4dcba80dc2f75c7a6986a4341b55e19af4dcb98666aa9"
+    },
+    {
+      "id": "merge-dart-analyze",
+      "cwd": "dart/agentools",
+      "command": [
+        "dart",
+        "analyze",
+        "--fatal-infos"
+      ],
+      "started_utc": "2026-10-08T14:13:02.239806+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.516,
+      "log_sha256": "cc1af4b3cfe265a66e1dc4f788437d4c43da4d2296c21780793e2ef9a4bd19a9"
+    },
+    {
+      "id": "merge-mcp",
+      "cwd": "dart/agentools_mcp_dart",
+      "command": [
+        "dart",
+        "test"
+      ],
+      "started_utc": "2026-10-08T14:15:24.141048+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.765,
+      "log_sha256": "2ca8235ed3af9412f170caeef80459e6dfa9966650a982dc0b2e202812dd41e2"
+    },
+    {
+      "id": "merge-conformance",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_gate.py",
+        "--all"
+      ],
+      "started_utc": "2026-10-08T14:15:20.568015+00:00",
+      "exit_code": 0,
+      "duration_seconds": 23.908,
+      "log_sha256": "60e55ae04508aefa70d25a6f0dcb3ab00041692c33b1fc031736498d89db3dfa"
+    },
+    {
+      "id": "merge-adversarial",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/adversarial_corpus.py",
+        "run"
+      ],
+      "started_utc": "2026-10-08T14:15:22.954730+00:00",
+      "exit_code": 0,
+      "duration_seconds": 1.216,
+      "log_sha256": "c1a5445401fdb65ccf51402b25794df4367ab1fff86513a1643f36ab31bdcdec"
+    },
+    {
+      "id": "merge-mutation",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/mutation_gate.py",
+        "run"
+      ],
+      "started_utc": "2026-10-08T14:15:21.759802+00:00",
+      "exit_code": 0,
+      "duration_seconds": 23.307,
+      "log_sha256": "d1769f97771cbd9cc1e5157829267fb5676abb18abd6936643fc4e930c677420"
+    },
+    {
+      "id": "merge-storage",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/storage_chaos.py",
+        "run"
+      ],
+      "started_utc": "2026-10-08T14:16:32.221262+00:00",
+      "exit_code": 0,
+      "duration_seconds": 45.044,
+      "log_sha256": "3f6df52fc07fae59ef5cf8fbfca5bdd2dc78c538aa08d93237f49af6ef33923e"
+    },
+    {
+      "id": "merge-resource",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/resource_gate.py",
+        "run"
+      ],
+      "started_utc": "2026-10-08T14:17:49.161356+00:00",
+      "exit_code": 0,
+      "duration_seconds": 36.626,
+      "log_sha256": "895019aa35813bdbf31ce558259830976f4dc5a8059b98bfbd81838c7ff06d8d"
+    },
+    {
+      "id": "merge-packages",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/package_gate.py",
+        "run"
+      ],
+      "started_utc": "2026-10-08T14:16:33.432842+00:00",
+      "exit_code": 0,
+      "duration_seconds": 13.391,
+      "log_sha256": "dffe06aef81d58a37468439304f66253620cb7d37487508a1c58fa05a7258f87"
+    },
+    {
+      "id": "merge-python-final",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools",
+        "-p",
+        "*.py"
+      ],
+      "started_utc": "2026-10-08T14:22:16.590643+00:00",
+      "exit_code": 0,
+      "duration_seconds": 54.358,
+      "log_sha256": "c9509dc1520df870dd93fcd0effb92b2cb5f0ea42521f1599ee8a306aeaafab2"
+    },
+    {
+      "id": "merge-cli-lock-final",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/tools",
+        "-p",
+        "test*.py"
+      ],
+      "started_utc": "2026-10-08T14:22:17.766222+00:00",
+      "exit_code": 0,
+      "duration_seconds": 36.027,
+      "log_sha256": "8dca827ba29cc71af9feb93e6a526611bc76dd5cc54dffc75af5bac348340622"
+    },
+    {
+      "id": "merge-osv",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "osv-scan"
+      ],
+      "started_utc": "2026-10-08T14:20:39.066984+00:00",
+      "exit_code": 0,
+      "duration_seconds": 7.625,
+      "log_sha256": "9afa81382717e8d63d39ddeac692a713f60efbc678b2db30e636cc860cc7ffce"
+    },
+    {
+      "id": "merge-policy",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_policy.py",
+        "check-workflows"
+      ],
+      "started_utc": "2026-10-08T14:20:46.711434+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.064,
+      "log_sha256": "2688264482599fdb8063d07c419ed4797b7951d0855e27e2eed5ed7e26594ffd"
+    },
+    {
+      "id": "merge-matrix",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "validate"
+      ],
+      "started_utc": "2026-10-08T14:20:46.794386+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.114,
+      "log_sha256": "05ad7e2b2cd2a7ab85735af4936a7ec3887769b9dba4fbf1460d5984391c4bb2"
+    },
+    {
+      "id": "merge-worktree-secrets",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "-c",
+        "from tools.ci_matrix import run_gitleaks_worktree; raise SystemExit(run_gitleaks_worktree())"
+      ],
+      "started_utc": "2026-10-08T14:20:04.790287+00:00",
+      "exit_code": 0,
+      "duration_seconds": 1.269,
+      "log_sha256": "e5c4f21896a85f2b02f5dd6f1f0666e2203ccbeb44202522ce0d21ad9c72f0ce"
+    },
+    {
+      "id": "merge-compat-core-latest-receipt",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "disposable-dart_core-latest"
+      ],
+      "started_utc": "2026-10-08T14:15:34.320968+00:00",
+      "exit_code": 0,
+      "duration_seconds": 8.179,
+      "log_sha256": "33a53ae6a1b4cb630330d56c7670906a895a80b3e5c2b1ae5ca6cecb70cb3b77"
+    },
+    {
+      "id": "merge-compat-core-lowest-receipt",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "disposable-dart_core-lowest"
+      ],
+      "started_utc": "2026-10-08T14:15:26.208867+00:00",
+      "exit_code": 0,
+      "duration_seconds": 8.082,
+      "log_sha256": "9c758b3b2bc750b4e0504e9f31cde220faea5b1addc2fdb92eee7e1b61b245db"
+    },
+    {
+      "id": "merge-compat-dart-mcp-lowest-final",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "disposable-dart_mcp-lowest"
+      ],
+      "started_utc": "2026-10-08T14:15:35.711511+00:00",
+      "exit_code": 0,
+      "duration_seconds": 7.127,
+      "log_sha256": "6016a735f332151c8e3203a26f9d5b633b3691085faf5a0de19b51b79b5b6fd8"
+    },
+    {
+      "id": "merge-compat-mcp-latest-receipt",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "disposable-dart_mcp-latest"
+      ],
+      "started_utc": "2026-10-08T14:15:37.106712+00:00",
+      "exit_code": 0,
+      "duration_seconds": 7.327,
+      "log_sha256": "078890a0fe7d5a090ef07756d9b955bc6cf25b21971af1a5b4b5722776f2f96d"
+    },
+    {
+      "id": "merge-compat-php-latest-final",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "disposable-php-latest"
+      ],
+      "started_utc": "2026-10-08T14:15:26.200701+00:00",
+      "exit_code": 0,
+      "duration_seconds": 10.885,
+      "log_sha256": "d3b2d9ff69ef9fbbb946192dbff6480fe8b541b5d5cf11f0883219d6f257c773"
+    },
+    {
+      "id": "merge-compat-php-lowest-receipt",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "disposable-php-lowest"
+      ],
+      "started_utc": "2026-10-08T14:15:26.209481+00:00",
+      "exit_code": 0,
+      "duration_seconds": 9.483,
+      "log_sha256": "632fa527b26d8d8cb1711957c32322ccd7aadb1671680dbb1d0fd71ba7e41515"
+    },
+    {
+      "id": "push-acceptance-matrix",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/release_acceptance.py",
+        "capture"
+      ],
+      "started_utc": "2026-10-08T14:25:24.286411+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.064,
+      "log_sha256": "bc6f27432c0ddaf9001926d35ced1596a9bc20261212045647d2a748f3340589"
+    },
+    {
+      "id": "push-consumers",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/release_consumer_gate.py",
+        "capture",
+        "--allow-dirty"
+      ],
+      "started_utc": "2026-10-08T14:25:25.785811+00:00",
+      "exit_code": 0,
+      "duration_seconds": 9.381,
+      "log_sha256": "2a3823c439c85e2d22add86797990d2a0be6b73135b13c7dcff050afb1a56674"
+    },
+    {
+      "id": "push-docs",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/docs_gate.py",
+        "run"
+      ],
+      "started_utc": "2026-10-08T14:25:24.378856+00:00",
+      "exit_code": 0,
+      "duration_seconds": 1.366,
+      "log_sha256": "2a3823c439c85e2d22add86797990d2a0be6b73135b13c7dcff050afb1a56674"
+    },
+    {
+      "id": "push-gitleaks",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/ci_matrix.py",
+        "gitleaks-scan"
+      ],
+      "started_utc": "2026-10-08T14:25:04.719241+00:00",
+      "exit_code": 0,
+      "duration_seconds": 2.923,
+      "log_sha256": "21c224ec973f0e6121ca977991ff84de18c0ab232f64ffa2fb8fecfef9cd6430"
+    },
+    {
+      "id": "push-private-rc",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/private_rc_gate.py",
+        "run"
+      ],
+      "started_utc": "2026-10-08T14:25:21.177726+00:00",
+      "exit_code": 0,
+      "duration_seconds": 3.07,
+      "log_sha256": "2a3823c439c85e2d22add86797990d2a0be6b73135b13c7dcff050afb1a56674"
+    },
+    {
+      "id": "push-private-release",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/private_release_gate.py",
+        "capture"
+      ],
+      "started_utc": "2026-10-08T14:25:35.186233+00:00",
+      "exit_code": 0,
+      "duration_seconds": 0.114,
+      "log_sha256": "2264882bb9b378e9b17b0c85ad84e018c888847bb8d1b4812d5c0785bd229122"
+    },
+    {
+      "id": "push-reproducibility",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/release_candidate.py",
+        "run"
+      ],
+      "started_utc": "2026-10-08T14:25:03.555963+00:00",
+      "exit_code": 0,
+      "duration_seconds": 2.571,
+      "log_sha256": "dffe06aef81d58a37468439304f66253620cb7d37487508a1c58fa05a7258f87"
+    },
+    {
+      "id": "push-sbom",
+      "cwd": ".",
+      "command": [
+        "python3",
+        "tools/sbom_gate.py",
+        "run"
+      ],
+      "started_utc": "2026-10-08T14:25:06.152393+00:00",
+      "exit_code": 0,
+      "duration_seconds": 15.0,
+      "log_sha256": "dffe06aef81d58a37468439304f66253620cb7d37487508a1c58fa05a7258f87"
+    }
+  ],
+  "receipt_coherence": {
+    "docs_to_matrix": true,
+    "consumers_to_docs": true,
+    "consumers_to_rc": true,
+    "acceptance_to_dossier": true,
+    "dossier_to_P10_consumer": true,
+    "dossier_to_P10_docs": true,
+    "dossier_to_P10_matrix": true,
+    "dossier_to_P9_private_rc": true
+  },
+  "frozen_2026_08_unchanged": true,
+  "private_acceptance": "green",
+  "public_authorized": false,
+  "verdict": "green"
+}

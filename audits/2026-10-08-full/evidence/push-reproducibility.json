@@ -1,0 +1,12 @@
+{
+  "id": "push-reproducibility",
+  "cwd": ".",
+  "command": [
+    "python3",
+    "tools/release_candidate.py",
+    "run"
+  ],
+  "started_utc": "2026-10-08T14:25:03.555963+00:00",
+  "exit_code": 0,
+  "duration_seconds": 2.571
+}

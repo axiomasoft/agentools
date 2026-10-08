@@ -1,7 +1,7 @@
 # P9 supply-chain evidence
 
 **Status:** `green`
-**RC receipt:** `f5f20828919410b4d2983cd226a3649ab5d9ecb730348652cd3045daa3bfc217`
+**RC receipt:** `b3150b2911d69b7968349c923671bad665d6043f58d29c0ae3b64a2e1fe8a08f`
 **Syft:** `Application:   syft
 Version:       1.52.0
 BuildDate:     2026-09-17T14:32:25Z
@@ -20,6 +20,6 @@ SchemaVersion: 16.1.10`
 
 ## Subjects
 
-- `php-sdk`: SPDX subject `894ecdb65e1765fb8c86fdb1930cff353a3ad9f39ec02609d2fa31cd37095a81` · provenance `statement-verified`
-- `dart-core`: SPDX subject `7aa379ce002bf29012b9de6b700771a09ec9122fc6b19f0139ec76349c5b1088` · provenance `statement-verified`
-- `dart-mcp-companion`: SPDX subject `e89b9d2874f0bfbaf593b07ca7a58038d9cfeaa7c6c97f45f6f18fe54550d42b` · provenance `statement-verified`
+- `php-sdk`: SPDX subject `70597c2ee029d550fff43029e731449ec79d67db1ca3ea85eb29932676e8e1df` · provenance `statement-verified`
+- `dart-core`: SPDX subject `59e046220c131602ca4288ee09580dae8e64a3c6c0a3361b5d5f5137c04d5092` · provenance `statement-verified`
+- `dart-mcp-companion`: SPDX subject `50f1cb079761a5c056289d09231f441d7ea1733afcfcbffd5099aff99ccf33ce` · provenance `statement-verified`

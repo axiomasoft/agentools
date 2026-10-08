@@ -45,16 +45,18 @@
   [resource](evidence/merge-resource.log) и [packages](evidence/merge-packages.log)
   проходят. Шесть lowest/latest lanes повторно исполнены; команды записаны
   в `evidence/merge-compat-*.json`.
-- [Python tools](evidence/merge-python-final.log) и
-  [дополнительные tools tests](evidence/merge-cli-lock-final.log) проверяют
+- [Python tools](evidence/merge-python-final.log): 147 тестов (один ожидаемый live skip);
+  [дополнительные tools tests](evidence/merge-cli-lock-final.log): 79 тестов. Они проверяют
   объединённую инфраструктуру, включая locked scanners и archive epoch.
 - [OSV](evidence/merge-osv.log), [workflow policy](evidence/merge-policy.log),
   [CI matrix](evidence/merge-matrix.log) и
   [сканирование текущих файлов](evidence/merge-worktree-secrets.log) проходят.
 
-Свежие P9/P10 receipts пересоздаются после фиксации объединённого продукта,
-чтобы ссылаться на доступный commit. Их команды записываются в
-`evidence/push-*.json`; финальная проверка истории — `push-gitleaks.log`.
+Свежие P9/P10 receipts пересозданы после фиксации объединённого продукта
+`5b03b66`, чтобы ссылаться на доступный commit. Их команды записаны в
+`evidence/push-*.json`; [финальная проверка истории](evidence/push-gitleaks.log) проходит.
+[Машинная сводка](evidence/push-verification.json) подтверждает все команды и
+согласованность итоговых SHA-256.
 Ранние `merge-cli-lock` и `merge-gitleaks` содержат сохранённые неуспешные попытки:
 первая зависела от ещё не пересобранного RC, вторая обнаружила два SHA-256
 inventory в промежуточном локальном коммите. Их финальные повторы выполняются
