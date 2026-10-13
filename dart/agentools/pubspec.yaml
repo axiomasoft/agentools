@@ -19,7 +19,7 @@ dev_dependencies:
   benchmark_harness: 2.4.0
   test: ^1.31.0
   lints: ^6.1.0
-  postgres: ^3.5.8
+  postgres: ^3.5.20
 
 agentools:
   spec_rev: 2026-09
