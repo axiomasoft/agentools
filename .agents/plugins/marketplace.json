@@ -53,10 +53,10 @@
       "category": "engineering"
     },
     {
-      "name": "task",
+      "name": "planner",
       "source": {
         "source": "local",
-        "path": "./.agents/plugins/bundles/task"
+        "path": "./.agents/plugins/bundles/planner"
       },
       "policy": {
         "installation": "AVAILABLE",
