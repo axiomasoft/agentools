@@ -50,3 +50,5 @@ __pycache__/
 /php/infection.json
 /php/infection.html
 .grok/config.toml
+plans/*/artifacts/**/*.jsonl
+.swissknifeman/backups/
