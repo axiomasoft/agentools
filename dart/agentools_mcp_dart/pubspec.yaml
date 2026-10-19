@@ -9,7 +9,7 @@ environment:
 dependencies:
   agentools:
     path: ../agentools
-  mcp_dart: ^2.4.0
+  mcp_dart: ^2.4.3
 
 dev_dependencies:
   # v3 targets the removed JIT frontend snapshot; lowest graphs need the AOT client.
