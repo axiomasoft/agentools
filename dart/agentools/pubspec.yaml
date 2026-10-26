@@ -15,7 +15,7 @@ dependencies:
 
 dev_dependencies:
   # v3 targets the removed JIT frontend snapshot; lowest graphs need the AOT client.
-  frontend_server_client: ^4.0.0
+  frontend_server_client: ^4.2.0
   benchmark_harness: 2.4.0
   test: ^1.31.0
   lints: ^6.1.0
