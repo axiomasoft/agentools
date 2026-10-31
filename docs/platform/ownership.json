@@ -1,0 +1,291 @@
+{
+  "document_kind": "ownership-matrix",
+  "status": "recorded",
+  "plan_id": "PLAN2",
+  "subject": "PLAN2.P1.4",
+  "evidence_tier": "selected_contract_not_external_runtime_qualification",
+  "rows": [
+    {
+      "entity": "ExecutionContext/authentication",
+      "authoritative_owner": "host",
+      "platform_allowed": "Trusted server-side tenant/actor/purpose/authorization/policy/correlation value and opaque refs.",
+      "platform_forbidden": "Caller/LLM trusted flags; duplicated host ACL or authentication authority.",
+      "port_boundary": "HostSecurity",
+      "current_guard": "Authentication + tenant/session authorization at construction; each owner rechecks before write/disclosure.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "not qualified here"
+    },
+    {
+      "entity": "Context manifests",
+      "authoritative_owner": "AgenTools Context",
+      "platform_allowed": "Immutable snapshot refs/hashes, bounded authorized projections and summary refs.",
+      "platform_forbidden": "Unbounded transcript/archive, copied person knowledge or permanent raw provider state.",
+      "port_boundary": "ContextSources",
+      "current_guard": "Current rights/consent/disclosure over pins, with budget/projection limits.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "new platform runtime planned"
+    },
+    {
+      "entity": "Model/deployment configuration",
+      "authoritative_owner": "AgenTools Models",
+      "platform_allowed": "Versioned routing/capability evidence refs, typed invocation facts.",
+      "platform_forbidden": "Fabricated support/pricing, credentials in public errors, provider-driven domain effects.",
+      "port_boundary": "ModelTransport + trusted credential resolver",
+      "current_guard": "Current route/admission/region/incident/cancellation checks before IO; missing required capability denies.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "new platform runtime planned"
+    },
+    {
+      "entity": "AssistantSession/Turn/Run",
+      "authoritative_owner": "AgenTools Runtime",
+      "platform_allowed": "Technical pins, state/checkpoint/run_step/version/claim_epoch and accepted input hash.",
+      "platform_forbidden": "Education session source of truth; second transcript; alternate loop for same turn.",
+      "port_boundary": "RunStore",
+      "current_guard": "Tenant authorization, fenced claim and current emergency policy; waits hold no worker/SQL lock.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "new platform runtime planned"
+    },
+    {
+      "entity": "Invocation/proposal mapping",
+      "authoritative_owner": "AgenTools Runtime",
+      "platform_allowed": "Stable invocation/provider-tool-ID/content-hash mapping before Action submit/confirmation.",
+      "platform_forbidden": "Proposal handler execution in model adapter; new identity on retry; inference that absent mapping proves no effect.",
+      "port_boundary": "RunStore + ModelTransport",
+      "current_guard": "CAS and current permission before the consuming boundary; unknown reply remains unknown.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "new platform runtime planned"
+    },
+    {
+      "entity": "Action definition/journal/status",
+      "authoritative_owner": "AgenTools Actions",
+      "platform_allowed": "One code-only definition registry, dated journal-derived status/effect checkpoints.",
+      "platform_forbidden": "DB-supplied handler classes/SQL/URL; Run statuses as ActionStatus; bypass via raw/plugins/fakes.",
+      "port_boundary": "DatedActionJournal + Confirmation + Idempotency",
+      "current_guard": "Trusted constructor confirmation, current owner policy, immutable input/hash/scope and deadline.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "new platform runtime planned"
+    },
+    {
+      "entity": "Effect technical intent/outcome",
+      "authoritative_owner": "AgenTools Actions",
+      "platform_allowed": "Committed tenant/action/effect-key/request-hash intent, owner_operation_ref, known/unknown outcome ref.",
+      "platform_forbidden": "Authoritative domain ledger; blind retry after ambiguous IO; cancellation hiding an unresolved effect.",
+      "port_boundary": "EffectOwner",
+      "current_guard": "Current owner permission/consent/emergency guards and fence at dispatch; owner probe before retry.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "new platform runtime planned"
+    },
+    {
+      "entity": "Domain write/facts",
+      "authoritative_owner": "host/domain owner",
+      "platform_allowed": "Opaque operation refs and allowed result projections.",
+      "platform_forbidden": "Second business database or owner authorization engine.",
+      "port_boundary": "EffectOwner/HostSecurity",
+      "current_guard": "Domain owner authorizes its own write from current facts, independently of snapshot pins.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "not qualified here"
+    },
+    {
+      "entity": "Delivery intent",
+      "authoritative_owner": "AgenTools Runtime",
+      "platform_allowed": "Durable outbox with stable delivery identity, bounded encrypted temporary payload, retention deadline, receipt/ref/hash.",
+      "platform_forbidden": "Second transcript archive or claim completed means delivered.",
+      "port_boundary": "Delivery",
+      "current_guard": "Current recipient visibility/consent before disclosure; unknown delivery reconciles by same identity.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "new platform runtime planned"
+    },
+    {
+      "entity": "Visible message/membership/history/cursor",
+      "authoritative_owner": "Chatom via host Messenger",
+      "platform_allowed": "Message refs, allowed history projection and summary refs.",
+      "platform_forbidden": "Canonical message/history/membership database in AgenTools.",
+      "port_boundary": "ContextSources + Delivery",
+      "current_guard": "Chatom/host current membership and visibility on every read/disclosure.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "not qualified here"
+    },
+    {
+      "entity": "Media/STT/TTS/playout/reconnect",
+      "authoritative_owner": "Loqum",
+      "platform_allowed": "Opaque media/session/transcript segment refs and allowed normalized input.",
+      "platform_forbidden": "Competing media session/reconnect/playout owner or second model loop.",
+      "port_boundary": "optional Loqum bridge",
+      "current_guard": "Loqum/host media consent and session policy; late events cannot mutate terminal runs.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "not qualified here"
+    },
+    {
+      "entity": "EducationSession/pedagogical packs/providers/scorers",
+      "authoritative_owner": "Edufy AiCore",
+      "platform_allowed": "Technical refs to host-provided bundles/sessions and authorized evaluation results.",
+      "platform_forbidden": "Lessons/students/grades imports into core; ownership transfer or school production cutover.",
+      "port_boundary": "host education adapter",
+      "current_guard": "Edufy consent/rights/handoff current; host-contract harness is not host_e2e.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "not qualified here"
+    },
+    {
+      "entity": "Person-level knowledge map",
+      "authoritative_owner": "Edufy AiCore",
+      "platform_allowed": "Authorized derived retrieval refs and technical checkpoint.",
+      "platform_forbidden": "Second person knowledge map or independent learner-license policy.",
+      "port_boundary": "optional Knowledge/host adapter",
+      "current_guard": "Host current consent/rights and profile scope before retrieval/disclosure.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "not qualified here"
+    },
+    {
+      "entity": "Immutable bytes/version/hash/scan/hold/retention",
+      "authoritative_owner": "Files/Vaulter",
+      "platform_allowed": "Opaque file version/hash refs and bounded processing artifact refs.",
+      "platform_forbidden": "Canonical file storage, scan/hold or retention decision ownership.",
+      "port_boundary": "file/context source adapter",
+      "current_guard": "Owner scan/hold/current access gates; pins never bypass revoke.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "not qualified here"
+    },
+    {
+      "entity": "Material meaning/rights/publication/audience/license",
+      "authoritative_owner": "Library/Content",
+      "platform_allowed": "Authorized semantic refs and retrieval projections.",
+      "platform_forbidden": "Second knowledge license/rights engine or copied publication authority.",
+      "port_boundary": "optional Knowledge/host content adapter",
+      "current_guard": "External rights/publication/audience owner decides current access.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "not qualified here"
+    },
+    {
+      "entity": "Knowledge retrieval index/cache",
+      "authoritative_owner": "external source owners; AgenTools optional projection only",
+      "platform_allowed": "Rebuildable derived index/cache keyed by version/hash with bounded retention and current-rights invalidation.",
+      "platform_forbidden": "Canonical semantic source, person map or knowledge license ledger.",
+      "port_boundary": "optional Knowledge extension",
+      "current_guard": "Current source-owner permission/consent before retrieval and disclosure; missing rights never allow.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "not qualified here"
+    },
+    {
+      "entity": "Canonical usage metering/projections",
+      "authoritative_owner": "ControLLM",
+      "platform_allowed": "Versioned tenant/invocation usage facts, export outbox and acknowledgement refs.",
+      "platform_forbidden": "Second metering product or interpreting old input/output counters as complete unknown usage.",
+      "port_boundary": "UsageExport",
+      "current_guard": "Contract-version/hash deduplication; preserve nullable dimensions and explicit certainty.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "not qualified here"
+    },
+    {
+      "entity": "Entitlement/quota/admission",
+      "authoritative_owner": "Tariffler/host",
+      "platform_allowed": "Opaque owner decision/reservation refs and technical checkpoints.",
+      "platform_forbidden": "agt_budget_limits entitlement engine or granting billable permission during owner outage.",
+      "port_boundary": "Admission",
+      "current_guard": "Current owner admission immediately before billable IO; unavailable is non-green.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "not qualified here"
+    },
+    {
+      "entity": "Money authorization/reservation/settlement",
+      "authoritative_owner": "Commerce/Billium/current money owner",
+      "platform_allowed": "Opaque owner reservation/operation refs and reconciliation status.",
+      "platform_forbidden": "Money ledger, local settlement or quote computed with binary float.",
+      "port_boundary": "Money",
+      "current_guard": "Money owner current authorization and idempotency; amount uses owner exact minor/decimal contract.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "not qualified here"
+    },
+    {
+      "entity": "Existing school billing",
+      "authoritative_owner": "existing school Billing owner",
+      "platform_allowed": "Only explicit owner-contract refs when separately integrated.",
+      "platform_forbidden": "Unordered data migration or replacement of existing Billing.",
+      "port_boundary": "host money adapter",
+      "current_guard": "Separate proven migration/owner authorization would be needed; not part of this item.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "not qualified here"
+    },
+    {
+      "entity": "Host permission/consent/facts",
+      "authoritative_owner": "host",
+      "platform_allowed": "Request-scoped trusted evidence refs and bounded facts snapshots.",
+      "platform_forbidden": "Platform becoming current permission, consent or business-fact authority.",
+      "port_boundary": "HostSecurity/ContextSources",
+      "current_guard": "Each owner rechecks immediately before its own write or disclosure; guard failure cannot be overridden by a plugin.",
+      "identity_rule": "Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.",
+      "uncertainty": "Known/unknown preserved; no fabricated success or zero.",
+      "external_implementation_evidence": "not qualified here"
+    }
+  ],
+  "sources_of_truth": "External owner facts remain authoritative. Platform owns technical orchestration/journal/outbox state only; no second transcript/money/metering/entitlement/knowledge-license owner.",
+  "platform_sql_scope": [
+    "session/turn/run/invocation checkpoints",
+    "context/bundle/version refs and hashes",
+    "Action journal/effect refs under dated semantics",
+    "proposal identity map",
+    "delivery and usage export outboxes",
+    "opaque external reservation refs"
+  ],
+  "single_loop": "AgenTools Runtime",
+  "privacy_policy": "Minimal purpose-bound refs/projections. Temporary payload retention and encryption are required design contracts; no storage implementation claimed. Secrets/raw provider response never enter public error.",
+  "certainty_policy": "Unknown effect/invocation/delivery/usage/admission is not failed/success/zero/allow. Current owner policy and emergency guards override pins.",
+  "contract_refs": [
+    {
+      "path": "@plan/knowledge/eco.ownership.json",
+      "section": "ownership",
+      "sha256": "840fdb0e20c4ce6e2625180e9a4c7affb34437076ddd7518c35e1a1f17f142f2"
+    },
+    {
+      "path": "@plan/knowledge/cm.cm-source-baseline.json",
+      "section": "cm-source-baseline",
+      "sha256": "129f99577da00774e56a92a5db51f4b702fe9d1b8c04ada42ed46f848b3413d3"
+    }
+  ],
+  "source_baseline": [
+    {
+      "path": "php/src/Ops/CostRecorder.php",
+      "sha256": "bc3870b8dec0374aa15bb1cca8ce51a4d403f6ceded77a5d89c1b937a6f045a3",
+      "symbol": "calculateAmountMinor"
+    },
+    {
+      "path": "docs/platform/loop-ownership.json",
+      "sha256": "64507a9ec7f3d5df9dea0a90886357b711ea880b8c60ba240c427b0fbd28475a",
+      "symbol": "\"ownership\""
+    }
+  ],
+  "evidence_boundary": "Provided owner decisions and adopted contracts, plus inspected source baseline. No external owner implementation, FOUNDATION/HYBRID gate, provider live or pilot readiness asserted.",
+  "invariants": {
+    "platform_second_transcript": false,
+    "platform_money_ledger": false,
+    "platform_metering_product": false,
+    "platform_entitlement_engine": false,
+    "platform_knowledge_license_owner": false,
+    "unknown_is_zero": false,
+    "current_owner_permissions_override_pins": true,
+    "identity": {
+      "scope": "tenant",
+      "same_hash": "replay_same_identity",
+      "different_hash": "integrity_conflict"
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "revision": "platform/runtime/v1",
+  "evidence_tier": "unit",
+  "run": {
+    "status_owner": "Common/RunStatus",
+    "checkpoint_owner": "Common/RunCheckpoint",
+    "command_owner": "Runtime/RunCommand",
+    "reducer_owner": "Runtime/RunState",
+    "commands": "Tenant/run/command/step/next/policy hash; attempt version/claim_epoch are fences, excluded from identity. Same command returns saved original outcome before stale-fence rejection. Differing hash conflicts. New command uses checkpoint CAS. Cancellation completion requires tenant-scoped policy evidence and no unresolved/unknown effects.",
+    "storage": "Adapter must atomically CAS checkpoint + command outcome; reducer is pure and does not claim database durability.",
+    "delivery": "Separate DeliveryIntent/OperationReceipt; Run terminal status does not rewrite delivery/action outcomes."
+  },
+  "registry": {
+    "owner": "Actions/ActionRegistry",
+    "registration": "Code-only ActionRegistration(ActionDefinition, ActionHandler); no model/config hydration, dynamic FQN/SQL/URL resolution or effect invocation.",
+    "definition_hash": "sha-256(JCS({revision: platform/action-definition/v1, id, version, ...metadata})); global immutable code content, not a tenant submission identity.",
+    "views": [
+      "executionView: pinned definition + opaque owner binding after current access intersection",
+      "modelView: allowed definition refs + canonical input schema",
+      "adminView: allowed definition refs + full immutable metadata"
+    ],
+    "intersection": [
+      "registered",
+      "profile",
+      "skill",
+      "host",
+      "session",
+      "operational availability",
+      "required scopes"
+    ],
+    "schema": "Canonical immutable JSON schema strings; all views derive from one inputSchema. Local InputSchemaValidator port validates exact same schema before submit. Schema ref resolution must remain local/fail closed."
+  },
+  "actions": {
+    "facade": "Actions/ActionApplication",
+    "submission": "ActionSubmission binds raw input to tenant-scoped action-input hash and typed ActionRequest. No assistant is needed.",
+    "submit_returns": "Actions/ActionReceipt contains safe ActionView: existing Common/ActionReceipt dated action ref/status/version + pinned definition_ref/hash + safeNextStep. It means durable accepted only when lifecycle adapter has committed, never completed by inference.",
+    "lifecycle_port": "Actions/ActionLifecycle owns atomic submission-key reservation and dated journal delegation. SDK bridge must use ActionReducer/EventStore, ConfirmationService and IdempotencyCoordinator; no replacement reducer, token protocol or effect loop.",
+    "status": "Refresh host context; tenant-scoped safe metadata only; check pinned registration and current intersection before disclosure.",
+    "cancel": "Durable request; terminal receipt and definition/result refs cannot change. Compensation is a separate explicit authorized action.",
+    "reconcile": "No caller-supplied owner operation key. Adapter loads original saved key, queries status, CAS known outcome. Unknown/missing stays backoff/manual with reconciliation_required and no write retry.",
+    "mapping": "Common/ActionPhaseMapping validates journal status: pending->created; ready->running with internal eligibility; executing->applying; succeeded->completed; reconciling->reconciliation_required. Cancellation is event/flag, no new dated ActionStatus.",
+    "dispatch_guards": "Facade checks do not grant effect execution. Adapter/owner must recheck current permissions, emergency/revocation, confirmation, deadline, admission and hardened idempotency at dispatch.",
+    "operation_receipts": "cancel returns CancelReceipt(commandRef, view); reconcile returns ReconcileReceipt(commandRef, view). Status returns ActionView. Receipt wrappers add no new wire status."
+  },
+  "limitations": [
+    "Pure unit contracts only. Scripted memory lifecycle in tests is not a production adapter or a database.",
+    "RUN-007 and V2ALL-STATES-* exercise core boundaries at unit tier here; isolated PostgreSQL concurrency/recovery and host e2e are pending their owning adapters.",
+    "SDK dated reducer is reused in tests; actual production SDK bridge/confirmation/write composition belongs to owning P3/P5 slices. No provider/production readiness claim."
+  ]
+}

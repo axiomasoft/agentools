@@ -1,0 +1,680 @@
+{
+  "document_kind": "package-map",
+  "status": "recorded",
+  "plan_id": "PLAN2",
+  "subject": "PLAN2.P1.4",
+  "evidence_tier": "design_source_inspection",
+  "php_packages": [
+    {
+      "name": "agentools/sdk",
+      "path": "php/",
+      "psr4": {
+        "AgenTools\\": "src/"
+      },
+      "role": "legacy-sdk",
+      "depends_on": [],
+      "status": "existing",
+      "minimum_php": ">=8.3",
+      "production_install": true,
+      "autoload_contour": "production",
+      "optional_for_direct_sdk": false,
+      "optional_for_platform_profile": false,
+      "selection_rationale": "Preserve current production package/FQNs/ports/direct Actions; actual external dependencies remain in observed manifest/lock.",
+      "implementation_owner": "existing SDK",
+      "manifest": "php/composer.json",
+      "target_lock_status": "existing source/lock",
+      "license": "proprietary; private source policy, no public release authorization"
+    },
+    {
+      "name": "agentools/platform-core",
+      "path": "packages/agentools-core/",
+      "psr4": {
+        "AgenToolsPlatform\\Core\\": "src/"
+      },
+      "role": "core",
+      "depends_on": [],
+      "status": "planned",
+      "minimum_php": ">=8.3",
+      "production_install": true,
+      "autoload_contour": "production",
+      "optional_for_direct_sdk": true,
+      "optional_for_platform_profile": false,
+      "selection_rationale": "Pure values, deterministic policy and ports for Common/Security/Profiles/Context/Models/Runtime/Actions; no SDK/framework/domain/IO dependency.",
+      "implementation_owner": "P3.1",
+      "manifest": "packages/agentools-core/composer.json",
+      "target_lock_status": "not_created; owning implementation task must create and verify before runtime qualification",
+      "license": "proprietary; private source policy, no public release authorization"
+    },
+    {
+      "name": "agentools/platform-sdk-bridge",
+      "path": "packages/agentools-sdk-bridge/",
+      "psr4": {
+        "AgenToolsPlatform\\SdkBridge\\": "src/"
+      },
+      "role": "adapter",
+      "depends_on": [
+        "agentools/platform-core",
+        "agentools/sdk"
+      ],
+      "status": "planned",
+      "minimum_php": ">=8.3",
+      "production_install": true,
+      "autoload_contour": "production",
+      "optional_for_direct_sdk": true,
+      "optional_for_platform_profile": true,
+      "selection_rationale": "Thin production adapter delegates dated ActionReducer/EventStore/ConfirmationService/IdempotencyCoordinator and legacy respond/ScenarioRunner; avoids core importing the SDK IO surface. No second reducer or loop.",
+      "implementation_owner": "P3.1/P4.1/P5 owning slices",
+      "manifest": "packages/agentools-sdk-bridge/composer.json",
+      "target_lock_status": "not_created; owning implementation task must create and verify before runtime qualification",
+      "license": "proprietary; private source policy, no public release authorization"
+    },
+    {
+      "name": "agentools/platform-postgres",
+      "path": "packages/agentools-postgres/",
+      "psr4": {
+        "AgenToolsPlatform\\Postgres\\": "src/"
+      },
+      "role": "persistence",
+      "depends_on": [
+        "agentools/platform-core",
+        "agentools/sdk"
+      ],
+      "status": "planned",
+      "minimum_php": ">=8.3",
+      "production_install": true,
+      "autoload_contour": "production",
+      "optional_for_direct_sdk": true,
+      "optional_for_platform_profile": true,
+      "selection_rationale": "Technical platform stores/CAS/outbox; reuse existing SDK PostgreSQL event/idempotency/token stores through their dated interfaces. Only isolated PG may qualify recovery.",
+      "implementation_owner": "P3.1/P3.2",
+      "manifest": "packages/agentools-postgres/composer.json",
+      "target_lock_status": "not_created; owning implementation task must create and verify before runtime qualification",
+      "license": "proprietary; private source policy, no public release authorization"
+    },
+    {
+      "name": "agentools/platform-model-adapter",
+      "path": "packages/agentools-model-adapter/",
+      "psr4": {
+        "AgenToolsPlatform\\ModelAdapter\\": "src/"
+      },
+      "role": "adapter",
+      "depends_on": [
+        "agentools/platform-core"
+      ],
+      "status": "planned",
+      "minimum_php": ">=8.3",
+      "production_install": true,
+      "autoload_contour": "production",
+      "optional_for_direct_sdk": true,
+      "optional_for_platform_profile": true,
+      "selection_rationale": "P1.2 choice C: direct Anthropic Messages via injected IO port, no laravel/ai, no automatic effect/tool loop.",
+      "implementation_owner": "P4.2",
+      "manifest": "packages/agentools-model-adapter/composer.json",
+      "target_lock_status": "not_created; owning implementation task must create and verify before runtime qualification",
+      "license": "proprietary; private source policy, no public release authorization"
+    },
+    {
+      "name": "agentools/platform-laravel",
+      "path": "packages/agentools-laravel/",
+      "psr4": {
+        "AgenToolsPlatform\\Laravel\\": "src/"
+      },
+      "role": "composition",
+      "depends_on": [
+        "agentools/platform-core",
+        "agentools/platform-postgres",
+        "agentools/platform-sdk-bridge",
+        "agentools/platform-model-adapter"
+      ],
+      "status": "planned",
+      "minimum_php": ">=8.3",
+      "production_install": true,
+      "autoload_contour": "production",
+      "optional_for_direct_sdk": true,
+      "optional_for_platform_profile": true,
+      "selection_rationale": "Explicit host/container/job bindings over trusted ports; Laravel lock requirements remain adapter-local.",
+      "implementation_owner": "P6",
+      "manifest": "packages/agentools-laravel/composer.json",
+      "target_lock_status": "not_created; owning implementation task must create and verify before runtime qualification",
+      "license": "proprietary; private source policy, no public release authorization"
+    },
+    {
+      "name": "agentools/platform-testing",
+      "path": "packages/agentools-testing/",
+      "psr4": {
+        "AgenToolsPlatform\\Testing\\": "src/"
+      },
+      "role": "testing",
+      "depends_on": [
+        "agentools/platform-core"
+      ],
+      "status": "planned",
+      "minimum_php": ">=8.3",
+      "production_install": false,
+      "autoload_contour": "dev-only",
+      "optional_for_direct_sdk": true,
+      "optional_for_platform_profile": true,
+      "selection_rationale": "Guard-preserving scripted transport and host-contract fixtures; absent from production --no-dev closures.",
+      "implementation_owner": "P3.1/P13",
+      "manifest": "packages/agentools-testing/composer.json",
+      "target_lock_status": "not_created; owning implementation task must create and verify before runtime qualification",
+      "license": "proprietary; private source policy, no public release authorization"
+    },
+    {
+      "name": "agentools/platform-knowledge",
+      "path": "extensions/knowledge/",
+      "psr4": {
+        "AgenToolsPlatform\\Knowledge\\": "src/"
+      },
+      "role": "extension",
+      "depends_on": [
+        "agentools/platform-core"
+      ],
+      "status": "planned",
+      "minimum_php": ">=8.3",
+      "production_install": true,
+      "autoload_contour": "production",
+      "optional_for_direct_sdk": true,
+      "optional_for_platform_profile": true,
+      "selection_rationale": "Optional retrieval/projection adapter; license/rights/canonical person knowledge remain external owners.",
+      "implementation_owner": "P10",
+      "manifest": "extensions/knowledge/composer.json",
+      "target_lock_status": "not_created; owning implementation task must create and verify before runtime qualification",
+      "license": "proprietary; private source policy, no public release authorization"
+    },
+    {
+      "name": "agentools/platform-chatom",
+      "path": "extensions/chatom/",
+      "psr4": {
+        "AgenToolsPlatform\\ChatomBridge\\": "src/"
+      },
+      "role": "extension",
+      "depends_on": [
+        "agentools/platform-core"
+      ],
+      "status": "planned",
+      "minimum_php": ">=8.3",
+      "production_install": true,
+      "autoload_contour": "production",
+      "optional_for_direct_sdk": true,
+      "optional_for_platform_profile": true,
+      "selection_rationale": "Optional host Messenger bridge; visible message/history/membership/cursor stay Chatom-owned.",
+      "implementation_owner": "P7/P8",
+      "manifest": "extensions/chatom/composer.json",
+      "target_lock_status": "not_created; owning implementation task must create and verify before runtime qualification",
+      "license": "proprietary; private source policy, no public release authorization"
+    },
+    {
+      "name": "agentools/platform-loqum",
+      "path": "extensions/loqum/",
+      "psr4": {
+        "AgenToolsPlatform\\LoqumBridge\\": "src/"
+      },
+      "role": "extension",
+      "depends_on": [
+        "agentools/platform-core"
+      ],
+      "status": "planned",
+      "minimum_php": ">=8.3",
+      "production_install": true,
+      "autoload_contour": "production",
+      "optional_for_direct_sdk": true,
+      "optional_for_platform_profile": true,
+      "selection_rationale": "Optional media/STT/TTS/playout/reconnect bridge; AgenTools owns model loop only.",
+      "implementation_owner": "P8",
+      "manifest": "extensions/loqum/composer.json",
+      "target_lock_status": "not_created; owning implementation task must create and verify before runtime qualification",
+      "license": "proprietary; private source policy, no public release authorization"
+    },
+    {
+      "name": "agentools/platform-filament",
+      "path": "extensions/filament/",
+      "psr4": {
+        "AgenToolsPlatform\\Filament\\": "src/"
+      },
+      "role": "extension",
+      "depends_on": [
+        "agentools/platform-laravel"
+      ],
+      "status": "planned",
+      "minimum_php": ">=8.3",
+      "production_install": true,
+      "autoload_contour": "production",
+      "optional_for_direct_sdk": true,
+      "optional_for_platform_profile": true,
+      "selection_rationale": "Optional admin views over the same ActionDefinition; no handler/class/SQL/URL registration from DB.",
+      "implementation_owner": "P6/P7",
+      "manifest": "extensions/filament/composer.json",
+      "target_lock_status": "not_created; owning implementation task must create and verify before runtime qualification",
+      "license": "proprietary; private source policy, no public release authorization"
+    },
+    {
+      "name": "agentools/platform-scheduler",
+      "path": "extensions/scheduler/",
+      "psr4": {
+        "AgenToolsPlatform\\Scheduler\\": "src/"
+      },
+      "role": "extension",
+      "depends_on": [
+        "agentools/platform-laravel"
+      ],
+      "status": "planned",
+      "minimum_php": ">=8.3",
+      "production_install": true,
+      "autoload_contour": "production",
+      "optional_for_direct_sdk": true,
+      "optional_for_platform_profile": true,
+      "selection_rationale": "Optional trigger adapter; same guarded ingress and stable source identity, no alternate loop; Cadence not inherited.",
+      "implementation_owner": "optional scheduler owner",
+      "manifest": "extensions/scheduler/composer.json",
+      "target_lock_status": "not_created; owning implementation task must create and verify before runtime qualification",
+      "license": "proprietary; private source policy, no public release authorization"
+    }
+  ],
+  "native_dart": [
+    {
+      "package": "agentools",
+      "path": "dart/agentools/",
+      "entry": "package:agentools/agentools.dart",
+      "sdk": "^3.11.0",
+      "status": "existing",
+      "new_php_platform_required": false,
+      "offline_direct_actions": true
+    },
+    {
+      "package": "agentools_mcp_dart",
+      "path": "dart/agentools_mcp_dart/",
+      "entry": "package:agentools_mcp_dart/agentools_mcp_dart.dart",
+      "status": "existing",
+      "optional": true,
+      "distribution": "private-paired; core remains independent"
+    }
+  ],
+  "policy": {
+    "public_release": false,
+    "package_rename": false,
+    "license_change": false,
+    "existing_php_minimum": ">=8.3",
+    "core_php_minimum": ">=8.3",
+    "root_namespace_owner": {
+      "AgenTools\\": "agentools/sdk"
+    },
+    "new_root_namespace": "AgenToolsPlatform\\ is not registered as a package-wide prefix; each non-overlapping child prefix has exactly one owner.",
+    "production_testing_dependency": false,
+    "new_package_distribution": "Private local/path or owner-controlled private artifacts only; manifests/locks/no-dev checks must be created by owning tasks. No registry upload or public name availability claim.",
+    "core_forbidden": [
+      "framework",
+      "domain",
+      "IO",
+      "container",
+      "Eloquent",
+      "Request",
+      "PDO",
+      "SQL",
+      "laravel/ai",
+      "Chatom",
+      "Loqum",
+      "Edufy",
+      "Filament",
+      "filesystem",
+      "network",
+      "clock/random reads in reducers"
+    ],
+    "action_handler_policy": "One code-only ActionDefinition registry projects execution/model/admin views. DB configuration never loads PHP classes, SQL/URLs or tools. Mandatory guards cannot be removed by plugins/raw/fakes.",
+    "loop_owner": "AgenTools Runtime",
+    "simultaneous_turn_loops": false,
+    "supported_loop_mode": "separate-transport",
+    "loop_proven": false,
+    "target_lock_gate": "Unknown/missing/corrupt required evidence is non-green; absent planned source does not prove purity. No new package installed or dependency resolved in this ADR."
+  },
+  "module_graph": {
+    "Common": [],
+    "Security": [
+      "Common"
+    ],
+    "Profiles": [
+      "Common"
+    ],
+    "Context": [
+      "Common",
+      "Security",
+      "Profiles"
+    ],
+    "Models": [
+      "Common",
+      "Profiles",
+      "Context"
+    ],
+    "Actions": [
+      "Common",
+      "Security",
+      "Profiles"
+    ],
+    "Runtime": [
+      "Common",
+      "Security",
+      "Profiles",
+      "Context",
+      "Models",
+      "Actions"
+    ]
+  },
+  "ports": [
+    {
+      "module": "Security",
+      "port_role": "HostSecurity",
+      "adapter_owner": "Host adapters",
+      "contract": "Trusted context factory and current permission/consent/emergency checks before owner write/disclosure; caller flags never grant authority.",
+      "symbol_status": "logical role; concrete exported signatures belong to owning implementation task"
+    },
+    {
+      "module": "Profiles",
+      "port_role": "ProfileRepository",
+      "adapter_owner": "Postgres/host adapters",
+      "contract": "Immutable bundle/session pins; pins never override current revoke/emergency policy.",
+      "symbol_status": "logical role; concrete exported signatures belong to owning implementation task"
+    },
+    {
+      "module": "Context",
+      "port_role": "ContextSources",
+      "adapter_owner": "Chatom/host/optional knowledge adapters",
+      "contract": "Budgeted manifests of authorized refs/hashes, not a second transcript or person knowledge store.",
+      "symbol_status": "logical role; concrete exported signatures belong to owning implementation task"
+    },
+    {
+      "module": "Models",
+      "port_role": "ModelTransport",
+      "adapter_owner": "platform-model-adapter",
+      "contract": "One exchange to typed response/proposals; no direct domain effects; unknown capability denied before send.",
+      "symbol_status": "logical role; concrete exported signatures belong to owning implementation task"
+    },
+    {
+      "module": "Runtime",
+      "port_role": "RunStore",
+      "adapter_owner": "platform-postgres",
+      "contract": "Atomic accepted turn/run/outbox; run_step/version CAS/claim_epoch; wait releases worker and SQL lock.",
+      "symbol_status": "logical role; concrete exported signatures belong to owning implementation task"
+    },
+    {
+      "module": "Actions",
+      "port_role": "DatedActionJournal",
+      "adapter_owner": "platform-sdk-bridge + platform-postgres",
+      "contract": "Delegates existing EventStore.append/load and pure dated reducer; seq/hash/epoch semantics preserved.",
+      "symbol_status": "logical role; concrete exported signatures belong to owning implementation task"
+    },
+    {
+      "module": "Actions",
+      "port_role": "Confirmation",
+      "adapter_owner": "platform-sdk-bridge",
+      "contract": "Delegates trusted-constructor ConfirmationService; durable proposal mapping before prepare, saved result reused on retry.",
+      "symbol_status": "logical role; concrete exported signatures belong to owning implementation task"
+    },
+    {
+      "module": "Actions",
+      "port_role": "Idempotency",
+      "adapter_owner": "platform-sdk-bridge",
+      "contract": "Delegates fenced IdempotencyCoordinator/Store; unknown effect is not a safe retry and expiry semantics unchanged.",
+      "symbol_status": "logical role; concrete exported signatures belong to owning implementation task"
+    },
+    {
+      "module": "Actions",
+      "port_role": "EffectOwner",
+      "adapter_owner": "Host/domain adapters",
+      "contract": "Code-only ActionDefinition handler, committed intent before IO, current owner guards and fence; ambiguous result reconciles by stable effect key.",
+      "symbol_status": "logical role; concrete exported signatures belong to owning implementation task"
+    },
+    {
+      "module": "Runtime",
+      "port_role": "Delivery",
+      "adapter_owner": "Host Messenger/Chatom bridge",
+      "contract": "Stable outbox delivery identity; disclose only after current visibility check; completed != delivered.",
+      "symbol_status": "logical role; concrete exported signatures belong to owning implementation task"
+    },
+    {
+      "module": "Models",
+      "port_role": "UsageExport",
+      "adapter_owner": "ControLLM host bridge",
+      "contract": "Versioned tenant/invocation facts/export outbox, null/unknown preserved; canonical metering external.",
+      "symbol_status": "logical role; concrete exported signatures belong to owning implementation task"
+    },
+    {
+      "module": "Security",
+      "port_role": "Admission",
+      "adapter_owner": "Tariffler/host bridge",
+      "contract": "Entitlement/quota owner decides; unavailable is not locally manufactured billable permission.",
+      "symbol_status": "logical role; concrete exported signatures belong to owning implementation task"
+    },
+    {
+      "module": "Actions",
+      "port_role": "Money",
+      "adapter_owner": "Commerce/Billium/host bridge",
+      "contract": "Opaque reservation/settlement refs only; no platform money ledger or binary-float quote.",
+      "symbol_status": "logical role; concrete exported signatures belong to owning implementation task"
+    }
+  ],
+  "dependency_selections": [
+    {
+      "id": "existing-sdk",
+      "consumer": "agentools/sdk",
+      "selection": "existing",
+      "source_refs": [
+        {
+          "path": "php/composer.json",
+          "sha256": "e4257bfb8d748df5e5e4a2007be75ae7aaaedf9fc938d1222a67ff353c8459df"
+        },
+        {
+          "path": "php/composer.lock",
+          "sha256": "8edaad1ab9dceecf940e00405ac44ca5d7e619aa0bb5584bc3d8e5b3db67955d"
+        }
+      ],
+      "target_version": null,
+      "rule": "Keep current manifest and exact private lock; no rename, PHP floor rise or dependency promotion."
+    },
+    {
+      "id": "pure-core",
+      "consumer": "agentools/platform-core",
+      "selection": "selected-design",
+      "external_packages": [],
+      "php": ">=8.3",
+      "source_refs": [
+        {
+          "path": "php/composer.json",
+          "sha256": "e4257bfb8d748df5e5e4a2007be75ae7aaaedf9fc938d1222a67ff353c8459df"
+        },
+        {
+          "path": "docs/platform/compatibility.json",
+          "sha256": "69c5fe4b5df6f993d75c45acb379ace7ae1744dba702bee73486102288cf9514"
+        }
+      ],
+      "rule": "Only core-owned values/ports and deterministic PHP language features; no IO merely because PHP exposes it."
+    },
+    {
+      "id": "pdo-postgres",
+      "consumer": "agentools/platform-postgres",
+      "selection": "selected-design",
+      "external_packages": [
+        "ext-pdo",
+        "ext-pdo_pgsql"
+      ],
+      "source_refs": [
+        {
+          "path": "php/src/Persistence/PdoPostgresEventStore.php",
+          "sha256": "1e43be4ed66c3c325120310e7e8cfe978ca2506a08e2d5ff1540edc3861779b1"
+        },
+        {
+          "path": "php/src/Idempotency/PdoPostgresIdempotencyStore.php",
+          "sha256": "9da182d9d5bca833e5a4eef9f58d20742548131b78bdb4264b8c059366dda091"
+        },
+        {
+          "path": "php/src/Confirmation/PdoPostgresConfirmationTokenStore.php",
+          "sha256": "d3148e5bea13a571141fd7ec5d30fed5ef3d4a07d3899d8d50f01fe16fad992a"
+        }
+      ],
+      "target_version": null,
+      "rule": "Driver availability is adapter-local; production DB schema/driver/server compatibility and new lock are pending owning task."
+    },
+    {
+      "id": "model-driver",
+      "consumer": "agentools/platform-model-adapter",
+      "selection": "selected-design",
+      "driver": "direct-anthropic-messages",
+      "protocol_version": "2026-10-21",
+      "sdk_package": null,
+      "sdk_version": null,
+      "framework_dependency": null,
+      "source_refs": [
+        {
+          "path": "docs/platform/loop-ownership.json",
+          "sha256": "64507a9ec7f3d5df9dea0a90886357b711ea880b8c60ba240c427b0fbd28475a"
+        },
+        {
+          "path": "docs/platform/sdk-capabilities.json",
+          "sha256": "c0ea4f61db53ff638c89ae9e3240012739afa6cc48334bb0a146a89cf52e5041"
+        }
+      ],
+      "target_lock": null,
+      "rule": "Reuse recorded P1.2 choice C; no SDK pin or laravel/ai. Production HTTP client/stream implementation and lock not selected by an offline probe."
+    },
+    {
+      "id": "http-client",
+      "consumer": "agentools/platform-model-adapter",
+      "selection": "unverified-not-selected",
+      "target_package": null,
+      "target_version": null,
+      "target_lock": null,
+      "source_refs": [],
+      "implementation_owner": "P4.2",
+      "target_need": "Real bounded HTTP/stream IO and cancellation",
+      "rule": "No numeric constraint inherited from Botkit or research lock. Required adapter cannot qualify until its target manifest/lock, PHP/runtime compatibility and no-dev/source tests exist."
+    },
+    {
+      "id": "laravel-framework",
+      "consumer": "agentools/platform-laravel",
+      "selection": "unverified-not-selected",
+      "target_package": null,
+      "target_version": null,
+      "target_lock": null,
+      "source_refs": [],
+      "implementation_owner": "P6",
+      "target_need": "Target host container/jobs/auth composition",
+      "rule": "No numeric constraint inherited from Botkit or research lock. Required adapter cannot qualify until its target manifest/lock, PHP/runtime compatibility and no-dev/source tests exist."
+    },
+    {
+      "id": "filament",
+      "consumer": "agentools/platform-filament",
+      "selection": "unverified-not-selected",
+      "target_package": null,
+      "target_version": null,
+      "target_lock": null,
+      "source_refs": [],
+      "implementation_owner": "P6/P7",
+      "target_need": "Target admin views, only when installed",
+      "rule": "No numeric constraint inherited from Botkit or research lock. Required adapter cannot qualify until its target manifest/lock, PHP/runtime compatibility and no-dev/source tests exist."
+    },
+    {
+      "id": "scheduler-backend",
+      "consumer": "agentools/platform-scheduler",
+      "selection": "unverified-not-selected",
+      "target_package": null,
+      "target_version": null,
+      "target_lock": null,
+      "source_refs": [],
+      "implementation_owner": "optional scheduler task",
+      "target_need": "Target scheduling trigger, not a loop",
+      "rule": "No numeric constraint inherited from Botkit or research lock. Required adapter cannot qualify until its target manifest/lock, PHP/runtime compatibility and no-dev/source tests exist."
+    },
+    {
+      "id": "chatom-client",
+      "consumer": "agentools/platform-chatom",
+      "selection": "unverified-not-selected",
+      "target_package": null,
+      "target_version": null,
+      "target_lock": null,
+      "source_refs": [],
+      "implementation_owner": "P7/P8",
+      "target_need": "Host Messenger bridge",
+      "rule": "No numeric constraint inherited from Botkit or research lock. Required adapter cannot qualify until its target manifest/lock, PHP/runtime compatibility and no-dev/source tests exist."
+    },
+    {
+      "id": "loqum-client",
+      "consumer": "agentools/platform-loqum",
+      "selection": "unverified-not-selected",
+      "target_package": null,
+      "target_version": null,
+      "target_lock": null,
+      "source_refs": [],
+      "implementation_owner": "P8",
+      "target_need": "Media session bridge",
+      "rule": "No numeric constraint inherited from Botkit or research lock. Required adapter cannot qualify until its target manifest/lock, PHP/runtime compatibility and no-dev/source tests exist."
+    }
+  ],
+  "local_dependency_observation": {
+    "path": "@plan/artifacts/implementation/P1.4/local-dependency-observation.json",
+    "sha256": "b22f983e78354d9950ca6f0ab285026e78c514bfb6a88719ccee74996eee7290"
+  },
+  "first_read_vertical": {
+    "production_closure": [
+      "agentools/platform-core",
+      "agentools/platform-postgres",
+      "agentools/platform-sdk-bridge",
+      "agentools/sdk"
+    ],
+    "test_profile": [
+      "agentools/platform-testing",
+      "scripted transport",
+      "one guarded read Action"
+    ],
+    "proof_required": [
+      "durable accepted input/proposal mapping",
+      "committed Action intent before IO",
+      "durable response and versioned nullable usage export",
+      "claim fencing/CAS and unknown-effect recovery in isolated PG"
+    ],
+    "later_order": [
+      "confirmation/write",
+      "target Laravel composition",
+      "optional advanced profiles/knowledge/hosts/voice"
+    ],
+    "runtime_implemented": false
+  },
+  "dependency_profiles": {
+    "direct_php_actions": [
+      "agentools/sdk"
+    ],
+    "offline_dart": [
+      "agentools"
+    ],
+    "assistant_headless": [
+      "agentools/platform-core",
+      "agentools/platform-sdk-bridge",
+      "agentools/platform-postgres",
+      "agentools/platform-model-adapter"
+    ],
+    "laravel_host": [
+      "agentools/platform-laravel"
+    ],
+    "optional_extensions": [
+      "agentools/platform-knowledge",
+      "agentools/platform-chatom",
+      "agentools/platform-loqum",
+      "agentools/platform-filament",
+      "agentools/platform-scheduler"
+    ]
+  },
+  "dated_contract_bridge": {
+    "actions": "Dated Action wire/ports remain owned by agentools/sdk; bridge translates only declared additive values, not statuses or guards. Core declares a narrow orchestration port and does not fork the dated EventStore/reducer/token protocol.",
+    "llm": "Existing PHP/Dart LlmPort.respond and ScenarioRunner remain native entrypoints. PHP compatibility adapter stays separate from the proposal-only transport; Dart sync API is not replaced by an implicit Future.",
+    "identity": "Keep both ScenarioRunner key derivations and persisted identity on retry. No old/new loop executes one turn. Durable proposal mapping reuses saved ConfirmationService result instead of regenerating prepare identity.",
+    "durability": "EffectCommitter local append is insufficient. Future dispatcher proves committed storage/fence/guards before calling an effect owner."
+  },
+  "planned_path_resolution": {
+    "old_cm_candidate": "packages/agentools-laravel-ai",
+    "selected": "packages/agentools-model-adapter",
+    "authority": "Current root.architecture + explicit P1.4 direct-driver instruction and accepted P1.2 C supersede the historical planned directory label; no API/namespace migration or plan-source edit."
+  },
+  "limitations": [
+    "All new packages/autoload mappings/ports are selected design, not created runtime.",
+    "Exact HTTP/framework/admin/scheduler/host-client target pins remain unverified and cannot qualify adapters.",
+    "No public registry reservation, license change, provider qualification, production rollout or sibling write."
+  ]
+}

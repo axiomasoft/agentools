@@ -1,0 +1,18 @@
+{
+  "id": "schema.16-bundle-pin",
+  "definition": "bundle_ref",
+  "data": {
+    "ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "bundle-1"
+    },
+    "version": 1,
+    "hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

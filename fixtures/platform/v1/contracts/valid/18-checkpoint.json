@@ -1,0 +1,21 @@
+{
+  "id": "schema.18-checkpoint",
+  "definition": "run_checkpoint",
+  "data": {
+    "run_id": {
+      "tenant_id": "tenant-a",
+      "kind": "run",
+      "id": "run-1"
+    },
+    "status": "running",
+    "version": 2,
+    "claim_epoch": 2,
+    "certainty": "known",
+    "unresolved_effects": false
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

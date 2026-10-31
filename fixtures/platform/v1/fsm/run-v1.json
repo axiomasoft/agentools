@@ -1,0 +1,50 @@
+{
+  "revision": "platform/run/v1",
+  "transitions": {
+    "accepted": [
+      "preparing",
+      "cancelling"
+    ],
+    "preparing": [
+      "running",
+      "failed",
+      "cancelling"
+    ],
+    "running": [
+      "waiting_action",
+      "waiting_confirmation",
+      "waiting_external",
+      "completed",
+      "failed",
+      "cancelling"
+    ],
+    "waiting_action": [
+      "running",
+      "failed",
+      "cancelling"
+    ],
+    "waiting_confirmation": [
+      "running",
+      "failed",
+      "cancelling"
+    ],
+    "waiting_external": [
+      "running",
+      "failed",
+      "cancelling"
+    ],
+    "cancelling": [
+      "cancelled"
+    ],
+    "completed": [],
+    "failed": [],
+    "cancelled": []
+  },
+  "terminal": [
+    "completed",
+    "failed",
+    "cancelled"
+  ],
+  "delivery": "separate",
+  "cancellation_requires_policy_evidence": true
+}

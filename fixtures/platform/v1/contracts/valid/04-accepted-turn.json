@@ -1,0 +1,24 @@
+{
+  "id": "schema.04-accepted-turn",
+  "definition": "accepted_turn",
+  "data": {
+    "source_key": "sha-256:f50e53c1d9f17bcf7dd02040fd1a980db0aa74682a058ea46757fa62fcc6dda6",
+    "source_payload_hash": "sha-256:139bff32a9694c5213fe5ac1514d1a3a462f5b7b0f8e79d06ae622b4f11cc6db",
+    "turn_id": {
+      "tenant_id": "tenant-a",
+      "kind": "turn",
+      "id": "turn-1"
+    },
+    "run_id": {
+      "tenant_id": "tenant-a",
+      "kind": "run",
+      "id": "run-1"
+    },
+    "status": "accepted"
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

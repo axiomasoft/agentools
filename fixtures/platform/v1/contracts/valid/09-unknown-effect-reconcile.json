@@ -1,0 +1,21 @@
+{
+  "id": "schema.09-unknown-effect-reconcile",
+  "definition": "run_checkpoint",
+  "data": {
+    "run_id": {
+      "tenant_id": "tenant-a",
+      "kind": "run",
+      "id": "run-1"
+    },
+    "status": "running",
+    "version": 2,
+    "claim_epoch": 2,
+    "certainty": "unknown",
+    "unresolved_effects": true
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

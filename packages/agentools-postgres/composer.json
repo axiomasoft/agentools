@@ -1,0 +1,81 @@
+{
+  "name": "agentools/platform-postgres",
+  "description": "Private additive PostgreSQL persistence and versioned platform migrations.",
+  "type": "library",
+  "license": "proprietary",
+  "require": {
+    "php": ">=8.3",
+    "ext-pdo": "*",
+    "ext-pdo_pgsql": "*",
+    "agentools/platform-core": "dev-main",
+    "agentools/sdk": "dev-main"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^2.2",
+    "phpunit/phpunit": "^11.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "AgenToolsPlatform\\Postgres\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AgenToolsPlatform\\Postgres\\Tests\\": "tests/"
+    }
+  },
+  "archive": {
+    "exclude": [
+      "/tests",
+      "/vendor",
+      "/phpunit.xml",
+      "/phpstan.neon",
+      "/composer.lock"
+    ]
+  },
+  "scripts": {
+    "test": [
+      "python3 tests/run.py",
+      "python3 tests/Runtime/run.py",
+      "python3 tests/Concurrency/run.py",
+      "python3 tests/Actions/run.py",
+      "python3 tests/Isolation/run.py --partition payloads"
+    ],
+    "analyse": "phpstan analyse -c phpstan.neon --no-progress"
+  },
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": false,
+    "platform": {
+      "php": "8.3.0"
+    }
+  },
+  "extra": {
+    "agentools": {
+      "private": true,
+      "evidence_tier": "isolated-postgres"
+    }
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../agentools-core",
+      "options": {
+        "symlink": false,
+        "versions": {
+          "agentools/platform-core": "dev-main"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "../../php",
+      "options": {
+        "symlink": false,
+        "versions": {
+          "agentools/sdk": "dev-main"
+        }
+      }
+    }
+  ]
+}

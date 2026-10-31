@@ -1,0 +1,20 @@
+{
+  "id": "schema.10-confirmation-input-substitution",
+  "definition": "platform_error",
+  "data": {
+    "code": "confirmation_invalid",
+    "retry_class": "never",
+    "certainty": "known",
+    "public_message_key": "agentools.platform.confirmation_invalid",
+    "trace_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "trace-1"
+    }
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

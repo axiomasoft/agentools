@@ -1,0 +1,1168 @@
+{
+  "document_kind": "platform-bootstrap",
+  "status": "recorded",
+  "plan_id": "PLAN2",
+  "source_revisions": {
+    "agentools": "8c22b5a2f139b5587ff735fb3eb16105420ffe18",
+    "botkit": "59c701335f31b09f617ff5473a61df3c2fdda54c"
+  },
+  "data_origin": "new-platform",
+  "botkit_data_migration": false,
+  "bootstrap_steps": [
+    {
+      "id": "B01-scaffold",
+      "operation": "Create P2 scaffold/testing and fail-closed platform gate, then actual platform schemas/fixtures and dated Action mapping. Consume P1.4 package map; new namespace child prefixes have one owner; preserve current SDK and frozen 2026-08. All names here remain planned until owning tasks create them.",
+      "verification": "Verify schema/fixture positive and negative controls, exact suite registry and missing-suite/zero-test/required-skip nonzero behavior; core source and production dependency checks must inspect real source, not absent directories.",
+      "owner": "P2.1 / P2.2 / P2.3 / P2.4"
+    },
+    {
+      "id": "B02-new-schema",
+      "operation": "Create new AgenTools SQL schema and migration/version record using P3.1 install path in a proven isolated PostgreSQL database. Create required package manifests/config/locks before their suites. Reuse existing dated SDK stores through their interfaces; no Botkit database/backup/reader required.",
+      "verification": "Before any mutation verify database name, owner and explicit isolated-test allow marker; refuse development/production DSNs. Assert tenant composite keys/FKs, id/hash conflict, version/CAS and clean install. Required real PostgreSQL missing is failure, not mock substitution.",
+      "owner": "P3.1 (schema/install owner), P3.2-P3.5 (durability slices)"
+    },
+    {
+      "id": "B03-registry-config",
+      "operation": "Register code-only ActionDefinition implementations and trusted host ports. Resolve versioned configuration/bundle/registry hashes and credential refs; the initial minimal code configuration supports the first vertical without requiring optional admin/scheduler or the later profile publisher. DB settings never load classes, SQL, arbitrary URLs or grant tools.",
+      "verification": "Reject missing/mismatched registry/hash/config versions and production InMemory/Fake persistence. Keep core construction free of PDO/network/framework; testing profile is explicit and retains tenant/purpose/tool/confirmation/disclosure guards.",
+      "owner": "P3.1 initial code registry/config; Profiles publisher P7.1"
+    },
+    {
+      "id": "B04-new-session",
+      "operation": "Create new tenant-bound AssistantSession/Turn/Run from trusted context, accepted source-event identity and payload hash. Bind immutable configuration/bundle and model/deployment versions; persist proposal, effect, delivery and usage mappings before their respective boundaries. No import of Botkit sessions/users.",
+      "verification": "Duplicate same tenant/key/hash replays saved identity/result; differing hash is integrity_conflict. Cross-tenant keys/FKs cannot link. Pins never grant current permissions: revoke/consent/emergency checks run immediately before disclosure/provider/owner IO; denied pins remain historical, never rewritten.",
+      "owner": "AgenTools Runtime / Profiles (owning P3/P5/P7 tasks)"
+    },
+    {
+      "id": "B05-read-vertical",
+      "operation": "Build the first headless read journey with real kernel/stores/isolated PG, scripted transport/external owners and one guarded read Action. Persist intake/run, invocation result/proposal map, committed intent, response/delivery and nullable versioned usage. Exactly AgenTools Runtime owns the turn loop.",
+      "verification": "Crash/replay from persisted boundaries preserves Turn/Run/Action/effect/delivery identities; stale epochs fail CAS. No external IO under SQL lock. Outbox/scanner recovers after commit-before-enqueue; unknown differs from failed/success/zero. Scripted provider is not live qualification.",
+      "owner": "P3/P4/P5 owning tasks; P1.4 first_read_vertical"
+    },
+    {
+      "id": "B06-confirmation-write",
+      "operation": "After the read vertical, add confirmation/write using existing ConfirmationService, token replay and fenced IdempotencyCoordinator. Reuse saved prepare result via durable proposal mapping; current owner authorization and committed intent/fence are required before effects.",
+      "verification": "Exercise denial/revoke/deadline/hash mismatch, duplicate confirmation, stale worker and owner-accepted/lost-reply. Do not reinterpret EffectCommitter local append as durable dispatcher proof. Unknown effect remains unresolved until owner lookup/manual outcome; no blind retry or compensating effect without separate authority.",
+      "owner": "P5 Actions/Runtime; dated SDK bridge"
+    },
+    {
+      "id": "B07-laravel-composition",
+      "operation": "Compose headless Laravel bindings/factories/scoped request/job context and managed entrypoint after read and confirmation/write. Public routes opt-in; raw is guarded or privileged internal transport-only without domain effects. Code plugins cannot bypass mandatory guards. Optional Filament inspector is read-only until P7.7 after P7.1 publisher; scheduler is optional.",
+      "verification": "Apply shared guard matrix to every exposed managed/raw/build/stream/background/voice/direct-actions path. Test sequential tenant A→B and recycled worker/Octane cleanup after success/exception/cancel; no actor/credential/policy/profile/cache/diagnostic leak. No second effect-capable loop.",
+      "owner": "P6.1-P6.3; optional P6.4/P6.5 and P7.7 later"
+    },
+    {
+      "id": "B08-recovery-handoff",
+      "operation": "Rehearse clean target install, read/write scripted journeys, crash/restart, isolated backup restore and projection rebuild on new-platform data. Consume current baseline and all owning runtime receipts; follow the recovery matrix and exact historical case aliases below. This ordered contract is not authorization to run later tasks.",
+      "verification": "Use real kernel + isolated PG with scripted external ports. Compare append-only Action event sequence/digest, projections/checkpoints, stable identities, outbox receipts and usage corrections after restore; current revocation and compatible bundle recovery still hold. No Botkit cutover or production switch; P13.2/P13.3/P13.4 own broader gates.",
+      "owner": "P13.1 (after its declared upstream P12.5); P13.2 regression / P13.3 packaging / P13.4 final acceptance"
+    }
+  ],
+  "reuse_decisions": [
+    {
+      "capability_id": "agentools.action",
+      "disposition": "reuse",
+      "target_owner": "Existing AgenTools SDK; thin platform-sdk-bridge where needed",
+      "rationale": "Reuse in place the dated ports/reducer/confirmation/fencing/native API; do not relocate FQNs or change old retention/identity schemes.",
+      "evidence_refs": [
+        "inventory.agentools.action",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "agentools.confirmation",
+      "disposition": "reuse",
+      "target_owner": "Existing AgenTools SDK; thin platform-sdk-bridge where needed",
+      "rationale": "Reuse in place the dated ports/reducer/confirmation/fencing/native API; do not relocate FQNs or change old retention/identity schemes.",
+      "evidence_refs": [
+        "inventory.agentools.confirmation",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "agentools.persistence",
+      "disposition": "reuse",
+      "target_owner": "Existing AgenTools SDK; thin platform-sdk-bridge where needed",
+      "rationale": "Reuse in place the dated ports/reducer/confirmation/fencing/native API; do not relocate FQNs or change old retention/identity schemes.",
+      "evidence_refs": [
+        "inventory.agentools.persistence",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "agentools.scenario",
+      "disposition": "reuse",
+      "target_owner": "Existing AgenTools SDK; thin platform-sdk-bridge where needed",
+      "rationale": "Reuse in place the dated ports/reducer/confirmation/fencing/native API; do not relocate FQNs or change old retention/identity schemes.",
+      "evidence_refs": [
+        "inventory.agentools.scenario",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "agentools.fencing",
+      "disposition": "reuse",
+      "target_owner": "Existing AgenTools SDK; thin platform-sdk-bridge where needed",
+      "rationale": "Reuse in place the dated ports/reducer/confirmation/fencing/native API; do not relocate FQNs or change old retention/identity schemes.",
+      "evidence_refs": [
+        "inventory.agentools.fencing",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "agentools.journal-store",
+      "disposition": "reuse",
+      "target_owner": "Existing AgenTools SDK; thin platform-sdk-bridge where needed",
+      "rationale": "Reuse in place the dated ports/reducer/confirmation/fencing/native API; do not relocate FQNs or change old retention/identity schemes.",
+      "evidence_refs": [
+        "inventory.agentools.journal-store",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "agentools.dart",
+      "disposition": "reuse",
+      "target_owner": "Existing AgenTools SDK; thin platform-sdk-bridge where needed",
+      "rationale": "Reuse in place the dated ports/reducer/confirmation/fencing/native API; do not relocate FQNs or change old retention/identity schemes.",
+      "evidence_refs": [
+        "inventory.agentools.dart",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "agentools.token-replay",
+      "disposition": "reuse",
+      "target_owner": "Existing AgenTools SDK; thin platform-sdk-bridge where needed",
+      "rationale": "Reuse in place the dated ports/reducer/confirmation/fencing/native API; do not relocate FQNs or change old retention/identity schemes.",
+      "evidence_refs": [
+        "inventory.agentools.token-replay",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "agentools.wire-status",
+      "disposition": "reuse",
+      "target_owner": "Existing AgenTools SDK; thin platform-sdk-bridge where needed",
+      "rationale": "Reuse in place the dated ports/reducer/confirmation/fencing/native API; do not relocate FQNs or change old retention/identity schemes.",
+      "evidence_refs": [
+        "inventory.agentools.wire-status",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "agentools.scenario-retry",
+      "disposition": "reuse",
+      "target_owner": "Existing AgenTools SDK; thin platform-sdk-bridge where needed",
+      "rationale": "Reuse in place the dated ports/reducer/confirmation/fencing/native API; do not relocate FQNs or change old retention/identity schemes.",
+      "evidence_refs": [
+        "inventory.agentools.scenario-retry",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "agentools.effect",
+      "disposition": "adapt",
+      "target_owner": "Actions bridge + technical Run orchestration",
+      "rationale": "Preserve existing native behavior; add outer committed intent/CAS/fence/recovery proof. Local EffectCommitter append/long-operation class is not a durable assistant loop.",
+      "evidence_refs": [
+        "inventory.agentools.effect",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "agentools.long-operations",
+      "disposition": "adapt",
+      "target_owner": "Actions bridge + technical Run orchestration",
+      "rationale": "Preserve existing native behavior; add outer committed intent/CAS/fence/recovery proof. Local EffectCommitter append/long-operation class is not a durable assistant loop.",
+      "evidence_refs": [
+        "inventory.agentools.long-operations",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.managed",
+      "disposition": "replace",
+      "target_owner": "AgenTools Runtime + proposal-only ModelTransport",
+      "rationale": "One future turn loop, typed terminal/usage uncertainty and durable guarded Actions. No Botkit facade or donor loop.",
+      "evidence_refs": [
+        "inventory.botkit.managed",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.stream",
+      "disposition": "replace",
+      "target_owner": "AgenTools Runtime + proposal-only ModelTransport",
+      "rationale": "One future turn loop, typed terminal/usage uncertainty and durable guarded Actions. No Botkit facade or donor loop.",
+      "evidence_refs": [
+        "inventory.botkit.stream",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.raw-build",
+      "disposition": "omit",
+      "target_owner": "Guarded target ingress/Actions only",
+      "rationale": "Do not expose bypass APIs or reuse private provider orchestration. Concrete target use cases enter the same guards and loop.",
+      "evidence_refs": [
+        "inventory.botkit.raw-build",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.research.raw",
+      "disposition": "omit",
+      "target_owner": "Guarded target ingress/Actions only",
+      "rationale": "Do not expose bypass APIs or reuse private provider orchestration. Concrete target use cases enter the same guards and loop.",
+      "evidence_refs": [
+        "inventory.botkit.research.raw",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.analyst.raw",
+      "disposition": "omit",
+      "target_owner": "Guarded target ingress/Actions only",
+      "rationale": "Do not expose bypass APIs or reuse private provider orchestration. Concrete target use cases enter the same guards and loop.",
+      "evidence_refs": [
+        "inventory.botkit.analyst.raw",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.options",
+      "disposition": "adapt",
+      "target_owner": "Profiles + ActionDefinition registry",
+      "rationale": "Reuse registration/configuration ideas only; immutable published bundles and code-only handlers, current guards above pins; no DB class loader.",
+      "evidence_refs": [
+        "inventory.botkit.options",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.registry",
+      "disposition": "adapt",
+      "target_owner": "Profiles + ActionDefinition registry",
+      "rationale": "Reuse registration/configuration ideas only; immutable published bundles and code-only handlers, current guards above pins; no DB class loader.",
+      "evidence_refs": [
+        "inventory.botkit.registry",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.fake",
+      "disposition": "adapt",
+      "target_owner": "platform-testing",
+      "rationale": "Guard-preserving scripted transport/host harness, not an allow-all bypass. No production dependency on testkit/reference.",
+      "evidence_refs": [
+        "inventory.botkit.fake",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.conversation",
+      "disposition": "replace",
+      "target_owner": "Chatom host Messenger bridge",
+      "rationale": "Chatom retains canonical visible messages/membership/history/cursor; platform uses refs and bounded temporary delivery payload.",
+      "evidence_refs": [
+        "inventory.botkit.conversation",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.security",
+      "disposition": "replace",
+      "target_owner": "Security ports + trusted host policy",
+      "rationale": "Mandatory tenant/current permission/consent/emergency guards cannot be replaced by optional plugins or donor permission package defaults.",
+      "evidence_refs": [
+        "inventory.botkit.security",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.plugins",
+      "disposition": "replace",
+      "target_owner": "Security ports + trusted host policy",
+      "rationale": "Mandatory tenant/current permission/consent/emergency guards cannot be replaced by optional plugins or donor permission package defaults.",
+      "evidence_refs": [
+        "inventory.botkit.plugins",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.permission-plugin",
+      "disposition": "replace",
+      "target_owner": "Security ports + trusted host policy",
+      "rationale": "Mandatory tenant/current permission/consent/emergency guards cannot be replaced by optional plugins or donor permission package defaults.",
+      "evidence_refs": [
+        "inventory.botkit.permission-plugin",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.cli",
+      "disposition": "adapt",
+      "target_owner": "Target Laravel ingress/jobs, after headless read/write verticals",
+      "rationale": "Reuse thin registration/job/context-reset ideas by target scenario, stable source identity/CAS, no donor routes/API/data or framework pins.",
+      "evidence_refs": [
+        "inventory.botkit.cli",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.http",
+      "disposition": "adapt",
+      "target_owner": "Target Laravel ingress/jobs, after headless read/write verticals",
+      "rationale": "Reuse thin registration/job/context-reset ideas by target scenario, stable source identity/CAS, no donor routes/API/data or framework pins.",
+      "evidence_refs": [
+        "inventory.botkit.http",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.tenant-reset",
+      "disposition": "adapt",
+      "target_owner": "Target Laravel ingress/jobs, after headless read/write verticals",
+      "rationale": "Reuse thin registration/job/context-reset ideas by target scenario, stable source identity/CAS, no donor routes/API/data or framework pins.",
+      "evidence_refs": [
+        "inventory.botkit.tenant-reset",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.jobs",
+      "disposition": "adapt",
+      "target_owner": "Target Laravel ingress/jobs, after headless read/write verticals",
+      "rationale": "Reuse thin registration/job/context-reset ideas by target scenario, stable source identity/CAS, no donor routes/API/data or framework pins.",
+      "evidence_refs": [
+        "inventory.botkit.jobs",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.research-job",
+      "disposition": "adapt",
+      "target_owner": "Target Laravel ingress/jobs, after headless read/write verticals",
+      "rationale": "Reuse thin registration/job/context-reset ideas by target scenario, stable source identity/CAS, no donor routes/API/data or framework pins.",
+      "evidence_refs": [
+        "inventory.botkit.research-job",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.publish-job",
+      "disposition": "adapt",
+      "target_owner": "Target Laravel ingress/jobs, after headless read/write verticals",
+      "rationale": "Reuse thin registration/job/context-reset ideas by target scenario, stable source identity/CAS, no donor routes/API/data or framework pins.",
+      "evidence_refs": [
+        "inventory.botkit.publish-job",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.article-job",
+      "disposition": "adapt",
+      "target_owner": "Target Laravel ingress/jobs, after headless read/write verticals",
+      "rationale": "Reuse thin registration/job/context-reset ideas by target scenario, stable source identity/CAS, no donor routes/API/data or framework pins.",
+      "evidence_refs": [
+        "inventory.botkit.article-job",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.manual-publish-job",
+      "disposition": "adapt",
+      "target_owner": "Target Laravel ingress/jobs, after headless read/write verticals",
+      "rationale": "Reuse thin registration/job/context-reset ideas by target scenario, stable source identity/CAS, no donor routes/API/data or framework pins.",
+      "evidence_refs": [
+        "inventory.botkit.manual-publish-job",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.filament",
+      "disposition": "adapt",
+      "target_owner": "Optional platform-filament",
+      "rationale": "Reuse view ideas only after target lock; same ActionDefinition and current guards. No mandatory admin/core dependency or donor model API.",
+      "evidence_refs": [
+        "inventory.botkit.filament",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.admin-proposals",
+      "disposition": "adapt",
+      "target_owner": "Optional platform-filament",
+      "rationale": "Reuse view ideas only after target lock; same ActionDefinition and current guards. No mandatory admin/core dependency or donor model API.",
+      "evidence_refs": [
+        "inventory.botkit.admin-proposals",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.usage",
+      "disposition": "replace",
+      "target_owner": "ControLLM UsageExport bridge",
+      "rationale": "Technical nullable invocation facts and versioned export outbox; external canonical metering and money owners, no listener-created second product.",
+      "evidence_refs": [
+        "inventory.botkit.usage",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.cache",
+      "disposition": "adapt",
+      "target_owner": "Models cache port in model adapter",
+      "rationale": "Capability/region/permission/pin/retention evidence before use; no inherited cache support, prices or credential ownership.",
+      "evidence_refs": [
+        "inventory.botkit.cache",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.cadence",
+      "disposition": "omit",
+      "target_owner": "Initial vertical; optional future platform-scheduler",
+      "rationale": "Scheduling is optional and later target-selected; no mandatory Cadence version/schema/job migration. Future triggers use the same guarded ingress and stable identity.",
+      "evidence_refs": [
+        "inventory.botkit.cadence",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.cadence-dispatch",
+      "disposition": "omit",
+      "target_owner": "Initial vertical; optional future platform-scheduler",
+      "rationale": "Scheduling is optional and later target-selected; no mandatory Cadence version/schema/job migration. Future triggers use the same guarded ingress and stable identity.",
+      "evidence_refs": [
+        "inventory.botkit.cadence-dispatch",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.flood-job",
+      "disposition": "omit",
+      "target_owner": "Initial vertical; optional future platform-scheduler",
+      "rationale": "Scheduling is optional and later target-selected; no mandatory Cadence version/schema/job migration. Future triggers use the same guarded ingress and stable identity.",
+      "evidence_refs": [
+        "inventory.botkit.flood-job",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.run-due-command",
+      "disposition": "omit",
+      "target_owner": "Initial vertical; optional future platform-scheduler",
+      "rationale": "Scheduling is optional and later target-selected; no mandatory Cadence version/schema/job migration. Future triggers use the same guarded ingress and stable identity.",
+      "evidence_refs": [
+        "inventory.botkit.run-due-command",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "capability_id": "botkit.sync-cadence-command",
+      "disposition": "omit",
+      "target_owner": "Initial vertical; optional future platform-scheduler",
+      "rationale": "Scheduling is optional and later target-selected; no mandatory Cadence version/schema/job migration. Future triggers use the same guarded ingress and stable identity.",
+      "evidence_refs": [
+        "inventory.botkit.sync-cadence-command",
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    }
+  ],
+  "schema_owner": "P3.1",
+  "recovery_owner": "P13.1",
+  "compatibility_ref": "docs/platform/compatibility.json",
+  "sections": [
+    {
+      "id": "boundary",
+      "title": "Initial target platform only",
+      "text": "{\"Botkit_role\": \"readonly donor source observations; no live consumers asserted\", \"data_origin\": \"new-platform\", \"execution_order\": \"first read vertical, then confirmation/write, then target Laravel composition\", \"not_prerequisites\": [\"Botkit data/user migration\", \"backfill\", \"shadow\", \"cutover\", \"Botkit compatibility facades\", \"old Botkit schema/reader/backup\"], \"release_ref\": \"docs/platform/release-boundaries.json\", \"runtime_implemented\": false, \"schema_versioning_required\": true}"
+    },
+    {
+      "id": "reuse-provenance",
+      "title": "Traceable in-place reuse and idea adaptation",
+      "text": "{\"attribution_gate\": \"Reuse in place preserves existing source/revision/license. Before any later donor code copy, owning task records exact source path/symbol/revision/hash and license/attribution and adds target behavioral positive/negative/fault tests; missing license is not copy permission. Donor signatures/layout/dependencies are not the acceptance target.\", \"basis\": \"P1.1 capability IDs and exact inherited source observations + P1.4 sections#reuse; M2 supersedes historical donor recommendations. Each capability receives exactly one disposition with reason/target owner.\", \"code_copy_authorized\": false, \"source_refs\": [{\"path\": \"docs/platform/inventory.json\", \"sha256\": \"2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc\", \"symbol\": \"capabilities,claims\"}, {\"path\": \"docs/platform/architecture.json\", \"sha256\": \"dc20c879bbf47710a745d48062b8b639585ba561b8d1bf63e0aabcbacda2af86\", \"symbol\": \"sections#reuse\"}], \"target_dependency_pins\": \"No donor lock inherited; current P1.4 target framework/HTTP/admin/scheduler/host client choices remain unverified until owning task exact manifest/lock/no-dev evidence.\"}"
+    },
+    {
+      "id": "schema",
+      "title": "Schema/install ownership and upgrade contract",
+      "text": "{\"adapter\": \"agentools/platform-postgres\", \"data_origin\": \"new-platform\", \"expand_contract\": \"Additive install/version upgrades retain prior compatible reader through expand. Incompatible schema/contract needs owner decision and updated design API before behavior. Never delete append-only facts or rerun applied effects during rollback.\", \"installation\": \"Empty isolated database/schema, explicit installed version and migration history/checksums; no schema SQL is shipped by this document. Reject unsupported versions or mismatched migration/registry hashes; install replay must not duplicate facts.\", \"isolation\": \"Prove database name/owner/allow marker before create/install/backup/restore/cleanup; existing isolated_workspace/storage_chaos mechanism may be extended by owning task. SQLite/fakes cannot qualify durable behavior.\", \"minimum_stores\": [\"instances/profile_versions/bundles/session bindings\", \"sessions/turns/runs\", \"invocation intents/results and stable proposal_map\", \"dated Action events/current projection/attempts/effect intents/confirmations\", \"inbox/outbox/payload refs/delivery intents and receipts\", \"versioned usage facts/export acknowledgement refs\"], \"owner\": \"P3.1\", \"payloads\": \"Encrypted bounded temporary refs with purpose/hash/classification/TTL/key ref; redacted IDs/hashes/codes/timings in logs. Purge authorized bytes, retain minimal permitted tombstone/provenance; unresolved effects/reservations cannot be pruned away.\", \"runtime_status\": \"planned\", \"schema_version_owner\": \"P3.1 install/migration mechanism; later owning slices add additive versioned tables\", \"tenant_keys\": \"tenant_id NOT NULL; PRIMARY KEY (tenant_id,id); child FK (tenant_id,parent_id); version >= 0; timestamptz. Global code registry uses separate explicit namespace, not tenant_id=NULL. IDs are not read authorization; RLS is optional only after its own verified ADR.\", \"transactions\": \"Atomic accepted work and outbox; Action event+projection+outbox in one transaction. Short claim transaction increments epoch; external IO after commit. Completion uses tenant/id/version/epoch/lease-owner CAS; zero updates means stale claim. Queue is a signal, persisted scanner is recovery source.\", \"unique_constraints\": [\"tenant/source/source_event + payload_hash comparison\", \"one active run per tenant/turn\", \"tenant/run/invocation/proposal_key\", \"tenant/action/sequence\", \"stable effect/delivery/usage-version keys\"]}"
+    },
+    {
+      "id": "identity",
+      "title": "Stable tenant identities",
+      "text": "{\"different_hash\": \"integrity_conflict\", \"entities\": [\"source-event\", \"Turn\", \"Run\", \"invocation/proposal\", \"Action\", \"effect\", \"delivery\", \"usage-version\"], \"rule\": \"Persist maps and accepted hashes before submission/IO. Retries reuse saved identities/results; lease expiry never proves an external effect did not happen. A separately authorized replacement provider invocation has a new identity and possible usage.\", \"same_hash\": \"replay_same_identity\", \"scope\": \"tenant\"}"
+    },
+    {
+      "id": "registry-sessions",
+      "title": "Code configuration and new sessions",
+      "text": "{\"code_only_registry\": true, \"current_owner_permissions_override_pins\": true, \"emergency_guards_override_pins\": true, \"first_profile_publication\": \"P7.1; P7.7 draft/validate/publish/assign UI follows publisher\", \"first_read_config\": \"minimal code-defined/versioned configuration; optional rich profile publisher/admin not prerequisite\", \"forbidden\": [\"DB handler classes/SQL/arbitrary URLs\", \"automatic repin on route drain\", \"plugin/fake/raw authorization bypass\"], \"public_routes\": \"opt-in; every exposed path covered by shared guards\", \"published_immutable\": true, \"session_creation\": \"trusted tenant/actor/purpose + new session; snapshot version/hash refs; credentials resolved by trusted host\", \"single_effect_capable_loop\": \"AgenTools Runtime\"}"
+    },
+    {
+      "id": "recovery",
+      "title": "Recovery classification and owners",
+      "text": "[{\"action\": \"Scanner advances the same persisted Run and stable turn/source identities; queue retry is only a signal.\", \"boundary\": \"committed run, not started / commit before enqueue\", \"external_owner\": null, \"forbidden\": \"Create a second accepted run or alternate loop.\", \"technical_owner\": \"AgenTools Runtime / RunStore\"}, {\"action\": \"New fencing epoch; old version/epoch/lease-owner completion rejected. Do not infer safe effect retry from lease expiry.\", \"boundary\": \"expired/stale worker claim\", \"external_owner\": null, \"forbidden\": \"Old worker completes or dispatches with stale fence.\", \"technical_owner\": \"RunStore / Postgres adapter\"}, {\"action\": \"Lookup persisted proposal→Action/confirmation mapping; reuse saved prepare identity/result and reconcile journal/idempotency state.\", \"boundary\": \"saved proposal but missing Action submit receipt\", \"external_owner\": null, \"forbidden\": \"Regenerate confirmation/action/effect keys on retry.\", \"technical_owner\": \"Runtime + SDK bridge / Actions\"}, {\"action\": \"Mark invocation unknown, preserve possible usage. Lookup first; only explicit bounded policy may create a separate new invocation with possible additional cost.\", \"boundary\": \"provider accepted request, response lost\", \"external_owner\": \"provider transport status lookup if supported\", \"forbidden\": \"Treat unknown as failure/zero or resubmit under the old invocation as if never sent.\", \"technical_owner\": \"Models / Runtime invocation store\"}, {\"action\": \"Lookup stable effect key/owner_operation_ref; if no reliable lookup/idempotency, keep unresolved/manual with age/deadline/escalation. Current permissions/emergency guards apply.\", \"boundary\": \"effect owner accepted, response lost\", \"external_owner\": \"host/domain/money owner\", \"forbidden\": \"Blind retry, hide unknown on cancellation/prune, or invent success.\", \"technical_owner\": \"Actions technical effect-intent journal\"}, {\"action\": \"Lookup/deduplicate same destination delivery key with current visibility; completed run is not proof of delivered response/TTS.\", \"boundary\": \"delivery accepted, receipt lost\", \"external_owner\": \"Chatom/host destination\", \"forbidden\": \"New message key or disclosure after revoke.\", \"technical_owner\": \"Runtime delivery outbox\"}, {\"action\": \"Replay same tenant/invocation/usage-version/hash; correction is an explicit new version, nullable dimensions and certainty preserved.\", \"boundary\": \"usage export or correction acknowledgement lost\", \"external_owner\": \"ControLLM\", \"forbidden\": \"Count duplicate usage, erase unknown to zero, or become canonical metering owner.\", \"technical_owner\": \"Models usage facts/export outbox\"}, {\"action\": \"Restore isolated backup; rebuild projection into new checkpoint/table from immutable journal, compare event sequence/canonical digest, outbox receipts and usage correction versions before controlled swap/restart.\", \"boundary\": \"backup restore and projection rebuild\", \"external_owner\": \"effect/delivery owners reconcile existing accepted operations\", \"forbidden\": \"Rewrite journal facts or dispatch already applied effects while rebuilding.\", \"technical_owner\": \"P13.1 rehearsal operator; P3 schema/store owners\"}, {\"action\": \"Disable new affected admission, drain known work, reconcile unknown before switch; prior compatible bundles apply to new permitted attempts. Preserve old session pins and record revocation, do not silently repin. Compensating actions need separate authorization.\", \"boundary\": \"compatible deployment/bundle rollback or incident\", \"external_owner\": \"host current security/admission owners\", \"forbidden\": \"Production rollout/switch here or emergency-block bypass through historical pins.\", \"technical_owner\": \"Runtime admission/operator + Profiles\"}]"
+    },
+    {
+      "id": "recovery-handoff",
+      "title": "P13.1 exact case and evidence handoff",
+      "text": "{\"assertions\": [\"clean install requires no Botkit source DB/users/consumers\", \"replay identical source/job with identical identities and hash conflict on changed payload\", \"two-worker CAS/fencing, commit-before-enqueue and no IO under lock\", \"lost provider/effect/delivery/usage replies follow recovery matrix\", \"new session pins immutable version; current revocation/consent/emergency defeats old pin\", \"restore backup and rebuild projection: exact journal sequence/digest, outbox receipts and usage corrections match; no effect replay\"], \"broader_owners\": {\"P13.2\": \"dated SDK regression\", \"P13.3\": \"packaging/no-dev installs\", \"P13.4\": \"DEVELOPMENT.md full acceptance after final P13.3 inputs\"}, \"canonical_cases\": [\"CUT-001\", \"V2ALL-MIGRATION-POSITIVE\", \"V2ALL-MIGRATION-NEGATIVE\", \"V2ALL-MIGRATION-FAULT\"], \"case_contract\": \"knowledge/cases-P13.1#cases\", \"data_origin\": \"new-platform\", \"execution_status\": \"planned; no runtime case executed by P1.5\", \"external_ports\": \"scripted; this local-host-e2e scenario uses the real platform kernel and isolated PG, not a remote host deployment\", \"future_commands\": [{\"cmd\": \"python3 tools/platform_gate.py e2e --scenario bootstrap-recovery\", \"status\": \"planned; P2.1 creates CLI, P13.1 registers exact nonempty scenario\"}, {\"cmd\": \"python3 tools/platform_gate.py check-boundaries\", \"status\": \"planned; owning tasks implement actual source/dependency/guard checks\"}], \"historical_alias_mapping\": {\"CUT-001\": \"clean target install + durable crash/restart/restore/projection\", \"V2ALL-MIGRATION-FAULT\": \"crash/restart/restore preserves stable identities and unknowns\", \"V2ALL-MIGRATION-NEGATIVE\": \"reject duplicate dispatch/stale fence/bypass and donor/public/protocol out-of-scope changes\", \"V2ALL-MIGRATION-POSITIVE\": \"new platform journey, actual SDK compatibility, guards/pins/private boundaries\"}, \"non_green\": [\"missing suite\", \"empty required case set\", \"required skip\", \"missing dependency/PG isolation proof\", \"unresolved required local assertion\"], \"owner\": \"P13.1\", \"receipt_requirements\": [\"exact commands and UTC start/end\", \"HEAD + dirty diff digest; fixture/spec/package/lock hashes; toolchain\", \"database name/owner/allow-marker isolation proof and cleanup\", \"canonical tier and scripted/live adapter mode\", \"exact required and actual case sets, count, failures and skips\", \"stdout/stderr paths+hashes; costs/possible usage+bound; limitations\"], \"required_tiers\": [\"isolated-postgres\", \"local-host-e2e\"]}"
+    },
+    {
+      "id": "compatibility",
+      "title": "Existing AgenTools obligations",
+      "text": "{\"contract_ref\": \"docs/platform/compatibility.json\", \"handoff\": [\"P2 schema/Action mapping and fail-closed boundary tests\", \"P3 target schema/keys/transactions and isolated-PG proof\", \"P13 recovery, SDK regression, packaging and final acceptance\"], \"preserve\": [\"spec/revisions/2026-09 closed ActionStatus; Run state stays separate\", \"frozen spec/fixtures 2026-08\", \"agentools/sdk and AgenTools\\\\ namespace; PHP APIs\", \"Dart core and optional private-paired MCP; offline/direct Actions\", \"native LlmPort.respond and ScenarioRunner including both persisted retry key schemes\", \"ConfirmationService and token replay; IdempotencyCoordinator and current guards\"], \"public_break_policy\": \"Concrete owner question with API/wire example, impact and proposed revision before any material public change; lack of Botkit users does not authorize a break.\"}"
+    },
+    {
+      "id": "evidence-boundary",
+      "title": "Design and readiness limits",
+      "text": "{\"acceptance_owner\": \"conductor V1/V3; executor performs actual V2 manual inspection\", \"isolated_pg_executed\": false, \"live_provider_qualified\": false, \"local_unit_tests\": \"focused design contract checks only, not future runtime cases\", \"no_dispatch_or_release_authority\": true, \"production_ready\": false, \"remote_host_ready\": false, \"runtime\": false, \"tier\": \"design-schema\"}"
+    }
+  ],
+  "claims": [
+    {
+      "id": "upstream.architecture",
+      "classification": "verified_repo",
+      "statement": "P1.4 records 13 grouped dispositions over the 41 P1.1 capabilities, a private additive package DAG, technical ownership and read-first order. This is a selected design, not implemented packages.",
+      "evidence": [
+        {
+          "path": "docs/platform/architecture.json",
+          "symbol": "sections#reuse,delivery-order,loop-and-compatibility",
+          "sha256": "dc20c879bbf47710a745d48062b8b639585ba561b8d1bf63e0aabcbacda2af86"
+        },
+        {
+          "path": "docs/platform/package-map.json",
+          "symbol": "first_read_vertical,dated_contract_bridge,policy",
+          "sha256": "f659c00e368d2540f36fbf615b9e4901ebb4882ad9a32694ea01ed125b0bb82d"
+        }
+      ]
+    },
+    {
+      "id": "upstream.ownership",
+      "classification": "verified_repo",
+      "statement": "P1.4 ownership matrix assigns technical checkpoints/journal/outboxes to AgenTools and retains domain/history/rights/metering/admission/money authority outside it; no external implementation is qualified.",
+      "evidence": [
+        {
+          "path": "docs/platform/ownership.json",
+          "symbol": "rows,platform_sql_scope,invariants",
+          "sha256": "cc1d21b141a2cb1c08a13979d9df23820f1afa856179381aeae4960bb058aba2"
+        }
+      ]
+    },
+    {
+      "id": "upstream.compatibility",
+      "classification": "verified_repo",
+      "statement": "The recorded P1.3 compatibility contract is the downstream reference; this bootstrap adds no protocol status, SDK namespace/package change or new requirement for direct/offline consumers.",
+      "evidence": [
+        {
+          "path": "docs/platform/compatibility.json",
+          "symbol": "php,dart,wire_action_statuses",
+          "sha256": "69c5fe4b5df6f993d75c45acb379ace7ae1744dba702bee73486102288cf9514"
+        },
+        {
+          "path": "docs/platform/package-map.json",
+          "symbol": "dated_contract_bridge,native_dart",
+          "sha256": "f659c00e368d2540f36fbf615b9e4901ebb4882ad9a32694ea01ed125b0bb82d"
+        }
+      ]
+    },
+    {
+      "id": "owner.m2",
+      "classification": "owner_direction",
+      "statement": "D7/M2: Botkit is donor-only. No Botkit data/users/backfill/shadow/cutover/facades are prerequisites; preserve actual AgenTools contracts and private owner release gates.",
+      "evidence": [
+        {
+          "path": "@plan/knowledge/owner-amendment-2026-10-31.json",
+          "symbol": "boundary; Planner API revision sha256:efa41e9a05831f44943c5293e3e4041fe5af6d17117d82377e54475a9abd4ba2"
+        }
+      ]
+    },
+    {
+      "id": "design.bootstrap",
+      "classification": "proposal",
+      "statement": "Ordered target bootstrap, schema/version ownership, stable identity and recovery obligations below are handoff requirements; their runtime checks remain planned.",
+      "evidence": []
+    },
+    {
+      "id": "unknown.runtime",
+      "classification": "unverified",
+      "statement": "No P2/P3 new platform runtime, isolated-PG recovery, no-dev packaging, remote host, live provider or pilot readiness is demonstrated by this design.",
+      "evidence": []
+    },
+    {
+      "id": "inventory.agentools.action",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for agentools.action: Existing journal and reducer implement dated Actions; preserve wire status. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#agentools.action; claims#obs.agentools.action",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.agentools.confirmation",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for agentools.confirmation: Trusted-port confirmation service exists; runtime test results not inferred. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#agentools.confirmation; claims#obs.agentools.confirmation",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.agentools.persistence",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for agentools.persistence: PostgreSQL event store and idempotency coordinator exist; recovery behavior requires actual suite evidence. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#agentools.persistence; claims#obs.agentools.persistence",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.agentools.scenario",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for agentools.scenario: ScenarioRunner and LlmPort::respond(array):array are existing integration points. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#agentools.scenario; claims#obs.agentools.scenario",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.agentools.fencing",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for agentools.fencing: Existing PostgreSQL idempotency store supplies fenced identity boundary; isolated database tests remain pending. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#agentools.fencing; claims#obs.agentools.fencing",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.agentools.journal-store",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for agentools.journal-store: Existing durable journal facade; durable intent before external IO must be separately demonstrated. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#agentools.journal-store; claims#obs.agentools.journal-store",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.agentools.dart",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for agentools.dart: Dart core public library and direct offline Actions are compatibility obligations. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#agentools.dart; claims#obs.agentools.dart",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.agentools.token-replay",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for agentools.token-replay: Token consume uses tenant_id and token_id conflict key; differing digest produces collision and repeated equal token is spent. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#agentools.token-replay; claims#obs.agentools.token-replay",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.agentools.wire-status",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for agentools.wire-status: The dated PHP action status enum is an existing public wire boundary. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#agentools.wire-status; claims#obs.agentools.wire-status",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.agentools.scenario-retry",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for agentools.scenario-retry: Scenario semantic retry invokes ToolPort with the same derived key under bounded attempts; handleFailure comments describe future journal-aware invocation retry. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#agentools.scenario-retry; claims#obs.agentools.scenario-retry",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.agentools.effect",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for agentools.effect: Journal append is in-memory; durable persistence before external IO is not established by this class. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#agentools.effect; claims#obs.agentools.effect",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.agentools.long-operations",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for agentools.long-operations: Existing long-operation coordination is part of SDK; claims require its tests, not source presence. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#agentools.long-operations; claims#obs.agentools.long-operations",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.managed",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.managed: run executes authorization, message security and before plugins, then prompt, after plugins and completion event. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.managed; claims#obs.botkit.managed",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.stream",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.stream: stream shares preflight but returns stream response without after-run plugins or BotRunCompleted. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.stream; claims#obs.botkit.stream",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.raw-build",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.raw-build: agent and agentByType build through authorization hooks; managed message security and run plugins are not invoked. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.raw-build; claims#obs.botkit.raw-build",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.research.raw",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.research.raw: Creates research log, calls SDK agent prompt directly and dispatches handlers; managed pipeline equivalence is not proven. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.research.raw; claims#obs.botkit.research.raw",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.analyst.raw",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.analyst.raw: Directly constructs structured SDK agent and prompts it; writes analysis logs and reports. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.analyst.raw; claims#obs.botkit.analyst.raw",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.options",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.options: Options are mutable; definition key and scope columns identify the row, with a global row when scope is absent. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.options; claims#obs.botkit.options",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.registry",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.registry: Definitions, plugins and class-map tools have runtime registration entrypoints. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.registry; claims#obs.botkit.registry",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.fake",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.fake: Fake supplies assertions for recorded runs, hooks and security events. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.fake; claims#obs.botkit.fake",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.conversation",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.conversation: Uses Laravel AI ConversationStore for conversation history and local metadata; send and stream delegate to managed Botkit calls. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.conversation; claims#obs.botkit.conversation",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.security",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.security: Configured stages process SecurityContext through Laravel pipeline; target mandatory guards must not be optional plugins. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.security; claims#obs.botkit.security",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.plugins",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.plugins: Plugins are activated from per-bot options and expose lifecycle hooks; mandatory security cannot depend on an optional plugin. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.plugins; claims#obs.botkit.plugins",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.permission-plugin",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.permission-plugin: Permission check allows empty configured permission; authorization is plugin-dependent. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.permission-plugin; claims#obs.botkit.permission-plugin",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.cli",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.cli: CLI resolves agent or subAgent then calls prompt directly; managed pipeline is not entered by this command. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.cli; claims#obs.botkit.cli",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.http",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.http: Config-gated conversation and stream routes use controller and configured middleware. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.http; claims#obs.botkit.http",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.tenant-reset",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.tenant-reset: CurrentBotRun singleton is flushed before queue jobs and, when octane.listeners is enabled, on OperationTerminated. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.tenant-reset; claims#obs.botkit.tenant-reset",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.jobs",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.jobs: Job class comes from botkit.jobs.run_agent config; missing class raises an error. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.jobs; claims#obs.botkit.jobs",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.research-job",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.research-job: Queue job invokes research orchestrator. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.research-job; claims#obs.botkit.research-job",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.publish-job",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.publish-job: Queue job invokes publish pipeline action; other article and manual jobs remain distinct paths. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.publish-job; claims#obs.botkit.publish-job",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.article-job",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.article-job: Job carries proposalId/trigger, configures queue with three retries and delegates to article action. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.article-job; claims#obs.botkit.article-job",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.manual-publish-job",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.manual-publish-job: Job fetches publisher by ID, checks its type, locks agent and delegates to RunContentPublishLlmAction with manual context text. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.manual-publish-job; claims#obs.botkit.manual-publish-job",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.filament",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.filament: Admin CRUD reads registered definitions, tools, middleware and option schemas against bot_agents. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.filament; claims#obs.botkit.filament",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.admin-proposals",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.admin-proposals: Admin approve/reject directly updates research proposal status; approved article action conditionally dispatches publish job. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.admin-proposals; claims#obs.botkit.admin-proposals",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.usage",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.usage: AgentPrompted usage, when present, is forwarded to metrics with current-run context or agent class fallback. Coverage of all provider paths is unproven. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.usage; claims#obs.botkit.usage",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.cache",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.cache: Delegates Gemini cache lifecycle to configured port; exact provider capabilities remain unverified. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.cache; claims#obs.botkit.cache",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.cadence",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.cadence: Scheduler exists; tenant isolation and replay properties require further investigation. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.cadence; claims#obs.botkit.cadence",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.cadence-dispatch",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.cadence-dispatch: ScheduleTriggered key botkit.agent.{id} resolves a BotAgent and dispatches a job; exactly-once occurrence not established. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.cadence-dispatch; claims#obs.botkit.cadence-dispatch",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.flood-job",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.flood-job: Configurable retries/backoff; emits proposed comment and updates scheduled slot status. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.flood-job; claims#obs.botkit.flood-job",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.run-due-command",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.run-due-command: Command queries every agent with non-null cadence and dispatches a job; no due-time comparison is visible in handle, and it returns success after reported individual failures. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.run-due-command; claims#obs.botkit.run-due-command",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    },
+    {
+      "id": "inventory.botkit.sync-cadence-command",
+      "classification": "verified_repo",
+      "statement": "Inherited P1.1 source observation for botkit.sync-cadence-command: Command calls BotAgentCadenceScheduler::registerAll and reports schedules synced; register method inspected separately contains no executable registration. Source/navigation evidence only; no new donor audit, executed test or active consumer claim.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "symbol": "capabilities#botkit.sync-cadence-command; claims#obs.botkit.sync-cadence-command",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc"
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "BOOTSTRAP-NEW",
+      "status": "accepted",
+      "decision": "Bootstrap only new AgenTools platform data with P3.1 schema and P13.1 recovery ownership; no operational Botkit migration.",
+      "rationale": "D7/M2 and explicit current task.",
+      "evidence_refs": [
+        "owner.m2",
+        "design.bootstrap"
+      ]
+    },
+    {
+      "id": "BOOTSTRAP-REUSE",
+      "status": "accepted",
+      "decision": "Carry forward all 41 fresh P1.4 capability dispositions with inherited P1.1 provenance; no code copy authorized here.",
+      "rationale": "Preserve accepted target architecture while avoiding donor API/dependency obligations.",
+      "evidence_refs": [
+        "upstream.architecture",
+        "owner.m2"
+      ]
+    },
+    {
+      "id": "BOOTSTRAP-COMPAT",
+      "status": "accepted",
+      "decision": "Read first, then confirmation/write and Laravel; preserve real AgenTools dated/native/direct/offline contracts and current guards over pins.",
+      "rationale": "D2, D3 and P1.4 contract.",
+      "evidence_refs": [
+        "upstream.architecture",
+        "upstream.compatibility",
+        "upstream.ownership"
+      ]
+    }
+  ],
+  "limitations": [
+    "This records design requirements; no runtime/source/PG recovery/provider/remote host/pilot readiness is claimed.",
+    "Botkit revision and source statements are inherited P1.1 evidence, not a fresh donor audit or license clearance for copying.",
+    "P2/P3/P13 CLI and runtime cases are planned until owning tasks create them; missing/zero/required skips must fail.",
+    "Target optional dependencies and production HTTP client/lock remain unverified under P1.4; no new pin or install performed.",
+    "P1.4 executor receipt retains historical pending acceptance flags; current caller declares P1.4 done with review GREEN. Bytes match the supplied receipt.",
+    "No plan source/state, commits, publication, production rollout, paid provider call or sibling repository write is part of this change."
+  ]
+}

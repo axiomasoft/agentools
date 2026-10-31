@@ -1,0 +1,135 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "db50ad905c82ae8259cd8f90da89cfe7",
+    "packages": [
+        {
+            "name": "agentools/platform-core",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../../../agentools-core",
+                "reference": "17095babba3368bb7b64767a0fd01243a329fa67"
+            },
+            "require": {
+                "php": ">=8.3"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.2"
+            },
+            "type": "library",
+            "extra": {
+                "agentools": {
+                    "private": true,
+                    "evidence_tier": "unit"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AgenToolsPlatform\\Core\\": "src/"
+                }
+            },
+            "archive": {
+                "exclude": [
+                    "/tests",
+                    "/vendor",
+                    "/phpstan.neon",
+                    "/composer.lock"
+                ]
+            },
+            "scripts": {
+                "test": [
+                    "@php tests/smoke.php",
+                    "@php tests/Common/run.php",
+                    "@php tests/Runtime/run.php"
+                ],
+                "analyse": [
+                    "phpstan analyse -c phpstan.neon --no-progress"
+                ]
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Private pure values and ports for the additive AgenTools platform.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        }
+    ],
+    "packages-dev": [
+        {
+            "name": "agentools/platform-testing",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../..",
+                "reference": "3c5907ea27c141fa588abdc86ed79c748ea32f54"
+            },
+            "require": {
+                "agentools/platform-core": "dev-main",
+                "php": ">=8.3"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.2"
+            },
+            "type": "library",
+            "extra": {
+                "agentools": {
+                    "private": true,
+                    "dev_only": true
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AgenToolsPlatform\\Testing\\": "src/"
+                }
+            },
+            "archive": {
+                "exclude": [
+                    "/tests",
+                    "/fixtures",
+                    "/bin",
+                    "/vendor",
+                    "/phpstan.neon",
+                    "/composer.lock"
+                ]
+            },
+            "scripts": {
+                "test": [
+                    "@php tests/smoke.php"
+                ],
+                "analyse": [
+                    "phpstan analyse -c phpstan.neon --no-progress"
+                ]
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Private development-only platform test reporting and architecture fixtures.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        }
+    ],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "agentools/platform-core": 20,
+        "agentools/platform-testing": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=8.3"
+    },
+    "platform-dev": {},
+    "platform-overrides": {
+        "php": "8.3.0"
+    },
+    "plugin-api-version": "2.6.0"
+}

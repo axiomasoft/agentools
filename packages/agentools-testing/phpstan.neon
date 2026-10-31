@@ -1,0 +1,9 @@
+parameters:
+    bootstrapFiles:
+        - tests/bootstrap.php
+    level: max
+    paths:
+        - src
+        - tests
+    excludePaths:
+        - tests/no-dev/vendor

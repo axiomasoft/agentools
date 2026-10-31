@@ -1,0 +1,28 @@
+{
+  "id": "schema.34-unknown-cancellation",
+  "definition": "checkpoint_transition",
+  "data": {
+    "checkpoint": {
+      "run_id": {
+        "tenant_id": "tenant-a",
+        "kind": "run",
+        "id": "run-1"
+      },
+      "status": "cancelling",
+      "version": 2,
+      "claim_epoch": 2,
+      "certainty": "unknown",
+      "unresolved_effects": true
+    },
+    "next_status": "cancelled",
+    "expected_version": 2,
+    "claim_epoch": 2
+  },
+  "expect": {
+    "valid": false,
+    "reason_code": "policy_conflict"
+  },
+  "guards": [
+    "transition"
+  ]
+}

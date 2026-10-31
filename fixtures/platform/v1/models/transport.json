@@ -1,0 +1,115 @@
+{
+  "revision": "platform-models/v1",
+  "cases": [
+    {
+      "id": "CM-028",
+      "vision_detail": "high",
+      "support": "unsupported",
+      "expected": "capability_unavailable",
+      "io_calls": 0
+    },
+    {
+      "id": "CM-029",
+      "tenant": "alpha",
+      "account": "account-A",
+      "region": "eu",
+      "expires_at": "2026-10-31T12:00:00.000001Z",
+      "attempts": [
+        {
+          "tenant": "alpha",
+          "account": "account-A",
+          "region": "eu",
+          "now": "2026-10-31T12:00:00Z",
+          "allowed": true
+        },
+        {
+          "tenant": "beta",
+          "account": "account-A",
+          "region": "eu",
+          "now": "2026-10-31T12:00:00Z",
+          "allowed": false
+        },
+        {
+          "tenant": "alpha",
+          "account": "account-B",
+          "region": "eu",
+          "now": "2026-10-31T12:00:00Z",
+          "allowed": false
+        },
+        {
+          "tenant": "alpha",
+          "account": "account-A",
+          "region": "us",
+          "now": "2026-10-31T12:00:00Z",
+          "allowed": false
+        },
+        {
+          "tenant": "alpha",
+          "account": "account-A",
+          "region": "eu",
+          "now": "2026-10-31T12:00:00.000001Z",
+          "allowed": false
+        }
+      ]
+    },
+    {
+      "id": "CM-030",
+      "legacy_exchanges": [
+        {
+          "input": {
+            "prompt": "run"
+          },
+          "output": {
+            "toolCall": {
+              "name": "demo_read_note",
+              "arguments": {
+                "note_id": "note-1"
+              }
+            }
+          }
+        },
+        {
+          "input": {
+            "fixture": "simple_tool_call"
+          },
+          "output": {
+            "toolCall": {
+              "name": "demo_read_note",
+              "arguments": {
+                "note_id": "note-1"
+              }
+            }
+          }
+        },
+        {
+          "input": {
+            "llm_stub": {
+              "tool": "demo_probe",
+              "args": {
+                "value": "scenario-010"
+              }
+            }
+          },
+          "output": {
+            "tool": "demo_probe",
+            "args": {
+              "value": "scenario-010"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "models.partial-usage",
+      "input_tokens": 7,
+      "output_tokens": null,
+      "expected_certainty": "unknown"
+    },
+    {
+      "id": "models.observed-zero",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "expected_certainty": "known"
+    }
+  ]
+}

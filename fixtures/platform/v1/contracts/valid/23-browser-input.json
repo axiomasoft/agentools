@@ -1,0 +1,13 @@
+{
+  "id": "schema.23-browser-input",
+  "definition": "browser_input",
+  "data": {
+    "client_event_id": "client-event-1",
+    "input_ref": "client-input-1"
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

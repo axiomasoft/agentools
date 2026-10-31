@@ -1,0 +1,28 @@
+{
+  "id": "schema.12-stale-worker-write",
+  "definition": "checkpoint_transition",
+  "data": {
+    "checkpoint": {
+      "run_id": {
+        "tenant_id": "tenant-a",
+        "kind": "run",
+        "id": "run-1"
+      },
+      "status": "running",
+      "version": 2,
+      "claim_epoch": 2,
+      "certainty": "known",
+      "unresolved_effects": false
+    },
+    "next_status": "completed",
+    "expected_version": 2,
+    "claim_epoch": 1
+  },
+  "expect": {
+    "valid": false,
+    "reason_code": "stale_claim"
+  },
+  "guards": [
+    "transition"
+  ]
+}

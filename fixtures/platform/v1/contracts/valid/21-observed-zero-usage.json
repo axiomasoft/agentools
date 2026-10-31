@@ -1,0 +1,26 @@
+{
+  "id": "schema.21-observed-zero-usage",
+  "definition": "usage_version",
+  "data": {
+    "id": {
+      "tenant_id": "tenant-a",
+      "kind": "usage-version",
+      "id": "usage-1"
+    },
+    "invocation_id": {
+      "tenant_id": "tenant-a",
+      "kind": "invocation",
+      "id": "invocation-1"
+    },
+    "version": 1,
+    "facts_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "certainty": "known"
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

@@ -1,0 +1,24 @@
+{
+  "id": "schema.22-known-effect",
+  "definition": "operation_receipt",
+  "data": {
+    "operation_id": {
+      "tenant_id": "tenant-a",
+      "kind": "effect",
+      "id": "dated-effect-1"
+    },
+    "request_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "outcome": "succeeded",
+    "certainty": "known",
+    "result_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "owner-receipt-1"
+    }
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

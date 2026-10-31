@@ -1,0 +1,1156 @@
+{
+  "document_kind": "sdk-consumers",
+  "status": "recorded",
+  "plan_id": "PLAN2",
+  "subject": "PLAN2.P1.3",
+  "evidence_tier": "design_source_inspection",
+  "source_revisions": {
+    "agentools": "8c22b5a2f139b5587ff735fb3eb16105420ffe18"
+  },
+  "surface_authority": {
+    "path": "api/package-surface-v1.json",
+    "sha256": "d267428e4d9542530b6d0bc083aeaa53472a93cd797342175660773c8272326d"
+  },
+  "package_surface": [
+    {
+      "behavioural_test": "dart/agentools/test/effects/effect_committer_test.dart",
+      "ecosystem": "dart",
+      "id": "dart:agentools:agentools.dart#ActionJournal",
+      "kind": "declaration",
+      "legacy_libraries": [],
+      "migration": "keep",
+      "package": "agentools",
+      "path": "dart/agentools/lib/src/journal/action_journal.dart",
+      "production_consumer": null,
+      "source_digest": "56d349d59add6bebdcd88354efd4e5eb80df9b6e2b06d589b1f5dc21b72348cd",
+      "target_library": "package:agentools/agentools.dart",
+      "target_name": "ActionJournal",
+      "tier": "advanced"
+    },
+    {
+      "behavioural_test": "dart/agentools/test/effects/effect_committer_test.dart",
+      "ecosystem": "dart",
+      "id": "dart:agentools:agentools.dart#ActionReducer",
+      "kind": "declaration",
+      "legacy_libraries": [],
+      "migration": "keep",
+      "package": "agentools",
+      "path": "dart/agentools/lib/src/journal/action_reducer.dart",
+      "production_consumer": "dart/agentools/conformance/sdk_conformance_engine.dart",
+      "source_digest": "3352fcb9e32916a2f1b6ca34c0fc9f5447fc563d675a447a4b3ae3442b37e1cf",
+      "target_library": "package:agentools/agentools.dart",
+      "target_name": "ActionReducer",
+      "tier": "advanced"
+    },
+    {
+      "behavioural_test": "dart/agentools/test/journal/action_reducer_test.dart",
+      "ecosystem": "dart",
+      "id": "dart:agentools:agentools.dart#ActionStatus",
+      "kind": "declaration",
+      "legacy_libraries": [],
+      "migration": "keep",
+      "package": "agentools",
+      "path": "dart/agentools/lib/src/journal/action_status.dart",
+      "production_consumer": "dart/agentools/conformance/sdk_conformance_engine.dart",
+      "source_digest": "03dca1397b07daedc0de09a6155b66ca26966404d2dd404de2081a45719af958",
+      "target_library": "package:agentools/agentools.dart",
+      "target_name": "ActionStatus",
+      "tier": "advanced"
+    },
+    {
+      "behavioural_test": null,
+      "ecosystem": "dart",
+      "id": "dart:agentools:agentools.dart#ConfirmationService",
+      "kind": "declaration",
+      "legacy_libraries": [],
+      "migration": "keep",
+      "package": "agentools",
+      "path": "dart/agentools/lib/src/confirmation/confirmation_service.dart",
+      "production_consumer": null,
+      "source_digest": "271792b729378b4a932a4c9c768001ecb2e270f0c767fe11b8d2b747a63e91a4",
+      "target_library": "package:agentools/agentools.dart",
+      "target_name": "ConfirmationService",
+      "tier": "advanced"
+    },
+    {
+      "behavioural_test": "dart/agentools/test/journal/in_memory_event_store_test.dart",
+      "ecosystem": "dart",
+      "id": "dart:agentools:agentools.dart#EventStore",
+      "kind": "declaration",
+      "legacy_libraries": [],
+      "migration": "keep",
+      "package": "agentools",
+      "path": "dart/agentools/lib/src/contracts/event_store.dart",
+      "production_consumer": null,
+      "source_digest": "2e7cc9a170d4cd22109a4721dddbbfe737ae449eef3a0962dc6928bced0bedb3",
+      "target_library": "package:agentools/agentools.dart",
+      "target_name": "EventStore",
+      "tier": "advanced"
+    },
+    {
+      "behavioural_test": "dart/agentools/test/idempotency/fencing_gate_test.dart",
+      "ecosystem": "dart",
+      "id": "dart:agentools:agentools.dart#IdempotencyCoordinator",
+      "kind": "declaration",
+      "legacy_libraries": [],
+      "migration": "keep",
+      "package": "agentools",
+      "path": "dart/agentools/lib/src/idempotency/idempotency_coordinator.dart",
+      "production_consumer": null,
+      "source_digest": "3894dbccd4dae6b54d5011c3fa23ddaf1bd3c2e9c6fb8324c924ebe6d24c60bb",
+      "target_library": "package:agentools/agentools.dart",
+      "target_name": "IdempotencyCoordinator",
+      "tier": "advanced"
+    },
+    {
+      "behavioural_test": null,
+      "ecosystem": "dart",
+      "id": "dart:agentools:agentools.dart#IdempotencyStore",
+      "kind": "declaration",
+      "legacy_libraries": [],
+      "migration": "keep",
+      "package": "agentools",
+      "path": "dart/agentools/lib/src/contracts/idempotency_store.dart",
+      "production_consumer": null,
+      "source_digest": "aa18760679af16585f1a6e604c828457675c439e455fe51ac09979347cc8b75d",
+      "target_library": "package:agentools/agentools.dart",
+      "target_name": "IdempotencyStore",
+      "tier": "advanced"
+    },
+    {
+      "behavioural_test": "dart/agentools/test/scenario/llm_port_test.dart",
+      "ecosystem": "dart",
+      "id": "dart:agentools:agentools.dart#LlmPort",
+      "kind": "declaration",
+      "legacy_libraries": [],
+      "migration": "keep",
+      "package": "agentools",
+      "path": "dart/agentools/lib/src/contracts/llm_port.dart",
+      "production_consumer": null,
+      "source_digest": "7424b92a48068e46736f1e14b4c69254493dff234fbb143b1e299434d2388fa4",
+      "target_library": "package:agentools/agentools.dart",
+      "target_name": "LlmPort",
+      "tier": "advanced"
+    },
+    {
+      "behavioural_test": null,
+      "ecosystem": "dart",
+      "id": "dart:agentools:agentools.dart#McpTransport",
+      "kind": "declaration",
+      "legacy_libraries": [],
+      "migration": "keep",
+      "package": "agentools",
+      "path": "dart/agentools/lib/src/contracts/mcp_transport.dart",
+      "production_consumer": "dart/agentools_mcp_dart/lib/src/mcp_dart_transport.dart",
+      "source_digest": "e382b268c874fe7423a2d5af37439259381484a88326cab3693b50a0825083e6",
+      "target_library": "package:agentools/agentools.dart",
+      "target_name": "McpTransport",
+      "tier": "advanced"
+    },
+    {
+      "behavioural_test": "dart/agentools/test/scenario/scenario_runner_test.dart",
+      "ecosystem": "dart",
+      "id": "dart:agentools:agentools.dart#ScenarioRunner",
+      "kind": "declaration",
+      "legacy_libraries": [],
+      "migration": "keep",
+      "package": "agentools",
+      "path": "dart/agentools/lib/src/scenario/scenario_runner.dart",
+      "production_consumer": "dart/agentools/conformance/sdk_conformance_engine.dart",
+      "source_digest": "ae75f22c66c1230adbc310b7d1045fadd14f36c185cd20445d045fb5f154facb",
+      "target_library": "package:agentools/agentools.dart",
+      "target_name": "ScenarioRunner",
+      "tier": "advanced"
+    },
+    {
+      "behavioural_test": null,
+      "ecosystem": "dart",
+      "id": "dart:agentools:agentools.dart#SqlConfirmationTokenStore",
+      "kind": "declaration",
+      "legacy_libraries": [],
+      "migration": "keep",
+      "package": "agentools",
+      "path": "dart/agentools/lib/src/confirmation/sql_confirmation_token_store.dart",
+      "production_consumer": null,
+      "source_digest": "3fe30ad48d7e1c45c464bc5b72ed921cce04485446811394be30000d70867d79",
+      "target_library": "package:agentools/agentools.dart",
+      "target_name": "SqlConfirmationTokenStore",
+      "tier": "advanced"
+    },
+    {
+      "behavioural_test": "dart/agentools/test/persistence/sql_event_store_test.dart",
+      "ecosystem": "dart",
+      "id": "dart:agentools:agentools.dart#SqlEventStore",
+      "kind": "declaration",
+      "legacy_libraries": [],
+      "migration": "keep",
+      "package": "agentools",
+      "path": "dart/agentools/lib/src/persistence/sql_event_store.dart",
+      "production_consumer": null,
+      "source_digest": "920bb6681ce41d24a8a2bb4f995d3e55b976b1744c464da554d584022d4dc51b",
+      "target_library": "package:agentools/agentools.dart",
+      "target_name": "SqlEventStore",
+      "tier": "advanced"
+    },
+    {
+      "behavioural_test": "dart/agentools/test/idempotency/sql_idempotency_store_test.dart",
+      "ecosystem": "dart",
+      "id": "dart:agentools:agentools.dart#SqlIdempotencyStore",
+      "kind": "declaration",
+      "legacy_libraries": [],
+      "migration": "keep",
+      "package": "agentools",
+      "path": "dart/agentools/lib/src/idempotency/sql_idempotency_store.dart",
+      "production_consumer": null,
+      "source_digest": "49cb5954a5bc4b92d7178ae87c019042e018d92827ddfabf2a2a1032433fbd75",
+      "target_library": "package:agentools/agentools.dart",
+      "target_name": "SqlIdempotencyStore",
+      "tier": "advanced"
+    },
+    {
+      "behavioural_test": "dart/agentools/test/idempotency/fencing_gate_test.dart",
+      "ecosystem": "dart",
+      "id": "dart:agentools:agentools.dart#ToolPort",
+      "kind": "declaration",
+      "legacy_libraries": [],
+      "migration": "keep",
+      "package": "agentools",
+      "path": "dart/agentools/lib/src/contracts/tool_port.dart",
+      "production_consumer": "dart/agentools/conformance/harness_tool_port.dart",
+      "source_digest": "aa3ca2ae27b6244a50a953b3e240ede6932e2cfd3e4873315ba5dce665d6c566",
+      "target_library": "package:agentools/agentools.dart",
+      "target_name": "ToolPort",
+      "tier": "advanced"
+    },
+    {
+      "behavioural_test": "dart/agentools_mcp_dart/test/mcp_dart_transport_test.dart",
+      "ecosystem": "dart",
+      "id": "dart:agentools_mcp_dart:agentools_mcp_dart.dart#McpDartTransport",
+      "kind": "declaration",
+      "legacy_libraries": [],
+      "migration": "keep",
+      "package": "agentools_mcp_dart",
+      "path": "dart/agentools_mcp_dart/lib/src/mcp_dart_transport.dart",
+      "production_consumer": "dart/agentools_mcp_dart/lib/src/mcp_dart_transport.dart",
+      "source_digest": "f24c3389084168488f3d9452d51807cecf7b15b90629d34d97157a6d5b1fa057",
+      "target_library": "package:agentools_mcp_dart/agentools_mcp_dart.dart",
+      "target_name": "McpDartTransport",
+      "tier": "stable"
+    },
+    {
+      "archive_role": "production",
+      "autoload": "production",
+      "behavioural_test": "php/tests/Action/ActionReducerTest.php",
+      "ecosystem": "php",
+      "id": "php:AgenTools\\Action\\ActionJournal",
+      "kind": "class",
+      "legacy_fqns": [],
+      "migration": "keep",
+      "package": "agentools/sdk",
+      "path": "php/src/Action/ActionJournal.php",
+      "production_consumer": null,
+      "psr4_mismatch": false,
+      "source_digest": "8dd5030496bd4438eeecc083f98cb7eb9893500b2d0793b08e6260d43402c2da",
+      "target_fqn": "AgenTools\\Action\\ActionJournal",
+      "tier": "advanced"
+    },
+    {
+      "archive_role": "production",
+      "autoload": "production",
+      "behavioural_test": "php/tests/Action/ActionReducerTest.php",
+      "ecosystem": "php",
+      "id": "php:AgenTools\\Action\\ActionReducer",
+      "kind": "class",
+      "legacy_fqns": [],
+      "migration": "keep",
+      "package": "agentools/sdk",
+      "path": "php/src/Action/ActionReducer.php",
+      "production_consumer": "php/conformance/SdkConformanceEngine.php",
+      "psr4_mismatch": false,
+      "source_digest": "f5cf4c07ba207724e25b287d8940c6384633248a3a85567b787f107c2661b6f5",
+      "target_fqn": "AgenTools\\Action\\ActionReducer",
+      "tier": "advanced"
+    },
+    {
+      "archive_role": "production",
+      "autoload": "production",
+      "behavioural_test": "php/tests/Action/ActionReducerTest.php",
+      "ecosystem": "php",
+      "id": "php:AgenTools\\Action\\ActionStatus",
+      "kind": "enum",
+      "legacy_fqns": [],
+      "migration": "keep",
+      "package": "agentools/sdk",
+      "path": "php/src/Action/ActionStatus.php",
+      "production_consumer": "php/conformance/SdkConformanceEngine.php",
+      "psr4_mismatch": false,
+      "source_digest": "802eea9b23ad88517cf5a4e45b5396c893cb7a654a68fcbcc4693995fb3b1ff7",
+      "target_fqn": "AgenTools\\Action\\ActionStatus",
+      "tier": "advanced"
+    },
+    {
+      "archive_role": "production",
+      "autoload": "production",
+      "behavioural_test": null,
+      "ecosystem": "php",
+      "id": "php:AgenTools\\Confirmation\\ConfirmationService",
+      "kind": "class",
+      "legacy_fqns": [],
+      "migration": "keep",
+      "package": "agentools/sdk",
+      "path": "php/src/Confirmation/ConfirmationService.php",
+      "production_consumer": "php/reference/Confirmation/SliceConfirmationDependencies.php",
+      "psr4_mismatch": false,
+      "source_digest": "2944dfbe35b1f8803d6de1fb92646ab6c5958624f7e61e2128f5245b881cf8f0",
+      "target_fqn": "AgenTools\\Confirmation\\ConfirmationService",
+      "tier": "advanced"
+    },
+    {
+      "archive_role": "production",
+      "autoload": "production",
+      "behavioural_test": "php/tests/Confirmation/PdoPostgresConfirmationTokenStoreTest.php",
+      "ecosystem": "php",
+      "id": "php:AgenTools\\Confirmation\\PdoPostgresConfirmationTokenStore",
+      "kind": "class",
+      "legacy_fqns": [],
+      "migration": "keep",
+      "package": "agentools/sdk",
+      "path": "php/src/Confirmation/PdoPostgresConfirmationTokenStore.php",
+      "production_consumer": null,
+      "psr4_mismatch": false,
+      "source_digest": "e832cfdcd15606aa48da7613f8a9bacf9aa11bffbcf4883c756a540e3ce2fd1e",
+      "target_fqn": "AgenTools\\Confirmation\\PdoPostgresConfirmationTokenStore",
+      "tier": "advanced"
+    },
+    {
+      "archive_role": "production",
+      "autoload": "production",
+      "behavioural_test": "php/tests/Persistence/InMemoryEventStoreTest.php",
+      "ecosystem": "php",
+      "id": "php:AgenTools\\Contracts\\EventStore",
+      "kind": "interface",
+      "legacy_fqns": [],
+      "migration": "keep",
+      "package": "agentools/sdk",
+      "path": "php/src/Contracts/EventStore.php",
+      "production_consumer": null,
+      "psr4_mismatch": false,
+      "source_digest": "50f7bd5e3c27f01236b6f44bda0da9313779fbb47afb84ddc72ce2a36e1f65e0",
+      "target_fqn": "AgenTools\\Contracts\\EventStore",
+      "tier": "advanced"
+    },
+    {
+      "archive_role": "production",
+      "autoload": "production",
+      "behavioural_test": "php/tests/Idempotency/FencingGateTest.php",
+      "ecosystem": "php",
+      "id": "php:AgenTools\\Contracts\\IdempotencyStore",
+      "kind": "interface",
+      "legacy_fqns": [],
+      "migration": "keep",
+      "package": "agentools/sdk",
+      "path": "php/src/Contracts/IdempotencyStore.php",
+      "production_consumer": "php/reference/Persistence/SqliteIdempotencyStore.php",
+      "psr4_mismatch": false,
+      "source_digest": "864ee112b5b5e828e1bb9b598450b90d118231f8a34655edc058962b27d41a1a",
+      "target_fqn": "AgenTools\\Contracts\\IdempotencyStore",
+      "tier": "stable"
+    },
+    {
+      "archive_role": "production",
+      "autoload": "production",
+      "behavioural_test": null,
+      "ecosystem": "php",
+      "id": "php:AgenTools\\Contracts\\LlmPort",
+      "kind": "interface",
+      "legacy_fqns": [],
+      "migration": "keep",
+      "package": "agentools/sdk",
+      "path": "php/src/Contracts/LlmPort.php",
+      "production_consumer": "php/reference/Adapters/ScriptedLlmPort.php",
+      "psr4_mismatch": false,
+      "source_digest": "6bc4e8b468db6f173db64f5014a5ab54bc03b3fffa2c5c6b262b0ce9e206e150",
+      "target_fqn": "AgenTools\\Contracts\\LlmPort",
+      "tier": "advanced"
+    },
+    {
+      "archive_role": "production",
+      "autoload": "production",
+      "behavioural_test": "php/tests/Idempotency/FencingGateTest.php",
+      "ecosystem": "php",
+      "id": "php:AgenTools\\Contracts\\ToolPort",
+      "kind": "interface",
+      "legacy_fqns": [],
+      "migration": "keep",
+      "package": "agentools/sdk",
+      "path": "php/src/Contracts/ToolPort.php",
+      "production_consumer": "php/conformance/HarnessToolPort.php",
+      "psr4_mismatch": false,
+      "source_digest": "37cfdb21a483e15298a45f3a7e8135c5d871a839fc184b6e810a71d1d6b79b11",
+      "target_fqn": "AgenTools\\Contracts\\ToolPort",
+      "tier": "stable"
+    },
+    {
+      "archive_role": "production",
+      "autoload": "production",
+      "behavioural_test": "php/tests/Idempotency/FencingGateTest.php",
+      "ecosystem": "php",
+      "id": "php:AgenTools\\Idempotency\\IdempotencyCoordinator",
+      "kind": "class",
+      "legacy_fqns": [],
+      "migration": "keep",
+      "package": "agentools/sdk",
+      "path": "php/src/Idempotency/IdempotencyCoordinator.php",
+      "production_consumer": "php/reference/Scenario/ReferenceIdempotencyCoordinatorFactory.php",
+      "psr4_mismatch": false,
+      "source_digest": "982af0bbe3d14397d768a78d644c1eaf84261c8eb23a9ce41f3d9dc1129a168d",
+      "target_fqn": "AgenTools\\Idempotency\\IdempotencyCoordinator",
+      "tier": "stable"
+    },
+    {
+      "archive_role": "production",
+      "autoload": "production",
+      "behavioural_test": "php/tests/Idempotency/FencingGateTest.php",
+      "ecosystem": "php",
+      "id": "php:AgenTools\\Idempotency\\PdoPostgresIdempotencyStore",
+      "kind": "class",
+      "legacy_fqns": [],
+      "migration": "keep",
+      "package": "agentools/sdk",
+      "path": "php/src/Idempotency/PdoPostgresIdempotencyStore.php",
+      "production_consumer": null,
+      "psr4_mismatch": false,
+      "source_digest": "be9087cc43c4047920cfada11e253d0b921bb12a08d5f83c5ea00e268f687c75",
+      "target_fqn": "AgenTools\\Idempotency\\PdoPostgresIdempotencyStore",
+      "tier": "advanced"
+    },
+    {
+      "archive_role": "production",
+      "autoload": "production",
+      "behavioural_test": "php/tests/Persistence/EventStoreGateTest.php",
+      "ecosystem": "php",
+      "id": "php:AgenTools\\Persistence\\PdoPostgresEventStore",
+      "kind": "class",
+      "legacy_fqns": [],
+      "migration": "keep",
+      "package": "agentools/sdk",
+      "path": "php/src/Persistence/PdoPostgresEventStore.php",
+      "production_consumer": null,
+      "psr4_mismatch": false,
+      "source_digest": "6ab885285ff784144d4df36b7dcaa571b111756adfa23036697c46575eb71cd5",
+      "target_fqn": "AgenTools\\Persistence\\PdoPostgresEventStore",
+      "tier": "advanced"
+    },
+    {
+      "archive_role": "production",
+      "autoload": "production",
+      "behavioural_test": "php/tests/Scenario/ScenarioRunnerTest.php",
+      "ecosystem": "php",
+      "id": "php:AgenTools\\Scenario\\ScenarioRunner",
+      "kind": "class",
+      "legacy_fqns": [],
+      "migration": "keep",
+      "package": "agentools/sdk",
+      "path": "php/src/Scenario/ScenarioRunner.php",
+      "production_consumer": "php/conformance/SdkConformanceEngine.php",
+      "psr4_mismatch": false,
+      "source_digest": "19b87f15703f4ce86af336302a07290f85d3d460964c8afc984d968115b153b3",
+      "target_fqn": "AgenTools\\Scenario\\ScenarioRunner",
+      "tier": "advanced"
+    }
+  ],
+  "packages": [
+    {
+      "language": "php",
+      "path": "php/",
+      "package": "agentools/sdk",
+      "namespace": "AgenTools\\",
+      "minimum_runtime": ">=8.3",
+      "production_entry": "PSR-4 AgenTools\\ => src/",
+      "development_only": [
+        "AgenTools\\Reference\\",
+        "AgenTools\\TestKit\\",
+        "AgenTools\\Tests\\"
+      ],
+      "optional_adapter": "PdoPostgres* require ext-pdo_pgsql",
+      "stability": "Use api/package-surface-v1.json tier per symbol; PSR-4 reachability alone is not stable",
+      "evidence": [
+        {
+          "path": "php/composer.json",
+          "sha256": "e4257bfb8d748df5e5e4a2007be75ae7aaaedf9fc938d1222a67ff353c8459df",
+          "symbol": "\"name\"",
+          "line": 2
+        },
+        {
+          "path": "php/API.md",
+          "sha256": "c2cf6db38925ecc19a1023bb8a051d96fbffa43255b1c2a9ce4ed707882f5f10",
+          "symbol": "Supported entry",
+          "line": 5
+        }
+      ]
+    },
+    {
+      "language": "dart",
+      "path": "dart/agentools/",
+      "package": "agentools",
+      "minimum_runtime": "^3.11.0",
+      "publish_to": "none",
+      "production_entry": "package:agentools/agentools.dart",
+      "development_only": [
+        "package:agentools/agentools_testkit.dart"
+      ],
+      "forbidden_consumer_imports": [
+        "package:agentools/src/"
+      ],
+      "optional_adapter": "SqlEventStore/SqlIdempotencyStore/SqlConfirmationTokenStore with injected executor; no default in-memory production store",
+      "evidence": [
+        {
+          "path": "dart/agentools/pubspec.yaml",
+          "sha256": "58904433927f35d73ac65ce6af035fc9f57dd9d6353c71c6be10aca0bd74b615",
+          "symbol": "sdk:",
+          "line": 7
+        },
+        {
+          "path": "dart/agentools/API.md",
+          "sha256": "2c16005490bb49bf027a4ff8d8cb83d049cbf3acfd4eb22818776384bce4f22f",
+          "symbol": "Supported entry",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "language": "dart",
+      "path": "dart/agentools_mcp_dart/",
+      "package": "agentools_mcp_dart",
+      "minimum_runtime": "^3.11.0",
+      "publish_to": "none",
+      "production_entry": "package:agentools_mcp_dart/agentools_mcp_dart.dart",
+      "export": "McpDartTransport",
+      "distribution": "optional private-paired path dependency on ../agentools",
+      "core_required": false,
+      "evidence": [
+        {
+          "path": "dart/agentools_mcp_dart/API.md",
+          "sha256": "de460b8f7311ee13a4397e424327a9c0ad006e62b2ed6945ab08ebae50f0bf39",
+          "symbol": "Supported entry",
+          "line": 6
+        },
+        {
+          "path": "dart/agentools_mcp_dart/pubspec.yaml",
+          "sha256": "c10900fcdee1fd2c86c7815f24e30ce0d50dc1fa07f27ceb3f90371343b49f21",
+          "symbol": "path:",
+          "line": 11
+        }
+      ]
+    }
+  ],
+  "consumers": [
+    {
+      "id": "php-direct",
+      "classification": "verified_repo",
+      "surface": "ConfirmationService, IdempotencyCoordinator, EventStore, ActionReducer, ScenarioRunner, LlmPort.respond",
+      "obligation": "Preserve direct/headless native API without Assistant/Laravel/model/MCP dependency. Production host chooses trusted ports and durable adapters.",
+      "evidence": [
+        {
+          "path": "php/API.md",
+          "sha256": "c2cf6db38925ecc19a1023bb8a051d96fbffa43255b1c2a9ce4ed707882f5f10",
+          "symbol": "Supported entry",
+          "line": 5
+        },
+        {
+          "path": "php/src/Contracts/LlmPort.php",
+          "sha256": "6bc4e8b468db6f173db64f5014a5ab54bc03b3fffa2c5c6b262b0ce9e206e150",
+          "symbol": "function respond",
+          "line": 17
+        },
+        {
+          "path": "php/src/Scenario/ScenarioRunner.php",
+          "sha256": "9d7a030fb48b7d53c713d4dea80ac3c8d1d735aca5ac060c623724506885603c",
+          "symbol": "public function run",
+          "line": 29
+        }
+      ]
+    },
+    {
+      "id": "dart-native-offline",
+      "classification": "verified_repo",
+      "surface": "agentools.dart; pure reducer/ScenarioRunner/LlmPort; injected SQL ports",
+      "obligation": "Retain direct/native/offline use; no Flutter, PHP server or MCP companion requirement; current trusted host policy before effects.",
+      "evidence": [
+        {
+          "path": "dart/agentools/API.md",
+          "sha256": "2c16005490bb49bf027a4ff8d8cb83d049cbf3acfd4eb22818776384bce4f22f",
+          "symbol": "Supported entry",
+          "line": 6
+        },
+        {
+          "path": "dart/agentools/lib/agentools.dart",
+          "sha256": "991c24180debb9e4dd893958ab7c7113d7a74723b31aec60ffdb853b20214d07",
+          "symbol": "export",
+          "line": 3
+        },
+        {
+          "path": "dart/agentools/lib/src/contracts/llm_port.dart",
+          "sha256": "7424b92a48068e46736f1e14b4c69254493dff234fbb143b1e299434d2388fa4",
+          "symbol": "respond(",
+          "line": 4
+        }
+      ]
+    },
+    {
+      "id": "dart-mcp",
+      "classification": "verified_repo",
+      "surface": "McpDartTransport optional companion",
+      "obligation": "Preserve supported public core imports and private-paired package boundary; do not make companion mandatory for core.",
+      "evidence": [
+        {
+          "path": "dart/agentools_mcp_dart/API.md",
+          "sha256": "de460b8f7311ee13a4397e424327a9c0ad006e62b2ed6945ab08ebae50f0bf39",
+          "symbol": "Supported entry",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "id": "AiResto",
+      "classification": "unverified",
+      "surface": "independent native/offline/direct Actions consumer obligation",
+      "obligation": "Preserve compatibility; concrete external paths, deployment, authentication, calls and tests remain unverified.",
+      "evidence": []
+    },
+    {
+      "id": "ERP",
+      "classification": "unverified",
+      "surface": "independent PHP/Dart/direct Actions consumer obligation",
+      "obligation": "Preserve compatibility; no inference of absence from local caller search.",
+      "evidence": []
+    },
+    {
+      "id": "Botkit",
+      "classification": "owner_direction",
+      "surface": "donor-only",
+      "obligation": "No operating consumers, compatibility facade or data transfer inferred; historical source callers are donor observations.",
+      "evidence": []
+    }
+  ],
+  "legacy_scenario_identity": {
+    "php": "run(scenario,context,tools,IdempotencyKey|string|null runKey=null,?string runId=null); supplying both identities rejected",
+    "dart": "run(scenario,context,tools,[IdempotencyKey? runKey]); runWithId(...,{String? runId})",
+    "idempotency_key_scheme": "Existing IdempotencyKey uses length-prefixed UTF-8 tuple + SHA-256 base64url; string runId uses shared JCS tuple + hex SHA-256. Preserve both and never switch on retry.",
+    "omitted_identity": "Fresh independent run, not a retry identity. Persist identity and scheme before first effect.",
+    "scope": "Linear existing interpreter; not a durable Assistant Run FSM and not proof of crash-safe journal dispatch."
+  },
+  "llm_port_adapter": {
+    "existing_php": "LlmPort::respond(array input): array",
+    "existing_dart": "LlmPort.respond(Map<String,dynamic>): Map<String,dynamic>",
+    "planned": "Explicit legacy compatibility adapter may wrap a single ModelTransport exchange, retaining old return/exception semantics; new rich stream/usage/unknown data remains in additive API. No invented synchronous cast from Future or second effect loop.",
+    "implemented": false,
+    "owner": "P4.1/P4.2; concrete signatures and capability mismatch behavior must be verified there"
+  },
+  "platform_projection_applicability": [
+    {
+      "schema": "ExecutionContext",
+      "role": "host trusted context",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "tenant/actor/acting_as/purpose/authorization/policy/correlation; constructed server-side, no trusted caller flags",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP trusted factory adapter; Dart trusted host/session bridge; authentication is external",
+      "owner": "host",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "TrustedInput",
+      "role": "Assistant input",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "stable tenant/source-event identity + hash; authenticated context; duplicate same hash replays, differing hash conflicts",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP ingress adapter; Dart optional API client, never derives trust from JSON",
+      "owner": "Runtime",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "AcceptedTurn",
+      "role": "Assistant accept result",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "turn_id/run_id/status; atomic turn/run/outbox; one active run per turn",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP service value; Dart optional read projection",
+      "owner": "Runtime",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "Run",
+      "role": "Assistant run",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "independent FSM/version/run_step/claim_epoch; terminal immutable; waiting holds no worker/SQL lock",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP runtime store; Dart optional read projection, not ActionStatus",
+      "owner": "Runtime",
+      "source_contract": "knowledge/rt.states#states"
+    },
+    {
+      "schema": "RunClaim",
+      "role": "worker claim",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "tenant/run/claim_epoch/version CAS; stale claim cannot checkpoint or dispatch",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP worker/storage adapter; Dart only if future worker profile explicitly owns it",
+      "owner": "Runtime",
+      "source_contract": "knowledge/rt.states#states"
+    },
+    {
+      "schema": "SessionMigration",
+      "role": "Assistant migrateSession command",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "expected_version/new_bundle_ref/policy; immutable pins plus current guards",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP host policy adapter; Dart optional client command, no local bypass",
+      "owner": "Runtime",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "ActionRequest",
+      "role": "direct or Assistant Action submit",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "definition id/version/hash; stable origin/proposal/key; input_ref/hash; scope hash/context/deadline",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP Actions composition; Dart direct/offline Actions composition; no Assistant dependency",
+      "owner": "Actions",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "ActionReceipt",
+      "role": "durably accepted Action",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "existing 2026-09 only",
+      "semantics": "action_id/wire_status/version; submit is not synchronous success",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP service result; Dart projection uses existing closed ActionStatus",
+      "owner": "Actions",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "ActionRef",
+      "role": "Action getStatus/cancel/reconcile",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "tenant/action/context and authorized isolation; UUID is not a grant",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP current-owner guard adapter; Dart host authorization bridge",
+      "owner": "Actions",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "CancellationRequest",
+      "role": "Run or Action request",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "target kind/ref/reason; stable command identity; Action cancellation_requested event/flag, never new status",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP command/store adapter; Dart client/direct Action event adapter",
+      "owner": "Runtime/Actions independently",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "ReconcileRequest",
+      "role": "trusted operator/worker",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "stable action/effect identity/current epoch; known outcome evidence; no blind retry",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP owner-probe adapter; Dart optional owner-probe adapter",
+      "owner": "Actions",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "EffectRequest",
+      "role": "domain effect boundary",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "action_id/effect_key/owner_operation_ref/request_hash; tenant-scoped immutable identity; same key/different hash integrity_conflict",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP durable dispatcher then EffectApplier; Dart guarded native/SQL adapter; no second loop",
+      "owner": "Actions/external effect owner",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "EffectOutcome",
+      "role": "known/unknown effect",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "known success/failure vs unknown; immutable outcome ref/hash; callbacks fenced",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP owner result adapter; Dart owner result adapter; unknown never parsed as failed",
+      "owner": "Actions/external effect owner",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "ProposalMapping",
+      "role": "model proposal to Action",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "tenant/invocation/provider tool ID + content hash; durable mapping before confirmation/effect",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP runtime persistence; Dart optional projection, no provider handler execution",
+      "owner": "Runtime",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "ModelRequest",
+      "role": "model transport input",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "invocation_id/messages/context snapshot ref+hash/tools/output contract/params/deadline/cancellation/cache intent",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP vendor-neutral ModelTransport adapter; Dart optional independent transport adapter, no required PHP/Laravel bridge",
+      "owner": "ModelTransport",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "Deployment",
+      "role": "selected transport deployment",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "deployment/account/model/region and capability evidence; unknown or unsupported denied before send",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP current routing/credential adapter; Dart trusted host routing bridge",
+      "owner": "host",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "ModelResponse",
+      "role": "model transport result",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "request ID/requested+actual model/finish/refusal/output/proposals/usage certainty/adapter version",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP typed normalization; Dart optional projection; never executes handlers",
+      "owner": "ModelTransport",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "ModelStreamEvent",
+      "role": "typed streaming",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "terminal/error/cancellation/disclosure boundaries; missing terminal is not success",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP stream adapter; Dart optional typed stream projection",
+      "owner": "ModelTransport",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "Invocation",
+      "role": "model exchange checkpoint",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "stable tenant/invocation/request hash/result ref and certainty; model fallback creates policy-controlled new invocation, never repeats Action",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP durable store adapter; Dart optional read projection",
+      "owner": "Runtime",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "UsageVersion",
+      "role": "metering export",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "tenant/invocation/version identity + hash; unknown/null separate from zero; append correction versions",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP ControLLM port; Dart optional usage projection; no invented zero",
+      "owner": "ControLLM",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "Delivery",
+      "role": "technical outbox",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "stable tenant/delivery identity/hash; known vs unknown; run completed does not mean delivered",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP delivery adapter; Dart offline queue bridge; domain history remains Chatom",
+      "owner": "delivery owner/Runtime technical outbox",
+      "source_contract": "knowledge/root.contracts#contracts"
+    },
+    {
+      "schema": "PlatformError",
+      "role": "additive platform vocabulary",
+      "status": "planned",
+      "owning_revision": "spec/platform/v1 (planned, not published)",
+      "wire_action_status_applicability": "none; independent platform object",
+      "semantics": "code/retry_class/certainty/public_message_key/trace_ref/optional diagnostic_ref; no secrets or raw provider data",
+      "php_projection": "planned additive; no existing exported symbol claimed",
+      "dart_projection": "optional planned additive, direct/offline core unaffected",
+      "language_specific_adapters": "PHP typed error adapter; Dart typed error adapter; explicit partial dated translation",
+      "owner": "platform boundary",
+      "source_contract": "knowledge/root.contracts#contracts"
+    }
+  ],
+  "sections": [
+    {
+      "id": "packages",
+      "title": "Native package boundaries",
+      "text": "Preserve current names/runtime floors/autoload and barrels. Do not replace public APIs with RFC namespaces."
+    },
+    {
+      "id": "consumers",
+      "title": "Observed entries versus external consumers",
+      "text": "Local source entrypoints are observed; AiResto/ERP are unverified preservation obligations. Botkit is donor-only."
+    },
+    {
+      "id": "adapters",
+      "title": "Additive language projections",
+      "text": "Every logical schema has PHP/Dart applicability and adapter ownership; no generated SDK or provider support is claimed."
+    }
+  ],
+  "claims": [
+    {
+      "id": "sdk.php",
+      "classification": "verified_repo",
+      "statement": "PHP production package remains agentools/sdk, AgenTools\\ => src/, PHP >=8.3; reference/testkit/tests are dev autoload, not production imports. Reachability is not a stability promise.",
+      "evidence": [
+        {
+          "path": "php/composer.json",
+          "sha256": "e4257bfb8d748df5e5e4a2007be75ae7aaaedf9fc938d1222a67ff353c8459df",
+          "symbol": "\"name\"",
+          "line": 2
+        },
+        {
+          "path": "php/API.md",
+          "sha256": "c2cf6db38925ecc19a1023bb8a051d96fbffa43255b1c2a9ce4ed707882f5f10",
+          "symbol": "Exact identities",
+          "line": 13
+        }
+      ]
+    },
+    {
+      "id": "sdk.dart",
+      "classification": "verified_repo",
+      "statement": "Dart core remains agentools, SDK ^3.11.0, publish_to:none, public core barrel agentools.dart and separate testkit entry. MCP is optional private-paired and imports supported core only.",
+      "evidence": [
+        {
+          "path": "dart/agentools/pubspec.yaml",
+          "sha256": "58904433927f35d73ac65ce6af035fc9f57dd9d6353c71c6be10aca0bd74b615",
+          "symbol": "sdk:",
+          "line": 7
+        },
+        {
+          "path": "dart/agentools/API.md",
+          "sha256": "2c16005490bb49bf027a4ff8d8cb83d049cbf3acfd4eb22818776384bce4f22f",
+          "symbol": "Supported entry",
+          "line": 6
+        },
+        {
+          "path": "dart/agentools_mcp_dart/API.md",
+          "sha256": "de460b8f7311ee13a4397e424327a9c0ad006e62b2ed6945ab08ebae50f0bf39",
+          "symbol": "private-paired",
+          "line": 14
+        }
+      ]
+    },
+    {
+      "id": "legacy.api",
+      "classification": "verified_repo",
+      "statement": "LlmPort.respond and ScenarioRunner remain current APIs. PHP supports IdempotencyKey or string run identity; Dart run retains IdempotencyKey and runWithId supplies string identity. Switching schemes changes keys; retries must retain the chosen persisted identity and scheme.",
+      "evidence": [
+        {
+          "path": "php/src/Contracts/LlmPort.php",
+          "sha256": "6bc4e8b468db6f173db64f5014a5ab54bc03b3fffa2c5c6b262b0ce9e206e150",
+          "symbol": "function respond",
+          "line": 17
+        },
+        {
+          "path": "dart/agentools/lib/src/contracts/llm_port.dart",
+          "sha256": "7424b92a48068e46736f1e14b4c69254493dff234fbb143b1e299434d2388fa4",
+          "symbol": "respond(",
+          "line": 4
+        },
+        {
+          "path": "php/src/Scenario/ScenarioRunner.php",
+          "sha256": "9d7a030fb48b7d53c713d4dea80ac3c8d1d735aca5ac060c623724506885603c",
+          "symbol": "public function run",
+          "line": 29
+        },
+        {
+          "path": "dart/agentools/lib/src/scenario/scenario_runner.dart",
+          "sha256": "40386b6d53b6a44fdd532fec347b1b2d72d6cdf056c13d57cb1a358d5af32f83",
+          "symbol": "ScenarioResult runWithId",
+          "line": 32
+        }
+      ]
+    },
+    {
+      "id": "external.consumers",
+      "classification": "unverified",
+      "statement": "Independent AiResto/ERP/offline host bindings and deployment behavior are not inspected or live tested here; preservation is required even without an observed caller.",
+      "evidence": []
+    },
+    {
+      "id": "owner.boundary",
+      "classification": "owner_direction",
+      "statement": "D1/D2/D3/D7 and owner-amendment-2026-10-31: one AgenTools platform, closed dated wire, external data owners, Botkit donor-only; no mandatory Botkit facade, data migration or rollout.",
+      "evidence": [
+        {
+          "path": "@plan/knowledge/owner-amendment-2026-10-31.json",
+          "symbol": "boundary",
+          "sha256": "b55aada95a3bf65fb78eea6f6f8948c03a2aebc1dd31fbcb498d8a035010d5e5"
+        }
+      ]
+    },
+    {
+      "id": "transport.handoff",
+      "classification": "verified_repo",
+      "statement": "P1.2 records choice C separate transport, AgenTools sole future loop owner, no selected laravel/ai dependency and loop_proven:false. This is upstream design/offline evidence, not provider qualification.",
+      "evidence": [
+        {
+          "path": "docs/platform/loop-ownership.json",
+          "sha256": "64507a9ec7f3d5df9dea0a90886357b711ea880b8c60ba240c427b0fbd28475a",
+          "symbol": "\"loop_proven\"",
+          "line": 11
+        },
+        {
+          "path": "docs/platform/loop-ownership.json",
+          "sha256": "64507a9ec7f3d5df9dea0a90886357b711ea880b8c60ba240c427b0fbd28475a",
+          "symbol": "\"P1.4\"",
+          "line": 130
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D2",
+      "status": "accepted",
+      "decision": "Keep dated 2026-09, namespace/package and PHP/Dart/offline direct Actions; platform v1 is additive.",
+      "rationale": "Accepted execution-input D2 and observed package surface.",
+      "evidence_refs": [
+        "wire.closed",
+        "sdk.php",
+        "sdk.dart",
+        "legacy.api"
+      ]
+    },
+    {
+      "id": "D7",
+      "status": "accepted",
+      "decision": "Botkit is donor-only, no mandatory facade or data migration.",
+      "rationale": "Owner amendment supersedes historical P1.1 migration recommendations; preserve actual AgenTools obligations.",
+      "evidence_refs": [
+        "owner.boundary"
+      ]
+    }
+  ],
+  "limitations": [
+    "Design/source matrix and focused tests only; no new runtime, durable dispatcher, host binding, provider live call or production readiness.",
+    "Independent AiResto/ERP callers are unverified, not absent; existing API obligations remain.",
+    "Raw plan schemas/examples are design samples, not an implementation or published protocol; conductor owns V1/V2/V3 and per-check receipts.",
+    "P1.4 must choose additive placement/dependencies from target evidence; P1.2 direct selection does not force laravel/ai or raise existing PHP SDK floor."
+  ],
+  "package_surface_scope": "Exact selected boundary declarations, copied without tier promotion from the authoritative 386-entry manifest; not a new stability promise.",
+  "contract_provenance": {
+    "method": "Required contracts supplied inline in execution-input; execution-boundary and owner-amendment read through native Planner API. These provided hashes are not represented as a fresh raw-file hash computation.",
+    "provided_inputs": [
+      {
+        "path": "@plan/knowledge/rt.states.json",
+        "sha256": "91dfad09844fa94ffdfc91c153e3219af47cd29832efa02e381015671b6701c3",
+        "section": "states"
+      },
+      {
+        "path": "@plan/knowledge/rt.baseline.json",
+        "sha256": "6117b102e47c5189983e2743a3539d2c0403adc703f741da412327bb254be0b4",
+        "section": "baseline"
+      },
+      {
+        "path": "@plan/knowledge/root.contracts.json",
+        "sha256": "81d13620bf178464e4c3d3dfeae037dfe7f0cd92bc78de52656bc3d29c8a299b",
+        "section": "contracts"
+      },
+      {
+        "path": "@plan/knowledge/cases-P1.3.json",
+        "sha256": "4003b501d266e0d4d241ed5bfcdcb90789be3979f20935bf3f5c20f872a7a6d2",
+        "section": "cases"
+      }
+    ],
+    "accepted_decisions": [
+      "D1",
+      "D2",
+      "D3",
+      "D5",
+      "D6",
+      "D7"
+    ],
+    "owner_amendment": "knowledge/owner-amendment-2026-10-31#boundary",
+    "source_observation_scope": "Listed current repository files and symbols only; historical inventory classifications do not imply implementation/live use."
+  },
+  "handoff_P1_4": {
+    "preserve": [
+      "agentools/sdk",
+      "AgenTools\\",
+      "PHP >=8.3",
+      "Dart agentools ^3.11.0",
+      "optional private-paired MCP",
+      "LlmPort.respond",
+      "ScenarioRunner legacy and string identity schemes",
+      "direct Actions and offline/AiResto/ERP compatibility",
+      "closed 2026-09; frozen 2026-08"
+    ],
+    "future_ownership": "Choose additive package names/paths and locks in P1.4; all platform projections here are planned and impose no new dependency on existing native SDKs.",
+    "P1_2_input": "Recorded separate direct transport, no laravel/ai target dependency, loop_proven:false; not live qualification.",
+    "gaps": [
+      "Durable dispatcher must commit intent before IO; local EffectCommitter append is insufficient.",
+      "ConfirmationService.prepare currently creates fresh random proposal identity. Future stable proposal mapping must reuse saved result before re-entering prepare.",
+      "Dart existing LlmPort.respond is synchronous. Rich/async ModelTransport needs an explicit additive adapter; do not silently replace signature or co-execute a turn.",
+      "Existing idempotency retention/expiry is dated behavior. Platform long-lived identity registry is separate and must not silently alter SDK expiration.",
+      "Botkit migration/facade recommendations in historical P1.1 are not obligations. AiResto/ERP concrete bindings remain unverified."
+    ]
+  }
+}

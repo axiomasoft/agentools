@@ -74,59 +74,76 @@ SQL;
     public function __construct(
         private readonly PDO $pdo,
         private readonly Canonicalizer $canonicalizer = new Canonicalizer(),
+        private readonly ?string $schema = null,
     ) {
         if ($this->pdo->getAttribute(PDO::ATTR_ERRMODE) !== PDO::ERRMODE_EXCEPTION) {
             throw new \InvalidArgumentException('PdoPostgresEventStore requires PDO::ERRMODE_EXCEPTION.');
+        }
+        if ($schema !== null && (preg_match('/\A[a-z][a-z0-9_]{0,62}\z/D', $schema) !== 1
+            || in_array($schema, ['public', 'information_schema'], true) || str_starts_with($schema, 'pg_'))) {
+            throw new \InvalidArgumentException('An explicit application schema is required.');
         }
     }
 
     /** @param list<UncommittedEvent> $events */
     public function append(string $tenantId, string $actionId, int $expectedPrevSeq, array $events): AppendResult
     {
-        $rules = new EventStoreSupport($this->canonicalizer);
-        $rules->assertAppendable($tenantId, $actionId, $events);
+        (new EventStoreSupport($this->canonicalizer))->assertAppendable($tenantId, $actionId, $events);
         $this->pdo->beginTransaction();
         try {
-            $insertHeader = $this->pdo->prepare(self::LOCK_HEADER_SQL);
-            $insertHeader->execute(['tenant_id' => $tenantId, 'action_id' => $actionId]);
-            $header = $this->pdo->prepare(self::SELECT_HEADER_SQL);
-            $header->execute(['tenant_id' => $tenantId, 'action_id' => $actionId]);
-            $headerSeq = $header->fetchColumn();
-            $actual = $headerSeq === false ? 0 : $this->intValue($headerSeq, 'current_seq');
-
-            $hashes = [];
-            foreach ($events as $event) {
-                $hashes[] = $rules->contentHash($tenantId, $actionId, $event);
-            }
-
-            /** @var array<int, array<string, mixed>> $existing */
-            $existing = [];
-            $lookup = $this->pdo->prepare(self::LOOKUP_SQL);
-            foreach ($events as $index => $event) {
-                $lookup->execute(['tenant_id' => $tenantId, 'event_id' => $event->eventId]);
-                $row = $lookup->fetch(PDO::FETCH_ASSOC);
-                if (is_array($row)) {
-                    $existing[$index] = $this->assoc($row);
-                }
-            }
-
-            if ($existing === []) {
-                $result = $this->insertAll($tenantId, $actionId, $actual, $expectedPrevSeq, $events, $hashes);
-                $this->pdo->commit();
-
-                return $result;
-            }
-
-            $classified = $this->classifyReplay($tenantId, $actionId, $expectedPrevSeq, $actual, $events, $hashes, $existing);
+            $result = $this->appendInTransaction($tenantId, $actionId, $expectedPrevSeq, $events);
             $this->pdo->commit();
-
-            return $classified;
+            return $result;
         } catch (\Throwable $exception) {
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
             throw $exception;
         }
+    }
+
+    /**
+     * Explicit participant: the caller owns commit/rollback on this same PDO.
+     * An AppendResult from this method is not evidence that a transaction committed.
+     * @param list<UncommittedEvent> $events
+     */
+    public function appendInTransaction(string $tenantId, string $actionId, int $expectedPrevSeq, array $events): AppendResult
+    {
+        if (!$this->pdo->inTransaction()) {
+            throw new \LogicException('A caller-owned transaction is required.');
+        }
+        $rules = new EventStoreSupport($this->canonicalizer);
+        $rules->assertAppendable($tenantId, $actionId, $events);
+        $insertHeader = $this->pdo->prepare($this->sql(self::LOCK_HEADER_SQL));
+        $insertHeader->execute(['tenant_id' => $tenantId, 'action_id' => $actionId]);
+        $header = $this->pdo->prepare($this->sql(self::SELECT_HEADER_SQL));
+        $header->execute(['tenant_id' => $tenantId, 'action_id' => $actionId]);
+        $headerSeq = $header->fetchColumn();
+        $actual = $headerSeq === false ? 0 : $this->intValue($headerSeq, 'current_seq');
+
+        $hashes = [];
+        foreach ($events as $event) {
+            $hashes[] = $rules->contentHash($tenantId, $actionId, $event);
+        }
+
+        /** @var array<int, array<string, mixed>> $existing */
+        $existing = [];
+        $lookup = $this->pdo->prepare($this->sql(self::LOOKUP_SQL));
+        foreach ($events as $index => $event) {
+            $lookup->execute(['tenant_id' => $tenantId, 'event_id' => $event->eventId]);
+            $row = $lookup->fetch(PDO::FETCH_ASSOC);
+            if (is_array($row)) {
+                $existing[$index] = $this->assoc($row);
+            }
+        }
+
+        if ($existing === []) {
+            $result = $this->insertAll($tenantId, $actionId, $actual, $expectedPrevSeq, $events, $hashes);
+            return $result;
+        }
+
+        $classified = $this->classifyReplay($tenantId, $actionId, $expectedPrevSeq, $actual, $events, $hashes, $existing);
+        return $classified;
     }
 
     public function load(string $tenantId, string $actionId, int $afterSeq = 0, int $limit = EventStoreSupport::DEFAULT_PAGE): EventStreamPage
@@ -137,7 +154,7 @@ SQL;
         if ($limit < 1 || $limit > EventStoreSupport::MAX_PAGE) {
             throw EventStoreFailure::pageLimit($limit);
         }
-        $statement = $this->pdo->prepare(self::LOAD_SQL);
+        $statement = $this->pdo->prepare($this->sql(self::LOAD_SQL));
         $statement->bindValue('tenant_id', $tenantId);
         $statement->bindValue('action_id', $actionId);
         $statement->bindValue('after_seq', $afterSeq, PDO::PARAM_INT);
@@ -220,7 +237,7 @@ SQL;
         }
         $chain = new JournalHashChain($this->canonicalizer);
         $previous = $this->tailEvent($tenantId, $actionId);
-        $insert = $this->pdo->prepare(self::INSERT_EVENT_SQL);
+        $insert = $this->pdo->prepare($this->sql(self::INSERT_EVENT_SQL));
         $firstSeq = $actual + 1;
         $lastPosition = 0;
         foreach ($events as $index => $event) {
@@ -264,7 +281,7 @@ SQL;
             $lastPosition = $this->intField($this->assoc($returned), 'global_position');
             $previous = $committed;
         }
-        $update = $this->pdo->prepare(self::UPDATE_HEADER_SQL);
+        $update = $this->pdo->prepare($this->sql(self::UPDATE_HEADER_SQL));
         $update->execute([
             'tenant_id' => $tenantId,
             'action_id' => $actionId,
@@ -276,7 +293,7 @@ SQL;
 
     private function tailEvent(string $tenantId, string $actionId): ?ActionEvent
     {
-        $statement = $this->pdo->prepare(self::TAIL_HASH_SQL);
+        $statement = $this->pdo->prepare($this->sql(self::TAIL_HASH_SQL));
         $statement->execute(['tenant_id' => $tenantId, 'action_id' => $actionId]);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
 
@@ -286,7 +303,7 @@ SQL;
     private function positionFor(string $tenantId, string $eventId): int
     {
         $statement = $this->pdo->prepare(
-            'SELECT global_position FROM agentools_events WHERE tenant_id = :tenant_id AND event_id = :event_id',
+            $this->sql('SELECT global_position FROM agentools_events WHERE tenant_id = :tenant_id AND event_id = :event_id'),
         );
         $statement->execute(['tenant_id' => $tenantId, 'event_id' => $eventId]);
 
@@ -363,5 +380,14 @@ SQL;
         }
 
         throw new \RuntimeException(sprintf('Event row field %s must be an integer.', $key));
+    }
+
+    private function sql(string $sql): string
+    {
+        if ($this->schema === null) {
+            return $sql;
+        }
+        return str_replace(['agentools_event_streams', 'agentools_events'],
+            ['"' . $this->schema . '"."agentools_event_streams"', '"' . $this->schema . '"."agentools_events"'], $sql);
     }
 }

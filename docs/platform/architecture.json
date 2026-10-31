@@ -1,0 +1,368 @@
+{
+  "document_kind": "architecture",
+  "status": "recorded",
+  "plan_id": "PLAN2",
+  "source_revisions": {
+    "agentools": "8c22b5a2f139b5587ff735fb3eb16105420ffe18"
+  },
+  "core_package": "agentools/platform-core",
+  "packages": [
+    {
+      "name": "agentools/sdk",
+      "role": "legacy-sdk",
+      "depends_on": []
+    },
+    {
+      "name": "agentools/platform-core",
+      "role": "core",
+      "depends_on": []
+    },
+    {
+      "name": "agentools/platform-sdk-bridge",
+      "role": "adapter",
+      "depends_on": [
+        "agentools/platform-core",
+        "agentools/sdk"
+      ]
+    },
+    {
+      "name": "agentools/platform-postgres",
+      "role": "persistence",
+      "depends_on": [
+        "agentools/platform-core",
+        "agentools/sdk"
+      ]
+    },
+    {
+      "name": "agentools/platform-model-adapter",
+      "role": "adapter",
+      "depends_on": [
+        "agentools/platform-core"
+      ]
+    },
+    {
+      "name": "agentools/platform-laravel",
+      "role": "composition",
+      "depends_on": [
+        "agentools/platform-core",
+        "agentools/platform-postgres",
+        "agentools/platform-sdk-bridge",
+        "agentools/platform-model-adapter"
+      ]
+    },
+    {
+      "name": "agentools/platform-testing",
+      "role": "testing",
+      "depends_on": [
+        "agentools/platform-core"
+      ]
+    },
+    {
+      "name": "agentools/platform-knowledge",
+      "role": "extension",
+      "depends_on": [
+        "agentools/platform-core"
+      ]
+    },
+    {
+      "name": "agentools/platform-chatom",
+      "role": "extension",
+      "depends_on": [
+        "agentools/platform-core"
+      ]
+    },
+    {
+      "name": "agentools/platform-loqum",
+      "role": "extension",
+      "depends_on": [
+        "agentools/platform-core"
+      ]
+    },
+    {
+      "name": "agentools/platform-filament",
+      "role": "extension",
+      "depends_on": [
+        "agentools/platform-laravel"
+      ]
+    },
+    {
+      "name": "agentools/platform-scheduler",
+      "role": "extension",
+      "depends_on": [
+        "agentools/platform-laravel"
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "adr",
+      "title": "Private additive layout and one namespace owner",
+      "text": "{\"alternatives\": [{\"decision\": \"rejected: current contract preservation\", \"option\": \"rename SDK or use RFC axioma namespace\"}, {\"decision\": \"rejected: duplicate FQN/mechanism ownership\", \"option\": \"copy SDK implementation into pure core\"}, {\"decision\": \"rejected: pure-core boundary\", \"option\": \"core imports SDK/framework/PDO/domain\"}, {\"decision\": \"rejected: would require host boilerplate or couple core to SDK IO surface\", \"option\": \"omit SDK bridge\"}], \"decision\": \"Keep agentools/sdk/AgenTools\\\\ and existing native APIs; select private agentools/platform-* packages with separate AgenToolsPlatform child prefixes. A thin SDK bridge isolates pure core from legacy SDK IO while reusing dated semantics.\", \"state\": \"accepted private design; not created/exported/published packages\"}"
+    },
+    {
+      "id": "package-map",
+      "title": "Package and autoload owners",
+      "text": "{\"native_dart\": [{\"entry\": \"package:agentools/agentools.dart\", \"new_php_platform_required\": false, \"offline_direct_actions\": true, \"package\": \"agentools\", \"path\": \"dart/agentools/\", \"sdk\": \"^3.11.0\", \"status\": \"existing\"}, {\"distribution\": \"private-paired; core remains independent\", \"entry\": \"package:agentools_mcp_dart/agentools_mcp_dart.dart\", \"optional\": true, \"package\": \"agentools_mcp_dart\", \"path\": \"dart/agentools_mcp_dart/\", \"status\": \"existing\"}], \"php_packages\": [{\"autoload_contour\": \"production\", \"depends_on\": [], \"implementation_owner\": \"existing SDK\", \"license\": \"proprietary; private source policy, no public release authorization\", \"manifest\": \"php/composer.json\", \"minimum_php\": \">=8.3\", \"name\": \"agentools/sdk\", \"optional_for_direct_sdk\": false, \"optional_for_platform_profile\": false, \"path\": \"php/\", \"production_install\": true, \"psr4\": {\"AgenTools\\\\\": \"src/\"}, \"role\": \"legacy-sdk\", \"selection_rationale\": \"Preserve current production package/FQNs/ports/direct Actions; actual external dependencies remain in observed manifest/lock.\", \"status\": \"existing\", \"target_lock_status\": \"existing source/lock\"}, {\"autoload_contour\": \"production\", \"depends_on\": [], \"implementation_owner\": \"P3.1\", \"license\": \"proprietary; private source policy, no public release authorization\", \"manifest\": \"packages/agentools-core/composer.json\", \"minimum_php\": \">=8.3\", \"name\": \"agentools/platform-core\", \"optional_for_direct_sdk\": true, \"optional_for_platform_profile\": false, \"path\": \"packages/agentools-core/\", \"production_install\": true, \"psr4\": {\"AgenToolsPlatform\\\\Core\\\\\": \"src/\"}, \"role\": \"core\", \"selection_rationale\": \"Pure values, deterministic policy and ports for Common/Security/Profiles/Context/Models/Runtime/Actions; no SDK/framework/domain/IO dependency.\", \"status\": \"planned\", \"target_lock_status\": \"not_created; owning implementation task must create and verify before runtime qualification\"}, {\"autoload_contour\": \"production\", \"depends_on\": [\"agentools/platform-core\", \"agentools/sdk\"], \"implementation_owner\": \"P3.1/P4.1/P5 owning slices\", \"license\": \"proprietary; private source policy, no public release authorization\", \"manifest\": \"packages/agentools-sdk-bridge/composer.json\", \"minimum_php\": \">=8.3\", \"name\": \"agentools/platform-sdk-bridge\", \"optional_for_direct_sdk\": true, \"optional_for_platform_profile\": true, \"path\": \"packages/agentools-sdk-bridge/\", \"production_install\": true, \"psr4\": {\"AgenToolsPlatform\\\\SdkBridge\\\\\": \"src/\"}, \"role\": \"adapter\", \"selection_rationale\": \"Thin production adapter delegates dated ActionReducer/EventStore/ConfirmationService/IdempotencyCoordinator and legacy respond/ScenarioRunner; avoids core importing the SDK IO surface. No second reducer or loop.\", \"status\": \"planned\", \"target_lock_status\": \"not_created; owning implementation task must create and verify before runtime qualification\"}, {\"autoload_contour\": \"production\", \"depends_on\": [\"agentools/platform-core\", \"agentools/sdk\"], \"implementation_owner\": \"P3.1/P3.2\", \"license\": \"proprietary; private source policy, no public release authorization\", \"manifest\": \"packages/agentools-postgres/composer.json\", \"minimum_php\": \">=8.3\", \"name\": \"agentools/platform-postgres\", \"optional_for_direct_sdk\": true, \"optional_for_platform_profile\": true, \"path\": \"packages/agentools-postgres/\", \"production_install\": true, \"psr4\": {\"AgenToolsPlatform\\\\Postgres\\\\\": \"src/\"}, \"role\": \"persistence\", \"selection_rationale\": \"Technical platform stores/CAS/outbox; reuse existing SDK PostgreSQL event/idempotency/token stores through their dated interfaces. Only isolated PG may qualify recovery.\", \"status\": \"planned\", \"target_lock_status\": \"not_created; owning implementation task must create and verify before runtime qualification\"}, {\"autoload_contour\": \"production\", \"depends_on\": [\"agentools/platform-core\"], \"implementation_owner\": \"P4.2\", \"license\": \"proprietary; private source policy, no public release authorization\", \"manifest\": \"packages/agentools-model-adapter/composer.json\", \"minimum_php\": \">=8.3\", \"name\": \"agentools/platform-model-adapter\", \"optional_for_direct_sdk\": true, \"optional_for_platform_profile\": true, \"path\": \"packages/agentools-model-adapter/\", \"production_install\": true, \"psr4\": {\"AgenToolsPlatform\\\\ModelAdapter\\\\\": \"src/\"}, \"role\": \"adapter\", \"selection_rationale\": \"P1.2 choice C: direct Anthropic Messages via injected IO port, no laravel/ai, no automatic effect/tool loop.\", \"status\": \"planned\", \"target_lock_status\": \"not_created; owning implementation task must create and verify before runtime qualification\"}, {\"autoload_contour\": \"production\", \"depends_on\": [\"agentools/platform-core\", \"agentools/platform-postgres\", \"agentools/platform-sdk-bridge\", \"agentools/platform-model-adapter\"], \"implementation_owner\": \"P6\", \"license\": \"proprietary; private source policy, no public release authorization\", \"manifest\": \"packages/agentools-laravel/composer.json\", \"minimum_php\": \">=8.3\", \"name\": \"agentools/platform-laravel\", \"optional_for_direct_sdk\": true, \"optional_for_platform_profile\": true, \"path\": \"packages/agentools-laravel/\", \"production_install\": true, \"psr4\": {\"AgenToolsPlatform\\\\Laravel\\\\\": \"src/\"}, \"role\": \"composition\", \"selection_rationale\": \"Explicit host/container/job bindings over trusted ports; Laravel lock requirements remain adapter-local.\", \"status\": \"planned\", \"target_lock_status\": \"not_created; owning implementation task must create and verify before runtime qualification\"}, {\"autoload_contour\": \"dev-only\", \"depends_on\": [\"agentools/platform-core\"], \"implementation_owner\": \"P3.1/P13\", \"license\": \"proprietary; private source policy, no public release authorization\", \"manifest\": \"packages/agentools-testing/composer.json\", \"minimum_php\": \">=8.3\", \"name\": \"agentools/platform-testing\", \"optional_for_direct_sdk\": true, \"optional_for_platform_profile\": true, \"path\": \"packages/agentools-testing/\", \"production_install\": false, \"psr4\": {\"AgenToolsPlatform\\\\Testing\\\\\": \"src/\"}, \"role\": \"testing\", \"selection_rationale\": \"Guard-preserving scripted transport and host-contract fixtures; absent from production --no-dev closures.\", \"status\": \"planned\", \"target_lock_status\": \"not_created; owning implementation task must create and verify before runtime qualification\"}, {\"autoload_contour\": \"production\", \"depends_on\": [\"agentools/platform-core\"], \"implementation_owner\": \"P10\", \"license\": \"proprietary; private source policy, no public release authorization\", \"manifest\": \"extensions/knowledge/composer.json\", \"minimum_php\": \">=8.3\", \"name\": \"agentools/platform-knowledge\", \"optional_for_direct_sdk\": true, \"optional_for_platform_profile\": true, \"path\": \"extensions/knowledge/\", \"production_install\": true, \"psr4\": {\"AgenToolsPlatform\\\\Knowledge\\\\\": \"src/\"}, \"role\": \"extension\", \"selection_rationale\": \"Optional retrieval/projection adapter; license/rights/canonical person knowledge remain external owners.\", \"status\": \"planned\", \"target_lock_status\": \"not_created; owning implementation task must create and verify before runtime qualification\"}, {\"autoload_contour\": \"production\", \"depends_on\": [\"agentools/platform-core\"], \"implementation_owner\": \"P7/P8\", \"license\": \"proprietary; private source policy, no public release authorization\", \"manifest\": \"extensions/chatom/composer.json\", \"minimum_php\": \">=8.3\", \"name\": \"agentools/platform-chatom\", \"optional_for_direct_sdk\": true, \"optional_for_platform_profile\": true, \"path\": \"extensions/chatom/\", \"production_install\": true, \"psr4\": {\"AgenToolsPlatform\\\\ChatomBridge\\\\\": \"src/\"}, \"role\": \"extension\", \"selection_rationale\": \"Optional host Messenger bridge; visible message/history/membership/cursor stay Chatom-owned.\", \"status\": \"planned\", \"target_lock_status\": \"not_created; owning implementation task must create and verify before runtime qualification\"}, {\"autoload_contour\": \"production\", \"depends_on\": [\"agentools/platform-core\"], \"implementation_owner\": \"P8\", \"license\": \"proprietary; private source policy, no public release authorization\", \"manifest\": \"extensions/loqum/composer.json\", \"minimum_php\": \">=8.3\", \"name\": \"agentools/platform-loqum\", \"optional_for_direct_sdk\": true, \"optional_for_platform_profile\": true, \"path\": \"extensions/loqum/\", \"production_install\": true, \"psr4\": {\"AgenToolsPlatform\\\\LoqumBridge\\\\\": \"src/\"}, \"role\": \"extension\", \"selection_rationale\": \"Optional media/STT/TTS/playout/reconnect bridge; AgenTools owns model loop only.\", \"status\": \"planned\", \"target_lock_status\": \"not_created; owning implementation task must create and verify before runtime qualification\"}, {\"autoload_contour\": \"production\", \"depends_on\": [\"agentools/platform-laravel\"], \"implementation_owner\": \"P6/P7\", \"license\": \"proprietary; private source policy, no public release authorization\", \"manifest\": \"extensions/filament/composer.json\", \"minimum_php\": \">=8.3\", \"name\": \"agentools/platform-filament\", \"optional_for_direct_sdk\": true, \"optional_for_platform_profile\": true, \"path\": \"extensions/filament/\", \"production_install\": true, \"psr4\": {\"AgenToolsPlatform\\\\Filament\\\\\": \"src/\"}, \"role\": \"extension\", \"selection_rationale\": \"Optional admin views over the same ActionDefinition; no handler/class/SQL/URL registration from DB.\", \"status\": \"planned\", \"target_lock_status\": \"not_created; owning implementation task must create and verify before runtime qualification\"}, {\"autoload_contour\": \"production\", \"depends_on\": [\"agentools/platform-laravel\"], \"implementation_owner\": \"optional scheduler owner\", \"license\": \"proprietary; private source policy, no public release authorization\", \"manifest\": \"extensions/scheduler/composer.json\", \"minimum_php\": \">=8.3\", \"name\": \"agentools/platform-scheduler\", \"optional_for_direct_sdk\": true, \"optional_for_platform_profile\": true, \"path\": \"extensions/scheduler/\", \"production_install\": true, \"psr4\": {\"AgenToolsPlatform\\\\Scheduler\\\\\": \"src/\"}, \"role\": \"extension\", \"selection_rationale\": \"Optional trigger adapter; same guarded ingress and stable source identity, no alternate loop; Cadence not inherited.\", \"status\": \"planned\", \"target_lock_status\": \"not_created; owning implementation task must create and verify before runtime qualification\"}], \"ref\": \"docs/platform/package-map.json\"}"
+    },
+    {
+      "id": "module-ports",
+      "title": "Module dependency DAG and adapter ports",
+      "text": "{\"module_graph\": {\"Actions\": [\"Common\", \"Security\", \"Profiles\"], \"Common\": [], \"Context\": [\"Common\", \"Security\", \"Profiles\"], \"Models\": [\"Common\", \"Profiles\", \"Context\"], \"Profiles\": [\"Common\"], \"Runtime\": [\"Common\", \"Security\", \"Profiles\", \"Context\", \"Models\", \"Actions\"], \"Security\": [\"Common\"]}, \"ports\": [{\"adapter_owner\": \"Host adapters\", \"contract\": \"Trusted context factory and current permission/consent/emergency checks before owner write/disclosure; caller flags never grant authority.\", \"module\": \"Security\", \"port_role\": \"HostSecurity\", \"symbol_status\": \"logical role; concrete exported signatures belong to owning implementation task\"}, {\"adapter_owner\": \"Postgres/host adapters\", \"contract\": \"Immutable bundle/session pins; pins never override current revoke/emergency policy.\", \"module\": \"Profiles\", \"port_role\": \"ProfileRepository\", \"symbol_status\": \"logical role; concrete exported signatures belong to owning implementation task\"}, {\"adapter_owner\": \"Chatom/host/optional knowledge adapters\", \"contract\": \"Budgeted manifests of authorized refs/hashes, not a second transcript or person knowledge store.\", \"module\": \"Context\", \"port_role\": \"ContextSources\", \"symbol_status\": \"logical role; concrete exported signatures belong to owning implementation task\"}, {\"adapter_owner\": \"platform-model-adapter\", \"contract\": \"One exchange to typed response/proposals; no direct domain effects; unknown capability denied before send.\", \"module\": \"Models\", \"port_role\": \"ModelTransport\", \"symbol_status\": \"logical role; concrete exported signatures belong to owning implementation task\"}, {\"adapter_owner\": \"platform-postgres\", \"contract\": \"Atomic accepted turn/run/outbox; run_step/version CAS/claim_epoch; wait releases worker and SQL lock.\", \"module\": \"Runtime\", \"port_role\": \"RunStore\", \"symbol_status\": \"logical role; concrete exported signatures belong to owning implementation task\"}, {\"adapter_owner\": \"platform-sdk-bridge + platform-postgres\", \"contract\": \"Delegates existing EventStore.append/load and pure dated reducer; seq/hash/epoch semantics preserved.\", \"module\": \"Actions\", \"port_role\": \"DatedActionJournal\", \"symbol_status\": \"logical role; concrete exported signatures belong to owning implementation task\"}, {\"adapter_owner\": \"platform-sdk-bridge\", \"contract\": \"Delegates trusted-constructor ConfirmationService; durable proposal mapping before prepare, saved result reused on retry.\", \"module\": \"Actions\", \"port_role\": \"Confirmation\", \"symbol_status\": \"logical role; concrete exported signatures belong to owning implementation task\"}, {\"adapter_owner\": \"platform-sdk-bridge\", \"contract\": \"Delegates fenced IdempotencyCoordinator/Store; unknown effect is not a safe retry and expiry semantics unchanged.\", \"module\": \"Actions\", \"port_role\": \"Idempotency\", \"symbol_status\": \"logical role; concrete exported signatures belong to owning implementation task\"}, {\"adapter_owner\": \"Host/domain adapters\", \"contract\": \"Code-only ActionDefinition handler, committed intent before IO, current owner guards and fence; ambiguous result reconciles by stable effect key.\", \"module\": \"Actions\", \"port_role\": \"EffectOwner\", \"symbol_status\": \"logical role; concrete exported signatures belong to owning implementation task\"}, {\"adapter_owner\": \"Host Messenger/Chatom bridge\", \"contract\": \"Stable outbox delivery identity; disclose only after current visibility check; completed != delivered.\", \"module\": \"Runtime\", \"port_role\": \"Delivery\", \"symbol_status\": \"logical role; concrete exported signatures belong to owning implementation task\"}, {\"adapter_owner\": \"ControLLM host bridge\", \"contract\": \"Versioned tenant/invocation facts/export outbox, null/unknown preserved; canonical metering external.\", \"module\": \"Models\", \"port_role\": \"UsageExport\", \"symbol_status\": \"logical role; concrete exported signatures belong to owning implementation task\"}, {\"adapter_owner\": \"Tariffler/host bridge\", \"contract\": \"Entitlement/quota owner decides; unavailable is not locally manufactured billable permission.\", \"module\": \"Security\", \"port_role\": \"Admission\", \"symbol_status\": \"logical role; concrete exported signatures belong to owning implementation task\"}, {\"adapter_owner\": \"Commerce/Billium/host bridge\", \"contract\": \"Opaque reservation/settlement refs only; no platform money ledger or binary-float quote.\", \"module\": \"Actions\", \"port_role\": \"Money\", \"symbol_status\": \"logical role; concrete exported signatures belong to owning implementation task\"}]}"
+    },
+    {
+      "id": "dependencies",
+      "title": "Target dependency evidence and private policy",
+      "text": "{\"observed_source_refs\": [{\"path\": \"DEVELOPMENT.md\", \"sha256\": \"1bb4f2c0182fc4a140306f35a2f9b28a3fda728a7b6072d0406637f42dbaffdf\"}, {\"path\": \"php/composer.json\", \"sha256\": \"e4257bfb8d748df5e5e4a2007be75ae7aaaedf9fc938d1222a67ff353c8459df\"}, {\"path\": \"php/composer.lock\", \"sha256\": \"8edaad1ab9dceecf940e00405ac44ca5d7e619aa0bb5584bc3d8e5b3db67955d\"}, {\"path\": \"conformance/composer.json\", \"sha256\": \"a9b278402a06d6099d22954b0269d42213a092f098b4badf7a17bf3a05628f08\"}, {\"path\": \"conformance/composer.lock\", \"sha256\": \"3fca1daa7b7b6469c5316cf56c62dacb34e09f3c7ca03c8912fb68165ab36440\"}, {\"path\": \"bakeoff/php/composer.json\", \"sha256\": \"08c60dd3fed9a1a502b2e53507064d258cceb682b2be4a789403406d7ba536dc\"}, {\"path\": \"bakeoff/php/composer.lock\", \"sha256\": \"30fe17996e1578059457b706ddb689675a4fd7d7810c91e1d24bf73b9536bd1e\"}, {\"path\": \"consumers/php/production/composer.json\", \"sha256\": \"e6e0a125aedcc6e24382198f788c52ae6606b4d15053024a323feedb1615fc20\"}, {\"path\": \"consumers/php/dev/composer.json\", \"sha256\": \"363c9b3d9223af7db49220f876f36469dd88a8a3f66eb5b6f4ca97b988eae98a\"}, {\"path\": \"consumers/release/php/composer.json\", \"sha256\": \"a0dfa8a687c434b0d1bf0713adfae84af65ce7b7587d9fc1688a464fa414f0b1\"}, {\"path\": \"php/API.md\", \"sha256\": \"c2cf6db38925ecc19a1023bb8a051d96fbffa43255b1c2a9ce4ed707882f5f10\"}, {\"path\": \"dart/agentools/API.md\", \"sha256\": \"2c16005490bb49bf027a4ff8d8cb83d049cbf3acfd4eb22818776384bce4f22f\"}, {\"path\": \"dart/agentools_mcp_dart/API.md\", \"sha256\": \"de460b8f7311ee13a4397e424327a9c0ad006e62b2ed6945ab08ebae50f0bf39\"}, {\"path\": \"dart/agentools/pubspec.yaml\", \"sha256\": \"58904433927f35d73ac65ce6af035fc9f57dd9d6353c71c6be10aca0bd74b615\"}, {\"path\": \"dart/agentools_mcp_dart/pubspec.yaml\", \"sha256\": \"c10900fcdee1fd2c86c7815f24e30ce0d50dc1fa07f27ceb3f90371343b49f21\"}, {\"path\": \"php/src/Contracts/LlmPort.php\", \"sha256\": \"6bc4e8b468db6f173db64f5014a5ab54bc03b3fffa2c5c6b262b0ce9e206e150\"}, {\"path\": \"dart/agentools/lib/src/contracts/llm_port.dart\", \"sha256\": \"7424b92a48068e46736f1e14b4c69254493dff234fbb143b1e299434d2388fa4\"}, {\"path\": \"php/src/Ops/CostRecorder.php\", \"sha256\": \"bc3870b8dec0374aa15bb1cca8ce51a4d403f6ceded77a5d89c1b937a6f045a3\"}, {\"path\": \"php/src/Contracts/EventStore.php\", \"sha256\": \"50f7bd5e3c27f01236b6f44bda0da9313779fbb47afb84ddc72ce2a36e1f65e0\"}, {\"path\": \"php/src/Contracts/IdempotencyStore.php\", \"sha256\": \"864ee112b5b5e828e1bb9b598450b90d118231f8a34655edc058962b27d41a1a\"}, {\"path\": \"php/src/Action/ActionReducer.php\", \"sha256\": \"4e143916bddf1f3b249b91aa4e38cea66e8557b592a188484791fa4d4ad63064\"}, {\"path\": \"php/src/Confirmation/ConfirmationService.php\", \"sha256\": \"2944dfbe35b1f8803d6de1fb92646ab6c5958624f7e61e2128f5245b881cf8f0\"}, {\"path\": \"php/src/Effects/EffectCommitter.php\", \"sha256\": \"57e9b35497546332b428f3d5cbae8eac46fd0669fd45b86c0e1331dc923d8bba\"}, {\"path\": \"php/src/Persistence/PdoPostgresEventStore.php\", \"sha256\": \"1e43be4ed66c3c325120310e7e8cfe978ca2506a08e2d5ff1540edc3861779b1\"}, {\"path\": \"php/src/Idempotency/PdoPostgresIdempotencyStore.php\", \"sha256\": \"9da182d9d5bca833e5a4eef9f58d20742548131b78bdb4264b8c059366dda091\"}, {\"path\": \"php/src/Confirmation/PdoPostgresConfirmationTokenStore.php\", \"sha256\": \"d3148e5bea13a571141fd7ec5d30fed5ef3d4a07d3899d8d50f01fe16fad992a\"}, {\"path\": \"docs/platform/inventory.json\", \"sha256\": \"2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc\"}, {\"path\": \"docs/platform/audit-traceability.json\", \"sha256\": \"b918ea3deeaa01bd231eaf52b97465d10d43e67b2fce0d57004f92e5046bf029\"}, {\"path\": \"docs/platform/sdk-capabilities.json\", \"sha256\": \"c0ea4f61db53ff638c89ae9e3240012739afa6cc48334bb0a146a89cf52e5041\"}, {\"path\": \"docs/platform/loop-ownership.json\", \"sha256\": \"64507a9ec7f3d5df9dea0a90886357b711ea880b8c60ba240c427b0fbd28475a\"}, {\"path\": \"docs/platform/compatibility.json\", \"sha256\": \"69c5fe4b5df6f993d75c45acb379ace7ae1744dba702bee73486102288cf9514\"}, {\"path\": \"docs/platform/sdk-consumers.json\", \"sha256\": \"e78efbf61f721aeceb4afc4c5c412bd70b5e72811a6aadb56c2d4f9f8e17174e\"}], \"policy\": {\"action_handler_policy\": \"One code-only ActionDefinition registry projects execution/model/admin views. DB configuration never loads PHP classes, SQL/URLs or tools. Mandatory guards cannot be removed by plugins/raw/fakes.\", \"core_forbidden\": [\"framework\", \"domain\", \"IO\", \"container\", \"Eloquent\", \"Request\", \"PDO\", \"SQL\", \"laravel/ai\", \"Chatom\", \"Loqum\", \"Edufy\", \"Filament\", \"filesystem\", \"network\", \"clock/random reads in reducers\"], \"core_php_minimum\": \">=8.3\", \"existing_php_minimum\": \">=8.3\", \"license_change\": false, \"loop_owner\": \"AgenTools Runtime\", \"loop_proven\": false, \"new_package_distribution\": \"Private local/path or owner-controlled private artifacts only; manifests/locks/no-dev checks must be created by owning tasks. No registry upload or public name availability claim.\", \"new_root_namespace\": \"AgenToolsPlatform\\\\ is not registered as a package-wide prefix; each non-overlapping child prefix has exactly one owner.\", \"package_rename\": false, \"production_testing_dependency\": false, \"public_release\": false, \"root_namespace_owner\": {\"AgenTools\\\\\": \"agentools/sdk\"}, \"simultaneous_turn_loops\": false, \"supported_loop_mode\": \"separate-transport\", \"target_lock_gate\": \"Unknown/missing/corrupt required evidence is non-green; absent planned source does not prove purity. No new package installed or dependency resolved in this ADR.\"}, \"selections\": [{\"consumer\": \"agentools/sdk\", \"id\": \"existing-sdk\", \"rule\": \"Keep current manifest and exact private lock; no rename, PHP floor rise or dependency promotion.\", \"selection\": \"existing\", \"source_refs\": [{\"path\": \"php/composer.json\", \"sha256\": \"e4257bfb8d748df5e5e4a2007be75ae7aaaedf9fc938d1222a67ff353c8459df\"}, {\"path\": \"php/composer.lock\", \"sha256\": \"8edaad1ab9dceecf940e00405ac44ca5d7e619aa0bb5584bc3d8e5b3db67955d\"}], \"target_version\": null}, {\"consumer\": \"agentools/platform-core\", \"external_packages\": [], \"id\": \"pure-core\", \"php\": \">=8.3\", \"rule\": \"Only core-owned values/ports and deterministic PHP language features; no IO merely because PHP exposes it.\", \"selection\": \"selected-design\", \"source_refs\": [{\"path\": \"php/composer.json\", \"sha256\": \"e4257bfb8d748df5e5e4a2007be75ae7aaaedf9fc938d1222a67ff353c8459df\"}, {\"path\": \"docs/platform/compatibility.json\", \"sha256\": \"69c5fe4b5df6f993d75c45acb379ace7ae1744dba702bee73486102288cf9514\"}]}, {\"consumer\": \"agentools/platform-postgres\", \"external_packages\": [\"ext-pdo\", \"ext-pdo_pgsql\"], \"id\": \"pdo-postgres\", \"rule\": \"Driver availability is adapter-local; production DB schema/driver/server compatibility and new lock are pending owning task.\", \"selection\": \"selected-design\", \"source_refs\": [{\"path\": \"php/src/Persistence/PdoPostgresEventStore.php\", \"sha256\": \"1e43be4ed66c3c325120310e7e8cfe978ca2506a08e2d5ff1540edc3861779b1\"}, {\"path\": \"php/src/Idempotency/PdoPostgresIdempotencyStore.php\", \"sha256\": \"9da182d9d5bca833e5a4eef9f58d20742548131b78bdb4264b8c059366dda091\"}, {\"path\": \"php/src/Confirmation/PdoPostgresConfirmationTokenStore.php\", \"sha256\": \"d3148e5bea13a571141fd7ec5d30fed5ef3d4a07d3899d8d50f01fe16fad992a\"}], \"target_version\": null}, {\"consumer\": \"agentools/platform-model-adapter\", \"driver\": \"direct-anthropic-messages\", \"framework_dependency\": null, \"id\": \"model-driver\", \"protocol_version\": \"2026-10-21\", \"rule\": \"Reuse recorded P1.2 choice C; no SDK pin or laravel/ai. Production HTTP client/stream implementation and lock not selected by an offline probe.\", \"sdk_package\": null, \"sdk_version\": null, \"selection\": \"selected-design\", \"source_refs\": [{\"path\": \"docs/platform/loop-ownership.json\", \"sha256\": \"64507a9ec7f3d5df9dea0a90886357b711ea880b8c60ba240c427b0fbd28475a\"}, {\"path\": \"docs/platform/sdk-capabilities.json\", \"sha256\": \"c0ea4f61db53ff638c89ae9e3240012739afa6cc48334bb0a146a89cf52e5041\"}], \"target_lock\": null}, {\"consumer\": \"agentools/platform-model-adapter\", \"id\": \"http-client\", \"implementation_owner\": \"P4.2\", \"rule\": \"No numeric constraint inherited from Botkit or research lock. Required adapter cannot qualify until its target manifest/lock, PHP/runtime compatibility and no-dev/source tests exist.\", \"selection\": \"unverified-not-selected\", \"source_refs\": [], \"target_lock\": null, \"target_need\": \"Real bounded HTTP/stream IO and cancellation\", \"target_package\": null, \"target_version\": null}, {\"consumer\": \"agentools/platform-laravel\", \"id\": \"laravel-framework\", \"implementation_owner\": \"P6\", \"rule\": \"No numeric constraint inherited from Botkit or research lock. Required adapter cannot qualify until its target manifest/lock, PHP/runtime compatibility and no-dev/source tests exist.\", \"selection\": \"unverified-not-selected\", \"source_refs\": [], \"target_lock\": null, \"target_need\": \"Target host container/jobs/auth composition\", \"target_package\": null, \"target_version\": null}, {\"consumer\": \"agentools/platform-filament\", \"id\": \"filament\", \"implementation_owner\": \"P6/P7\", \"rule\": \"No numeric constraint inherited from Botkit or research lock. Required adapter cannot qualify until its target manifest/lock, PHP/runtime compatibility and no-dev/source tests exist.\", \"selection\": \"unverified-not-selected\", \"source_refs\": [], \"target_lock\": null, \"target_need\": \"Target admin views, only when installed\", \"target_package\": null, \"target_version\": null}, {\"consumer\": \"agentools/platform-scheduler\", \"id\": \"scheduler-backend\", \"implementation_owner\": \"optional scheduler task\", \"rule\": \"No numeric constraint inherited from Botkit or research lock. Required adapter cannot qualify until its target manifest/lock, PHP/runtime compatibility and no-dev/source tests exist.\", \"selection\": \"unverified-not-selected\", \"source_refs\": [], \"target_lock\": null, \"target_need\": \"Target scheduling trigger, not a loop\", \"target_package\": null, \"target_version\": null}, {\"consumer\": \"agentools/platform-chatom\", \"id\": \"chatom-client\", \"implementation_owner\": \"P7/P8\", \"rule\": \"No numeric constraint inherited from Botkit or research lock. Required adapter cannot qualify until its target manifest/lock, PHP/runtime compatibility and no-dev/source tests exist.\", \"selection\": \"unverified-not-selected\", \"source_refs\": [], \"target_lock\": null, \"target_need\": \"Host Messenger bridge\", \"target_package\": null, \"target_version\": null}, {\"consumer\": \"agentools/platform-loqum\", \"id\": \"loqum-client\", \"implementation_owner\": \"P8\", \"rule\": \"No numeric constraint inherited from Botkit or research lock. Required adapter cannot qualify until its target manifest/lock, PHP/runtime compatibility and no-dev/source tests exist.\", \"selection\": \"unverified-not-selected\", \"source_refs\": [], \"target_lock\": null, \"target_need\": \"Media session bridge\", \"target_package\": null, \"target_version\": null}]}"
+    },
+    {
+      "id": "loop-and-compatibility",
+      "title": "One loop and native compatibility",
+      "text": "{\"actions\": \"Dated Action wire/ports remain owned by agentools/sdk; bridge translates only declared additive values, not statuses or guards. Core declares a narrow orchestration port and does not fork the dated EventStore/reducer/token protocol.\", \"durability\": \"EffectCommitter local append is insufficient. Future dispatcher proves committed storage/fence/guards before calling an effect owner.\", \"identity\": \"Keep both ScenarioRunner key derivations and persisted identity on retry. No old/new loop executes one turn. Durable proposal mapping reuses saved ConfirmationService result instead of regenerating prepare identity.\", \"llm\": \"Existing PHP/Dart LlmPort.respond and ScenarioRunner remain native entrypoints. PHP compatibility adapter stays separate from the proposal-only transport; Dart sync API is not replaced by an implicit Future.\"}"
+    },
+    {
+      "id": "ownership",
+      "title": "External authority and technical platform state",
+      "text": "{\"certainty_policy\": \"Unknown effect/invocation/delivery/usage/admission is not failed/success/zero/allow. Current owner policy and emergency guards override pins.\", \"ref\": \"docs/platform/ownership.json\", \"rows\": [{\"authoritative_owner\": \"host\", \"current_guard\": \"Authentication + tenant/session authorization at construction; each owner rechecks before write/disclosure.\", \"entity\": \"ExecutionContext/authentication\", \"external_implementation_evidence\": \"not qualified here\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Trusted server-side tenant/actor/purpose/authorization/policy/correlation value and opaque refs.\", \"platform_forbidden\": \"Caller/LLM trusted flags; duplicated host ACL or authentication authority.\", \"port_boundary\": \"HostSecurity\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"AgenTools Context\", \"current_guard\": \"Current rights/consent/disclosure over pins, with budget/projection limits.\", \"entity\": \"Context manifests\", \"external_implementation_evidence\": \"new platform runtime planned\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Immutable snapshot refs/hashes, bounded authorized projections and summary refs.\", \"platform_forbidden\": \"Unbounded transcript/archive, copied person knowledge or permanent raw provider state.\", \"port_boundary\": \"ContextSources\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"AgenTools Models\", \"current_guard\": \"Current route/admission/region/incident/cancellation checks before IO; missing required capability denies.\", \"entity\": \"Model/deployment configuration\", \"external_implementation_evidence\": \"new platform runtime planned\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Versioned routing/capability evidence refs, typed invocation facts.\", \"platform_forbidden\": \"Fabricated support/pricing, credentials in public errors, provider-driven domain effects.\", \"port_boundary\": \"ModelTransport + trusted credential resolver\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"AgenTools Runtime\", \"current_guard\": \"Tenant authorization, fenced claim and current emergency policy; waits hold no worker/SQL lock.\", \"entity\": \"AssistantSession/Turn/Run\", \"external_implementation_evidence\": \"new platform runtime planned\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Technical pins, state/checkpoint/run_step/version/claim_epoch and accepted input hash.\", \"platform_forbidden\": \"Education session source of truth; second transcript; alternate loop for same turn.\", \"port_boundary\": \"RunStore\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"AgenTools Runtime\", \"current_guard\": \"CAS and current permission before the consuming boundary; unknown reply remains unknown.\", \"entity\": \"Invocation/proposal mapping\", \"external_implementation_evidence\": \"new platform runtime planned\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Stable invocation/provider-tool-ID/content-hash mapping before Action submit/confirmation.\", \"platform_forbidden\": \"Proposal handler execution in model adapter; new identity on retry; inference that absent mapping proves no effect.\", \"port_boundary\": \"RunStore + ModelTransport\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"AgenTools Actions\", \"current_guard\": \"Trusted constructor confirmation, current owner policy, immutable input/hash/scope and deadline.\", \"entity\": \"Action definition/journal/status\", \"external_implementation_evidence\": \"new platform runtime planned\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"One code-only definition registry, dated journal-derived status/effect checkpoints.\", \"platform_forbidden\": \"DB-supplied handler classes/SQL/URL; Run statuses as ActionStatus; bypass via raw/plugins/fakes.\", \"port_boundary\": \"DatedActionJournal + Confirmation + Idempotency\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"AgenTools Actions\", \"current_guard\": \"Current owner permission/consent/emergency guards and fence at dispatch; owner probe before retry.\", \"entity\": \"Effect technical intent/outcome\", \"external_implementation_evidence\": \"new platform runtime planned\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Committed tenant/action/effect-key/request-hash intent, owner_operation_ref, known/unknown outcome ref.\", \"platform_forbidden\": \"Authoritative domain ledger; blind retry after ambiguous IO; cancellation hiding an unresolved effect.\", \"port_boundary\": \"EffectOwner\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"host/domain owner\", \"current_guard\": \"Domain owner authorizes its own write from current facts, independently of snapshot pins.\", \"entity\": \"Domain write/facts\", \"external_implementation_evidence\": \"not qualified here\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Opaque operation refs and allowed result projections.\", \"platform_forbidden\": \"Second business database or owner authorization engine.\", \"port_boundary\": \"EffectOwner/HostSecurity\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"AgenTools Runtime\", \"current_guard\": \"Current recipient visibility/consent before disclosure; unknown delivery reconciles by same identity.\", \"entity\": \"Delivery intent\", \"external_implementation_evidence\": \"new platform runtime planned\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Durable outbox with stable delivery identity, bounded encrypted temporary payload, retention deadline, receipt/ref/hash.\", \"platform_forbidden\": \"Second transcript archive or claim completed means delivered.\", \"port_boundary\": \"Delivery\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"Chatom via host Messenger\", \"current_guard\": \"Chatom/host current membership and visibility on every read/disclosure.\", \"entity\": \"Visible message/membership/history/cursor\", \"external_implementation_evidence\": \"not qualified here\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Message refs, allowed history projection and summary refs.\", \"platform_forbidden\": \"Canonical message/history/membership database in AgenTools.\", \"port_boundary\": \"ContextSources + Delivery\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"Loqum\", \"current_guard\": \"Loqum/host media consent and session policy; late events cannot mutate terminal runs.\", \"entity\": \"Media/STT/TTS/playout/reconnect\", \"external_implementation_evidence\": \"not qualified here\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Opaque media/session/transcript segment refs and allowed normalized input.\", \"platform_forbidden\": \"Competing media session/reconnect/playout owner or second model loop.\", \"port_boundary\": \"optional Loqum bridge\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"Edufy AiCore\", \"current_guard\": \"Edufy consent/rights/handoff current; host-contract harness is not host_e2e.\", \"entity\": \"EducationSession/pedagogical packs/providers/scorers\", \"external_implementation_evidence\": \"not qualified here\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Technical refs to host-provided bundles/sessions and authorized evaluation results.\", \"platform_forbidden\": \"Lessons/students/grades imports into core; ownership transfer or school production cutover.\", \"port_boundary\": \"host education adapter\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"Edufy AiCore\", \"current_guard\": \"Host current consent/rights and profile scope before retrieval/disclosure.\", \"entity\": \"Person-level knowledge map\", \"external_implementation_evidence\": \"not qualified here\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Authorized derived retrieval refs and technical checkpoint.\", \"platform_forbidden\": \"Second person knowledge map or independent learner-license policy.\", \"port_boundary\": \"optional Knowledge/host adapter\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"Files/Vaulter\", \"current_guard\": \"Owner scan/hold/current access gates; pins never bypass revoke.\", \"entity\": \"Immutable bytes/version/hash/scan/hold/retention\", \"external_implementation_evidence\": \"not qualified here\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Opaque file version/hash refs and bounded processing artifact refs.\", \"platform_forbidden\": \"Canonical file storage, scan/hold or retention decision ownership.\", \"port_boundary\": \"file/context source adapter\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"Library/Content\", \"current_guard\": \"External rights/publication/audience owner decides current access.\", \"entity\": \"Material meaning/rights/publication/audience/license\", \"external_implementation_evidence\": \"not qualified here\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Authorized semantic refs and retrieval projections.\", \"platform_forbidden\": \"Second knowledge license/rights engine or copied publication authority.\", \"port_boundary\": \"optional Knowledge/host content adapter\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"external source owners; AgenTools optional projection only\", \"current_guard\": \"Current source-owner permission/consent before retrieval and disclosure; missing rights never allow.\", \"entity\": \"Knowledge retrieval index/cache\", \"external_implementation_evidence\": \"not qualified here\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Rebuildable derived index/cache keyed by version/hash with bounded retention and current-rights invalidation.\", \"platform_forbidden\": \"Canonical semantic source, person map or knowledge license ledger.\", \"port_boundary\": \"optional Knowledge extension\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"ControLLM\", \"current_guard\": \"Contract-version/hash deduplication; preserve nullable dimensions and explicit certainty.\", \"entity\": \"Canonical usage metering/projections\", \"external_implementation_evidence\": \"not qualified here\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Versioned tenant/invocation usage facts, export outbox and acknowledgement refs.\", \"platform_forbidden\": \"Second metering product or interpreting old input/output counters as complete unknown usage.\", \"port_boundary\": \"UsageExport\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"Tariffler/host\", \"current_guard\": \"Current owner admission immediately before billable IO; unavailable is non-green.\", \"entity\": \"Entitlement/quota/admission\", \"external_implementation_evidence\": \"not qualified here\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Opaque owner decision/reservation refs and technical checkpoints.\", \"platform_forbidden\": \"agt_budget_limits entitlement engine or granting billable permission during owner outage.\", \"port_boundary\": \"Admission\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"Commerce/Billium/current money owner\", \"current_guard\": \"Money owner current authorization and idempotency; amount uses owner exact minor/decimal contract.\", \"entity\": \"Money authorization/reservation/settlement\", \"external_implementation_evidence\": \"not qualified here\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Opaque owner reservation/operation refs and reconciliation status.\", \"platform_forbidden\": \"Money ledger, local settlement or quote computed with binary float.\", \"port_boundary\": \"Money\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"existing school Billing owner\", \"current_guard\": \"Separate proven migration/owner authorization would be needed; not part of this item.\", \"entity\": \"Existing school billing\", \"external_implementation_evidence\": \"not qualified here\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Only explicit owner-contract refs when separately integrated.\", \"platform_forbidden\": \"Unordered data migration or replacement of existing Billing.\", \"port_boundary\": \"host money adapter\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}, {\"authoritative_owner\": \"host\", \"current_guard\": \"Each owner rechecks immediately before its own write or disclosure; guard failure cannot be overridden by a plugin.\", \"entity\": \"Host permission/consent/facts\", \"external_implementation_evidence\": \"not qualified here\", \"identity_rule\": \"Stable tenant-scoped identity; same identity/same hash replay, differing hash integrity_conflict.\", \"platform_allowed\": \"Request-scoped trusted evidence refs and bounded facts snapshots.\", \"platform_forbidden\": \"Platform becoming current permission, consent or business-fact authority.\", \"port_boundary\": \"HostSecurity/ContextSources\", \"uncertainty\": \"Known/unknown preserved; no fabricated success or zero.\"}]}"
+    },
+    {
+      "id": "reuse",
+      "title": "Fresh grouped M2 reuse/replace/omit decisions",
+      "text": "[{\"capability_ids\": [\"agentools.action\", \"agentools.confirmation\", \"agentools.persistence\", \"agentools.scenario\", \"agentools.fencing\", \"agentools.journal-store\", \"agentools.dart\", \"agentools.token-replay\", \"agentools.wire-status\", \"agentools.scenario-retry\"], \"code_copy_authorized\": false, \"disposition\": \"reuse\", \"donor_data_migration\": false, \"evidence\": {\"path\": \"docs/platform/inventory.json\", \"sha256\": \"2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc\", \"symbol\": \"agentools.action,agentools.confirmation,agentools.persistence,agentools.scenario,agentools.fencing,agentools.journal-store,agentools.dart,agentools.token-replay,agentools.wire-status,agentools.scenario-retry\"}, \"evidence_tier\": \"inherited_P1.1_source_observation_not_new_donor_audit\", \"mandatory_donor_api_compatibility\": false, \"rationale\": \"Reuse in place the dated ports/reducer/confirmation/fencing/native API; do not relocate FQNs or change old retention/identity schemes.\", \"target_owner\": \"Existing AgenTools SDK; thin platform-sdk-bridge where needed\"}, {\"capability_ids\": [\"agentools.effect\", \"agentools.long-operations\"], \"code_copy_authorized\": false, \"disposition\": \"adapt\", \"donor_data_migration\": false, \"evidence\": {\"path\": \"docs/platform/inventory.json\", \"sha256\": \"2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc\", \"symbol\": \"agentools.effect,agentools.long-operations\"}, \"evidence_tier\": \"inherited_P1.1_source_observation_not_new_donor_audit\", \"mandatory_donor_api_compatibility\": false, \"rationale\": \"Preserve existing native behavior; add outer committed intent/CAS/fence/recovery proof. Local EffectCommitter append/long-operation class is not a durable assistant loop.\", \"target_owner\": \"Actions bridge + technical Run orchestration\"}, {\"capability_ids\": [\"botkit.managed\", \"botkit.stream\"], \"code_copy_authorized\": false, \"disposition\": \"replace\", \"donor_data_migration\": false, \"evidence\": {\"path\": \"docs/platform/inventory.json\", \"sha256\": \"2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc\", \"symbol\": \"botkit.managed,botkit.stream\"}, \"evidence_tier\": \"inherited_P1.1_source_observation_not_new_donor_audit\", \"mandatory_donor_api_compatibility\": false, \"rationale\": \"One future turn loop, typed terminal/usage uncertainty and durable guarded Actions. No Botkit facade or donor loop.\", \"target_owner\": \"AgenTools Runtime + proposal-only ModelTransport\"}, {\"capability_ids\": [\"botkit.raw-build\", \"botkit.research.raw\", \"botkit.analyst.raw\"], \"code_copy_authorized\": false, \"disposition\": \"omit\", \"donor_data_migration\": false, \"evidence\": {\"path\": \"docs/platform/inventory.json\", \"sha256\": \"2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc\", \"symbol\": \"botkit.raw-build,botkit.research.raw,botkit.analyst.raw\"}, \"evidence_tier\": \"inherited_P1.1_source_observation_not_new_donor_audit\", \"mandatory_donor_api_compatibility\": false, \"rationale\": \"Do not expose bypass APIs or reuse private provider orchestration. Concrete target use cases enter the same guards and loop.\", \"target_owner\": \"Guarded target ingress/Actions only\"}, {\"capability_ids\": [\"botkit.options\", \"botkit.registry\"], \"code_copy_authorized\": false, \"disposition\": \"adapt\", \"donor_data_migration\": false, \"evidence\": {\"path\": \"docs/platform/inventory.json\", \"sha256\": \"2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc\", \"symbol\": \"botkit.options,botkit.registry\"}, \"evidence_tier\": \"inherited_P1.1_source_observation_not_new_donor_audit\", \"mandatory_donor_api_compatibility\": false, \"rationale\": \"Reuse registration/configuration ideas only; immutable published bundles and code-only handlers, current guards above pins; no DB class loader.\", \"target_owner\": \"Profiles + ActionDefinition registry\"}, {\"capability_ids\": [\"botkit.fake\"], \"code_copy_authorized\": false, \"disposition\": \"adapt\", \"donor_data_migration\": false, \"evidence\": {\"path\": \"docs/platform/inventory.json\", \"sha256\": \"2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc\", \"symbol\": \"botkit.fake\"}, \"evidence_tier\": \"inherited_P1.1_source_observation_not_new_donor_audit\", \"mandatory_donor_api_compatibility\": false, \"rationale\": \"Guard-preserving scripted transport/host harness, not an allow-all bypass. No production dependency on testkit/reference.\", \"target_owner\": \"platform-testing\"}, {\"capability_ids\": [\"botkit.conversation\"], \"code_copy_authorized\": false, \"disposition\": \"replace\", \"donor_data_migration\": false, \"evidence\": {\"path\": \"docs/platform/inventory.json\", \"sha256\": \"2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc\", \"symbol\": \"botkit.conversation\"}, \"evidence_tier\": \"inherited_P1.1_source_observation_not_new_donor_audit\", \"mandatory_donor_api_compatibility\": false, \"rationale\": \"Chatom retains canonical visible messages/membership/history/cursor; platform uses refs and bounded temporary delivery payload.\", \"target_owner\": \"Chatom host Messenger bridge\"}, {\"capability_ids\": [\"botkit.security\", \"botkit.plugins\", \"botkit.permission-plugin\"], \"code_copy_authorized\": false, \"disposition\": \"replace\", \"donor_data_migration\": false, \"evidence\": {\"path\": \"docs/platform/inventory.json\", \"sha256\": \"2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc\", \"symbol\": \"botkit.security,botkit.plugins,botkit.permission-plugin\"}, \"evidence_tier\": \"inherited_P1.1_source_observation_not_new_donor_audit\", \"mandatory_donor_api_compatibility\": false, \"rationale\": \"Mandatory tenant/current permission/consent/emergency guards cannot be replaced by optional plugins or donor permission package defaults.\", \"target_owner\": \"Security ports + trusted host policy\"}, {\"capability_ids\": [\"botkit.cli\", \"botkit.http\", \"botkit.tenant-reset\", \"botkit.jobs\", \"botkit.research-job\", \"botkit.publish-job\", \"botkit.article-job\", \"botkit.manual-publish-job\"], \"code_copy_authorized\": false, \"disposition\": \"adapt\", \"donor_data_migration\": false, \"evidence\": {\"path\": \"docs/platform/inventory.json\", \"sha256\": \"2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc\", \"symbol\": \"botkit.cli,botkit.http,botkit.tenant-reset,botkit.jobs,botkit.research-job,botkit.publish-job,botkit.article-job,botkit.manual-publish-job\"}, \"evidence_tier\": \"inherited_P1.1_source_observation_not_new_donor_audit\", \"mandatory_donor_api_compatibility\": false, \"rationale\": \"Reuse thin registration/job/context-reset ideas by target scenario, stable source identity/CAS, no donor routes/API/data or framework pins.\", \"target_owner\": \"Target Laravel ingress/jobs, after headless read/write verticals\"}, {\"capability_ids\": [\"botkit.filament\", \"botkit.admin-proposals\"], \"code_copy_authorized\": false, \"disposition\": \"adapt\", \"donor_data_migration\": false, \"evidence\": {\"path\": \"docs/platform/inventory.json\", \"sha256\": \"2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc\", \"symbol\": \"botkit.filament,botkit.admin-proposals\"}, \"evidence_tier\": \"inherited_P1.1_source_observation_not_new_donor_audit\", \"mandatory_donor_api_compatibility\": false, \"rationale\": \"Reuse view ideas only after target lock; same ActionDefinition and current guards. No mandatory admin/core dependency or donor model API.\", \"target_owner\": \"Optional platform-filament\"}, {\"capability_ids\": [\"botkit.usage\"], \"code_copy_authorized\": false, \"disposition\": \"replace\", \"donor_data_migration\": false, \"evidence\": {\"path\": \"docs/platform/inventory.json\", \"sha256\": \"2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc\", \"symbol\": \"botkit.usage\"}, \"evidence_tier\": \"inherited_P1.1_source_observation_not_new_donor_audit\", \"mandatory_donor_api_compatibility\": false, \"rationale\": \"Technical nullable invocation facts and versioned export outbox; external canonical metering and money owners, no listener-created second product.\", \"target_owner\": \"ControLLM UsageExport bridge\"}, {\"capability_ids\": [\"botkit.cache\"], \"code_copy_authorized\": false, \"disposition\": \"adapt\", \"donor_data_migration\": false, \"evidence\": {\"path\": \"docs/platform/inventory.json\", \"sha256\": \"2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc\", \"symbol\": \"botkit.cache\"}, \"evidence_tier\": \"inherited_P1.1_source_observation_not_new_donor_audit\", \"mandatory_donor_api_compatibility\": false, \"rationale\": \"Capability/region/permission/pin/retention evidence before use; no inherited cache support, prices or credential ownership.\", \"target_owner\": \"Models cache port in model adapter\"}, {\"capability_ids\": [\"botkit.cadence\", \"botkit.cadence-dispatch\", \"botkit.flood-job\", \"botkit.run-due-command\", \"botkit.sync-cadence-command\"], \"code_copy_authorized\": false, \"disposition\": \"omit\", \"donor_data_migration\": false, \"evidence\": {\"path\": \"docs/platform/inventory.json\", \"sha256\": \"2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc\", \"symbol\": \"botkit.cadence,botkit.cadence-dispatch,botkit.flood-job,botkit.run-due-command,botkit.sync-cadence-command\"}, \"evidence_tier\": \"inherited_P1.1_source_observation_not_new_donor_audit\", \"mandatory_donor_api_compatibility\": false, \"rationale\": \"Scheduling is optional and later target-selected; no mandatory Cadence version/schema/job migration. Future triggers use the same guarded ingress and stable identity.\", \"target_owner\": \"Initial vertical; optional future platform-scheduler\"}]"
+    },
+    {
+      "id": "delivery-order",
+      "title": "First read vertical and later extensions",
+      "text": "{\"later_order\": [\"confirmation/write\", \"target Laravel composition\", \"optional advanced profiles/knowledge/hosts/voice\"], \"production_closure\": [\"agentools/platform-core\", \"agentools/platform-postgres\", \"agentools/platform-sdk-bridge\", \"agentools/sdk\"], \"proof_required\": [\"durable accepted input/proposal mapping\", \"committed Action intent before IO\", \"durable response and versioned nullable usage export\", \"claim fencing/CAS and unknown-effect recovery in isolated PG\"], \"runtime_implemented\": false, \"test_profile\": [\"agentools/platform-testing\", \"scripted transport\", \"one guarded read Action\"]}"
+    },
+    {
+      "id": "path-resolution",
+      "title": "Resolve historical planned adapter label",
+      "text": "{\"authority\": \"Current root.architecture + explicit P1.4 direct-driver instruction and accepted P1.2 C supersede the historical planned directory label; no API/namespace migration or plan-source edit.\", \"old_cm_candidate\": \"packages/agentools-laravel-ai\", \"selected\": \"packages/agentools-model-adapter\"}"
+    },
+    {
+      "id": "evidence-boundary",
+      "title": "What this ADR establishes",
+      "text": "{\"no_dev_install_new_packages_executed\": false, \"package_source_exists\": false, \"provider_live_calls\": 0, \"required_future_gates\": [\"Each owning task creates manifests/locks/test/analyse/no-dev boundary before suite\", \"Missing required suite, zero cases or required skips fail; future command names remain planned\", \"First runtime vertical must prove isolated PG persistence/recovery before write/Laravel composition\", \"Current owner/emergency guards override pinned configuration\"], \"runtime_import_scan_executed\": false, \"tier\": \"design_source_inspection + future focused checker tests\", \"upstream\": \"Latest coordinator handoff says P1.2/P1.3 done; original executor receipts retain historical pending flags and are not rewritten here.\"}"
+    }
+  ],
+  "claims": [
+    {
+      "id": "baseline.sdk",
+      "classification": "verified_repo",
+      "statement": "Existing agentools/sdk owns AgenTools\\ from src/, PHP >=8.3, proprietary/private; native PHP/Dart and optional private-paired MCP surface remain.",
+      "evidence": [
+        {
+          "path": "php/composer.json",
+          "sha256": "e4257bfb8d748df5e5e4a2007be75ae7aaaedf9fc938d1222a67ff353c8459df",
+          "symbol": "\"name\""
+        },
+        {
+          "path": "php/API.md",
+          "sha256": "c2cf6db38925ecc19a1023bb8a051d96fbffa43255b1c2a9ce4ed707882f5f10",
+          "symbol": "Supported entry"
+        },
+        {
+          "path": "dart/agentools/API.md",
+          "sha256": "2c16005490bb49bf027a4ff8d8cb83d049cbf3acfd4eb22818776384bce4f22f",
+          "symbol": "Supported entry"
+        },
+        {
+          "path": "dart/agentools_mcp_dart/API.md",
+          "sha256": "de460b8f7311ee13a4397e424327a9c0ad006e62b2ed6945ab08ebae50f0bf39",
+          "symbol": "private-paired"
+        }
+      ]
+    },
+    {
+      "id": "baseline.local-graph",
+      "classification": "verified_repo",
+      "statement": "Scoped local Composer manifests and exact locks are recorded; none registers the selected new platform package names or prefixes. Availability is local only.",
+      "evidence": [
+        {
+          "path": "@plan/artifacts/implementation/P1.4/local-dependency-observation.json",
+          "sha256": "b22f983e78354d9950ca6f0ab285026e78c514bfb6a88719ccee74996eee7290",
+          "symbol": "production_namespace_owners"
+        }
+      ]
+    },
+    {
+      "id": "upstream.transport",
+      "classification": "verified_repo",
+      "statement": "P1.2 records choice C direct transport, null selected SDK and one future AgenTools loop; no production implementation or live qualification.",
+      "evidence": [
+        {
+          "path": "docs/platform/loop-ownership.json",
+          "sha256": "64507a9ec7f3d5df9dea0a90886357b711ea880b8c60ba240c427b0fbd28475a",
+          "symbol": "\"decision\""
+        },
+        {
+          "path": "docs/platform/sdk-capabilities.json",
+          "sha256": "c0ea4f61db53ff638c89ae9e3240012739afa6cc48334bb0a146a89cf52e5041",
+          "symbol": "\"selected_transport\""
+        }
+      ]
+    },
+    {
+      "id": "upstream.compatibility",
+      "classification": "verified_repo",
+      "statement": "P1.3 records the exact ten dated statuses, additive PHP/Dart baseline and direct/offline/legacy bridge obligations.",
+      "evidence": [
+        {
+          "path": "docs/platform/compatibility.json",
+          "sha256": "69c5fe4b5df6f993d75c45acb379ace7ae1744dba702bee73486102288cf9514",
+          "symbol": "wire_action_statuses"
+        },
+        {
+          "path": "docs/platform/sdk-consumers.json",
+          "sha256": "e78efbf61f721aeceb4afc4c5c412bd70b5e72811a6aadb56c2d4f9f8e17174e",
+          "symbol": "legacy_scenario_identity"
+        }
+      ]
+    },
+    {
+      "id": "baseline.durability",
+      "classification": "verified_repo",
+      "statement": "Existing PDO adapters implement EventStore/fenced leases/token consume. EffectCommitter local append alone does not prove committed intent before effect IO.",
+      "evidence": [
+        {
+          "path": "php/src/Persistence/PdoPostgresEventStore.php",
+          "sha256": "1e43be4ed66c3c325120310e7e8cfe978ca2506a08e2d5ff1540edc3861779b1",
+          "symbol": "PdoPostgresEventStore"
+        },
+        {
+          "path": "php/src/Idempotency/PdoPostgresIdempotencyStore.php",
+          "sha256": "9da182d9d5bca833e5a4eef9f58d20742548131b78bdb4264b8c059366dda091",
+          "symbol": "PdoPostgresIdempotencyStore"
+        },
+        {
+          "path": "php/src/Confirmation/PdoPostgresConfirmationTokenStore.php",
+          "sha256": "d3148e5bea13a571141fd7ec5d30fed5ef3d4a07d3899d8d50f01fe16fad992a",
+          "symbol": "PdoPostgresConfirmationTokenStore"
+        },
+        {
+          "path": "php/src/Effects/EffectCommitter.php",
+          "sha256": "57e9b35497546332b428f3d5cbae8eac46fd0669fd45b86c0e1331dc923d8bba",
+          "symbol": "$journal = $journal->append"
+        }
+      ]
+    },
+    {
+      "id": "baseline.cost",
+      "classification": "verified_repo",
+      "statement": "CostRecorder exposes input/output token counts and integer versioned-price-table calculation; it is not an extended nullable metering or money ledger owner.",
+      "evidence": [
+        {
+          "path": "php/src/Ops/CostRecorder.php",
+          "sha256": "bc3870b8dec0374aa15bb1cca8ce51a4d403f6ceded77a5d89c1b937a6f045a3",
+          "symbol": "calculateAmountMinor"
+        }
+      ]
+    },
+    {
+      "id": "baseline.inventory",
+      "classification": "verified_repo",
+      "statement": "P1.1 source inventory provides 41 capability IDs. Historical migration/facade dispositions are not target obligations and are replaced by the grouped M2 decisions here.",
+      "evidence": [
+        {
+          "path": "docs/platform/inventory.json",
+          "sha256": "2d31e78a1fedc27332cc5fce7adabfda20995fd8de4dc437b8a0a6f5a30843dc",
+          "symbol": "capabilities"
+        },
+        {
+          "path": "docs/platform/audit-traceability.json",
+          "sha256": "b918ea3deeaa01bd231eaf52b97465d10d43e67b2fce0d57004f92e5046bf029",
+          "symbol": "requirements"
+        }
+      ]
+    },
+    {
+      "id": "owner.platform",
+      "classification": "owner_direction",
+      "statement": "D1/D2/D3/D7 and current execution-input preserve one private additive AgenTools, native dated API, external owners and donor-only Botkit; no publication or rollout.",
+      "evidence": [
+        {
+          "path": "@plan/knowledge/owner-amendment-2026-10-31.json",
+          "symbol": "boundary",
+          "sha256": "b55aada95a3bf65fb78eea6f6f8948c03a2aebc1dd31fbcb498d8a035010d5e5"
+        }
+      ]
+    },
+    {
+      "id": "design.boundaries",
+      "classification": "proposal",
+      "statement": "Select the package/module DAG, separate non-overlapping prefixes and thin SDK bridge as private additive architecture. All new directories and port symbols remain planned.",
+      "evidence": []
+    },
+    {
+      "id": "design.ownership",
+      "classification": "proposal",
+      "statement": "Adopt eco.ownership contracts: platform technical orchestration/journal/outbox; external current permission/history/media/education/rights/metering/admission/money ownership. External readiness not asserted.",
+      "evidence": []
+    },
+    {
+      "id": "unknown.dependencies",
+      "classification": "unverified",
+      "statement": "Production HTTP/framework/admin/scheduler/host-client exact target versions and new package locks are not selected or qualified by existing donor/research locks.",
+      "evidence": []
+    },
+    {
+      "id": "unknown.runtime",
+      "classification": "unverified",
+      "statement": "New core/runtime source purity, no-dev archives, durable recovery and external consumer behavior are not implemented/proven by this design graph.",
+      "evidence": []
+    }
+  ],
+  "decisions": [
+    {
+      "id": "ADR-P1.4-LAYOUT",
+      "status": "accepted",
+      "decision": "Private additive package map with existing SDK unchanged and one owner per new prefix; no bare AgenToolsPlatform prefix owner.",
+      "rationale": "Current contracts, local manifest/lock inspection and pure-core separation.",
+      "evidence_refs": [
+        "baseline.sdk",
+        "baseline.local-graph",
+        "upstream.compatibility",
+        "design.boundaries"
+      ]
+    },
+    {
+      "id": "ADR-P1.4-TRANSPORT",
+      "status": "accepted",
+      "decision": "Model adapter owns separate direct transport only; no laravel/ai target dependency and no second loop.",
+      "rationale": "Accepted P1.2 choice C; research candidate lock is not a target dependency pin.",
+      "evidence_refs": [
+        "upstream.transport",
+        "unknown.dependencies"
+      ]
+    },
+    {
+      "id": "ADR-P1.4-OWNERSHIP",
+      "status": "accepted",
+      "decision": "Technical platform state only; external domain/history/knowledge-rights/metering/admission/money sources remain authoritative.",
+      "rationale": "D3 and declared ownership contract; owner readiness remains unverified.",
+      "evidence_refs": [
+        "owner.platform",
+        "design.ownership",
+        "baseline.cost"
+      ]
+    },
+    {
+      "id": "ADR-P1.4-DONOR",
+      "status": "accepted",
+      "decision": "Fresh grouped reuse/adapt/replace/omit decisions replace historical Botkit compatibility/migration recommendations.",
+      "rationale": "M2 donor-only direction; no copied code or donor dependency adopted by this ADR.",
+      "evidence_refs": [
+        "owner.platform",
+        "baseline.inventory"
+      ]
+    }
+  ],
+  "limitations": [
+    "Design/source ADR only; all new packages/exports/manifests/locks and runtime behavior remain owning-task work.",
+    "DAG/prefix checks validate selected architecture, not imports in absent runtime source or Composer no-dev installation.",
+    "Exact HTTP/framework/admin/scheduler/host-client dependencies remain explicitly unverified; required evidence absence cannot qualify those adapters.",
+    "P1.1 inventory is inherited source evidence, not a new donor audit or proof of active consumers; no Botkit facade/data migration is required.",
+    "External owners/live providers/host_e2e/pilot and production readiness are not established.",
+    "Acceptance V1/V2/V3 are conductor-owned; no per-V PASS is fabricated."
+  ]
+}

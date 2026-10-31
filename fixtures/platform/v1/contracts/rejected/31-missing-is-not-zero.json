@@ -1,0 +1,26 @@
+{
+  "id": "schema.31-missing-is-not-zero",
+  "definition": "usage_version",
+  "data": {
+    "id": {
+      "tenant_id": "tenant-a",
+      "kind": "usage-version",
+      "id": "usage-1"
+    },
+    "invocation_id": {
+      "tenant_id": "tenant-a",
+      "kind": "invocation",
+      "id": "invocation-1"
+    },
+    "version": 1,
+    "facts_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "input_tokens": 7,
+    "output_tokens": null,
+    "certainty": "known"
+  },
+  "expect": {
+    "valid": false,
+    "reason_code": "invalid_input"
+  },
+  "guards": []
+}

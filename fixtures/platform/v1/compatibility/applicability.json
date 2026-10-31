@@ -1,0 +1,104 @@
+{
+  "revision": "platform-applicability/v1",
+  "surfaces": [
+    {
+      "surface": "dated-action-behavior",
+      "tier": "contract-scripted",
+      "cases": [
+        "portable.action.complete",
+        "portable.action.wait-cancel",
+        "portable.action.unknown-kind",
+        "portable.action.unknown-effect",
+        "portable.action.terminal-late",
+        "portable.action.stale-epoch",
+        "portable.action.invalid-cancel",
+        "portable.action.version-cas"
+      ],
+      "consumers": {
+        "reference": {
+          "applicable": true,
+          "rationale": "SDK-backed journal harness"
+        },
+        "php": {
+          "applicable": true,
+          "rationale": "Existing dated SDK ActionReducer"
+        },
+        "dart": {
+          "applicable": true,
+          "rationale": "Existing dated SDK ActionReducer"
+        }
+      }
+    },
+    {
+      "surface": "portable-action-usage-error-schema",
+      "tier": "design-schema",
+      "cases": [
+        "portable.usage.partial",
+        "portable.usage.zero",
+        "portable.usage.missing-not-zero",
+        "portable.action.receipt",
+        "portable.action.closed-wire",
+        "portable.error.unknown-not-known"
+      ],
+      "consumers": {
+        "reference": {
+          "applicable": true,
+          "rationale": "Local published JSON Schema validation; does not claim a native platform Usage runtime"
+        },
+        "php": {
+          "applicable": true,
+          "rationale": "Local published JSON Schema validation; does not claim a native platform Usage runtime"
+        },
+        "dart": {
+          "applicable": true,
+          "rationale": "Local published JSON Schema validation; does not claim a native platform Usage runtime"
+        }
+      }
+    },
+    {
+      "surface": "php-core-context-action-facade",
+      "tier": "contract-scripted",
+      "cases": [
+        "testkit.real-facade-guards"
+      ],
+      "consumers": {
+        "php": {
+          "applicable": true,
+          "rationale": "PHP core host/context and facade ports"
+        },
+        "dart": {
+          "applicable": false,
+          "rationale": "PHP runtime composition has no Dart API; dated direct Actions remain portable"
+        },
+        "reference": {
+          "applicable": false,
+          "rationale": "Core integration ports are separate from the dated reference SDK"
+        }
+      }
+    },
+    {
+      "surface": "laravel-composition",
+      "tier": null,
+      "cases": [],
+      "status": "planned",
+      "consumers": {
+        "php": {
+          "applicable": true,
+          "rationale": "PHP adapter owning slice, not implemented or qualified here"
+        },
+        "dart": {
+          "applicable": false,
+          "rationale": "Laravel is a PHP framework; offline Dart SDK does not depend on it"
+        },
+        "reference": {
+          "applicable": false,
+          "rationale": "Dated reference consumer is framework independent"
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Action reference path reuses the existing SDK journal/reducer, not a third independent implementation.",
+    "Schema-only Usage parity is not native SDK UsageVersion support or canonical metering."
+  ]
+}

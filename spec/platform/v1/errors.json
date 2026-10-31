@@ -1,0 +1,185 @@
+{
+  "revision": "platform/v1",
+  "codes": {
+    "invalid_input": {
+      "allowed_retries": [
+        "never"
+      ],
+      "certainty": "evidence-bound",
+      "dated_codes": [
+        "agentools.validation.confirmation_token_invalid",
+        "agentools.validation.idempotency_key_missing"
+      ]
+    },
+    "unauthenticated": {
+      "allowed_retries": [
+        "after_policy_refresh"
+      ],
+      "certainty": "evidence-bound",
+      "dated_codes": []
+    },
+    "access_denied": {
+      "allowed_retries": [
+        "never",
+        "after_policy_refresh"
+      ],
+      "certainty": "evidence-bound",
+      "dated_codes": [
+        "agentools.permission.confirmation_authorization_denied",
+        "agentools.permission.confirmation_policy_denied"
+      ]
+    },
+    "policy_conflict": {
+      "allowed_retries": [
+        "after_policy_refresh"
+      ],
+      "certainty": "evidence-bound",
+      "dated_codes": [
+        "agentools.precondition.confirmation_policy_changed"
+      ]
+    },
+    "stale_context": {
+      "allowed_retries": [
+        "after_policy_refresh"
+      ],
+      "certainty": "evidence-bound",
+      "dated_codes": [
+        "agentools.precondition.descriptor_drift"
+      ]
+    },
+    "integrity_conflict": {
+      "allowed_retries": [
+        "never",
+        "manual"
+      ],
+      "certainty": "evidence-bound",
+      "dated_codes": [
+        "agentools.validation.idempotency_key_reuse",
+        "agentools.conflict.event_id_collision"
+      ]
+    },
+    "optimistic_conflict": {
+      "allowed_retries": [
+        "safe_same_key",
+        "status_lookup"
+      ],
+      "certainty": "evidence-bound",
+      "dated_codes": [
+        "agentools.conflict.version_conflict"
+      ]
+    },
+    "stale_claim": {
+      "allowed_retries": [
+        "status_lookup"
+      ],
+      "certainty": "evidence-bound",
+      "dated_codes": [
+        "agentools.conflict.idempotency_lost_lease"
+      ]
+    },
+    "confirmation_required": {
+      "allowed_retries": [
+        "after_policy_refresh"
+      ],
+      "certainty": "evidence-bound",
+      "dated_codes": []
+    },
+    "confirmation_invalid": {
+      "allowed_retries": [
+        "never",
+        "after_policy_refresh"
+      ],
+      "certainty": "evidence-bound",
+      "dated_codes": [
+        "agentools.precondition.confirmation_args_mismatch",
+        "agentools.precondition.confirmation_expired",
+        "agentools.precondition.confirmation_token_spent",
+        "agentools.permission.confirmation_context_mismatch"
+      ]
+    },
+    "capability_unavailable": {
+      "allowed_retries": [
+        "after_policy_refresh"
+      ],
+      "certainty": "evidence-bound",
+      "dated_codes": [
+        "agentools.precondition.idempotency_capability_unknown"
+      ]
+    },
+    "deployment_unavailable": {
+      "allowed_retries": [
+        "after_policy_refresh",
+        "new_invocation"
+      ],
+      "certainty": "evidence-bound",
+      "dated_codes": []
+    },
+    "admission_denied": {
+      "allowed_retries": [
+        "after_policy_refresh"
+      ],
+      "certainty": "evidence-bound",
+      "dated_codes": []
+    },
+    "provider_timeout": {
+      "allowed_retries": [
+        "status_lookup",
+        "manual"
+      ],
+      "certainty": "evidence-bound",
+      "dated_codes": []
+    },
+    "invocation_unknown": {
+      "allowed_retries": [
+        "status_lookup",
+        "manual"
+      ],
+      "certainty": "unknown",
+      "dated_codes": []
+    },
+    "effect_unknown": {
+      "allowed_retries": [
+        "status_lookup",
+        "manual"
+      ],
+      "certainty": "unknown",
+      "dated_codes": [
+        "agentools.precondition.idempotency_ambiguous_effect"
+      ]
+    },
+    "delivery_unknown": {
+      "allowed_retries": [
+        "status_lookup",
+        "manual"
+      ],
+      "certainty": "unknown",
+      "dated_codes": []
+    },
+    "manual_resolution_required": {
+      "allowed_retries": [
+        "status_lookup",
+        "manual"
+      ],
+      "certainty": "unknown",
+      "dated_codes": []
+    },
+    "cancelled": {
+      "allowed_retries": [
+        "never"
+      ],
+      "certainty": "evidence-bound",
+      "dated_codes": []
+    },
+    "deadline_exceeded": {
+      "allowed_retries": [
+        "never",
+        "status_lookup",
+        "manual"
+      ],
+      "certainty": "evidence-bound",
+      "dated_codes": []
+    }
+  },
+  "translation_rule": "Only wrap an actually observed dated error in context; no reverse synthesis or new wire code.",
+  "public_payload": "Closed schema; opaque tenant-bound refs, no raw provider response, secrets or diagnostics text."
+}

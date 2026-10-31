@@ -1,0 +1,255 @@
+{
+  "document_kind": "release-boundaries",
+  "status": "recorded",
+  "plan_id": "PLAN2",
+  "subject": "PLAN2.P1.5",
+  "evidence_tier": "design-schema",
+  "bootstrap_ref": "docs/platform/bootstrap.json",
+  "package_map_ref": "docs/platform/package-map.json",
+  "ownership_ref": "docs/platform/ownership.json",
+  "compatibility_ref": "docs/platform/compatibility.json",
+  "authority": {
+    "current_scope": "P1.5 design documents and current-item evidence only",
+    "commit_owner": "coordinator; no executor commit/push/tag/PR",
+    "public_release_gate": "G-RELEASE remains owner-controlled; passing local/private RC evidence grants no publication authority",
+    "requires_separate_authority": [
+      "commit/push/tag/PR",
+      "package/public artifact publication or registry upload",
+      "live provider calls with explicit credentials/data/spend/cost cap",
+      "production deployment/canary/switch/rollback",
+      "sibling repository changes or destructive cross-repo work",
+      "compensating domain/money actions"
+    ],
+    "current_authorized_actions": {
+      "commit": false,
+      "push": false,
+      "tag": false,
+      "publish": false,
+      "spend": false,
+      "production": false,
+      "cross_repo_write": false,
+      "model_dispatch": false
+    }
+  },
+  "evidence_tiers": [
+    {
+      "tier": "design-schema",
+      "proves": "Recorded contracts, schemas and examples are internally consistent.",
+      "does_not_prove": "Implemented runtime, provider support, durability, remote integration or production readiness."
+    },
+    {
+      "tier": "unit",
+      "proves": "Named deterministic behavior under the tested local inputs.",
+      "does_not_prove": "Real PostgreSQL/external IO/host integration."
+    },
+    {
+      "tier": "contract-scripted",
+      "proves": "Versioned ports and local consumer harness assertions with scripted owners/providers.",
+      "does_not_prove": "External owner deployment/readiness or provider live support."
+    },
+    {
+      "tier": "isolated-postgres",
+      "proves": "Actual SQL durability/concurrency/recovery cases in a proven isolated database.",
+      "does_not_prove": "Remote owner/provider or production behavior."
+    },
+    {
+      "tier": "local-host-e2e",
+      "proves": "Real local kernel + isolated PG + scripted external ports for named journeys.",
+      "does_not_prove": "Remote host readiness or production rollout."
+    },
+    {
+      "tier": "live-provider",
+      "proves": "Only the named registered deployment/capability and bounded live case receipt.",
+      "does_not_prove": "All providers, host readiness or production permission."
+    },
+    {
+      "tier": "product-pilot",
+      "proves": "Only separately authorized pilot consumer/capability scope.",
+      "does_not_prove": "General public readiness or permission to publish."
+    }
+  ],
+  "readiness_rule": "Report capability + consumer + canonical evidence tier separately. Unknown/not-qualified live deployments and unresolved external integrations remain named follow-ups; never promote scripted/schema results or use one public-ready flag.",
+  "external_handoffs": [
+    {
+      "owner": "host",
+      "authoritative_role": "current authentication/authorization/consent/facts",
+      "platform_port_role": "Security and EffectOwner/ContextSources",
+      "status": "pending_remote_integration",
+      "required_contract_version": "owner-agreed version not established by P1.5; concrete signature/version selected by owning integration task before qualification",
+      "required_data": "synthetic tenant A/B fixtures and minimum authorized opaque refs; real data only under separate explicit scope",
+      "local_gate": "trusted tenant/actor context, current deny/revoke/emergency and cross-tenant negative cases",
+      "current_evidence": "P1.4 ownership selection; local harness/exported handoff only; no remote readiness claim",
+      "next_owner": "owning host/adapter implementation task together with host"
+    },
+    {
+      "owner": "Chatom via host Messenger",
+      "authoritative_role": "canonical visible messages/membership/history/cursor and destination receipt",
+      "platform_port_role": "ContextSources + Delivery",
+      "status": "pending_remote_integration",
+      "required_contract_version": "owner-agreed version not established by P1.5; concrete signature/version selected by owning integration task before qualification",
+      "required_data": "synthetic tenant A/B fixtures and minimum authorized opaque refs; real data only under separate explicit scope",
+      "local_gate": "read/disclosure visibility; duplicate/lost-reply delivery lookup under stable key",
+      "current_evidence": "P1.4 ownership selection; local harness/exported handoff only; no remote readiness claim",
+      "next_owner": "owning host/adapter implementation task together with Chatom via host Messenger"
+    },
+    {
+      "owner": "ControLLM",
+      "authoritative_role": "canonical usage metering",
+      "platform_port_role": "UsageExport",
+      "status": "pending_remote_integration",
+      "required_contract_version": "owner-agreed version not established by P1.5; concrete signature/version selected by owning integration task before qualification",
+      "required_data": "synthetic tenant A/B fixtures and minimum authorized opaque refs; real data only under separate explicit scope",
+      "local_gate": "nullable/versioned usage + same-key/hash replay, conflict and correction acknowledgement",
+      "current_evidence": "P1.4 ownership selection; local harness/exported handoff only; no remote readiness claim",
+      "next_owner": "owning host/adapter implementation task together with ControLLM"
+    },
+    {
+      "owner": "Tariffler/host",
+      "authoritative_role": "entitlement/quota/admission",
+      "platform_port_role": "Admission",
+      "status": "pending_remote_integration",
+      "required_contract_version": "owner-agreed version not established by P1.5; concrete signature/version selected by owning integration task before qualification",
+      "required_data": "synthetic tenant A/B fixtures and minimum authorized opaque refs; real data only under separate explicit scope",
+      "local_gate": "current billable admission; missing/unavailable owner never manufactures allow",
+      "current_evidence": "P1.4 ownership selection; local harness/exported handoff only; no remote readiness claim",
+      "next_owner": "owning host/adapter implementation task together with Tariffler/host"
+    },
+    {
+      "owner": "Commerce/Billium/current money owner",
+      "authoritative_role": "authorization/reservation/settlement ledger",
+      "platform_port_role": "Money/EffectOwner",
+      "status": "pending_remote_integration",
+      "required_contract_version": "owner-agreed version not established by P1.5; concrete signature/version selected by owning integration task before qualification",
+      "required_data": "synthetic tenant A/B fixtures and minimum authorized opaque refs; real data only under separate explicit scope",
+      "local_gate": "exact minor/decimal owner contract; idempotent effect key and unknown lookup/manual",
+      "current_evidence": "P1.4 ownership selection; local harness/exported handoff only; no remote readiness claim",
+      "next_owner": "owning host/adapter implementation task together with Commerce/Billium/current money owner"
+    },
+    {
+      "owner": "Edufy AiCore",
+      "authoritative_role": "EducationSession, pedagogy and person-level knowledge",
+      "platform_port_role": "host education/knowledge adapter",
+      "status": "pending_remote_integration",
+      "required_contract_version": "owner-agreed version not established by P1.5; concrete signature/version selected by owning integration task before qualification",
+      "required_data": "synthetic tenant A/B fixtures and minimum authorized opaque refs; real data only under separate explicit scope",
+      "local_gate": "versioned bundle/session refs, current consent/license/rights and guarded handoff",
+      "current_evidence": "P1.4 ownership selection; local harness/exported handoff only; no remote readiness claim",
+      "next_owner": "owning host/adapter implementation task together with Edufy AiCore"
+    },
+    {
+      "owner": "Files/Vaulter",
+      "authoritative_role": "immutable bytes/version/hash/scan/hold/retention",
+      "platform_port_role": "file/context source adapter",
+      "status": "pending_remote_integration",
+      "required_contract_version": "owner-agreed version not established by P1.5; concrete signature/version selected by owning integration task before qualification",
+      "required_data": "synthetic tenant A/B fixtures and minimum authorized opaque refs; real data only under separate explicit scope",
+      "local_gate": "current scan/hold/access, version/hash refs and bounded payload retention",
+      "current_evidence": "P1.4 ownership selection; local harness/exported handoff only; no remote readiness claim",
+      "next_owner": "owning host/adapter implementation task together with Files/Vaulter"
+    },
+    {
+      "owner": "Library/Content",
+      "authoritative_role": "material meaning/rights/publication/audience/license",
+      "platform_port_role": "knowledge/content adapter",
+      "status": "pending_remote_integration",
+      "required_contract_version": "owner-agreed version not established by P1.5; concrete signature/version selected by owning integration task before qualification",
+      "required_data": "synthetic tenant A/B fixtures and minimum authorized opaque refs; real data only under separate explicit scope",
+      "local_gate": "current audience/license/publication gates; no platform rights ledger",
+      "current_evidence": "P1.4 ownership selection; local harness/exported handoff only; no remote readiness claim",
+      "next_owner": "owning host/adapter implementation task together with Library/Content"
+    },
+    {
+      "owner": "Loqum",
+      "authoritative_role": "media/STT/TTS/playout/reconnect",
+      "platform_port_role": "optional voice bridge",
+      "status": "pending_remote_integration",
+      "required_contract_version": "owner-agreed version not established by P1.5; concrete signature/version selected by owning integration task before qualification",
+      "required_data": "synthetic tenant A/B fixtures and minimum authorized opaque refs; real data only under separate explicit scope",
+      "local_gate": "media consent/session continuity/delivered semantics; no second loop",
+      "current_evidence": "P1.4 ownership selection; local harness/exported handoff only; no remote readiness claim",
+      "next_owner": "owning host/adapter implementation task together with Loqum"
+    }
+  ],
+  "local_harness": {
+    "mode": "scripted external ports; guards retained",
+    "runtime_required_for_p13": "real platform kernel + real isolated PostgreSQL",
+    "remote_host_readiness": false,
+    "not_a_remote_pass": true,
+    "fakes": "Only explicit testing profile; deployment profile rejects InMemory/Fake persistence. Production packages never depend on platform-testing.",
+    "required_checks": "Missing suite/dependency, zero required tests or required skips => nonzero; no always-green stub."
+  },
+  "live_boundary": {
+    "status": "not-qualified; not executed",
+    "planned_cli": "python3 tools/platform_gate.py qualify --live --provider REGISTERED_ID --max-cost-minor N --currency ISO",
+    "cli_owner": "P2.1 CLI surface and owning qualification task; not available evidence by naming it",
+    "requires": [
+      "explicit execution scope for registered provider/deployment/capability",
+      "credential resolver and permitted data/region/retention",
+      "explicit currency/max-cost bound and admission permission",
+      "fresh official capability/pricing evidence at execution time",
+      "current consent/permissions/emergency checks immediately before IO",
+      "actual usage/possible cost/unknown outcomes and exact cases in receipt"
+    ],
+    "offline": "Scripted external provider/owner ports; required isolated PG is still real. Offline never grants permission for paid calls."
+  },
+  "compatibility_boundary": {
+    "wire_revision": "2026-09",
+    "frozen_predecessor": "2026-08",
+    "additive_platform_v1": true,
+    "sdk_package_namespace_rename": false,
+    "action_status_expansion": false,
+    "parallel_effect_capable_loop": false,
+    "loop_owner": "AgenTools Runtime",
+    "native_consumers": "PHP/Dart/MCP, LlmPort.respond, ScenarioRunner, offline/direct Actions per compatibility.json",
+    "material_public_change": "Needs concrete owner question with API/wire example + impact + proposed revision, then design API amendment before behavior; Botkit donor-only does not waive it."
+  },
+  "recovery_boundary": {
+    "target": "new-platform only; schema P3.1, rehearsal P13.1",
+    "production_switch_authorized": false,
+    "preserve": [
+      "stable tenant identities and hash conflicts",
+      "idempotency/fencing/CAS/committed intent",
+      "immutable session pins plus current owner revoke/emergency checks",
+      "unknown provider/effect/delivery/usage outcomes",
+      "append-only facts and external owner sources of truth"
+    ],
+    "stopping_output": "Stopping response/TTS does not cancel accepted Action; unresolved effects/reservations remain visible.",
+    "rollback": "Compatible target deployment/bundle recovery is rehearsed locally, without Botkit cutover or production switch."
+  },
+  "downstream_handoff": {
+    "P2": "Scaffold/fail-closed CLI and actual schemas/fixtures, dated Action mapping, no runtime claim from design-schema.",
+    "P3": "New schema/install/versioning and real isolated PG, code registry/config/new sessions, stable identity/durability; preserve external ownership.",
+    "P13.1": "Clean-install/crash/restore/projection/unknown-effect cases on new platform data; canonical legacy IDs remain aliases.",
+    "P13.2": "Existing SDK/protocol regression.",
+    "P13.3": "Private packaging/no-dev installation; no public publication.",
+    "P13.4": "Full DEVELOPMENT.md acceptance on final inputs; local acceptance does not grant G-RELEASE."
+  },
+  "source_refs": [
+    {
+      "path": "DEVELOPMENT.md",
+      "symbol": "Normative hierarchy; Generated files; Full acceptance; Definition of done",
+      "sha256": "1bb4f2c0182fc4a140306f35a2f9b28a3fda728a7b6072d0406637f42dbaffdf"
+    },
+    {
+      "path": "docs/platform/architecture.json",
+      "symbol": "sections#adr,dependencies,evidence-boundary",
+      "sha256": "dc20c879bbf47710a745d48062b8b639585ba561b8d1bf63e0aabcbacda2af86"
+    },
+    {
+      "path": "docs/platform/ownership.json",
+      "symbol": "rows,invariants",
+      "sha256": "cc1d21b141a2cb1c08a13979d9df23820f1afa856179381aeae4960bb058aba2"
+    }
+  ],
+  "contract_refs": [
+    "knowledge/root.verification#verification",
+    "knowledge/root.runbook#runbook",
+    "knowledge/owner-amendment-2026-10-31#boundary",
+    "knowledge/execution-boundary#rules"
+  ],
+  "limitations": [
+    "P1.5 documents selected design only; all new runtime/isolated-PG/remote/live/pilot checks remain planned.",
+    "No external owner integration or public readiness is established by the local contract harness.",
+    "No new dependency version or price is selected; exact target dependencies remain owning-task work."
+  ]
+}

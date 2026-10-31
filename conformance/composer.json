@@ -2,6 +2,7 @@
   "name": "agentools/conformance",
   "description": "Детерминированный раннер корпуса AgenTools.",
   "type": "project",
+  "license": "proprietary",
   "require": {},
   "require-dev": {
     "phpunit/phpunit": "^11.0"

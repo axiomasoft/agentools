@@ -1,0 +1,18 @@
+{
+  "id": "schema.32-no-new-action-status",
+  "definition": "action_receipt",
+  "data": {
+    "action_id": {
+      "tenant_id": "tenant-a",
+      "kind": "action",
+      "id": "dated-action-1"
+    },
+    "wire_status": "manual_resolution_required",
+    "version": 1
+  },
+  "expect": {
+    "valid": false,
+    "reason_code": "invalid_input"
+  },
+  "guards": []
+}

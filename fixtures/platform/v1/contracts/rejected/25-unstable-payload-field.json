@@ -1,0 +1,21 @@
+{
+  "id": "schema.25-unstable-payload-field",
+  "definition": "input_payload",
+  "data": {
+    "input_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "input-1"
+    },
+    "content_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "conversation_ref": null,
+    "message_ref": null,
+    "utterance_ref": null,
+    "transport_timestamp": "2026-10-31T12:00:00Z"
+  },
+  "expect": {
+    "valid": false,
+    "reason_code": "invalid_input"
+  },
+  "guards": []
+}

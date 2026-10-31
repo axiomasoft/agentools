@@ -1,0 +1,38 @@
+{
+  "revision": "platform-models/v1",
+  "evidence_tier": "contract-scripted",
+  "legacy": [
+    {
+      "surface": "PHP LlmPort",
+      "signature": "respond(array $input): array",
+      "change": "unchanged",
+      "test": "php/tests/Platform/Models/LegacyTransportTest.php"
+    },
+    {
+      "surface": "Dart LlmPort",
+      "signature": "Map<String,dynamic> respond(Map<String,dynamic> input)",
+      "change": "unchanged",
+      "test": "dart/agentools/test/scenario/llm_port_test.dart"
+    },
+    {
+      "surface": "PHP ScenarioRunner",
+      "signature": "run(scenario, context, ToolPort, runKey?, runId?)",
+      "change": "unchanged; no model port or respond method",
+      "test": "php/tests/Scenario/ScenarioRunnerTest.php"
+    },
+    {
+      "surface": "Dart ScenarioRunner",
+      "signature": "run(scenario, context, ToolPort, [runKey]); runWithId(..., runId:)",
+      "change": "unchanged; ToolPort only",
+      "test": "dart/agentools/test/scenario/scenario_runner_test.dart"
+    }
+  ],
+  "optional_bridges": {
+    "php": "AgenTools\\Platform\\Models requires separately autoloaded agentools/platform-core; no SDK core runtime dependency for existing consumers",
+    "dart": "separate platform_models.dart import; no Future-to-respond conversion"
+  },
+  "limitations": [
+    "No provider IO, metering or durable runtime qualification",
+    "No assertion that existing consumers adopted this additive API"
+  ]
+}

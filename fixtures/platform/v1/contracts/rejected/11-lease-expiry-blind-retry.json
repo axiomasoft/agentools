@@ -1,0 +1,20 @@
+{
+  "id": "schema.11-lease-expiry-blind-retry",
+  "definition": "platform_error",
+  "data": {
+    "code": "effect_unknown",
+    "retry_class": "safe_same_key",
+    "certainty": "unknown",
+    "public_message_key": "agentools.platform.effect_unknown",
+    "trace_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "trace-1"
+    }
+  },
+  "expect": {
+    "valid": false,
+    "reason_code": "invalid_input"
+  },
+  "guards": []
+}

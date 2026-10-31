@@ -1,0 +1,14 @@
+{
+  "id": "schema.30-invalid-calendar",
+  "definition": "timestamp",
+  "data": {
+    "at": "2026-02-30T12:00:00Z"
+  },
+  "expect": {
+    "valid": false,
+    "reason_code": "invalid_input"
+  },
+  "guards": [
+    "utc"
+  ]
+}

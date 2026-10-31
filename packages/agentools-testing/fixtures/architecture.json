@@ -1,0 +1,19 @@
+{
+  "description": "Synthetic source stimuli; never production classes or runtime qualification.",
+  "allowed": [
+    "<?php namespace AgenToolsPlatform\\Core\\Common; final class Value { public function __construct(public readonly string $id) {} }",
+    "<?php namespace AgenToolsPlatform\\Core\\Actions; use AgenToolsPlatform\\Core\\Common\\IntegrityConflict; final class ReadAction {}"
+  ],
+  "denied": {
+    "framework-import": "<?php namespace AgenToolsPlatform\\Core\\Runtime; use Illuminate\\Http\\Request; final class Kernel {}",
+    "sdk-import": "<?php namespace AgenToolsPlatform\\Core\\Actions; use AgenTools\\ActionStatus;",
+    "pdo": "<?php namespace AgenToolsPlatform\\Core\\Runtime; new \\PDO('dsn');",
+    "actions-runtime": "<?php namespace AgenToolsPlatform\\Core\\Actions; use AgenToolsPlatform\\Core\\Runtime\\Kernel;",
+    "io-function": "<?php namespace AgenToolsPlatform\\Core\\Common; file_get_contents('/secret');",
+    "dynamic-call": "<?php namespace AgenToolsPlatform\\Core\\Common; $callable();",
+    "qualified-io": "<?php namespace AgenToolsPlatform\\Core\\Common; \\file_get_contents('/secret');",
+    "eval": "<?php namespace AgenToolsPlatform\\Core\\Common; eval($source);",
+    "include": "<?php namespace AgenToolsPlatform\\Core\\Common; require 'adapter.php';",
+    "clock": "<?php namespace AgenToolsPlatform\\Core\\Common; time();"
+  }
+}

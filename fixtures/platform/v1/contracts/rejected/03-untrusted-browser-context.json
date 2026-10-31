@@ -1,0 +1,15 @@
+{
+  "id": "schema.03-untrusted-browser-context",
+  "definition": "browser_input",
+  "data": {
+    "client_event_id": "browser-event-1",
+    "input_ref": "client-input-1",
+    "authorized": true,
+    "tenant_id": "tenant-a"
+  },
+  "expect": {
+    "valid": false,
+    "reason_code": "invalid_input"
+  },
+  "guards": []
+}

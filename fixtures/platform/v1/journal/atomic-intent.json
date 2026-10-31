@@ -1,0 +1,10 @@
+{
+  "spec_revision": "2026-09",
+  "events": [
+    {"event_id": "a1000000000000000000000000000001", "kind": "action_created", "payload": {}},
+    {"event_id": "a1000000000000000000000000000002", "kind": "action_started", "payload": {}},
+    {"event_id": "a1000000000000000000000000000003", "kind": "epoch_started", "epoch": 1, "payload": {}},
+    {"event_id": "a1000000000000000000000000000004", "kind": "effect_requested", "epoch": 1,
+      "payload": {"effect_id": "effect:one", "owner_namespace": "test-owner", "idempotency_key": "owner:operation:one", "request_ref": "encrypted:request:one", "request_hash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}}
+  ]
+}

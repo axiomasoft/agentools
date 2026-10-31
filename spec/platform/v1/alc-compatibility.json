@@ -1,0 +1,203 @@
+{
+  "protocol_revision": "2026-09",
+  "wire_statuses": [
+    "created",
+    "running",
+    "awaiting_confirmation",
+    "applying",
+    "reconciliation_required",
+    "completed",
+    "rejected",
+    "expired",
+    "failed",
+    "cancelled"
+  ],
+  "terminal_statuses": [
+    "completed",
+    "rejected",
+    "expired",
+    "failed",
+    "cancelled"
+  ],
+  "projection": [
+    {
+      "classification": "proposal",
+      "condition": "Action durably accepted; action_created exists. A queued Run is not sufficient.",
+      "internal_status": "pending",
+      "transition_refs": [
+        "ALC-T1"
+      ],
+      "wire_status": "created"
+    },
+    {
+      "classification": "proposal",
+      "condition": "action_started exists AND internal dispatch eligibility is satisfied; running alone does not reconstruct eligibility.",
+      "internal_status": "ready",
+      "transition_refs": [
+        "ALC-T4"
+      ],
+      "wire_status": "running"
+    },
+    {
+      "classification": "proposal",
+      "condition": "A guarded effect_requested is recorded, with committed persistence before IO in future dispatcher. Model generation alone is not applying.",
+      "internal_status": "executing",
+      "transition_refs": [
+        "ALC-T8",
+        "ALC-T20"
+      ],
+      "wire_status": "applying"
+    },
+    {
+      "classification": "proposal",
+      "condition": "action_completed exists; effect_confirmed alone returns running and is not Action completion.",
+      "internal_status": "succeeded",
+      "transition_refs": [
+        "ALC-T9",
+        "ALC-T18"
+      ],
+      "wire_status": "completed"
+    },
+    {
+      "classification": "proposal",
+      "condition": "task_binding_lost from applying with unresolved effect; unrelated uncertainty must not synthesize an invalid transition.",
+      "internal_status": "reconciling",
+      "transition_refs": [
+        "ALC-T26"
+      ],
+      "wire_status": "reconciliation_required"
+    },
+    {
+      "classification": "proposal",
+      "condition": "confirmation_requested includes deadline; preserve trusted token and approval boundary.",
+      "internal_status": "awaiting_confirmation",
+      "transition_refs": [
+        "ALC-T7",
+        "ALC-T15"
+      ],
+      "wire_status": "awaiting_confirmation"
+    },
+    {
+      "classification": "proposal",
+      "condition": "confirmation_resolved reject or revoke.",
+      "internal_status": "rejected",
+      "transition_refs": [
+        "ALC-T12",
+        "ALC-T13"
+      ],
+      "wire_status": "rejected"
+    },
+    {
+      "classification": "proposal",
+      "condition": "confirmation_resolved expire, not arbitrary run deadline.",
+      "internal_status": "expired",
+      "transition_refs": [
+        "ALC-T14"
+      ],
+      "wire_status": "expired"
+    },
+    {
+      "classification": "proposal",
+      "condition": "Known action_failed outcome under dated semantics; not unknown effect or invocation.",
+      "internal_status": "failed",
+      "transition_refs": [
+        "ALC-T10",
+        "ALC-T17",
+        "ALC-T22",
+        "ALC-T30"
+      ],
+      "wire_status": "failed"
+    },
+    {
+      "classification": "proposal",
+      "condition": "cancellation_requested in force and action_cancelled from allowed source; never cancel applying/reconciliation_required with unresolved effects.",
+      "internal_status": "cancelled",
+      "transition_refs": [
+        "ALC-T36",
+        "ALC-T37",
+        "ALC-T38"
+      ],
+      "wire_status": "cancelled"
+    }
+  ],
+  "reconcile_reasons": [
+    {
+      "certainty": "unknown",
+      "entry": "ALC-T26",
+      "reason": "task_binding_lost_with_unresolved_effect",
+      "resolution": "Probe owner by stable effect identity; append effect_confirmed/effect_failed only for known outcome under current epoch (T27/T28).",
+      "wire_status": "reconciliation_required"
+    },
+    {
+      "certainty": "unknown",
+      "entry": "No new wire transition; T26 only when its event and guard actually hold.",
+      "reason": "effect_unknown",
+      "resolution": "No blind effect retry; status_lookup or trusted reconciliation.",
+      "wire_status": "applying or reconciliation_required as already journaled"
+    },
+    {
+      "certainty": "unknown",
+      "entry": "Operational queue metadata, never an ActionStatus.",
+      "reason": "manual_resolution_required",
+      "resolution": "Operator current permission/policy and known owner outcome required; keep reconciliation_required until then.",
+      "wire_status": "reconciliation_required for an Action already in reconciliation"
+    },
+    {
+      "certainty": "unknown",
+      "entry": "Invocation/Run waiting_external only; not an Action status.",
+      "reason": "invocation_unknown",
+      "resolution": "Retain invocation identity; do not equate missing response with zero usage.",
+      "wire_status": null
+    },
+    {
+      "certainty": "unknown",
+      "entry": "Delivery/outbox only; completed Action/Run remains independently recorded.",
+      "reason": "delivery_unknown",
+      "resolution": "Reconcile by tenant delivery identity; completed is not delivered.",
+      "wire_status": null
+    }
+  ],
+  "run_fsm": {
+    "accepted": [
+      "preparing",
+      "cancelling"
+    ],
+    "cancelled": [],
+    "cancelling": [
+      "cancelled"
+    ],
+    "completed": [],
+    "failed": [],
+    "preparing": [
+      "running",
+      "failed",
+      "cancelling"
+    ],
+    "running": [
+      "waiting_action",
+      "waiting_confirmation",
+      "waiting_external",
+      "completed",
+      "failed",
+      "cancelling"
+    ],
+    "waiting_action": [
+      "running",
+      "failed",
+      "cancelling"
+    ],
+    "waiting_confirmation": [
+      "running",
+      "failed",
+      "cancelling"
+    ],
+    "waiting_external": [
+      "running",
+      "failed",
+      "cancelling"
+    ]
+  },
+  "limitations": [
+    "Projection of authoritative journal state only; not a second reducer or dispatch authorization."
+  ]
+}

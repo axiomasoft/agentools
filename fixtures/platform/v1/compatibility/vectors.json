@@ -1,0 +1,269 @@
+{
+  "revision": "platform-compatibility/v1",
+  "dated_revision": "2026-09",
+  "cases": [
+    {
+      "id": "portable.action.complete",
+      "kind": "action",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "action_completed"
+        }
+      ],
+      "expected": {
+        "status": "completed",
+        "seq": 3,
+        "epoch": 0,
+        "cancellation_requested": false,
+        "unresolved_effects": false,
+        "rejection": null
+      }
+    },
+    {
+      "id": "portable.action.wait-cancel",
+      "kind": "action",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "confirmation_requested",
+          "payload": {
+            "deadline": "2026-11-01T00:00:00Z"
+          }
+        },
+        {
+          "kind": "cancellation_requested"
+        },
+        {
+          "kind": "action_cancelled"
+        }
+      ],
+      "expected": {
+        "status": "cancelled",
+        "seq": 5,
+        "epoch": 0,
+        "cancellation_requested": true,
+        "unresolved_effects": false,
+        "rejection": null
+      }
+    },
+    {
+      "id": "portable.action.unknown-kind",
+      "kind": "action",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "future.provider_observation",
+          "payload": {
+            "outcome": "unknown"
+          }
+        }
+      ],
+      "expected": {
+        "status": "created",
+        "seq": 2,
+        "epoch": 0,
+        "cancellation_requested": false,
+        "unresolved_effects": false,
+        "rejection": null
+      }
+    },
+    {
+      "id": "portable.action.unknown-effect",
+      "kind": "action",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 1
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "effect-1",
+            "idempotency_key": "saved-owner-key"
+          }
+        },
+        {
+          "kind": "task_binding_lost"
+        }
+      ],
+      "expected": {
+        "status": "reconciliation_required",
+        "seq": 5,
+        "epoch": 1,
+        "cancellation_requested": false,
+        "unresolved_effects": true,
+        "rejection": null
+      }
+    },
+    {
+      "id": "portable.action.terminal-late",
+      "kind": "action",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "action_completed"
+        },
+        {
+          "kind": "input_recorded",
+          "payload": {
+            "name": "late",
+            "value": "untrusted"
+          }
+        }
+      ],
+      "expected": {
+        "status": "completed",
+        "seq": 3,
+        "epoch": 0,
+        "cancellation_requested": false,
+        "unresolved_effects": false,
+        "rejection": "lifecycle"
+      }
+    },
+    {
+      "id": "portable.action.stale-epoch",
+      "kind": "action",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 2
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "effect-1"
+          }
+        }
+      ],
+      "expected": {
+        "status": "running",
+        "seq": 3,
+        "epoch": 2,
+        "cancellation_requested": false,
+        "unresolved_effects": false,
+        "rejection": "stale_epoch"
+      }
+    },
+    {
+      "id": "portable.action.invalid-cancel",
+      "kind": "action",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 1
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "effect-1",
+            "idempotency_key": "saved-owner-key"
+          }
+        },
+        {
+          "kind": "cancellation_requested"
+        },
+        {
+          "kind": "action_cancelled"
+        }
+      ],
+      "expected": {
+        "status": "applying",
+        "seq": 5,
+        "epoch": 1,
+        "cancellation_requested": true,
+        "unresolved_effects": true,
+        "rejection": "lifecycle"
+      }
+    },
+    {
+      "id": "portable.action.version-cas",
+      "kind": "action",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started",
+          "expected_prev_seq": 0
+        }
+      ],
+      "expected": {
+        "status": "created",
+        "seq": 1,
+        "epoch": 0,
+        "cancellation_requested": false,
+        "unresolved_effects": false,
+        "rejection": "version_conflict"
+      }
+    },
+    {
+      "id": "portable.usage.partial",
+      "kind": "schema",
+      "source": "fixtures/platform/v1/contracts/valid/07-partial-usage.json"
+    },
+    {
+      "id": "portable.usage.zero",
+      "kind": "schema",
+      "source": "fixtures/platform/v1/contracts/valid/21-observed-zero-usage.json"
+    },
+    {
+      "id": "portable.usage.missing-not-zero",
+      "kind": "schema",
+      "source": "fixtures/platform/v1/contracts/rejected/31-missing-is-not-zero.json"
+    },
+    {
+      "id": "portable.action.receipt",
+      "kind": "schema",
+      "source": "fixtures/platform/v1/contracts/valid/05-action-receipt.json"
+    },
+    {
+      "id": "portable.action.closed-wire",
+      "kind": "schema",
+      "source": "fixtures/platform/v1/contracts/rejected/32-no-new-action-status.json"
+    },
+    {
+      "id": "portable.error.unknown-not-known",
+      "kind": "schema",
+      "source": "fixtures/platform/v1/contracts/rejected/26-unknown-as-known.json"
+    }
+  ]
+}

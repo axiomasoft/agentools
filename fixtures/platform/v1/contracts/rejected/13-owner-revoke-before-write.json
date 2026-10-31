@@ -1,0 +1,63 @@
+{
+  "id": "schema.13-owner-revoke-before-write",
+  "definition": "trusted_input",
+  "data": {
+    "context": {
+      "tenant_id": "tenant-a",
+      "actor_ref": {
+        "tenant_id": "tenant-a",
+        "kind": "ref",
+        "id": "actor-a"
+      },
+      "acting_as": null,
+      "subject_ref": null,
+      "authorization_ref": {
+        "tenant_id": "tenant-a",
+        "kind": "ref",
+        "id": "authorization-1"
+      },
+      "policy_revision": "policy-1",
+      "consent_ref": null,
+      "agent_principal_ref": null,
+      "session_ref": {
+        "tenant_id": "tenant-a",
+        "kind": "session",
+        "id": "session-1"
+      },
+      "purpose": "assist.read",
+      "correlation": {
+        "trace_id": "trace-1",
+        "request_id": "request-1"
+      }
+    },
+    "source": {
+      "instance_ref": {
+        "tenant_id": "tenant-a",
+        "kind": "instance",
+        "id": "instance-1"
+      },
+      "kind": "host.message",
+      "event_id": "event-1"
+    },
+    "payload": {
+      "input_ref": {
+        "tenant_id": "tenant-a",
+        "kind": "ref",
+        "id": "input-1"
+      },
+      "content_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "conversation_ref": null,
+      "message_ref": null,
+      "utterance_ref": null
+    }
+  },
+  "expect": {
+    "valid": false,
+    "reason_code": "access_denied"
+  },
+  "guards": [
+    "trusted-input",
+    "current-owner"
+  ],
+  "owner_denied": true
+}

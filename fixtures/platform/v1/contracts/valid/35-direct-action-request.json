@@ -1,0 +1,64 @@
+{
+  "id": "schema.35-direct-action-request",
+  "definition": "action_request",
+  "data": {
+    "definition": {
+      "id": "record.read",
+      "version": "1.0",
+      "hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "origin_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "direct-origin"
+    },
+    "proposal_id": null,
+    "idempotency_key": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "direct-key"
+    },
+    "input_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "input"
+    },
+    "input_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "scope_hash": "sha-256:98bf1b3bdcc7be4448ab8ba2dc983968f08162ed304409b0e15166ece0a15dbf",
+    "deadline": "2026-10-31T12:00:00Z",
+    "execution_context": {
+      "tenant_id": "tenant-a",
+      "actor_ref": {
+        "tenant_id": "tenant-a",
+        "kind": "ref",
+        "id": "actor-a"
+      },
+      "acting_as": null,
+      "subject_ref": null,
+      "authorization_ref": {
+        "tenant_id": "tenant-a",
+        "kind": "ref",
+        "id": "authorization-1"
+      },
+      "policy_revision": "policy-1",
+      "consent_ref": null,
+      "agent_principal_ref": null,
+      "session_ref": {
+        "tenant_id": "tenant-a",
+        "kind": "session",
+        "id": "session-1"
+      },
+      "purpose": "assist.read",
+      "correlation": {
+        "trace_id": "trace-1",
+        "request_id": "request-1"
+      }
+    },
+    "request_hash": "sha-256:a081c8a321fca9bcdcdb98f2d7f6d93ab1fa5b3bee0f81399a599be2e49b791d"
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

@@ -1,0 +1,21 @@
+{
+  "id": "schema.28-unknown-terminal",
+  "definition": "run_checkpoint",
+  "data": {
+    "run_id": {
+      "tenant_id": "tenant-a",
+      "kind": "run",
+      "id": "run-1"
+    },
+    "status": "failed",
+    "version": 2,
+    "claim_epoch": 2,
+    "certainty": "unknown",
+    "unresolved_effects": true
+  },
+  "expect": {
+    "valid": false,
+    "reason_code": "invalid_input"
+  },
+  "guards": []
+}

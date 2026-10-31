@@ -1,0 +1,18 @@
+{
+  "id": "schema.05-action-receipt",
+  "definition": "action_receipt",
+  "data": {
+    "action_id": {
+      "tenant_id": "tenant-a",
+      "kind": "action",
+      "id": "dated-action-1"
+    },
+    "wire_status": "completed",
+    "version": 1
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

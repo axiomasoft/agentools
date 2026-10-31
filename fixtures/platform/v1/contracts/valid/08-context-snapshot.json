@@ -1,0 +1,19 @@
+{
+  "id": "schema.08-context-snapshot",
+  "definition": "context_snapshot",
+  "data": {
+    "snapshot_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "snapshot-1"
+    },
+    "revision": 1,
+    "content_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "scope_hash": "sha-256:98bf1b3bdcc7be4448ab8ba2dc983968f08162ed304409b0e15166ece0a15dbf"
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

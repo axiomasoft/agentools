@@ -1,0 +1,20 @@
+{
+  "id": "schema.06-unknown-invocation",
+  "definition": "operation_receipt",
+  "data": {
+    "operation_id": {
+      "tenant_id": "tenant-a",
+      "kind": "invocation",
+      "id": "invocation-1"
+    },
+    "request_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "outcome": "unknown",
+    "certainty": "unknown",
+    "result_ref": null
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

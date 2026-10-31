@@ -1,0 +1,33 @@
+{
+  "id": "schema.37-delivery-intent",
+  "definition": "delivery_intent",
+  "data": {
+    "id": {
+      "tenant_id": "tenant-a",
+      "kind": "delivery",
+      "id": "delivery-1"
+    },
+    "run_id": {
+      "tenant_id": "tenant-a",
+      "kind": "run",
+      "id": "run-1"
+    },
+    "response_version": 1,
+    "destination": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "destination"
+    },
+    "response_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "response"
+    },
+    "request_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

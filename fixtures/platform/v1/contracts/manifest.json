@@ -1,0 +1,249 @@
+{
+  "revision": "platform/v1",
+  "cases": [
+    {
+      "id": "schema.01-trusted-input",
+      "path": "valid/01-trusted-input.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.02-stale-context",
+      "path": "rejected/02-stale-context.json",
+      "valid": false,
+      "reason_code": "stale_context"
+    },
+    {
+      "id": "schema.03-untrusted-browser-context",
+      "path": "rejected/03-untrusted-browser-context.json",
+      "valid": false,
+      "reason_code": "invalid_input"
+    },
+    {
+      "id": "schema.04-accepted-turn",
+      "path": "valid/04-accepted-turn.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.05-action-receipt",
+      "path": "valid/05-action-receipt.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.06-unknown-invocation",
+      "path": "valid/06-unknown-invocation.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.07-partial-usage",
+      "path": "valid/07-partial-usage.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.08-context-snapshot",
+      "path": "valid/08-context-snapshot.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.09-unknown-effect-reconcile",
+      "path": "valid/09-unknown-effect-reconcile.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.10-confirmation-input-substitution",
+      "path": "valid/10-confirmation-input-substitution.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.11-lease-expiry-blind-retry",
+      "path": "rejected/11-lease-expiry-blind-retry.json",
+      "valid": false,
+      "reason_code": "invalid_input"
+    },
+    {
+      "id": "schema.12-stale-worker-write",
+      "path": "rejected/12-stale-worker-write.json",
+      "valid": false,
+      "reason_code": "stale_claim"
+    },
+    {
+      "id": "schema.13-owner-revoke-before-write",
+      "path": "rejected/13-owner-revoke-before-write.json",
+      "valid": false,
+      "reason_code": "access_denied"
+    },
+    {
+      "id": "schema.14-trusted-envelope",
+      "path": "valid/14-trusted-envelope.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.15-normalized-response",
+      "path": "valid/15-normalized-response.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.16-bundle-pin",
+      "path": "valid/16-bundle-pin.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.17-utc-instant",
+      "path": "valid/17-utc-instant.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.18-checkpoint",
+      "path": "valid/18-checkpoint.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.19-effect-request",
+      "path": "valid/19-effect-request.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.20-public-error",
+      "path": "valid/20-public-error.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.21-observed-zero-usage",
+      "path": "valid/21-observed-zero-usage.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.22-known-effect",
+      "path": "valid/22-known-effect.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.23-browser-input",
+      "path": "valid/23-browser-input.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.24-tenant-mismatch",
+      "path": "rejected/24-tenant-mismatch.json",
+      "valid": false,
+      "reason_code": "access_denied"
+    },
+    {
+      "id": "schema.25-unstable-payload-field",
+      "path": "rejected/25-unstable-payload-field.json",
+      "valid": false,
+      "reason_code": "invalid_input"
+    },
+    {
+      "id": "schema.26-unknown-as-known",
+      "path": "rejected/26-unknown-as-known.json",
+      "valid": false,
+      "reason_code": "invalid_input"
+    },
+    {
+      "id": "schema.27-public-secret-field",
+      "path": "rejected/27-public-secret-field.json",
+      "valid": false,
+      "reason_code": "invalid_input"
+    },
+    {
+      "id": "schema.28-unknown-terminal",
+      "path": "rejected/28-unknown-terminal.json",
+      "valid": false,
+      "reason_code": "invalid_input"
+    },
+    {
+      "id": "schema.29-non-utc-time",
+      "path": "rejected/29-non-utc-time.json",
+      "valid": false,
+      "reason_code": "invalid_input"
+    },
+    {
+      "id": "schema.30-invalid-calendar",
+      "path": "rejected/30-invalid-calendar.json",
+      "valid": false,
+      "reason_code": "invalid_input"
+    },
+    {
+      "id": "schema.31-missing-is-not-zero",
+      "path": "rejected/31-missing-is-not-zero.json",
+      "valid": false,
+      "reason_code": "invalid_input"
+    },
+    {
+      "id": "schema.32-no-new-action-status",
+      "path": "rejected/32-no-new-action-status.json",
+      "valid": false,
+      "reason_code": "invalid_input"
+    },
+    {
+      "id": "schema.33-version-conflict",
+      "path": "rejected/33-version-conflict.json",
+      "valid": false,
+      "reason_code": "optimistic_conflict"
+    },
+    {
+      "id": "schema.34-unknown-cancellation",
+      "path": "rejected/34-unknown-cancellation.json",
+      "valid": false,
+      "reason_code": "policy_conflict"
+    },
+    {
+      "id": "schema.35-direct-action-request",
+      "path": "valid/35-direct-action-request.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.36-proposal-binding",
+      "path": "valid/36-proposal-binding.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.37-delivery-intent",
+      "path": "valid/37-delivery-intent.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.38-invocation-fallback",
+      "path": "valid/38-invocation-fallback.json",
+      "valid": true,
+      "reason_code": null
+    },
+    {
+      "id": "schema.39-definition-fqn-rejected",
+      "path": "rejected/39-definition-fqn-rejected.json",
+      "valid": false,
+      "reason_code": "invalid_input"
+    },
+    {
+      "id": "schema.40-action-tenant-mismatch",
+      "path": "rejected/40-action-tenant-mismatch.json",
+      "valid": false,
+      "reason_code": "access_denied"
+    }
+  ],
+  "limitations": [
+    "Worked vectors reconstructed from accepted P2.2 contracts and named examples; not runtime/store/confirmation/provider evidence.",
+    "Example 10 is the public confirmation_invalid error projection; dated ConfirmationService remains authoritative."
+  ]
+}

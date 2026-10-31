@@ -1,0 +1,73 @@
+{
+  "name": "agentools/platform-model-adapter",
+  "description": "Private proposal-only model transports with bounded HTTP IO.",
+  "type": "library",
+  "license": "proprietary",
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../agentools-core",
+      "options": {
+        "symlink": true,
+        "versions": {
+          "agentools/platform-core": "dev-main"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "../agentools-testing",
+      "options": {
+        "symlink": true,
+        "versions": {
+          "agentools/platform-testing": "dev-main"
+        }
+      }
+    }
+  ],
+  "require": {
+    "php": ">=8.3",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "agentools/platform-core": "dev-main",
+    "opis/json-schema": "^2.6"
+  },
+  "require-dev": {
+    "agentools/platform-testing": "dev-main",
+    "phpstan/phpstan": "^2.2",
+    "ext-pdo_sqlite": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "AgenToolsPlatform\\ModelAdapter\\": "src/"
+    }
+  },
+  "archive": {
+    "exclude": [
+      "/tests",
+      "/vendor",
+      "/composer.lock",
+      "/phpstan.neon"
+    ]
+  },
+  "scripts": {
+    "test": "python3 tests/contract.py",
+    "analyse": "phpstan analyse -c phpstan.neon --no-progress"
+  },
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": false,
+    "platform": {
+      "php": "8.3.0"
+    }
+  },
+  "extra": {
+    "agentools": {
+      "private": true,
+      "evidence_tier": "contract-scripted",
+      "loop_owner": "AgenTools Runtime",
+      "sdk_package": null,
+      "sdk_version": null
+    }
+  }
+}

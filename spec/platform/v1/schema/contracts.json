@@ -1,0 +1,1961 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentools:platform:v1:contracts",
+  "title": "Private additive platform v1 contracts",
+  "$defs": {
+    "tenant": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
+      "not": {
+        "pattern": "^[gG][lL][oO][bB][aA][lL]$"
+      }
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^sha-256:[a-f0-9]{64}$"
+    },
+    "utc": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?Z$"
+    },
+    "ref": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "$ref": "#/$defs/tenant"
+        },
+        "kind": {
+          "const": "ref"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "turn_id": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "$ref": "#/$defs/tenant"
+        },
+        "kind": {
+          "const": "turn"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "run_id": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "$ref": "#/$defs/tenant"
+        },
+        "kind": {
+          "const": "run"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "invocation_id": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "$ref": "#/$defs/tenant"
+        },
+        "kind": {
+          "const": "invocation"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "proposal_id": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "$ref": "#/$defs/tenant"
+        },
+        "kind": {
+          "const": "proposal"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "action_id": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "$ref": "#/$defs/tenant"
+        },
+        "kind": {
+          "const": "action"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "tenant_id",
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "effect_id": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "$ref": "#/$defs/tenant"
+        },
+        "kind": {
+          "const": "effect"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "tenant_id",
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "delivery_id": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "$ref": "#/$defs/tenant"
+        },
+        "kind": {
+          "const": "delivery"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "usage_version_id": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "$ref": "#/$defs/tenant"
+        },
+        "kind": {
+          "const": "usage-version"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "session_id": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "$ref": "#/$defs/tenant"
+        },
+        "kind": {
+          "const": "session"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "instance_id": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "$ref": "#/$defs/tenant"
+        },
+        "kind": {
+          "const": "instance"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "kind",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "correlation": {
+      "type": "object",
+      "properties": {
+        "trace_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "request_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        }
+      },
+      "required": [
+        "trace_id",
+        "request_id"
+      ],
+      "additionalProperties": false
+    },
+    "purpose": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9._-]{0,63}$"
+    },
+    "execution_context": {
+      "type": "object",
+      "properties": {
+        "tenant_id": {
+          "$ref": "#/$defs/tenant"
+        },
+        "actor_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "acting_as": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "subject_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "authorization_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "policy_revision": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "consent_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "agent_principal_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "session_ref": {
+          "$ref": "#/$defs/session_id"
+        },
+        "purpose": {
+          "$ref": "#/$defs/purpose"
+        },
+        "correlation": {
+          "$ref": "#/$defs/correlation"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "actor_ref",
+        "acting_as",
+        "subject_ref",
+        "authorization_ref",
+        "policy_revision",
+        "consent_ref",
+        "agent_principal_ref",
+        "session_ref",
+        "purpose",
+        "correlation"
+      ],
+      "additionalProperties": false
+    },
+    "input_payload": {
+      "type": "object",
+      "properties": {
+        "input_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "content_hash": {
+          "$ref": "#/$defs/hash"
+        },
+        "conversation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "message_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "utterance_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "input_ref",
+        "content_hash",
+        "conversation_ref",
+        "message_ref",
+        "utterance_ref"
+      ],
+      "additionalProperties": false
+    },
+    "source_identity": {
+      "type": "object",
+      "properties": {
+        "instance_ref": {
+          "$ref": "#/$defs/instance_id"
+        },
+        "kind": {
+          "$ref": "#/$defs/purpose"
+        },
+        "event_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$"
+        }
+      },
+      "required": [
+        "instance_ref",
+        "kind",
+        "event_id"
+      ],
+      "additionalProperties": false
+    },
+    "trusted_input": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "$ref": "#/$defs/execution_context"
+        },
+        "source": {
+          "$ref": "#/$defs/source_identity"
+        },
+        "payload": {
+          "$ref": "#/$defs/input_payload"
+        }
+      },
+      "required": [
+        "context",
+        "source",
+        "payload"
+      ],
+      "additionalProperties": false
+    },
+    "browser_input": {
+      "type": "object",
+      "properties": {
+        "client_event_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$"
+        },
+        "input_ref": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$"
+        },
+        "attachment_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$"
+          }
+        }
+      },
+      "required": [
+        "client_event_id",
+        "input_ref"
+      ],
+      "additionalProperties": false
+    },
+    "accepted_turn": {
+      "type": "object",
+      "properties": {
+        "source_key": {
+          "$ref": "#/$defs/hash"
+        },
+        "source_payload_hash": {
+          "$ref": "#/$defs/hash"
+        },
+        "turn_id": {
+          "$ref": "#/$defs/turn_id"
+        },
+        "run_id": {
+          "$ref": "#/$defs/run_id"
+        },
+        "status": {
+          "enum": [
+            "accepted",
+            "cancelled",
+            "cancelling",
+            "completed",
+            "failed",
+            "preparing",
+            "running",
+            "waiting_action",
+            "waiting_confirmation",
+            "waiting_external"
+          ]
+        }
+      },
+      "required": [
+        "source_key",
+        "source_payload_hash",
+        "turn_id",
+        "run_id",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "run_checkpoint": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "$ref": "#/$defs/run_id"
+        },
+        "status": {
+          "enum": [
+            "accepted",
+            "cancelled",
+            "cancelling",
+            "completed",
+            "failed",
+            "preparing",
+            "running",
+            "waiting_action",
+            "waiting_confirmation",
+            "waiting_external"
+          ]
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "claim_epoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "certainty": {
+          "enum": [
+            "known",
+            "unknown"
+          ]
+        },
+        "unresolved_effects": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "run_id",
+        "status",
+        "version",
+        "claim_epoch",
+        "certainty",
+        "unresolved_effects"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "completed",
+                  "failed",
+                  "cancelled"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "certainty": {
+                "const": "known"
+              },
+              "unresolved_effects": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "action_receipt": {
+      "type": "object",
+      "properties": {
+        "action_id": {
+          "$ref": "#/$defs/action_id"
+        },
+        "wire_status": {
+          "enum": [
+            "created",
+            "running",
+            "awaiting_confirmation",
+            "applying",
+            "reconciliation_required",
+            "completed",
+            "rejected",
+            "expired",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "action_id",
+        "wire_status",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "effect_request": {
+      "type": "object",
+      "properties": {
+        "action_id": {
+          "$ref": "#/$defs/action_id"
+        },
+        "effect_id": {
+          "$ref": "#/$defs/effect_id"
+        },
+        "effect_key": {
+          "$ref": "#/$defs/hash"
+        },
+        "owner_operation_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "request_hash": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "required": [
+        "action_id",
+        "effect_id",
+        "effect_key",
+        "owner_operation_ref",
+        "request_hash"
+      ],
+      "additionalProperties": false
+    },
+    "operation_receipt": {
+      "type": "object",
+      "properties": {
+        "operation_id": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/invocation_id"
+            },
+            {
+              "$ref": "#/$defs/effect_id"
+            },
+            {
+              "$ref": "#/$defs/delivery_id"
+            }
+          ]
+        },
+        "request_hash": {
+          "$ref": "#/$defs/hash"
+        },
+        "outcome": {
+          "enum": [
+            "succeeded",
+            "failed",
+            "unknown"
+          ]
+        },
+        "certainty": {
+          "enum": [
+            "known",
+            "unknown"
+          ]
+        },
+        "result_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "operation_id",
+        "request_hash",
+        "outcome",
+        "certainty",
+        "result_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "unknown"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "certainty": {
+                "const": "unknown"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "certainty": {
+                "const": "known"
+              },
+              "result_ref": {
+                "$ref": "#/$defs/ref"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "usage_version": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/usage_version_id"
+        },
+        "invocation_id": {
+          "$ref": "#/$defs/invocation_id"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "facts_hash": {
+          "$ref": "#/$defs/hash"
+        },
+        "input_tokens": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "output_tokens": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "certainty": {
+          "enum": [
+            "known",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "invocation_id",
+        "version",
+        "facts_hash",
+        "input_tokens",
+        "output_tokens",
+        "certainty"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "certainty": {
+                "const": "known"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "input_tokens": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "output_tokens": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            }
+          },
+          "else": {
+            "anyOf": [
+              {
+                "properties": {
+                  "input_tokens": {
+                    "type": "null"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "output_tokens": {
+                    "type": "null"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "bundle_ref": {
+      "type": "object",
+      "properties": {
+        "ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "hash": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "required": [
+        "ref",
+        "version",
+        "hash"
+      ],
+      "additionalProperties": false
+    },
+    "context_snapshot": {
+      "type": "object",
+      "properties": {
+        "snapshot_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "content_hash": {
+          "$ref": "#/$defs/hash"
+        },
+        "scope_hash": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "required": [
+        "snapshot_ref",
+        "revision",
+        "content_hash",
+        "scope_hash"
+      ],
+      "additionalProperties": false
+    },
+    "platform_error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "enum": [
+            "invalid_input",
+            "unauthenticated",
+            "access_denied",
+            "policy_conflict",
+            "stale_context",
+            "integrity_conflict",
+            "optimistic_conflict",
+            "stale_claim",
+            "confirmation_required",
+            "confirmation_invalid",
+            "capability_unavailable",
+            "deployment_unavailable",
+            "admission_denied",
+            "provider_timeout",
+            "invocation_unknown",
+            "effect_unknown",
+            "delivery_unknown",
+            "manual_resolution_required",
+            "cancelled",
+            "deadline_exceeded"
+          ]
+        },
+        "retry_class": {
+          "enum": [
+            "never",
+            "safe_same_key",
+            "status_lookup",
+            "new_invocation",
+            "after_policy_refresh",
+            "manual"
+          ]
+        },
+        "certainty": {
+          "enum": [
+            "known",
+            "unknown"
+          ]
+        },
+        "public_message_key": {
+          "type": "string"
+        },
+        "trace_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "diagnostic_ref": {
+          "$ref": "#/$defs/ref"
+        }
+      },
+      "required": [
+        "code",
+        "retry_class",
+        "certainty",
+        "public_message_key",
+        "trace_ref"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "invalid_input"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "never"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.invalid_input"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "unauthenticated"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "after_policy_refresh"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.unauthenticated"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "access_denied"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "never",
+                  "after_policy_refresh"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.access_denied"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "policy_conflict"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "after_policy_refresh"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.policy_conflict"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "stale_context"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "after_policy_refresh"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.stale_context"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "integrity_conflict"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "never",
+                  "manual"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.integrity_conflict"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "optimistic_conflict"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "safe_same_key",
+                  "status_lookup"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.optimistic_conflict"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "stale_claim"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "status_lookup"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.stale_claim"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "confirmation_required"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "after_policy_refresh"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.confirmation_required"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "confirmation_invalid"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "never",
+                  "after_policy_refresh"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.confirmation_invalid"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "capability_unavailable"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "after_policy_refresh"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.capability_unavailable"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "deployment_unavailable"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "after_policy_refresh",
+                  "new_invocation"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.deployment_unavailable"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "admission_denied"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "after_policy_refresh"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.admission_denied"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "provider_timeout"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "status_lookup",
+                  "manual"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.provider_timeout"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "invocation_unknown"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "status_lookup",
+                  "manual"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.invocation_unknown"
+              },
+              "certainty": {
+                "const": "unknown"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "effect_unknown"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "status_lookup",
+                  "manual"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.effect_unknown"
+              },
+              "certainty": {
+                "const": "unknown"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "delivery_unknown"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "status_lookup",
+                  "manual"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.delivery_unknown"
+              },
+              "certainty": {
+                "const": "unknown"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "manual_resolution_required"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "status_lookup",
+                  "manual"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.manual_resolution_required"
+              },
+              "certainty": {
+                "const": "unknown"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "cancelled"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "never"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.cancelled"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "deadline_exceeded"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "never",
+                  "status_lookup",
+                  "manual"
+                ]
+              },
+              "public_message_key": {
+                "const": "agentools.platform.deadline_exceeded"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "certainty": {
+                "const": "unknown"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retry_class": {
+                "enum": [
+                  "status_lookup",
+                  "manual"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "host_source": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/purpose"
+        },
+        "event_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$"
+        },
+        "payload_hash": {
+          "$ref": "#/$defs/hash"
+        },
+        "message_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "utterance_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "event_id",
+        "payload_hash"
+      ],
+      "additionalProperties": false
+    },
+    "trusted_envelope": {
+      "type": "object",
+      "properties": {
+        "tenant_ref": {
+          "$ref": "#/$defs/tenant"
+        },
+        "actor_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "acting_as_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "subject_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "purpose": {
+          "$ref": "#/$defs/purpose"
+        },
+        "locale": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$"
+        },
+        "source": {
+          "$ref": "#/$defs/host_source"
+        },
+        "assistant_instance_ref": {
+          "$ref": "#/$defs/instance_id"
+        },
+        "assistant_session_ref": {
+          "$ref": "#/$defs/session_id"
+        },
+        "conversation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "education_session_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "realtime_session_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "correlation_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@-]{0,255}$"
+        },
+        "traceparent": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^00-[a-f0-9]{32}-[a-f0-9]{16}-0[01]$"
+        },
+        "consent_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "authorization_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "policy_versions": {
+          "type": "object",
+          "properties": {
+            "authorization": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+            }
+          },
+          "required": [
+            "authorization"
+          ],
+          "additionalProperties": false
+        },
+        "context": {
+          "$ref": "#/$defs/context_snapshot"
+        },
+        "capability": {
+          "$ref": "#/$defs/purpose"
+        },
+        "retention_policy_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "residency_policy_ref": {
+          "$ref": "#/$defs/ref"
+        }
+      },
+      "required": [
+        "tenant_ref",
+        "actor_ref",
+        "purpose",
+        "locale",
+        "source",
+        "assistant_instance_ref",
+        "assistant_session_ref",
+        "correlation_id",
+        "authorization_ref",
+        "policy_versions",
+        "context",
+        "capability",
+        "retention_policy_ref",
+        "residency_policy_ref"
+      ],
+      "additionalProperties": false
+    },
+    "normalized_response": {
+      "type": "object",
+      "properties": {
+        "response_id": {
+          "$ref": "#/$defs/ref"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "turn_ref": {
+          "$ref": "#/$defs/turn_id"
+        },
+        "run_ref": {
+          "$ref": "#/$defs/run_id"
+        },
+        "display_text_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "speakable_text_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "citations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "artifact_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "action_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/action_id"
+          }
+        },
+        "interactive_commands": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "memory_candidates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ref"
+          }
+        },
+        "validated_session_patch": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "provenance": {
+          "$ref": "#/$defs/ref"
+        }
+      },
+      "required": [
+        "response_id",
+        "version",
+        "turn_ref",
+        "run_ref",
+        "display_text_ref",
+        "speakable_text_ref",
+        "citations",
+        "artifact_refs",
+        "action_refs",
+        "interactive_commands",
+        "memory_candidates",
+        "validated_session_patch",
+        "provenance"
+      ],
+      "additionalProperties": false
+    },
+    "timestamp": {
+      "type": "object",
+      "properties": {
+        "at": {
+          "$ref": "#/$defs/utc"
+        }
+      },
+      "required": [
+        "at"
+      ],
+      "additionalProperties": false
+    },
+    "checkpoint_transition": {
+      "type": "object",
+      "properties": {
+        "checkpoint": {
+          "$ref": "#/$defs/run_checkpoint"
+        },
+        "next_status": {
+          "enum": [
+            "accepted",
+            "cancelled",
+            "cancelling",
+            "completed",
+            "failed",
+            "preparing",
+            "running",
+            "waiting_action",
+            "waiting_confirmation",
+            "waiting_external"
+          ]
+        },
+        "expected_version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "claim_epoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "checkpoint",
+        "next_status",
+        "expected_version",
+        "claim_epoch"
+      ],
+      "additionalProperties": false
+    },
+    "definition_ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._-]{0,127}$"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+        },
+        "hash": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "hash"
+      ],
+      "additionalProperties": false
+    },
+    "action_request": {
+      "type": "object",
+      "properties": {
+        "definition": {
+          "$ref": "#/$defs/definition_ref"
+        },
+        "origin_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "proposal_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/proposal_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "idempotency_key": {
+          "$ref": "#/$defs/ref"
+        },
+        "input_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "input_hash": {
+          "$ref": "#/$defs/hash"
+        },
+        "scope_hash": {
+          "$ref": "#/$defs/hash"
+        },
+        "execution_context": {
+          "$ref": "#/$defs/execution_context"
+        },
+        "deadline": {
+          "$ref": "#/$defs/utc"
+        },
+        "request_hash": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "required": [
+        "definition",
+        "origin_ref",
+        "proposal_id",
+        "idempotency_key",
+        "input_ref",
+        "input_hash",
+        "scope_hash",
+        "execution_context",
+        "deadline",
+        "request_hash"
+      ],
+      "additionalProperties": false
+    },
+    "proposal_binding": {
+      "type": "object",
+      "properties": {
+        "proposal_id": {
+          "$ref": "#/$defs/proposal_id"
+        },
+        "action_id": {
+          "$ref": "#/$defs/action_id"
+        },
+        "input_hash": {
+          "$ref": "#/$defs/hash"
+        },
+        "confirmation_ref": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "proposal_id",
+        "action_id",
+        "input_hash",
+        "confirmation_ref"
+      ],
+      "additionalProperties": false
+    },
+    "delivery_intent": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/delivery_id"
+        },
+        "run_id": {
+          "$ref": "#/$defs/run_id"
+        },
+        "response_version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "destination": {
+          "$ref": "#/$defs/ref"
+        },
+        "response_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "request_hash": {
+          "$ref": "#/$defs/hash"
+        }
+      },
+      "required": [
+        "id",
+        "run_id",
+        "response_version",
+        "destination",
+        "response_ref",
+        "request_hash"
+      ],
+      "additionalProperties": false
+    },
+    "invocation_identity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/invocation_id"
+        },
+        "run_id": {
+          "$ref": "#/$defs/run_id"
+        },
+        "parent_invocation_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/invocation_id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "request_ref": {
+          "$ref": "#/$defs/ref"
+        },
+        "request_hash": {
+          "$ref": "#/$defs/hash"
+        },
+        "deadline": {
+          "$ref": "#/$defs/utc"
+        }
+      },
+      "required": [
+        "id",
+        "run_id",
+        "parent_invocation_id",
+        "request_ref",
+        "request_hash",
+        "deadline"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/trusted_input"
+    },
+    {
+      "$ref": "#/$defs/trusted_envelope"
+    },
+    {
+      "$ref": "#/$defs/accepted_turn"
+    },
+    {
+      "$ref": "#/$defs/run_checkpoint"
+    },
+    {
+      "$ref": "#/$defs/action_receipt"
+    },
+    {
+      "$ref": "#/$defs/effect_request"
+    },
+    {
+      "$ref": "#/$defs/operation_receipt"
+    },
+    {
+      "$ref": "#/$defs/usage_version"
+    },
+    {
+      "$ref": "#/$defs/platform_error"
+    },
+    {
+      "$ref": "#/$defs/bundle_ref"
+    },
+    {
+      "$ref": "#/$defs/context_snapshot"
+    },
+    {
+      "$ref": "#/$defs/normalized_response"
+    },
+    {
+      "$ref": "#/$defs/action_request"
+    },
+    {
+      "$ref": "#/$defs/proposal_binding"
+    },
+    {
+      "$ref": "#/$defs/delivery_intent"
+    },
+    {
+      "$ref": "#/$defs/invocation_identity"
+    }
+  ]
+}

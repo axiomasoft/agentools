@@ -1,0 +1,466 @@
+{
+  "document_kind": "transport-choice",
+  "status": "recorded",
+  "plan_id": "PLAN2",
+  "source_revisions": {
+    "agentools": "8c22b5a2f139b5587ff735fb3eb16105420ffe18",
+    "laravel-ai-candidate": "6837b4c557f67e04e8a13d882fe7724032278c27"
+  },
+  "selected_transport": {
+    "driver": "direct",
+    "package": null,
+    "version": null,
+    "source_ref": "@plan/artifacts/implementation/P1.2/sources.json#anthropic-messages; anthropic-version=2026-10-21",
+    "rationale": "Choose C: public SDK proposal-only APIs exist, but exact v1.3.0 streaming collapses valid/missing/duplicate terminal outputs. B durable recovery is unknown. Direct wire preserves raw terminal/error/nullable usage evidence while AgenTools owns the only future durable loop."
+  },
+  "supported_loop_mode": "separate-transport",
+  "loop_proven": false,
+  "capabilities": [
+    {
+      "name": "text_system_boundaries",
+      "support": "supported",
+      "evidence_class": "executed_contract",
+      "required_for_loop": true,
+      "evidence_refs": [
+        "anthropic-messages",
+        "direct-offline-contract"
+      ]
+    },
+    {
+      "name": "proposal_only",
+      "support": "supported",
+      "evidence_class": "executed_contract",
+      "required_for_loop": true,
+      "evidence_refs": [
+        "anthropic-tools",
+        "direct-offline-contract"
+      ]
+    },
+    {
+      "name": "stable_tool_ids",
+      "support": "supported",
+      "evidence_class": "executed_contract",
+      "required_for_loop": true,
+      "evidence_refs": [
+        "anthropic-tools",
+        "direct-offline-contract"
+      ]
+    },
+    {
+      "name": "client_tool_result_replay",
+      "support": "supported",
+      "evidence_class": "executed_contract",
+      "required_for_loop": true,
+      "evidence_refs": [
+        "anthropic-tools",
+        "direct-offline-contract"
+      ]
+    },
+    {
+      "name": "structured_output",
+      "support": "supported",
+      "evidence_class": "executed_contract",
+      "required_for_loop": true,
+      "evidence_refs": [
+        "anthropic-messages",
+        "direct-offline-contract"
+      ]
+    },
+    {
+      "name": "stream_terminal_errors",
+      "support": "supported",
+      "evidence_class": "executed_contract",
+      "required_for_loop": true,
+      "evidence_refs": [
+        "anthropic-streaming",
+        "direct-offline-contract"
+      ]
+    },
+    {
+      "name": "nullable_usage",
+      "support": "supported",
+      "evidence_class": "executed_contract",
+      "required_for_loop": true,
+      "evidence_refs": [
+        "anthropic-errors",
+        "direct-offline-contract"
+      ]
+    },
+    {
+      "name": "credential_isolation",
+      "support": "supported",
+      "evidence_class": "executed_contract",
+      "required_for_loop": true,
+      "evidence_refs": [
+        "direct-offline-contract"
+      ]
+    },
+    {
+      "name": "generation_limits_cancellation_deadline",
+      "support": "supported",
+      "evidence_class": "executed_contract",
+      "required_for_loop": true,
+      "evidence_refs": [
+        "direct-offline-contract"
+      ]
+    },
+    {
+      "name": "normalized_errors_refusals_model_request_refs",
+      "support": "supported",
+      "evidence_class": "executed_contract",
+      "required_for_loop": true,
+      "evidence_refs": [
+        "direct-offline-contract"
+      ]
+    },
+    {
+      "name": "no_automatic_effects",
+      "support": "supported",
+      "evidence_class": "executed_contract",
+      "required_for_loop": true,
+      "evidence_refs": [
+        "direct-offline-contract"
+      ]
+    },
+    {
+      "name": "audio",
+      "support": "unsupported",
+      "evidence_class": "source_inspection",
+      "required_for_loop": false,
+      "evidence_refs": [
+        "choice-C"
+      ]
+    },
+    {
+      "name": "image_attachments",
+      "support": "unsupported",
+      "evidence_class": "source_inspection",
+      "required_for_loop": false,
+      "evidence_refs": [
+        "choice-C"
+      ]
+    },
+    {
+      "name": "explicit_prompt_cache",
+      "support": "unsupported",
+      "evidence_class": "source_inspection",
+      "required_for_loop": false,
+      "evidence_refs": [
+        "choice-C"
+      ]
+    },
+    {
+      "name": "opaque_provider_continuation",
+      "support": "unsupported",
+      "evidence_class": "source_inspection",
+      "required_for_loop": false,
+      "evidence_refs": [
+        "choice-C"
+      ]
+    },
+    {
+      "name": "server_tools",
+      "support": "unsupported",
+      "evidence_class": "source_inspection",
+      "required_for_loop": false,
+      "evidence_refs": [
+        "anthropic-tools",
+        "choice-C"
+      ]
+    },
+    {
+      "name": "candidate_model_qualification",
+      "support": "unknown",
+      "evidence_class": "unverified",
+      "required_for_loop": false,
+      "evidence_refs": []
+    }
+  ],
+  "sections": [
+    {
+      "id": "primary-sources",
+      "title": "Official URLs, dates and source hashes",
+      "text": "[{\"checked_at\": \"2026-10-31T10:13:39.230597+00:00\", \"id\": \"laravel-release\", \"path\": \"@plan/artifacts/implementation/P1.2/sources/laravel-release.json\", \"resolved_url\": \"https://api.github.com/repos/laravel/ai/releases/latest\", \"sha256\": \"b2fd30a1c6f74396f49aaa971e6e4405210b9f4e3687f1a62be3c45611b64e07\", \"url\": \"https://api.github.com/repos/laravel/ai/releases/latest\"}, {\"checked_at\": \"2026-10-31T10:13:40.469203+00:00\", \"id\": \"laravel-composer\", \"path\": \"@plan/artifacts/implementation/P1.2/sources/laravel-composer.json\", \"resolved_url\": \"https://raw.githubusercontent.com/laravel/ai/v1.3.0/composer.json\", \"sha256\": \"92d05091559640a086772bafdbc1f154268bd9b543db1cc33c33dbf9c9cdd8ab\", \"url\": \"https://raw.githubusercontent.com/laravel/ai/v1.3.0/composer.json\"}, {\"checked_at\": \"2026-10-31T10:13:47.099152+00:00\", \"id\": \"laravel-docs\", \"path\": \"@plan/artifacts/implementation/P1.2/sources/laravel-docs.html\", \"resolved_url\": \"https://laravel.com/framework/docs/13.x/ai-sdk\", \"sha256\": \"16b95ae2a00c240bc714689124344f251f382de215d8dda95ab4fee85cce8694\", \"url\": \"https://laravel.com/docs/13.x/ai-sdk\"}, {\"checked_at\": \"2026-10-31T10:13:50.504727+00:00\", \"id\": \"anthropic-versioning\", \"path\": \"@plan/artifacts/implementation/P1.2/sources/anthropic-versioning.html\", \"resolved_url\": \"https://platform.claude.com/docs/en/api/versioning\", \"sha256\": \"1f06ce149cedc886bde3293709c98e6c63987cf8ee0a75fc99bc4b7fc6668f08\", \"url\": \"https://platform.claude.com/docs/en/api/versioning\"}, {\"checked_at\": \"2026-10-31T10:13:55.066651+00:00\", \"id\": \"anthropic-messages\", \"path\": \"@plan/artifacts/implementation/P1.2/sources/anthropic-messages.html\", \"resolved_url\": \"https://platform.claude.com/docs/en/api/messages/create\", \"sha256\": \"8e42b7cc726493630e0db619e0dda4443be76e5358c71ce3e1a9a316b9a76250\", \"url\": \"https://platform.claude.com/docs/en/api/messages/create\"}, {\"checked_at\": \"2026-10-31T10:14:00.031103+00:00\", \"id\": \"anthropic-tools\", \"path\": \"@plan/artifacts/implementation/P1.2/sources/anthropic-tools.html\", \"resolved_url\": \"https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview\", \"sha256\": \"f6cf3faf1421aaa323125344a9a7dc122de024559b28424066c2a96694693c24\", \"url\": \"https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview\"}, {\"checked_at\": \"2026-10-31T10:14:05.703995+00:00\", \"id\": \"anthropic-streaming\", \"path\": \"@plan/artifacts/implementation/P1.2/sources/anthropic-streaming.html\", \"resolved_url\": \"https://platform.claude.com/docs/en/build-with-claude/streaming\", \"sha256\": \"5569c03867f710d1a40d46339fbd4f216fe9f99c2bdf2de1c20e259bbc102f98\", \"url\": \"https://platform.claude.com/docs/en/build-with-claude/streaming\"}, {\"checked_at\": \"2026-10-31T10:14:10.178151+00:00\", \"id\": \"anthropic-errors\", \"path\": \"@plan/artifacts/implementation/P1.2/sources/anthropic-errors.html\", \"resolved_url\": \"https://platform.claude.com/docs/en/api/errors\", \"sha256\": \"ddc4fff6d6f79bef67311c0a694d95f53583f9453930e0fee2273779613602a5\", \"url\": \"https://platform.claude.com/docs/en/api/errors\"}, {\"checked_at\": \"2026-10-31T10:19:41.673678+00:00\", \"id\": \"anthropic-structured\", \"path\": \"@plan/artifacts/implementation/P1.2/sources/anthropic-structured.md\", \"sha256\": \"8631740741153622db77145c666df87e3b9dec96363eb42cc8892519ec691a3e\", \"url\": \"https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md\"}, {\"checked_at\": \"2026-10-31T10:19:43.242114+00:00\", \"id\": \"anthropic-auth\", \"path\": \"@plan/artifacts/implementation/P1.2/sources/anthropic-auth.md\", \"sha256\": \"99fb4877823260f12cd7a18ffc6891f00ae2a8df4e84cade7bc1d1c14ee65596\", \"url\": \"https://platform.claude.com/docs/en/api/overview.md\"}]"
+    },
+    {
+      "id": "candidates",
+      "title": "At most two target transport candidates",
+      "text": "[{\"A\": \"rejected: normalized streaming loses missing/duplicate terminal; public proposal-only API DOES exist\", \"B\": \"not qualified: durable fenced pause/resume/callback recovery unknown\", \"composer_sha256\": \"2cfaf24fadbd403a4bd0362c4c4a49724558e73b9ece604112c1b3e88f2d684d\", \"donor_version_pin\": false, \"framework\": \"Illuminate 12/13; json-schema >=12.62 or >=13.15 within respective majors\", \"id\": \"laravel-ai\", \"lock_sha256\": \"6431509565947866d15bd44055e9054310f8e2bd2d809d2ca6cba41d5b59312f\", \"lockfile\": \"@plan/artifacts/implementation/P1.2/probe/composer.lock\", \"package\": \"laravel/ai\", \"php\": \"^8.3\", \"selected\": false, \"source_commit\": \"6837b4c557f67e04e8a13d882fe7724032278c27\", \"source_manifest\": \"@plan/artifacts/implementation/P1.2/sdk-source-manifest.json\", \"support_basis\": \"official latest stable release, not an assumed LTS promise\", \"version\": \"1.3.0\"}, {\"choice\": \"C\", \"dependencies\": \"No new Composer dependency selected; PHP JSON + adapter HTTP port; concrete production HTTP stack/lock is P4.2, not fabricated here\", \"endpoint\": \"POST https://api.anthropic.com/v1/messages\", \"evidence_tier\": \"documented + offline executed_contract\", \"framework\": null, \"id\": \"direct-anthropic-messages\", \"live_qualified\": false, \"php\": \">=8.3\", \"protocol\": \"anthropic-version: 2026-10-21\", \"sdk_package\": null, \"sdk_version\": null, \"selected\": true}]"
+    },
+    {
+      "id": "matrix",
+      "title": "Required/optional read-write capability matrix",
+      "text": "[{\"direct\": {\"evidence\": \"executed_contract\", \"scope\": \"offline wire contract only; deployment qualification pending\", \"support\": \"supported\"}, \"name\": \"text_system_boundaries\", \"refs\": [\"anthropic-messages\", \"direct-offline-contract\"], \"required_read\": true, \"required_write\": true, \"sdk\": {\"evidence\": \"source_inspected\", \"scope\": \"exact candidate source, not live qualification\", \"support\": \"supported\"}}, {\"direct\": {\"evidence\": \"executed_contract\", \"scope\": \"offline wire contract only; deployment qualification pending\", \"support\": \"supported\"}, \"name\": \"proposal_only\", \"refs\": [\"anthropic-tools\", \"direct-offline-contract\"], \"required_read\": true, \"required_write\": true, \"sdk\": {\"evidence\": \"executed_contract\", \"refs\": [\"sdk-public-step\"], \"support\": \"supported\"}}, {\"direct\": {\"evidence\": \"executed_contract\", \"scope\": \"offline wire contract only; deployment qualification pending\", \"support\": \"supported\"}, \"name\": \"stable_tool_ids\", \"refs\": [\"anthropic-tools\", \"direct-offline-contract\"], \"required_read\": true, \"required_write\": true, \"sdk\": {\"evidence\": \"executed_contract\", \"refs\": [\"sdk-public-step\"], \"support\": \"supported\"}}, {\"direct\": {\"evidence\": \"executed_contract\", \"scope\": \"offline wire contract only; deployment qualification pending\", \"support\": \"supported\"}, \"name\": \"client_tool_result_replay\", \"refs\": [\"anthropic-tools\", \"direct-offline-contract\"], \"required_read\": true, \"required_write\": true, \"sdk\": {\"evidence\": \"source_inspected\", \"scope\": \"exact candidate source, not live qualification\", \"support\": \"supported\"}}, {\"direct\": {\"evidence\": \"executed_contract\", \"scope\": \"offline wire contract only; deployment qualification pending\", \"support\": \"supported\"}, \"name\": \"structured_output\", \"refs\": [\"anthropic-messages\", \"direct-offline-contract\"], \"required_read\": true, \"required_write\": true, \"sdk\": {\"evidence\": \"source_inspected\", \"scope\": \"exact candidate source, not live qualification\", \"support\": \"supported\"}}, {\"direct\": {\"evidence\": \"executed_contract\", \"scope\": \"offline wire contract only; deployment qualification pending\", \"support\": \"supported\"}, \"name\": \"stream_terminal_errors\", \"refs\": [\"anthropic-streaming\", \"direct-offline-contract\"], \"required_read\": true, \"required_write\": true, \"sdk\": {\"evidence\": \"executed_contract\", \"refs\": [\"sdk-terminal-loss\"], \"scope\": \"selected public normalized streaming API loses terminal count\", \"support\": \"unsupported\"}}, {\"direct\": {\"evidence\": \"executed_contract\", \"scope\": \"offline wire contract only; deployment qualification pending\", \"support\": \"supported\"}, \"name\": \"nullable_usage\", \"refs\": [\"anthropic-errors\", \"direct-offline-contract\"], \"required_read\": true, \"required_write\": true, \"sdk\": {\"evidence\": \"executed_contract\", \"refs\": [\"sdk-usage-loss\"], \"scope\": \"normalized usage alone; sync raw can recover absence\", \"support\": \"unsupported\"}}, {\"direct\": {\"evidence\": \"executed_contract\", \"scope\": \"offline wire contract only; deployment qualification pending\", \"support\": \"supported\"}, \"name\": \"credential_isolation\", \"refs\": [\"direct-offline-contract\"], \"required_read\": true, \"required_write\": true, \"sdk\": {\"evidence\": \"unverified\", \"support\": \"unknown\"}}, {\"direct\": {\"evidence\": \"executed_contract\", \"scope\": \"offline wire contract only; deployment qualification pending\", \"support\": \"supported\"}, \"name\": \"generation_limits_cancellation_deadline\", \"refs\": [\"direct-offline-contract\"], \"required_read\": true, \"required_write\": true, \"sdk\": {\"evidence\": \"source_inspected\", \"scope\": \"exact candidate source, not live qualification\", \"support\": \"supported\"}}, {\"direct\": {\"evidence\": \"executed_contract\", \"scope\": \"offline wire contract only; deployment qualification pending\", \"support\": \"supported\"}, \"name\": \"normalized_errors_refusals_model_request_refs\", \"refs\": [\"direct-offline-contract\"], \"required_read\": true, \"required_write\": true, \"sdk\": {\"evidence\": \"source_inspected\", \"scope\": \"exact candidate source, not live qualification\", \"support\": \"supported\"}}, {\"direct\": {\"evidence\": \"executed_contract\", \"scope\": \"offline wire contract only; deployment qualification pending\", \"support\": \"supported\"}, \"name\": \"no_automatic_effects\", \"refs\": [\"direct-offline-contract\"], \"required_read\": true, \"required_write\": true, \"sdk\": {\"evidence\": \"executed_contract\", \"refs\": [\"sdk-public-step\"], \"support\": \"supported\"}}, {\"direct\": {\"evidence\": \"source_inspection\", \"scope\": \"offline wire contract only; deployment qualification pending\", \"support\": \"unsupported\"}, \"name\": \"audio\", \"refs\": [\"choice-C\"], \"required_read\": false, \"required_write\": false, \"sdk\": {\"evidence\": \"unverified\", \"support\": \"unknown\"}}, {\"direct\": {\"evidence\": \"source_inspection\", \"scope\": \"offline wire contract only; deployment qualification pending\", \"support\": \"unsupported\"}, \"name\": \"image_attachments\", \"refs\": [\"choice-C\"], \"required_read\": false, \"required_write\": false, \"sdk\": {\"evidence\": \"unverified\", \"support\": \"unknown\"}}, {\"direct\": {\"evidence\": \"source_inspection\", \"scope\": \"offline wire contract only; deployment qualification pending\", \"support\": \"unsupported\"}, \"name\": \"explicit_prompt_cache\", \"refs\": [\"choice-C\"], \"required_read\": false, \"required_write\": false, \"sdk\": {\"evidence\": \"unverified\", \"support\": \"unknown\"}}, {\"direct\": {\"evidence\": \"source_inspection\", \"scope\": \"offline wire contract only; deployment qualification pending\", \"support\": \"unsupported\"}, \"name\": \"opaque_provider_continuation\", \"refs\": [\"choice-C\"], \"required_read\": false, \"required_write\": false, \"sdk\": {\"evidence\": \"unverified\", \"support\": \"unknown\"}}, {\"direct\": {\"evidence\": \"source_inspection\", \"scope\": \"offline wire contract only; deployment qualification pending\", \"support\": \"unsupported\"}, \"name\": \"server_tools\", \"refs\": [\"anthropic-tools\", \"choice-C\"], \"required_read\": false, \"required_write\": false, \"sdk\": {\"evidence\": \"unverified\", \"support\": \"unknown\"}}, {\"direct\": {\"evidence\": \"unverified\", \"scope\": \"offline wire contract only; deployment qualification pending\", \"support\": \"unknown\"}, \"name\": \"candidate_model_qualification\", \"refs\": [], \"required_read\": false, \"required_write\": false, \"sdk\": {\"evidence\": \"unverified\", \"support\": \"unknown\"}}]"
+    },
+    {
+      "id": "core-adapters",
+      "title": "Core, adapter and composition constraints",
+      "text": "{\"adapter\": {\"automatic_retries\": false, \"credential_scope\": \"tenant/account/provider/region/workspace scoped trusted ref, resolve only before IO\", \"framework_dependency\": null, \"http_version\": \"2026-10-21\", \"mode\": \"separate-transport\", \"provider_server_tools\": false, \"sdk_dependency\": null, \"selected_driver\": \"anthropic-messages\"}, \"core\": {\"forbidden\": [\"Laravel\", \"laravel/ai\", \"PDO\", \"container\", \"Eloquent\", \"domain stores\"], \"imports\": \"value objects and ports only\", \"php\": \">=8.3\"}, \"laravel_composition\": {\"framework_lock_owner\": \"P1.4/P6; candidate Illuminate requirements do not constrain direct core\", \"owns\": \"bind ModelTransport and host credential/current policy ports\", \"requires_laravel_ai\": false}, \"read_vertical\": \"one model proposal -> durable mapping -> guarded read Action -> tool_result -> fresh explicit model exchange -> durable response/usage\", \"write_vertical\": \"same transport; proposal durable mapping precedes confirmation; host consent/current permissions/emergency guards/fence precede write; unknown effect reconciles before any retry\"}"
+    },
+    {
+      "id": "public-api",
+      "title": "Exact inspected SDK public signatures and source hashes",
+      "text": "{\"composer_sha256\": \"2cfaf24fadbd403a4bd0362c4c4a49724558e73b9ece604112c1b3e88f2d684d\", \"dependency_constraints\": {\"illuminate/console\": \"^12.0|^13.0\", \"illuminate/container\": \"^12.0|^13.0\", \"illuminate/contracts\": \"^12.0|^13.0\", \"illuminate/database\": \"^12.0|^13.0\", \"illuminate/filesystem\": \"^12.0|^13.0\", \"illuminate/json-schema\": \"^12.62|^13.15\", \"illuminate/support\": \"^12.0|^13.0\", \"laravel/prompts\": \"^0.3.6\", \"laravel/serializable-closure\": \"^2.0\", \"php\": \"^8.3\", \"symfony/yaml\": \"^7.2|^8.0\"}, \"dependency_versions\": {\"brick/math\": \"0.14.8\", \"carbonphp/carbon-doctrine-types\": \"3.2.1\", \"doctrine/inflector\": \"2.1.1\", \"fruitcake/php-cors\": \"v1.4.0\", \"guzzlehttp/guzzle\": \"7.16.1\", \"guzzlehttp/promises\": \"2.6.0\", \"guzzlehttp/psr7\": \"2.13.2\", \"guzzlehttp/uri-template\": \"v1.0.11\", \"illuminate/bus\": \"v12.70.2\", \"illuminate/collections\": \"v12.70.2\", \"illuminate/conditionable\": \"v12.70.2\", \"illuminate/console\": \"v12.70.2\", \"illuminate/container\": \"v12.70.2\", \"illuminate/contracts\": \"v12.70.2\", \"illuminate/database\": \"v12.70.2\", \"illuminate/events\": \"v12.70.2\", \"illuminate/filesystem\": \"v12.70.2\", \"illuminate/http\": \"v12.70.2\", \"illuminate/json-schema\": \"v12.70.2\", \"illuminate/macroable\": \"v12.70.2\", \"illuminate/pipeline\": \"v12.70.2\", \"illuminate/reflection\": \"v12.70.2\", \"illuminate/session\": \"v12.70.2\", \"illuminate/support\": \"v12.70.2\", \"illuminate/view\": \"v12.70.2\", \"laravel/ai\": \"v1.3.0\", \"laravel/prompts\": \"v0.3.26\", \"laravel/serializable-closure\": \"v2.1.0\", \"nesbot/carbon\": \"3.15.1\", \"nunomaduro/termwind\": \"v2.4.0\", \"psr/clock\": \"1.0.0\", \"psr/container\": \"2.0.2\", \"psr/event-dispatcher\": \"1.0.0\", \"psr/http-client\": \"1.0.3\", \"psr/http-factory\": \"1.1.0\", \"psr/http-message\": \"2.0\", \"psr/log\": \"3.0.2\", \"psr/simple-cache\": \"3.0.0\", \"ralouphie/getallheaders\": \"3.0.3\", \"ramsey/collection\": \"2.1.1\", \"ramsey/uuid\": \"4.9.4\", \"symfony/clock\": \"v7.4.21\", \"symfony/console\": \"v7.4.22\", \"symfony/deprecation-contracts\": \"v3.7.1\", \"symfony/error-handler\": \"v7.4.22\", \"symfony/event-dispatcher\": \"v7.4.17\", \"symfony/event-dispatcher-contracts\": \"v3.7.1\", \"symfony/finder\": \"v7.4.22\", \"symfony/http-foundation\": \"v7.4.22\", \"symfony/http-kernel\": \"v7.4.22\", \"symfony/mime\": \"v7.4.22\", \"symfony/polyfill-ctype\": \"v1.37.0\", \"symfony/polyfill-intl-grapheme\": \"v1.43.3\", \"symfony/polyfill-intl-idn\": \"v1.43.0\", \"symfony/polyfill-intl-normalizer\": \"v1.43.0\", \"symfony/polyfill-mbstring\": \"v1.43.3\", \"symfony/polyfill-php80\": \"v1.43.0\", \"symfony/polyfill-php83\": \"v1.43.0\", \"symfony/polyfill-php84\": \"v1.43.0\", \"symfony/polyfill-php85\": \"v1.43.0\", \"symfony/polyfill-time\": \"v1.42.0\", \"symfony/process\": \"v7.4.22\", \"symfony/service-contracts\": \"v3.7.3\", \"symfony/string\": \"v7.4.22\", \"symfony/translation\": \"v7.4.22\", \"symfony/translation-contracts\": \"v3.7.1\", \"symfony/var-dumper\": \"v7.4.22\", \"symfony/yaml\": \"v7.4.22\", \"voku/portable-ascii\": \"2.1.1\"}, \"files\": [{\"path\": \"@plan/artifacts/implementation/P1.2/probe/vendor/laravel/ai/src/Contracts/Gateway/StepTextGateway.php\", \"public_signatures\": [\"public function generateTextStep(\\n        TextProvider $provider,\\n        string $model,\\n        ?string $instructions,\\n        array $messages,\\n        array $tools,\\n        ?array $schema,\\n        ?TextGenerationOptions $options,\\n        ?int $timeout,\\n        StepContext $stepContext,\\n    ): StepResponse\", \"public function generateStreamStep(\\n        string $invocationId,\\n        TextProvider $provider,\\n        string $model,\\n        ?string $instructions,\\n        array $messages,\\n        array $tools,\\n        ?array $schema,\\n        ?TextGenerationOptions $options,\\n        ?int $timeout,\\n        StepContext $stepContext,\\n    ): Generator\"], \"sha256\": \"5033eb03b7fad0428756e429dadb5903859dee31ed41d515fad2bf7a2d6e3021\", \"symbols\": [{\"declaration\": \"public function generateTextStep(\", \"line\": 24}, {\"declaration\": \"public function generateStreamStep(\", \"line\": 44}], \"url\": \"https://raw.githubusercontent.com/laravel/ai/6837b4c557f67e04e8a13d882fe7724032278c27/src/Contracts/Gateway/StepTextGateway.php\"}, {\"path\": \"@plan/artifacts/implementation/P1.2/probe/vendor/laravel/ai/src/Gateway/Anthropic/AnthropicGateway.php\", \"public_signatures\": [\"public function __construct(protected Dispatcher $events)\", \"public function generateTextStep(\\n        TextProvider $provider,\\n        string $model,\\n        ?string $instructions,\\n        array $messages,\\n        array $tools,\\n        ?array $schema,\\n        ?TextGenerationOptions $options,\\n        ?int $timeout,\\n        StepContext $stepContext,\\n    ): StepResponse\", \"public function generateStreamStep(\\n        string $invocationId,\\n        TextProvider $provider,\\n        string $model,\\n        ?string $instructions,\\n        array $messages,\\n        array $tools,\\n        ?array $schema,\\n        ?TextGenerationOptions $options,\\n        ?int $timeout,\\n        StepContext $stepContext,\\n    ): Generator\", \"public function generateImage(\\n        ImageProvider $provider,\\n        string $model,\\n        string $prompt,\\n        array $attachments = [],\\n        ?string $size = null,\\n        ?string $quality = null,\\n        ?int $timeout = null,\\n        array $providerOptions = [],\\n    ): ImageResponse\", \"public function generateAudio(\\n        AudioProvider $provider,\\n        string $model,\\n        string $text,\\n        string $voice,\\n        ?string $instructions = null,\\n        int $timeout = 30,\\n        array $providerOptions = [],\\n    ): AudioResponse\", \"public function generateTranscription(\\n        TranscriptionProvider $provider,\\n        string $model,\\n        TranscribableAudio $audio,\\n        ?string $language = null,\\n        bool $diarize = false,\\n        int $timeout = 30,\\n        array $providerOptions = [],\\n    ): TranscriptionResponse\", \"public function generateEmbeddings(\\n        EmbeddingProvider $provider,\\n        string $model,\\n        array $inputs,\\n        int $dimensions,\\n        int $timeout = 30,\\n        array $providerOptions = [],\\n    ): EmbeddingsResponse\"], \"sha256\": \"b1a0920ddb8047f0f33d46ff17813bb8c46de359758956e439edb52eaa4c6544\", \"symbols\": [{\"declaration\": \"public function __construct(protected Dispatcher $events) {}\", \"line\": 38}, {\"declaration\": \"public function generateTextStep(\", \"line\": 43}, {\"declaration\": \"public function generateStreamStep(\", \"line\": 79}, {\"declaration\": \"public function generateImage(\", \"line\": 123}, {\"declaration\": \"public function generateAudio(\", \"line\": 141}, {\"declaration\": \"public function generateTranscription(\", \"line\": 158}, {\"declaration\": \"public function generateEmbeddings(\", \"line\": 175}, {\"declaration\": \"protected function overloadedStatusCodes(): array\", \"line\": 189}, {\"declaration\": \"protected function insufficientCreditPatterns(): array\", \"line\": 198}], \"url\": \"https://raw.githubusercontent.com/laravel/ai/6837b4c557f67e04e8a13d882fe7724032278c27/src/Gateway/Anthropic/AnthropicGateway.php\"}, {\"path\": \"@plan/artifacts/implementation/P1.2/probe/vendor/laravel/ai/src/Gateway/Anthropic/Concerns/ParsesTextResponses.php\", \"public_signatures\": [], \"sha256\": \"b017de8b0fcc153964d6e17c3d32a00e60b2bcc53f1ace0f55bd46a592e78a5c\", \"symbols\": [{\"declaration\": \"protected function validateTextResponse(array $data): void\", \"line\": 27}, {\"declaration\": \"protected function parseTextResponse(\", \"line\": 41}, {\"declaration\": \"protected function buildStepResponse(\", \"line\": 59}, {\"declaration\": \"protected function extractText(array $content): string\", \"line\": 105}, {\"declaration\": \"protected function textSeparator(string $before, string $after): string\", \"line\": 128}, {\"declaration\": \"protected function isToolBlock(string $type): bool\", \"line\": 136}, {\"declaration\": \"protected function isProviderToolResultBlock(string $type): bool\", \"line\": 144}, {\"declaration\": \"protected function extractReasoning(array $content): string\", \"line\": 152}, {\"declaration\": \"protected function extractProviderToolCalls(array $content): array\", \"line\": 164}, {\"declaration\": \"protected function extractToolCalls(array $content): array\", \"line\": 177}, {\"declaration\": \"protected function extractCitations(array $content): Collection\", \"line\": 192}, {\"declaration\": \"protected function extractUsage(array $data): TextUsage\", \"line\": 237}, {\"declaration\": \"protected function extractFinishReason(array $data): FinishReason\", \"line\": 256}, {\"declaration\": \"protected function extractStructuredOutput(array $content): array\", \"line\": 271}], \"url\": \"https://raw.githubusercontent.com/laravel/ai/6837b4c557f67e04e8a13d882fe7724032278c27/src/Gateway/Anthropic/Concerns/ParsesTextResponses.php\"}, {\"path\": \"@plan/artifacts/implementation/P1.2/probe/vendor/laravel/ai/src/Gateway/Anthropic/Concerns/HandlesTextStreaming.php\", \"public_signatures\": [], \"sha256\": \"a96fccebd0d6e60d208c1cfc87fa48089d3103cfbf95cb20e793f14bc8063dbd\", \"symbols\": [{\"declaration\": \"protected function processTextStream(\", \"line\": 29}, {\"declaration\": \"protected function generateEventId(): string\", \"line\": 351}], \"url\": \"https://raw.githubusercontent.com/laravel/ai/6837b4c557f67e04e8a13d882fe7724032278c27/src/Gateway/Anthropic/Concerns/HandlesTextStreaming.php\"}, {\"path\": \"@plan/artifacts/implementation/P1.2/probe/vendor/laravel/ai/src/Gateway/Anthropic/Concerns/CreatesAnthropicClient.php\", \"public_signatures\": [], \"sha256\": \"acc38a2176165c18ff880d965be65b5b571f8cc1caea3aad78b18d705c91389b\", \"symbols\": [{\"declaration\": \"protected function client(Provider $provider, ?int $timeout = null): PendingRequest\", \"line\": 16}, {\"declaration\": \"protected function baseUrl(Provider $provider): string\", \"line\": 37}], \"url\": \"https://raw.githubusercontent.com/laravel/ai/6837b4c557f67e04e8a13d882fe7724032278c27/src/Gateway/Anthropic/Concerns/CreatesAnthropicClient.php\"}, {\"path\": \"@plan/artifacts/implementation/P1.2/probe/vendor/laravel/ai/src/Gateway/Anthropic/Concerns/MapsTools.php\", \"public_signatures\": [], \"sha256\": \"eaae926ab248c08f3d3fb7c364ab84d466d98ab03ffd6458a50d3e881ca947a3\", \"symbols\": [{\"declaration\": \"protected function mapTools(array $tools, Provider $provider): array\", \"line\": 32}, {\"declaration\": \"protected function mapTool(Tool $tool, bool $defer = false): array\", \"line\": 66}, {\"declaration\": \"protected function mapProviderTool(ProviderTool $tool, Provider $provider): array\", \"line\": 95}, {\"declaration\": \"protected function mapCodeExecutionTool(CodeExecution $tool, Provider $provider): array\", \"line\": 108}, {\"declaration\": \"protected function mapWebFetchTool(WebFetch $tool, Provider $provider): array\", \"line\": 124}, {\"declaration\": \"protected function mapWebSearchTool(WebSearch $tool, Provider $provider): array\", \"line\": 140}], \"url\": \"https://raw.githubusercontent.com/laravel/ai/6837b4c557f67e04e8a13d882fe7724032278c27/src/Gateway/Anthropic/Concerns/MapsTools.php\"}, {\"path\": \"@plan/artifacts/implementation/P1.2/probe/vendor/laravel/ai/src/Gateway/StepResponse.php\", \"public_signatures\": [\"public function __construct(\\n        public string $text,\\n        public array $toolCalls,\\n        public FinishReason $finishReason,\\n        public TextUsage $usage,\\n        public Meta $meta,\\n        public ?array $structured = null,\\n        public ?string $continuationToken = null,\\n        public array $replayBlocks = [],\\n        public array $pendingApprovals = [],\\n        public string $reasoning = '',\\n        public array $providerToolCalls = [],\\n    )\", \"public function toArray(): array\", \"public function jsonSerialize(): mixed\"], \"sha256\": \"cde94246dc683e812224858ded01f6f342becd3134f5e5796eee8f462b2a3a71\", \"symbols\": [{\"declaration\": \"public function __construct(\", \"line\": 26}, {\"declaration\": \"public function toArray(): array\", \"line\": 43}, {\"declaration\": \"public function jsonSerialize(): mixed\", \"line\": 61}], \"url\": \"https://raw.githubusercontent.com/laravel/ai/6837b4c557f67e04e8a13d882fe7724032278c27/src/Gateway/StepResponse.php\"}, {\"path\": \"@plan/artifacts/implementation/P1.2/probe/vendor/laravel/ai/src/Gateway/StepContext.php\", \"public_signatures\": [\"public function __construct(\\n        public readonly int $stepNumber = 0,\\n        public readonly bool $isFinalStep = false,\\n        public readonly ?string $continuationToken = null,\\n    )\"], \"sha256\": \"612cb6632b9e757af1b8be9cadd4d4fee2f16bcd41c11802b6741c91fd89c9cc\", \"symbols\": [{\"declaration\": \"public function __construct(\", \"line\": 8}], \"url\": \"https://raw.githubusercontent.com/laravel/ai/6837b4c557f67e04e8a13d882fe7724032278c27/src/Gateway/StepContext.php\"}, {\"path\": \"@plan/artifacts/implementation/P1.2/probe/vendor/laravel/ai/src/Gateway/TextGenerationOptions.php\", \"public_signatures\": [\"public function __construct(\\n        public readonly ?int $maxSteps = null,\\n        public readonly ?int $maxTokens = null,\\n        public readonly ?float $temperature = null,\\n        public readonly ?Agent $agent = null,\\n        public readonly ?float $topP = null,\\n        public readonly ?ToolChoice $toolChoice = null,\\n        public readonly ?CacheInstructions $cacheInstructions = null,\\n        public readonly ?CacheToolDefinitions $cacheToolDefinitions = null,\\n        public readonly ?array $providerOptions = null,\\n    )\", \"public function providerOptions(Lab|string $provider): ?array\", \"public function withToolChoice(?ToolChoice $toolChoice): self\", \"public function withMaxTokens(?int $maxTokens): self\", \"public function withProviderOptions(?array $providerOptions): self\", \"public function forStep(int $stepNumber): self\"], \"sha256\": \"8babb5aa100ed67f9217d302268462b2b5903b641a0cd03128acaff68c444172\", \"symbols\": [{\"declaration\": \"public function __construct(\", \"line\": 19}, {\"declaration\": \"public function providerOptions(Lab|string $provider): ?array\", \"line\": 38}, {\"declaration\": \"public function withToolChoice(?ToolChoice $toolChoice): self\", \"line\": 56}, {\"declaration\": \"public function withMaxTokens(?int $maxTokens): self\", \"line\": 64}, {\"declaration\": \"public function withProviderOptions(?array $providerOptions): self\", \"line\": 74}, {\"declaration\": \"protected function with(array $overrides): self\", \"line\": 84}, {\"declaration\": \"public function forStep(int $stepNumber): self\", \"line\": 92}, {\"declaration\": \"public static function forAgent(Agent $agent): self\", \"line\": 108}], \"url\": \"https://raw.githubusercontent.com/laravel/ai/6837b4c557f67e04e8a13d882fe7724032278c27/src/Gateway/TextGenerationOptions.php\"}, {\"path\": \"@plan/artifacts/implementation/P1.2/probe/vendor/laravel/ai/src/Gateway/RunContext.php\", \"public_signatures\": [\"public function __construct(\\n        public readonly string $invocationId,\\n        public readonly Agent $agent,\\n        public readonly TextProvider $provider,\\n        public readonly string $model,\\n        protected readonly Dispatcher $events,\\n    )\", \"public function recordStep(Step $step): void\", \"public function recordToolResult(ToolResult $result): void\", \"public function recordedResponse(): AgentResponse\", \"public function startingStep(StepContext $step, array $messages, ?TextGenerationOptions $options, ?string $model = null): void\", \"public function stepCompleted(?StepContext $step, StepResponse $response, float $time, ?string $model = null): void\", \"public function stepFailed(?StepContext $step, Throwable $exception, float $time, ?string $model = null): void\", \"public function invokingTool(Tool $tool, array $arguments, string $toolInvocationId): void\", \"public function toolInvoked(Tool $tool, array $arguments, mixed $result, string $toolInvocationId, float $time): void\", \"public function toolFailed(Tool $tool, array $arguments, Throwable $exception, string $toolInvocationId, float $time): void\"], \"sha256\": \"e975204751087ce71d355bf220a292b3ae8ec15f181cf2eb555d19e0c9015925\", \"symbols\": [{\"declaration\": \"public function __construct(\", \"line\": 28}, {\"declaration\": \"public function recordStep(Step $step): void\", \"line\": 39}, {\"declaration\": \"public function recordToolResult(ToolResult $result): void\", \"line\": 47}, {\"declaration\": \"public function recordedResponse(): AgentResponse\", \"line\": 59}, {\"declaration\": \"public function startingStep(StepContext $step, array $messages, ?TextGenerationOptions $options, ?string $model = null): void\", \"line\": 76}, {\"declaration\": \"public function stepCompleted(?StepContext $step, StepResponse $response, float $time, ?string $model = null): void\", \"line\": 87}, {\"declaration\": \"public function stepFailed(?StepContext $step, Throwable $exception, float $time, ?string $model = null): void\", \"line\": 102}, {\"declaration\": \"public function invokingTool(Tool $tool, array $arguments, string $toolInvocationId): void\", \"line\": 119}, {\"declaration\": \"public function toolInvoked(Tool $tool, array $arguments, mixed $result, string $toolInvocationId, float $time): void\", \"line\": 131}, {\"declaration\": \"public function toolFailed(Tool $tool, array $arguments, Throwable $exception, string $toolInvocationId, float $time): void\", \"line\": 143}], \"url\": \"https://raw.githubusercontent.com/laravel/ai/6837b4c557f67e04e8a13d882fe7724032278c27/src/Gateway/RunContext.php\"}, {\"path\": \"@plan/artifacts/implementation/P1.2/probe/vendor/laravel/ai/src/Gateway/TextGenerationLoop.php\", \"public_signatures\": [\"public function __construct(protected StepTextGateway $gateway)\", \"public function generate(\\n        TextProvider $provider,\\n        string $model,\\n        ?string $instructions,\\n        array $messages = [],\\n        array $tools = [],\\n        ?array $schema = null,\\n        ?TextGenerationOptions $options = null,\\n        ?int $timeout = null,\\n        ?array $approval = null,\\n        ?Closure $recordApprovalResults = null,\\n        ?RunContext $context = null,\\n    ): TextResponse\", \"public function stream(\\n        string $invocationId,\\n        TextProvider $provider,\\n        string $model,\\n        ?string $instructions,\\n        array $messages = [],\\n        array $tools = [],\\n        ?array $schema = null,\\n        ?TextGenerationOptions $options = null,\\n        ?int $timeout = null,\\n        ?array $approval = null,\\n        ?Closure $recordApprovalResults = null,\\n        ?array $validatedApproval = null,\\n        ?RunContext $context = null,\\n    ): Generator\", \"public function validateApproval(array $approval, array $messages, array $tools): array\"], \"sha256\": \"b77ec93e010dd93965a4e8e2c48bf6dbbc03f880fbe158838434fc6480ea17cf\", \"symbols\": [{\"declaration\": \"public function __construct(protected StepTextGateway $gateway) {}\", \"line\": 83}, {\"declaration\": \"public function generate(\", \"line\": 90}, {\"declaration\": \"public function stream(\", \"line\": 228}, {\"declaration\": \"protected function middlewareFor(?TextGenerationOptions $options): array\", \"line\": 446}, {\"declaration\": \"protected function runStep(PendingStep $step, array $middleware, Closure $run): StepResult\", \"line\": 457}, {\"declaration\": \"protected function toStepResult(mixed $result): StepResult\", \"line\": 473}, {\"declaration\": \"protected function attempt(PendingStep $step, ?PendingStep $previous, array $history, ?string $continuationToken, ?RunContext $context, Closure $call): StepResult\", \"line\": 488}, {\"declaration\": \"protected function stepCompleted(?RunContext $context, ?StepResult $attempt, StepResponse $response): void\", \"line\": 510}, {\"declaration\": \"protected function stepFailed(?RunContext $context, ?StepResult $attempt, Throwable $exception): void\", \"line\": 520}, {\"declaration\": \"protected function stepContextFor(PendingStep $step, ?PendingStep $previous, array $history, ?string $continuationToken): StepContext\", \"line\": 532}, {\"declaration\": \"protected function eventsFor(string $invocationId, TextProvider $provider, string $model, StepResponse $response): Generator\", \"line\": 548}, {\"declaration\": \"protected function resolveMaxSteps(?TextGenerationOptions $options, array $tools): int\", \"line\": 570}, {\"declaration\": \"protected function stepToolResults(StepResponse $result, bool $isFinalStep, array $tools, ?RunContext $context = null): array\", \"line\": 617}, {\"declaration\": \"protected function earlyStepToolResults(StepResponse $result): ?array\", \"line\": 628}, {\"declaration\": \"protected function streamedStepToolResults(StepResponse $result, bool $isFinalStep, array $tools, string $invocationId, ?TextGenerationOptions $options = null, ?RunContext $context = null): Generator\", \"line\": 647}, {\"declaration\": \"protected function preliminaryToolResults(Generator $events, ToolCall $toolCall, string $invocationId): Generator\", \"line\": 684}, {\"declaration\": \"protected function executeAgentToolStreaming(AgentTool $tool, array $arguments, ?string $toolCallId = null, ?RunContext $context = null): Generator\", \"line\": 721}, {\"declaration\": \"protected function approvalAwareToolResults(array $toolCalls, array $tools, bool $isFinalStep = false, ?RunContext $context = null): array\", \"line\": 751}, {\"declaration\": \"protected function resolvedToolResult(ToolCall $toolCall, ?Tool $tool, bool $isFinalStep, array $tools = [], ?RunContext $context = null): ToolResult\", \"line\": 768}, {\"declaration\": \"protected function recordedToolResult(ToolResult $result, ?RunContext $context): ToolResult\", \"line\": 784}, {\"declaration\": \"protected function toolResult(ToolCall $toolCall, mixed $result, bool $failed = false): ToolResult\", \"line\": 794}, {\"declaration\": \"protected function resolveToolCalls(array $toolCalls, array $tools, bool $isFinalStep): array\", \"line\": 813}, {\"declaration\": \"protected function availableToolNames(array $tools): string\", \"line\": 849}, {\"declaration\": \"protected function resumeFromApproval(array $approval, array $messages, array $tools, ?array $validatedApproval = null, ?RunContext $context = null): ApprovalResumption\", \"line\": 865}, {\"declaration\": \"protected function resolveApprovalResults(array $approval, array $messages, array $tools, ?array $validatedApproval = null, ?RunContext $context = null): array\", \"line\": 892}, {\"declaration\": \"public function validateApproval(array $approval, array $messages, array $tools): array\", \"line\": 957}, {\"declaration\": \"protected function approvalForTool(?Tool $tool, ToolCall $toolCall): ?Approval\", \"line\": 1003}, {\"declaration\": \"protected function generateEventId(): string\", \"line\": 1013}, {\"declaration\": \"protected function buildAssistantMessage(StepResponse $result): AssistantMessage\", \"line\": 1021}, {\"declaration\": \"protected function buildStep(StepResponse $result): Step\", \"line\": 1030}, {\"declaration\": \"protected function emptyResponse(TextProvider $provider, string $model, array $newMessages): TextResponse\", \"line\": 1048}, {\"declaration\": \"protected function buildFinalResponse(\", \"line\": 1057}, {\"declaration\": \"protected function ensureSingleToolSearch(array $tools): void\", \"line\": 1099}, {\"declaration\": \"protected function toolsSupportedBy(TextProvider $provider, array $tools): array\", \"line\": 1112}], \"url\": \"https://raw.githubusercontent.com/laravel/ai/6837b4c557f67e04e8a13d882fe7724032278c27/src/Gateway/TextGenerationLoop.php\"}, {\"path\": \"@plan/artifacts/implementation/P1.2/probe/vendor/laravel/ai/src/Gateway/Concerns/InvokesTools.php\", \"public_signatures\": [], \"sha256\": \"5dc76a9dce1b3ed2ade2c0f40cded78fa4a8bc9061463f1474f1c3c4907b7abf\", \"symbols\": [{\"declaration\": \"protected function executeTool(Tool $tool, array $arguments, ?string $toolCallId = null, ?RunContext $context = null): string\", \"line\": 24}, {\"declaration\": \"protected function findTool(string $name, array $tools): ?Tool\", \"line\": 55}], \"url\": \"https://raw.githubusercontent.com/laravel/ai/6837b4c557f67e04e8a13d882fe7724032278c27/src/Gateway/Concerns/InvokesTools.php\"}, {\"path\": \"@plan/artifacts/implementation/P1.2/probe/vendor/laravel/ai/src/Gateway/Concerns/HandlesToolApprovals.php\", \"public_signatures\": [], \"sha256\": \"305411bae4a65dca826d71c14c3df0cbc7264ace0439c14381ab9e096c821778\", \"symbols\": [{\"declaration\": \"protected function pendingToolCalls(array $messages): array\", \"line\": 22}, {\"declaration\": \"protected function appendApprovalResults(array $messages, array $toolResults): array\", \"line\": 55}, {\"declaration\": \"protected function settleAbandonedToolCalls(array $messages, bool $exceptLatestAssistantTurn = false): array\", \"line\": 78}, {\"declaration\": \"protected function latestAssistantTurnIndex(array $messages): int\", \"line\": 138}, {\"declaration\": \"protected function pendingApprovalsFor(Collection $toolCalls, Collection $approvals): Collection\", \"line\": 154}], \"url\": \"https://raw.githubusercontent.com/laravel/ai/6837b4c557f67e04e8a13d882fe7724032278c27/src/Gateway/Concerns/HandlesToolApprovals.php\"}, {\"path\": \"@plan/artifacts/implementation/P1.2/probe/vendor/laravel/ai/src/Responses/Data/TextUsage.php\", \"public_signatures\": [\"public function __construct(\\n        int $inputTokens = 0,\\n        int $outputTokens = 0,\\n        public ?int $cacheReadInputTokens = null,\\n        public ?int $cacheWriteInputTokens = null,\\n        public ?int $reasoningTokens = null,\\n    )\", \"public function uncachedInputTokens(): int\", \"public function add(TextUsage $usage): TextUsage\", \"public function toArray(): array\"], \"sha256\": \"f23fab9d7c81c020fc6cf3f56c159ef796a85b749c18e4284b25e0285d7d0462\", \"symbols\": [{\"declaration\": \"public function __construct(\", \"line\": 14}, {\"declaration\": \"public static function fromArray(array $data): self\", \"line\": 29}, {\"declaration\": \"public function uncachedInputTokens(): int\", \"line\": 43}, {\"declaration\": \"public function add(TextUsage $usage): TextUsage\", \"line\": 51}, {\"declaration\": \"protected static function sum(?int $a, ?int $b): ?int\", \"line\": 65}, {\"declaration\": \"public function toArray(): array\", \"line\": 73}], \"url\": \"https://raw.githubusercontent.com/laravel/ai/6837b4c557f67e04e8a13d882fe7724032278c27/src/Responses/Data/TextUsage.php\"}, {\"path\": \"@plan/artifacts/implementation/P1.2/probe/vendor/laravel/ai/src/Contracts/Tool.php\", \"public_signatures\": [\"public function description(): Stringable|string\", \"public function handle(Request $request): Stringable|string\", \"public function schema(JsonSchema $schema): array\"], \"sha256\": \"736667328fe3846a1f3700738e1ce084b81f3c31ac1fa49e14e480dcdfb75486\", \"symbols\": [{\"declaration\": \"public function description(): Stringable|string;\", \"line\": 15}, {\"declaration\": \"public function handle(Request $request): Stringable|string;\", \"line\": 20}, {\"declaration\": \"public function schema(JsonSchema $schema): array;\", \"line\": 27}], \"url\": \"https://raw.githubusercontent.com/laravel/ai/6837b4c557f67e04e8a13d882fe7724032278c27/src/Contracts/Tool.php\"}, {\"path\": \"@plan/artifacts/implementation/P1.2/probe/vendor/laravel/ai/src/Providers/Provider.php\", \"public_signatures\": [\"public function __construct(\\n        protected Gateway $gateway,\\n        protected array $config,\\n        protected Dispatcher $events)\", \"public function name(): string\", \"public function driver(): string\", \"public function providerCredentials(): array\", \"public function additionalConfiguration(): array\", \"public function withHeaders(array $headers): static\", \"public function __serialize(): array\", \"public function __unserialize(array $data): void\", \"public function __toString(): string\"], \"sha256\": \"7e2c08ac19516d31b571932302ceee1a7eb4e6187f8fd01991ec0fbf939ce766\", \"symbols\": [{\"declaration\": \"public function __construct(\", \"line\": 18}, {\"declaration\": \"public function name(): string\", \"line\": 26}, {\"declaration\": \"public function driver(): string\", \"line\": 34}, {\"declaration\": \"public function providerCredentials(): array\", \"line\": 42}, {\"declaration\": \"public function additionalConfiguration(): array\", \"line\": 52}, {\"declaration\": \"public function withHeaders(array $headers): static\", \"line\": 64}, {\"declaration\": \"protected function dispatchingFailure(Closure $call, Closure $failed): mixed\", \"line\": 84}, {\"declaration\": \"public static function formatProviderAndModelList(self|Lab|array|string $providers, ?string $model = null): array\", \"line\": 98}, {\"declaration\": \"public function __serialize(): array\", \"line\": 124}, {\"declaration\": \"public function __unserialize(array $data): void\", \"line\": 134}, {\"declaration\": \"public function __toString(): string\", \"line\": 150}], \"url\": \"https://raw.githubusercontent.com/laravel/ai/6837b4c557f67e04e8a13d882fe7724032278c27/src/Providers/Provider.php\"}, {\"path\": \"@plan/artifacts/implementation/P1.2/probe/vendor/laravel/ai/src/Providers/AnthropicProvider.php\", \"public_signatures\": [\"public function codeExecutionToolOptions(CodeExecution $codeExecution): array\", \"public function webFetchToolOptions(WebFetch $fetch): array\", \"public function webSearchToolOptions(WebSearch $search): array\", \"public function defaultTextModel(): string\", \"public function cheapestTextModel(): string\", \"public function smartestTextModel(): string\", \"public function fileGateway(): FileGateway\"], \"sha256\": \"cb827e6fe9c254a9f0403e2f7f0091cfca5a556e2ce9776b62925ff32dbd2d5b\", \"symbols\": [{\"declaration\": \"public function codeExecutionToolOptions(CodeExecution $codeExecution): array\", \"line\": 29}, {\"declaration\": \"public function webFetchToolOptions(WebFetch $fetch): array\", \"line\": 37}, {\"declaration\": \"public function webSearchToolOptions(WebSearch $search): array\", \"line\": 50}, {\"declaration\": \"public function defaultTextModel(): string\", \"line\": 71}, {\"declaration\": \"public function cheapestTextModel(): string\", \"line\": 79}, {\"declaration\": \"public function smartestTextModel(): string\", \"line\": 87}, {\"declaration\": \"public function fileGateway(): FileGateway\", \"line\": 95}], \"url\": \"https://raw.githubusercontent.com/laravel/ai/6837b4c557f67e04e8a13d882fe7724032278c27/src/Providers/AnthropicProvider.php\"}], \"lock_sha256\": \"6431509565947866d15bd44055e9054310f8e2bd2d809d2ca6cba41d5b59312f\", \"lockfile\": \"@plan/artifacts/implementation/P1.2/probe/composer.lock\", \"package\": \"laravel/ai\", \"public_api_use\": \"StepTextGateway::generateTextStep and generateStreamStep only; no reflection, vendor patches or internal calls\", \"selected_target_dependency\": false, \"source_commit\": \"6837b4c557f67e04e8a13d882fe7724032278c27\", \"version\": \"v1.3.0\"}"
+    },
+    {
+      "id": "handoff",
+      "title": "P1.4 and P4.2 handoff",
+      "text": "{\"P1.4\": {\"adapter_framework\": null, \"choice\": \"C\", \"compatibility\": \"preserve agentools/sdk, AgenTools namespace, LlmPort::respond, ScenarioRunner, closed 2026-09 wire\", \"core_php\": \">=8.3\", \"dependency_evidence\": \"@plan/artifacts/implementation/P1.2/sdk-source-manifest.json\", \"driver\": \"anthropic-messages\", \"mode\": \"separate-transport\", \"package_namespace\": \"vendor-neutral model-adapter owning directory; private package/FQN chosen by P1.4\", \"sdk_package\": null, \"sdk_version\": null}, \"P4.2\": {\"before_IO\": \"optional unsupported/unknown/expired required evidence fails typed; no fallback into forbidden region; cancellation and incident block override pins\", \"contract_probe\": \"tools/platform_probe_sdk.php\", \"driver\": \"direct Anthropic Messages\", \"optional_unsupported\": [\"audio\", \"image attachments\", \"explicit cache options\", \"opaque continuation\", \"server tools\", \"arbitrary provider options\"], \"production_implemented\": false, \"protocol_version\": \"2026-10-21\", \"public_api_evidence\": [\"https://platform.claude.com/docs/en/api/versioning\", \"https://platform.claude.com/docs/en/api/messages/create\", \"https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview\", \"https://platform.claude.com/docs/en/build-with-claude/streaming\", \"https://platform.claude.com/docs/en/api/errors\", \"https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md\", \"https://platform.claude.com/docs/en/api/overview.md\"], \"required_pending\": [\"implement typed ModelTransport mapping without executing handlers\", \"production HTTP client lock/no-dev boundary\", \"validated JSON Schema dialect and typed provider-option subset\", \"deadline/cancellation during streaming IO and current guard recheck at actual dispatch\", \"raw request-id/model/latency and partial usage normalization\", \"tenant-scoped durable proposal mapping/hash conflict with PG owner\", \"fenced crash/recovery schedules and exactly one runtime loop\", \"stream chunk/backpressure/size bounds and cancellation after partial disclosure\", \"qualification per selected deployment/model/task under separate live scope\"], \"sdk_dependency\": null, \"tests\": \"tools/tests/test_platform_probe_sdk.py\"}}"
+    },
+    {
+      "id": "models",
+      "title": "Unverified candidate model register",
+      "text": "{\"checked_at\": \"2026-10-31T10:19:43.242114+00:00\", \"models\": [{\"account_ref\": null, \"capability_snapshot\": null, \"deployment_ref\": null, \"evidence\": \"source_inspected\", \"live_calls\": 0, \"model_ref\": \"claude-sonnet-5-5\", \"model_revision\": null, \"origin\": \"candidate SDK defaultTextModel source observation, NOT chosen deployment\", \"provider\": \"anthropic\", \"qualification\": \"unverified\", \"region_terms_prices\": null, \"support\": \"unknown\"}], \"pending\": \"Owner-configured deployment/model revision, trusted credentials, region/data/legal/admin/quota/task evaluation and fresh per-capability evidence are mandatory before live routing.\", \"register_kind\": \"unverified-candidate-models\", \"routing_allowed\": false, \"transport\": \"direct Anthropic Messages 2026-10-21\"}"
+    },
+    {
+      "id": "upstream",
+      "title": "Consumed P1.1 result",
+      "text": "{\"head\": \"8c22b5a2f139b5587ff735fb3eb16105420ffe18\", \"inventory\": \"docs/platform/inventory.json#obs.agentools.scenario\", \"limitations\": \"identified/not-run tests and unverified external consumers/provider/live remain pending; historical donor migration dispositions do not bind target\", \"source\": \"Planner get P1.1 result, artifact/receipt-P1.1 metadata; input summary\", \"status\": \"done as source/design inventory\", \"traceability\": \"docs/platform/audit-traceability.json\"}"
+    }
+  ],
+  "claims": [
+    {
+      "id": "laravel-release",
+      "classification": "verified_repo",
+      "statement": "Official latest stable observed 2026-10-31 is v1.3.0, published 2026-10-19; this is an evaluated candidate, not the selected dependency.",
+      "evidence": [
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sources/laravel-release.json",
+          "sha256": "b2fd30a1c6f74396f49aaa971e6e4405210b9f4e3687f1a62be3c45611b64e07"
+        }
+      ]
+    },
+    {
+      "id": "laravel-composer",
+      "classification": "verified_repo",
+      "statement": "Candidate manifest requires PHP ^8.3, Illuminate ^12.0|^13.0, json-schema ^12.62|^13.15; no framework dependency is added to AgenTools core.",
+      "evidence": [
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sources/laravel-composer.json",
+          "sha256": "92d05091559640a086772bafdbc1f154268bd9b543db1cc33c33dbf9c9cdd8ab"
+        }
+      ]
+    },
+    {
+      "id": "anthropic-versioning",
+      "classification": "verified_repo",
+      "statement": "The direct protocol pins anthropic-version 2026-10-21, the current documented version. Generation options removed in this version are not silently sent.",
+      "evidence": [
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sources/anthropic-versioning.html",
+          "sha256": "1f06ce149cedc886bde3293709c98e6c63987cf8ee0a75fc99bc4b7fc6668f08"
+        }
+      ]
+    },
+    {
+      "id": "anthropic-messages",
+      "classification": "verified_repo",
+      "statement": "POST /v1/messages is one model exchange, with separate system instructions, messages, client tool definitions, max_tokens and output_config; no application tool handler is executed by this endpoint.",
+      "evidence": [
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sources/anthropic-messages.html",
+          "sha256": "8e42b7cc726493630e0db619e0dda4443be76e5358c71ce3e1a9a316b9a76250"
+        }
+      ]
+    },
+    {
+      "id": "anthropic-tools",
+      "classification": "verified_repo",
+      "statement": "Client tool_use IDs are replayed as tool_result.tool_use_id. Server tools execute remotely and are excluded from this selected vertical.",
+      "evidence": [
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sources/anthropic-tools.html",
+          "sha256": "f6cf3faf1421aaa323125344a9a7dc122de024559b28424066c2a96694693c24"
+        }
+      ]
+    },
+    {
+      "id": "anthropic-streaming",
+      "classification": "verified_repo",
+      "statement": "SSE documents message_start, content deltas, cumulative message_delta usage, message_stop and in-stream errors. Missing/duplicate terminal are adapter errors, not successful completion.",
+      "evidence": [
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sources/anthropic-streaming.html",
+          "sha256": "5569c03867f710d1a40d46339fbd4f216fe9f99c2bdf2de1c20e259bbc102f98"
+        }
+      ]
+    },
+    {
+      "id": "anthropic-errors",
+      "classification": "verified_repo",
+      "statement": "HTTP errors and post-200 stream errors are distinct; a transport interruption does not prove zero usage or a failed Action.",
+      "evidence": [
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sources/anthropic-errors.html",
+          "sha256": "ddc4fff6d6f79bef67311c0a694d95f53583f9453930e0fee2273779613602a5"
+        }
+      ]
+    },
+    {
+      "id": "sdk-public-step",
+      "classification": "verified_repo",
+      "statement": "Exact v1.3.0 StepTextGateway exposes public generateTextStep and generateStreamStep. The HTTP fake experiment extracts toolu_stable with zero handler invocations and exactly one HTTP request.",
+      "evidence": [
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sdk-source-manifest.json",
+          "sha256": "13e193aeb577c0e3a59726ce9b975e34f513c92ac8561885d4b07d799a32b506"
+        },
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sdk-proposal.json",
+          "sha256": "180db952011ea3618f7f99f2523d41ebf4f4de31e4cd31570ac6f384d0c302f6"
+        },
+        {
+          "path": "@plan/artifacts/implementation/P1.2/probe/sdk_observation.php",
+          "sha256": "7ea3003de2b1810495de5b3e3dbe759a0c80c3bb11b9f6a7227c1085d3472ffc",
+          "symbol": "AnthropicGateway::generateTextStep"
+        }
+      ]
+    },
+    {
+      "id": "sdk-terminal-loss",
+      "classification": "verified_repo",
+      "statement": "Complete, missing-terminal and duplicate-terminal scripted streams all return the same normalized event types and finish=stop from public generateStreamStep. Terminal presence/count cannot be recovered from these normalized outputs. This disqualifies A for required streaming without replacing the streaming path or inspecting internal/vendor APIs.",
+      "evidence": [
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sdk-complete.json",
+          "sha256": "5da46c3be5626ac07b6a6e0d119d82d1366e0b2d53ba3dfde6c158e72c5acc13"
+        },
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sdk-missing_terminal.json",
+          "sha256": "fdbbf9845948ea11c703fa2c4c32a41f06cda4d97a74b488d1373ea5c4136322"
+        },
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sdk-duplicate_terminal.json",
+          "sha256": "73fd894fea877cbf9efc1869ab41a3458c0f0dc8a31f4e14fdf0ea20b0fe8d31"
+        },
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sdk-stream-runs.json",
+          "sha256": "0f03323774590d483d5fbf120eb6ba722946b3fafc2f1469012ad82e5a77e7d2"
+        }
+      ]
+    },
+    {
+      "id": "sdk-usage-loss",
+      "classification": "verified_repo",
+      "statement": "Missing usage normalizes to input/output zero in the candidate. Synchronous raw response allows an adapter to recover absence, so this alone does not disqualify A. Public streaming does not expose equivalent raw terminal proof.",
+      "evidence": [
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sdk-missing_usage.json",
+          "sha256": "55603a0781c1bba3ed704d16e55c4fdd2ce7f82892b6ae2f642ae118b6bff373"
+        },
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sdk-source-manifest.json",
+          "sha256": "13e193aeb577c0e3a59726ce9b975e34f513c92ac8561885d4b07d799a32b506"
+        }
+      ]
+    },
+    {
+      "id": "sdk-durable-recovery",
+      "classification": "unverified",
+      "statement": "SDK approval storage and per-step events do not establish AgenTools fenced durable callbacks, current host permissions, exactly-once proposal mapping or unknown-effect reconciliation. No B durable recovery proof was executed.",
+      "evidence": [
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sdk-source-manifest.json",
+          "sha256": "13e193aeb577c0e3a59726ce9b975e34f513c92ac8561885d4b07d799a32b506"
+        }
+      ]
+    },
+    {
+      "id": "direct-offline-contract",
+      "classification": "verified_repo",
+      "statement": "The standalone probe and repository tests exercise direct wire normalization and fail-closed preconditions with scripted IO only. Execution evidence is indexed in focused-checks.json; no provider, production adapter or durable runtime loop is thereby qualified.",
+      "evidence": [
+        {
+          "path": "tools/platform_probe_sdk.php",
+          "sha256": "320da0a49bdb9b882e2971080d314dee70c770972b90318ab23946f4f0b3a59b",
+          "symbol": "prepare,normalize,stream,select"
+        },
+        {
+          "path": "tools/tests/test_platform_probe_sdk.py",
+          "sha256": "0efcdfda56186842fc872a18246d0541803e6858148f759b914dcb18c0847271",
+          "symbol": "SelectionTests,DirectContractTests,BeforeIOTests,StreamFaultTests"
+        }
+      ]
+    },
+    {
+      "id": "core-compatibility",
+      "classification": "verified_repo",
+      "statement": "Existing agentools/sdk PHP >=8.3, LlmPort::respond(array):array and ScenarioRunner remain unchanged. This item adds research documents and standalone probes only.",
+      "evidence": [
+        {
+          "path": "php/composer.json",
+          "sha256": "e4257bfb8d748df5e5e4a2007be75ae7aaaedf9fc938d1222a67ff353c8459df"
+        },
+        {
+          "path": "php/src/Contracts/LlmPort.php",
+          "sha256": "6bc4e8b468db6f173db64f5014a5ab54bc03b3fffa2c5c6b262b0ce9e206e150",
+          "symbol": "respond"
+        },
+        {
+          "path": "php/src/Scenario/ScenarioRunner.php",
+          "sha256": "9d7a030fb48b7d53c713d4dea80ac3c8d1d735aca5ac060c623724506885603c",
+          "symbol": "run"
+        }
+      ]
+    },
+    {
+      "id": "choice-C",
+      "classification": "proposal",
+      "statement": "Select direct Anthropic Messages protocol with AgenTools as sole future durable loop owner. SDK package/version are null. P1.4 owns package naming and P4.2 owns the actual driver implementation.",
+      "evidence": [
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sdk-stream-runs.json",
+          "sha256": "0f03323774590d483d5fbf120eb6ba722946b3fafc2f1469012ad82e5a77e7d2"
+        }
+      ]
+    },
+    {
+      "id": "anthropic-structured",
+      "classification": "verified_repo",
+      "statement": "Native JSON output uses output_config.format type=json_schema; model-specific schema restrictions, refusals and truncation require explicit handling.",
+      "evidence": [
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sources/anthropic-structured.md",
+          "sha256": "8631740741153622db77145c666df87e3b9dec96363eb42cc8892519ec691a3e"
+        }
+      ]
+    },
+    {
+      "id": "anthropic-auth",
+      "classification": "verified_repo",
+      "statement": "Direct authentication and workspace scope must be resolved from trusted tenant/account credential refs. x-api-key remains documented for workspace-scoped API keys; no secret is read by this probe.",
+      "evidence": [
+        {
+          "path": "@plan/artifacts/implementation/P1.2/sources/anthropic-auth.md",
+          "sha256": "99fb4877823260f12cd7a18ffc6891f00ae2a8df4e84cade7bc1d1c14ee65596"
+        }
+      ]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "P12-TRANSPORT-C",
+      "status": "accepted",
+      "decision": "Select direct Anthropic Messages 2026-10-21 with AgenTools-owned loop; SDK package/version null.",
+      "rationale": "Required raw stream terminal/error semantics remain observable without replacing SDK streaming or creating another loop; no dependency or schema changes in current SDK.",
+      "evidence_refs": [
+        "choice-C",
+        "sdk-public-step",
+        "sdk-terminal-loss",
+        "sdk-durable-recovery",
+        "anthropic-streaming",
+        "core-compatibility"
+      ]
+    }
+  ],
+  "limitations": [
+    "This is a recorded transport selection and offline contract evidence, not an implemented ModelTransport, durable runtime loop, provider support guarantee or production readiness.",
+    "loop_proven remains false. AgenTools durable storage, confirmation, CAS/fencing, effect reconciliation and delivery/usage deduplication belong to later owners and were not executed here.",
+    "Required transport features remain required for both read and write. Optional restrictions describe the selected initial driver surface, not global Anthropic inability.",
+    "Probe JSON schema validation is intentionally a bounded fixture subset; full supported dialect validation and real cancellation during IO remain P4.2 work.",
+    "CapabilitySnapshot in tests is synthetic. No model/account/deployment/legal/region/price/quality qualification was obtained; unknown/expired evidence must not route real requests.",
+    "SDK v1.3.0 isolated install is research-only, not a target pin. Donor v0.6.8 is not installed or inherited. A could be reconsidered only after exact public streaming boundary evidence changes.",
+    "Perplexity researcher was unavailable before execution; official primary sources were retrieved directly. Initial standalone SDK streaming setup needed ramsey/uuid; isolated dependency repaired and failure evidence retained.",
+    "Acceptance V1-V4 are coordinator-owned and not run by executor. The focused-checks.json records only actual focused commands; no per-V PASS receipt is fabricated."
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "id": "schema.38-invocation-fallback",
+  "definition": "invocation_identity",
+  "data": {
+    "id": {
+      "tenant_id": "tenant-a",
+      "kind": "invocation",
+      "id": "invocation-2"
+    },
+    "run_id": {
+      "tenant_id": "tenant-a",
+      "kind": "run",
+      "id": "run-1"
+    },
+    "parent_invocation_id": {
+      "tenant_id": "tenant-a",
+      "kind": "invocation",
+      "id": "invocation-1"
+    },
+    "request_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "request"
+    },
+    "request_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "deadline": "2026-10-31T12:00:00Z"
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

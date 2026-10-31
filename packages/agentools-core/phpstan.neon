@@ -1,0 +1,7 @@
+parameters:
+    bootstrapFiles:
+        - tests/Common/bootstrap.php
+    level: max
+    paths:
+        - src
+        - tests

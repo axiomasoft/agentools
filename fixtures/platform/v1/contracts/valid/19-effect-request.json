@@ -1,0 +1,28 @@
+{
+  "id": "schema.19-effect-request",
+  "definition": "effect_request",
+  "data": {
+    "action_id": {
+      "tenant_id": "tenant-a",
+      "kind": "action",
+      "id": "dated-action-1"
+    },
+    "effect_id": {
+      "tenant_id": "tenant-a",
+      "kind": "effect",
+      "id": "dated-effect-1"
+    },
+    "effect_key": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "owner_operation_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "owner-operation-1"
+    },
+    "request_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

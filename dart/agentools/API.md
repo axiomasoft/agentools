@@ -45,3 +45,13 @@ See [migration and verification notes](../../docs/audit-fixes-2026-10.md).
 `ScenarioRunner.run(scenario, context, tools, runKey)` preserves the existing
 `IdempotencyKey` derivation from main. Omit the key for an independent invocation.
 Use `runWithId(..., runId: ...)` for the shared JCS identity scheme.
+
+
+### Additive model values
+
+`package:agentools/platform_models.dart` exposes typed ModelRequest, ModelResponse,
+ModelEvent, capability evidence and a proposal-only async ModelTransport. It is a
+separate optional import. Existing synchronous LlmPort.respond and ToolPort-based
+ScenarioRunner stay unchanged; asynchronous results are never cast to respond.
+See [transport contract](../../spec/platform/v1/models/transport.md) and its shared
+PHP/Dart fixtures. This API alone proves no provider support or durable loop.

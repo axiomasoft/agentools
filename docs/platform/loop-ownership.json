@@ -1,0 +1,190 @@
+{
+  "document_kind": "loop-ownership-adr",
+  "status": "recorded",
+  "plan_id": "PLAN2",
+  "checked_at": "2026-10-31T10:19:43.242114+00:00",
+  "decision": "C",
+  "selected_driver": "anthropic-messages",
+  "protocol_version": "2026-10-21",
+  "supported_loop_mode": "separate-transport",
+  "loop_owner": "AgenTools Runtime",
+  "loop_proven": false,
+  "runtime_implemented": false,
+  "sdk": {
+    "package": null,
+    "version": null
+  },
+  "alternatives": [
+    {
+      "id": "laravel-ai",
+      "package": "laravel/ai",
+      "version": "1.3.0",
+      "source_commit": "6837b4c557f67e04e8a13d882fe7724032278c27",
+      "source_manifest": "@plan/artifacts/implementation/P1.2/sdk-source-manifest.json",
+      "lockfile": "@plan/artifacts/implementation/P1.2/probe/composer.lock",
+      "lock_sha256": "6431509565947866d15bd44055e9054310f8e2bd2d809d2ca6cba41d5b59312f",
+      "composer_sha256": "2cfaf24fadbd403a4bd0362c4c4a49724558e73b9ece604112c1b3e88f2d684d",
+      "selected": false,
+      "php": "^8.3",
+      "framework": "Illuminate 12/13; json-schema >=12.62 or >=13.15 within respective majors",
+      "support_basis": "official latest stable release, not an assumed LTS promise",
+      "A": "rejected: normalized streaming loses missing/duplicate terminal; public proposal-only API DOES exist",
+      "B": "not qualified: durable fenced pause/resume/callback recovery unknown",
+      "donor_version_pin": false
+    },
+    {
+      "id": "direct-anthropic-messages",
+      "selected": true,
+      "choice": "C",
+      "sdk_package": null,
+      "sdk_version": null,
+      "protocol": "anthropic-version: 2026-10-21",
+      "endpoint": "POST https://api.anthropic.com/v1/messages",
+      "php": ">=8.3",
+      "framework": null,
+      "dependencies": "No new Composer dependency selected; PHP JSON + adapter HTTP port; concrete production HTTP stack/lock is P4.2, not fabricated here",
+      "evidence_tier": "documented + offline executed_contract",
+      "live_qualified": false
+    }
+  ],
+  "source_manifest": "@plan/artifacts/implementation/P1.2/sources.json",
+  "sdk_source_manifest": "@plan/artifacts/implementation/P1.2/sdk-source-manifest.json",
+  "boundaries": {
+    "core": {
+      "php": ">=8.3",
+      "imports": "value objects and ports only",
+      "forbidden": [
+        "Laravel",
+        "laravel/ai",
+        "PDO",
+        "container",
+        "Eloquent",
+        "domain stores"
+      ]
+    },
+    "adapter": {
+      "selected_driver": "anthropic-messages",
+      "mode": "separate-transport",
+      "sdk_dependency": null,
+      "framework_dependency": null,
+      "http_version": "2026-10-21",
+      "automatic_retries": false,
+      "provider_server_tools": false,
+      "credential_scope": "tenant/account/provider/region/workspace scoped trusted ref, resolve only before IO"
+    },
+    "laravel_composition": {
+      "requires_laravel_ai": false,
+      "owns": "bind ModelTransport and host credential/current policy ports",
+      "framework_lock_owner": "P1.4/P6; candidate Illuminate requirements do not constrain direct core"
+    },
+    "read_vertical": "one model proposal -> durable mapping -> guarded read Action -> tool_result -> fresh explicit model exchange -> durable response/usage",
+    "write_vertical": "same transport; proposal durable mapping precedes confirmation; host consent/current permissions/emergency guards/fence precede write; unknown effect reconciles before any retry"
+  },
+  "ownership": {
+    "model_exchange": "adapter: one request -> response/proposals, no effects",
+    "turn_loop": "AgenTools Runtime, exactly one owner; legacy ScenarioRunner/LlmPort path must not execute the same turn",
+    "proposal_mapping": "tenant + invocation + stable provider tool ID, canonical content hash; same ID/different hash conflicts",
+    "effect": "Actions only after durable intent, current host permission, confirmation, emergency guards and fencing",
+    "history": "Chatom owner; platform stores technical refs/checkpoints",
+    "usage": "versioned tenant/invocation identity; null remains unknown; ControLLM metering owner",
+    "admission": "Tariffler owner",
+    "money": "external owner ledger",
+    "delivery": "stable tenant-scoped outbox identity; later durable implementation"
+  },
+  "recovery_boundary": [
+    {
+      "point": "before model IO",
+      "owner": "Runtime/host",
+      "rule": "snapshot pins plus current authorization/admin/emergency guards, quota and deadline; incident block stops further IO"
+    },
+    {
+      "point": "after model reply before proposal map",
+      "owner": "Runtime persistence",
+      "rule": "durably retain response/proposal refs; callback cannot invoke a handler; recovery must not infer missing map means no effect"
+    },
+    {
+      "point": "after proposal map before effect",
+      "owner": "Actions",
+      "rule": "read through guards; write requires confirmation bound to exact canonical input and current permissions/fence"
+    },
+    {
+      "point": "timeout after effect dispatch",
+      "owner": "Actions/external owner",
+      "rule": "unknown separately from failed/success/zero; reconcile by stable effect identity before retry; model fallback never repeats an Action"
+    },
+    {
+      "point": "partial stream disclosure",
+      "owner": "Runtime",
+      "rule": "missing/duplicate terminal or error is interrupted/typed failure; no automatic fallback continuation after disclosure"
+    }
+  ],
+  "evidence": {
+    "sdk_public_proposal": "sdk-public-step",
+    "sdk_terminal_counterexample": "sdk-terminal-loss",
+    "sdk_recovery": "unknown; not executed",
+    "direct": "offline wire-contract only",
+    "durable_loop": "pending P4.1/P4.2/P3/P5/P13",
+    "live": "not_run, separate authorization/scope required"
+  },
+  "handoff": {
+    "P1.4": {
+      "driver": "anthropic-messages",
+      "choice": "C",
+      "mode": "separate-transport",
+      "sdk_package": null,
+      "sdk_version": null,
+      "core_php": ">=8.3",
+      "adapter_framework": null,
+      "package_namespace": "vendor-neutral model-adapter owning directory; private package/FQN chosen by P1.4",
+      "dependency_evidence": "@plan/artifacts/implementation/P1.2/sdk-source-manifest.json",
+      "compatibility": "preserve agentools/sdk, AgenTools namespace, LlmPort::respond, ScenarioRunner, closed 2026-09 wire"
+    },
+    "P4.2": {
+      "driver": "direct Anthropic Messages",
+      "protocol_version": "2026-10-21",
+      "sdk_dependency": null,
+      "public_api_evidence": [
+        "https://platform.claude.com/docs/en/api/versioning",
+        "https://platform.claude.com/docs/en/api/messages/create",
+        "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
+        "https://platform.claude.com/docs/en/build-with-claude/streaming",
+        "https://platform.claude.com/docs/en/api/errors",
+        "https://platform.claude.com/docs/en/build-with-claude/structured-outputs.md",
+        "https://platform.claude.com/docs/en/api/overview.md"
+      ],
+      "contract_probe": "tools/platform_probe_sdk.php",
+      "tests": "tools/tests/test_platform_probe_sdk.py",
+      "production_implemented": false,
+      "required_pending": [
+        "implement typed ModelTransport mapping without executing handlers",
+        "production HTTP client lock/no-dev boundary",
+        "validated JSON Schema dialect and typed provider-option subset",
+        "deadline/cancellation during streaming IO and current guard recheck at actual dispatch",
+        "raw request-id/model/latency and partial usage normalization",
+        "tenant-scoped durable proposal mapping/hash conflict with PG owner",
+        "fenced crash/recovery schedules and exactly one runtime loop",
+        "stream chunk/backpressure/size bounds and cancellation after partial disclosure",
+        "qualification per selected deployment/model/task under separate live scope"
+      ],
+      "optional_unsupported": [
+        "audio",
+        "image attachments",
+        "explicit cache options",
+        "opaque continuation",
+        "server tools",
+        "arbitrary provider options"
+      ],
+      "before_IO": "optional unsupported/unknown/expired required evidence fails typed; no fallback into forbidden region; cancellation and incident block override pins"
+    }
+  },
+  "limitations": [
+    "This is a recorded transport selection and offline contract evidence, not an implemented ModelTransport, durable runtime loop, provider support guarantee or production readiness.",
+    "loop_proven remains false. AgenTools durable storage, confirmation, CAS/fencing, effect reconciliation and delivery/usage deduplication belong to later owners and were not executed here.",
+    "Required transport features remain required for both read and write. Optional restrictions describe the selected initial driver surface, not global Anthropic inability.",
+    "Probe JSON schema validation is intentionally a bounded fixture subset; full supported dialect validation and real cancellation during IO remain P4.2 work.",
+    "CapabilitySnapshot in tests is synthetic. No model/account/deployment/legal/region/price/quality qualification was obtained; unknown/expired evidence must not route real requests.",
+    "SDK v1.3.0 isolated install is research-only, not a target pin. Donor v0.6.8 is not installed or inherited. A could be reconsidered only after exact public streaming boundary evidence changes.",
+    "Perplexity researcher was unavailable before execution; official primary sources were retrieved directly. Initial standalone SDK streaming setup needed ramsey/uuid; isolated dependency repaired and failure evidence retained.",
+    "Acceptance V1-V4 are coordinator-owned and not run by executor. The focused-checks.json records only actual focused commands; no per-V PASS receipt is fabricated."
+  ]
+}

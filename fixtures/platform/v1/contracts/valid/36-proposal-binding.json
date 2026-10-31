@@ -1,0 +1,27 @@
+{
+  "id": "schema.36-proposal-binding",
+  "definition": "proposal_binding",
+  "data": {
+    "proposal_id": {
+      "tenant_id": "tenant-a",
+      "kind": "proposal",
+      "id": "proposal-1"
+    },
+    "action_id": {
+      "tenant_id": "tenant-a",
+      "kind": "action",
+      "id": "dated-action-1"
+    },
+    "input_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "confirmation_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "saved-confirmation-1"
+    }
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

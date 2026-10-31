@@ -1,0 +1,13 @@
+{
+  "name": "agentools/private-platform-no-dev-fixture",
+  "description": "Local production closure smoke fixture; never published.",
+  "license": "proprietary",
+  "repositories": [
+    {"type": "path", "url": "../../../agentools-core", "options": {"symlink": false, "versions": {"agentools/platform-core": "dev-main"}}},
+    {"type": "path", "url": "../..", "options": {"symlink": false, "versions": {"agentools/platform-testing": "dev-main"}}}
+  ],
+  "require": {"php": ">=8.3", "agentools/platform-core": "dev-main"},
+  "require-dev": {"agentools/platform-testing": "dev-main"},
+  "config": {"allow-plugins": false, "platform": {"php": "8.3.0"}},
+  "scripts": {"test": "@php check.php"}
+}

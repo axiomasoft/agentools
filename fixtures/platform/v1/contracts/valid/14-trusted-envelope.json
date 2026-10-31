@@ -1,0 +1,71 @@
+{
+  "id": "schema.14-trusted-envelope",
+  "definition": "trusted_envelope",
+  "data": {
+    "tenant_ref": "tenant-a",
+    "actor_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "actor-a"
+    },
+    "acting_as_ref": null,
+    "subject_ref": null,
+    "purpose": "assist.read",
+    "locale": "en-US",
+    "source": {
+      "kind": "host.message",
+      "event_id": "event-1",
+      "payload_hash": "sha-256:139bff32a9694c5213fe5ac1514d1a3a462f5b7b0f8e79d06ae622b4f11cc6db"
+    },
+    "assistant_instance_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "instance",
+      "id": "instance-1"
+    },
+    "assistant_session_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "session",
+      "id": "session-1"
+    },
+    "conversation_ref": null,
+    "education_session_ref": null,
+    "realtime_session_ref": null,
+    "correlation_id": "correlation-1",
+    "traceparent": null,
+    "consent_ref": null,
+    "authorization_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "authorization-1"
+    },
+    "policy_versions": {
+      "authorization": "policy-1"
+    },
+    "context": {
+      "snapshot_ref": {
+        "tenant_id": "tenant-a",
+        "kind": "ref",
+        "id": "snapshot-1"
+      },
+      "revision": 1,
+      "content_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "scope_hash": "sha-256:98bf1b3bdcc7be4448ab8ba2dc983968f08162ed304409b0e15166ece0a15dbf"
+    },
+    "capability": "read",
+    "retention_policy_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "retention-1"
+    },
+    "residency_policy_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "residency-1"
+    }
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

@@ -5,7 +5,10 @@ parameters:
         - testkit
         - reference
         - tests
+    scanDirectories:
+        - ../packages/agentools-core/src
     scanFiles:
+        - ../packages/agentools-core/tests/Common/Harness.php
         - conformance/HarnessToolPort.php
     excludePaths:
         - reference/conformance/adapter.php

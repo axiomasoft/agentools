@@ -1,0 +1,44 @@
+{
+  "id": "schema.15-normalized-response",
+  "definition": "normalized_response",
+  "data": {
+    "response_id": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "response-1"
+    },
+    "version": 1,
+    "turn_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "turn",
+      "id": "turn-1"
+    },
+    "run_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "run",
+      "id": "run-1"
+    },
+    "display_text_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "text-1"
+    },
+    "speakable_text_ref": null,
+    "citations": [],
+    "artifact_refs": [],
+    "action_refs": [],
+    "interactive_commands": [],
+    "memory_candidates": [],
+    "validated_session_patch": null,
+    "provenance": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "provenance-1"
+    }
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}

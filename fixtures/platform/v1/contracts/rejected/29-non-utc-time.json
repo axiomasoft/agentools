@@ -1,0 +1,12 @@
+{
+  "id": "schema.29-non-utc-time",
+  "definition": "timestamp",
+  "data": {
+    "at": "2026-10-31T12:00:00+00:00"
+  },
+  "expect": {
+    "valid": false,
+    "reason_code": "invalid_input"
+  },
+  "guards": []
+}

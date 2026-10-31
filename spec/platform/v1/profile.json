@@ -1,0 +1,58 @@
+{
+  "revision": "platform/v1",
+  "dated_protocol_revision": "2026-09",
+  "schema": "urn:agentools:platform:v1:contracts",
+  "scope_rules": [
+    "Every nested typed reference has the outer tenant; IDs never grant access.",
+    "ExecutionContext is constructed only through a trusted server HostAuthorization port after authentication/session/purpose checks. No from-array constructor.",
+    "Owners recheck current authorization, consent and emergency policy at write/disclosure; pins do not grant rights.",
+    "Unknown cannot become failed/completed/cancelled without trusted resolution evidence.",
+    "UTC timestamps use Z, valid calendar dates, no implicit current clock; normalize trailing fractional zeros."
+  ],
+  "canonical_hash": {
+    "algorithm": "SHA-256",
+    "canonicalization": "existing RFC 8785 JCS through CanonicalJson port",
+    "envelope": [
+      "revision",
+      "tenant_id",
+      "domain",
+      "payload"
+    ],
+    "revision_literal": "platform/v1",
+    "source_payload_fields": [
+      "input_ref",
+      "content_hash",
+      "conversation_ref",
+      "message_ref",
+      "utterance_ref"
+    ],
+    "transport_timestamps": "Not accepted in the stable source payload schema.",
+    "numeric_rule": "Cross-language integers are bounded to 2^53-1; no float IDs/versions.",
+    "action_request_hash_fields": [
+      "definition",
+      "origin_ref",
+      "proposal_id",
+      "idempotency_key",
+      "input_ref",
+      "input_hash",
+      "scope_hash",
+      "deadline"
+    ]
+  },
+  "source_identity": [
+    "tenant",
+    "source.kind",
+    "source.event_id",
+    "assistant_instance"
+  ],
+  "proposal_identity": "Persist provider proposal ID or normalized ordinal once; never regenerate on retry.",
+  "effect_identity": "Keep dated Action/effect IDs and persisted owner operation ref; effect_key is tenant/action/ordinal bound.",
+  "source_conflict_alias": {
+    "SOURCE_PAYLOAD_CONFLICT": "integrity_conflict"
+  },
+  "limitations": [
+    "Value/schema contracts and pure reducers only; no store, transaction, effect execution, runtime loop or external owner implementation.",
+    "Full immutable profile publication and all IO adapters remain their owning tasks.",
+    "No change to dated ActionStatus, existing SDK key derivations or PHP/Dart API."
+  ]
+}

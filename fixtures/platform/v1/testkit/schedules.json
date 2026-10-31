@@ -1,0 +1,20 @@
+{
+  "revision": "testkit-schedule/v1",
+  "interleaving": [
+    "a",
+    "b",
+    "a"
+  ],
+  "durable_boundary": [
+    "before_commit",
+    "after_commit"
+  ],
+  "external_boundary": [
+    "before_external",
+    "after_external"
+  ],
+  "disclosure_boundary": [
+    "before_disclosure",
+    "after_disclosure"
+  ]
+}

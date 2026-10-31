@@ -1,0 +1,20 @@
+{
+  "id": "schema.20-public-error",
+  "definition": "platform_error",
+  "data": {
+    "code": "effect_unknown",
+    "retry_class": "status_lookup",
+    "certainty": "unknown",
+    "public_message_key": "agentools.platform.effect_unknown",
+    "trace_ref": {
+      "tenant_id": "tenant-a",
+      "kind": "ref",
+      "id": "trace-1"
+    }
+  },
+  "expect": {
+    "valid": true,
+    "reason_code": null
+  },
+  "guards": []
+}
