@@ -5,6 +5,6 @@
     <file>../Runtime/IntakeTest.php</file>
     <file>../Concurrency/ClaimsOutboxTest.php</file>
     <file>../Actions/ActionJournalTest.php</file>
-    <file>IsolationRetentionTest.php</file>
+    <file>IsolationRetentionTest.php</file><file>DerivedPayloadTest.php</file>
   </testsuite></testsuites>
 </phpunit>

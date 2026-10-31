@@ -76,6 +76,11 @@ final readonly class FileEncryptedPayloadStore implements EncryptedPayloadStore
             if (is_file($path) && !unlink($path)) {
                 throw new StorageFailure();
             }
+            // Writes killed before rename still belong to this exact handle. SQL
+            // reserves purge before entering this backend; the handle lock excludes
+            // a concurrent writer. Do not infer ownership of legacy write-* files.
+            $this->purgeStagedWrites($path);
+            $this->syncDirectory();
         });
     }
 
@@ -146,17 +151,16 @@ final readonly class FileEncryptedPayloadStore implements EncryptedPayloadStore
 
     private function write(string $path, string $bytes): void
     {
-        $temporary=tempnam($this->root,'write-');
-        if ($temporary===false) {
-            throw new StorageFailure();
-        }
+        // Keep the target's identity even if the process dies before rename.
+        // A global write-* name cannot be associated with its SQL payload/hold.
+        $temporary=$path.'.write-'.bin2hex(random_bytes(16));
         $file=null;
         try {
-            if (!chmod($temporary,0600)) {
+            $file=fopen($temporary,'x+b');
+            if ($file===false || !chmod($temporary,0600)) {
                 throw new StorageFailure();
             }
-            $file=fopen($temporary,'wb');
-            if ($file===false || fwrite($file,$bytes)!==strlen($bytes) || !fflush($file) || !fsync($file)) {
+            if (fwrite($file,$bytes)!==strlen($bytes) || !fflush($file) || !fsync($file)) {
                 throw new StorageFailure();
             }
             fclose($file);
@@ -164,6 +168,9 @@ final readonly class FileEncryptedPayloadStore implements EncryptedPayloadStore
             if (!rename($temporary,$path)) {
                 throw new StorageFailure();
             }
+            // fsync(file) alone does not make the new directory entry durable.
+            // In particular the purge tombstone must survive before unlinking ciphertext.
+            $this->syncDirectory();
         } finally {
             if (is_resource($file)) {
                 fclose($file);
@@ -171,6 +178,37 @@ final readonly class FileEncryptedPayloadStore implements EncryptedPayloadStore
             if (is_file($temporary)) {
                 unlink($temporary);
             }
+        }
+    }
+
+    private function purgeStagedWrites(string $path): void
+    {
+        foreach ([$path.'.write-*', $path.'.purged.write-*'] as $pattern) {
+            $files=glob($pattern);
+            if ($files===false) {
+                throw new StorageFailure();
+            }
+            foreach ($files as $file) {
+                if (preg_match('/\.write-[a-f0-9]{32}\z/', $file)!==1
+                    || is_link($file) || !is_file($file) || !unlink($file)) {
+                    throw new StorageFailure();
+                }
+            }
+        }
+    }
+
+    private function syncDirectory(): void
+    {
+        $directory=fopen($this->root,'r');
+        if ($directory===false) {
+            throw new StorageFailure();
+        }
+        try {
+            if (!fsync($directory)) {
+                throw new StorageFailure();
+            }
+        } finally {
+            fclose($directory);
         }
     }
 }
