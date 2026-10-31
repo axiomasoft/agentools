@@ -11,7 +11,7 @@ use AgenToolsPlatform\Postgres\Runtime\{Connection, RepositoryContext, StorageFa
 
 final readonly class IntakeRepository
 {
-    public function __construct(private RepositoryContext $environment)
+    public function __construct(private RepositoryContext $environment, private ?IntakeAdmission $admission = null)
     {
     }
 
@@ -29,6 +29,7 @@ final readonly class IntakeRepository
             'event' => SourceKey::event($input->source)];
         $db = $this->environment->db;
         return $db->transaction(function () use ($db, $input, $snapshot, $context, $identity, $receipt): AcceptedTurn {
+            $this->admission?->assertCurrent($db, $input);
             $session = $db->row('SELECT instance_id FROM ' . $db->table('sessions') . ' WHERE tenant_id=:tenant AND id=:session',
                 ['tenant' => $identity['tenant'], 'session' => $context->session->value]);
             if ($session === null || Connection::text($session, 'instance_id') !== $input->source->instance->value) {

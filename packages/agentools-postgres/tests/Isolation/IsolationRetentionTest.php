@@ -380,9 +380,9 @@ final class IsolationRetentionTest extends TestCase
             $this->awaitExpiry($payload->retentionUntil);
             self::assertFalse($this->scalar("SELECT platform_payload_unresolved('tenant-alpha','legacy')"));
             $db->execute('UPDATE ' . $db->table('payload_refs') . ' SET purge_pending_at=clock_timestamp(),purge_token=:token,version=version+1', ['token'=>str_repeat('a',64)]);
-            self::assertSame(['0005_delivery_resolution.sql'], $migrator->migrate());
+            self::assertSame(['0005_delivery_resolution.sql', '0006_delivery_claims.sql'], $migrator->migrate());
             self::assertTrue($this->scalar("SELECT platform_payload_unresolved('tenant-alpha','legacy')"));
-            self::assertSame($history, $this->scalar("SELECT jsonb_object_agg(version,checksum)::text FROM platform_migrations WHERE version<>'0005_delivery_resolution.sql'"));
+            self::assertSame($history, $this->scalar("SELECT jsonb_object_agg(version,checksum)::text FROM platform_migrations WHERE version NOT IN ('0005_delivery_resolution.sql','0006_delivery_claims.sql')"));
             self::assertSame([], $migrator->migrate());
             $this->fails(ContractViolation::class, fn () => $repo->purge($ctx, $payload->ref));
             self::assertCount(0, $this->vault->deletions, 'Legacy reservation must recheck receipts before external IO');

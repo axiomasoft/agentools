@@ -1,5 +1,8 @@
 # AgenTools
 
+Chatom owner integration is saved on Git branch `integration/chatom-durable-delivery`.
+See the [Git handoff and continuation prompt](CHATOM-INTEGRATION-HANDOFF.md) before integrating it with PLAN2.
+
 Protocol-first agent + tools + scenarios for business applications: a normative
 specification aligned with Model Context Protocol (MCP) ideas, plus native PHP and
 Dart SDKs verified by shared conformance fixtures.

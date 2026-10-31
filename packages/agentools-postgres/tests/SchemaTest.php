@@ -124,7 +124,7 @@ final class SchemaTest extends TestCase
 
     public function testCleanInstallAndReapply(): void
     {
-        self::assertSame(5, (int) $this->scalar('SELECT count(*) FROM platform_migrations'));
+        self::assertSame(6, (int) $this->scalar('SELECT count(*) FROM platform_migrations'));
         self::assertSame([], $this->migrator->migrate());
         $this->seed();
         self::assertSame('accepted', $this->scalar("SELECT status FROM runs WHERE tenant_id='a' AND id='run'"));
@@ -133,7 +133,7 @@ final class SchemaTest extends TestCase
     public function testCatalogKeysIndexesAndNullability(): void
     {
         $tables = $this->strings("SELECT tablename FROM pg_tables WHERE schemaname=current_schema() AND tablename <> 'platform_migrations'");
-        self::assertCount(22, $tables);
+        self::assertCount(26, $tables);
         foreach ($tables as $table) {
             self::assertSame('tenant_id,id', $this->scalar("SELECT string_agg(a.attname, ',' ORDER BY k.ordinality)
                 FROM pg_constraint c CROSS JOIN LATERAL unnest(c.conkey) WITH ORDINALITY k(attnum,ordinality)
@@ -389,7 +389,7 @@ final class SchemaTest extends TestCase
     {
         $this->seed();
         $this->migrationFiles(function (string $directory): void {
-            file_put_contents($directory . '/0006_fault.sql', 'CREATE TABLE should_rollback(id int); SELECT 1/0;');
+            file_put_contents($directory . '/0007_fault.sql', 'CREATE TABLE should_rollback(id int); SELECT 1/0;');
             try {
                 $this->migrator->migrate($directory);
                 self::fail('Faulted upgrade succeeded');
@@ -398,7 +398,7 @@ final class SchemaTest extends TestCase
             }
         });
         self::assertNull($this->scalar("SELECT to_regclass('should_rollback')"));
-        self::assertSame(5, (int) $this->scalar('SELECT count(*) FROM platform_migrations'));
+        self::assertSame(6, (int) $this->scalar('SELECT count(*) FROM platform_migrations'));
         self::assertSame('accepted', $this->scalar("SELECT status FROM runs WHERE tenant_id='a' AND id='run'"));
         self::assertSame([], $this->migrator->migrate());
     }
@@ -410,6 +410,7 @@ final class SchemaTest extends TestCase
             unlink($directory . '/0003_action_journal.sql');
             unlink($directory . '/0004_payload_lifecycle.sql');
             unlink($directory . '/0005_delivery_resolution.sql');
+            unlink($directory . '/0006_delivery_claims.sql');
             $schema = 'p3_' . bin2hex(random_bytes(12));
             $this->db->createSchema($schema);
             try {
@@ -417,7 +418,7 @@ final class SchemaTest extends TestCase
                 self::assertSame(['0001_intake.sql'], $migrator->migrate($directory));
                 $this->sql("INSERT INTO instances(tenant_id,id,config_ref,config_hash,registry_hash) VALUES ('a','old','code:v1','" . self::HASH . "','" . self::HASH . "')");
                 $before = $this->scalar("SELECT config_ref FROM instances WHERE tenant_id='a' AND id='old'");
-                self::assertSame(['0002_durable_refs.sql', '0003_action_journal.sql', '0004_payload_lifecycle.sql', '0005_delivery_resolution.sql'], $migrator->migrate());
+                self::assertSame(['0002_durable_refs.sql', '0003_action_journal.sql', '0004_payload_lifecycle.sql', '0005_delivery_resolution.sql', '0006_delivery_claims.sql'], $migrator->migrate());
                 self::assertSame($before, $this->scalar("SELECT config_ref FROM instances WHERE tenant_id='a' AND id='old'"));
                 self::assertSame([], $migrator->migrate());
                 $this->db->pdo->beginTransaction();

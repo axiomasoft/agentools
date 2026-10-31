@@ -1,5 +1,10 @@
 # PostgreSQL storage contract
 
+The optional 2026-10-31 isolated Chatom owner candidate adds real immutable
+delivery/source fencing and an encrypted disk backend. Its composition, additive
+migration, evidence and unresolved retention/host boundaries are documented in
+[chatom-delivery.md](chatom-delivery.md). The guarantees below remain in force.
+
 This private adapter stores technical identity, version, journal, checkpoint,
 encrypted payload references and transport state. It does not own Chatom history,
 money, business permissions, consent or model/owner execution. The dated Action
