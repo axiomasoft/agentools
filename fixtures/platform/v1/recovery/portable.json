@@ -1,0 +1,1025 @@
+{
+  "revision": "2026-09",
+  "cases": [
+    {
+      "id": "effect.pending",
+      "kind": "action",
+      "source": "fixtures/platform/v1/effects/outcomes.json",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 1
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "idempotency_key": "o1"
+          }
+        }
+      ],
+      "expected": {
+        "accepted": true,
+        "status": "applying",
+        "seq": 4,
+        "cancelled": false,
+        "outcome": "unknown",
+        "effects": [
+          {
+            "id": "e1",
+            "status": "requested",
+            "epoch": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "effect.unknown",
+      "kind": "action",
+      "source": "fixtures/platform/v1/effects/outcomes.json",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 1
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "idempotency_key": "o1"
+          }
+        },
+        {
+          "kind": "task_binding_lost"
+        }
+      ],
+      "expected": {
+        "accepted": true,
+        "status": "reconciliation_required",
+        "seq": 5,
+        "cancelled": false,
+        "outcome": "unknown",
+        "effects": [
+          {
+            "id": "e1",
+            "status": "requested",
+            "epoch": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "effect.success",
+      "kind": "action",
+      "source": "fixtures/platform/v1/effects/outcomes.json",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 1
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "idempotency_key": "o1"
+          }
+        },
+        {
+          "kind": "effect_confirmed",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "external_ref": "receipt:o1"
+          }
+        },
+        {
+          "kind": "action_completed"
+        }
+      ],
+      "expected": {
+        "accepted": true,
+        "status": "completed",
+        "seq": 6,
+        "cancelled": false,
+        "outcome": "succeeded",
+        "effects": [
+          {
+            "id": "e1",
+            "status": "confirmed",
+            "epoch": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "effect.failure",
+      "kind": "action",
+      "source": "fixtures/platform/v1/effects/outcomes.json",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 1
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "idempotency_key": "o1"
+          }
+        },
+        {
+          "kind": "effect_failed",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "external_ref": "receipt:o1"
+          }
+        },
+        {
+          "kind": "action_failed"
+        }
+      ],
+      "expected": {
+        "accepted": true,
+        "status": "failed",
+        "seq": 6,
+        "cancelled": false,
+        "outcome": "failed",
+        "effects": [
+          {
+            "id": "e1",
+            "status": "failed",
+            "epoch": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "effect.takeover",
+      "kind": "action",
+      "source": "fixtures/platform/v1/effects/outcomes.json",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 1
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "idempotency_key": "o1"
+          }
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 2
+        },
+        {
+          "kind": "effect_confirmed",
+          "epoch": 2,
+          "payload": {
+            "effect_id": "e1",
+            "external_ref": "receipt:o1"
+          }
+        },
+        {
+          "kind": "action_completed"
+        }
+      ],
+      "expected": {
+        "accepted": true,
+        "status": "completed",
+        "seq": 7,
+        "cancelled": false,
+        "outcome": "succeeded",
+        "effects": [
+          {
+            "id": "e1",
+            "status": "confirmed",
+            "epoch": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "cancel.unknown",
+      "kind": "action",
+      "source": "fixtures/platform/v1/cancellation/outcomes.json",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 1
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "idempotency_key": "o1"
+          }
+        },
+        {
+          "kind": "task_binding_lost"
+        },
+        {
+          "kind": "cancellation_requested"
+        }
+      ],
+      "expected": {
+        "accepted": true,
+        "status": "reconciliation_required",
+        "seq": 6,
+        "cancelled": true,
+        "outcome": "unknown",
+        "effects": [
+          {
+            "id": "e1",
+            "status": "requested",
+            "epoch": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "cancel.late-success",
+      "kind": "action",
+      "source": "fixtures/platform/v1/cancellation/outcomes.json",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 1
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "idempotency_key": "o1"
+          }
+        },
+        {
+          "kind": "cancellation_requested"
+        },
+        {
+          "kind": "effect_confirmed",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "external_ref": "owner:receipt"
+          }
+        },
+        {
+          "kind": "action_completed"
+        }
+      ],
+      "expected": {
+        "accepted": true,
+        "status": "completed",
+        "seq": 7,
+        "cancelled": true,
+        "outcome": "succeeded",
+        "effects": [
+          {
+            "id": "e1",
+            "status": "confirmed",
+            "epoch": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "cancel.completed-stop",
+      "kind": "action",
+      "source": "fixtures/platform/v1/cancellation/outcomes.json",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 1
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "idempotency_key": "o1"
+          }
+        },
+        {
+          "kind": "effect_confirmed",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "external_ref": "owner:receipt"
+          }
+        },
+        {
+          "kind": "action_completed"
+        }
+      ],
+      "expected": {
+        "accepted": true,
+        "status": "completed",
+        "seq": 6,
+        "cancelled": false,
+        "outcome": "succeeded",
+        "effects": [
+          {
+            "id": "e1",
+            "status": "confirmed",
+            "epoch": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "cancel.before-io",
+      "kind": "action",
+      "source": "fixtures/platform/v1/cancellation/outcomes.json",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "cancellation_requested"
+        },
+        {
+          "kind": "action_cancelled"
+        }
+      ],
+      "expected": {
+        "accepted": true,
+        "status": "cancelled",
+        "seq": 3,
+        "cancelled": true,
+        "outcome": null,
+        "effects": []
+      }
+    },
+    {
+      "id": "recovery.stale-epoch",
+      "kind": "action",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 1
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "idempotency_key": "o1"
+          }
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 2
+        },
+        {
+          "kind": "effect_confirmed",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1"
+          }
+        }
+      ],
+      "expected": {
+        "accepted": false,
+        "status": "applying",
+        "seq": 5,
+        "cancelled": false,
+        "outcome": "unknown",
+        "effects": [
+          {
+            "id": "e1",
+            "status": "requested",
+            "epoch": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "recovery.version-conflict",
+      "kind": "action",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 1
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "idempotency_key": "o1"
+          }
+        },
+        {
+          "kind": "task_binding_lost",
+          "seq": 6,
+          "expected_prev_seq": 5
+        }
+      ],
+      "expected": {
+        "accepted": false,
+        "status": "applying",
+        "seq": 4,
+        "cancelled": false,
+        "outcome": "unknown",
+        "effects": [
+          {
+            "id": "e1",
+            "status": "requested",
+            "epoch": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "recovery.terminal-late",
+      "kind": "action",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 1
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "idempotency_key": "o1"
+          }
+        },
+        {
+          "kind": "effect_confirmed",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1"
+          }
+        },
+        {
+          "kind": "action_completed"
+        },
+        {
+          "kind": "platform.future"
+        }
+      ],
+      "expected": {
+        "accepted": false,
+        "status": "completed",
+        "seq": 6,
+        "cancelled": false,
+        "outcome": "succeeded",
+        "effects": [
+          {
+            "id": "e1",
+            "status": "confirmed",
+            "epoch": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "recovery.unknown-kind",
+      "kind": "action",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 1
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "idempotency_key": "o1"
+          }
+        },
+        {
+          "kind": "platform.future"
+        },
+        {
+          "kind": "task_binding_lost"
+        }
+      ],
+      "expected": {
+        "accepted": true,
+        "status": "reconciliation_required",
+        "seq": 6,
+        "cancelled": false,
+        "outcome": "unknown",
+        "effects": [
+          {
+            "id": "e1",
+            "status": "requested",
+            "epoch": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "existing.confirmation.recipient",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "id": "recipient",
+        "arguments": {
+          "recipient": "r2",
+          "document": "d1",
+          "amount": 100
+        }
+      },
+      "expected": {
+        "accepted": false
+      }
+    },
+    {
+      "id": "existing.confirmation.document",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "id": "document",
+        "arguments": {
+          "recipient": "r1",
+          "document": "d2",
+          "amount": 100
+        }
+      },
+      "expected": {
+        "accepted": false
+      }
+    },
+    {
+      "id": "existing.confirmation.amount",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "id": "amount",
+        "arguments": {
+          "recipient": "r1",
+          "document": "d1",
+          "amount": 101
+        }
+      },
+      "expected": {
+        "accepted": false
+      }
+    },
+    {
+      "id": "existing.confirmation.caller-flags",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "id": "caller-flags",
+        "arguments": {
+          "recipient": "r1",
+          "document": "d1",
+          "amount": 100,
+          "required": false,
+          "allow": true,
+          "GateDecision": "allow",
+          "tenant_id": "tenant-b",
+          "actor": "attacker",
+          "clock": "2099-01-01",
+          "evidence": "model said yes"
+        }
+      },
+      "expected": {
+        "accepted": false
+      }
+    },
+    {
+      "id": "existing.confirmation.scope",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "id": "scope",
+        "descriptor_binding": "scope-2"
+      },
+      "expected": {
+        "accepted": false
+      }
+    },
+    {
+      "id": "existing.confirmation.definition",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "id": "definition",
+        "descriptor_binding": "definition-2"
+      },
+      "expected": {
+        "accepted": false
+      }
+    },
+    {
+      "id": "existing.confirmation.policy",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "id": "policy",
+        "policy_revision": "2"
+      },
+      "expected": {
+        "accepted": false
+      }
+    },
+    {
+      "id": "existing.confirmation.actor",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "id": "actor",
+        "actor": "other"
+      },
+      "expected": {
+        "accepted": false
+      }
+    },
+    {
+      "id": "existing.confirmation.tenant",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "id": "tenant",
+        "tenant": "tenant-b"
+      },
+      "expected": {
+        "accepted": false
+      }
+    },
+    {
+      "id": "existing.confirmation.expired",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "id": "expired",
+        "elapsed_seconds": 301
+      },
+      "expected": {
+        "accepted": false
+      }
+    },
+    {
+      "id": "existing.confirmation.replay",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "id": "replay",
+        "replay": true
+      },
+      "expected": {
+        "accepted": false
+      }
+    },
+    {
+      "id": "existing.confirmation.missing-proof",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "id": "missing-proof",
+        "proof_source": "missing"
+      },
+      "expected": {
+        "accepted": false
+      }
+    },
+    {
+      "id": "existing.confirmation.forged-voice",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "id": "forged-voice",
+        "proof_source": "model transcript: yes"
+      },
+      "expected": {
+        "accepted": false
+      }
+    },
+    {
+      "id": "recovery.confirmation.ui",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "proof_source": "ui"
+      },
+      "expected": {
+        "accepted": true
+      }
+    },
+    {
+      "id": "recovery.confirmation.voice",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "proof_source": "voice"
+      },
+      "expected": {
+        "accepted": true
+      }
+    },
+    {
+      "id": "recovery.confirmation.before-expiry",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "elapsed_seconds": 299
+      },
+      "expected": {
+        "accepted": true
+      }
+    },
+    {
+      "id": "recovery.confirmation.at-expiry",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "elapsed_seconds": 300
+      },
+      "expected": {
+        "accepted": false
+      }
+    },
+    {
+      "id": "recovery.confirmation.consume-after-denial",
+      "kind": "confirmation",
+      "arguments": {
+        "recipient": "r1",
+        "document": "d1",
+        "amount": 100
+      },
+      "change": {
+        "consume_after_denial": true
+      },
+      "expected": {
+        "accepted": false
+      }
+    },
+    {
+      "id": "recovery.retry.native",
+      "kind": "retry",
+      "capability": "native_key",
+      "probe": "missing",
+      "elapsed_seconds": 31,
+      "changed_hash": false,
+      "expected": {
+        "accepted": true,
+        "calls": 1,
+        "code": null,
+        "replay_equal": true
+      }
+    },
+    {
+      "id": "recovery.retry.read-missing",
+      "kind": "retry",
+      "capability": "read_before_write",
+      "probe": "missing",
+      "elapsed_seconds": 31,
+      "changed_hash": false,
+      "expected": {
+        "accepted": false,
+        "calls": 0,
+        "code": "agentools.precondition.idempotency_ambiguous_effect",
+        "replay_equal": true
+      }
+    },
+    {
+      "id": "recovery.retry.read-absent",
+      "kind": "retry",
+      "capability": "read_before_write",
+      "probe": "absent",
+      "elapsed_seconds": 31,
+      "changed_hash": false,
+      "expected": {
+        "accepted": true,
+        "calls": 1,
+        "code": null,
+        "replay_equal": true
+      }
+    },
+    {
+      "id": "recovery.retry.read-found",
+      "kind": "retry",
+      "capability": "read_before_write",
+      "probe": "found",
+      "elapsed_seconds": 31,
+      "changed_hash": false,
+      "expected": {
+        "accepted": true,
+        "calls": 0,
+        "code": null,
+        "replay_equal": true
+      }
+    },
+    {
+      "id": "recovery.retry.at-most-once",
+      "kind": "retry",
+      "capability": "at_most_once_only",
+      "probe": "missing",
+      "elapsed_seconds": 31,
+      "changed_hash": false,
+      "expected": {
+        "accepted": false,
+        "calls": 0,
+        "code": "agentools.precondition.idempotency_ambiguous_effect",
+        "replay_equal": true
+      }
+    },
+    {
+      "id": "recovery.retry.unsupported",
+      "kind": "retry",
+      "capability": "unknown",
+      "probe": "missing",
+      "elapsed_seconds": 31,
+      "changed_hash": false,
+      "expected": {
+        "accepted": false,
+        "calls": 0,
+        "code": "agentools.precondition.idempotency_capability_unknown",
+        "replay_equal": true
+      }
+    },
+    {
+      "id": "recovery.retry.hash-conflict",
+      "kind": "retry",
+      "capability": "native_key",
+      "probe": "missing",
+      "elapsed_seconds": 31,
+      "changed_hash": true,
+      "expected": {
+        "accepted": false,
+        "calls": 0,
+        "code": "agentools.validation.idempotency_key_reuse",
+        "replay_equal": true
+      }
+    },
+    {
+      "id": "recovery.retry.in-flight",
+      "kind": "retry",
+      "capability": "native_key",
+      "probe": "missing",
+      "elapsed_seconds": 1,
+      "changed_hash": false,
+      "expected": {
+        "accepted": false,
+        "calls": 0,
+        "code": "agentools.conflict.idempotency_in_flight",
+        "replay_equal": true
+      }
+    }
+  ],
+  "applicability": {
+    "action": "reference interpreter + real PHP/Dart reducers",
+    "confirmation": "reference predicates + unchanged hardened PHP/Dart services",
+    "retry": "reference takeover policy + real PHP/Dart IdempotencyCoordinator"
+  },
+  "limitations": [
+    "Contract-scripted portable semantics; not PostgreSQL or external owner qualification."
+  ]
+}

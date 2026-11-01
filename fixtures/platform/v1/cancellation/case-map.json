@@ -1,0 +1,81 @@
+{
+  "subject": "PLAN2.P5.4",
+  "tier": "isolated-postgres",
+  "contract_refs": [
+    "knowledge/rt.states#states",
+    "knowledge/rt.effects-recovery#effects-recovery",
+    "knowledge/root.runbook#runbook"
+  ],
+  "cases": [
+    {
+      "id": "CANCEL-001",
+      "method": "testCancellationWithUnresolvedEffect",
+      "assertions": "Lost owner reply + independent Run/Action/stream cancellation; no fabricated rollback; same-key late reconciliation."
+    },
+    {
+      "id": "V2-P5-4-TTS-POS",
+      "method": "testCompletedEffectSurvivesTtsStop",
+      "assertions": "Completed owner effect survives TTS stop; partial delivery evidence is independent and replayed."
+    },
+    {
+      "id": "V2ALL-CANCEL-POSITIVE",
+      "method": "testIndependentRunActionAndOutputCommands",
+      "assertions": "Independent cancellation commands and terminal Run policy; explicit compensation also required by cancel.explicit-compensation."
+    },
+    {
+      "id": "V2ALL-CANCEL-NEGATIVE",
+      "method": "testInterruptedOutputNeverClaimsWholeDelivery",
+      "assertions": "Unknown acknowledgement remains null, generated units are not delivered units, wrong output binding/fence denied."
+    },
+    {
+      "id": "V2ALL-CANCEL-FAULT",
+      "method": "testCancellationFaultRetainsPartialDelivery",
+      "assertions": "Injected late local effect receipt failure after partial stream interruption; reconciliation/partial receipt survive with one owner write."
+    },
+    {
+      "id": "cancel.manual-atomic",
+      "method": "testManualReceiptAtomicRollback",
+      "assertions": "Manual effect result and operator receipt roll back together on deferred SQL failure, then recover."
+    },
+    {
+      "id": "cancel.manual-cas-replay",
+      "method": "testAuditedManualResolutionCasAndReplay",
+      "assertions": "Stale version, wrong same-epoch target, forged owner receipt and revoked operator denied; successful reason/evidence audited once."
+    },
+    {
+      "id": "cancel.authority-immutable-audit",
+      "method": "testAuthorityTenantVersionAndImmutableAudit",
+      "assertions": "Current authority, tenant, version/epoch and append-only audit/terminal decision guards."
+    },
+    {
+      "id": "cancel.source-closure-unknown",
+      "method": "testSourceClosureLeavesUnknownVisible",
+      "assertions": "Source closure leaves cancelling and unknown effects visible."
+    },
+    {
+      "id": "cancel.explicit-compensation",
+      "method": "testExplicitCompensationRequiresFreshConfirmation",
+      "assertions": "Separate registered Action, new key, fresh consent/confirmation and explicit owner execution; original history preserved."
+    },
+    {
+      "id": "cancel.compensation-guards",
+      "method": "testCompensationPolicyAndUnknownDenied",
+      "assertions": "Unknown original, denied operator, missing fresh proof and revoked owner cannot execute compensation; input traces redacted."
+    },
+    {
+      "id": "cancel.crash-after-commit",
+      "method": "testCrashAfterCancellationCommit",
+      "assertions": "Actual SIGKILL after durable cancellation/audit commit and before response; restart returns original receipt."
+    },
+    {
+      "id": "cancel.competing-commands",
+      "method": "testCompetingCancellation",
+      "assertions": "Two PHP processes overlap on PostgreSQL locks and commit one cancellation/receipt."
+    }
+  ],
+  "limitations": [
+    "Synthetic transport acknowledgements and owner/operator authority fixtures; no real stream/TTS provider qualification.",
+    "Laravel container/HTTP/queue integration remains P6.",
+    "Accounting owners remain external; no automatic release, recharge or compensation."
+  ]
+}

@@ -15,6 +15,12 @@ final class ManualClock
     {
         if ($seconds < 0) { throw new \InvalidArgumentException('Clock must advance monotonically'); }
         $next = (new \DateTimeImmutable($this->instant->value))->add(new \DateInterval('PT' . $seconds . 'S'));
-        $this->instant = new UtcInstant($next->format('Y-m-d\TH:i:s\Z'));
+        $this->instant = new UtcInstant($next->format('Y-m-d\TH:i:s.u\Z'));
+    }
+    public function advanceMicroseconds(int $microseconds): void
+    {
+        if ($microseconds < 0) { throw new \InvalidArgumentException('Clock must advance monotonically'); }
+        $next = (new \DateTimeImmutable($this->instant->value))->modify('+' . $microseconds . ' microseconds');
+        $this->instant = new UtcInstant($next->format('Y-m-d\TH:i:s.u\Z'));
     }
 }

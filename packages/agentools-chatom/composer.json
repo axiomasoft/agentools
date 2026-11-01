@@ -1,0 +1,16 @@
+{
+  "name": "agentools/platform-chatom",
+  "description": "Private explicit Chatom text history and persisted-response composition over the owning platform APIs.",
+  "type": "library",
+  "license": "proprietary",
+  "require": {
+    "php": "^8.4",
+    "agentools/platform-core": "dev-main",
+    "agentools/platform-postgres": "dev-main",
+    "agentools/sdk": "dev-main",
+    "agentools/chatom": "dev-main",
+    "axiomasoft/chatom": "^1.0@RC"
+  },
+  "autoload": {"psr-4": {"AgenToolsPlatform\\Chatom\\": "src/"}},
+  "config": {"allow-plugins": false, "sort-packages": true}
+}

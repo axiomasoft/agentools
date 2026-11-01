@@ -1,0 +1,105 @@
+{
+    "format": "profile-bundle/v1",
+    "owner": {
+        "kind": "tenant",
+        "tenant_id": "tenant-a"
+    },
+    "id": "bundle.support",
+    "version": 8,
+    "compiler": {
+        "id": "profile.compiler",
+        "version": "1",
+        "hash": "sha-256:e996bb0ea465fae70d3e3c66b3b6e02d33d2f1eb76d5958720578b6cf359cc2e"
+    },
+    "definition": {
+        "owner": {
+            "kind": "platform"
+        },
+        "kind": "assistant_definition",
+        "id": "assistant.support",
+        "version": "1",
+        "hash": "sha-256:4c4ed1afbfdaa1e4c3bf7bbb82d730cecb7e384da91eea4f3cc093fd545524d6"
+    },
+    "profile": {
+        "owner": {
+            "kind": "tenant",
+            "tenant_id": "tenant-a"
+        },
+        "kind": "profile",
+        "id": "profile.support",
+        "version": "8",
+        "hash": "sha-256:3adce4b2147fce7d8fb3b0559ff7e7da614b12e872452b9e673c88720102e0fc"
+    },
+    "dependencies": [
+        {
+            "resource": {
+                "owner": {
+                    "kind": "platform"
+                },
+                "kind": "assistant_definition",
+                "id": "assistant.support",
+                "version": "1",
+                "hash": "sha-256:4c4ed1afbfdaa1e4c3bf7bbb82d730cecb7e384da91eea4f3cc093fd545524d6"
+            },
+            "provenance": {
+                "created_by_ref": "code:fixture-author",
+                "validation_ref": "validation:scripted",
+                "evaluation_ref": "evaluation:scripted"
+            }
+        },
+        {
+            "resource": {
+                "owner": {
+                    "kind": "tenant",
+                    "tenant_id": "tenant-a"
+                },
+                "kind": "deployment",
+                "id": "deployment.read",
+                "version": "1",
+                "hash": "sha-256:aee50b18a03c89e4883a5acadf5c8614dd7fd2f111c3b616e1a8d6427edc3e3f"
+            },
+            "provenance": {
+                "created_by_ref": "code:fixture-author",
+                "validation_ref": "validation:scripted",
+                "evaluation_ref": "evaluation:scripted"
+            }
+        },
+        {
+            "resource": {
+                "owner": {
+                    "kind": "tenant",
+                    "tenant_id": "tenant-a"
+                },
+                "kind": "profile",
+                "id": "profile.support",
+                "version": "8",
+                "hash": "sha-256:3adce4b2147fce7d8fb3b0559ff7e7da614b12e872452b9e673c88720102e0fc"
+            },
+            "provenance": {
+                "created_by_ref": "code:fixture-author",
+                "validation_ref": "validation:scripted",
+                "evaluation_ref": "evaluation:scripted"
+            }
+        }
+    ],
+    "compiled": {
+        "effective_fields": {
+            "tone": "concise"
+        },
+        "resolved_restrictions": {
+            "deployment": "deployment.read",
+            "regions": [
+                "RU"
+            ],
+            "tools": [
+                "search"
+            ]
+        }
+    },
+    "provenance": {
+        "created_by_ref": "code:fixture-author",
+        "validation_ref": "validation:scripted",
+        "evaluation_ref": "evaluation:scripted"
+    },
+    "content_hash": "sha-256:77c5bca4509cc9a346fb98bf9fe35149e1c47b329f2b0e163420a52019a9f2f9"
+}

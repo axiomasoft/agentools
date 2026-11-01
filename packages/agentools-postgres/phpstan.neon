@@ -3,3 +3,10 @@ parameters:
     paths:
         - src
         - tests
+    scanDirectories:
+        - ../agentools-core/src
+        - ../../examples/platform/direct-action/src
+    scanFiles:
+        - ../agentools-core/tests/Common/JcsAdapter.php
+        - ../agentools-core/tests/Common/TestHost.php
+        - ../agentools-core/tests/Profiles/Fixture.php

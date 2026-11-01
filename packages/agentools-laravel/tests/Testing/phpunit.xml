@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap.php" colors="false" failOnWarning="true" failOnRisky="true" cacheResult="false">
+ <testsuites><testsuite name="testing-profile"><file>ProfileTest.php</file><file>FaultTest.php</file></testsuite></testsuites>
+</phpunit>

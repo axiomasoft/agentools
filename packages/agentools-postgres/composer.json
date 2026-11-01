@@ -42,7 +42,8 @@
       "python3 tests/Runtime/run.py",
       "python3 tests/Concurrency/run.py",
       "python3 tests/Actions/run.py",
-      "python3 tests/Isolation/run.py --partition payloads"
+      "python3 tests/Isolation/run.py --partition payloads",
+      "python3 tests/Models/run.py"
     ],
     "analyse": "phpstan analyse -c phpstan.neon --no-progress"
   },

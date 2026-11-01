@@ -1,0 +1,46 @@
+{
+    "before_full_check": {
+        "generated_bytes": 16,
+        "pending_payloads": 0,
+        "receipts": 0,
+        "delivered_bytes": 0,
+        "heard_bytes": 0,
+        "confirmed_prefix_bytes": 0,
+        "stopped": false
+    },
+    "after_full_check": {
+        "generated_bytes": 25,
+        "pending_payloads": 1,
+        "receipts": 0,
+        "delivered_bytes": 0,
+        "heard_bytes": 0,
+        "confirmed_prefix_bytes": 0,
+        "stopped": false
+    },
+    "after_delivery": {
+        "generated_bytes": 25,
+        "pending_payloads": 0,
+        "receipts": 1,
+        "delivered_bytes": 25,
+        "heard_bytes": null,
+        "confirmed_prefix_bytes": 0,
+        "stopped": false
+    },
+    "receipt": {
+        "receipt_ref": {
+            "tenant_id": "context-tenant",
+            "kind": "ref",
+            "id": "delivery:disclosure:6ef135955b6cc507c3f752e63575504066036325a31dbd0138316093e322102f"
+        },
+        "payload_ref": {
+            "tenant_id": "context-tenant",
+            "kind": "ref",
+            "id": "disclosure:6ef135955b6cc507c3f752e63575504066036325a31dbd0138316093e322102f"
+        },
+        "hash": "sha-256:8a58649e9597301ff9ae3ffa488a11a03fc56488bbbefd6e6a8035effc741e50",
+        "state": "delivered",
+        "delivered_bytes": 25,
+        "heard_bytes": null,
+        "confirmed_prefix_bytes": 0
+    }
+}

@@ -1,0 +1,80 @@
+{
+  "source": "IdempotencyCoordinator.takeoverDecision invariants; missing probe is ambiguous",
+  "cases": [
+    {
+      "strategy": "native_key",
+      "lookup": "succeeded",
+      "retry": false
+    },
+    {
+      "strategy": "native_key",
+      "lookup": "failed",
+      "retry": false
+    },
+    {
+      "strategy": "native_key",
+      "lookup": "absent",
+      "retry": true
+    },
+    {
+      "strategy": "native_key",
+      "lookup": "unknown",
+      "retry": true
+    },
+    {
+      "strategy": "native_key",
+      "lookup": "unsupported",
+      "retry": true
+    },
+    {
+      "strategy": "read_before_write",
+      "lookup": "succeeded",
+      "retry": false
+    },
+    {
+      "strategy": "read_before_write",
+      "lookup": "failed",
+      "retry": false
+    },
+    {
+      "strategy": "read_before_write",
+      "lookup": "absent",
+      "retry": true
+    },
+    {
+      "strategy": "read_before_write",
+      "lookup": "unknown",
+      "retry": false
+    },
+    {
+      "strategy": "read_before_write",
+      "lookup": "unsupported",
+      "retry": false
+    },
+    {
+      "strategy": "unsupported",
+      "lookup": "succeeded",
+      "retry": false
+    },
+    {
+      "strategy": "unsupported",
+      "lookup": "failed",
+      "retry": false
+    },
+    {
+      "strategy": "unsupported",
+      "lookup": "absent",
+      "retry": false
+    },
+    {
+      "strategy": "unsupported",
+      "lookup": "unknown",
+      "retry": false
+    },
+    {
+      "strategy": "unsupported",
+      "lookup": "unsupported",
+      "retry": false
+    }
+  ]
+}

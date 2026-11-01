@@ -1,0 +1,29 @@
+{
+  "tier": "contract-scripted",
+  "postgres_tier": "isolated-postgres",
+  "postgres": {
+    "testDraftValidatePublishInspect": "profile-admin.lifecycle",
+    "testPublishedImmutableNewDraftVersion": "profile-admin.immutable",
+    "testTypedConflictAndProvenanceRemainDraft": "profile-admin.conflict-provenance",
+    "testCrossTenantAndActorRevocation": "profile-admin.cross-tenant-actor",
+    "testRevokeBetweenAuditAndWrite": "profile-admin.current-revocation",
+    "testAssignmentPinsAndExplicitMigration": "profile-admin.assignment-pins-migration",
+    "testCommandReplayConflictAndCas": "profile-admin.command-cas",
+    "testCurrentEmergencyAndCompatibilityGuards": "profile-admin.emergency-compatibility",
+    "testDeprecateRetire": "profile-admin.deprecate-retire",
+    "testAuditFailureAndUnknownOutcome": "profile-admin.audit-unknown",
+    "testScopedCleanupAndProductionBindings": "profile-admin.scope-production",
+    "testPageDelegatesAndRefreshesAuthorization": "profile-admin.page-current-rights",
+    "testUntrustedFormEnvelopeAndRequiredReason": "profile-admin.untrusted-form"
+  },
+  "shell": {
+    "testProfilePluginSeparateOptIn": "profile-admin.route-opt-in",
+    "testProfileProjectionEscaped": "profile-admin.escaped-conflict"
+  },
+  "limitations": [
+    "Real PHP Filament/Laravel integration and canonical publisher on isolated PostgreSQL; scripted host authorization, provenance, compatibility and audit.",
+    "No browser deployment, live provider, production host/audit store or rollout qualification.",
+    "P2.4 ManualClock fractional-time finding, P3.5 audit/reset uncertainty, P6.5 prepare/dual-dispatch risks and boundary-review gap remain outside this scope. Historical P4.4/P5.2 review limits remain. P7.8 cross-plan reconciliation is pending; this receipt does not implement it.",
+    "D8: no classical mutation testing, mutants or mutation score."
+  ]
+}

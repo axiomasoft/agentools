@@ -1,0 +1,37 @@
+{
+    "id": "history",
+    "kind": "recent",
+    "source_ref": "source:history",
+    "source_version": "v1",
+    "owner_ref": "owner",
+    "trust_class": "untrusted",
+    "classification": "private",
+    "purpose": "support.read",
+    "content_ref": "content:history",
+    "content_hash": "sha-256:642f4c4074e393cb2e4472152b919b36807d7bdd90278dd197e77cdd63b662ba",
+    "expires_at": "2030-01-01T00:00:00Z",
+    "mandatory": true,
+    "priority": 100,
+    "evidence_refs": [],
+    "provenance": {
+        "source_kind": "history",
+        "message_ids": [
+            {
+                "tenant_id": "context-tenant",
+                "kind": "ref",
+                "id": "message:7"
+            }
+        ],
+        "through_turn": {
+            "tenant_id": "context-tenant",
+            "kind": "ref",
+            "id": "turn:7"
+        },
+        "summary_version": "summary:v1",
+        "fresh_at": "2026-11-01T12:00:00.123456Z",
+        "raw_result_ref": null,
+        "tool_id": null,
+        "user_view_ref": null,
+        "audit_view_ref": null
+    }
+}

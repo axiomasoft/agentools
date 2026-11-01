@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap.php" colors="false" failOnWarning="true" failOnRisky="true" cacheResult="false">
+  <testsuites><testsuite name="laravel-composition"><file>ManagedTest.php</file><file>LifecycleTest.php</file></testsuite></testsuites>
+</phpunit>

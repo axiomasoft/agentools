@@ -1,0 +1,25 @@
+{
+    "tenant_id": "context-tenant",
+    "session_id": "session",
+    "correlation": {
+        "trace_id": "trace",
+        "request_id": "request"
+    },
+    "code": "allowed",
+    "links": {
+        "snapshot_ref": {
+            "tenant_id": "context-tenant",
+            "kind": "ref",
+            "id": "snapshot:aac4e50bb1536068d16bbd75501e05f77c4bee275cd24c23020d1a1bef1c8efe"
+        },
+        "decision_ref": {
+            "tenant_id": "context-tenant",
+            "kind": "ref",
+            "id": "decision:disclosure"
+        },
+        "hash": null,
+        "duration_ms": null
+    },
+    "error_code": null,
+    "redacted": true
+}

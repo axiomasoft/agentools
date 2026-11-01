@@ -43,7 +43,7 @@ def main():
                 !class_exists('AgenTools\\Persistence\\PdoPostgresEventStore') ||
                 !class_exists('AgenToolsPlatform\\Postgres\\Payloads\\PayloadRepository') ||
                 !class_exists('AgenToolsPlatform\\Postgres\\Payloads\\JobBoundary') ||
-                count(glob('migrations/*.sql')) !== 4) { exit(1); }
+                count(glob('migrations/*.sql')) !== 12) { exit(1); }
             echo json_encode(['case'=>'packaging.postgres-no-dev','status'=>'passed']);"""
         result = subprocess.run(["php", "-r", code], cwd=target, text=True, capture_output=True, timeout=10)
         sys.stdout.write(result.stdout)

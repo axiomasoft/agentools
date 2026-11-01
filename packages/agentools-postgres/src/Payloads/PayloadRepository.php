@@ -100,37 +100,46 @@ final readonly class PayloadRepository
         if ($prepared === null) {
             throw new ContractViolation(ErrorCode::AccessDenied);
         }
+        $db->assertIdle();
+        $readFailed = false;
         try {
-            $db->assertIdle();
             try {
                 $bytes = $this->store->read($context, $this->handle($ref, $prepared));
             } catch (Throwable) {
+                $readFailed = true;
                 $db->transaction(fn () => $this->audit($context, $ref, 'dereference', 'unknown', $decision));
                 throw new StorageFailure();
             }
-            if (!hash_equals($payload->contentHash->value, 'sha-256:' . hash('sha256', $bytes))) {
-                $db->transaction(fn () => $this->audit($context, $ref, 'dereference', 'integrity_conflict', $decision));
-                throw new IntegrityConflict('Payload content hash conflict');
-            }
-            try {
-                $release = $this->grant($context, $payload, 'dereference');
-            } catch (Throwable) {
-                $db->transaction(fn () => $this->audit($context, $ref, 'dereference', 'denied', null));
-                throw new ContractViolation(ErrorCode::AccessDenied);
-            }
-            $allowed = $db->transaction(function () use ($context, $ref, $prepared, $release): bool {
-                $latest = $this->load($context, $ref, true);
-                $allowed = $latest['readable'] === true && Connection::number($latest, 'version') === Connection::number($prepared, 'version');
-                $this->audit($context, $ref, 'dereference', $allowed ? 'released' : 'denied', $release);
-                return $allowed;
-            });
-            if (!$allowed) {
-                throw new ContractViolation(ErrorCode::AccessDenied);
-            }
-            return $bytes;
         } finally {
-            $this->resetStore();
+            try {
+                $this->resetStore();
+            } catch (StorageFailure $error) {
+                if (!$readFailed) {
+                    $db->transaction(fn () => $this->audit($context, $ref, 'dereference', 'unknown', $decision));
+                }
+                throw $error;
+            }
         }
+        if (!hash_equals($payload->contentHash->value, 'sha-256:' . hash('sha256', $bytes))) {
+            $db->transaction(fn () => $this->audit($context, $ref, 'dereference', 'integrity_conflict', $decision));
+            throw new IntegrityConflict('Payload content hash conflict');
+        }
+        try {
+            $release = $this->grant($context, $payload, 'dereference');
+        } catch (Throwable) {
+            $db->transaction(fn () => $this->audit($context, $ref, 'dereference', 'denied', null));
+            throw new ContractViolation(ErrorCode::AccessDenied);
+        }
+        $allowed = $db->transaction(function () use ($context, $ref, $prepared, $release): bool {
+            $latest = $this->load($context, $ref, true);
+            $allowed = $latest['readable'] === true && Connection::number($latest, 'version') === Connection::number($prepared, 'version');
+            $this->audit($context, $ref, 'dereference', $allowed ? 'released' : 'denied', $release);
+            return $allowed;
+        });
+        if (!$allowed) {
+            throw new ContractViolation(ErrorCode::AccessDenied);
+        }
+        return $bytes;
     }
 
     public function purge(ExecutionContext $context, Ref $ref): void
@@ -169,13 +178,14 @@ final readonly class PayloadRepository
         if ($prepared === null) {
             return;
         }
+        $handles = [$this->handle($ref, $prepared)];
+        $statement = $db->execute('SELECT * FROM ' . $db->table('payload_materializations') . ' WHERE tenant_id=:tenant AND payload_id=:id AND purged_at IS NULL ORDER BY id',
+            ['tenant' => $ref->tenant->value, 'id' => $ref->value]);
+        while (($copy = $statement->fetch(PDO::FETCH_ASSOC)) !== false) {
+            $handles[] = $this->handle(new Ref($ref->tenant, Connection::text($copy, 'id')), $copy);
+        }
+        $purgeFailed = false;
         try {
-            $handles = [$this->handle($ref, $prepared)];
-            $statement = $db->execute('SELECT * FROM ' . $db->table('payload_materializations') . ' WHERE tenant_id=:tenant AND payload_id=:id AND purged_at IS NULL ORDER BY id',
-                ['tenant' => $ref->tenant->value, 'id' => $ref->value]);
-            while (($copy = $statement->fetch(PDO::FETCH_ASSOC)) !== false) {
-                $handles[] = $this->handle(new Ref($ref->tenant, Connection::text($copy, 'id')), $copy);
-            }
             try {
                 foreach ($handles as $handle) {
                     $db->assertIdle();
@@ -183,27 +193,35 @@ final readonly class PayloadRepository
                     $this->store->purge($context, $handle, $operation);
                 }
             } catch (Throwable) {
+                $purgeFailed = true;
                 $db->transaction(fn () => $this->audit($context, $ref, 'purge', 'unknown', $decision));
                 throw new StorageFailure();
             }
-            $release = $this->grant($context, $payload, 'purge');
-            $db->transaction(function () use ($db, $context, $ref, $prepared, $release): void {
-                $row = $this->load($context, $ref, true);
-                if ($row['purged_at'] !== null) {
-                    return;
-                }
-                if (Connection::text($row, 'purge_token') !== Connection::text($prepared, 'purge_token')) {
-                    throw new ContractViolation(ErrorCode::OptimisticConflict);
-                }
-                $db->execute('UPDATE ' . $db->table('payload_refs') . ' SET version=version+1,encrypted_ref=NULL,encryption_key_ref=NULL,purged_at=clock_timestamp()
-                    WHERE tenant_id=:tenant AND id=:id', ['tenant' => $ref->tenant->value, 'id' => $ref->value]);
-                $db->execute('UPDATE ' . $db->table('payload_materializations') . ' SET version=version+1,encrypted_ref=NULL,encryption_key_ref=NULL,purged_at=clock_timestamp()
-                    WHERE tenant_id=:tenant AND payload_id=:id AND purged_at IS NULL', ['tenant' => $ref->tenant->value, 'id' => $ref->value]);
-                $this->audit($context, $ref, 'purge', 'purged', $release);
-            });
         } finally {
-            $this->resetStore();
+            try {
+                $this->resetStore();
+            } catch (StorageFailure $error) {
+                if (!$purgeFailed) {
+                    $db->transaction(fn () => $this->audit($context, $ref, 'purge', 'unknown', $decision));
+                }
+                throw $error;
+            }
         }
+        $release = $this->grant($context, $payload, 'purge');
+        $db->transaction(function () use ($db, $context, $ref, $prepared, $release): void {
+            $row = $this->load($context, $ref, true);
+            if ($row['purged_at'] !== null) {
+                return;
+            }
+            if (Connection::text($row, 'purge_token') !== Connection::text($prepared, 'purge_token')) {
+                throw new ContractViolation(ErrorCode::OptimisticConflict);
+            }
+            $db->execute('UPDATE ' . $db->table('payload_refs') . ' SET version=version+1,encrypted_ref=NULL,encryption_key_ref=NULL,purged_at=clock_timestamp()
+                WHERE tenant_id=:tenant AND id=:id', ['tenant' => $ref->tenant->value, 'id' => $ref->value]);
+            $db->execute('UPDATE ' . $db->table('payload_materializations') . ' SET version=version+1,encrypted_ref=NULL,encryption_key_ref=NULL,purged_at=clock_timestamp()
+                WHERE tenant_id=:tenant AND payload_id=:id AND purged_at IS NULL', ['tenant' => $ref->tenant->value, 'id' => $ref->value]);
+            $this->audit($context, $ref, 'purge', 'purged', $release);
+        });
     }
 
     private function authorize(ExecutionContext $context, Ref $ref): void

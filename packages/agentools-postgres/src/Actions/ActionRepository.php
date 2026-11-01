@@ -143,7 +143,14 @@ final readonly class ActionRepository implements TransactionBoundary
         $this->environment->authorize($context);
         $db = $this->environment->db;
         return $db->transaction(function () use ($db, $context, $action, $expectedDigest): Projection {
-            $this->binding($context, $action);
+            // Direct Actions have no proposal/run binding. Their immutable accepted
+            // submission supplies the same actor/scope authorization boundary.
+            $direct = $db->row('SELECT id FROM ' . $db->table('action_submissions') . '
+                WHERE tenant_id=:tenant AND id=:id AND actor_ref=:actor AND scope_hash=:scope', [
+                    'tenant'=>$action->tenant->value, 'id'=>$action->value,
+                    'actor'=>$context->identity->actorRef->value,
+                    'scope'=>$context->scopeHash($this->environment->hasher)->value]);
+            if ($direct === null) { $this->binding($context, $action); }
             $head = $db->row('SELECT current_seq FROM ' . $db->table('agentools_event_streams') . '
                 WHERE tenant_id=:tenant AND action_id=:action FOR UPDATE', ['tenant' => $action->tenant->value, 'action' => $action->value]);
             if ($head === null) {

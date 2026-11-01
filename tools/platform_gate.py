@@ -29,8 +29,8 @@ SELF_CASES = tuple("GateTests.test_" + name for name in (
     "boundary_production_testing", "boundary_duplicate_owner", "boundary_core_dependency",
     "boundary_autoload_escape", "boundary_transitive_testing", "boundary_namespace_path",
     "boundary_production_source", "contradictory_totals",
-    "sdk_adapter_registry", "model_transport_registry", "platform_registry", "fsm_registry", "testkit_registry", "pg_schema_registry", "pg_intake_registry", "aggregate_preflight",
-    "cli_missing_suite", "cli_wrong_mode", "cli_missing_pg_isolation", "cli_future_commands",
+    "sdk_adapter_registry", "model_transport_registry", "runtime_registry", "read_journey_registry", "action_submit_registry", "confirmation_write_registry", "effect_reconcile_registry", "cancellation_resolution_registry", "write_recovery_registry", "laravel_composition_registry", "platform_definitions_registry", "composition_testing_registry", "filament_registry", "scheduler_registry", "platform_registry", "fsm_registry", "testkit_registry", "pg_schema_registry", "pg_intake_registry", "pg_claims_outbox_registry", "pg_action_journal_registry", "pg_isolation_retention_registry", "aggregate_preflight",
+    "profile_publish_registry", "profile_admin_registry", "profile_merge_registry", "skill_selection_registry", "context_compiler_registry", "history_memory_registry", "context_guards_registry", "cli_missing_suite", "cli_wrong_mode", "cli_missing_pg_isolation", "cli_future_commands",
     "exact_cases", "zero_cases", "skips", "failure", "duplicate_cases", "extra_cases",
     "missing_cases", "mode_mismatch", "tier_mismatch", "unknown_status", "malformed_report",
     "pg_proof_missing", "pg_case_set", "runner_nonzero", "missing_dependency",
@@ -268,7 +268,9 @@ PG_SCHEMA_INPUTS = tuple(f'{POSTGRES}/{path}' for path in (
     'composer.json', 'composer.lock', 'phpunit.xml', 'phpstan.neon', 'vendor/autoload.php',
     'vendor/bin/phpunit', 'src/Migrator.php', 'src/MigrationException.php',
     'migrations/0001_intake.sql', 'migrations/0002_durable_refs.sql', 'migrations/0003_action_journal.sql', 'migrations/0004_payload_lifecycle.sql',
-    'migrations/0005_delivery_resolution.sql',
+    'migrations/0005_delivery_resolution.sql', 'migrations/0006_delivery_claims.sql', 'migrations/0007_action_submissions.sql',
+    'migrations/0008_payload_holds.sql', 'migrations/0009_confirmation.sql', 'migrations/0010_effect_recovery.sql',
+    'migrations/0011_operator_operations.sql', 'migrations/0012_derived_payloads.sql',
     'tests/IsolatedDatabase.php', 'tests/SchemaTest.php', 'tests/run.py',
 )) + ('tools/storage_chaos.py', 'tools/platform_gate.py')
 SUITES[('pg-schema', 'pg-test')] = Suite('P3.1', 'isolated-postgres', 'isolated-postgres',
@@ -337,6 +339,17 @@ PG_PAYLOAD_CASES = (
     'pg-isolation-retention.testResolverFailuresAuditAndRevoke',
     'pg-isolation-retention.testReadPurgeDisclosureFence',
     'pg-isolation-retention.testLegacyPurgeReservationRequiresReceiptResolution',
+    'pg-isolation-retention.testBoundsDoNotReplaceCurrentSourceAuthority',
+    'pg-isolation-retention.testHoldAuthorityCannotCrossSessionsOrEraseItsHistory',
+    'pg-isolation-retention.testHoldsSurviveRestartAndPurgeAllRegisteredCopies',
+    'pg-isolation-retention.testOrphanScanAndCrashAfterPhysicalPurgeReconcileWithoutResurrection',
+    'pg-isolation-retention.testExpiryScanIncludesUnknownDeliveryButCannotAuthorizeItsErasure',
+    'pg-isolation-retention.testParallelPlanDirectActionInputRemainsUnresolvedAndCannotLinkAfterPurge',
+    'pg-isolation-retention.testAllSevenStoresEraseBytesBeforeDurableCompletionAndCannotReopen',
+    'pg-isolation-retention.testEmptyCoverageForeignScopeAndChangedOperationNeverProduceCompletion',
+    'pg-isolation-retention.testHoldAndLostPhysicalDeletionAckReconcileAfterRestart',
+    'pg-isolation-retention.testBoundedCleanupCompletesOnlyAfterAllPayloads',
+    'pg-isolation-retention.testActualProcessCrashBeforeRenameRetainsHandleProvenanceAndPurgeCleansStaging',
 )
 PG_ISOLATION_RETENTION_CASES = PG_SCHEMA_CASES + PG_INTAKE_CASES + PG_CLAIMS_OUTBOX_CASES + PG_ACTION_JOURNAL_CASES + PG_PAYLOAD_CASES
 PG_ISOLATION_RETENTION_INPUTS = PG_ACTION_JOURNAL_INPUTS + tuple(str(p.relative_to(ROOT)) for base in (
@@ -396,6 +409,519 @@ REQUIRED = {
     "doctor": (("platform-spec", "check-spec"), ("read", "e2e"),
                ("platform-durability", "pg-test")),
 }
+
+
+RUNTIME_CASES = (
+    'runtime.bounds-and-serial-only', 'runtime.plan-and-explicit-replacement',
+    'runtime.normalization-and-mapping-integrity', 'runtime.unknown-keeps-null-and-no-dispatch',
+    'runtime.unknown-admission-is-not-admitted',
+    'runtime.pre-provider-refusal-is-known-and-durable', 'runtime.pre-provider-exact-denial-types',
+    'runtime.revocation-during-outbound-is-proven-not-sent',
+    'runtime.provider-uncertainty-including-typed-errors-stays-unknown',
+    'runtime.outbound-crash-does-not-become-refusal-or-resend',
+    'runtime.refusal-persistence-failure-after-outbound-remains-uncertain',
+    'runtime.refusal-persistence-before-outbound-does-not-invent-unknown',
+    'runtime.refusal-does-not-disable-successful-exchanges',
+    'runtime.refusal-replay-rejects-inconsistent-metadata',
+)
+RUNTIME_INPUTS = MODEL_TRANSPORT_INPUTS + tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / CORE / 'src/Runtime', ROOT / CORE / 'src/Budget', ROOT / CORE / 'tests/Runtime')
+    for p in sorted(base.rglob('*.php')))
+SUITES[('runtime', 'test')] = Suite('P4.3', 'unit', 'unit', RUNTIME_CASES,
+    ('php', f'{CORE}/tests/Runtime/advance.php'), RUNTIME_INPUTS)
+PG_MODEL_CASES = (
+    'RUN-005', 'RUN-006', 'V2-P4-3-PROPOSAL-POS', 'V2-P4-3-PROPOSAL-NEG',
+    'V2-P4-3-PROVIDER-POS', 'V2-P4-3-PROVIDER-NEG', 'V2ALL-RUN-POSITIVE',
+    'V2ALL-RUN-NEGATIVE', 'V2ALL-RUN-FAULT', 'pg-models.testSecondHostReadExample',
+    'pg-models.testFencingAndCompetingConnections', 'pg-models.testInvocationAndCostAndErrorBounds',
+    'pg-models.testResultUsageRollback', 'pg-models.testResponseDeliveryRollback',
+    'pg-models.testIdentityAndCurrentPermissionGuards', 'pg-models.testReadContinuationDoesNotReplayAction',
+    'pg-models.testObservedZeroAndMissingCache', 'pg-models.testFractionalDeadlineBoundary',
+    'pg-models.testPreProviderRefusalSurvivesRestartWithoutIntent',
+    'pg-models.testPreProviderRefusalAfterIntentIsKnownFailure',
+    'pg-models.testUnknownCannotBecomePreProviderRefusal',
+    'pg-models.testRefusalCommitFailureAfterIntentRecoversUnknown',
+)
+PG_MODEL_INPUTS = PG_CLAIMS_OUTBOX_INPUTS + RUNTIME_INPUTS + tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / POSTGRES / 'src/Models', ROOT / POSTGRES / 'tests/Models') for p in sorted(base.rglob('*'))
+    if p.is_file() and p.suffix in {'.php', '.py', '.xml', '.md'})
+SUITES[('pg-runtime', 'pg-test')] = Suite('P4.3', 'isolated-postgres', 'isolated-postgres', PG_MODEL_CASES,
+    (sys.executable, '-B', f'{POSTGRES}/tests/Models/run.py'), tuple(dict.fromkeys(PG_MODEL_INPUTS)), requires_pg=True)
+SUITES[('pg-models', 'pg-test')] = SUITES[('pg-runtime', 'pg-test')]
+# Acceptance uses one suite name for its core and isolated PostgreSQL partitions.
+SUITES[('durable-invocation', 'test')] = SUITES[('runtime', 'test')]
+SUITES[('durable-invocation', 'pg-test')] = SUITES[('pg-runtime', 'pg-test')]
+
+
+CONTEXT_READ_CASES = (
+    'context-read.pinned-manifest', 'context-read.mandatory-overflow', 'context-read.optional-pruning',
+    'context-read.current-access-and-expiry', 'context-read.cross-tenant-and-purpose',
+    'context-read.invalid-count-and-output-reserve', 'context-read.trust-and-classification-retained',
+)
+READ_JOURNEY_CASES = (
+    'READ-001', 'READ-ALLOWLIST-NEG', 'READ-DISCLOSURE-NEG', 'READ-RECOVERY-FAULT',
+    'READ-DELIVERY-FAULT', 'READ-DELIVERY-NEG', 'READ-IDENTITY-NEG', 'READ-GUARDS-NEG',
+    'READ-SECOND-HOST', 'READ-EXAMPLE', 'READ-PRIVACY', 'READ-CONTEXT',
+    'READ-F1-NOT-SENT', 'READ-F2-PRE-SEND',
+)
+READ_JOURNEY_INPUTS = tuple(dict.fromkeys(PG_MODEL_INPUTS + tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / 'examples/platform/read-journey', ROOT / 'conformance/platform/read-journey',
+    ROOT / CORE / 'src/Context', ROOT / CORE / 'tests/Context', ROOT / TESTING / 'tests/Journeys')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php', '.py', '.json', '.xml', '.sql', '.md'}) + (
+        f'{TESTING}/composer.json', f'{TESTING}/composer.lock', f'{TESTING}/phpstan.neon',
+        f'{MODEL_ADAPTER}/.gitignore', 'tools/tests/test_platform_gate.py',
+    )))
+SUITES[('context-read', 'test')] = Suite('P4.4', 'unit', 'unit', CONTEXT_READ_CASES,
+    ('php', f'{CORE}/tests/Context/compiler.php'), READ_JOURNEY_INPUTS)
+SUITES[('read-journey', 'e2e')] = Suite('P4.4', 'local-host-e2e', 'local-host-e2e', READ_JOURNEY_CASES,
+    (sys.executable, '-B', 'conformance/platform/read-journey/run.py'), READ_JOURNEY_INPUTS, requires_pg=True)
+
+
+ACTION_SUBMIT_CASES = (
+    'action.outcomes', 'facade.accepted-replay-conflict', 'facade.guards-before-submit',
+    'facade.retry-current-restrictions', 'facade.tenant-and-result-binding',
+    'action.dated-mapping-and-unknown', 'facade.cancel-reconcile-no-effect-loop',
+    'V2ALL-CATALOG-POSITIVE', 'V2ALL-CATALOG-NEGATIVE', 'V2ALL-CATALOG-FAULT',
+    'registry.hash-content-and-policy', 'dart.action.accepted-pending', 'dart.action.known-success',
+    'dart.action.known-failure', 'dart.action.unknown-is-not-failed',
+)
+PG_ACTION_SUBMIT_CASES = (
+    'ACT-SUBMIT-REPLAY', 'ACT-STATUS-DISCLOSURE', 'ACT-SUBMIT-GUARDS',
+    'ACT-SUBMIT-ATOMIC', 'ACT-SUBMIT-PROPOSAL', 'ACT-SUBMIT-RACE',
+    'ACT-SUBMIT-CRASH', 'ACT-STATUS-UNKNOWN', 'ACT-DIRECT-NO-MODEL',
+)
+ACTION_SUBMIT_INPUTS = tuple(dict.fromkeys(PG_ACTION_JOURNAL_INPUTS + tuple(
+    str(p.relative_to(ROOT)) for base in (
+        ROOT / CORE / 'src/Actions', ROOT / CORE / 'tests/Actions',
+        ROOT / 'examples/platform/direct-action', ROOT / 'fixtures/platform/v1/actions')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php', '.py', '.dart', '.json', '.md'})
+    + tuple(str(p.relative_to(ROOT)) for p in sorted((ROOT / POSTGRES / 'migrations').glob('*.sql'))) + (
+        # Keep the owning migration mandatory even if it disappears from discovery.
+        f'{POSTGRES}/migrations/0007_action_submissions.sql',
+        'dart/agentools/.dart_tool/package_config.json', 'dart/agentools/pubspec.lock',
+        'dart/agentools/test/platform/action_submit_test.dart',
+        'dart/agentools/lib/src/journal/action_reducer.dart', 'tools/tests/test_platform_gate.py',
+    )))
+SUITES[('action-submit', 'test')] = Suite('P5.1', 'unit', 'unit', ACTION_SUBMIT_CASES,
+    (sys.executable, '-B', 'examples/platform/direct-action/tests/contract.py'), ACTION_SUBMIT_INPUTS)
+SUITES[('action-submit', 'pg-test')] = Suite('P5.1', 'isolated-postgres', 'isolated-postgres', PG_ACTION_SUBMIT_CASES,
+    (sys.executable, '-B', f'{POSTGRES}/tests/Actions/submit.py'), ACTION_SUBMIT_INPUTS, requires_pg=True)
+
+CONFIRMATION_PORTABLE_NAMES = (
+    'recipient', 'document', 'amount', 'caller-flags', 'scope', 'definition', 'policy',
+    'actor', 'tenant', 'expired', 'replay', 'missing-proof', 'forged-voice',
+)
+CONFIRMATION_CASES = ('confirmation.binding-tuple', 'confirmation.no-caller-gate') + tuple(
+    {'recipient': 'CNF-001', 'caller-flags': 'CNF-003'}.get(name, 'php.confirmation.' + name)
+    for name in CONFIRMATION_PORTABLE_NAMES) + tuple('dart.confirmation.' + name for name in CONFIRMATION_PORTABLE_NAMES)
+PG_CONFIRMATION_CASES = (
+    'V2-P5-2-CONFIRM-POS', 'CNF-002', 'CNF-004', 'V2ALL-CONFIRM-NEGATIVE',
+    'V2ALL-CONFIRM-POSITIVE', 'V2ALL-CONFIRM-FAULT', 'confirmation.atomic-journal-proof',
+    'confirmation.cancel-compensation', 'confirmation.runnable-example',
+    'confirmation.owner-commit-journal-failure', 'confirmation.owner-receipt-outage',
+    'confirmation.owner-reconciliation-guards',
+)
+CONFIRMATION_INPUTS = tuple(dict.fromkeys(ACTION_SUBMIT_INPUTS + tuple(
+    str(p.relative_to(ROOT)) for base in (
+        ROOT / POSTGRES / 'src/Confirmation', ROOT / CORE / 'tests/Actions/Confirmation',
+        ROOT / 'examples/platform/confirmed-write', ROOT / 'fixtures/platform/v1/confirmation',
+        ROOT / 'php/src/Confirmation', ROOT / 'php/src/Contracts', ROOT / 'dart/agentools/lib/src/confirmation')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php', '.dart', '.json', '.py', '.xml', '.md'}) + (
+        f'{POSTGRES}/migrations/0009_confirmation.sql',
+        'fixtures/platform/v1/confirmation/binding-map.json', 'fixtures/platform/v1/confirmation/bindings.json',
+        'php/tests/Confirmation/PlatformBindingFixture.php', 'php/tests/Confirmation/PlatformBindingTest.php',
+        'php/tests/Confirmation/platform-binding.php', 'dart/agentools/test/confirmation/platform_binding_test.dart',
+    )))
+SUITES[('confirmation-write', 'test')] = Suite('P5.2', 'contract-scripted', 'contract-scripted', CONFIRMATION_CASES,
+    (sys.executable, '-B', f'{CORE}/tests/Actions/Confirmation/contract.py'), CONFIRMATION_INPUTS)
+SUITES[('confirmation-write', 'pg-test')] = Suite('P5.2', 'isolated-postgres', 'isolated-postgres', PG_CONFIRMATION_CASES,
+    (sys.executable, '-B', f'{CORE}/tests/Actions/Confirmation/pg.py'), CONFIRMATION_INPUTS, requires_pg=True)
+
+EFFECT_CASES = ('effect.strategy-matrix', 'effect.typed-binding', 'effect.native-key-contract') + tuple(
+    language + '.effect.' + name for language in ('php', 'dart')
+    for name in ('pending', 'unknown', 'success', 'failure', 'takeover'))
+PG_EFFECT_CASES = (
+    'ACT-002', 'ACT-003', 'ACT-004', 'V2-P5-3-MANUAL-POS', 'V2-P5-3-LOOKUP-POS',
+    'V2ALL-EFFECT-POSITIVE', 'V2ALL-EFFECT-NEGATIVE', 'V2ALL-EFFECT-FAULT',
+    'effect.retry-bounds-cancellation', 'effect.projection-current-authority',
+    'effect.native-unknown-retry', 'effect.read-absent-recovery',
+    'effect.definition-current-policy',
+    'effect.sigkill-after-owner-commit', 'effect.competing-recovery',
+)
+EFFECT_INPUTS = tuple(dict.fromkeys(CONFIRMATION_INPUTS + tuple(
+    str(p.relative_to(ROOT)) for base in (
+        ROOT / CORE / 'src/Actions/Effects', ROOT / CORE / 'tests/Actions/Effects',
+        ROOT / POSTGRES / 'src/Effects', ROOT / POSTGRES / 'tests/Effects',
+        ROOT / TESTING / 'src/Owners', ROOT / 'fixtures/platform/v1/effects')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php', '.json', '.py', '.xml', '.md'}) + (
+        f'{POSTGRES}/migrations/0010_effect_recovery.sql',
+        f'{POSTGRES}/tests/Effects/CrashTest.php', f'{POSTGRES}/tests/Effects/EffectsTest.php',
+        f'{CORE}/tests/Actions/Effects/contract.php', f'{CORE}/tests/Actions/Effects/contract.py',
+        'fixtures/platform/v1/effects/outcomes.json', 'fixtures/platform/v1/effects/strategies.json',
+        'dart/agentools/test/platform/effect_recovery_test.dart',
+    )))
+SUITES[('effect-reconcile', 'test')] = Suite('P5.3', 'contract-scripted', 'contract-scripted', EFFECT_CASES,
+    (sys.executable, '-B', f'{CORE}/tests/Actions/Effects/contract.py'), EFFECT_INPUTS)
+SUITES[('effect-reconcile', 'pg-test')] = Suite('P5.3', 'isolated-postgres', 'isolated-postgres', PG_EFFECT_CASES,
+    (sys.executable, '-B', f'{POSTGRES}/tests/Effects/run.py'), EFFECT_INPUTS, requires_pg=True)
+
+CANCELLATION_CASES = ('cancellation.command-binding', 'cancellation.run-policy', 'cancellation.output-certainty') + tuple(
+    language + '.cancel.' + name for language in ('php', 'dart')
+    for name in ('unknown', 'late-success', 'completed-stop', 'before-io'))
+PG_CANCELLATION_CASES = (
+    'CANCEL-001', 'V2-P5-4-TTS-POS', 'V2ALL-CANCEL-POSITIVE', 'V2ALL-CANCEL-NEGATIVE', 'V2ALL-CANCEL-FAULT',
+    'cancel.manual-atomic',
+    'cancel.manual-cas-replay', 'cancel.authority-immutable-audit', 'cancel.source-closure-unknown',
+    'cancel.explicit-compensation', 'cancel.compensation-guards', 'cancel.crash-after-commit', 'cancel.competing-commands',
+)
+CANCELLATION_INPUTS = tuple(dict.fromkeys(EFFECT_INPUTS + tuple(
+    str(p.relative_to(ROOT)) for base in (
+        ROOT / CORE / 'src/Actions/Cancellation', ROOT / CORE / 'src/Runtime', ROOT / POSTGRES / 'src/Operations',
+        ROOT / 'packages/agentools-laravel/src', ROOT / 'packages/agentools-laravel/tests', ROOT / 'fixtures/platform/v1/cancellation')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php', '.json', '.py', '.xml', '.md'}) + (
+        f'{POSTGRES}/migrations/0011_operator_operations.sql', f'{POSTGRES}/src/Delivery/DeliveryRepository.php',
+        'packages/agentools-laravel/composer.json', 'packages/agentools-laravel/composer.lock',
+        'packages/agentools-laravel/vendor/autoload.php', 'packages/agentools-laravel/phpstan.neon',
+        'packages/agentools-laravel/tests/Operations/contract.php', 'packages/agentools-laravel/tests/Operations/contract.py',
+        'packages/agentools-laravel/tests/Operations/CancellationTest.php', 'packages/agentools-laravel/tests/Operations/CompensationTest.php',
+        'packages/agentools-laravel/tests/Operations/RecoveryTest.php', 'packages/agentools-laravel/tests/Operations/run.py',
+        'dart/agentools/test/platform/cancellation_test.dart', 'fixtures/platform/v1/cancellation/outcomes.json',
+    )))
+SUITES[('cancellation-resolution', 'test')] = Suite('P5.4', 'contract-scripted', 'contract-scripted', CANCELLATION_CASES,
+    (sys.executable, '-B', 'packages/agentools-laravel/tests/Operations/contract.py'), CANCELLATION_INPUTS)
+SUITES[('cancellation-resolution', 'pg-test')] = Suite('P5.4', 'isolated-postgres', 'isolated-postgres', PG_CANCELLATION_CASES,
+    (sys.executable, '-B', 'packages/agentools-laravel/tests/Operations/run.py'), CANCELLATION_INPUTS, requires_pg=True)
+
+
+WRITE_JOURNEY_CASES = ('WRITE-001', 'WRITE-DIRECT-PARITY', 'WRITE-REVOKE', 'WRITE-F2-OWNER-COMMIT',
+    'WRITE-TENANT-INSTANCE', 'WRITE-CRASH-MATRIX', 'WRITE-ZOMBIE', 'WRITE-SOURCE-RACE', 'WRITE-DRAIN',
+    'WRITE-ATOMIC-MATRIX', 'WRITE-ROLLBACK', 'WRITE-PRIVACY')
+WRITE_RECOVERY_CASES = WRITE_JOURNEY_CASES + PG_CONFIRMATION_CASES + PG_EFFECT_CASES + PG_CANCELLATION_CASES
+WRITE_BOUNDARIES = ('intake', 'signal-commit', 'wake', 'admission', 'invocation-intent', 'provider-commit',
+    'payload-accepted', 'model-result', 'action-submit', 'preview', 'proof', 'confirmation', 'effect-intent',
+    'owner-commit', 'effect-confirmed', 'delivery-intent', 'delivery-claim', 'destination-commit', 'delivery-receipt')
+WRITE_ATOMIC_BOUNDARIES = ('model-result', 'action-submit', 'preview', 'effect-intent', 'delivery-intent', 'delivery-receipt')
+PORTABLE_RECOVERY_IDS = ('effect.pending', 'effect.unknown', 'effect.success', 'effect.failure', 'effect.takeover', 'cancel.unknown', 'cancel.late-success', 'cancel.completed-stop', 'cancel.before-io', 'recovery.stale-epoch', 'recovery.version-conflict', 'recovery.terminal-late', 'recovery.unknown-kind', 'existing.confirmation.recipient', 'existing.confirmation.document', 'existing.confirmation.amount', 'existing.confirmation.caller-flags', 'existing.confirmation.scope', 'existing.confirmation.definition', 'existing.confirmation.policy', 'existing.confirmation.actor', 'existing.confirmation.tenant', 'existing.confirmation.expired', 'existing.confirmation.replay', 'existing.confirmation.missing-proof', 'existing.confirmation.forged-voice', 'recovery.confirmation.ui', 'recovery.confirmation.voice', 'recovery.confirmation.before-expiry', 'recovery.confirmation.at-expiry', 'recovery.confirmation.consume-after-denial', 'recovery.retry.native', 'recovery.retry.read-missing', 'recovery.retry.read-absent', 'recovery.retry.read-found', 'recovery.retry.at-most-once', 'recovery.retry.unsupported', 'recovery.retry.hash-conflict', 'recovery.retry.in-flight')
+PORTABLE_RECOVERY_CASES = tuple(consumer + '.' + case for consumer in ('reference', 'php-sdk', 'dart-sdk') for case in PORTABLE_RECOVERY_IDS)
+WRITE_RECOVERY_INPUTS = tuple(dict.fromkeys(CANCELLATION_INPUTS + tuple(
+    str(p.relative_to(ROOT)) for base in (ROOT / 'conformance/platform/write-journey', ROOT / 'fixtures/platform/v1/recovery', ROOT / 'php/tests/Recovery')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php', '.py', '.json', '.xml', '.sql', '.md', '.neon'}) + (
+        'conformance/platform/write-journey/e2e.py', 'conformance/platform/write-journey/full.xml',
+        'conformance/platform/write-journey/parity.py', 'conformance/platform/write-journey/RecoveryTest.php',
+        'fixtures/platform/v1/recovery/portable.json', 'fixtures/platform/v1/recovery/write-matrix.json',
+        'dart/agentools/test/platform/write_recovery_test.dart', 'dart/agentools/test/platform/write_recovery_worker.dart',
+        'php/tests/Recovery/PortableRecovery.php', 'php/tests/Recovery/worker.php',
+    )))
+SUITES[('write-recovery', 'test')] = Suite('P5.5', 'contract-scripted', 'contract-scripted', PORTABLE_RECOVERY_CASES,
+    (sys.executable, '-B', 'conformance/platform/write-journey/parity.py'), WRITE_RECOVERY_INPUTS)
+SUITES[('write-recovery', 'e2e')] = Suite('P5.5', 'local-host-e2e', 'local-host-e2e', WRITE_RECOVERY_CASES,
+    (sys.executable, '-B', 'conformance/platform/write-journey/e2e.py'), WRITE_RECOVERY_INPUTS, requires_pg=True)
+
+
+LARAVEL_PG_CASES = ('CM-041', 'CM-042', 'V2ALL-MANAGED-POSITIVE', 'V2ALL-MANAGED-NEGATIVE',
+    'V2ALL-MANAGED-FAULT', 'managed.disclosure-revocation', 'managed.budget-unknown',
+    'managed.delivery-unknown', 'managed.production-no-fake', 'managed.reset-failure',
+    'managed.reset-all-ports', 'managed.opt-in-provider', 'managed.octane-sandbox',
+    'managed.accounting-failure', 'managed.command-admission', 'managed.single-loop-replay', 'managed.evidence-tenant', 'managed.pg-session-reset')
+LARAVEL_CASES = LARAVEL_PG_CASES + ('managed.composer-valid', 'managed.static-analysis',
+    'managed.production-no-dev', 'managed.reuse-map')
+LARAVEL_INPUTS = tuple(dict.fromkeys(WRITE_RECOVERY_INPUTS + tuple(str(p.relative_to(ROOT))
+    for base in (ROOT / 'packages/agentools-laravel/src', ROOT / 'packages/agentools-laravel/tests/Composition')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php', '.py', '.json', '.xml'}) + (
+        'packages/agentools-laravel/composer.json', 'packages/agentools-laravel/composer.lock',
+        'packages/agentools-laravel/phpstan.neon', 'packages/agentools-laravel/vendor/autoload.php',
+        'packages/agentools-laravel/tests/Composition/composition.py',
+        'packages/agentools-laravel/tests/Composition/ManagedTest.php',
+        'packages/agentools-laravel/tests/Composition/LifecycleTest.php',
+        'packages/agentools-laravel/tests/Composition/no_dev.py',
+        'packages/agentools-laravel/tests/Composition/reuse-map.json', 'docs/platform/laravel.md')))
+SUITES[('laravel-composition', 'pg-test')] = Suite('P6.1', 'isolated-postgres', 'isolated-postgres',
+    LARAVEL_PG_CASES, (sys.executable, '-B', 'packages/agentools-laravel/tests/Composition/run.py'),
+    LARAVEL_INPUTS, requires_pg=True)
+# The acceptance test command self-provisions/verifies PG through the existing safe bootstrap.
+# Its nested proof is mandatory below, even though the public command has no --isolated option.
+SUITES[('laravel-composition', 'test')] = Suite('P6.1', 'contract-scripted', 'contract-scripted',
+    LARAVEL_CASES, (sys.executable, '-B', 'packages/agentools-laravel/tests/Composition/composition.py'), LARAVEL_INPUTS)
+
+
+DEFINITIONS_PG_CASES = ('definitions.immutable-owner', 'definitions.hash-conflict', 'definitions.draft-isolation',
+    'definitions.current-revocation', 'plugins.selected-data-only', 'plugins.failure-policy', 'plugins.bounds',
+    'plugins.reset-failure', 'instances.cas-replay', 'instances.session-pins', 'instances.current-tenant',
+    'instances.commit-fault', 'instances.schema-version', 'definitions.managed-positive',
+    'definitions.managed-negative', 'definitions.fragment-guards', 'definitions.managed-fault')
+DEFINITIONS_CASES = DEFINITIONS_PG_CASES + ('definitions.composer-valid', 'definitions.static-analysis',
+    'definitions.production-no-dev', 'definitions.attribution')
+DEFINITIONS_INPUTS = tuple(dict.fromkeys(LARAVEL_INPUTS + tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / 'packages/agentools-laravel/src/Definitions', ROOT / 'packages/agentools-laravel/src/Plugins',
+    ROOT / 'packages/agentools-laravel/tests/Definitions') for p in sorted(base.rglob('*'))
+    if p.is_file() and p.suffix in {'.php', '.py', '.json', '.xml', '.sql', '.md'}) + (
+        'packages/agentools-laravel/tests/Definitions/composition.py',
+        'packages/agentools-laravel/tests/Definitions/RegistryTest.php',
+        'packages/agentools-laravel/tests/Definitions/PluginTest.php',
+        'packages/agentools-laravel/tests/Definitions/InstanceTest.php',
+        'packages/agentools-laravel/tests/Definitions/AdmissionTest.php',
+        'packages/agentools-laravel/tests/Definitions/attribution.json',
+        'packages/agentools-laravel/src/Definitions/schema.sql')))
+SUITES[('platform-definitions', 'pg-test')] = Suite('P6.2', 'isolated-postgres', 'isolated-postgres',
+    DEFINITIONS_PG_CASES, (sys.executable, '-B', 'packages/agentools-laravel/tests/Definitions/run.py'),
+    DEFINITIONS_INPUTS, requires_pg=True)
+SUITES[('platform-definitions', 'test')] = Suite('P6.2', 'contract-scripted', 'contract-scripted',
+    DEFINITIONS_CASES, (sys.executable, '-B', 'packages/agentools-laravel/tests/Definitions/composition.py'), DEFINITIONS_INPUTS)
+
+
+COMPOSITION_PORT_CASES = ('fake.ports-identity-state', 'fake.raw-admission-and-purpose-denial',
+    'fake.delivery-disclosure-and-unknown', 'fake.owner-requires-durable-boundary',
+    'fake.external-fault-and-lookup', 'fake.stream-terminal-loss-stays-unknown', 'fake.tenant-cache-reset')
+COMPOSITION_TESTING_PG_CASES = ('V2ALL-FAKE-POSITIVE', 'V2ALL-FAKE-NEGATIVE', 'V2ALL-FAKE-FAULT',
+    'fake-profile.raw-admission', 'fake-profile.worker-isolation', 'fake-profile.after-commit',
+    'fake-profile.model-recovery', 'fake-profile.owner-boundary')
+COMPOSITION_TESTING_CASES = COMPOSITION_PORT_CASES + COMPOSITION_TESTING_PG_CASES + (
+    'fake-profile.composer-valid', 'fake-profile.static-analysis',
+    'fake-profile.consumer-analysis', 'fake-profile.production-no-dev')
+COMPOSITION_TESTING_INPUTS = tuple(dict.fromkeys(DEFINITIONS_INPUTS + tuple(str(p.relative_to(ROOT))
+    for base in (ROOT / TESTING / 'src/Composition', ROOT / TESTING / 'tests/Composition',
+        ROOT / 'packages/agentools-laravel/tests/Testing', ROOT / 'fixtures/platform/v1/composition')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php', '.py', '.json', '.xml', '.md'}) + (
+        f'{TESTING}/composer.json', f'{TESTING}/composer.lock', f'{TESTING}/phpstan.neon',
+        f'{TESTING}/src/Models/PreciseClock.php', f'{TESTING}/src/Failpoints.php', f'{TESTING}/src/FaultPoint.php',
+        f'{TESTING}/src/ScriptedDisclosure.php', f'{TESTING}/vendor/autoload.php',
+        'packages/agentools-laravel/tests/Testing/composition.py',
+        'packages/agentools-laravel/tests/Testing/ProfileTest.php',
+        'packages/agentools-laravel/tests/Testing/FaultTest.php',
+        f'{TESTING}/tests/Composition/ports.php', 'fixtures/platform/v1/composition/testing-profile.json')))
+SUITES[('composition-testing', 'pg-test')] = Suite('P6.3', 'isolated-postgres', 'isolated-postgres',
+    COMPOSITION_TESTING_PG_CASES, (sys.executable, '-B', 'packages/agentools-laravel/tests/Testing/run.py'),
+    COMPOSITION_TESTING_INPUTS, requires_pg=True)
+SUITES[('composition-testing', 'test')] = Suite('P6.3', 'contract-scripted', 'contract-scripted',
+    COMPOSITION_TESTING_CASES, (sys.executable, '-B', 'packages/agentools-laravel/tests/Testing/composition.py'),
+    COMPOSITION_TESTING_INPUTS)
+
+
+FILAMENT_PG_CASES = ('V2ALL-ADMIN-POSITIVE', 'V2ALL-ADMIN-NEGATIVE', 'V2ALL-ADMIN-FAULT',
+    'admin.audit-fail-closed', 'admin.diagnostics-permission-ttl', 'admin.worker-tenant-switch',
+    'admin.production-no-fake', 'admin.page-fresh-redacted', 'admin.cleanup-partial-failure', 'admin.unknown-owner-outcome')
+FILAMENT_SHELL_CASES = ('admin.route-opt-in', 'admin.view-escaping')
+FILAMENT_CASES = FILAMENT_PG_CASES + FILAMENT_SHELL_CASES + (
+    'admin.composer-valid', 'admin.static-analysis', 'admin.production-no-dev')
+FILAMENT_INPUTS = tuple(dict.fromkeys(LARAVEL_INPUTS + tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / 'extensions/filament/src', ROOT / 'extensions/filament/resources', ROOT / 'extensions/filament/tests')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php', '.py', '.json', '.xml'}) + (
+        'extensions/filament/composer.json', 'extensions/filament/composer.lock',
+        'extensions/filament/phpstan.neon', 'extensions/filament/vendor/autoload.php',
+        'extensions/filament/tests/InspectorTest.php', 'extensions/filament/tests/ShellTest.php',
+        'extensions/filament/tests/cases.json', 'extensions/filament/tests/run.py',
+        'extensions/filament/tests/shell.py', 'extensions/filament/tests/no_dev.py',
+        'extensions/filament/tests/no-dev.php', 'extensions/filament/tests/suite.py',
+        'extensions/filament/resources/views/inspect.blade.php',
+        'extensions/filament/resources/views/projection.blade.php', 'docs/platform/admin.md')))
+SUITES[('filament', 'pg-test')] = Suite('P6.4', 'isolated-postgres', 'isolated-postgres',
+    FILAMENT_PG_CASES, (sys.executable, '-B', 'extensions/filament/tests/run.py'), FILAMENT_INPUTS, requires_pg=True)
+SUITES[('filament', 'test')] = Suite('P6.4', 'contract-scripted', 'contract-scripted', FILAMENT_CASES,
+    (sys.executable, '-B', 'extensions/filament/tests/suite.py'), FILAMENT_INPUTS)
+
+
+SCHEDULER_PG_CASES = ('CM-045', 'CM-046', 'CM-047', 'V2ALL-SCHED-NEGATIVE',
+    'scheduler.atomic-rollback', 'scheduler.stop-unplanned-denied', 'scheduler.crash-after-commit',
+    'V2ALL-SCHED-POSITIVE', 'CM-048', 'scheduler.common-guards-source-binding', 'V2ALL-SCHED-FAULT',
+    'scheduler.tenant-production', 'scheduler.guard-required-alias-denied')
+SCHEDULER_CALENDAR_CASES = ('scheduler.dst-overlap-zone', 'scheduler.dst-gap',
+    'scheduler.misfire-policies', 'scheduler.explicit-policies')
+SCHEDULER_CASES = SCHEDULER_PG_CASES + SCHEDULER_CALENDAR_CASES + (
+    'scheduler.composer-valid', 'scheduler.static-analysis', 'scheduler.core-port-analysis', 'scheduler.production-no-dev')
+SCHEDULER_INPUTS = tuple(dict.fromkeys(LARAVEL_INPUTS + tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / 'extensions/scheduler/src', ROOT / 'extensions/scheduler/tests', ROOT / 'fixtures/platform/v1/scheduler')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php', '.py', '.json', '.xml', '.sql'}) + (
+        'extensions/scheduler/composer.json', 'extensions/scheduler/composer.lock', 'extensions/scheduler/phpstan.neon',
+        'extensions/scheduler/.gitignore', 'extensions/scheduler/vendor/autoload.php',
+        'extensions/scheduler/tests/StoreTest.php', 'extensions/scheduler/tests/RuntimeTest.php',
+        'extensions/scheduler/tests/CalendarTest.php', 'extensions/scheduler/tests/worker.php',
+        'extensions/scheduler/tests/Evidence.php', 'extensions/scheduler/tests/run.py',
+        'extensions/scheduler/tests/calendar.py', 'extensions/scheduler/tests/no_dev.py',
+        'extensions/scheduler/tests/no-dev.php', 'extensions/scheduler/tests/suite.py',
+        'extensions/scheduler/src/schema.sql', 'packages/agentools-core/src/Scheduling/SchedulePort.php',
+        'fixtures/platform/v1/scheduler/cases.json', 'docs/platform/scheduler.md')))
+SUITES[('scheduler', 'pg-test')] = Suite('P6.5', 'isolated-postgres', 'isolated-postgres',
+    SCHEDULER_PG_CASES, (sys.executable, '-B', 'extensions/scheduler/tests/run.py'), SCHEDULER_INPUTS, requires_pg=True)
+SUITES[('scheduler', 'test')] = Suite('P6.5', 'contract-scripted', 'contract-scripted', SCHEDULER_CASES,
+    (sys.executable, '-B', 'extensions/scheduler/tests/suite.py'), SCHEDULER_INPUTS)
+
+
+PROFILE_UNIT_CASES = ('profiles.typed-owner-registry', 'profiles.content-hash-codec',
+    'profiles.compiler-output-pin', 'profiles.dependency-hash-provenance', 'profiles.cross-tenant-overlay',
+    'profiles.closure-duplicate-missing', 'profiles.deterministic-immutable-bytes',
+    'profiles.revoked-dependency-not-cached', 'profiles.strict-manifest-envelope')
+PROFILE_EXAMPLE_CASES = ('profiles.generated-manifest-examples',)
+PROFILE_CASES = PROFILE_UNIT_CASES + PROFILE_EXAMPLE_CASES + ('profiles.core-composer-valid',
+    'profiles.pg-composer-valid', 'profiles.core-static-analysis', 'profiles.pg-static-analysis', 'profiles.production-no-dev')
+PROFILE_PG_CASES = ('profiles.published-immutable', 'profiles.validation-failure-draft',
+    'profiles.publish-current-dependencies', 'profiles.publication-identity-cas', 'profiles.lifecycle-history',
+    'profiles.tenant-current-owner', 'profiles.schema-version', 'profiles.assignment-new-sessions-only',
+    'profiles.assignment-command-cas', 'profiles.current-guards-over-pins', 'profiles.explicit-migration-audit',
+    'profiles.migration-denial', 'profiles.concurrent-publish', 'profiles.concurrent-pin',
+    'profiles.publish-sigkill-recovery', 'profiles.pin-sigkill-recovery', 'profiles.migration-sigkill-recovery',
+    'profiles.migration-commit-rollback')
+PROFILE_INPUTS = tuple(dict.fromkeys(tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / CORE / 'src/Profiles', ROOT / CORE / 'src/Common', ROOT / CORE / 'src/Security',
+    ROOT / CORE / 'tests/Profiles', ROOT / 'packages/agentools-postgres/src/Profiles',
+    ROOT / 'packages/agentools-postgres/tests/Profiles', ROOT / 'fixtures/platform/v1/profiles')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php', '.py', '.json', '.sql', '.xml', '.md'}) + (
+        f'{CORE}/composer.json', f'{CORE}/composer.lock', f'{CORE}/phpstan.neon',
+        f'{CORE}/tests/Common/JcsAdapter.php', f'{CORE}/tests/Common/TestHost.php',
+        f'{CORE}/tests/Common/Harness.php', f'{CORE}/tests/Common/bootstrap.php',
+        'packages/agentools-postgres/composer.json', 'packages/agentools-postgres/composer.lock',
+        'packages/agentools-postgres/phpstan.neon', 'packages/agentools-postgres/tests/run.py',
+        'packages/agentools-postgres/tests/IsolatedDatabase.php',
+        'packages/agentools-postgres/tests/Runtime/TestRevisions.php',
+        'packages/agentools-postgres/src/Runtime/Connection.php',
+        'packages/agentools-postgres/src/Runtime/RepositoryContext.php',
+        'packages/agentools-postgres/src/Runtime/ContextRevision.php',
+        'packages/agentools-postgres/src/Runtime/StorageFailure.php',
+        f'{CORE}/tests/Profiles/suite.py', f'{CORE}/tests/Profiles/publication.php',
+        f'{CORE}/tests/Profiles/examples.php', f'{CORE}/tests/Profiles/no_dev.py',
+        'packages/agentools-postgres/src/Profiles/schema.sql',
+        'packages/agentools-postgres/tests/Profiles/run.py',
+        'packages/agentools-postgres/tests/Profiles/PublicationTest.php',
+        'packages/agentools-postgres/tests/Profiles/PinningTest.php',
+        'packages/agentools-postgres/tests/Profiles/RecoveryTest.php',
+        'packages/agentools-postgres/tests/Profiles/worker.php',
+        'fixtures/platform/v1/profiles/bundle-7.json', 'fixtures/platform/v1/profiles/bundle-8.json',
+        'fixtures/platform/v1/profiles/skill-dependency.json', 'fixtures/platform/v1/profiles/paired-merge.json',
+        'fixtures/platform/v1/profiles/skill-manifest.example.json',
+        'fixtures/platform/v1/profiles/README.md', 'tools/storage_chaos.py',
+        'php/composer.json', 'php/composer.lock', 'php/src/Schema/Canonicalizer.php',
+        'tools/platform_gate.py', 'tools/tests/test_platform_gate.py')))
+SUITES[('profile-publish', 'test')] = Suite('P7.1', 'contract-scripted', 'contract-scripted',
+    PROFILE_CASES, (sys.executable, '-B', f'{CORE}/tests/Profiles/suite.py'), PROFILE_INPUTS)
+SUITES[('profile-publish', 'pg-test')] = Suite('P7.1', 'isolated-postgres', 'isolated-postgres',
+    PROFILE_PG_CASES, (sys.executable, '-B', 'packages/agentools-postgres/tests/Profiles/run.py'),
+    PROFILE_INPUTS, requires_pg=True)
+
+
+PROFILE_MERGE_CORE_CASES = ('CM-001','CM-002','V2ALL-PROFILE-POSITIVE','V2ALL-PROFILE-NEGATIVE',
+    'merge.methodology-approved','merge.style-bounds','merge.required-capability',
+    'merge.deterministic-provenance','merge.document-hash-validation','merge.dependency-closure')
+PROFILE_MERGE_LIVE_CASES = ('CM-004','V2ALL-PROFILE-FAULT','merge.material-rights-current',
+    'merge.no-unknown-default','merge.operational-role-required','merge.filtered-serialization')
+PROFILE_MERGE_PG_CASES = ('CM-003','CM-005','CM-006','V2-P7-2-TENANT-POS','V2-P7-2-TENANT-FAULT')
+PROFILE_MERGE_CASES = PROFILE_MERGE_CORE_CASES + PROFILE_MERGE_LIVE_CASES + PROFILE_MERGE_PG_CASES + (
+    'merge.composer-valid','merge.static-analysis','merge.production-no-dev')
+PROFILE_MERGE_INPUTS = tuple(dict.fromkeys(PROFILE_INPUTS + tuple(str(p.relative_to(ROOT))
+    for p in sorted((ROOT / 'fixtures/platform/v1/merge').rglob('*')) if p.is_file()) + (
+        f'{CORE}/tests/Profiles/merge.php', f'{CORE}/tests/Profiles/merge-live.php',
+        f'{CORE}/tests/Profiles/merge-pg.py', f'{CORE}/tests/Profiles/merge-suite.py',
+        f'{CORE}/tests/Profiles/merge-phpunit.xml', f'{CORE}/tests/Profiles/merge-pg-bootstrap.php',
+        f'{CORE}/tests/Profiles/MergeFixture.php', f'{CORE}/tests/Profiles/MergeProof.php',
+        f'{CORE}/tests/Profiles/PublicationMergeTest.php',
+        f'{CORE}/src/Profiles/Composition/Composer.php', f'{CORE}/src/Profiles/Composition/TypedCompiler.php',
+        'fixtures/platform/v1/merge/compatible.json', 'fixtures/platform/v1/merge/conflict.json',
+        'fixtures/platform/v1/merge/README.md')))
+SUITES[('profile-merge','test')] = Suite('P7.2','contract-scripted','contract-scripted',
+    PROFILE_MERGE_CASES, (sys.executable,'-B',f'{CORE}/tests/Profiles/merge-suite.py'), PROFILE_MERGE_INPUTS)
+
+
+SKILL_CORE_CASES = ('CM-007','CM-008','V2ALL-SKILL-POSITIVE','V2ALL-SKILL-NEGATIVE',
+    'skills.missing-context','skills.reproducible-host-route','skills.tool-versions-availability',
+    'skills.token-bounds','skills.permissions-shortlist','skills.metadata-bounds')
+SKILL_LIFECYCLE_CASES = ('V2ALL-SKILL-FAULT','skills.injection-remains-data','skills.qualification-exact-tuple',
+    'skills.publication-qualification-required','skills.versioned-new-runs','skills.tenant-code-separation','skills.current-guard-after-load')
+SKILL_EXAMPLE_CASES = ('skills.generated-examples',)
+SKILL_CASES = SKILL_CORE_CASES + SKILL_LIFECYCLE_CASES + SKILL_EXAMPLE_CASES + (
+    'skills.composer-valid','skills.static-analysis','skills.production-no-dev')
+SKILL_INPUTS = tuple(dict.fromkeys(PROFILE_MERGE_INPUTS + tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / CORE / 'src/Models', ROOT / CORE / 'src/Context', ROOT / 'fixtures/platform/v1/skills')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php','.json','.md'}) + (
+        f'{CORE}/src/Profiles/Skills/SkillManifest.php', f'{CORE}/src/Profiles/Skills/Router.php',
+        f'{CORE}/src/Profiles/Skills/ManifestCodec.php', f'{CORE}/src/Profiles/Skills/Projection.php',
+        f'{CORE}/tests/Profiles/Skills/contract.php', f'{CORE}/tests/Profiles/Skills/lifecycle.php',
+        f'{CORE}/tests/Profiles/Skills/examples.php', f'{CORE}/tests/Profiles/Skills/suite.py',
+        f'{CORE}/tests/Profiles/Skills/no_dev.py', f'{CORE}/tests/Profiles/Skills/Fixture.php',
+        f'{CORE}/tests/Profiles/Skills/Capture.php', f'{CORE}/tests/Profiles/Skills/Proof.php',
+        'fixtures/platform/v1/skills/manifest.json', 'fixtures/platform/v1/skills/fragment.json',
+        'fixtures/platform/v1/skills/selection.json', 'fixtures/platform/v1/skills/README.md')))
+SUITES[('skill-selection','test')] = Suite('P7.3','contract-scripted','contract-scripted',
+    SKILL_CASES,(sys.executable,'-B',f'{CORE}/tests/Profiles/Skills/suite.py'),SKILL_INPUTS)
+
+
+CONTEXT_CORE_CASES = ('CM-009','CM-010','CM-011','CM-012','CM-013','V2-P7-4-TRUST-POS','V2-P7-4-TOKENIZER-FAULT')
+CONTEXT_LIFECYCLE_CASES = ('V2ALL-CONTEXT-POSITIVE','V2ALL-CONTEXT-NEGATIVE','V2ALL-CONTEXT-FAULT',
+    'V2ALL-TOKEN-POSITIVE','V2ALL-TOKEN-NEGATIVE','V2ALL-TOKEN-FAULT','context.diagnostics-authorized-ttl')
+CONTEXT_EXAMPLE_CASES = ('context.generated-examples',)
+CONTEXT_PG_CASES = ('context.snapshot-durable-replay','context.snapshot-current-scope','context.snapshot-integrity-conflict')
+CONTEXT_CASES = CONTEXT_CORE_CASES + CONTEXT_LIFECYCLE_CASES + CONTEXT_EXAMPLE_CASES + CONTEXT_READ_CASES + CONTEXT_PG_CASES + (
+    'context.composer-valid','context.static-analysis','context.production-no-dev')
+CONTEXT_INPUTS = tuple(dict.fromkeys(tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / CORE / 'src/Common', ROOT / CORE / 'src/Security', ROOT / CORE / 'src/Context', ROOT / CORE / 'tests/Context',
+    ROOT / POSTGRES / 'src/Context', ROOT / POSTGRES / 'tests/Context', ROOT / 'spec/platform/v1/context', ROOT / 'fixtures/platform/v1/context')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php','.py','.json','.sql','.md'}) + (
+    f'{CORE}/composer.json',f'{CORE}/composer.lock',f'{CORE}/phpstan.neon', f'{CORE}/src/Profiles/BundleRef.php',
+    f'{CORE}/tests/Common/bootstrap.php',f'{CORE}/tests/Common/Harness.php',f'{CORE}/tests/Common/JcsAdapter.php',f'{CORE}/tests/Common/TestHost.php',
+    f'{POSTGRES}/composer.json',f'{POSTGRES}/composer.lock',f'{POSTGRES}/src/Runtime/Connection.php',f'{POSTGRES}/src/Runtime/RepositoryContext.php',
+    f'{POSTGRES}/src/Runtime/ContextRevision.php',f'{POSTGRES}/src/Runtime/StorageFailure.php',f'{POSTGRES}/tests/IsolatedDatabase.php',
+    'php/src/Schema/Canonicalizer.php','tools/platform_gate.py','tools/tests/test_platform_gate.py')))
+SUITES[('context-compiler','test')] = Suite('P7.4','contract-scripted','contract-scripted',CONTEXT_CASES,
+    (sys.executable,'-B',f'{CORE}/tests/Context/suite.py'),CONTEXT_INPUTS)
+SUITES[('context-compiler','pg-test')] = Suite('P7.4-pg','isolated-postgres','isolated-postgres',CONTEXT_PG_CASES,
+    ('php',f'{POSTGRES}/tests/Context/snapshots.php'),CONTEXT_INPUTS,requires_pg=True)
+
+
+HISTORY_CORE_CASES = ('CM-014','CM-017','V2ALL-HISTORY-POSITIVE','V2ALL-HISTORY-NEGATIVE','V2ALL-HISTORY-FAULT',
+    'history.working-cas','history.trigger-source-rebuild','history.bounded-unavailable')
+MEMORY_CORE_CASES = ('CM-015','CM-016','memory.lifecycle-evidence-dedup','memory.expiry-revoke','memory.consent-export','memory.tenant-injection')
+HISTORY_EXAMPLE_CASES = ('history.generated-owner-example',)
+HISTORY_CASES = HISTORY_CORE_CASES + MEMORY_CORE_CASES + HISTORY_EXAMPLE_CASES + (
+    'history.composer-valid','history.static-analysis','history.production-no-dev')
+SUMMARY_DURABLE_CASES = ('summary.durable-metadata','summary.monotone-integrity','summary.source-cascade','summary.current-guards-corruption')
+SUMMARY_CONCURRENT_CASES = ('summary.competing-connections',)
+SUMMARY_RECOVERY_CASES = ('summary.crash-restart',)
+SUMMARY_PG_CASES = SUMMARY_DURABLE_CASES + SUMMARY_CONCURRENT_CASES + SUMMARY_RECOVERY_CASES
+HISTORY_INPUTS = tuple(dict.fromkeys(CONTEXT_INPUTS + tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / POSTGRES / 'src/Summaries', ROOT / POSTGRES / 'tests/Summaries', ROOT / 'fixtures/platform/v1/history')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php','.py','.json','.sql','.md'})))
+SUITES[('history-memory','test')] = Suite('P7.5','contract-scripted','contract-scripted',HISTORY_CASES,
+    (sys.executable,'-B',f'{CORE}/tests/Context/History/suite.py'),HISTORY_INPUTS)
+SUITES[('history-memory','pg-test')] = Suite('P7.5-pg','isolated-postgres','isolated-postgres',SUMMARY_PG_CASES,
+    (sys.executable,'-B',f'{POSTGRES}/tests/Summaries/suite.py'),HISTORY_INPUTS,requires_pg=True)
+
+
+SECURITY_GUARD_CASES = ('security.injection-surfaces','security.stale-revision','security.current-source-revoke','security.entry-parity',
+    'security.exact-rendered-binding','security.emergency-and-unknown','security.snapshot-integrity-and-scope')
+SECURITY_DISCLOSURE_CASES = ('CM-043','security.disclosure-denial-and-revoke','security.checked-segments-interruption','security.live-approved',
+    'security.unknown-delivery','security.output-order-bounds','security.disclosure-policy-refresh')
+SECURITY_WORKER_CASES = ('security.worker-isolation','security.worker-reset-fault','security.redacted-logs-diagnostics')
+SECURITY_EXAMPLE_CASES = ('security.generated-examples',)
+SECURITY_CASES = SECURITY_GUARD_CASES + SECURITY_DISCLOSURE_CASES + SECURITY_WORKER_CASES + SECURITY_EXAMPLE_CASES + (
+    'security.composer-valid','security.static-analysis','security.production-no-dev')
+SECURITY_INPUTS = tuple(dict.fromkeys(HISTORY_INPUTS + tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / CORE / 'tests/Security', ROOT / CORE / 'src/Models', ROOT / 'fixtures/platform/v1/security') for p in sorted(base.rglob('*'))
+    if p.is_file() and p.suffix in {'.php','.py','.json','.md'}) + (
+        f'{CORE}/src/Runtime/RequestRenderer.php', f'{CORE}/src/Runtime/GuardedTransport.php',
+        f'{CORE}/src/Models/ModelTransport.php', f'{CORE}/src/Models/ModelRequest.php', f'{CORE}/src/Models/TransportPreflight.php',
+        f'{CORE}/src/Profiles/DefinitionRef.php')))
+SUITES[('context-guards','test')] = Suite('P7.6','contract-scripted','contract-scripted',SECURITY_CASES,
+    (sys.executable,'-B',f'{CORE}/tests/Security/suite.py'),SECURITY_INPUTS)
+SUITES[('context-security','test')] = SUITES[('context-guards','test')]
+
+PROFILE_ADMIN_PG_CASES = ('profile-admin.lifecycle', 'profile-admin.immutable',
+    'profile-admin.conflict-provenance', 'profile-admin.cross-tenant-actor', 'profile-admin.current-revocation',
+    'profile-admin.assignment-pins-migration', 'profile-admin.command-cas', 'profile-admin.emergency-compatibility',
+    'profile-admin.deprecate-retire', 'profile-admin.audit-unknown', 'profile-admin.scope-production',
+    'profile-admin.page-current-rights', 'profile-admin.untrusted-form')
+PROFILE_ADMIN_SHELL_CASES = ('profile-admin.route-opt-in', 'profile-admin.escaped-conflict')
+PROFILE_ADMIN_CASES = PROFILE_ADMIN_PG_CASES + PROFILE_ADMIN_SHELL_CASES + (
+    'profile-admin.composer-valid', 'profile-admin.static-analysis', 'profile-admin.production-no-dev')
+PROFILE_ADMIN_INPUTS = tuple(dict.fromkeys(FILAMENT_INPUTS + PROFILE_INPUTS + PROFILE_MERGE_INPUTS + (
+    'extensions/filament/tests/ProfilePublishTest.php', 'extensions/filament/tests/ProfileShellTest.php',
+    'extensions/filament/tests/ProfileFixture.php', 'extensions/filament/tests/profile-publish.xml',
+    'extensions/filament/tests/profile-shell.xml', 'extensions/filament/tests/profile-cases.json',
+    'extensions/filament/tests/profile-run.py', 'extensions/filament/tests/profile-shell.py',
+    'extensions/filament/tests/profile-suite.py', 'extensions/filament/src/Profiles/Admin.php',
+    'extensions/filament/src/Pages/Profiles.php', 'extensions/filament/resources/views/profiles.blade.php',
+    'extensions/filament/resources/views/profile-projection.blade.php', 'extensions/filament/README.md',
+    'tools/platform_gate.py', 'tools/tests/test_platform_gate.py')))
+SUITES[('profile-publish-admin', 'pg-test')] = Suite('P7.7-pg', 'isolated-postgres', 'isolated-postgres',
+    PROFILE_ADMIN_PG_CASES, (sys.executable, '-B', 'extensions/filament/tests/profile-run.py'), PROFILE_ADMIN_INPUTS, requires_pg=True)
+SUITES[('profile-publish-admin', 'test')] = Suite('P7.7', 'contract-scripted', 'contract-scripted',
+    PROFILE_ADMIN_CASES, (sys.executable, '-B', 'extensions/filament/tests/profile-suite.py'), PROFILE_ADMIN_INPUTS)
 
 
 class GateError(Exception):
@@ -460,6 +986,227 @@ def validate_report(spec: Suite, report):
         require(isinstance(proof.get("owner"), str) and bool(proof["owner"]), "missing database owner")
         require(proof.get("allow_marker_verified") is True, "isolation allow marker not verified")
         require(Counter(proof.get("case_ids", [])) == Counter(spec.cases), "PG exact durable case set differs")
+        if spec.owner == 'P6.5':
+            observations = report.get('observations', {})
+            concurrent = observations.get('CM-045', {})
+            require(concurrent.get('workers') == 2 and concurrent.get('exits') == [0, 0]
+                and concurrent.get('same_receipts') is True and concurrent.get('counts') == 1,
+                'real concurrent scanner proof missing')
+            crash = observations.get('scheduler.crash-after-commit', {})
+            require(crash.get('signal') == 9 and crash.get('signaled') is True and type(crash.get('worker_exit')) is int
+                and crash['worker_exit'] != 0 and crash.get('same_refs') is True and crash.get('counts') == 1,
+                'SIGKILL occurrence recovery proof missing')
+            unknown = observations.get('V2ALL-SCHED-FAULT', {})
+            require(unknown.get('same_run') is True and unknown.get('owner_outcome') == 'unknown'
+                and unknown.get('status') == 'reconciliation_required' and unknown.get('provider_calls') == 1
+                and unknown.get('owner_writes') == 0, 'stopped schedule unknown-action proof missing')
+    if spec.owner == 'P7.6':
+        portable=report.get('portable')
+        require(isinstance(portable,list) and len(portable)==4,'security behavioral partitions missing')
+        for case_group,unit in zip((SECURITY_GUARD_CASES,SECURITY_DISCLOSURE_CASES,SECURITY_WORKER_CASES,SECURITY_EXAMPLE_CASES),portable):
+            validate_report(Suite('P7.6-portable','contract-scripted','contract-scripted',case_group,(),()),unit)
+        packaging=report.get('packaging')
+        require(isinstance(packaging,dict) and packaging.get('standalone_core') is True and packaging.get('context_guards') is True
+            and all(packaging.get(k) is False for k in ('testing_autoload','sdk_autoload','postgres_autoload','framework_autoload')),
+            'standalone guard production no-dev proof missing')
+        observed=report.get('observations',{})
+        buffered=observed.get('CM-043',{})
+        require(buffered.get('early_content_bytes')==0 and buffered.get('checks')==1 and buffered.get('full_result_check') is True
+            and buffered.get('generated_bytes')==25 and buffered.get('delivered_before_receipt')==0
+            and buffered.get('delivered_after_receipt')==25 and buffered.get('heard_bytes') is None,'sensitive buffered actual-receipt proof missing')
+        worker=observed.get('worker_isolation',{})
+        require(worker.get('jobs')==2 and worker.get('resource_kinds')==7 and worker.get('alpha_refs_in_beta')==0
+            and worker.get('finally_reset') is True,'worker tenant reset proof missing')
+        injection=observed.get('injection_surfaces',{})
+        require(injection.get('surfaces')==['history','retrieval','tool','summary','memory','skill','input']
+            and injection.get('unexpected_tools')==0 and injection.get('policy_disabled') is False,'untrusted surface parity proof missing')
+        entries=observed.get('entry_parity',{})
+        require(entries.get('entries')==['text','raw','build','stream','voice','background','scheduled'] and entries.get('cached_grants')==0,
+            'entry parity/current permission proof missing')
+        unknown=observed.get('unknown_delivery',{})
+        require(unknown.get('owner_calls')==1 and unknown.get('delivered_bytes') is None and unknown.get('resend') is False,'unknown delivery was erased/retried')
+        redaction=observed.get('redaction',{})
+        require(all(redaction.get(k) is True for k in ('nested_values_redacted','exception_chain_redacted','encrypted','ttl','audit'))
+            and redaction.get('diagnostic_calls')==1,'redaction/encrypted diagnostic privilege proof missing')
+        require(report.get('input_hashes')==hashes(ROOT,spec.dependencies),'context guard input hashes missing/stale')
+    if spec.owner == 'P7.5':
+        portable=report.get('portable')
+        require(isinstance(portable,list) and len(portable)==3,'history/memory behavioral reports missing')
+        for case_group,unit in zip((HISTORY_CORE_CASES,MEMORY_CORE_CASES,HISTORY_EXAMPLE_CASES),portable):
+            validate_report(Suite('P7.5-portable','contract-scripted','contract-scripted',case_group,(),()),unit)
+        packaging=report.get('packaging')
+        require(isinstance(packaging,dict) and packaging.get('standalone_core') is True and packaging.get('history_memory') is True
+            and all(packaging.get(k) is False for k in ('testing_autoload','sdk_autoload','postgres_autoload','framework_autoload')),
+            'standalone history/memory production no-dev proof missing')
+        require(report.get('input_hashes')==hashes(ROOT,spec.dependencies),'history/memory input hashes missing/stale')
+    if spec.owner == 'P7.5-pg':
+        portable=report.get('portable')
+        require(isinstance(portable,list) and len(portable)==3,'summary durable/concurrency/recovery reports missing')
+        for case_group,unit in zip((SUMMARY_DURABLE_CASES,SUMMARY_CONCURRENT_CASES,SUMMARY_RECOVERY_CASES),portable):
+            validate_report(Suite('P7.5-portable-pg','isolated-postgres','isolated-postgres',case_group,(),(),requires_pg=True),unit)
+        observations=report.get('observations',{})
+        concurrent=observations.get('competing_connections',{})
+        backends=concurrent.get('backends',[])
+        require(isinstance(backends,list) and len(backends)==2 and all(type(p) is int and p>0 for p in backends)
+            and backends[0]!=backends[1] and concurrent.get('exits')==[0,0]
+            and concurrent.get('outcomes')==['appended','integrity_conflict'] and concurrent.get('versions')==1,
+            'real competing summary connections/CAS proof missing')
+        crash=observations.get('crash_restart',{})
+        for boundary in ('before_commit','after_commit'):
+            event=crash.get(boundary,{})
+            require(event.get('signaled') is True and event.get('signal')==9 and type(event.get('exit')) is int and event['exit']!=0,
+                'required SIGKILL boundary proof missing')
+        require(crash.get('rolled_back') is True and crash.get('replay_versions')==1 and crash.get('same_hash') is True,
+            'summary restart/replay integrity proof missing')
+        cascade=observations.get('source_cascade',{})
+        require(cascade.get('invalidated')==4 and cascade.get('historical_markers')==1 and cascade.get('future_use_denied') is True,
+            'source deletion cascade/historical marker proof missing')
+        require(report.get('input_hashes')==hashes(ROOT,spec.dependencies),'summary input hashes missing/stale')
+    if spec.owner == 'P7.4':
+        portable=report.get('portable')
+        require(isinstance(portable,list) and len(portable)==4,'context behavioral reports missing')
+        for case_group,unit in zip((CONTEXT_CORE_CASES,CONTEXT_LIFECYCLE_CASES,CONTEXT_EXAMPLE_CASES,CONTEXT_READ_CASES),portable):
+            tier='unit' if case_group==CONTEXT_READ_CASES else 'contract-scripted'
+            validate_report(Suite('P7.4-portable',tier,tier,case_group,(),()),unit)
+        validate_report(SUITES[('context-compiler','pg-test')],report.get('postgres'))
+        packaging=report.get('packaging')
+        require(isinstance(packaging,dict) and packaging.get('standalone_core') is True and packaging.get('context') is True
+            and all(packaging.get(k) is False for k in ('testing_autoload','sdk_autoload','postgres_autoload','framework_autoload')),
+            'standalone context production no-dev proof missing')
+        require(report.get('input_hashes')==hashes(ROOT,spec.dependencies),'context input hashes missing/stale')
+    if spec.owner == 'P7.3':
+        portable = report.get('portable')
+        require(isinstance(portable, list) and len(portable) == 3, 'skill behavioral reports missing')
+        for unit_cases, unit in zip((SKILL_CORE_CASES, SKILL_LIFECYCLE_CASES, SKILL_EXAMPLE_CASES), portable):
+            validate_report(Suite('P7.3-portable','contract-scripted','contract-scripted',unit_cases,(),()), unit)
+        packaging = report.get('packaging')
+        require(isinstance(packaging, dict) and packaging.get('standalone_core') is True and packaging.get('skills') is True
+            and all(packaging.get(k) is False for k in ('testing_autoload','sdk_autoload','postgres_autoload','framework_autoload')),
+            'standalone skill production no-dev proof missing')
+        observed = report.get('observations')
+        require(isinstance(observed, dict), 'skill observations missing')
+        selected = observed.get('CM-007')
+        require(isinstance(selected, dict) and all(type(selected.get(k)) is int and selected[k] == v
+            for k,v in {'registered':100,'shortlist':1,'selected':1,'fragment_loads':1,'transport_calls':1,'qualification_calls_during_route':0}.items())
+            and selected.get('tools') == ['search'], '100 manifests / one bounded full-fragment transport proof missing')
+        mismatch = observed.get('CM-008')
+        require(isinstance(mismatch, dict) and mismatch.get('code') == 'HASH_MISMATCH' and mismatch.get('loads') == 1
+            and mismatch.get('loaded_versions') == ['1'] and mismatch.get('latest_substituted') is False, 'exact fragment mismatch proof missing')
+        fault = observed.get('V2ALL-SKILL-FAULT')
+        require(isinstance(fault, dict) and fault.get('revoked_loads') == 0 and fault.get('audit_marker') == 'revoked'
+            and fault.get('snapshot_unchanged') is True, 'current skill revoke/audit proof missing')
+        negative = observed.get('V2ALL-SKILL-NEGATIVE')
+        require(isinstance(negative, dict) and negative.get('rejected_manifest_fields') == ['secret','history','corpus','curriculum','tool_catalogue']
+            and negative.get('forbidden_fragment_kinds') == 5 and negative.get('qualified_publications') == 0, 'forbidden skill payload coverage missing')
+        require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'skill input hashes missing/stale')
+    if spec.owner == 'P7.2':
+        validate_report(Suite('P7.2-pg','isolated-postgres','isolated-postgres',
+            PROFILE_MERGE_PG_CASES, (), spec.dependencies, requires_pg=True), report.get('postgres'))
+        pg_inputs = report['postgres'].get('input_hashes')
+        require(pg_inputs == hashes(ROOT, spec.dependencies), 'typed merge publication input hashes missing/stale')
+        portable = report.get('portable')
+        require(isinstance(portable, list) and len(portable) == 2, 'typed merge portable reports missing')
+        for unit_cases, unit in zip((PROFILE_MERGE_CORE_CASES, PROFILE_MERGE_LIVE_CASES), portable):
+            validate_report(Suite('P7.2-core','contract-scripted','contract-scripted',unit_cases,(),()), unit)
+        packaging = report.get('packaging')
+        require(isinstance(packaging, dict) and packaging.get('composition') is True
+            and packaging.get('testing_autoload') is False, 'typed merge production no-dev proof missing')
+    if spec.owner == 'P7.1':
+        if spec.requires_pg:
+            observations = report.get('observations', {})
+            require(isinstance(observations, dict), 'profile observations missing')
+            for name in ('profiles.concurrent-publish', 'profiles.concurrent-pin'):
+                proof = observations.get(name, {})
+                require(isinstance(proof, dict), 'profile connection observation malformed')
+                backends = proof.get('backends')
+                require(proof.get('workers') == 2 and proof.get('exits') == [0, 0]
+                    and proof.get('competed') is True and proof.get('rows') == 1
+                    and isinstance(backends, list) and len(backends) == 2
+                    and all(type(pid) is int and pid > 0 for pid in backends) and backends[0] != backends[1],
+                    'real competing profile connections proof missing')
+            require(observations.get('profiles.concurrent-pin', {}).get('same_pin') is True, 'concurrent pin identity proof missing')
+            for name, rows in (('profiles.publish-sigkill-recovery', 1), ('profiles.pin-sigkill-recovery', 1),
+                    ('profiles.migration-sigkill-recovery', 2)):
+                proof = observations.get(name, {})
+                require(isinstance(proof, dict), 'profile crash observation malformed')
+                require(proof.get('signal') == 9 and proof.get('signaled') is True
+                    and type(proof.get('worker_exit')) is int and proof['worker_exit'] != 0
+                    and proof.get('committed') == 'committed' and proof.get('same_hash') is True
+                    and proof.get('rows') == rows, 'profile SIGKILL/restart proof missing')
+            rollback = observations.get('profiles.migration-commit-rollback', {})
+            require(isinstance(rollback, dict), 'profile rollback observation malformed')
+            require(all(rollback.get(k) is True for k in ('history_rolled_back', 'head_rolled_back', 'receipt_rolled_back'))
+                and rollback.get('retry_revision') == 2, 'atomic migration commit rollback proof missing')
+            inputs = report.get('input_hashes')
+            require(isinstance(inputs, dict) and set(inputs) == set(spec.dependencies)
+                and all(isinstance(h, str) and re.fullmatch('[0-9a-f]{64}', h) for h in inputs.values()),
+                'profile test input hashes missing')
+            require(inputs == hashes(ROOT, spec.dependencies), 'profile test inputs changed after execution')
+        else:
+            packaging = report.get('packaging', {})
+            require(isinstance(packaging, dict), 'profile packaging observation malformed')
+            require(packaging.get('profile_publisher') is True and packaging.get('profile_pins') is True
+                and packaging.get('testing_autoload') is False, 'profile production no-dev proof missing')
+            portable = report.get('portable')
+            require(isinstance(portable, list) and len(portable) == 2, 'profile unit reports missing')
+            for unit_cases, unit in zip((PROFILE_UNIT_CASES, PROFILE_EXAMPLE_CASES), portable):
+                validate_report(Suite('P7.1-unit', 'unit', 'unit', unit_cases, (), ()), unit)
+    if spec.owner in {'P6.1', 'P6.2', 'P6.3', 'P6.4', 'P6.5', 'P7.7'} and spec.mode == 'contract-scripted':
+        name = {'P6.1': 'laravel-composition', 'P6.2': 'platform-definitions', 'P6.3': 'composition-testing',
+                'P6.4': 'filament', 'P6.5': 'scheduler', 'P7.7': 'profile-publish-admin'}[spec.owner]
+        validate_report(SUITES[(name, 'pg-test')], report.get('postgres'))
+        packaging = report.get('packaging')
+        require(isinstance(packaging, dict) and packaging.get('provider') is True
+            and type(packaging.get('default_routes')) is int and packaging['default_routes'] == 0
+            and packaging.get('default_host_bindings') is False and packaging.get('testing_autoload') is False,
+            'production no-dev proof missing')
+        if spec.owner == 'P6.3':
+            validate_report(Suite('P6.3-ports', 'contract-scripted', 'contract-scripted',
+                COMPOSITION_PORT_CASES, (), ()), report.get('portable'))
+        if spec.owner in {'P6.4', 'P7.7'}:
+            require(packaging.get('filament_absent_headless') is True, 'headless Filament independence proof missing')
+            adapter = packaging.get('adapter')
+            require(isinstance(adapter, dict) and adapter.get('provider') is True
+                and type(adapter.get('default_routes')) is int and adapter['default_routes'] == 0
+                and adapter.get('default_host_bindings') is False and adapter.get('testing_autoload') is False
+                and adapter.get('filament') is True, 'adapter production no-dev proof missing')
+            shell_cases = PROFILE_ADMIN_SHELL_CASES if spec.owner == 'P7.7' else FILAMENT_SHELL_CASES
+            validate_report(Suite(spec.owner+'-shell', 'contract-scripted', 'contract-scripted',
+                shell_cases, (), ()), report.get('shell'))
+            if spec.owner == 'P7.7':
+                require(adapter.get('profile_admin') is True, 'profile admin production autoload proof missing')
+                require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'profile admin source hashes missing/stale')
+        if spec.owner == 'P6.5':
+            require(packaging.get('scheduler_absent_headless') is True and packaging.get('core_port') is True,
+                'independent core SchedulePort/headless proof missing')
+            adapter = packaging.get('adapter')
+            require(isinstance(adapter, dict) and adapter.get('provider') is True
+                and type(adapter.get('default_routes')) is int and adapter['default_routes'] == 0
+                and adapter.get('default_host_bindings') is False and adapter.get('testing_autoload') is False
+                and adapter.get('scheduler') is True and adapter.get('filament') is False
+                and adapter.get('core_port') is True, 'scheduler production no-dev proof missing')
+            validate_report(Suite('P6.5-calendar', 'unit', 'unit', SCHEDULER_CALENDAR_CASES, (), ()), report.get('calendar'))
+    if spec.owner == 'P5.5' and spec.requires_pg:
+        observations = report.get('observations', {})
+        crash = observations.get('crash-matrix', {}).get('boundaries', {})
+        require(set(crash) == set(WRITE_BOUNDARIES), 'exact SIGKILL boundary matrix missing')
+        for name, fact in crash.items():
+            require(type(fact.get('worker_exit')) is int and fact['worker_exit'] != 0, 'worker was not killed')
+            expected = 'unresolved' if name == 'invocation-intent' else 'completed'
+            require(fact.get('after', {}).get('status') == expected, 'wrong crash recovery outcome')
+            require(fact['after'].get('owner_writes') == (0 if expected == 'unresolved' else 1), 'duplicate or missing owner effect')
+        require(crash['owner-commit'].get('before', {}).get('outcome') == 'unknown', 'lost owner result erased unknown')
+        atomic = observations.get('atomic-matrix', {}).get('boundaries', {})
+        require(set(atomic) == set(WRITE_ATOMIC_BOUNDARIES), 'exact deferred-commit fault matrix missing')
+        require(all(f.get('rolled_back') is True and f.get('owner_writes') == 1 and f.get('messages') == 1 for f in atomic.values()), 'atomic recovery failed')
+        zombie = observations.get('zombie', {})
+        require(zombie.get('old_worker_alive_after_db_lease_expiry') is True and zombie.get('facts', {}).get('stale_run') is True
+                and zombie['facts'].get('stale_effect') is True and zombie['facts'].get('owner_writes') == 1
+                and zombie.get('accepted_epoch', 0) > zombie.get('original_epoch', 0), 'live zombie proof missing')
+        rollback = observations.get('rollback', {})
+        require(rollback.get('reader_revision') == '2026-09' and rollback.get('owner_writes') == 1
+                and re.fullmatch(r'sha-256:[0-9a-f]{64}', rollback.get('projection_digest', '')) is not None, 'compatible reader rollback proof missing')
+        validate_report(SUITES[('write-recovery', 'test')], report.get('portable'))
     return {"count": len(cases), "failures": 0, "skips": 0, "case_ids": ids}
 
 
@@ -474,6 +1221,11 @@ def run_suite(root: Path, spec: Suite, *, isolated=False, timeout=120):
     result = {"command": list(spec.command), "owner": spec.owner, "mode": spec.mode,
               "tier": spec.tier, "dependency_hashes": inputs, "exit": process.returncode,
               "stdout": process.stdout, "stderr": process.stderr}
+    if spec.owner in {'P6.4', 'P6.5', 'P7.7', 'P7.7-pg'}:
+        result['suite_manifest_hash'] = digest(json.dumps({
+            'owner': spec.owner, 'mode': spec.mode, 'tier': spec.tier, 'cases': spec.cases,
+            'command': spec.command, 'requires_pg': spec.requires_pg, 'dependencies': inputs,
+        }, sort_keys=True, separators=(',', ':')).encode())
     try:
         require(process.returncode == 0, f"runner exited {process.returncode}")
         try:
@@ -506,7 +1258,9 @@ MODULES = {
     "Context": {"Common", "Security", "Profiles"},
     "Models": {"Common", "Profiles", "Context"},
     "Actions": {"Common", "Security", "Profiles"},
-    "Runtime": {"Common", "Security", "Profiles", "Context", "Models", "Actions"},
+    "Budget": {"Common"},
+    "Scheduling": {"Common", "Security", "Context"},
+    "Runtime": {"Common", "Security", "Profiles", "Context", "Models", "Actions", "Budget"},
 }
 
 

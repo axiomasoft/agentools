@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="../../../../examples/platform/confirmed-write/bootstrap.php" failOnWarning="true" failOnRisky="true" cacheResult="false">
+  <testsuites><testsuite name="effect-reconcile"><file>EffectsTest.php</file><file>CrashTest.php</file></testsuite></testsuites>
+</phpunit>

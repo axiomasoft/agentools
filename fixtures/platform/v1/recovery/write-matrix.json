@@ -1,0 +1,106 @@
+{
+  "subject": "PLAN2.P5.5",
+  "tier": "local-host-e2e",
+  "boundaries": [
+    {
+      "id": "intake",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "signal-commit",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "wake",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "admission",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "invocation-intent",
+      "expected": "unresolved",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "provider-commit",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "payload-accepted",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "model-result",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "action-submit",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "preview",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "proof",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "confirmation",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "effect-intent",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "owner-commit",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "effect-confirmed",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "delivery-intent",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "delivery-claim",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "destination-commit",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    },
+    {
+      "id": "delivery-receipt",
+      "expected": "completed",
+      "fault": "SIGKILL after committed boundary; restart without callback regeneration"
+    }
+  ],
+  "limitations": [
+    "Schema/host configuration provisioning is a separate migration rehearsal.",
+    "Outbound provider intent without a provider receipt remains unknown, never blindly resends.",
+    "Synthetic external provider/owner/destination with real PostgreSQL kernel and separate connections."
+  ]
+}

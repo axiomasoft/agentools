@@ -1,0 +1,107 @@
+{
+  "name": "agentools/platform-filament",
+  "description": "Private opt-in Filament inspector and profile lifecycle adapter over headless AgenTools services.",
+  "type": "library",
+  "license": "proprietary",
+  "require": {
+    "php": ">=8.3",
+    "agentools/platform-laravel": "dev-main",
+    "filament/filament": "^5.0",
+    "agentools/platform-core": "dev-main",
+    "agentools/platform-postgres": "dev-main",
+    "agentools/platform-model-adapter": "dev-main",
+    "agentools/sdk": "dev-main"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^2.2",
+    "phpunit/phpunit": "^11.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "AgenToolsPlatform\\Filament\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AgenToolsPlatform\\Filament\\Tests\\": "tests/"
+    }
+  },
+  "archive": {
+    "exclude": [
+      "/tests",
+      "/vendor",
+      "/composer.lock",
+      "/phpstan.neon"
+    ]
+  },
+  "scripts": {
+    "test": "python3 tests/suite.py",
+    "analyse": "phpstan analyse -c phpstan.neon --no-progress --memory-limit=512M"
+  },
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": false,
+    "platform": {
+      "php": "8.3.0"
+    }
+  },
+  "extra": {
+    "agentools": {
+      "private": true,
+      "evidence_tier": "contract-scripted",
+      "registration": "Explicit provider and panel plugin; no discovery"
+    }
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../../packages/agentools-laravel",
+      "options": {
+        "symlink": false,
+        "versions": {
+          "agentools/platform-laravel": "dev-main"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "../../packages/agentools-core",
+      "options": {
+        "symlink": false,
+        "versions": {
+          "agentools/platform-core": "dev-main"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "../../packages/agentools-postgres",
+      "options": {
+        "symlink": false,
+        "versions": {
+          "agentools/platform-postgres": "dev-main"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "../../packages/agentools-model-adapter",
+      "options": {
+        "symlink": false,
+        "versions": {
+          "agentools/platform-model-adapter": "dev-main"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "../../php",
+      "options": {
+        "symlink": false,
+        "versions": {
+          "agentools/sdk": "dev-main"
+        }
+      }
+    }
+  ]
+}

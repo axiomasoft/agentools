@@ -1,0 +1,216 @@
+{
+    "source_manifest": {
+        "branch": {
+            "tenant_id": "context-tenant",
+            "kind": "ref",
+            "id": "history:branch"
+        },
+        "through_turn": 10,
+        "status": "available",
+        "complete": true,
+        "messages": [
+            {
+                "ref": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "message:1"
+                },
+                "branch": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "history:branch"
+                },
+                "turn": 1,
+                "version": "v1",
+                "hash": "sha-256:7f9ea0c328d3ff86808f6700e7e671df75dc53b04352b866e893a7b4a1e57454"
+            },
+            {
+                "ref": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "message:2"
+                },
+                "branch": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "history:branch"
+                },
+                "turn": 2,
+                "version": "v1",
+                "hash": "sha-256:e20bacc1cf8d7ef4c36c7420626a408f2455fd8e31fe831658291ccc4d7f379c"
+            },
+            {
+                "ref": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "message:3"
+                },
+                "branch": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "history:branch"
+                },
+                "turn": 3,
+                "version": "v1",
+                "hash": "sha-256:52d66e33d35a79336d6d559188921da9eeadfc39b74be2c0e64a7d4eb859a800"
+            },
+            {
+                "ref": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "message:4"
+                },
+                "branch": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "history:branch"
+                },
+                "turn": 4,
+                "version": "v1",
+                "hash": "sha-256:1bb5eb4f92e93da65f3721439edcb98410f21832bc7d08a784217084eaca4f9b"
+            },
+            {
+                "ref": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "message:5"
+                },
+                "branch": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "history:branch"
+                },
+                "turn": 5,
+                "version": "v1",
+                "hash": "sha-256:eba87d24e4a64c0a509269a4270a289e321832066e89ed2f3bba0a36c4d0eb0d"
+            },
+            {
+                "ref": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "message:6"
+                },
+                "branch": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "history:branch"
+                },
+                "turn": 6,
+                "version": "v1",
+                "hash": "sha-256:c2e5d7fe02906bc33b86de854540ae2a1855e04b9717553aede1f9fcdd98d4a6"
+            },
+            {
+                "ref": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "message:7"
+                },
+                "branch": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "history:branch"
+                },
+                "turn": 7,
+                "version": "v1",
+                "hash": "sha-256:bc4315c1a6bf68af985d4956663ccc6a034a65c25227cec8b0740bc30dad790e"
+            },
+            {
+                "ref": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "message:8"
+                },
+                "branch": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "history:branch"
+                },
+                "turn": 8,
+                "version": "v1",
+                "hash": "sha-256:926ef5931bcd18bffb3d7e9b78074b2cdc81edafe1a113a4afa4539f24408dac"
+            },
+            {
+                "ref": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "message:9"
+                },
+                "branch": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "history:branch"
+                },
+                "turn": 9,
+                "version": "v1",
+                "hash": "sha-256:19956d7b8efbe45ae377663fe95ebff97a1c4db64e9079662b1c669d16ad5db2"
+            },
+            {
+                "ref": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "message:10"
+                },
+                "branch": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "history:branch"
+                },
+                "turn": 10,
+                "version": "v1",
+                "hash": "sha-256:4e4735faaa0080d0884e4d40f908796d6fff6aa3254b310069e512fc7336422e"
+            }
+        ]
+    },
+    "source_manifest_hash": "sha-256:e9af28688e653e9d9a1f67a31beac22e7eec0c1f69568ceb3b0425801a6fcf55",
+    "version": 1,
+    "fields": {
+        "view_ref": {
+            "tenant_id": "context-tenant",
+            "kind": "ref",
+            "id": "summary:view"
+        },
+        "covered": [
+            {
+                "tenant_id": "context-tenant",
+                "kind": "ref",
+                "id": "covered:task"
+            }
+        ],
+        "understood": [],
+        "uncertain": [
+            {
+                "tenant_id": "context-tenant",
+                "kind": "ref",
+                "id": "uncertain:fact"
+            }
+        ],
+        "open_questions": [
+            {
+                "tenant_id": "context-tenant",
+                "kind": "ref",
+                "id": "question"
+            }
+        ],
+        "promises": [
+            {
+                "tenant_id": "context-tenant",
+                "kind": "ref",
+                "id": "promise:1"
+            }
+        ],
+        "artifact_refs": [],
+        "action_refs": [
+            {
+                "tenant_id": "context-tenant",
+                "kind": "ref",
+                "id": "action:1"
+            }
+        ]
+    },
+    "view_hash": "sha-256:85ad1546f6cb01a4ce7667263e901e328be4182faa075c4e94f8715529978494",
+    "extractor_version": "extractor:v1",
+    "classification": "private",
+    "created_at": "2026-11-01T12:00:00.123456Z",
+    "expires_at": "2026-11-02T12:00:00Z",
+    "trust": "untrusted"
+}

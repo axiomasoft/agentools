@@ -1,0 +1,371 @@
+{
+  "subject": "PLAN2.P6.2",
+  "donor_revision": "59c701335f31b09f617ff5473a61df3c2fdda54c",
+  "donor_source_copied": false,
+  "donor_license": "not applicable: zero donor code copied",
+  "target_license": "proprietary",
+  "source": "docs/platform/bootstrap.json#reuse_decisions",
+  "disposition": "new target implementation; existing Core/PG/SDK reused in place",
+  "rows": [
+    {
+      "path": "packages/agentools-laravel/src/Definitions/Availability.php",
+      "sha256": "5f11929457ed056df629268c6c7d34ec2519e33ad7329594bf0f49527ddbbb07",
+      "inventory_rows": [
+        "inventory.botkit.registry",
+        "inventory.botkit.options"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/RegistryTest.php",
+        "packages/agentools-laravel/tests/Definitions/InstanceTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Definitions/DefaultSettings.php",
+      "sha256": "00e98ceedf91b00e4f76d0f14776a960caebe27052633cbdac073a087fb8edb5",
+      "inventory_rows": [
+        "inventory.botkit.registry",
+        "inventory.botkit.options"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/RegistryTest.php",
+        "packages/agentools-laravel/tests/Definitions/InstanceTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Definitions/Definition.php",
+      "sha256": "2c9a2428df1148e0bc01475472916a40b5acc7961fb32031b6f273dcf19f65c6",
+      "inventory_rows": [
+        "inventory.botkit.registry",
+        "inventory.botkit.options"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/RegistryTest.php",
+        "packages/agentools-laravel/tests/Definitions/InstanceTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Definitions/DraftSettings.php",
+      "sha256": "f130aef080a51905f57f975c936b72f6b1489353c92911c81b5e1bb08e332706",
+      "inventory_rows": [
+        "inventory.botkit.registry",
+        "inventory.botkit.options"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/RegistryTest.php",
+        "packages/agentools-laravel/tests/Definitions/InstanceTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Definitions/HardConstraints.php",
+      "sha256": "dc7f996d38065ced4c0315b483766edbea10e3596c102489588d716df4079d04",
+      "inventory_rows": [
+        "inventory.botkit.registry",
+        "inventory.botkit.options"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/RegistryTest.php",
+        "packages/agentools-laravel/tests/Definitions/InstanceTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Definitions/Instance.php",
+      "sha256": "53e4750b631462e84da81234abaf2049ab388064cbe909e9a00f3c905ab6e3c1",
+      "inventory_rows": [
+        "inventory.botkit.registry",
+        "inventory.botkit.options"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/RegistryTest.php",
+        "packages/agentools-laravel/tests/Definitions/InstanceTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Definitions/InstanceAuthority.php",
+      "sha256": "287689f46cae7749298c6a14249ac5d3de4526b64782867c7f99ceb31dc87558",
+      "inventory_rows": [
+        "inventory.botkit.registry",
+        "inventory.botkit.options"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/RegistryTest.php",
+        "packages/agentools-laravel/tests/Definitions/InstanceTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Definitions/OwnerScope.php",
+      "sha256": "1405a9a856748053a9940a4dd71286195568ab5a41ed5b8d80b5173a1b48e12b",
+      "inventory_rows": [
+        "inventory.botkit.registry",
+        "inventory.botkit.options"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/RegistryTest.php",
+        "packages/agentools-laravel/tests/Definitions/InstanceTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Definitions/PostgresInstances.php",
+      "sha256": "92091394281b8e44ac02ccf11a43d12e50acb97010121b499279fd7e79e0f295",
+      "inventory_rows": [
+        "inventory.botkit.registry",
+        "inventory.botkit.options"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/RegistryTest.php",
+        "packages/agentools-laravel/tests/Definitions/InstanceTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Definitions/Reference.php",
+      "sha256": "8552432f69133c4802492f86c350be2514d85e6a54b6fad64f34ec55674506be",
+      "inventory_rows": [
+        "inventory.botkit.registry",
+        "inventory.botkit.options"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/RegistryTest.php",
+        "packages/agentools-laravel/tests/Definitions/InstanceTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Definitions/Registry.php",
+      "sha256": "143e7fa86a91589a7226dfc1b79a17a807d843c0f884cc1b3ce96e63ef945c1e",
+      "inventory_rows": [
+        "inventory.botkit.registry",
+        "inventory.botkit.options"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/RegistryTest.php",
+        "packages/agentools-laravel/tests/Definitions/InstanceTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Definitions/SessionBinder.php",
+      "sha256": "fdaa3b3b74b328934068d77aa3d3191b215bbc67d96319767ccf0bc64b1fcf67",
+      "inventory_rows": [
+        "inventory.botkit.registry",
+        "inventory.botkit.options"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/RegistryTest.php",
+        "packages/agentools-laravel/tests/Definitions/InstanceTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Definitions/SessionPin.php",
+      "sha256": "5bd9ab58274b7b7798a434bb71e35c2c0910baf08ed351c6ab8c4db31ba1ff6a",
+      "inventory_rows": [
+        "inventory.botkit.registry",
+        "inventory.botkit.options"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/RegistryTest.php",
+        "packages/agentools-laravel/tests/Definitions/InstanceTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Definitions/StateCodec.php",
+      "sha256": "27cfd0b19d7d39d4df94e44129c8cc3dd08b4af1e5edbd3126f3ab8761c43310",
+      "inventory_rows": [
+        "inventory.botkit.registry",
+        "inventory.botkit.options"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/RegistryTest.php",
+        "packages/agentools-laravel/tests/Definitions/InstanceTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Definitions/Tone.php",
+      "sha256": "89ed59e6024080f6ab6150e471844ec11e8dc6212ac31b41697447c6d273fce1",
+      "inventory_rows": [
+        "inventory.botkit.registry",
+        "inventory.botkit.options"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/RegistryTest.php",
+        "packages/agentools-laravel/tests/Definitions/InstanceTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Definitions/schema.sql",
+      "sha256": "b6eee8c8be3dde4d8391ae1034f48519e43bc619bb0938dd4c5e44ae94abde27",
+      "inventory_rows": [
+        "inventory.botkit.registry",
+        "inventory.botkit.options"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/RegistryTest.php",
+        "packages/agentools-laravel/tests/Definitions/InstanceTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Plugins/Contribution.php",
+      "sha256": "84a8ab41e7a39f7a9d40012ceb0c933837b371034475777a6198aecc5c99ceb8",
+      "inventory_rows": [
+        "inventory.botkit.plugins",
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/PluginTest.php",
+        "packages/agentools-laravel/tests/Definitions/AdmissionTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Plugins/DataSink.php",
+      "sha256": "1b9aefbac8c82c5ccec6224ae45c61747143100ece918734e2562dbda6dba139",
+      "inventory_rows": [
+        "inventory.botkit.plugins",
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/PluginTest.php",
+        "packages/agentools-laravel/tests/Definitions/AdmissionTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Plugins/FailurePolicy.php",
+      "sha256": "f7753f2f47b7bd35c108770aee4cf7839fb3f2727c461bbe06814d70d0adbe87",
+      "inventory_rows": [
+        "inventory.botkit.plugins",
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/PluginTest.php",
+        "packages/agentools-laravel/tests/Definitions/AdmissionTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Plugins/Fragment.php",
+      "sha256": "e2bcfcb5154d2cb4e25ffde5a81a6fbc12c80d507bf643349a8b4b2effde42e2",
+      "inventory_rows": [
+        "inventory.botkit.plugins",
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/PluginTest.php",
+        "packages/agentools-laravel/tests/Definitions/AdmissionTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Plugins/HookInput.php",
+      "sha256": "fb9e156521ceaf1f851d464c6211d74c5325fef93140cd21b3f9ec73c552fab7",
+      "inventory_rows": [
+        "inventory.botkit.plugins",
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/PluginTest.php",
+        "packages/agentools-laravel/tests/Definitions/AdmissionTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Plugins/HookResult.php",
+      "sha256": "b027129e61897101905d26098e6ecb4b806ae8b4e8f44c28d8aff706fd180328",
+      "inventory_rows": [
+        "inventory.botkit.plugins",
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/PluginTest.php",
+        "packages/agentools-laravel/tests/Definitions/AdmissionTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Plugins/Manifest.php",
+      "sha256": "c33255a39f8138f73e5359cdf49af2f9171170dc9678fc31d857a01d49d8512e",
+      "inventory_rows": [
+        "inventory.botkit.plugins",
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/PluginTest.php",
+        "packages/agentools-laravel/tests/Definitions/AdmissionTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Plugins/Phase.php",
+      "sha256": "52a0216c59c1181d71bc74d8a34e057c276468c3d87e220488c1bba33b91e184",
+      "inventory_rows": [
+        "inventory.botkit.plugins",
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/PluginTest.php",
+        "packages/agentools-laravel/tests/Definitions/AdmissionTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Plugins/Plugin.php",
+      "sha256": "e7305613c4456e45cb154c2d29dc97e2b295695948599fb3355e0e930b91cf6c",
+      "inventory_rows": [
+        "inventory.botkit.plugins",
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/PluginTest.php",
+        "packages/agentools-laravel/tests/Definitions/AdmissionTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Plugins/PluginHost.php",
+      "sha256": "88d41865710f092c0de744637c448f06afc322e1f495d87daee875c6faa06d6c",
+      "inventory_rows": [
+        "inventory.botkit.plugins",
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/PluginTest.php",
+        "packages/agentools-laravel/tests/Definitions/AdmissionTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Plugins/Registration.php",
+      "sha256": "d9330c43e013c83624a62139834af8392ab1ec51d255a1921bd220347dc60a6b",
+      "inventory_rows": [
+        "inventory.botkit.plugins",
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/PluginTest.php",
+        "packages/agentools-laravel/tests/Definitions/AdmissionTest.php"
+      ]
+    },
+    {
+      "path": "packages/agentools-laravel/src/Plugins/Registry.php",
+      "sha256": "7263a37df15ded85b0a52c667010ebad002cb998c57db527b9bca6d95d4c2a2f",
+      "inventory_rows": [
+        "inventory.botkit.plugins",
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build"
+      ],
+      "consumer_test_files": [
+        "packages/agentools-laravel/tests/Definitions/PluginTest.php",
+        "packages/agentools-laravel/tests/Definitions/AdmissionTest.php"
+      ]
+    }
+  ]
+}

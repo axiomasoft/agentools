@@ -1,0 +1,23 @@
+{
+    "text_snapshot": {
+        "snapshot_ref": {
+            "tenant_id": "context-tenant",
+            "kind": "ref",
+            "id": "snapshot:1e537acf6a10a373a0ac3f1357d9f9f279a41d07a11cc7a3e30762a78cd323dc"
+        },
+        "revision": 1,
+        "content_hash": "sha-256:1e537acf6a10a373a0ac3f1357d9f9f279a41d07a11cc7a3e30762a78cd323dc",
+        "scope_hash": "sha-256:2a2600e73bba212834ed4f1f7266e8b0a34f4d79df68d3cce19eeaba00f08add"
+    },
+    "voice_decoded_delta_snapshot": {
+        "snapshot_ref": {
+            "tenant_id": "context-tenant",
+            "kind": "ref",
+            "id": "snapshot:1e537acf6a10a373a0ac3f1357d9f9f279a41d07a11cc7a3e30762a78cd323dc"
+        },
+        "revision": 1,
+        "content_hash": "sha-256:1e537acf6a10a373a0ac3f1357d9f9f279a41d07a11cc7a3e30762a78cd323dc",
+        "scope_hash": "sha-256:2a2600e73bba212834ed4f1f7266e8b0a34f4d79df68d3cce19eeaba00f08add"
+    },
+    "contract": "Same pinned plan, adapters and decoded input; no second trust model or live voice qualification."
+}

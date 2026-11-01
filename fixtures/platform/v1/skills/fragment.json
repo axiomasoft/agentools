@@ -1,0 +1,19 @@
+{
+    "ref": {
+        "owner": {
+            "kind": "tenant",
+            "tenant_id": "tenant-a"
+        },
+        "id": "fragment.skill.support",
+        "version": "1",
+        "hash": "sha-256:52e339fd153f78c435b6921947e5b28ab1684a0f70ca84dc57e8e808e829379c",
+        "provenance": {
+            "created_by_ref": "thirdparty:fixture",
+            "validation_ref": "validation:scripted",
+            "evaluation_ref": "evaluation:scripted"
+        }
+    },
+    "content_kind": "skill_fragment",
+    "classification": "restricted",
+    "text": "Only full fragment skill.support@1"
+}

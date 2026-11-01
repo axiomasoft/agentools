@@ -1,0 +1,6 @@
+{
+  "format": "profile-merge-case/v1",
+  "id": "CM-002",
+  "input": {"platform_regions": ["RU"], "tenant_regions": ["EU"]},
+  "expected": {"code": "REGION_INTERSECTION_EMPTY", "field": "regions", "network_calls": 0}
+}

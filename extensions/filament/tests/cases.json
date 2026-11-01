@@ -1,0 +1,26 @@
+{
+  "tier": "contract-scripted",
+  "postgres_tier": "isolated-postgres",
+  "postgres": {
+    "testAuthorizedReadOnly": "V2ALL-ADMIN-POSITIVE",
+    "testNoMutationOrHiddenDereference": "V2ALL-ADMIN-NEGATIVE",
+    "testTypedFailuresAndRevocation": "V2ALL-ADMIN-FAULT",
+    "testAuditFailureClosesDisclosure": "admin.audit-fail-closed",
+    "testSensitivePermissionAndTtl": "admin.diagnostics-permission-ttl",
+    "testTenantSwitchAndRetainedScope": "admin.worker-tenant-switch",
+    "testProductionRejectsTestingBindings": "admin.production-no-fake",
+    "testPageUsesFreshReadAndEscapedView": "admin.page-fresh-redacted",
+    "testPartialResolutionCleanupFailure": "admin.cleanup-partial-failure",
+    "testUnknownOwnerOutcome": "admin.unknown-owner-outcome"
+  },
+  "shell": {
+    "testProviderAndPluginOptIn": "admin.route-opt-in",
+    "testEscapedProjection": "admin.view-escaping"
+  },
+  "limitations": [
+    "Real Laravel/Filament PHP shell and headless reads over isolated PG; synthetic host authorization/audit/diagnostic store.",
+    "No browser server, live provider, production host/audit/encryption qualification, ProfileBundle publisher or production rollout.",
+    "P2.4 fractional ManualClock and P3.5 audit/reset uncertainty remain; P5.2 historical RED and single correction are not independently re-reviewed.",
+    "D8: no classical mutation testing or mutation score."
+  ]
+}

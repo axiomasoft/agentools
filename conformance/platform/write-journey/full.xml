@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap.php" failOnWarning="true" failOnRisky="true" cacheResult="false" controlGarbageCollector="true" numberOfTestsBeforeGarbageCollection="1">
+  <testsuites><testsuite name="write-recovery-required">
+    <file>WriteJourneyTest.php</file><file>RecoveryTest.php</file>
+    <file>../../../packages/agentools-core/tests/Actions/Confirmation/PostgresTest.php</file>
+    <file>../../../packages/agentools-postgres/tests/Effects/EffectsTest.php</file>
+    <file>../../../packages/agentools-postgres/tests/Effects/CrashTest.php</file>
+    <file>../../../packages/agentools-laravel/tests/Operations/CancellationTest.php</file>
+    <file>../../../packages/agentools-laravel/tests/Operations/CompensationTest.php</file>
+    <file>../../../packages/agentools-laravel/tests/Operations/RecoveryTest.php</file>
+  </testsuite></testsuites>
+</phpunit>

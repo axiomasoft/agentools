@@ -1,0 +1,65 @@
+{
+    "code": "CONTEXT_MANDATORY_OVERFLOW",
+    "available_tokens": 5500,
+    "required_tokens": 5600,
+    "count_confidence": "conservative",
+    "tokenizer_version": "scripted-utf8-byte-upper-bound/v1",
+    "renderer_version": "scripted-utf8-byte-upper-bound/v1",
+    "mandatory_blocks": [
+        {
+            "id": "policy",
+            "kind": "policy",
+            "source_ref": "source:policy",
+            "source_version": "v1",
+            "owner_ref": "owner",
+            "trust_class": "policy",
+            "classification": "private",
+            "purpose": "support.read",
+            "content_ref": "content:policy",
+            "content_hash": "sha-256:57f997084f68d70d568d113c9f4dc37cc4c20c72d0c0f3508559962d2c5c0944",
+            "expires_at": "2030-01-01T00:00:00Z",
+            "mandatory": true,
+            "priority": 100,
+            "evidence_refs": [],
+            "provenance": {
+                "source_kind": "host",
+                "message_ids": [],
+                "through_turn": null,
+                "summary_version": null,
+                "fresh_at": null,
+                "raw_result_ref": null,
+                "tool_id": null,
+                "user_view_ref": null,
+                "audit_view_ref": null
+            }
+        },
+        {
+            "id": "input",
+            "kind": "input",
+            "source_ref": "source:input",
+            "source_version": "v1",
+            "owner_ref": "owner",
+            "trust_class": "untrusted",
+            "classification": "private",
+            "purpose": "support.read",
+            "content_ref": "content:input",
+            "content_hash": "sha-256:791cd06e331b4ba4a2a341eaa97ae9c416d2daae3983578f159bf7cda1fa908e",
+            "expires_at": "2030-01-01T00:00:00Z",
+            "mandatory": true,
+            "priority": 100,
+            "evidence_refs": [],
+            "provenance": {
+                "source_kind": "host",
+                "message_ids": [],
+                "through_turn": null,
+                "summary_version": null,
+                "fresh_at": null,
+                "raw_result_ref": null,
+                "tool_id": null,
+                "user_view_ref": null,
+                "audit_view_ref": null
+            }
+        }
+    ],
+    "exclusions": []
+}

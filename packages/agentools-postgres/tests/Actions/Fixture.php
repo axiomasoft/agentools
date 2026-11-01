@@ -23,7 +23,7 @@ final readonly class Fixture
     public RunClaim $claim;
     public ActionRepository $actions;
 
-    public function __construct(public IsolatedDatabase $database, public string $schema, bool $seed = true)
+    public function __construct(public IsolatedDatabase $database, public string $schema, bool $seed = true, ?PayloadHash $proposalHash = null)
     {
         $this->runtime = new RuntimeFixture($database->pdo, $schema, new TenantId('tenant-a'));
         $this->context = $this->runtime->context();
@@ -43,7 +43,7 @@ final readonly class Fixture
             $db->execute('INSERT INTO ' . $db->table('proposal_map') . '
                 (tenant_id,id,run_id,invocation_id,proposal_key,payload_hash,proposal_ref,action_ref)
                 VALUES (\'tenant-a\',\'proposal\',:run,\'invocation\',\'proposal\',:hash,\'encrypted:proposal\',:action)', [
-                    'run' => $receipt->runId->value, 'hash' => str_repeat('a', 64), 'action' => $this->action->value]);
+                    'run' => $receipt->runId->value, 'hash' => $proposalHash === null ? str_repeat('a', 64) : substr($proposalHash->value, 8), 'action' => $this->action->value]);
         } else {
             $db = $this->runtime->environment->db;
             $row = $db->row('SELECT id,claim_owner,lease_until FROM ' . $db->table('runs') . ' WHERE tenant_id=\'tenant-a\'')

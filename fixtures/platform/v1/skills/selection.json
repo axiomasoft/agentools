@@ -1,0 +1,23 @@
+{
+    "format": "skill-selection/v1",
+    "routing_hash": "sha-256:582c2b00fc15a03ecd59e13697d463739ada8a29786a702b888732ac2bff4c18",
+    "selected_skill": {
+        "owner": {
+            "kind": "tenant",
+            "tenant_id": "tenant-a"
+        },
+        "kind": "skill",
+        "id": "skill.support",
+        "version": "1",
+        "hash": "sha-256:6a9cab779af4ddae9a7354287adc00c142c5c99964e203649dd5ead4cb5a9a29"
+    },
+    "qualification_tuple_hash": "sha-256:35f5a27182131e346aba7a7ed2806129087ca295d642b7ff73519c2d2a2dcda2",
+    "prompt_hash": "sha-256:f12e900263f8e03de82b6595e7318ada1f76537796f2fcc42c2395ca559b654f",
+    "tool_schema_hash": "sha-256:5c867562b954ed0a48b16a1c2b3935521b45e3eea2a08a910b3160b7a258b6e6",
+    "counter": {
+        "id": "byte-upper-bound",
+        "version": "1",
+        "hash": "sha-256:a826010b3d1acad17c0d3f448cd429ec9ba3ac1540b37ae1c2b6f0bbcb8cf17a"
+    },
+    "selection_hash": "sha-256:3c2a102bcc453f9dc94b26c385c1a0822f6afdfee879b9a1e628946a839f2006"
+}

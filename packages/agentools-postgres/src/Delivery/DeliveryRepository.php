@@ -154,8 +154,25 @@ final readonly class DeliveryRepository
     {
         $context->session->tenant->assertSame($proposal->run->tenant);
         $this->environment->authorize($context);
-        $row=$this->load($context,$proposal->key);
         ($this->authorizeSource)($context,$proposal->source,'publish');
+        $this->assertCommitFence($context, $proposal, $token);
+    }
+
+    /**
+     * Nonserializable same-operation check, minted only after current host/source authorization.
+     * Destination Reauthorize may call it under SQL locks: it reads current owner facts, performs no owner IO,
+     * and never rehydrates authority from IDs. The host must also recheck its local binding and native revision.
+     * @return \Closure():void
+     */
+    public function prepareCommit(ExecutionContext $context, DeliverySubmission $proposal, string $token): \Closure
+    {
+        $this->assertCurrent($context, $proposal, $token);
+        return function () use ($context, $proposal, $token): void { $this->assertCommitFence($context, $proposal, $token); };
+    }
+
+    private function assertCommitFence(ExecutionContext $context, DeliverySubmission $proposal, string $token): void
+    {
+        $row=$this->load($context,$proposal->key);
         $this->matching($row,$proposal);
         $this->source($proposal->source,$proposal->sourceRevision,false);
         if ($row['cancelled']!==false || $row['live']!==true || $row['readable']!==true || $row['state']!=='sending'
@@ -312,8 +329,8 @@ final readonly class DeliveryRepository
                 ON b.tenant_id=t.tenant_id AND b.id=t.input_ref WHERE t.tenant_id=r.tenant_id AND t.id=r.turn_id AND b.source_ref=:source)';
             $db->execute('UPDATE '.$db->table('runs').' r SET version=version+1,status=\'cancelling\',claim_owner=NULL,lease_until=NULL,fencing_epoch=fencing_epoch+1
                 WHERE r.tenant_id=:tenant AND r.status NOT IN (\'completed\',\'failed\',\'cancelled\',\'cancelling\') AND '.$bound,$parameters);
-            $db->execute('UPDATE '.$db->table('runs').' r SET version=version+1,status=\'cancelled\',terminal_code=\'source_closed\',
-                claim_owner=NULL,lease_until=NULL,fencing_epoch=fencing_epoch+1 WHERE r.tenant_id=:tenant AND r.status=\'cancelling\' AND '.$bound,$parameters);
+            // Source/output closure stops the next Run step. Terminal cancellation
+            // needs a separate audited policy decision after unknown work is reconciled.
         });
     }
 

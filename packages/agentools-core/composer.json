@@ -27,7 +27,8 @@
       "@php tests/smoke.php",
       "@php tests/Common/run.php",
       "@php tests/Runtime/run.php",
-      "@php tests/Models/run.php"
+      "@php tests/Models/run.php",
+      "@php tests/Runtime/advance.php"
     ],
     "analyse": "phpstan analyse -c phpstan.neon --no-progress"
   },

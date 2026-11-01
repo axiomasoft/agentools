@@ -1,0 +1,46 @@
+{
+  "revision": "history-memory/v1",
+  "rows": [
+    {
+      "artifact": "exact transcript",
+      "owner": "external HistorySource",
+      "local_storage": "refs/hashes only",
+      "source_delete": "deny new use; request owner delete; retain historical marker"
+    },
+    {
+      "artifact": "working state",
+      "owner": "runtime with host acceptance",
+      "local_storage": "bounded refs/schema/version/expiry",
+      "expiry": "deny context use; host retention cleanup"
+    },
+    {
+      "artifact": "summary",
+      "owner": "runtime metadata; host view bytes",
+      "local_storage": "immutable source manifest/view refs/hashes",
+      "source_delete": "invalidate reverse dependency; preserve historical version"
+    },
+    {
+      "artifact": "memory candidate",
+      "owner": "external MemorySource/domain owner",
+      "local_storage": "dependency refs only",
+      "source_delete": "invalidate new use; initiate owner delete process"
+    },
+    {
+      "artifact": "history index/context cache",
+      "owner": "host; runtime reverse refs",
+      "local_storage": "dependency refs only",
+      "source_delete": "invalidate for future use"
+    },
+    {
+      "artifact": "completed run",
+      "owner": "runtime technical record",
+      "source_delete": "source_revoked/source_deleted/source_corrected/consent_revoked marker; do not rewrite delivery"
+    },
+    {
+      "artifact": "diagnostic prompt",
+      "owner": "separate authorized encrypted diagnostics host",
+      "expiry": "TTL/access/audit under P7.4; no plaintext default"
+    }
+  ],
+  "unknown_semantics": "unavailable source != failed read != successful empty history; pending/unknown delete != confirmed deletion"
+}

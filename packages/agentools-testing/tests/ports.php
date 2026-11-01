@@ -13,6 +13,11 @@ $cases = [
     $clock = new ManualClock(new UtcInstant('2026-10-31T12:00:00Z'));
     $clock->advanceSeconds(31); H::check($clock->now()->value === '2026-10-31T12:00:31Z');
     H::rejects(static fn () => $clock->advanceSeconds(-1), InvalidArgumentException::class);
+    $fractional = new ManualClock(new UtcInstant('2026-10-31T12:00:00.5Z'));
+    $fractional->advanceSeconds(0); H::check($fractional->now()->value === '2026-10-31T12:00:00.5Z');
+    $fractional->advanceSeconds(1); H::check($fractional->now()->value === '2026-10-31T12:00:01.5Z');
+    $fractional->advanceMicroseconds(500000); H::check($fractional->now()->value === '2026-10-31T12:00:02Z');
+    H::rejects(static fn () => $fractional->advanceMicroseconds(-1), InvalidArgumentException::class);
     $random = new ScriptedRandom([['purpose'=>'operation-key','value'=>'saved-1']]);
     H::rejects(static fn () => $random->next('wrong-purpose'), LogicException::class);
     H::rejects(static fn () => $random->assertConsumed(), LogicException::class);

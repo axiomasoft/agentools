@@ -19,6 +19,7 @@ final class TestVault implements EncryptedPayloadStore
     public int $resets = 0;
     public bool $supported = true;
     public bool $failRead = false;
+    public bool $failReset = false;
     public bool $loseDeleteReceipt = false;
     public ?\Closure $onRead = null;
     public ?\Closure $onPurge = null;
@@ -65,5 +66,8 @@ final class TestVault implements EncryptedPayloadStore
         ++$this->resets;
         $this->credential = null;
         $this->cachedBytes = null;
+        if ($this->failReset) {
+            throw new \RuntimeException('SECRET-reset-failed');
+        }
     }
 }

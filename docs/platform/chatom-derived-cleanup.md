@@ -6,9 +6,9 @@
 AgenTools platform milestones or qualify an Edufy host/provider deployment.
 
 The stores reuse `PayloadRepository` for bytes, TTL, authorization, registered
-copies, holds, purge reservations and deletion reconciliation. `0009_derived_payloads.sql`
+copies, holds, purge reservations and deletion reconciliation. `0012_derived_payloads.sql`
 adds only source/payload bindings and cleanup operation metadata. It follows the
-unchanged `0006` delivery, PLAN2 `0007` Action submission and `0008` holds migrations.
+unchanged `0006` delivery, PLAN2 `0007` Action submission, `0008` holds and `0009`–`0011` Action/Operations migrations.
 No second transcript, generation, scheduler, delivery or Action journal is added.
 
 ## Producer and reader contract

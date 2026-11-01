@@ -1,0 +1,43 @@
+{
+  "id": "testing-profile-v1",
+  "tier": "contract-scripted",
+  "postgres_partition_tier": "isolated-postgres",
+  "tenants": [
+    "alpha",
+    "beta"
+  ],
+  "entries": [
+    "managed",
+    "custom",
+    "raw",
+    "build",
+    "stream",
+    "voice",
+    "background",
+    "direct-action"
+  ],
+  "class_cases": {
+    "testTestingProfileKeepsRealGuardsAndConfirmation": "V2ALL-FAKE-POSITIVE",
+    "testProductionRejectsFakePersistenceAndSecrets": "V2ALL-FAKE-NEGATIVE",
+    "testBeforeIntakeCommitRollsBackAndRetryRecovers": "V2ALL-FAKE-FAULT",
+    "testRawBypassAndUnknownBudgetNeverReachModel": "fake-profile.raw-admission",
+    "testSequentialAlphaBetaAndExceptionCancelReset": "fake-profile.worker-isolation",
+    "testAfterIntakeCommitKeepsStableAcceptedSource": "fake-profile.after-commit",
+    "testModelLostReplyUsesOriginalLookupWithoutResend": "fake-profile.model-recovery",
+    "testFakeOwnerNeedsRealConfirmationAndRecoversUnknown": "fake-profile.owner-boundary"
+  },
+  "portable_cases": [
+    "fake.ports-identity-state",
+    "fake.raw-admission-and-purpose-denial",
+    "fake.delivery-disclosure-and-unknown",
+    "fake.owner-requires-durable-boundary",
+    "fake.external-fault-and-lookup",
+    "fake.stream-terminal-loss-stays-unknown",
+    "fake.tenant-cache-reset"
+  ],
+  "limitations": [
+    "Synthetic external owner state is not durable PostgreSQL or live provider evidence.",
+    "The PG partition retains the real kernel, confirmation, action/effect and invocation journals.",
+    "No mutation testing, public release or production qualification."
+  ]
+}

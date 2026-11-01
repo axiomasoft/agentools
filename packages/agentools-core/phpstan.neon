@@ -2,6 +2,23 @@ parameters:
     bootstrapFiles:
         - tests/Common/bootstrap.php
     level: max
+    parallel:
+        jobSize: 1
     paths:
         - src
         - tests
+    scanFiles:
+        - ../agentools-postgres/src/Profiles/Authority.php
+        - ../agentools-postgres/src/Profiles/BundleRepository.php
+        - ../agentools-postgres/src/Profiles/Schema.php
+        - ../agentools-postgres/src/Profiles/SessionRepository.php
+        - ../agentools-postgres/src/Profiles/StoredBundle.php
+        - ../agentools-postgres/src/Runtime/Connection.php
+        - ../agentools-postgres/src/Runtime/ContextRevision.php
+        - ../agentools-postgres/src/Runtime/RepositoryContext.php
+        - ../agentools-postgres/src/Runtime/StorageFailure.php
+        - ../agentools-postgres/tests/Profiles/DatabaseCase.php
+        - ../agentools-postgres/tests/Profiles/Fixture.php
+        - ../agentools-postgres/tests/IsolatedDatabase.php
+        - ../agentools-postgres/tests/Runtime/TestRevisions.php
+        - ../../fixtures/platform/v1/history/external-owner-adapter.php

@@ -1,0 +1,300 @@
+{
+  "subject": "PLAN2.P5.5",
+  "durable_tier": "local-host-e2e",
+  "external_mode": "scripted provider/admission/owner/destination; real Runtime/Actions and isolated PostgreSQL",
+  "contract_refs": [
+    "knowledge/rt.verification#verification",
+    "knowledge/root.verification#verification",
+    "knowledge/rt.states#states"
+  ],
+  "cases": [
+    {
+      "id": "WRITE-001",
+      "method": "testConfirmedWriteJourney",
+      "partition": "journey"
+    },
+    {
+      "id": "WRITE-DIRECT-PARITY",
+      "method": "testDirectAndAssistantShareGuardsAndIdentity",
+      "partition": "journey"
+    },
+    {
+      "id": "WRITE-REVOKE",
+      "method": "testRevokeAndEmergencyBeforeOwnerWrite",
+      "partition": "journey"
+    },
+    {
+      "id": "WRITE-F2-OWNER-COMMIT",
+      "method": "testF2OwnerCommitLocalJournalFailure",
+      "partition": "journey"
+    },
+    {
+      "id": "WRITE-TENANT-INSTANCE",
+      "method": "testTenantInstanceSwitchAndHashConflict",
+      "partition": "journey"
+    },
+    {
+      "id": "WRITE-CRASH-MATRIX",
+      "method": "testCrashAtEveryBoundary",
+      "partition": "journey"
+    },
+    {
+      "id": "WRITE-ZOMBIE",
+      "method": "testLiveZombieAfterLeaseExpiry",
+      "partition": "journey"
+    },
+    {
+      "id": "WRITE-SOURCE-RACE",
+      "method": "testConcurrentSourceDelivery",
+      "partition": "journey"
+    },
+    {
+      "id": "WRITE-DRAIN",
+      "method": "testDrainUnknownEffect",
+      "partition": "journey"
+    },
+    {
+      "id": "WRITE-ATOMIC-MATRIX",
+      "method": "testAtomicDurableBoundaries",
+      "partition": "journey"
+    },
+    {
+      "id": "WRITE-ROLLBACK",
+      "method": "testCompatibleRollbackReader",
+      "partition": "journey"
+    },
+    {
+      "id": "WRITE-PRIVACY",
+      "method": "testPrivacyAndResultBinding",
+      "partition": "journey"
+    },
+    {
+      "id": "V2-P5-2-CONFIRM-POS",
+      "method": "testValidConsumesOnce",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "CNF-002",
+      "method": "testRevokeBeforeOwnerWrite",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "CNF-004",
+      "method": "testConcurrentConsume",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "V2ALL-CONFIRM-NEGATIVE",
+      "method": "testExactBindings",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "V2ALL-CONFIRM-POSITIVE",
+      "method": "testPositiveBindingsAndVoice",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "V2ALL-CONFIRM-FAULT",
+      "method": "testCrashResponseLossAndEpoch",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "confirmation.atomic-journal-proof",
+      "method": "testDurablePreparationRollback",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "confirmation.cancel-compensation",
+      "method": "testCancellationAndCompensation",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "confirmation.runnable-example",
+      "method": "testRunnableExample",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "confirmation.owner-commit-journal-failure",
+      "method": "testOwnerCommitJournalFailureReconcilesSameKey",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "confirmation.owner-receipt-outage",
+      "method": "testOwnerReceiptOutageRetainsApplyingUnknown",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "confirmation.owner-reconciliation-guards",
+      "method": "testOwnerReconciliationRequiresBoundReceiptAndCurrentAuthority",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "ACT-002",
+      "method": "testOwnerCommitThenLocalJournalFailure",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "ACT-003",
+      "method": "testUnsupportedTimeoutNeverReplays",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "ACT-004",
+      "method": "testNativeKeyHashAndImmutableOutcome",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "V2-P5-3-MANUAL-POS",
+      "method": "testAuthenticatedManualResolution",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "V2-P5-3-LOOKUP-POS",
+      "method": "testCurrentEpochLookupAndStaleWorker",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "V2ALL-EFFECT-POSITIVE",
+      "method": "testCommittedIntentAndReadBeforeWrite",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "V2ALL-EFFECT-NEGATIVE",
+      "method": "testUnknownAndWrongBindingDenyReplay",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "V2ALL-EFFECT-FAULT",
+      "method": "testResponseLossRetainsUnknownAndKnownFailure",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "effect.retry-bounds-cancellation",
+      "method": "testRetryBoundsAndCancellation",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "effect.projection-current-authority",
+      "method": "testProjectionRebuildAndCurrentAuthority",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "effect.native-unknown-retry",
+      "method": "testNativeUnknownRetryUsesSameKey",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "effect.read-absent-recovery",
+      "method": "testReadAbsentRecoveryAndCapabilityBinding",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "effect.definition-current-policy",
+      "method": "testDefinitionLimitAndCurrentEmergencyPolicy",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "effect.sigkill-after-owner-commit",
+      "method": "testSigkillAfterOwnerCommit",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "effect.competing-recovery",
+      "method": "testCompetingRecovery",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "CANCEL-001",
+      "method": "testCancellationWithUnresolvedEffect",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "V2-P5-4-TTS-POS",
+      "method": "testCompletedEffectSurvivesTtsStop",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "V2ALL-CANCEL-POSITIVE",
+      "method": "testIndependentRunActionAndOutputCommands",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "V2ALL-CANCEL-NEGATIVE",
+      "method": "testInterruptedOutputNeverClaimsWholeDelivery",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "V2ALL-CANCEL-FAULT",
+      "method": "testCancellationFaultRetainsPartialDelivery",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "cancel.manual-atomic",
+      "method": "testManualReceiptAtomicRollback",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "cancel.manual-cas-replay",
+      "method": "testAuditedManualResolutionCasAndReplay",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "cancel.authority-immutable-audit",
+      "method": "testAuthorityTenantVersionAndImmutableAudit",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "cancel.source-closure-unknown",
+      "method": "testSourceClosureLeavesUnknownVisible",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "cancel.explicit-compensation",
+      "method": "testExplicitCompensationRequiresFreshConfirmation",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "cancel.compensation-guards",
+      "method": "testCompensationPolicyAndUnknownDenied",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "cancel.crash-after-commit",
+      "method": "testCrashAfterCancellationCommit",
+      "partition": "upstream-regression"
+    },
+    {
+      "id": "cancel.competing-commands",
+      "method": "testCompetingCancellation",
+      "partition": "upstream-regression"
+    }
+  ],
+  "required_observations": {
+    "crash-matrix": 19,
+    "atomic-matrix": 6,
+    "zombie": "old worker alive, DB lease expiry, both fences reject late commit",
+    "rollback": "0001-0010 to additive 0011; dated reader and projection digest preserved"
+  },
+  "portable": {
+    "fixture": "fixtures/platform/v1/recovery/portable.json",
+    "cases_per_consumer": 39,
+    "consumers": [
+      "reference",
+      "php-sdk",
+      "dart-sdk"
+    ],
+    "tier": "contract-scripted",
+    "comparison": "exact case IDs and typed observed JSON, including null"
+  },
+  "source_fixture_hashes": {
+    "fixtures/platform/v1/effects/outcomes.json": "de6cc92dddb2eac4f19a15120cf84b1771b8b2d7dea78f3fa1e4c549d46aef28",
+    "fixtures/platform/v1/cancellation/outcomes.json": "7172cbe0a40ca26db97f0d131ac67c606636acf54f822972322c0995ed53b512",
+    "fixtures/platform/v1/confirmation/bindings.json": "c19e48987941a2a1fc2b58315d9ea3db6cffd403d604b66137437652d9991417"
+  },
+  "limitations": [
+    "Scripted external ports are not live provider or production owner qualification.",
+    "Compatible schema/reader route is not deployment rollback or backup restore.",
+    "Historical P5.2 RED/rejected review and single correction remain unchanged.",
+    "Classical mutation testing excluded by owner decision D8."
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "tier": "contract-scripted",
+  "postgres_tier": "isolated-postgres",
+  "postgres": {
+    "testConcurrentScanners": "CM-045",
+    "testDstPersisted": "CM-046",
+    "testCatchupBoundAndDuplicateRetry": "CM-047",
+    "testStableIdentityAndHashConflict": "V2ALL-SCHED-NEGATIVE",
+    "testAtomicRollbackAndPendingBatchRecovery": "scheduler.atomic-rollback",
+    "testStoppedAndInventedTimeDenied": "scheduler.stop-unplanned-denied",
+    "testCrashAfterCommit": "scheduler.crash-after-commit",
+    "testManagedAdmissionAndLifecycle": "V2ALL-SCHED-POSITIVE",
+    "testCurrentRevocationBeforeDispatch": "CM-048",
+    "testCommonGuardDenialAndSourceSubstitution": "scheduler.common-guards-source-binding",
+    "testStopPreservesUnknownAction": "V2ALL-SCHED-FAULT",
+    "testTenantAndProductionBoundaries": "scheduler.tenant-production",
+    "testMissingGuardAndAliasDenied": "scheduler.guard-required-alias-denied"
+  },
+  "calendar": {
+    "testOverlapAndWorkerTimezone": "scheduler.dst-overlap-zone",
+    "testMissingWallTime": "scheduler.dst-gap",
+    "testBoundedMisfirePolicies": "scheduler.misfire-policies",
+    "testInvalidPoliciesAndRange": "scheduler.explicit-policies"
+  },
+  "limitations": [
+    "Daily wall-time rules with explicit IANA zone, active range, overlap/gap policy and bounded misfire; no general cron engine or Cadence dependency.",
+    "Real Laravel/core/PostgreSQL intake/runtime/confirmation journals; synthetic external authorization, provider, budget and delivery owners.",
+    "Scanner performs no provider/delivery/effect IO. Explicit dispatch uses the existing managed background runtime with ScheduledHost guard.",
+    "No live provider, production rollout, production owner qualification, ProfileBundle publisher/router or browser deployment claim.",
+    "P5.2 historical RED and single owner correction, P2.4 fractional ManualClock and P3.5 audit/reset uncertainty remain. D8 excludes classical mutation testing."
+  ]
+}

@@ -25,4 +25,16 @@ final readonly class EffectRequest
         $this->ownerOperationRef->assertSame($other->ownerOperationRef);
         $this->requestHash->assertSame($other->requestHash);
     }
+
+    /** @return array<string, mixed> */
+    public function toArray(): array
+    {
+        return [
+            'action_id' => $this->actionId->toArray(),
+            'effect_id' => $this->effectId->toArray(),
+            'effect_key' => $this->effectKey->value,
+            'owner_operation_ref' => $this->ownerOperationRef->toArray(),
+            'request_hash' => $this->requestHash->value,
+        ];
+    }
 }

@@ -1,6 +1,6 @@
 {
   "name": "agentools/platform-testing",
-  "description": "Private development-only platform test reporting and architecture fixtures.",
+  "description": "Private development-only platform doubles, fault injection, reporting and architecture fixtures.",
   "type": "library",
   "license": "proprietary",
   "repositories": [{"type": "path", "url": "../agentools-core", "options": {"symlink": false, "versions": {"agentools/platform-core": "dev-main"}}}],
@@ -9,7 +9,7 @@
   "autoload": {"psr-4": {"AgenToolsPlatform\\Testing\\": "src/"}},
   "archive": {"exclude": ["/tests", "/fixtures", "/bin", "/vendor", "/phpstan.neon", "/composer.lock"]},
   "scripts": {
-    "test": ["@php tests/smoke.php", "@php tests/run.php"],
+    "test": ["@php tests/smoke.php", "@php tests/run.php", "@php tests/Composition/ports.php", "@php ../agentools-core/tests/Context/compiler.php", "python3 ../../conformance/platform/read-journey/run.py"],
     "analyse": "phpstan analyse -c phpstan.neon --no-progress"
   },
   "config": {"sort-packages": true, "allow-plugins": false, "platform": {"php": "8.3.0"}},

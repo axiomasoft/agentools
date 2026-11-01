@@ -182,7 +182,7 @@ def tier_commands(tier: str) -> list[list[str]]:
         ["bash", "conformance/bin/semantic-parity"],
     ]
     extended = bounded + [
-        ["python3", "tools/mutation_gate.py", "run"],
+        # Owner decision D8 defers classical mutation testing for this stage.
         ["python3", "tools/adversarial_corpus.py", "run"],
         ["python3", "tools/resource_gate.py", "run"],
     ]
@@ -412,6 +412,7 @@ def cmd_write_finding(_: argparse.Namespace) -> int:
             "",
             "## Capability gaps (not silently passed)",
             "",
+            "- Classical mutation testing is deferred by owner decision D8; no mutation-test evidence is claimed.",
             "- GitHub dependency review and hosted attestations remain unavailable on current plan.",
             "- Secret scanning push protection disabled; Gitleaks is complementary.",
             "",
@@ -431,6 +432,12 @@ def _disposable_resolution(package: str, mode: str) -> tuple[int, str]:
         workspace = Path(tmp) / "tree"
         copy_workspace(REPO, workspace)
         if package == "php":
+            # The SDK platform regression loads the core model fixtures and their
+            # Composer autoloader from the same isolated source snapshot.
+            core = REPO / "packages" / "agentools-core"
+            if core.is_dir():
+                shutil.copytree(core, workspace / "packages" / "agentools-core",
+                                symlinks=True, ignore=shutil.ignore_patterns("__pycache__", ".phpunit.result.cache"))
             cwd = workspace / "php"
             resolve = ["composer", "update", "--no-interaction", "--prefer-dist"]
             if mode == "lowest":
@@ -585,6 +592,13 @@ def cmd_test(_: argparse.Namespace) -> int:
 
 
 class CiMatrixTests(unittest.TestCase):
+    def test_owner_defers_mutation_without_dropping_fault_checks(self) -> None:
+        for tier in ("extended", "release-candidate"):
+            commands = tier_commands(tier)
+            self.assertNotIn(["python3", "tools/mutation_gate.py", "run"], commands)
+            self.assertIn(["python3", "tools/adversarial_corpus.py", "run"], commands)
+            self.assertIn(["python3", "tools/resource_gate.py", "run"], commands)
+
     def test_worktree_scan_catches_uncommitted_and_untracked_secrets(self) -> None:
         scanner = install_cli_tool("gitleaks/gitleaks")
         config = REPO / ".gitleaks.toml"
@@ -702,6 +716,43 @@ class CiMatrixTests(unittest.TestCase):
         self.assertNotIn("'''plans/'''", text)
         self.assertNotIn("'''conformance/reports/'''", text)
         self.assertIn('condition = "AND"', text)
+
+    def test_gitleaks_planner_revision_exception_is_exact(self) -> None:
+        scanner = install_cli_tool("gitleaks/gitleaks")
+        original = (REPO / "docs/platform/bootstrap.json").read_text(encoding="utf-8")
+        match = re.search(r"Planner API revision sha256:([0-9a-f]{64})", original)
+        self.assertIsNotNone(match)
+        revision = match.group(1)
+        synthetic = hashlib.sha256(b"gitleaks synthetic different revision control").hexdigest()
+        self.assertNotEqual(revision, synthetic)
+        with tempfile.TemporaryDirectory(prefix="agentools-gitleaks-revision-") as tmp:
+            root = Path(tmp)
+            tree = root / "tree"
+            fixture = tree / "docs/platform/bootstrap.json"
+            fixture.parent.mkdir(parents=True)
+
+            def scan(name: str) -> tuple[int, list[dict[str, Any]]]:
+                report = root / f"{name}.json"
+                proc = subprocess.run(
+                    [str(scanner), "dir", "--no-banner", "--redact=100", "--config",
+                     str(REPO / ".gitleaks.toml"), "--report-format", "json",
+                     "--report-path", str(report), "."],
+                    cwd=tree, check=False, capture_output=True, text=True,
+                )
+                return proc.returncode, json.loads(report.read_text()) if report.is_file() else []
+
+            fixture.write_text(original, encoding="utf-8")
+            code, findings = scan("known")
+            self.assertEqual((code, len(findings)), (0, 0))
+            fixture.write_text(original.replace(revision, synthetic), encoding="utf-8")
+            code, findings = scan("different")
+            self.assertEqual(code, 1)
+            self.assertTrue(any(row.get("RuleID") == "generic-api-key" for row in findings))
+            fixture.write_text(original, encoding="utf-8")
+            (tree / "unrelated.txt").write_text(original, encoding="utf-8")
+            code, findings = scan("other-path")
+            self.assertEqual(code, 1)
+            self.assertTrue(any(row.get("File") == "unrelated.txt" for row in findings))
 
     def test_gitleaks_detects_secrets_in_formerly_allowlisted_directories(self) -> None:
         scanner = install_cli_tool("gitleaks/gitleaks")

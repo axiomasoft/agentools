@@ -1,0 +1,12 @@
+{
+    "policy_ref": {
+        "tenant_id": "context-tenant",
+        "kind": "ref",
+        "id": "output:policy"
+    },
+    "version": "v1",
+    "mode": "buffered",
+    "sensitive": true,
+    "max_bytes": 65536,
+    "live_approval_ref": null
+}

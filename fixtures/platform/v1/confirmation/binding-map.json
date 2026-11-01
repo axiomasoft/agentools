@@ -1,0 +1,14 @@
+{
+  "revision": "platform-confirmation/v1",
+  "codec": "at1 unchanged",
+  "direct_signed": ["tenant_id", "action_id", "args_fingerprint", "descriptor_digest", "principal", "proposal_id", "proposal_version", "expires_at", "jti", "purpose", "iss", "aud", "iat", "nbf", "kid", "alg", "v", "tool_name"],
+  "descriptor_extension": ["platform_binding_hash", "definition_ref"],
+  "platform_binding_fields": ["action_ref", "action_version", "epoch", "definition_ref", "input_hash", "scope_hash", "actor_ref", "policy_revision", "request_hash", "expires_at", "preview_hash"],
+  "immutable_record": ["tenant/proposal to action", "request hash", "binding tuple/hash", "token digest", "encrypted token and presentation"],
+  "journal_proof": ["authenticated source event ref/hash", "actor", "UI or voice channel", "proposal", "binding hash", "expiry"],
+  "current_checks": ["host context", "registry definition and operational policy", "dated token validity", "journal-backed approval", "explicit confirmation authorizer", "owner business permission in write transaction", "owner epoch and cancellation"],
+  "expiry_precision": "Round down to a whole UTC second before hashing or issuing; never extend the Action request deadline.",
+  "replay": "One immutable preparation per Action; one dated durable consume per tenant/jti. A consumed or expired token is never replaced on identical retry.",
+  "cancellation": "Persist a separate command; never erase success or unresolved effects. Compensation requires a separately registered and authorized Action with its own confirmation.",
+  "tier": "contract-scripted and isolated-postgres; synthetic host/owner only"
+}

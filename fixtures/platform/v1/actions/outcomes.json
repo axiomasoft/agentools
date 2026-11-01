@@ -1,0 +1,10 @@
+{
+  "revision": "2026-09",
+  "tier": "contract-scripted",
+  "cases": [
+    {"id": "action.accepted-pending", "events": [{"kind": "action_created"}], "status": "created", "outcome": null},
+    {"id": "action.known-success", "events": [{"kind": "action_created"}, {"kind": "action_started"}, {"kind": "action_completed"}], "status": "completed", "outcome": "succeeded"},
+    {"id": "action.known-failure", "events": [{"kind": "action_created"}, {"kind": "action_started"}, {"kind": "action_failed"}], "status": "failed", "outcome": "failed"},
+    {"id": "action.unknown-is-not-failed", "events": [{"kind": "action_created"}, {"kind": "action_started"}, {"kind": "epoch_started", "epoch": 1}, {"kind": "effect_requested", "epoch": 1, "payload": {"effect_id": "effect-0", "idempotency_key": "owner-original"}}, {"kind": "task_binding_lost"}], "status": "reconciliation_required", "outcome": "unknown"}
+  ]
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap.php" failOnWarning="true" failOnRisky="true" cacheResult="false">
+  <testsuites><testsuite name="profile-publish">
+    <file>PublicationTest.php</file><file>PinningTest.php</file><file>RecoveryTest.php</file>
+  </testsuite></testsuites>
+</phpunit>

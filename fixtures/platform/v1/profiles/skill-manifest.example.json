@@ -1,0 +1,27 @@
+{
+    "format": "skill-manifest-example/v1",
+    "evidence_tier": "design-schema",
+    "owner": {
+        "kind": "platform"
+    },
+    "id": "skill.support-read",
+    "version": "1",
+    "provenance": {
+        "created_by_ref": "code:fixture-author",
+        "validation_ref": "validation:scripted",
+        "evaluation_ref": "evaluation:scripted"
+    },
+    "purpose": "support.read",
+    "tools": [
+        {
+            "id": "search",
+            "version": "1",
+            "hash": "sha-256:f5977d536d5feb0c5bd7364c09d93765aa569bc12da4ecbf280564aae04cddaa"
+        }
+    ],
+    "restriction_refs": [
+        "policy:read-only"
+    ],
+    "methodology_ref": "methodology:support-read:1",
+    "content_hash": "sha-256:c689afcfe48a100494fd0bb855ccb444a8f75a976bad83c0a1b753f7513b1a18"
+}

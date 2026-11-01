@@ -1,0 +1,177 @@
+{
+    "compiler_version": "context-compiler/v2",
+    "renderer_version": "scripted-utf8-byte-upper-bound/v1",
+    "renderer_layout": "scripted byte-counted JSON envelope with baseline block order",
+    "tokenizer_version": "scripted-utf8-byte-upper-bound/v1",
+    "count_confidence": "conservative",
+    "counting_contract": "host documented conservative bound identified by tokenizer_version",
+    "tenant_id": "context-tenant",
+    "session_id": "session",
+    "turn_id": "turn",
+    "run_id": "run",
+    "bundle": {
+        "ref": {
+            "tenant_id": "context-tenant",
+            "kind": "ref",
+            "id": "bundle"
+        },
+        "version": 1,
+        "hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "policy_revision": "policy-1",
+    "scope_hash": "sha-256:2a2600e73bba212834ed4f1f7266e8b0a34f4d79df68d3cce19eeaba00f08add",
+    "deployment_ref": "deployment",
+    "deployment": {
+        "tenant_id": "context-tenant",
+        "kind": "ref",
+        "id": "deployment"
+    },
+    "model_version": "scripted-model/v1",
+    "capability_snapshot_ref": {
+        "tenant_id": "context-tenant",
+        "kind": "ref",
+        "id": "capabilities:v1"
+    },
+    "capability_snapshot_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "context_window": 8000,
+    "output_reserve": 2000,
+    "requested_max_output": 2000,
+    "safety_margin": 500,
+    "available_tokens": 5500,
+    "used_tokens": 181,
+    "framing_tokens": 2,
+    "sections": [
+        {
+            "id": "policy",
+            "kind": "policy",
+            "source_ref": "source:policy",
+            "source_version": "v1",
+            "owner_ref": "owner",
+            "trust_class": "policy",
+            "classification": "private",
+            "purpose": "support.read",
+            "content_ref": "content:policy",
+            "content_hash": "sha-256:57f997084f68d70d568d113c9f4dc37cc4c20c72d0c0f3508559962d2c5c0944",
+            "expires_at": "2030-01-01T00:00:00Z",
+            "mandatory": true,
+            "priority": 100,
+            "evidence_refs": [],
+            "provenance": {
+                "source_kind": "host",
+                "message_ids": [],
+                "through_turn": null,
+                "summary_version": null,
+                "fresh_at": null,
+                "raw_result_ref": null,
+                "tool_id": null,
+                "user_view_ref": null,
+                "audit_view_ref": null
+            },
+            "available_tokens": 5498,
+            "used_tokens": 49
+        },
+        {
+            "id": "history",
+            "kind": "recent",
+            "source_ref": "source:history",
+            "source_version": "v1",
+            "owner_ref": "owner",
+            "trust_class": "untrusted",
+            "classification": "private",
+            "purpose": "support.read",
+            "content_ref": "content:history",
+            "content_hash": "sha-256:642f4c4074e393cb2e4472152b919b36807d7bdd90278dd197e77cdd63b662ba",
+            "expires_at": "2030-01-01T00:00:00Z",
+            "mandatory": true,
+            "priority": 100,
+            "evidence_refs": [],
+            "provenance": {
+                "source_kind": "history",
+                "message_ids": [
+                    {
+                        "tenant_id": "context-tenant",
+                        "kind": "ref",
+                        "id": "message:7"
+                    }
+                ],
+                "through_turn": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "turn:7"
+                },
+                "summary_version": "summary:v1",
+                "fresh_at": "2026-11-01T12:00:00.123456Z",
+                "raw_result_ref": null,
+                "tool_id": null,
+                "user_view_ref": null,
+                "audit_view_ref": null
+            },
+            "available_tokens": 5449,
+            "used_tokens": 67
+        },
+        {
+            "id": "input",
+            "kind": "input",
+            "source_ref": "source:input",
+            "source_version": "v1",
+            "owner_ref": "owner",
+            "trust_class": "untrusted",
+            "classification": "private",
+            "purpose": "support.read",
+            "content_ref": "content:input",
+            "content_hash": "sha-256:791cd06e331b4ba4a2a341eaa97ae9c416d2daae3983578f159bf7cda1fa908e",
+            "expires_at": "2030-01-01T00:00:00Z",
+            "mandatory": true,
+            "priority": 100,
+            "evidence_refs": [],
+            "provenance": {
+                "source_kind": "host",
+                "message_ids": [],
+                "through_turn": null,
+                "summary_version": null,
+                "fresh_at": null,
+                "raw_result_ref": null,
+                "tool_id": null,
+                "user_view_ref": null,
+                "audit_view_ref": null
+            },
+            "available_tokens": 5382,
+            "used_tokens": 63
+        }
+    ],
+    "source_message_ids": [
+        {
+            "tenant_id": "context-tenant",
+            "kind": "ref",
+            "id": "message:7"
+        }
+    ],
+    "exclusions": [],
+    "exclusion_count": 0,
+    "classification": "private",
+    "retention": "host-policy",
+    "pins": {
+        "dependencies": [
+            {
+                "ref": {
+                    "tenant_id": "context-tenant",
+                    "kind": "ref",
+                    "id": "skill:v1"
+                },
+                "version": "v1",
+                "hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+        ],
+        "routing_decision_ref": {
+            "tenant_id": "context-tenant",
+            "kind": "ref",
+            "id": "route:v1"
+        },
+        "requested_model_params": {
+            "temperature": 0
+        },
+        "retention": "host-policy"
+    },
+    "snapshot_id": "snapshot:1e537acf6a10a373a0ac3f1357d9f9f279a41d07a11cc7a3e30762a78cd323dc",
+    "immutable_content_hash": "sha-256:1e537acf6a10a373a0ac3f1357d9f9f279a41d07a11cc7a3e30762a78cd323dc"
+}

@@ -1,0 +1,52 @@
+{
+    "candidate_ref": {
+        "tenant_id": "context-tenant",
+        "kind": "ref",
+        "id": "candidate:1"
+    },
+    "type": "preference",
+    "subject_ref": {
+        "tenant_id": "context-tenant",
+        "kind": "ref",
+        "id": "subject"
+    },
+    "owner_ref": {
+        "tenant_id": "context-tenant",
+        "kind": "ref",
+        "id": "owner:aicore"
+    },
+    "value_ref": {
+        "tenant_id": "context-tenant",
+        "kind": "ref",
+        "id": "value:1"
+    },
+    "value_hash": "sha-256:bfd5e4ebe59ca16884b1e5f9cf7bb42060a922a0755384e63dd0f5f2916a7f6b",
+    "sources": [
+        {
+            "ref": {
+                "tenant_id": "context-tenant",
+                "kind": "ref",
+                "id": "message:1"
+            },
+            "branch": {
+                "tenant_id": "context-tenant",
+                "kind": "ref",
+                "id": "history:branch"
+            },
+            "turn": 1,
+            "version": "v1",
+            "hash": "sha-256:7f9ea0c328d3ff86808f6700e7e671df75dc53b04352b866e893a7b4a1e57454"
+        }
+    ],
+    "extractor_version": "extractor:v1",
+    "confidence": null,
+    "sensitivity": "restricted",
+    "valid_from": "2026-11-01T12:00:00.123456Z",
+    "expires_at": "2026-11-02T00:00:00Z",
+    "retention": "host:consented",
+    "version": 1,
+    "status": "proposed",
+    "acceptance": null,
+    "dedup_key": "sha-256:83e0f5875cffc7083d2be2db6c1e6a3f4d3976b800e44d30cb011a187e040c6c",
+    "trust": "untrusted"
+}

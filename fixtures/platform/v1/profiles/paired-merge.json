@@ -1,0 +1,23 @@
+{
+  "format": "profile-merge-design-vectors/v1",
+  "owner": "P7.2",
+  "evidence_tier": "design-schema",
+  "cases": [
+    {
+      "id": "regions-tools-compatible",
+      "input": {
+        "platform_regions": ["RU"], "tenant_regions": ["RU", "EU"],
+        "registered_tools": ["search", "send"], "profile_tools": ["search", "send"],
+        "skill_tools": ["search"], "host_tools": ["search", "send"], "session_tools": ["search"],
+        "live_tools": ["search", "send"]
+      },
+      "expected": {"regions": ["RU"], "tools": ["search"], "omitted_tool_schemas": ["send"]}
+    },
+    {
+      "id": "regions-conflict",
+      "input": {"platform_regions": ["RU"], "tenant_regions": ["EU"]},
+      "expected": {"code": "REGION_INTERSECTION_EMPTY", "field": "regions"}
+    }
+  ],
+  "limitation": "Design examples handed to P7.2; P7.1 does not count these as executed merge cases."
+}

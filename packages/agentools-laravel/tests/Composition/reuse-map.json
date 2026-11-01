@@ -1,0 +1,271 @@
+{
+  "subject": "PLAN2.P6.1",
+  "donor_revision": "59c701335f31b09f617ff5473a61df3c2fdda54c",
+  "inventory_source": "docs/platform/bootstrap.json#reuse_decisions",
+  "donor_source_transfer": false,
+  "donor_license": "not applicable: zero donor code copied",
+  "target_license": "proprietary (packages/agentools-laravel/composer.json)",
+  "reused_in_place": [
+    "AgenToolsPlatform Core AdvanceRun/Actions",
+    "Postgres InvocationRepository/SubmissionLifecycle/Confirmation Service",
+    "AgenTools SDK 2026-09 Actions/confirmation; no FQN or wire changes"
+  ],
+  "rows": [
+    {
+      "target": "packages/agentools-laravel/src/AgenToolsServiceProvider.php",
+      "sha256": "a96826cbaaa64f704132a12800a6a76c950d3907efd436a970f40541f3f4fc4c",
+      "inventory_rows": [
+        "inventory.botkit.cli",
+        "inventory.botkit.http",
+        "inventory.botkit.jobs"
+      ],
+      "consumer_tests": [
+        "LifecycleTest.testProviderIsOptInScopedAndHasNoRoutes",
+        "LifecycleTest.testCommandUsesManagedAdmission"
+      ],
+      "disposition": "new target implementation; donor code not copied"
+    },
+    {
+      "target": "packages/agentools-laravel/src/Console/RunInput.php",
+      "sha256": "88927e6518bc431b960bd71f718bbbc5173b89423a0ce9ff6b842a034e7a3327",
+      "inventory_rows": [
+        "inventory.botkit.cli",
+        "inventory.botkit.http",
+        "inventory.botkit.jobs"
+      ],
+      "consumer_tests": [
+        "LifecycleTest.testProviderIsOptInScopedAndHasNoRoutes",
+        "LifecycleTest.testCommandUsesManagedAdmission"
+      ],
+      "disposition": "new target implementation; donor code not copied"
+    },
+    {
+      "target": "packages/agentools-laravel/src/Jobs/RunInput.php",
+      "sha256": "a1f39f36d378c91a887b8b700dd5b691bbbeb129ce6cf64dfe8877f1cfe9baed",
+      "inventory_rows": [
+        "inventory.botkit.cli",
+        "inventory.botkit.http",
+        "inventory.botkit.jobs"
+      ],
+      "consumer_tests": [
+        "LifecycleTest.testProviderIsOptInScopedAndHasNoRoutes",
+        "LifecycleTest.testCommandUsesManagedAdmission"
+      ],
+      "disposition": "new target implementation; donor code not copied"
+    },
+    {
+      "target": "packages/agentools-laravel/src/Managed/Scope.php",
+      "sha256": "85c642219c562a5527b37ae8e6fd3f315a824a1f0baeb0a8f4843c15e6bb6bfe",
+      "inventory_rows": [
+        "inventory.botkit.tenant-reset",
+        "inventory.botkit.security"
+      ],
+      "consumer_tests": [
+        "LifecycleTest.testTenantAThenBOnRecycledWorker",
+        "LifecycleTest.testOctaneCleansEventSandboxAndUnusedPorts",
+        "LifecycleTest.testResetFailureIsRedactedAndPoisonsScope"
+      ],
+      "disposition": "new target implementation; donor code not copied"
+    },
+    {
+      "target": "packages/agentools-laravel/src/Managed/HostBindings.php",
+      "sha256": "e0012c59bdcf6eb98fab1c74101cdee9b5577679d8f3e3b9e4014cf2c7e387bc",
+      "inventory_rows": [
+        "inventory.botkit.tenant-reset",
+        "inventory.botkit.security"
+      ],
+      "consumer_tests": [
+        "LifecycleTest.testTenantAThenBOnRecycledWorker",
+        "LifecycleTest.testOctaneCleansEventSandboxAndUnusedPorts",
+        "LifecycleTest.testResetFailureIsRedactedAndPoisonsScope"
+      ],
+      "disposition": "new target implementation; donor code not copied"
+    },
+    {
+      "target": "packages/agentools-laravel/src/Managed/LifecycleFailure.php",
+      "sha256": "9e48653351a3a4a25c100b8df6c07919b2ad8de4ad087da1e856eb3db79db70d",
+      "inventory_rows": [
+        "inventory.botkit.tenant-reset",
+        "inventory.botkit.security"
+      ],
+      "consumer_tests": [
+        "LifecycleTest.testTenantAThenBOnRecycledWorker",
+        "LifecycleTest.testOctaneCleansEventSandboxAndUnusedPorts",
+        "LifecycleTest.testResetFailureIsRedactedAndPoisonsScope"
+      ],
+      "disposition": "new target implementation; donor code not copied"
+    },
+    {
+      "target": "packages/agentools-laravel/src/Managed/LifecycleHealth.php",
+      "sha256": "3661e593df739c1c3a848a1b41e26171cd700dd563339dff0e151ff21bbdf1ee",
+      "inventory_rows": [
+        "inventory.botkit.tenant-reset",
+        "inventory.botkit.security"
+      ],
+      "consumer_tests": [
+        "LifecycleTest.testTenantAThenBOnRecycledWorker",
+        "LifecycleTest.testOctaneCleansEventSandboxAndUnusedPorts",
+        "LifecycleTest.testResetFailureIsRedactedAndPoisonsScope"
+      ],
+      "disposition": "new target implementation; donor code not copied"
+    },
+    {
+      "target": "packages/agentools-laravel/src/Managed/ProductionBinding.php",
+      "sha256": "3235b94dc0fa6ec90d8055bfef04e3cd8a1ada294d091b17b445366a8a9d7736",
+      "inventory_rows": [
+        "inventory.botkit.tenant-reset",
+        "inventory.botkit.security"
+      ],
+      "consumer_tests": [
+        "LifecycleTest.testTenantAThenBOnRecycledWorker",
+        "LifecycleTest.testOctaneCleansEventSandboxAndUnusedPorts",
+        "LifecycleTest.testResetFailureIsRedactedAndPoisonsScope"
+      ],
+      "disposition": "new target implementation; donor code not copied"
+    },
+    {
+      "target": "packages/agentools-laravel/src/Managed/Entry.php",
+      "sha256": "e6df37491dc716a9161d750b70cac024d46829b24698630adff4e99aa4ce24e8",
+      "inventory_rows": [
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build",
+        "inventory.agentools.action",
+        "inventory.agentools.confirmation"
+      ],
+      "consumer_tests": [
+        "ManagedTest.testEveryEntrySharesMandatoryAdmission",
+        "ManagedTest.testUntrustedToolAndPluginFlagsGrantNothing",
+        "ManagedTest.testUnknownBudgetCannotReachModelOrAction",
+        "ManagedTest.testRevocationBeforeDisclosurePreventsDelivery"
+      ],
+      "disposition": "new target implementation; donor code not copied"
+    },
+    {
+      "target": "packages/agentools-laravel/src/Managed/Input.php",
+      "sha256": "2c1ffc17f8acf2b3be244a767d07740b0d6b9beef3557f55b31c3bde4aeeba4f",
+      "inventory_rows": [
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build",
+        "inventory.agentools.action",
+        "inventory.agentools.confirmation"
+      ],
+      "consumer_tests": [
+        "ManagedTest.testEveryEntrySharesMandatoryAdmission",
+        "ManagedTest.testUntrustedToolAndPluginFlagsGrantNothing",
+        "ManagedTest.testUnknownBudgetCannotReachModelOrAction",
+        "ManagedTest.testRevocationBeforeDisclosurePreventsDelivery"
+      ],
+      "disposition": "new target implementation; donor code not copied"
+    },
+    {
+      "target": "packages/agentools-laravel/src/Managed/Work.php",
+      "sha256": "f12224c651498ea45377df9d2ac225518be864c7cb86bae9f9cbfa096eaf5f35",
+      "inventory_rows": [
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build",
+        "inventory.agentools.action",
+        "inventory.agentools.confirmation"
+      ],
+      "consumer_tests": [
+        "ManagedTest.testEveryEntrySharesMandatoryAdmission",
+        "ManagedTest.testUntrustedToolAndPluginFlagsGrantNothing",
+        "ManagedTest.testUnknownBudgetCannotReachModelOrAction",
+        "ManagedTest.testRevocationBeforeDisclosurePreventsDelivery"
+      ],
+      "disposition": "new target implementation; donor code not copied"
+    },
+    {
+      "target": "packages/agentools-laravel/src/Managed/HostAdmission.php",
+      "sha256": "3cbfde2e248b871832f6c021b9e362e8eaebf72c01738db07a9507853025f06f",
+      "inventory_rows": [
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build",
+        "inventory.agentools.action",
+        "inventory.agentools.confirmation"
+      ],
+      "consumer_tests": [
+        "ManagedTest.testEveryEntrySharesMandatoryAdmission",
+        "ManagedTest.testUntrustedToolAndPluginFlagsGrantNothing",
+        "ManagedTest.testUnknownBudgetCannotReachModelOrAction",
+        "ManagedTest.testRevocationBeforeDisclosurePreventsDelivery"
+      ],
+      "disposition": "new target implementation; donor code not copied"
+    },
+    {
+      "target": "packages/agentools-laravel/src/Managed/Executor.php",
+      "sha256": "d2856f5fa8c95e61a4655843c2fefeba2d2ad233b65c9f908bc9f139ea66ea19",
+      "inventory_rows": [
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build",
+        "inventory.agentools.action",
+        "inventory.agentools.confirmation"
+      ],
+      "consumer_tests": [
+        "ManagedTest.testEveryEntrySharesMandatoryAdmission",
+        "ManagedTest.testUntrustedToolAndPluginFlagsGrantNothing",
+        "ManagedTest.testUnknownBudgetCannotReachModelOrAction",
+        "ManagedTest.testRevocationBeforeDisclosurePreventsDelivery"
+      ],
+      "disposition": "new target implementation; donor code not copied"
+    },
+    {
+      "target": "packages/agentools-laravel/src/Managed/Composition.php",
+      "sha256": "0d45f6fd36b35afc2209c4ed539c375c6da42172c6ca3b6d3caf31839436d84c",
+      "inventory_rows": [
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build",
+        "inventory.agentools.action",
+        "inventory.agentools.confirmation"
+      ],
+      "consumer_tests": [
+        "ManagedTest.testEveryEntrySharesMandatoryAdmission",
+        "ManagedTest.testUntrustedToolAndPluginFlagsGrantNothing",
+        "ManagedTest.testUnknownBudgetCannotReachModelOrAction",
+        "ManagedTest.testRevocationBeforeDisclosurePreventsDelivery"
+      ],
+      "disposition": "new target implementation; donor code not copied"
+    },
+    {
+      "target": "packages/agentools-laravel/src/Managed/DurableProposals.php",
+      "sha256": "fc229db2db7e96d3df595d4aeb2805558eb083aa323c8e9116106faffabed4b2",
+      "inventory_rows": [
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build",
+        "inventory.agentools.action",
+        "inventory.agentools.confirmation"
+      ],
+      "consumer_tests": [
+        "ManagedTest.testEveryEntrySharesMandatoryAdmission",
+        "ManagedTest.testUntrustedToolAndPluginFlagsGrantNothing",
+        "ManagedTest.testUnknownBudgetCannotReachModelOrAction",
+        "ManagedTest.testRevocationBeforeDisclosurePreventsDelivery"
+      ],
+      "disposition": "new target implementation; donor code not copied"
+    },
+    {
+      "target": "packages/agentools-laravel/src/Managed/DeliveryReceipt.php",
+      "sha256": "5a7157e51b8701773d1edb3aae4f113eeeaa1151191044dffdf239e026acdf64",
+      "inventory_rows": [
+        "inventory.botkit.managed",
+        "inventory.botkit.stream",
+        "inventory.botkit.raw-build",
+        "inventory.agentools.action",
+        "inventory.agentools.confirmation"
+      ],
+      "consumer_tests": [
+        "ManagedTest.testEveryEntrySharesMandatoryAdmission",
+        "ManagedTest.testUntrustedToolAndPluginFlagsGrantNothing",
+        "ManagedTest.testUnknownBudgetCannotReachModelOrAction",
+        "ManagedTest.testRevocationBeforeDisclosurePreventsDelivery"
+      ],
+      "disposition": "new target implementation; donor code not copied"
+    }
+  ]
+}

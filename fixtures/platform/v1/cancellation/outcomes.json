@@ -1,0 +1,131 @@
+{
+  "revision": "2026-09",
+  "cases": [
+    {
+      "id": "cancel.unknown",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 1
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "idempotency_key": "o1"
+          }
+        },
+        {
+          "kind": "task_binding_lost"
+        },
+        {
+          "kind": "cancellation_requested"
+        }
+      ],
+      "status": "reconciliation_required",
+      "effect": "requested",
+      "cancelled": true
+    },
+    {
+      "id": "cancel.late-success",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 1
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "idempotency_key": "o1"
+          }
+        },
+        {
+          "kind": "cancellation_requested"
+        },
+        {
+          "kind": "effect_confirmed",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "external_ref": "owner:receipt"
+          }
+        },
+        {
+          "kind": "action_completed"
+        }
+      ],
+      "status": "completed",
+      "effect": "confirmed",
+      "cancelled": true
+    },
+    {
+      "id": "cancel.completed-stop",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "action_started"
+        },
+        {
+          "kind": "epoch_started",
+          "epoch": 1
+        },
+        {
+          "kind": "effect_requested",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "idempotency_key": "o1"
+          }
+        },
+        {
+          "kind": "effect_confirmed",
+          "epoch": 1,
+          "payload": {
+            "effect_id": "e1",
+            "external_ref": "owner:receipt"
+          }
+        },
+        {
+          "kind": "action_completed"
+        }
+      ],
+      "status": "completed",
+      "effect": "confirmed",
+      "cancelled": false
+    },
+    {
+      "id": "cancel.before-io",
+      "events": [
+        {
+          "kind": "action_created"
+        },
+        {
+          "kind": "cancellation_requested"
+        },
+        {
+          "kind": "action_cancelled"
+        }
+      ],
+      "status": "cancelled",
+      "effect": null,
+      "cancelled": true
+    }
+  ]
+}

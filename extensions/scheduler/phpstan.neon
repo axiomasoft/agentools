@@ -1,0 +1,19 @@
+parameters:
+    level: max
+    paths:
+        - src
+        - tests
+    bootstrapFiles:
+        - tests/bootstrap.php
+    scanDirectories:
+        - ../../packages/agentools-core/src
+        - ../../packages/agentools-postgres/src
+        - ../../packages/agentools-laravel/src
+        - ../../packages/agentools-laravel/tests/Composition
+        - ../../conformance/platform/write-journey
+        - ../../examples/platform/confirmed-write/src
+        - ../../examples/platform/direct-action/src
+        - ../../packages/agentools-core/tests/Actions/Confirmation
+        - ../../packages/agentools-core/tests/Common
+        - ../../packages/agentools-postgres/tests/Runtime
+        - ../../packages/agentools-postgres/tests/Effects

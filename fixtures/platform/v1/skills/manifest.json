@@ -1,0 +1,87 @@
+{
+    "resource": {
+        "owner": {
+            "kind": "tenant",
+            "tenant_id": "tenant-a"
+        },
+        "kind": "skill",
+        "id": "skill.support",
+        "version": "1",
+        "hash": "sha-256:6a9cab779af4ddae9a7354287adc00c142c5c99964e203649dd5ead4cb5a9a29"
+    },
+    "provenance": {
+        "created_by_ref": "host:fixture",
+        "validation_ref": "validation:deterministic",
+        "evaluation_ref": "evaluation:task-support"
+    },
+    "format": "skill-manifest/v1",
+    "purpose": "support.read",
+    "triggers": [
+        "support.read"
+    ],
+    "required_context": [
+        "goal"
+    ],
+    "allowed_tools": [
+        {
+            "id": "search",
+            "version": "1",
+            "hash": "sha-256:a20adc65ea93471b411cc3d0dbc2e5d80ccb01a269151e139450220a6867df6c"
+        },
+        {
+            "id": "send",
+            "version": "1",
+            "hash": "sha-256:37fa744506a2d630af30f8cd6a36b49b7037043cc902f8abb3934d64d7d45b46"
+        }
+    ],
+    "prompt_fragments": [
+        {
+            "owner": {
+                "kind": "tenant",
+                "tenant_id": "tenant-a"
+            },
+            "id": "fragment.skill.support",
+            "version": "1",
+            "hash": "sha-256:52e339fd153f78c435b6921947e5b28ab1684a0f70ca84dc57e8e808e829379c",
+            "provenance": {
+                "created_by_ref": "thirdparty:fixture",
+                "validation_ref": "validation:scripted",
+                "evaluation_ref": "evaluation:scripted"
+            }
+        }
+    ],
+    "rubric_refs": [
+        "rubric:support-read"
+    ],
+    "token_budget": 256,
+    "safety_class": 1,
+    "compatibility": {
+        "definition": {
+            "owner": {
+                "kind": "platform"
+            },
+            "kind": "assistant_definition",
+            "id": "assistant.support",
+            "version": "1",
+            "hash": "sha-256:8738b6bbbf7929db349b39cf5a7493ec83b56d8ea2d79fcc1ad0319d5c1dc157"
+        },
+        "profile": {
+            "owner": {
+                "kind": "tenant",
+                "tenant_id": "tenant-a"
+            },
+            "kind": "profile",
+            "id": "profile.support",
+            "version": "7",
+            "hash": "sha-256:0cc18ecedbdf18a4bdaa08eb151e6a0eb8bc5e0124c55842f540557491290d8e"
+        },
+        "compiler": {
+            "id": "profile.typed-compiler",
+            "version": "1",
+            "hash": "sha-256:e8e3a693c1f7ffcdcefb4a6028a03e30816e7e67f23d0ff39e0d091b4d2cf4d0"
+        }
+    },
+    "evaluation_refs": [
+        "evaluation:task-support"
+    ]
+}

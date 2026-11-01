@@ -1,9 +1,14 @@
 parameters:
     bootstrapFiles:
         - tests/bootstrap.php
+        - tests/Journeys/bootstrap.php
     level: max
     paths:
         - src
         - tests
+        - ../../examples/platform/read-journey/src
     excludePaths:
         - tests/no-dev/vendor
+    scanDirectories:
+        - ../agentools-core/src
+        - ../agentools-postgres/src

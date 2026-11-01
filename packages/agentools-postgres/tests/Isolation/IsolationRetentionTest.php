@@ -380,9 +380,9 @@ final class IsolationRetentionTest extends TestCase
             $this->awaitExpiry($payload->retentionUntil);
             self::assertFalse($this->scalar("SELECT platform_payload_unresolved('tenant-alpha','legacy')"));
             $db->execute('UPDATE ' . $db->table('payload_refs') . ' SET purge_pending_at=clock_timestamp(),purge_token=:token,version=version+1', ['token'=>str_repeat('a',64)]);
-            self::assertSame(['0005_delivery_resolution.sql', '0006_delivery_claims.sql', '0007_action_submissions.sql', '0008_payload_holds.sql', '0009_derived_payloads.sql'], $migrator->migrate());
+            self::assertSame(['0005_delivery_resolution.sql', '0006_delivery_claims.sql', '0007_action_submissions.sql', '0008_payload_holds.sql', '0009_confirmation.sql', '0010_effect_recovery.sql', '0011_operator_operations.sql', '0012_derived_payloads.sql'], $migrator->migrate());
             self::assertTrue($this->scalar("SELECT platform_payload_unresolved('tenant-alpha','legacy')"));
-            self::assertSame($history, $this->scalar("SELECT jsonb_object_agg(version,checksum)::text FROM platform_migrations WHERE version NOT IN ('0005_delivery_resolution.sql','0006_delivery_claims.sql','0007_action_submissions.sql', '0008_payload_holds.sql', '0009_derived_payloads.sql')"));
+            self::assertSame($history, $this->scalar("SELECT jsonb_object_agg(version,checksum)::text FROM platform_migrations WHERE version NOT IN ('0005_delivery_resolution.sql','0006_delivery_claims.sql','0007_action_submissions.sql', '0008_payload_holds.sql', '0009_confirmation.sql', '0010_effect_recovery.sql', '0011_operator_operations.sql', '0012_derived_payloads.sql')"));
             self::assertSame([], $migrator->migrate());
             $this->fails(ContractViolation::class, fn () => $repo->purge($ctx, $payload->ref));
             self::assertCount(0, $this->vault->deletions, 'Legacy reservation must recheck receipts before external IO');
@@ -429,6 +429,11 @@ final class IsolationRetentionTest extends TestCase
         $this->vault->backend[$f->tenant->value . ':payload'] = 'CHILD-TEXT';
         $this->vault->onRead = function (): void { $this->policy->denied = true; };
         $this->fails(ContractViolation::class, fn () => $repo->dereference($f->context(), $payload->ref));
+        $this->vault->onRead = null; $this->policy->denied = false;
+        $this->vault->failReset = true;
+        $this->fails(StorageFailure::class, fn () => $repo->dereference($f->context(), $payload->ref));
+        $this->vault->failReset = false;
+        self::assertSame(0, $this->scalar('SELECT count(*) FROM "' . $this->schema . '".payload_access_audit WHERE outcome=\'released\''));
         self::assertNull($this->vault->credential); self::assertNull($this->vault->cachedBytes);
         $audit = $this->scalar('SELECT json_agg(to_jsonb(a))::text FROM "' . $this->schema . '".payload_access_audit a');
         self::assertIsString($audit); self::assertStringNotContainsString('SECRET',$audit); self::assertStringNotContainsString('CHILD-TEXT',$audit);

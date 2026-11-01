@@ -62,4 +62,17 @@ final readonly class RunCheckpoint
         return new \AgenToolsPlatform\Core\Common\RunCheckpoint($this->runId, $this->status, $this->version + 1,
             $this->claimEpoch, Certainty::Known, false);
     }
+
+    /** @return array<string, mixed> */
+    public function toArray(): array
+    {
+        return [
+            'run_id' => $this->runId->toArray(),
+            'status' => $this->status->value,
+            'version' => $this->version,
+            'claim_epoch' => $this->claimEpoch,
+            'certainty' => $this->certainty->value,
+            'unresolved_effects' => $this->unresolvedEffects,
+        ];
+    }
 }

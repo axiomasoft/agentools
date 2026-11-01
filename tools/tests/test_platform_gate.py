@@ -176,6 +176,797 @@ class GateTests(unittest.TestCase):
             self.assertEqual(gate.execute(args), [result])
         run.assert_called_once_with(ROOT, spec, isolated=False)
 
+    def test_action_submit_registry(self):
+        for partition in ('test', 'pg-test'):
+            spec = gate.SUITES[('action-submit', partition)]
+            self.assertEqual(spec.owner, 'P5.1')
+            self.assertEqual(spec.requires_pg, partition == 'pg-test')
+            self.assertEqual(len(spec.cases), 9 if spec.requires_pg else 15)
+            self.assertIn('packages/agentools-postgres/migrations/0007_action_submissions.sql', spec.dependencies)
+            # Migrator applies every SQL input, including later additive migrations.
+            for migration in (ROOT / 'packages/agentools-postgres/migrations').glob('*.sql'):
+                self.assertIn(str(migration.relative_to(ROOT)), spec.dependencies)
+            gate.hashes(ROOT, spec.dependencies)
+            report = {'mode': spec.mode, 'tier': spec.tier,
+                      'cases': [{'id': name, 'status': 'passed'} for name in spec.cases]}
+            if spec.requires_pg:
+                report['isolation'] = {'engine': 'postgresql', 'isolated': True,
+                    'database': 'agentools_test_registry', 'owner': 'test',
+                    'allow_marker_verified': True, 'case_ids': list(spec.cases)}
+            gate.validate_report(spec, report)
+            for cases in ([], report['cases'][:-1], [dict(c, status='skipped') for c in report['cases']]):
+                with self.assertRaises(gate.GateError):
+                    gate.validate_report(spec, dict(report, cases=cases))
+            argv = [partition, '--suite', 'action-submit'] + (['--isolated'] if spec.requires_pg else [])
+            args = gate.parser().parse_args(argv)
+            with patch.object(gate, 'run_suite', return_value={'ok': True}) as run:
+                self.assertEqual(gate.execute(args), [{'ok': True}])
+            run.assert_called_once_with(ROOT, spec, isolated=spec.requires_pg)
+
+    def test_confirmation_write_registry(self):
+        for partition in ('test', 'pg-test'):
+            spec = gate.SUITES[('confirmation-write', partition)]
+            self.assertEqual(spec.owner, 'P5.2')
+            self.assertEqual(spec.requires_pg, partition == 'pg-test')
+            self.assertEqual(len(spec.cases), 12 if spec.requires_pg else 28)
+            self.assertEqual(len(spec.cases), len(set(spec.cases)))
+            self.assertIn('packages/agentools-postgres/migrations/0009_confirmation.sql', spec.dependencies)
+            gate.hashes(ROOT, spec.dependencies)
+            report = {'mode': spec.mode, 'tier': spec.tier,
+                      'cases': [{'id': name, 'status': 'passed'} for name in spec.cases]}
+            if spec.requires_pg:
+                report['isolation'] = {'engine': 'postgresql', 'isolated': True,
+                    'database': 'agentools_test_confirmation', 'owner': 'test',
+                    'allow_marker_verified': True, 'case_ids': list(spec.cases)}
+                self.assertTrue({'CNF-002', 'CNF-004', 'V2-P5-2-CONFIRM-POS',
+                    'V2ALL-CONFIRM-POSITIVE', 'V2ALL-CONFIRM-NEGATIVE', 'V2ALL-CONFIRM-FAULT',
+                    'confirmation.owner-commit-journal-failure', 'confirmation.owner-receipt-outage',
+                    'confirmation.owner-reconciliation-guards'} <= set(spec.cases))
+                for required in ('confirmation.owner-commit-journal-failure', 'confirmation.owner-receipt-outage',
+                                 'confirmation.owner-reconciliation-guards'):
+                    with self.assertRaises(gate.GateError):
+                        gate.validate_report(spec, dict(report, cases=[c for c in report['cases'] if c['id'] != required]))
+            else:
+                self.assertTrue({'CNF-001', 'CNF-003'} <= set(spec.cases))
+            gate.validate_report(spec, report)
+            for cases in ([], report['cases'][:-1], [dict(c, status='skipped') for c in report['cases']]):
+                with self.assertRaises(gate.GateError):
+                    gate.validate_report(spec, dict(report, cases=cases))
+            argv = [partition, '--suite', 'confirmation-write'] + (['--isolated'] if spec.requires_pg else [])
+            with patch.object(gate, 'run_suite', return_value={'ok': True}) as run:
+                self.assertEqual(gate.execute(gate.parser().parse_args(argv)), [{'ok': True}])
+            run.assert_called_once_with(ROOT, spec, isolated=spec.requires_pg)
+
+    def test_runtime_registry(self):
+        core = gate.SUITES[('runtime', 'test')]
+        durable = gate.SUITES[('pg-runtime', 'pg-test')]
+        self.assertEqual(core.owner, 'P4.3')
+        self.assertEqual(durable.owner, 'P4.3')
+        self.assertTrue(durable.requires_pg)
+        self.assertIs(durable, gate.SUITES[('pg-models', 'pg-test')])
+        self.assertIs(core, gate.SUITES[('durable-invocation', 'test')])
+        self.assertIs(durable, gate.SUITES[('durable-invocation', 'pg-test')])
+        for partition, spec, isolated in [('test', core, False), ('pg-test', durable, True)]:
+            argv = [partition, '--suite', 'durable-invocation']
+            if isolated:
+                argv.append('--isolated')
+            args = gate.parser().parse_args(argv)
+            result = {'ok': True}
+            with patch.object(gate, 'run_suite', return_value=result) as run:
+                self.assertEqual(gate.execute(args), [result])
+            run.assert_called_once_with(ROOT, spec, isolated=isolated)
+        required = {'RUN-005', 'RUN-006', 'V2-P4-3-PROPOSAL-POS', 'V2-P4-3-PROPOSAL-NEG',
+                    'V2-P4-3-PROVIDER-POS', 'V2-P4-3-PROVIDER-NEG', 'V2ALL-RUN-POSITIVE',
+                    'V2ALL-RUN-NEGATIVE', 'V2ALL-RUN-FAULT'}
+        self.assertTrue(required <= set(durable.cases))
+        self.assertEqual(len(durable.cases), len(set(durable.cases)))
+        for suite in [core, durable]:
+            gate.hashes(ROOT, suite.dependencies)
+            report = {'mode': suite.mode, 'tier': suite.tier,
+                      'cases': [{'id': c, 'status': 'passed'} for c in suite.cases]}
+            if suite.requires_pg:
+                report['isolation'] = {'engine': 'postgresql', 'isolated': True,
+                    'database': 'agentools_test_registry', 'owner': 'test',
+                    'allow_marker_verified': True, 'case_ids': list(suite.cases)}
+            self.assertEqual(gate.validate_report(suite, report)['count'], len(suite.cases))
+            report['cases'].pop()
+            with self.assertRaises(gate.GateError):
+                gate.validate_report(suite, report)
+        forbidden = '<?php namespace AgenToolsPlatform\\Core\\Budget; use AgenToolsPlatform\\Core\\Runtime\\InvocationPlan;'
+        self.assertTrue(gate.source_errors(ROOT, forbidden, gate.CORE + '/src/Budget/Bad.php'))
+
+    def test_read_journey_registry(self):
+        spec = gate.SUITES[('read-journey', 'e2e')]
+        self.assertEqual((spec.owner, spec.mode, spec.tier), ('P4.4', 'local-host-e2e', 'local-host-e2e'))
+        self.assertTrue(spec.requires_pg)
+        self.assertEqual(len(spec.cases), 14)
+        self.assertEqual(len(set(spec.cases)), 14)
+        gate.hashes(ROOT, spec.dependencies)
+        args = gate.parser().parse_args(['e2e', '--scenario', 'read-journey'])
+        with patch.object(gate, 'run_suite', return_value={'ok': True}) as run:
+            self.assertEqual(gate.execute(args), [{'ok': True}])
+        run.assert_called_once_with(ROOT, spec, isolated=True)
+        report = {'mode': spec.mode, 'tier': spec.tier,
+                  'cases': [{'id': name, 'status': 'passed'} for name in spec.cases],
+                  'isolation': {'engine': 'postgresql', 'isolated': True, 'database': 'agentools_test_read_registry',
+                                'owner': 'test', 'allow_marker_verified': True, 'case_ids': list(spec.cases)}}
+        gate.validate_report(spec, report)
+        for changed in [dict(report, cases=report['cases'][:-1]), dict(report, isolation=None),
+                        dict(report, cases=[dict(c, status='skipped') for c in report['cases']])]:
+            with self.assertRaises(gate.GateError):
+                gate.validate_report(spec, changed)
+        ignore = ROOT / 'packages/agentools-model-adapter/.gitignore'
+        self.assertEqual(ignore.read_text(), '/vendor/\n')
+        ignored = subprocess.run(['git', 'check-ignore', '-v', '--no-index',
+                                  'packages/agentools-model-adapter/vendor/autoload.php'],
+                                 cwd=ROOT, capture_output=True, text=True)
+        self.assertEqual(ignored.returncode, 0)
+        self.assertTrue(ignored.stdout.startswith('packages/agentools-model-adapter/.gitignore:1:/vendor/'))
+        core = gate.SUITES[('context-read', 'test')]
+        self.assertEqual(len(core.cases), 7)
+        self.assertEqual(core.owner, 'P4.4')
+
+    def test_effect_reconcile_registry(self):
+        portable = gate.SUITES[('effect-reconcile', 'test')]
+        durable = gate.SUITES[('effect-reconcile', 'pg-test')]
+        self.assertEqual((portable.owner, portable.tier, len(portable.cases)), ('P5.3', 'contract-scripted', 13))
+        self.assertEqual((durable.owner, durable.tier, len(durable.cases)), ('P5.3', 'isolated-postgres', 15))
+        self.assertTrue(durable.requires_pg)
+        self.assertIn('ACT-002', durable.cases)
+        self.assertIn('effect.sigkill-after-owner-commit', durable.cases)
+        self.assertIn('effect.competing-recovery', durable.cases)
+        gate.hashes(ROOT, durable.dependencies)
+        report = {'mode': durable.mode, 'tier': durable.tier,
+                  'cases': [{'id': name, 'status': 'passed'} for name in durable.cases],
+                  'isolation': {'engine': 'postgresql', 'isolated': True, 'database': 'agentools_test_effects',
+                                'owner': 'test', 'allow_marker_verified': True, 'case_ids': list(durable.cases)}}
+        gate.validate_report(durable, report)
+        for altered in (dict(report, cases=[]), dict(report, cases=report['cases'][:-1]),
+                        dict(report, isolation=None),
+                        dict(report, cases=[dict(c, status='skipped') for c in report['cases']])):
+            with self.assertRaises(gate.GateError): gate.validate_report(durable, altered)
+        with self.assertRaisesRegex(gate.GateError, '--isolated'): gate.run_suite(ROOT, durable)
+        args = gate.parser().parse_args(['pg-test', '--suite', 'effect-reconcile', '--isolated'])
+        with patch.object(gate, 'run_suite', return_value={'ok': True}) as run:
+            self.assertEqual(gate.execute(args), [{'ok': True}])
+        run.assert_called_once_with(ROOT, durable, isolated=True)
+
+    def test_context_guards_registry(self):
+        import copy
+        spec=gate.SUITES[('context-security','test')]
+        self.assertIs(spec,gate.SUITES[('context-guards','test')])
+        self.assertEqual((spec.owner,len(spec.cases)),('P7.6',21))
+        report={'mode':spec.mode,'tier':spec.tier,'cases':[{'id':c,'status':'passed'} for c in spec.cases],
+            'portable':[{'mode':'contract-scripted','tier':'contract-scripted','cases':[{'id':c,'status':'passed'} for c in group]}
+                for group in (gate.SECURITY_GUARD_CASES,gate.SECURITY_DISCLOSURE_CASES,gate.SECURITY_WORKER_CASES,gate.SECURITY_EXAMPLE_CASES)],
+            'packaging':{'standalone_core':True,'context_guards':True,'testing_autoload':False,'sdk_autoload':False,'postgres_autoload':False,'framework_autoload':False},
+            'observations':{'CM-043':{'early_content_bytes':0,'checks':1,'full_result_check':True,'generated_bytes':25,'delivered_before_receipt':0,'delivered_after_receipt':25,'heard_bytes':None},
+                'worker_isolation':{'jobs':2,'resource_kinds':7,'alpha_refs_in_beta':0,'finally_reset':True},
+                'injection_surfaces':{'surfaces':['history','retrieval','tool','summary','memory','skill','input'],'unexpected_tools':0,'policy_disabled':False},
+                'entry_parity':{'entries':['text','raw','build','stream','voice','background','scheduled'],'cached_grants':0},
+                'unknown_delivery':{'owner_calls':1,'delivered_bytes':None,'resend':False},
+                'redaction':{'nested_values_redacted':True,'exception_chain_redacted':True,'diagnostic_calls':1,'encrypted':True,'ttl':True,'audit':True}},
+            'input_hashes':gate.hashes(ROOT,spec.dependencies)}
+        self.assertEqual(gate.validate_report(spec,report)['count'],21)
+        for fault in ('case','skip','portable','hash','fake','early','hearing','worker','surface','entry','unknown','logs'):
+            bad=copy.deepcopy(report)
+            if fault=='case':bad['cases'].pop()
+            elif fault=='skip':bad['cases'][0]['status']='skipped'
+            elif fault=='portable':bad['portable'][0]['cases']=[]
+            elif fault=='hash':bad['input_hashes'][next(iter(bad['input_hashes']))]='0'*64
+            elif fault=='fake':bad['packaging']['testing_autoload']=True
+            elif fault=='early':bad['observations']['CM-043']['early_content_bytes']=1
+            elif fault=='hearing':bad['observations']['CM-043']['heard_bytes']=25
+            elif fault=='worker':bad['observations']['worker_isolation']['alpha_refs_in_beta']=1
+            elif fault=='surface':bad['observations']['injection_surfaces']['surfaces'].pop()
+            elif fault=='entry':bad['observations']['entry_parity']['cached_grants']=1
+            elif fault=='unknown':bad['observations']['unknown_delivery']['delivered_bytes']=0
+            else:bad['observations']['redaction']['exception_chain_redacted']=False
+            with self.assertRaises(gate.GateError):gate.validate_report(spec,bad)
+        for name in ('context-security','context-guards'):
+            args=gate.parser().parse_args(['test','--suite',name])
+            with patch.object(gate,'run_suite',return_value={'ok':True}) as run:self.assertEqual(gate.execute(args),[{'ok':True}])
+            run.assert_called_once_with(ROOT,spec,isolated=False)
+
+    def test_history_memory_registry(self):
+        import copy
+        core=gate.SUITES[('history-memory','test')];pg=gate.SUITES[('history-memory','pg-test')]
+        self.assertEqual((core.owner,len(core.cases),pg.owner,len(pg.cases)),('P7.5',18,'P7.5-pg',6))
+        def report(spec):return {'mode':spec.mode,'tier':spec.tier,'cases':[{'id':c,'status':'passed'} for c in spec.cases]}
+        pure=report(core);pure['portable']=[report(gate.Suite('portable','contract-scripted','contract-scripted',group,(),()))
+            for group in (gate.HISTORY_CORE_CASES,gate.MEMORY_CORE_CASES,gate.HISTORY_EXAMPLE_CASES)]
+        pure['packaging']={'standalone_core':True,'history_memory':True,'testing_autoload':False,'sdk_autoload':False,'postgres_autoload':False,'framework_autoload':False}
+        pure['input_hashes']=gate.hashes(ROOT,core.dependencies)
+        durable=report(pg)
+        def isolation(group):return {'engine':'postgresql','isolated':True,'database':'agentools_test_summary_registry','owner':'test','allow_marker_verified':True,'case_ids':list(group)}
+        durable['isolation']=isolation(pg.cases)
+        durable['portable']=[]
+        for group in (gate.SUMMARY_DURABLE_CASES,gate.SUMMARY_CONCURRENT_CASES,gate.SUMMARY_RECOVERY_CASES):
+            unit=report(gate.Suite('portable','isolated-postgres','isolated-postgres',group,(),()));unit['isolation']=isolation(group);durable['portable'].append(unit)
+        durable['observations']={'competing_connections':{'backends':[101,102],'exits':[0,0],'outcomes':['appended','integrity_conflict'],'versions':1},
+            'crash_restart':{'before_commit':{'signaled':True,'signal':9,'exit':-1},'after_commit':{'signaled':True,'signal':9,'exit':-1},'rolled_back':True,'replay_versions':1,'same_hash':True},
+            'source_cascade':{'invalidated':4,'historical_markers':1,'future_use_denied':True}}
+        durable['input_hashes']=gate.hashes(ROOT,pg.dependencies)
+        self.assertEqual(gate.validate_report(core,pure)['count'],18);self.assertEqual(gate.validate_report(pg,durable)['count'],6)
+        for spec,original in ((core,pure),(pg,durable)):
+            for fault in ('case','skip','portable','hash','boundary'):
+                bad=copy.deepcopy(original)
+                if fault=='case':bad['cases'].pop()
+                elif fault=='skip':bad['cases'][0]['status']='skipped'
+                elif fault=='portable':bad['portable'][0]['cases']=[]
+                elif fault=='hash':bad['input_hashes'][next(iter(bad['input_hashes']))]='0'*64
+                elif spec==core:bad['packaging']['testing_autoload']=True
+                else:bad['observations']['crash_restart']['after_commit']['signal']=0
+                with self.assertRaises(gate.GateError):gate.validate_report(spec,bad)
+        for fault in ('isolation','connection','cascade','rollback'):
+            bad=copy.deepcopy(durable)
+            if fault=='isolation':bad['isolation']['allow_marker_verified']=False
+            elif fault=='connection':bad['observations']['competing_connections']['backends']=[1,1]
+            elif fault=='cascade':bad['observations']['source_cascade']['invalidated']=1
+            else:bad['observations']['crash_restart']['rolled_back']=False
+            with self.assertRaises(gate.GateError):gate.validate_report(pg,bad)
+        args=gate.parser().parse_args(['test','--suite','history-memory'])
+        with patch.object(gate,'run_suite',return_value={'ok':True}) as run:self.assertEqual(gate.execute(args),[{'ok':True}])
+        run.assert_called_once_with(ROOT,core,isolated=False)
+        with self.assertRaisesRegex(gate.GateError,'--isolated'):gate.run_suite(ROOT,pg)
+
+    def test_context_compiler_registry(self):
+        import copy
+        spec=gate.SUITES[('context-compiler','test')]
+        self.assertEqual((spec.owner,spec.mode,spec.tier,len(spec.cases)),('P7.4','contract-scripted','contract-scripted',28))
+        portable=[]
+        for group in (gate.CONTEXT_CORE_CASES,gate.CONTEXT_LIFECYCLE_CASES,gate.CONTEXT_EXAMPLE_CASES,gate.CONTEXT_READ_CASES):
+            tier='unit' if group==gate.CONTEXT_READ_CASES else 'contract-scripted'
+            portable.append({'mode':tier,'tier':tier,'cases':[{'id':c,'status':'passed'} for c in group]})
+        postgres={'mode':'isolated-postgres','tier':'isolated-postgres','cases':[{'id':c,'status':'passed'} for c in gate.CONTEXT_PG_CASES],
+            'isolation':{'engine':'postgresql','isolated':True,'database':'agentools_test_context_registry','owner':'test',
+                'allow_marker_verified':True,'case_ids':list(gate.CONTEXT_PG_CASES)}}
+        report={'mode':spec.mode,'tier':spec.tier,'cases':[{'id':c,'status':'passed'} for c in spec.cases],
+            'portable':portable,'postgres':postgres,
+            'packaging':{'standalone_core':True,'context':True,'testing_autoload':False,'sdk_autoload':False,'postgres_autoload':False,'framework_autoload':False},
+            'input_hashes':gate.hashes(ROOT,spec.dependencies)}
+        self.assertEqual(gate.validate_report(spec,report)['count'],28)
+        for fault in ('case','skip','portable','postgres','isolation','fake','hash'):
+            bad=copy.deepcopy(report)
+            if fault=='case':bad['cases'].pop()
+            elif fault=='skip':bad['cases'][0]['status']='skipped'
+            elif fault=='portable':bad['portable'][0]['cases']=[]
+            elif fault=='postgres':bad['postgres']['cases'].pop()
+            elif fault=='isolation':bad['postgres']['isolation']['allow_marker_verified']=False
+            elif fault=='fake':bad['packaging']['testing_autoload']=True
+            else:bad['input_hashes'][next(iter(bad['input_hashes']))]='0'*64
+            with self.assertRaises(gate.GateError):gate.validate_report(spec,bad)
+        args=gate.parser().parse_args(['test','--suite','context-compiler'])
+        with patch.object(gate,'run_suite',return_value={'ok':True}) as run:
+            self.assertEqual(gate.execute(args),[{'ok':True}])
+        run.assert_called_once_with(ROOT,spec,isolated=False)
+        with self.assertRaisesRegex(gate.GateError,'--isolated'):
+            gate.run_suite(ROOT,gate.SUITES[('context-compiler','pg-test')])
+
+    def test_skill_selection_registry(self):
+        import copy
+        spec=gate.SUITES[('skill-selection','test')]
+        self.assertEqual((spec.owner,spec.mode,spec.tier,len(spec.cases)),('P7.3','contract-scripted','contract-scripted',21))
+        report={'mode':spec.mode,'tier':spec.tier,'cases':[{'id':c,'status':'passed'} for c in spec.cases],
+            'portable':[{'mode':'contract-scripted','tier':'contract-scripted','cases':[{'id':c,'status':'passed'} for c in group]}
+                for group in (gate.SKILL_CORE_CASES,gate.SKILL_LIFECYCLE_CASES,gate.SKILL_EXAMPLE_CASES)],
+            'packaging':{'standalone_core':True,'skills':True,'testing_autoload':False,'sdk_autoload':False,'postgres_autoload':False,'framework_autoload':False},
+            'observations':{'CM-007':{'registered':100,'shortlist':1,'selected':1,'fragment_loads':1,'transport_calls':1,'tools':['search'],'qualification_calls_during_route':0},
+                'CM-008':{'code':'HASH_MISMATCH','loads':1,'loaded_versions':['1'],'latest_substituted':False},
+                'V2ALL-SKILL-FAULT':{'revoked_loads':0,'audit_marker':'revoked','snapshot_unchanged':True},
+                'V2ALL-SKILL-NEGATIVE':{'rejected_manifest_fields':['secret','history','corpus','curriculum','tool_catalogue'],'forbidden_fragment_kinds':5,'qualified_publications':0}},
+            'input_hashes':gate.hashes(ROOT,spec.dependencies)}
+        self.assertEqual(gate.validate_report(spec,report)['count'],21)
+        for fault in ('case','skip','portable','all-fragments','judge','latest','revoke','payload','fake','hash'):
+            bad=copy.deepcopy(report)
+            if fault=='case':bad['cases'].pop()
+            elif fault=='skip':bad['cases'][0]['status']='skipped'
+            elif fault=='portable':bad['portable'][0]['cases']=[]
+            elif fault=='all-fragments':bad['observations']['CM-007']['fragment_loads']=100
+            elif fault=='judge':bad['observations']['CM-007']['qualification_calls_during_route']=1
+            elif fault=='latest':bad['observations']['CM-008']['latest_substituted']=True
+            elif fault=='revoke':bad['observations']['V2ALL-SKILL-FAULT']['audit_marker']='published'
+            elif fault=='payload':bad['observations']['V2ALL-SKILL-NEGATIVE']['forbidden_fragment_kinds']=4
+            elif fault=='fake':bad['packaging']['testing_autoload']=True
+            else:bad['input_hashes'][next(iter(bad['input_hashes']))]='0'*64
+            with self.assertRaises(gate.GateError):gate.validate_report(spec,bad)
+        args=gate.parser().parse_args(['test','--suite','skill-selection'])
+        with patch.object(gate,'run_suite',return_value={'ok':True}) as run:
+            self.assertEqual(gate.execute(args),[{'ok':True}])
+        run.assert_called_once_with(ROOT,spec,isolated=False)
+
+    def test_profile_merge_registry(self):
+        import copy
+        spec = gate.SUITES[('profile-merge','test')]
+        self.assertEqual((spec.owner,spec.mode,spec.tier,len(spec.cases)), ('P7.2','contract-scripted','contract-scripted',24))
+        report = {'mode':spec.mode,'tier':spec.tier,'cases':[{'id':c,'status':'passed'} for c in spec.cases],
+            'portable':[{'mode':'contract-scripted','tier':'contract-scripted','cases':[{'id':c,'status':'passed'} for c in group]}
+                for group in (gate.PROFILE_MERGE_CORE_CASES,gate.PROFILE_MERGE_LIVE_CASES)],
+            'packaging':{'composition':True,'testing_autoload':False},
+            'postgres':{'mode':'isolated-postgres','tier':'isolated-postgres','cases':[{'id':c,'status':'passed'} for c in gate.PROFILE_MERGE_PG_CASES],
+                'isolation':{'engine':'postgresql','isolated':True,'database':'agentools_test_merge_registry','owner':'test',
+                    'allow_marker_verified':True,'case_ids':list(gate.PROFILE_MERGE_PG_CASES)},
+                'input_hashes':gate.hashes(ROOT,spec.dependencies)}}
+        self.assertEqual(gate.validate_report(spec,report)['count'],24)
+        for fault in ('case','skip','pg-case','pg-proof','pg-tier','portable','hash','fake'):
+            bad=copy.deepcopy(report)
+            if fault=='case':bad['cases'].pop()
+            elif fault=='skip':bad['cases'][0]['status']='skipped'
+            elif fault=='pg-case':bad['postgres']['cases'].pop()
+            elif fault=='pg-proof':bad['postgres']['isolation']['allow_marker_verified']=False
+            elif fault=='pg-tier':bad['postgres']['tier']='contract-scripted'
+            elif fault=='portable':bad['portable'][1]['cases']=[]
+            elif fault=='hash':bad['postgres']['input_hashes'][next(iter(bad['postgres']['input_hashes']))]='0'*64
+            else:bad['packaging']['testing_autoload']=True
+            with self.assertRaises(gate.GateError):gate.validate_report(spec,bad)
+        args=gate.parser().parse_args(['test','--suite','profile-merge'])
+        with patch.object(gate,'run_suite',return_value={'ok':True}) as run:
+            self.assertEqual(gate.execute(args),[{'ok':True}])
+        run.assert_called_once_with(ROOT,spec,isolated=False)
+
+    def test_profile_publish_registry(self):
+        import copy
+        contract = gate.SUITES[('profile-publish', 'test')]
+        durable = gate.SUITES[('profile-publish', 'pg-test')]
+        self.assertEqual((contract.owner, contract.tier, len(contract.cases)), ('P7.1', 'contract-scripted', 15))
+        self.assertEqual((durable.owner, durable.requires_pg, len(durable.cases)), ('P7.1', True, 18))
+        def base(spec):
+            return {'mode': spec.mode, 'tier': spec.tier, 'cases': [{'id': c, 'status': 'passed'} for c in spec.cases]}
+        report = base(durable)
+        report['isolation'] = {'engine': 'postgresql', 'isolated': True, 'database': 'agentools_test_profiles_registry',
+            'owner': 'test', 'allow_marker_verified': True, 'case_ids': list(durable.cases)}
+        observations = report['observations'] = {}
+        for name in ('profiles.concurrent-publish', 'profiles.concurrent-pin'):
+            observations[name] = {'workers':2, 'exits':[0,0], 'competed':True, 'rows':1, 'backends':[101,102], 'same_pin':True}
+        for name, rows in (('profiles.publish-sigkill-recovery',1), ('profiles.pin-sigkill-recovery',1), ('profiles.migration-sigkill-recovery',2)):
+            observations[name] = {'signal':9,'signaled':True,'worker_exit':-1,'committed':'committed','same_hash':True,'rows':rows}
+        observations['profiles.migration-commit-rollback'] = {'history_rolled_back':True,'head_rolled_back':True,'receipt_rolled_back':True,'retry_revision':2}
+        report['input_hashes'] = gate.hashes(ROOT, durable.dependencies)
+        self.assertEqual(gate.validate_report(durable, report)['count'], 18)
+        for fault in ('case', 'skip', 'isolation', 'contention', 'backend', 'crash', 'rollback', 'hash', 'malformed'):
+            bad = copy.deepcopy(report)
+            if fault == 'case': bad['cases'].pop()
+            elif fault == 'skip': bad['cases'][0]['status'] = 'skipped'
+            elif fault == 'isolation': bad['isolation'] = None
+            elif fault == 'contention': bad['observations']['profiles.concurrent-pin']['competed'] = False
+            elif fault == 'backend': bad['observations']['profiles.concurrent-pin']['backends'] = [101,101]
+            elif fault == 'crash': bad['observations']['profiles.publish-sigkill-recovery']['signal'] = 0
+            elif fault == 'rollback': bad['observations']['profiles.migration-commit-rollback']['receipt_rolled_back'] = False
+            elif fault == 'hash': bad['input_hashes'][next(iter(bad['input_hashes']))] = '0'*64
+            else: bad['observations'] = None
+            with self.assertRaises(gate.GateError): gate.validate_report(durable, bad)
+        report = base(contract)
+        report.update(packaging={'profile_publisher':True,'profile_pins':True,'testing_autoload':False}, portable=[
+            {'mode':'unit','tier':'unit','cases':[{'id':c,'status':'passed'} for c in cases]}
+            for cases in (gate.PROFILE_UNIT_CASES, gate.PROFILE_EXAMPLE_CASES)])
+        self.assertEqual(gate.validate_report(contract, report)['count'], 15)
+        bad = copy.deepcopy(report); bad['packaging']['testing_autoload'] = True
+        with self.assertRaises(gate.GateError): gate.validate_report(contract, bad)
+        bad = copy.deepcopy(report); bad['portable'][0]['cases'].pop()
+        with self.assertRaises(gate.GateError): gate.validate_report(contract, bad)
+        bad = copy.deepcopy(report); bad['packaging'] = None
+        with self.assertRaises(gate.GateError): gate.validate_report(contract, bad)
+        with self.assertRaises(gate.GateError): gate.run_suite(ROOT, durable)
+        for partition, spec in [('test', contract), ('pg-test', durable)]:
+            args = gate.parser().parse_args([partition,'--suite','profile-publish'] + (['--isolated'] if spec.requires_pg else []))
+            with patch.object(gate, 'run_suite', return_value={'ok':True}) as run:
+                self.assertEqual(gate.execute(args), [{'ok': True}])
+            run.assert_called_once_with(ROOT, spec, isolated=spec.requires_pg)
+
+    def test_scheduler_registry(self):
+        import copy
+        port_path = gate.CORE + '/src/Scheduling/SchedulePort.php'
+        port_source = (ROOT / port_path).read_text()
+        self.assertEqual(gate.source_errors(ROOT, port_source, port_path), [])
+        self.assertEqual(gate.MODULES['Scheduling'], {'Common', 'Security', 'Context'})
+        for target in ('Runtime', 'Actions', 'Budget', 'Models', 'Profiles'):
+            source = '<?php namespace AgenToolsPlatform\\Core\\Scheduling; use AgenToolsPlatform\\Core\\' + target + '\\Forbidden;'
+            with self.subTest(dependency=target):
+                self.assertTrue(any('Scheduling cannot depend on ' + target in error
+                    for error in gate.source_errors(ROOT, source, port_path)))
+        for dependency in ('PDO', 'Illuminate\\Container\\Container', 'AgenToolsPlatform\\Scheduler\\Store'):
+            source = '<?php namespace AgenToolsPlatform\\Core\\Scheduling; use ' + dependency + ';'
+            with self.subTest(dependency=dependency):
+                self.assertTrue(gate.source_errors(ROOT, source, port_path))
+        source = '<?php namespace AgenToolsPlatform\\Core\\Scheduling; file_get_contents("/secret");'
+        self.assertTrue(any('unapproved function' in error for error in gate.source_errors(ROOT, source, port_path)))
+        source = '<?php namespace AgenToolsPlatform\\Core\\SchedulingUnknown; interface Port {}'
+        self.assertTrue(any('unknown core module' in error for error in gate.source_errors(ROOT, source, port_path)))
+        self.assertTrue(any('namespace/path module mismatch' in error for error in
+            gate.source_errors(ROOT, port_source, gate.CORE + '/src/Runtime/SchedulePort.php')))
+        source = '<?php namespace AgenToolsPlatform\\Core\\Runtime; use AgenToolsPlatform\\Core\\Scheduling\\SchedulePort;'
+        self.assertTrue(any('Runtime cannot depend on Scheduling' in error
+            for error in gate.source_errors(ROOT, source, gate.CORE + '/src/Runtime/Example.php')))
+        contract = gate.SUITES[('scheduler', 'test')]
+        durable = gate.SUITES[('scheduler', 'pg-test')]
+        self.assertEqual((contract.owner, contract.tier, len(contract.cases)), ('P6.5', 'contract-scripted', 21))
+        self.assertEqual((durable.owner, durable.tier, len(durable.cases)), ('P6.5', 'isolated-postgres', 13))
+        self.assertTrue(durable.requires_pg)
+        matrix = json.loads((ROOT / 'fixtures/platform/v1/scheduler/cases.json').read_text())
+        self.assertEqual(tuple(matrix['postgres'].values()), gate.SCHEDULER_PG_CASES)
+        self.assertEqual(tuple(matrix['calendar'].values()), gate.SCHEDULER_CALENDAR_CASES)
+        gate.hashes(ROOT, contract.dependencies)
+        report = {'mode': contract.mode, 'tier': contract.tier,
+            'cases': [{'id': name, 'status': 'passed'} for name in contract.cases],
+            'packaging': {'provider': True, 'default_routes': 0, 'default_host_bindings': False,
+                'testing_autoload': False, 'core_port': True, 'scheduler_absent_headless': True,
+                'adapter': {'provider': True, 'default_routes': 0, 'default_host_bindings': False,
+                    'testing_autoload': False, 'scheduler': True, 'filament': False, 'core_port': True}},
+            'calendar': {'mode': 'unit', 'tier': 'unit',
+                'cases': [{'id': name, 'status': 'passed'} for name in gate.SCHEDULER_CALENDAR_CASES]},
+            'postgres': {'mode': durable.mode, 'tier': durable.tier,
+                'cases': [{'id': name, 'status': 'passed'} for name in durable.cases],
+                'isolation': {'engine': 'postgresql', 'isolated': True, 'database': 'agentools_test_scheduler_registry',
+                    'owner': 'test', 'allow_marker_verified': True, 'case_ids': list(durable.cases)},
+                'observations': {
+                    'CM-045': {'workers': 2, 'exits': [0, 0], 'same_receipts': True, 'counts': 1},
+                    'scheduler.crash-after-commit': {'signal': 9, 'signaled': True, 'worker_exit': -1, 'same_refs': True, 'counts': 1},
+                    'V2ALL-SCHED-FAULT': {'same_run': True, 'owner_outcome': 'unknown', 'status': 'reconciliation_required',
+                        'provider_calls': 1, 'owner_writes': 0}}}}
+        gate.validate_report(contract, report)
+        for field in ('proof', 'missing', 'skip', 'zero', 'calendar', 'calendar-tier', 'headless', 'adapter', 'routes',
+                'core-port', 'pg-tier', 'live-tier', 'concurrent', 'kill', 'unknown'):
+            bad = copy.deepcopy(report)
+            if field == 'proof': bad['postgres']['isolation'] = None
+            elif field == 'missing': bad['postgres']['cases'].pop()
+            elif field == 'skip': bad['postgres']['cases'][0]['status'] = 'skipped'
+            elif field == 'zero': bad['cases'] = []
+            elif field == 'calendar': bad['calendar']['cases'] = []
+            elif field == 'calendar-tier': bad['calendar']['tier'] = 'isolated-postgres'
+            elif field == 'headless': bad['packaging']['scheduler_absent_headless'] = False
+            elif field == 'adapter': bad['packaging']['adapter']['testing_autoload'] = True
+            elif field == 'routes': bad['packaging']['adapter']['default_routes'] = 1
+            elif field == 'core-port': bad['packaging']['core_port'] = False
+            elif field == 'pg-tier': bad['postgres']['tier'] = 'contract-scripted'
+            elif field == 'live-tier': bad['tier'] = 'live-provider'
+            elif field == 'concurrent': bad['postgres']['observations']['CM-045']['exits'] = [0, 1]
+            elif field == 'kill': bad['postgres']['observations']['scheduler.crash-after-commit']['signal'] = 15
+            else: bad['postgres']['observations']['V2ALL-SCHED-FAULT']['owner_outcome'] = 'succeeded'
+            with self.subTest(field=field), self.assertRaises(gate.GateError):
+                gate.validate_report(contract, bad)
+        for partition in ('test', 'pg-test'):
+            argv = [partition, '--suite', 'scheduler'] + (['--isolated'] if partition == 'pg-test' else [])
+            with patch.object(gate, 'run_suite', return_value={'ok': True}) as run:
+                self.assertEqual(gate.execute(gate.parser().parse_args(argv)), [{'ok': True}])
+            run.assert_called_once_with(ROOT, gate.SUITES[('scheduler', partition)], isolated=partition == 'pg-test')
+        # Own source/fixture and required-case/tier additions must invalidate candidate-bound manifests.
+        with tempfile.TemporaryDirectory(prefix='scheduler_manifest_negative_') as directory:
+            root = Path(directory); fixture = root / 'fixture.json'; fixture.write_text('{}')
+            tiny = gate.Suite('P6.5', 'unit', 'unit', ('one',), ('runner',), ('fixture.json',))
+            output = json.dumps({'mode': 'unit', 'tier': 'unit', 'cases': [{'id': 'one', 'status': 'passed'}]})
+            with patch.object(gate.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0, output, '')):
+                first = gate.run_suite(root, tiny)['suite_manifest_hash']
+                fixture.write_text('{"changed":true}')
+                self.assertNotEqual(first, gate.run_suite(root, tiny)['suite_manifest_hash'])
+                fixture.write_text('{}'); (root / 'new.php').write_text('<?php')
+                for changed in (replace(tiny, cases=('one', 'two')), replace(tiny, tier='contract-scripted'),
+                        replace(tiny, dependencies=('fixture.json', 'new.php'))):
+                    self.assertNotEqual(first, gate.run_suite(root, changed)['suite_manifest_hash'])
+                fixture.unlink()
+                with self.assertRaises(gate.GateError): gate.run_suite(root, tiny)
+
+    def test_profile_admin_registry(self):
+        import copy
+        contract = gate.SUITES[('profile-publish-admin', 'test')]
+        durable = gate.SUITES[('profile-publish-admin', 'pg-test')]
+        self.assertEqual((contract.owner, contract.tier, len(contract.cases)), ('P7.7', 'contract-scripted', 18))
+        self.assertEqual((durable.owner, durable.tier, len(durable.cases)), ('P7.7-pg', 'isolated-postgres', 13))
+        self.assertTrue(durable.requires_pg)
+        matrix = json.loads((ROOT / 'extensions/filament/tests/profile-cases.json').read_text())
+        self.assertEqual(tuple(matrix['postgres'].values()), gate.PROFILE_ADMIN_PG_CASES)
+        self.assertEqual(tuple(matrix['shell'].values()), gate.PROFILE_ADMIN_SHELL_CASES)
+        report = {'mode': contract.mode, 'tier': contract.tier,
+            'cases': [{'id': name, 'status': 'passed'} for name in contract.cases],
+            'input_hashes': gate.hashes(ROOT, contract.dependencies),
+            'packaging': {'provider': True, 'default_routes': 0, 'default_host_bindings': False,
+                'testing_autoload': False, 'filament_absent_headless': True,
+                'adapter': {'provider': True, 'default_routes': 0, 'default_host_bindings': False,
+                    'testing_autoload': False, 'filament': True, 'profile_admin': True}},
+            'shell': {'mode': 'contract-scripted', 'tier': 'contract-scripted',
+                'cases': [{'id': name, 'status': 'passed'} for name in gate.PROFILE_ADMIN_SHELL_CASES]},
+            'postgres': {'mode': durable.mode, 'tier': durable.tier,
+                'cases': [{'id': name, 'status': 'passed'} for name in durable.cases],
+                'isolation': {'engine': 'postgresql', 'isolated': True, 'database': 'agentools_test_profile_admin_registry',
+                    'owner': 'test', 'allow_marker_verified': True, 'case_ids': list(durable.cases)}}}
+        gate.validate_report(contract, report)
+        for field in ('proof', 'missing', 'skip', 'zero', 'shell', 'headless', 'adapter', 'routes', 'tier', 'hashes'):
+            bad = copy.deepcopy(report)
+            if field == 'proof': bad['postgres']['isolation'] = None
+            elif field == 'missing': bad['postgres']['cases'].pop()
+            elif field == 'skip': bad['postgres']['cases'][0]['status'] = 'skipped'
+            elif field == 'zero': bad['cases'] = []
+            elif field == 'shell': bad['shell']['cases'] = []
+            elif field == 'headless': bad['packaging']['filament_absent_headless'] = False
+            elif field == 'adapter': bad['packaging']['adapter']['profile_admin'] = False
+            elif field == 'routes': bad['packaging']['adapter']['default_routes'] = 1
+            elif field == 'tier': bad['tier'] = 'live-provider'
+            else: bad['input_hashes'] = {}
+            with self.subTest(field=field), self.assertRaises(gate.GateError): gate.validate_report(contract, bad)
+        for partition in ('test', 'pg-test'):
+            argv = [partition, '--suite', 'profile-publish-admin'] + (['--isolated'] if partition == 'pg-test' else [])
+            with patch.object(gate, 'run_suite', return_value={'ok': True}) as run:
+                self.assertEqual(gate.execute(gate.parser().parse_args(argv)), [{'ok': True}])
+            run.assert_called_once_with(ROOT, gate.SUITES[('profile-publish-admin', partition)], isolated=partition == 'pg-test')
+        with tempfile.TemporaryDirectory(prefix='profile_admin_manifest_negative_') as directory:
+            root = Path(directory)
+            fixture = root / 'fixture.json'; fixture.write_text('{}')
+            tiny = gate.Suite('P7.7', 'unit', 'unit', ('one',), ('runner',), ('fixture.json',))
+            output = json.dumps({'mode': 'unit', 'tier': 'unit', 'cases': [{'id': 'one', 'status': 'passed'}]})
+            with patch.object(gate.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0, output, '')):
+                first = gate.run_suite(root, tiny)['suite_manifest_hash']
+                fixture.write_text('{"source":2}')
+                self.assertNotEqual(first, gate.run_suite(root, tiny)['suite_manifest_hash'])
+                fixture.write_text('{}')
+                (root / 'new.php').write_text('<?php')
+                for changed in (replace(tiny, cases=('one', 'two')), replace(tiny, tier='contract-scripted'),
+                        replace(tiny, dependencies=('fixture.json', 'new.php'))):
+                    self.assertNotEqual(first, gate.run_suite(root, changed)['suite_manifest_hash'])
+                fixture.unlink()
+                with self.assertRaises(gate.GateError): gate.run_suite(root, tiny)
+
+    def test_filament_registry(self):
+        import copy
+        contract = gate.SUITES[('filament', 'test')]
+        durable = gate.SUITES[('filament', 'pg-test')]
+        self.assertEqual((contract.owner, contract.tier, len(contract.cases)), ('P6.4', 'contract-scripted', 15))
+        self.assertEqual((durable.owner, durable.tier, len(durable.cases)), ('P6.4', 'isolated-postgres', 10))
+        self.assertTrue(durable.requires_pg)
+        matrix = json.loads((ROOT / 'extensions/filament/tests/cases.json').read_text())
+        self.assertEqual(tuple(matrix['postgres'].values()), gate.FILAMENT_PG_CASES)
+        self.assertEqual(tuple(matrix['shell'].values()), gate.FILAMENT_SHELL_CASES)
+        gate.hashes(ROOT, contract.dependencies)
+        report = {'mode': contract.mode, 'tier': contract.tier,
+            'cases': [{'id': name, 'status': 'passed'} for name in contract.cases],
+            'packaging': {'provider': True, 'default_routes': 0, 'default_host_bindings': False,
+                'testing_autoload': False, 'filament_absent_headless': True,
+                'adapter': {'provider': True, 'default_routes': 0, 'default_host_bindings': False,
+                    'testing_autoload': False, 'filament': True}},
+            'shell': {'mode': 'contract-scripted', 'tier': 'contract-scripted',
+                'cases': [{'id': name, 'status': 'passed'} for name in gate.FILAMENT_SHELL_CASES]},
+            'postgres': {'mode': durable.mode, 'tier': durable.tier,
+                'cases': [{'id': name, 'status': 'passed'} for name in durable.cases],
+                'isolation': {'engine': 'postgresql', 'isolated': True, 'database': 'agentools_test_filament_registry',
+                    'owner': 'test', 'allow_marker_verified': True, 'case_ids': list(durable.cases)}}}
+        gate.validate_report(contract, report)
+        for field in ('proof', 'missing', 'skip', 'zero', 'shell', 'shell-tier', 'headless', 'adapter', 'routes', 'pg-tier', 'live-tier'):
+            bad = copy.deepcopy(report)
+            if field == 'proof': bad['postgres']['isolation'] = None
+            elif field == 'missing': bad['postgres']['cases'].pop()
+            elif field == 'skip': bad['postgres']['cases'][0]['status'] = 'skipped'
+            elif field == 'zero': bad['cases'] = []
+            elif field == 'shell': bad['shell']['cases'] = []
+            elif field == 'shell-tier': bad['shell']['tier'] = 'live-provider'
+            elif field == 'headless': bad['packaging']['filament_absent_headless'] = False
+            elif field == 'adapter': bad['packaging']['adapter']['testing_autoload'] = True
+            elif field == 'routes': bad['packaging']['adapter']['default_routes'] = 1
+            elif field == 'pg-tier': bad['postgres']['tier'] = 'contract-scripted'
+            else: bad['tier'] = 'live-provider'
+            with self.subTest(field=field), self.assertRaises(gate.GateError):
+                gate.validate_report(contract, bad)
+        for partition in ('test', 'pg-test'):
+            argv = [partition, '--suite', 'filament'] + (['--isolated'] if partition == 'pg-test' else [])
+            with patch.object(gate, 'run_suite', return_value={'ok': True}) as run:
+                self.assertEqual(gate.execute(gate.parser().parse_args(argv)), [{'ok': True}])
+            run.assert_called_once_with(ROOT, gate.SUITES[('filament', partition)], isolated=partition == 'pg-test')
+        # Required view/fixture deletion is red, and source/case/tier additions alter the manifest hash.
+        with tempfile.TemporaryDirectory(prefix='filament_manifest_negative_') as directory:
+            root = Path(directory)
+            fixture = root / 'fixture.json'; fixture.write_text('{}')
+            tiny = gate.Suite('P6.4', 'unit', 'unit', ('one',), ('runner',), ('fixture.json',))
+            output = json.dumps({'mode': 'unit', 'tier': 'unit', 'cases': [{'id': 'one', 'status': 'passed'}]})
+            with patch.object(gate.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0, output, '')):
+                first = gate.run_suite(root, tiny)['suite_manifest_hash']
+                fixture.write_text('{"source":2}')
+                self.assertNotEqual(first, gate.run_suite(root, tiny)['suite_manifest_hash'])
+                fixture.write_text('{}')
+                extra = root / 'new.php'; extra.write_text('<?php')
+                for changed in (replace(tiny, cases=('one', 'two')), replace(tiny, tier='contract-scripted'),
+                        replace(tiny, dependencies=('fixture.json', 'new.php'))):
+                    self.assertNotEqual(first, gate.run_suite(root, changed)['suite_manifest_hash'])
+                fixture.unlink()
+                with self.assertRaises(gate.GateError): gate.run_suite(root, tiny)
+
+    def test_composition_testing_registry(self):
+        import copy
+        contract = gate.SUITES[('composition-testing', 'test')]
+        durable = gate.SUITES[('composition-testing', 'pg-test')]
+        self.assertEqual((contract.owner, contract.tier, len(contract.cases)), ('P6.3', 'contract-scripted', 19))
+        self.assertEqual((durable.owner, durable.tier, len(durable.cases)), ('P6.3', 'isolated-postgres', 8))
+        self.assertTrue(durable.requires_pg)
+        for case in ('V2ALL-FAKE-POSITIVE', 'V2ALL-FAKE-NEGATIVE', 'V2ALL-FAKE-FAULT'):
+            self.assertIn(case, durable.cases)
+        gate.hashes(ROOT, contract.dependencies)
+        report = {'mode': contract.mode, 'tier': contract.tier,
+            'cases': [{'id': name, 'status': 'passed'} for name in contract.cases],
+            'packaging': {'provider': True, 'default_routes': 0, 'default_host_bindings': False, 'testing_autoload': False},
+            'portable': {'mode': 'contract-scripted', 'tier': 'contract-scripted',
+                'cases': [{'id': name, 'status': 'passed'} for name in gate.COMPOSITION_PORT_CASES]},
+            'postgres': {'mode': durable.mode, 'tier': durable.tier,
+                'cases': [{'id': name, 'status': 'passed'} for name in durable.cases],
+                'isolation': {'engine': 'postgresql', 'isolated': True, 'database': 'agentools_test_profile_registry',
+                    'owner': 'test', 'allow_marker_verified': True, 'case_ids': list(durable.cases)}}}
+        gate.validate_report(contract, report)
+        for field in ('proof', 'missing', 'skip', 'zero', 'packaging', 'portable', 'portable-tier', 'pg-tier', 'live-tier'):
+            bad = copy.deepcopy(report)
+            if field == 'proof': bad['postgres']['isolation'] = None
+            elif field == 'missing': bad['postgres']['cases'].pop()
+            elif field == 'skip': bad['postgres']['cases'][0]['status'] = 'skipped'
+            elif field == 'zero': bad['cases'] = []
+            elif field == 'packaging': bad['packaging']['testing_autoload'] = True
+            elif field == 'portable': bad['portable']['cases'] = []
+            elif field == 'portable-tier': bad['portable']['tier'] = 'isolated-postgres'
+            elif field == 'pg-tier': bad['postgres']['tier'] = 'contract-scripted'
+            else: bad['tier'] = 'live-provider'
+            with self.subTest(field=field), self.assertRaises(gate.GateError):
+                gate.validate_report(contract, bad)
+        args = gate.parser().parse_args(['test', '--suite', 'composition-testing'])
+        with patch.object(gate, 'run_suite', return_value={'ok': True}) as run:
+            self.assertEqual(gate.execute(args), [{'ok': True}])
+        run.assert_called_once_with(ROOT, contract, isolated=False)
+        args = gate.parser().parse_args(['pg-test', '--suite', 'composition-testing', '--isolated'])
+        with patch.object(gate, 'run_suite', return_value={'ok': True}) as run:
+            self.assertEqual(gate.execute(args), [{'ok': True}])
+        run.assert_called_once_with(ROOT, durable, isolated=True)
+
+    def test_platform_definitions_registry(self):
+        import copy
+        contract=gate.SUITES[('platform-definitions','test')]
+        durable=gate.SUITES[('platform-definitions','pg-test')]
+        self.assertEqual((contract.owner,contract.tier,len(contract.cases)),('P6.2','contract-scripted',21))
+        self.assertEqual((durable.owner,durable.tier,len(durable.cases)),('P6.2','isolated-postgres',17))
+        self.assertTrue(durable.requires_pg)
+        gate.hashes(ROOT,contract.dependencies)
+        report={'mode':contract.mode,'tier':contract.tier,
+            'cases':[{'id':name,'status':'passed'} for name in contract.cases],
+            'packaging':{'provider':True,'default_routes':0,'default_host_bindings':False,'testing_autoload':False},
+            'postgres':{'mode':durable.mode,'tier':durable.tier,
+                'cases':[{'id':name,'status':'passed'} for name in durable.cases],
+                'isolation':{'engine':'postgresql','isolated':True,'database':'agentools_test_definitions_registry',
+                    'owner':'test','allow_marker_verified':True,'case_ids':list(durable.cases)}}}
+        gate.validate_report(contract,report)
+        for field in ('missing','skip','proof','packaging','zero'):
+            bad=copy.deepcopy(report)
+            if field=='missing':bad['postgres']['cases'].pop()
+            elif field=='skip':bad['postgres']['cases'][0]['status']='skipped'
+            elif field=='proof':bad['postgres']['isolation']=None
+            elif field=='packaging':bad['packaging']['testing_autoload']=True
+            else:bad['cases']=[]
+            with self.assertRaises(gate.GateError):gate.validate_report(contract,bad)
+        args=gate.parser().parse_args(['test','--suite','platform-definitions'])
+        with patch.object(gate,'run_suite',return_value={'ok':True}) as run:
+            self.assertEqual(gate.execute(args),[{'ok':True}])
+        run.assert_called_once_with(ROOT,contract,isolated=False)
+        from importlib.util import spec_from_file_location,module_from_spec
+        spec=spec_from_file_location('definitions_attribution',ROOT/'packages/agentools-laravel/tests/Definitions/attribution.py')
+        attribution=module_from_spec(spec);spec.loader.exec_module(attribution);attribution.check()
+        with tempfile.TemporaryDirectory(prefix='definitions_attribution_negative_') as directory:
+            target=Path(directory)
+            doc=attribution.expected();doc['rows'][0]['sha256']='0'*64
+            (target/'attribution.json').write_text(json.dumps(doc))
+            with patch.object(attribution,'HERE',target):
+                with self.assertRaisesRegex(RuntimeError,'stale'):attribution.check()
+
+    def test_laravel_composition_registry(self):
+        import copy
+        contract = gate.SUITES[('laravel-composition', 'test')]
+        durable = gate.SUITES[('laravel-composition', 'pg-test')]
+        self.assertEqual((contract.owner, contract.tier, len(contract.cases)), ('P6.1', 'contract-scripted', 22))
+        self.assertEqual((durable.owner, durable.tier, len(durable.cases)), ('P6.1', 'isolated-postgres', 18))
+        self.assertTrue(durable.requires_pg)
+        for case in ('CM-041', 'CM-042', 'V2ALL-MANAGED-NEGATIVE', 'V2ALL-MANAGED-FAULT'):
+            self.assertIn(case, durable.cases)
+        gate.hashes(ROOT, contract.dependencies)
+        report = {'mode':contract.mode, 'tier':contract.tier,
+            'cases':[{'id':c,'status':'passed'} for c in contract.cases],
+            'packaging':{'provider':True,'default_routes':0,'default_host_bindings':False,'testing_autoload':False},
+            'postgres':{'mode':durable.mode,'tier':durable.tier,
+                'cases':[{'id':c,'status':'passed'} for c in durable.cases],
+                'isolation':{'engine':'postgresql','isolated':True,'database':'agentools_test_laravel_registry',
+                    'owner':'test','allow_marker_verified':True,'case_ids':list(durable.cases)}}}
+        gate.validate_report(contract, report)
+        for change in ('proof','missing','skip','zero','packaging','packaging-type'):
+            bad=copy.deepcopy(report)
+            if change == 'proof': bad['postgres']['isolation']=None
+            elif change == 'missing': bad['postgres']['cases'].pop()
+            elif change == 'skip': bad['postgres']['cases'][0]['status']='skipped'
+            elif change == 'zero': bad['cases']=[]
+            elif change == 'packaging-type': bad['packaging']['default_routes']=False
+            else: bad['packaging']['testing_autoload']=True
+            with self.assertRaises(gate.GateError): gate.validate_report(contract,bad)
+        args=gate.parser().parse_args(['test','--suite','laravel-composition'])
+        with patch.object(gate,'run_suite',return_value={'ok':True}) as run:
+            self.assertEqual(gate.execute(args),[{'ok':True}])
+        run.assert_called_once_with(ROOT,contract,isolated=False)
+        from importlib.util import spec_from_file_location, module_from_spec
+        spec = spec_from_file_location('laravel_reuse_check', ROOT / 'packages/agentools-laravel/tests/Composition/reuse.py')
+        reuse = module_from_spec(spec); spec.loader.exec_module(reuse)
+        reuse.check()
+        with tempfile.TemporaryDirectory(prefix='laravel_reuse_negative_') as directory:
+            target = Path(directory)
+            for name in ('reuse-map.json','ManagedTest.php','LifecycleTest.php'):
+                shutil.copyfile(reuse.HERE / name,target / name)
+            with patch.object(reuse,'HERE',target):
+                data=json.loads((target / 'reuse-map.json').read_text())
+                bad=copy.deepcopy(data); bad['rows'][0]['sha256']='0'*64
+                (target / 'reuse-map.json').write_text(json.dumps(bad))
+                with self.assertRaisesRegex(RuntimeError,'stale'): reuse.check()
+                (target / 'reuse-map.json').write_text(json.dumps(data))
+                (target / 'LifecycleTest.php').write_text('<?php // consumer removed')
+                with self.assertRaisesRegex(RuntimeError,'Missing reuse consumer'): reuse.check()
+
+    def test_write_recovery_registry(self):
+        import copy
+        portable = gate.SUITES[('write-recovery', 'test')]
+        durable = gate.SUITES[('write-recovery', 'e2e')]
+        self.assertEqual((portable.owner, portable.tier, len(portable.cases)), ('P5.5', 'contract-scripted', 117))
+        self.assertEqual((durable.owner, durable.tier, len(durable.cases)), ('P5.5', 'local-host-e2e', 52))
+        self.assertTrue(durable.requires_pg)
+        gate.hashes(ROOT, durable.dependencies)
+        from importlib.util import spec_from_file_location, module_from_spec
+        spec = spec_from_file_location('portable_validator', ROOT / 'conformance/platform/write-journey/parity.py')
+        parity = module_from_spec(spec); spec.loader.exec_module(parity)
+        fixtures = json.loads((ROOT / 'fixtures/platform/v1/recovery/portable.json').read_text())['cases']
+        reports = [{'consumer': c, 'tier': 'contract-scripted', 'cases': [{'id': f['id'], 'observed': f['expected']} for f in fixtures]} for c in parity.CONSUMERS]
+        pr = parity.validate(fixtures, reports)
+        gate.validate_report(portable, pr)
+        for consumer_change in ('missing', 'duplicate', 'extra', 'disagree', 'type'):
+            changed = copy.deepcopy(reports)
+            if consumer_change == 'missing': changed[0]['cases'].pop()
+            elif consumer_change == 'duplicate': changed[0]['cases'].append(changed[0]['cases'][0])
+            elif consumer_change == 'extra': changed[0]['cases'][0]['id'] = 'unrequired'
+            elif consumer_change == 'type': changed[0]['cases'][0]['observed']['accepted'] = 1
+            else: changed[0]['cases'][0]['observed']['accepted'] = 'fabricated'
+            with self.assertRaises(ValueError): parity.validate(fixtures, changed)
+        report = {'mode': durable.mode, 'tier': durable.tier, 'cases': [{'id': c, 'status': 'passed'} for c in durable.cases],
+            'isolation': {'engine': 'postgresql', 'isolated': True, 'database': 'agentools_test_write_registry', 'owner': 'test', 'allow_marker_verified': True, 'case_ids': list(durable.cases)},
+            'portable': pr, 'observations': {
+                'crash-matrix': {'boundaries': {n: {'worker_exit': 9, 'before': {'outcome': 'unknown'}, 'after': {'status': 'unresolved' if n == 'invocation-intent' else 'completed', 'owner_writes': 0 if n == 'invocation-intent' else 1}} for n in gate.WRITE_BOUNDARIES}},
+                'atomic-matrix': {'boundaries': {n: {'rolled_back': True, 'owner_writes': 1, 'messages': 1} for n in gate.WRITE_ATOMIC_BOUNDARIES}},
+                'zombie': {'old_worker_alive_after_db_lease_expiry': True, 'facts': {'stale_run': True, 'stale_effect': True, 'owner_writes': 1}, 'accepted_epoch': 2, 'original_epoch': 1},
+                'rollback': {'reader_revision': '2026-09', 'owner_writes': 1, 'projection_digest': 'sha-256:' + 'a' * 64}}}
+        gate.validate_report(durable, report)
+        for invalid_digest in ('a' * 64, 'sha-256:' + 'a' * 63, 'sha-256:' + 'g' * 64,
+                               'sha-512:' + 'a' * 64, 'sha-256:' + 'a' * 64 + '\n'):
+            changed = copy.deepcopy(report)
+            changed['observations']['rollback']['projection_digest'] = invalid_digest
+            with self.assertRaisesRegex(gate.GateError, 'compatible reader rollback proof missing'):
+                gate.validate_report(durable, changed)
+        for mutation in ('case', 'isolation', 'crash', 'atomic', 'zombie', 'rollback', 'portable'):
+            changed = copy.deepcopy(report)
+            if mutation == 'case': changed['cases'].pop()
+            elif mutation == 'isolation': changed['isolation'] = None
+            elif mutation == 'portable': changed['portable']['cases'].pop()
+            elif mutation == 'crash': changed['observations']['crash-matrix']['boundaries'].pop('owner-commit')
+            elif mutation == 'atomic': changed['observations']['atomic-matrix']['boundaries'].pop('model-result')
+            else: changed['observations'].pop(mutation)
+            with self.assertRaises(gate.GateError): gate.validate_report(durable, changed)
+        args = gate.parser().parse_args(['e2e', '--scenario', 'write-recovery'])
+        with patch.object(gate, 'run_suite', return_value={'ok': True}) as run:
+            self.assertEqual(gate.execute(args), [{'ok': True}])
+        run.assert_called_once_with(ROOT, durable, isolated=True)
+
+    def test_cancellation_resolution_registry(self):
+        portable = gate.SUITES[('cancellation-resolution', 'test')]
+        durable = gate.SUITES[('cancellation-resolution', 'pg-test')]
+        self.assertEqual((portable.owner, portable.tier, len(portable.cases)), ('P5.4', 'contract-scripted', 11))
+        self.assertEqual((durable.owner, durable.tier, len(durable.cases)), ('P5.4', 'isolated-postgres', 13))
+        self.assertTrue(durable.requires_pg)
+        self.assertTrue({'CANCEL-001', 'cancel.explicit-compensation', 'cancel.crash-after-commit',
+                         'cancel.manual-cas-replay', 'cancel.competing-commands'}.issubset(durable.cases))
+        gate.hashes(ROOT, durable.dependencies)
+        report = {'mode': durable.mode, 'tier': durable.tier,
+                  'cases': [{'id': name, 'status': 'passed'} for name in durable.cases],
+                  'isolation': {'engine': 'postgresql', 'isolated': True, 'database': 'agentools_test_operations',
+                                'owner': 'test', 'allow_marker_verified': True, 'case_ids': list(durable.cases)}}
+        gate.validate_report(durable, report)
+        for altered in (dict(report, cases=[]), dict(report, cases=report['cases'][:-1]),
+                        dict(report, isolation=None), dict(report, cases=[dict(c, status='skipped') for c in report['cases']])):
+            with self.assertRaises(gate.GateError): gate.validate_report(durable, altered)
+        args = gate.parser().parse_args(['pg-test', '--suite', 'cancellation-resolution', '--isolated'])
+        with patch.object(gate, 'run_suite', return_value={'ok': True}) as run:
+            self.assertEqual(gate.execute(args), [{'ok': True}])
+        run.assert_called_once_with(ROOT, durable, isolated=True)
+
     def test_model_transport_registry(self):
         spec = gate.SUITES[('model-contract', 'test')]
         self.assertIs(spec, gate.SUITES[('model-transport', 'test')])
@@ -341,8 +1132,8 @@ class GateTests(unittest.TestCase):
         spec = gate.SUITES[("pg-isolation-retention", "pg-test")]
         self.assertEqual((spec.owner, spec.mode, spec.tier), ("P3.5", "isolated-postgres", "isolated-postgres"))
         self.assertTrue(spec.requires_pg)
-        self.assertEqual(len(spec.cases), 54)
-        self.assertEqual(len(set(spec.cases)), 54)
+        self.assertEqual(len(spec.cases), 65)
+        self.assertEqual(len(set(spec.cases)), 65)
         self.assertIn('pg-isolation-retention.testLegacyPurgeReservationRequiresReceiptResolution', spec.cases)
         for family in (gate.PG_SCHEMA_CASES, gate.PG_INTAKE_CASES, gate.PG_CLAIMS_OUTBOX_CASES, gate.PG_ACTION_JOURNAL_CASES):
             self.assertTrue(set(family).issubset(spec.cases))
@@ -519,6 +1310,7 @@ if __name__ == "__main__":
     ok = result.wasSuccessful() and not result.skipped and result.testsRun > 0
     try:
         gate.validate_report(gate.SUITES[("gate-self", "test")], report)
-    except gate.GateError:
+    except gate.GateError as error:
+        print(f"gate-self report validation failed: {error}", file=sys.stderr)
         ok = False
     sys.exit(0 if ok else 1)

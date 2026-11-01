@@ -37,3 +37,12 @@ condition = "AND"
 paths = ['''^plans/2026\.09\.19-№1-AGENTOOLS-HARDENING/log\.jsonl$''']
 regexTarget = "match"
 regexes = ['''^(?:P3-token-migration|P7-api-inventory|token-replay-v1)\.md\"?:\s*\"[0-9a-f]{64}\"$''']
+
+[[rules]]
+id = "generic-api-key"
+[rules.allowlist]
+description = "Documented Botkit Planner API revision SHA-256 digest in bootstrap inventory"
+condition = "AND"
+paths = ['''^docs/platform/bootstrap\.json$''']
+regexTarget = "match"
+regexes = ['''^API revision sha256:efa41e9a05831f44943c5293e3e4041fe5af6d17117d82377e54475a9abd4ba2\"$''']

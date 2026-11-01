@@ -1,0 +1,22 @@
+parameters:
+    level: max
+    bootstrapFiles:
+        - bootstrap.php
+    paths:
+        - BoundaryJournal.php
+        - Journey.php
+        - Ports.php
+        - PortableReference.php
+        - RecoveryTest.php
+        - Report.php
+        - WriteJourneyTest.php
+        - worker.php
+        - reference.php
+    scanDirectories:
+        - ../../../packages/agentools-core/src
+        - ../../../packages/agentools-postgres/src
+        - ../../../packages/agentools-laravel/src
+        - ../../../examples/platform/direct-action/src
+        - ../../../examples/platform/confirmed-write/src
+    scanFiles:
+        - ../../../packages/agentools-postgres/tests/IsolatedDatabase.php

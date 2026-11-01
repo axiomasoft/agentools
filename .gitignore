@@ -55,3 +55,5 @@ plans/*/artifacts/**/*.jsonl
 
 # Installed package dependencies; keep private candidate source and lockfiles only.
 /packages/*/vendor/
+/extensions/*/vendor/
+.swissknifeman/orch/

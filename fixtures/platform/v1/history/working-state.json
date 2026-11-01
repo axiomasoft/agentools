@@ -1,0 +1,55 @@
+{
+    "branch": {
+        "tenant_id": "context-tenant",
+        "kind": "ref",
+        "id": "history:branch"
+    },
+    "goal_ref": {
+        "tenant_id": "context-tenant",
+        "kind": "ref",
+        "id": "goal"
+    },
+    "current_step_ref": {
+        "tenant_id": "context-tenant",
+        "kind": "ref",
+        "id": "step"
+    },
+    "open_question_ref": {
+        "tenant_id": "context-tenant",
+        "kind": "ref",
+        "id": "question"
+    },
+    "latest_result_ref": {
+        "tenant_id": "context-tenant",
+        "kind": "ref",
+        "id": "tool:result"
+    },
+    "active_ui_object_ref": {
+        "tenant_id": "context-tenant",
+        "kind": "ref",
+        "id": "ui:active"
+    },
+    "promise_refs": [
+        {
+            "tenant_id": "context-tenant",
+            "kind": "ref",
+            "id": "promise:1"
+        }
+    ],
+    "action_refs": [
+        {
+            "tenant_id": "context-tenant",
+            "kind": "ref",
+            "id": "action:1"
+        }
+    ],
+    "schema_version": 1,
+    "version": 1,
+    "acceptance_ref": {
+        "tenant_id": "context-tenant",
+        "kind": "ref",
+        "id": "state:accepted"
+    },
+    "expires_at": "2026-11-02T00:00:00Z",
+    "retention": "working:24h"
+}

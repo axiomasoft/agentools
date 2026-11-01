@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap.php" colors="false" failOnWarning="true" failOnRisky="true" cacheResult="false">
+ <testsuites><testsuite name="definitions"><file>RegistryTest.php</file><file>PluginTest.php</file><file>InstanceTest.php</file><file>AdmissionTest.php</file></testsuite></testsuites>
+</phpunit>

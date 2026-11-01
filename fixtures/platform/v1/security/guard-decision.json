@@ -1,0 +1,16 @@
+{
+    "decision_ref": {
+        "tenant_id": "context-tenant",
+        "kind": "ref",
+        "id": "decision:disclosure"
+    },
+    "snapshot_ref": {
+        "tenant_id": "context-tenant",
+        "kind": "ref",
+        "id": "snapshot:aac4e50bb1536068d16bbd75501e05f77c4bee275cd24c23020d1a1bef1c8efe"
+    },
+    "snapshot_hash": "sha-256:aac4e50bb1536068d16bbd75501e05f77c4bee275cd24c23020d1a1bef1c8efe",
+    "entry": "stream",
+    "stage": "disclosure",
+    "code": "allowed"
+}

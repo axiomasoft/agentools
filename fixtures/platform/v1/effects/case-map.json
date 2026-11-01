@@ -1,0 +1,95 @@
+{
+  "subject": "PLAN2.P5.3",
+  "tier": "isolated-postgres",
+  "contract_refs": [
+    "knowledge/rt.effects-recovery#effects-recovery",
+    "knowledge/root.storage#storage",
+    "knowledge/eco.admission#admission"
+  ],
+  "requirement_refs": [
+    "REQ-033",
+    "REQ-034"
+  ],
+  "cases": [
+    {
+      "id": "ACT-002",
+      "method": "testOwnerCommitThenLocalJournalFailure",
+      "assertions": "Owner commits, deferred local journal failure, unknown and same-key lookup; SQL replay trigger forbids any further owner write."
+    },
+    {
+      "id": "ACT-003",
+      "method": "testUnsupportedTimeoutNeverReplays",
+      "assertions": "Unsupported high-risk execute denied before IO; existing ambiguous intent retained for manual workflow, never retried."
+    },
+    {
+      "id": "ACT-004",
+      "method": "testNativeKeyHashAndImmutableOutcome",
+      "assertions": "Native same-key duplicate returns original outcome; changed hash and changes to accepted outcome/receipt are rejected."
+    },
+    {
+      "id": "V2-P5-3-MANUAL-POS",
+      "method": "testAuthenticatedManualResolution",
+      "assertions": "Authenticated host authority verifies evidence/basis; denied authority and malformed basis cannot resolve; journal records operator/evidence refs."
+    },
+    {
+      "id": "V2-P5-3-LOOKUP-POS",
+      "method": "testCurrentEpochLookupAndStaleWorker",
+      "assertions": "Owner commits and response is lost; takeover preserves original key/request, stale acceptance denied, current epoch confirms once."
+    },
+    {
+      "id": "V2ALL-EFFECT-POSITIVE",
+      "method": "testCommittedIntentAndReadBeforeWrite",
+      "assertions": "Separate owner connection verifies immutable intent committed and local transaction idle; read-before-write probes authoritative absence."
+    },
+    {
+      "id": "V2ALL-EFFECT-NEGATIVE",
+      "method": "testUnknownAndWrongBindingDenyReplay",
+      "assertions": "Unknown lookup never becomes absence; wrong operation binding cannot be accepted or replayed."
+    },
+    {
+      "id": "V2ALL-EFFECT-FAULT",
+      "method": "testResponseLossRetainsUnknownAndKnownFailure",
+      "assertions": "Lost failure response remains unknown until lookup proves known failure, preserving reservation disposition."
+    },
+    {
+      "id": "effect.retry-bounds-cancellation",
+      "method": "testRetryBoundsAndCancellation",
+      "assertions": "DB-clock backoff, three-attempt cap and cancellation independently deny writes."
+    },
+    {
+      "id": "effect.projection-current-authority",
+      "method": "testProjectionRebuildAndCurrentAuthority",
+      "assertions": "Journal rebuild restores deleted direct-action projection; foreign session, wrong digest and revoked owner permission fail closed."
+    },
+    {
+      "id": "effect.native-unknown-retry",
+      "method": "testNativeUnknownRetryUsesSameKey",
+      "assertions": "Native retry of unknown uses original key/hash, preserves one owner operation and bounded attempt counter."
+    },
+    {
+      "id": "effect.read-absent-recovery",
+      "method": "testReadAbsentRecoveryAndCapabilityBinding",
+      "assertions": "Authoritative absent allows same-key recovery; capability mismatch denies before lookup/send."
+    },
+    {
+      "id": "effect.sigkill-after-owner-commit",
+      "method": "testSigkillAfterOwnerCommit",
+      "assertions": "Actual SIGKILL at advisory-lock barrier after separate owner commit; applying/unknown survives restart, lookup recovers with owner writes forbidden."
+    },
+    {
+      "id": "effect.competing-recovery",
+      "method": "testCompetingRecovery",
+      "assertions": "Two PHP processes overlap at PostgreSQL lock barrier, then independently reconcile to one confirmation and one owner operation."
+    },
+    {
+      "id": "effect.definition-current-policy",
+      "method": "testDefinitionLimitAndCurrentEmergencyPolicy",
+      "assertions": "Pinned maxAttempts=1 denies native replay; current registry/emergency policy denial stops owner lookup before IO."
+    }
+  ],
+  "limitations": [
+    "Synthetic owner contracts, not external owner qualification.",
+    "Unsupported owner high-risk IO is denied; timeout state is a pre-existing ambiguous-intent fixture, not an unsafe unsupported owner call.",
+    "No money owner is implemented; reservation retention is a technical checkpoint and no release is performed."
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "format": "profile-merge-case/v1",
+  "id": "CM-001",
+  "input": {
+    "platform_regions": ["RU"], "tenant_regions": ["RU", "EU"],
+    "profile_tools": ["search", "send"], "skill_tools": ["search"],
+    "host_tools": ["search", "send"], "session_tools": ["search"], "live_tools": ["search", "send"]
+  },
+  "expected": {"regions": ["RU"], "tools": ["search"], "omitted_schema_marker": "send_only"}
+}
