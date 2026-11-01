@@ -5,26 +5,58 @@ declare(strict_types=1);
 namespace AgenToolsPlatform\Chatom;
 
 use AgenTools\Chatom\Bridge\BridgeKeys;
-use AgenTools\Chatom\Data\{DeliveryIntent, IncomingInput};
+use AgenTools\Chatom\Data\DeliveryIntent;
+use AgenTools\Chatom\Data\IncomingInput;
 use AgenTools\Chatom\Nodes\Shape;
-use AgenTools\Chatom\Platform\{IntakeContext, PostgresDeliveryOwner};
+use AgenTools\Chatom\Platform\IntakeContext;
+use AgenTools\Chatom\Platform\PostgresDeliveryOwner;
 use AgenToolsPlatform\Core\Budget\BudgetPort;
-use AgenToolsPlatform\Core\Common\{CanonicalHasher, ContractViolation, ErrorCode, IdentityKeys, InputPayload, PayloadHash, Ref, RunStatus, SourceIdentity, UtcInstant};
-use AgenToolsPlatform\Core\Context\{CompiledContext, ContextBlock, ContextSnapshot, Provenance, ReadContextCompiler, SourceKind, TokenCounter};
-use AgenToolsPlatform\Core\Models\{ContentPart, GenerationOptions, MessageRole, ModelMessage, ModelRequest, ModelTransport};
-use AgenToolsPlatform\Core\Runtime\{AdvanceLease, AdvanceRun, ContinuationPolicy, InvocationGuard, InvocationPayloads, InvocationPlan, ProposalDispatcher};
+use AgenToolsPlatform\Core\Common\ContractViolation;
+use AgenToolsPlatform\Core\Common\ErrorCode;
+use AgenToolsPlatform\Core\Common\IdentityKeys;
+use AgenToolsPlatform\Core\Common\InputPayload;
+use AgenToolsPlatform\Core\Common\PayloadHash;
+use AgenToolsPlatform\Core\Common\Ref;
+use AgenToolsPlatform\Core\Common\RunId;
+use AgenToolsPlatform\Core\Common\RunStatus;
+use AgenToolsPlatform\Core\Common\SourceIdentity;
+use AgenToolsPlatform\Core\Common\UtcInstant;
+use AgenToolsPlatform\Core\Context\CompiledContext;
+use AgenToolsPlatform\Core\Context\ContextBlock;
+use AgenToolsPlatform\Core\Context\ContextSnapshot;
+use AgenToolsPlatform\Core\Context\Provenance;
+use AgenToolsPlatform\Core\Context\ReadContextCompiler;
+use AgenToolsPlatform\Core\Context\SourceKind;
+use AgenToolsPlatform\Core\Context\TokenCounter;
+use AgenToolsPlatform\Core\Models\ContentPart;
+use AgenToolsPlatform\Core\Models\GenerationOptions;
+use AgenToolsPlatform\Core\Models\MessageRole;
+use AgenToolsPlatform\Core\Models\ModelMessage;
+use AgenToolsPlatform\Core\Models\ModelRequest;
+use AgenToolsPlatform\Core\Models\ModelTransport;
+use AgenToolsPlatform\Core\Runtime\AdvanceLease;
+use AgenToolsPlatform\Core\Runtime\AdvanceRun;
+use AgenToolsPlatform\Core\Runtime\ContinuationPolicy;
+use AgenToolsPlatform\Core\Runtime\InvocationGuard;
+use AgenToolsPlatform\Core\Runtime\InvocationPayloads;
+use AgenToolsPlatform\Core\Runtime\InvocationPlan;
+use AgenToolsPlatform\Core\Runtime\ProposalDispatcher;
 use AgenToolsPlatform\Core\Security\ExecutionContext;
-use AgenToolsPlatform\Postgres\Claims\{ClaimPolicy, ClaimRepository};
+use AgenToolsPlatform\Postgres\Claims\ClaimPolicy;
+use AgenToolsPlatform\Postgres\Claims\ClaimRepository;
 use AgenToolsPlatform\Postgres\Context\SnapshotRepository;
 use AgenToolsPlatform\Postgres\Delivery\DeliveryRepository;
 use AgenToolsPlatform\Postgres\Models\InvocationRepository;
-use AgenToolsPlatform\Postgres\Runtime\{RepositoryContext, RunRepository, SessionRepository};
+use AgenToolsPlatform\Postgres\Runtime\RepositoryContext;
+use AgenToolsPlatform\Postgres\Runtime\RunRepository;
+use AgenToolsPlatform\Postgres\Runtime\SessionRepository;
+use Closure;
 
 /** One input/context/response composition over the existing native journals, claims and delivery owner. */
 final readonly class TextComposition
 {
-    /** @param \Closure(string):ExecutionContext $context */
-    public function __construct(private RepositoryContext $environment, private \Closure $context,
+    /** @param Closure(string):ExecutionContext $context */
+    public function __construct(private RepositoryContext $environment, private Closure $context,
         private TextProfile $profile, private NativeHistory $history, private ReadContextCompiler $compiler,
         private SnapshotRepository $snapshots, private TokenCounter $counter, private InvocationPayloads $payloads,
         private InvocationPayloads $exports, private InvocationRepository $invocations, private ModelTransport $model,
@@ -40,8 +72,10 @@ final readonly class TextComposition
     /** Called by the existing PostgresInbox, before the real owner intake commits and acknowledges. */
     public function prepare(IncomingInput $input): IntakeContext
     {
-        $context = ($this->context)('chatom.intake'); $hasher = $this->environment->hasher;
+        $context = ($this->context)('chatom.intake');
+        $hasher = $this->environment->hasher;
         $this->profile->bind($context, new SessionRepository($this->environment), $hasher);
+
         if ($input->target->assistant !== $this->profile->assistant->value
             || $input->target->policyRevision !== $context->identity->policyRevision) {
             throw new ContractViolation(ErrorCode::StaleContext);
@@ -54,22 +88,32 @@ final readonly class TextComposition
         $this->deliveries->bindInput($context, $inputRef, $source, $input->revision);
         $compiled = $this->compiled($context, $input);
         $this->snapshots->put($context, $compiled);
+
         return new IntakeContext($context, $compiled->snapshot, $this->profile->assistant, $payload);
     }
 
     /** One bounded native advance. A completed Run only stages the saved export, never the model. */
     public function advance(IncomingInput $input): string
     {
-        $context = ($this->context)('chatom.intake'); $hasher = $this->environment->hasher;
-        $keys = new IdentityKeys($hasher); $source = new SourceIdentity($this->profile->assistant, 'chatom.initial.v1', $input->key());
-        $turn = $keys->turn($source); $runId = $keys->run($turn);
+        $context = ($this->context)('chatom.intake');
+        $hasher = $this->environment->hasher;
+        $keys = new IdentityKeys($hasher);
+        $source = new SourceIdentity($this->profile->assistant, 'chatom.initial.v1', $input->key());
+        $turn = $keys->turn($source);
+        $runId = $keys->run($turn);
         $runs = new RunRepository($this->environment);
         $run = $runs->get($context, $runId) ?? throw new ContractViolation(ErrorCode::CapabilityUnavailable);
-        if ($run->status === RunStatus::Completed) { return $this->stage($context, $runId); }
+
+        if ($run->status === RunStatus::Completed) {
+            return $this->stage($context, $runId);
+        }
         $compiled = $this->compiled($context, $input);
         $this->snapshots->get($context, $compiled->snapshot);
         $deadline = $this->prepared($context, $input)['deadline'];
-        if (!is_string($deadline)) { throw new ContractViolation(ErrorCode::IntegrityConflict); }
+
+        if (! is_string($deadline)) {
+            throw new ContractViolation(ErrorCode::IntegrityConflict);
+        }
         $invocation = $keys->invocation($runId, 'text', 1);
         $request = new ModelRequest($invocation, [new ModelMessage(MessageRole::User, [ContentPart::text($compiled->rendered)])],
             $compiled->snapshot->ref, $compiled->snapshot->contentHash, $this->profile->credential, new UtcInstant($deadline),
@@ -83,16 +127,23 @@ final readonly class TextComposition
             $this->counter->count($compiled->rendered) + $request->generation->maxOutputTokens, null, null, $hasher);
         $bytes = BridgeKeys::encode(['rendered' => $compiled->rendered, 'plan' => $plan->identity()]);
         $this->payloads->put($context, $plan->requestRef, new PayloadHash('sha-256:'.hash('sha256', $bytes)), $bytes);
-        if ($run->status === RunStatus::Accepted) { $run = $runs->beginPreparation($context, $plan->snapshot, $runId, $run->version); }
+
+        if ($run->status === RunStatus::Accepted) {
+            $run = $runs->beginPreparation($context, $plan->snapshot, $runId, $run->version);
+        }
         $claim = (new ClaimRepository($this->environment, $this->claims))->claim($context, $plan->snapshot, $runId, $run->version);
-        if ($claim === null) { return 'busy'; }
+
+        if ($claim === null) {
+            return 'busy';
+        }
         $lease = new AdvanceLease($runId, $claim->state->version, $claim->state->fencingEpoch, $claim->owner);
         $saved = (new AdvanceRun($this->invocations, $this->model, $this->budget, $this->guard, $this->payloads,
             $this->actions, $hasher))->advance($context, $lease, $plan);
+
         return $saved->stage() === 'complete' ? $this->stage($context, $runId) : $saved->stage();
     }
 
-    private function stage(ExecutionContext $context, \AgenToolsPlatform\Core\Common\RunId $run): string
+    private function stage(ExecutionContext $context, RunId $run): string
     {
         $saved = $this->invocations->published($context, $run) ?? throw new ContractViolation(ErrorCode::CapabilityUnavailable);
         $settlement = $this->invocations->settlement($context, $run);
@@ -101,8 +152,12 @@ final readonly class TextComposition
         $bytes = $this->exports->get($delivery, $saved->payload);
         $saved->hash->assertSame(new PayloadHash('sha-256:'.hash('sha256', $bytes)));
         $intent = DeliveryIntent::restore(Shape::record(json_decode($bytes, true, 128, JSON_THROW_ON_ERROR)));
-        if ($intent->key() !== $saved->deliveryKey) { throw new ContractViolation(ErrorCode::IntegrityConflict); }
+
+        if ($intent->key() !== $saved->deliveryKey) {
+            throw new ContractViolation(ErrorCode::IntegrityConflict);
+        }
         $this->deliveries->submit($delivery, $this->owner->submission($intent, $delivery));
+
         return $saved->deliveryKey;
     }
 
@@ -110,8 +165,12 @@ final readonly class TextComposition
     {
         $key = new Ref($context->session->tenant, 'chatom:compiled:'.$input->key());
         $saved = $this->payloads->find($context, $key);
-        if ($saved !== null) { return $this->restore($context, Shape::record(json_decode($saved, true, 128, JSON_THROW_ON_ERROR))); }
-        $hasher = $this->environment->hasher; $branch = new Ref($key->tenant, $context->session->value);
+
+        if ($saved !== null) {
+            return $this->restore($context, Shape::record(json_decode($saved, true, 128, JSON_THROW_ON_ERROR)));
+        }
+        $hasher = $this->environment->hasher;
+        $branch = new Ref($key->tenant, $context->session->value);
         $message = $this->history->current($context, $branch, $input->source->id, $input->revision);
         $blocks = [];
         foreach (['policy' => $this->profile->policy, 'profile' => $this->profile->system] as $kind => $text) {
@@ -123,17 +182,21 @@ final readonly class TextComposition
             $message->source->version, $branch, 'untrusted', 'private', $context->purpose, $message->source->ref,
             $message->text, $this->expiresAt, true, 100, $hasher, provenance: new Provenance(SourceKind::History, [$message->source->ref]));
         foreach ($this->history->recent($context, $branch, 0, 16)->messages as $recent) {
-            if ($recent->source->turn >= $message->source->turn) { continue; }
+            if ($recent->source->turn >= $message->source->turn) {
+                continue;
+            }
             $blocks[] = new ContextBlock(new Ref($key->tenant, 'chatom:block:'.$recent->source->turn), 'recent', $recent->source->ref,
                 $recent->source->version, $branch, 'untrusted', 'private', $context->purpose, $recent->source->ref,
                 $recent->text, $this->expiresAt, false, 50, $hasher, provenance: new Provenance(SourceKind::History, [$recent->source->ref]));
         }
-        $keys = new IdentityKeys($hasher); $turn = $keys->turn(new SourceIdentity($this->profile->assistant, 'chatom.initial.v1', $input->key()));
+        $keys = new IdentityKeys($hasher);
+        $turn = $keys->turn(new SourceIdentity($this->profile->assistant, 'chatom.initial.v1', $input->key()));
         $plan = $this->compiler->buildPlan($context, $turn, $keys->run($turn), $this->profile->bundle, $blocks, $this->guard->now());
         $compiled = $this->compiler->finalize($plan, $this->profile->target, $this->counter, $this->guard->now());
         $bytes = BridgeKeys::encode(['rendered' => $compiled->rendered, 'manifest' => $compiled->manifestJson,
             'snapshot' => $compiled->snapshot->toArray(), 'deadline' => $this->expiresAt->value]);
         $this->payloads->put($context, $key, new PayloadHash('sha-256:'.hash('sha256', $bytes)), $bytes);
+
         return $compiled;
     }
 
@@ -149,17 +212,22 @@ final readonly class TextComposition
     {
         $s = Shape::record($data['snapshot'] ?? null);
         $ref = Shape::record($s['snapshot_ref'] ?? null);
-        $id = $ref['id'] ?? null; $revision = $s['revision'] ?? null;
-        $content = $s['content_hash'] ?? null; $scope = $s['scope_hash'] ?? null;
-        $rendered = $data['rendered'] ?? null; $manifest = $data['manifest'] ?? null;
-        if (!is_string($id) || !is_int($revision) || !is_string($content) || !is_string($scope)
-            || !is_string($rendered) || !is_string($manifest) || ($ref['kind'] ?? null) !== 'ref'
+        $id = $ref['id'] ?? null;
+        $revision = $s['revision'] ?? null;
+        $content = $s['content_hash'] ?? null;
+        $scope = $s['scope_hash'] ?? null;
+        $rendered = $data['rendered'] ?? null;
+        $manifest = $data['manifest'] ?? null;
+
+        if (! is_string($id) || ! is_int($revision) || ! is_string($content) || ! is_string($scope)
+            || ! is_string($rendered) || ! is_string($manifest) || ($ref['kind'] ?? null) !== 'ref'
             || ($ref['tenant_id'] ?? null) !== $context->session->tenant->value) {
             throw new ContractViolation(ErrorCode::IntegrityConflict);
         }
         $compiled = new CompiledContext(new ContextSnapshot(new Ref($context->session->tenant, $id),
             $revision, new PayloadHash($content), new PayloadHash($scope)), $rendered, $manifest);
         $compiled->assertIntegrity($context, $this->environment->hasher);
+
         return $compiled;
     }
 }

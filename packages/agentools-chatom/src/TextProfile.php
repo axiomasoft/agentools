@@ -4,27 +4,36 @@ declare(strict_types=1);
 
 namespace AgenToolsPlatform\Chatom;
 
-use AgenToolsPlatform\Core\Common\{CanonicalHasher, InstanceId, PayloadHash, Ref};
+use AgenToolsPlatform\Core\Common\CanonicalHasher;
+use AgenToolsPlatform\Core\Common\InstanceId;
+use AgenToolsPlatform\Core\Common\PayloadHash;
+use AgenToolsPlatform\Core\Common\Ref;
 use AgenToolsPlatform\Core\Context\ContextTarget;
 use AgenToolsPlatform\Core\Models\Deployment;
 use AgenToolsPlatform\Core\Profiles\BundleRef;
 use AgenToolsPlatform\Core\Security\ExecutionContext;
-use AgenToolsPlatform\Postgres\Runtime\{SessionBinding, SessionRepository};
+use AgenToolsPlatform\Postgres\Runtime\SessionBinding;
+use AgenToolsPlatform\Postgres\Runtime\SessionRepository;
+use InvalidArgumentException;
 
 /** Code configuration pins through native SessionRepository, not a profile publication or authority grant. */
 final readonly class TextProfile
 {
     public PayloadHash $hash;
+
     public BundleRef $bundle;
 
     public function __construct(public InstanceId $assistant, public string $version, public string $policy,
         public string $system, public Deployment $deployment, public Ref $credential,
         public ContextTarget $target, CanonicalHasher $hasher)
     {
-        foreach ([$deployment->ref, $credential, $target->deployment] as $ref) { $assistant->tenant->assertSame($ref->tenant); }
+        foreach ([$deployment->ref, $credential, $target->deployment] as $ref) {
+            $assistant->tenant->assertSame($ref->tenant);
+        }
         $deployment->ref->assertSame($target->deployment);
+
         if ($version === '' || $policy === '' || $system === '' || $target->requestedMaxOutput < 1) {
-            throw new \InvalidArgumentException('An explicit code-owned text profile and deployment are required');
+            throw new InvalidArgumentException('An explicit code-owned text profile and deployment are required');
         }
         $capabilities = [];
         foreach ($deployment->capabilities as $name => $evidence) {

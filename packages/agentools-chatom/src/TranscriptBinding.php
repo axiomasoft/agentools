@@ -8,6 +8,7 @@ use AgenToolsPlatform\Core\Common\Ref;
 use Chatom\Actors\Data\ActorRef;
 use Chatom\Channels\Data\ChannelId;
 use Chatom\Spaces\Data\SpaceId;
+use InvalidArgumentException;
 
 /** Rehydrated by the host from current owning authority; never accepted from a client. */
 final readonly class TranscriptBinding
@@ -16,7 +17,7 @@ final readonly class TranscriptBinding
         public ActorRef $viewer, public string $assistant, public string $nativeTenant)
     {
         if ($assistant === '' || $nativeTenant === '') {
-            throw new \InvalidArgumentException('An exact transcript binding is required');
+            throw new InvalidArgumentException('An exact transcript binding is required');
         }
     }
 }
