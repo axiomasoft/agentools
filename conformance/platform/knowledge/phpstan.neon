@@ -1,0 +1,13 @@
+parameters:
+    level: 6
+    paths:
+        - ../../../examples/platform/knowledge/src
+        - ScriptedGold.php
+    bootstrapFiles:
+        - ../../../examples/platform/knowledge/bootstrap.php
+    scanDirectories:
+        - ../../../examples/platform/read-journey/src
+        - ../../../packages/agentools-core/src
+        - ../../../packages/agentools-postgres/src
+        - ../../../extensions/knowledge/src
+        - ../../../php/src

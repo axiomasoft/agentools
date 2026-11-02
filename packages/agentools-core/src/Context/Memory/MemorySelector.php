@@ -46,6 +46,22 @@ final readonly class MemorySelector
                 new \AgenToolsPlatform\Core\Context\Provenance(SourceKind::Memory,array_map(static fn($r): Ref=>$r->ref,$c->sources)));
             $seen[$c->dedupKey->value]=true;
         }
+        // Recheck after every external view load; a pinned candidate grants no later disclosure.
+        foreach ($blocks as $block) {
+            if (!$this->derivations->usable($context,$block->ref)) { throw new \AgenToolsPlatform\Core\Common\ContractViolation(ErrorCode::StaleContext); }
+        }
+        $selected=[];foreach ($blocks as $block) { $selected[$block->ref->value]=true; }
+        foreach ($page->candidates as $candidate) {
+            if (!isset($selected[$candidate->ref->value])) { continue; }
+            foreach ($candidate->sources as $source) {
+                $read=$this->history->read($context,$source);
+                if (!$this->historyPolicy->sourceAllowed($context,$source) || $read->message===null
+                    || !Checks::future($read->message->expiresAt,$now)) { throw new \AgenToolsPlatform\Core\Common\ContractViolation(ErrorCode::StaleContext); }
+                $actual=$read->message->source;
+                $source->ref->assertSame($actual->ref);$source->hash->assertSame($actual->hash);$source->branch->assertSame($actual->branch);
+                if ($source->version!==$actual->version || $source->turn!==$actual->turn) { throw new \AgenToolsPlatform\Core\Common\ContractViolation(ErrorCode::IntegrityConflict); }
+            }
+        }
         $this->policy->authorize($context,$subject,'memory.export');
         if ($this->policy->consentVersion($context,$subject)!==$consent) { throw new \AgenToolsPlatform\Core\Common\ContractViolation(ErrorCode::AccessDenied); }
         return new \AgenToolsPlatform\Core\Context\History\HistorySelection($page->status,$blocks,$excluded,$page->hasMore);

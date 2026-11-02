@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="pg-bootstrap.php" cacheResult="false" failOnWarning="true" failOnRisky="true"><testsuites><testsuite name="invalidation"><file>GraphTest.php</file><file>RepositoryTest.php</file><file>ConcurrencyTest.php</file><file>CrashTest.php</file></testsuite></testsuites></phpunit>

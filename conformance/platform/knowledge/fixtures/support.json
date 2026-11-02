@@ -1,0 +1,29 @@
+{
+  "format": "synthetic-knowledge-fixture/v1",
+  "id": "support",
+  "synthetic": true,
+  "personal_data": false,
+  "locale": "en",
+  "audience": "support",
+  "query": "verification link",
+  "role": "Generic support editor: cite the permitted handbook, never invent a source.",
+  "versions": {
+    "v1": {
+      "pages": [
+        "Synthetic support handbook.\nA verification link expires after 30 minutes.\nRequest a fresh link through the local help form.",
+        "Synthetic support appendix.\nOnly the current owner may authorize disclosure."
+      ]
+    },
+    "v2": {
+      "pages": [
+        "Synthetic support handbook.\nA verification link expires after 10 minutes.\nRequest a fresh link through the local help form.",
+        "Synthetic support appendix.\nOnly the current owner may authorize disclosure."
+      ]
+    }
+  },
+  "gold": {
+    "owner": "scripted-host-fixture-only",
+    "scorer_version": "exact-source-gold/v1",
+    "educational_qualification": "insufficient_evidence"
+  }
+}

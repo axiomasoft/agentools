@@ -1,0 +1,29 @@
+{
+  "format": "synthetic-knowledge-fixture/v1",
+  "id": "education",
+  "synthetic": true,
+  "personal_data": false,
+  "locale": "en",
+  "audience": "education",
+  "query": "Force",
+  "role": "Generic teacher-shaped task: explain only the supplied formula and units, cite its source; no educational qualification is implied.",
+  "versions": {
+    "v1": {
+      "pages": [
+        "Synthetic mechanics sheet.\nForce F = m × a = 6 N for m = 2 kg and a = 3 m/s².",
+        "Synthetic units appendix.\nA newton has units kg·m/s².\nThis fixture contains no learner record."
+      ]
+    },
+    "v2": {
+      "pages": [
+        "Synthetic mechanics sheet.\nForce F = m × a = 8 N for m = 2 kg and a = 4 m/s².",
+        "Synthetic units appendix.\nA newton has units kg·m/s².\nThis fixture contains no learner record."
+      ]
+    }
+  },
+  "gold": {
+    "owner": "scripted-host-fixture-only",
+    "scorer_version": "exact-source-gold/v1",
+    "educational_qualification": "insufficient_evidence"
+  }
+}

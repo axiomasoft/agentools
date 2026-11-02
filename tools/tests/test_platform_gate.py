@@ -185,6 +185,97 @@ class GateTests(unittest.TestCase):
                 self.assertEqual(gate.execute(gate.parser().parse_args(argv)), [{'ok':True}])
             run.assert_called_once_with(ROOT,spec,isolated=spec.requires_pg)
 
+    def test_knowledge_journey_registry(self):
+        import copy
+        spec=gate.SUITES[('knowledge-journey','e2e')]
+        matrix=json.loads((ROOT/'extensions/knowledge/tests/Golden/cases.json').read_text())
+        self.assertEqual((spec.owner,spec.mode,spec.tier,spec.requires_pg),('P8.4','local-host-e2e','local-host-e2e',True))
+        self.assertEqual(tuple(matrix['postgres'].values()),gate.KNOWLEDGE_JOURNEY_CASES)
+        self.assertEqual(tuple(matrix['unit'].values())+('knowledge-golden.static-analysis',),gate.KNOWLEDGE_JOURNEY_UNIT_CASES)
+        report={'mode':spec.mode,'tier':spec.tier,'cases':[{'id':name,'status':'passed'} for name in spec.cases],
+            'evidence_kind':'host_contract_harness','input_hashes':gate.hashes(ROOT,spec.dependencies),'limitations':matrix['limitations'],
+            'transport':'scripted-knowledge/v1','extractor':'scripted-coordinate-extractor/v1','index':'isolated-postgresql-tsvector-gin',
+            'hooks':{'mode':'contract-scripted','tier':'contract-scripted','cases':[{'id':name,'status':'passed'} for name in gate.KNOWLEDGE_JOURNEY_UNIT_CASES]},
+            'isolation':{'engine':'postgresql','isolated':True,'database':'agentools_test_golden','owner':'test','allow_marker_verified':True,'case_ids':list(spec.cases)}}
+        proof={'runtime':'AdvanceRun','provider_calls':1,'responses':1,'usage_versions':1,'index':'postgresql-tsvector-gin',
+            'citations':[{'version':'v1'}],'source_hash':'a'*64,'release_hash':'b'*64,'snapshot_hash':'sha-256:'+'c'*64,'educational_qualification':'insufficient_evidence'}
+        report['observations']={'support':dict(proof),'education':dict(proof),
+            'correction':{'old_run':'old','new_run':'new','historical_unchanged':True,'old_snapshot_denied':True,'marker':'source_corrected','new_version':'v2'},
+            'pre-send-correction':{'provider_calls':0,'usage_rows':0,'request_count':0,'outcome':'failed','possible_cost':False},
+            'recovery':{'signal':9,'signaled':True,'worker_exit':-1,'provider_calls':1,'responses':1,'usage_versions':1,'delivery_messages':1,'lookup':'verified-same-request'}}
+        report['observations']['education-correction']=dict(report['observations']['correction'])
+        gate.validate_report(spec,report)
+        for field in ('zero','missing','duplicate','skip','failed','unknown','tier','hashes','stale','kind','limits','isolation','hooks','observations','live','education','correction','recovery','refusal'):
+            bad=copy.deepcopy(report)
+            if field=='zero': bad['cases']=[]
+            elif field=='missing': bad['cases'].pop()
+            elif field=='duplicate': bad['cases']+=bad['cases'][:1]
+            elif field in ('skip','failed','unknown'): bad['cases'][0]['status']={'skip':'skipped'}.get(field,field)
+            elif field=='tier': bad['tier']='live-provider'
+            elif field=='hashes': bad['input_hashes']={}
+            elif field=='stale': bad['input_hashes'][next(iter(bad['input_hashes']))]='0'*64
+            elif field=='kind': bad['evidence_kind']='design-schema'
+            elif field=='limits': bad['limitations']=[]
+            elif field in ('isolation','hooks','observations'): bad[field]={}
+            elif field=='live': bad['transport']='live-provider'
+            elif field=='education': bad['observations']['education']['educational_qualification']='qualified'
+            elif field=='correction': bad['observations']['correction']['historical_unchanged']=False
+            elif field=='recovery': bad['observations']['recovery']['provider_calls']=2
+            elif field=='refusal': bad['observations']['pre-send-correction']['possible_cost']=True
+            with self.subTest(field=field),self.assertRaises(gate.GateError):gate.validate_report(spec,bad)
+        for cases in ([],report['hooks']['cases'][:-1],[dict(c,status='skipped') for c in report['hooks']['cases']]):
+            bad=copy.deepcopy(report);bad['hooks']['cases']=cases
+            with self.assertRaises(gate.GateError):gate.validate_report(spec,bad)
+        with patch.object(gate,'run_suite',return_value={'ok':True}) as run:
+            self.assertEqual(gate.execute(gate.parser().parse_args(['e2e','--scenario','knowledge-journey'])),[{'ok':True}])
+        run.assert_called_once_with(ROOT,spec,isolated=True)
+
+    def test_knowledge_invalidation_registry(self):
+        import copy
+        matrix=json.loads((ROOT/'extensions/knowledge/tests/Invalidation/cases.json').read_text())
+        for partition,group in (('test','unit'),('pg-test','postgres')):
+            spec=gate.SUITES[('knowledge-invalidation',partition)]
+            self.assertEqual(spec.owner,'P8.3-pg' if spec.requires_pg else 'P8.3')
+            self.assertEqual(spec.requires_pg,partition=='pg-test')
+            self.assertEqual(tuple(matrix[group].values()),gate.KNOWLEDGE_INVALIDATION_PG_CASES if spec.requires_pg else gate.KNOWLEDGE_INVALIDATION_UNIT_CASES)
+            report={'mode':spec.mode,'tier':spec.tier,'cases':[{'id':name,'status':'passed'} for name in spec.cases],
+                'input_hashes':gate.hashes(ROOT,spec.dependencies),'evidence_kind':'host_contract_harness','limitations':matrix['limitations'],
+                'packaging':{'invalidation':True,'test_autoload':False,'sdk':False,'framework':False,'provider':False}}
+            if spec.requires_pg:
+                report['isolation']={'engine':'postgresql','isolated':True,'database':'agentools_test_invalidation','owner':'test',
+                    'allow_marker_verified':True,'case_ids':list(spec.cases)}
+                crash={'signal':9,'signaled':True,'worker_exit':-1,'retry_tombstones':1,'delete_intents':1,
+                    'lost_response':'unknown','replayed_io':0,'new_attempt_io':1}
+                report['observations']={'concurrency':{'competed':True,'backends':[11,12],'revocation':'committed','final_use':'denied'},
+                    'crash-before':dict(crash),'crash-after':dict(crash),
+                    'delete-crash':{'signal':9,'signaled':True,'worker_exit':-1,'lost_response':'unknown',
+                        'replayed_io':0,'new_attempt_io':1,'provider_effects':1,'receipt':'succeeded'}}
+            gate.validate_report(spec,report)
+            for field in ('zero','missing','duplicate','skip','failed','unknown','tier','hashes','stale','kind','limits','proof'):
+                bad=copy.deepcopy(report)
+                if field=='zero': bad['cases']=[]
+                elif field=='missing': bad['cases'].pop()
+                elif field=='duplicate': bad['cases']+=bad['cases'][:1]
+                elif field in ('skip','failed','unknown'): bad['cases'][0]['status']={'skip':'skipped'}.get(field,field)
+                elif field=='tier': bad['tier']='live-provider'
+                elif field=='hashes': bad['input_hashes']={}
+                elif field=='stale': bad['input_hashes'][next(iter(bad['input_hashes']))]='0'*64
+                elif field=='kind': bad['evidence_kind']='design-schema'
+                elif field=='limits': bad['limitations']=[]
+                elif spec.requires_pg: bad['observations']={}
+                else: bad['packaging']={}
+                with self.subTest(partition=partition,field=field),self.assertRaises(gate.GateError): gate.validate_report(spec,bad)
+            if spec.requires_pg:
+                for change in ('competed','backends','signal','replayed_io','lost_response'):
+                    bad=copy.deepcopy(report)
+                    if change in ('competed','backends'): bad['observations']['concurrency'][change]=False if change=='competed' else [11,11]
+                    else: bad['observations']['crash-before'][change]={'signal':0,'replayed_io':1,'lost_response':'succeeded'}[change]
+                    with self.assertRaises(gate.GateError): gate.validate_report(spec,bad)
+            argv=[partition,'--suite','knowledge-invalidation']+(['--isolated'] if spec.requires_pg else [])
+            with patch.object(gate,'run_suite',return_value={'ok':True}) as run:
+                self.assertEqual(gate.execute(gate.parser().parse_args(argv)),[{'ok':True}])
+            run.assert_called_once_with(ROOT,spec,isolated=spec.requires_pg)
+
     def test_knowledge_retrieval_registry(self):
         import copy
         spec = gate.SUITES[('knowledge-retrieval', 'test')]

@@ -1,0 +1,29 @@
+{
+  "unit": {
+    "testFormulaAndUnitsAreHostOwned": "knowledge-golden.host-formula-unit-gold",
+    "testMissingAndUnavailableGoldStayUnknown": "knowledge-golden.domain-gold-insufficient",
+    "testTechnicalCoordinatesHashesAndUtf8CannotBeGoldOverridden": "knowledge-golden.technical-coordinates-hashes",
+    "testNonSyntheticOrPersonalFixtureIsRejected": "knowledge-golden.synthetic-nonpersonal-only"
+  },
+  "postgres": {
+    "testSupportIngestIndexRuntimeCitationAndReplay": "KNOWLEDGE-SUPPORT-GOLDEN",
+    "testEducationFormulaUnitsCoordinatesAndCitation": "KNOWLEDGE-EDUCATION-GOLDEN",
+    "testMissingGoldCannotPublishDomainGatedRelease": "knowledge-golden.domain-release-gate",
+    "testCorrectionInvalidatesCacheSnapshotAndBufferedDisclosure": "KNOWLEDGE-CORRECTION-GOLDEN",
+    "testRevokeAtDeliveryBoundaryDoesNotSendOrConsumeAttempt": "knowledge-golden.buffered-revoke",
+    "testTenantAudienceAndUnknownWinOverCache": "knowledge-golden.tenant-audience-unknown",
+    "testNoEvidenceDoesNotFabricateCitation": "knowledge-golden.no-fabricated-source",
+    "testBudgetPrunesEvidencePreservingPolicyAndInput": "knowledge-golden.mandatory-context-budget",
+    "testCorrectionAfterIntentIsKnownNotSent": "knowledge-golden.correction-before-provider",
+    "testProviderCrashLookupAndRestartDoNotDuplicate": "knowledge-golden.provider-crash-recovery",
+    "testRunnableSyntheticExample": "knowledge-golden.runnable-example",
+    "testIndexIdentityAndForeignPartitionAreRejected": "knowledge-golden.index-identity-and-tenant",
+    "testEducationCorrectionRetainsOldFactAndCitesNewFormula": "KNOWLEDGE-EDUCATION-CORRECTION"
+  },
+  "limitations": [
+    "Synthetic nonpersonal support/education documents; exact fixture gold is a host script, not an expert educational baseline. Educational qualification remains insufficient_evidence.",
+    "Actual immutable PostgreSQL releases, dependency graph, tsvector/GIN index and native AdvanceRun/intake/claim/response/usage/delivery paths run in a verified isolated database.",
+    "Extractor, model, Library/Files owner, admission and destination are scripted. No live OCR/PDF/embedding/provider, expert pedagogy, pilot, price, provider erasure or production qualification.",
+    "Existing P7.6 F1/F2 and P7.8 reconciliation are historical evidence, with no independent re-review of the corrections. ManualClock is not used for timing proof. D8 excludes classical mutation testing."
+  ]
+}

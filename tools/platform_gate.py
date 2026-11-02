@@ -30,7 +30,7 @@ SELF_CASES = tuple("GateTests.test_" + name for name in (
     "boundary_autoload_escape", "boundary_transitive_testing", "boundary_namespace_path",
     "boundary_production_source", "contradictory_totals",
     "sdk_adapter_registry", "model_transport_registry", "runtime_registry", "read_journey_registry", "action_submit_registry", "confirmation_write_registry", "effect_reconcile_registry", "cancellation_resolution_registry", "write_recovery_registry", "laravel_composition_registry", "platform_definitions_registry", "composition_testing_registry", "filament_registry", "scheduler_registry", "platform_registry", "fsm_registry", "testkit_registry", "pg_schema_registry", "pg_intake_registry", "pg_claims_outbox_registry", "pg_action_journal_registry", "pg_isolation_retention_registry", "aggregate_preflight",
-    "knowledge_ingest_registry", "knowledge_retrieval_registry", "profile_publish_registry", "profile_admin_registry", "profile_merge_registry", "skill_selection_registry", "context_compiler_registry", "history_memory_registry", "context_guards_registry", "cli_missing_suite", "cli_wrong_mode", "cli_missing_pg_isolation", "cli_future_commands",
+    "knowledge_ingest_registry", "knowledge_retrieval_registry", "knowledge_invalidation_registry", "knowledge_journey_registry", "profile_publish_registry", "profile_admin_registry", "profile_merge_registry", "skill_selection_registry", "context_compiler_registry", "history_memory_registry", "context_guards_registry", "cli_missing_suite", "cli_wrong_mode", "cli_missing_pg_isolation", "cli_future_commands",
     "exact_cases", "zero_cases", "skips", "failure", "duplicate_cases", "extra_cases",
     "missing_cases", "mode_mismatch", "tier_mismatch", "unknown_status", "malformed_report",
     "pg_proof_missing", "pg_case_set", "runner_nonzero", "missing_dependency",
@@ -974,6 +974,34 @@ SUITES[('knowledge-retrieval', 'test')] = Suite('P8.2', 'contract-scripted', 'co
     KNOWLEDGE_RETRIEVAL_INPUTS)
 
 
+# P8.3: transitive technical dependency graph, local denial before provider deletion.
+KNOWLEDGE_INVALIDATION_UNIT_CASES = ('invalidation.exact-tenant-version-hash', 'invalidation.explicit-delete-capability', 'invalidation.delete-replay-and-unknown', 'invalidation.delete-unsupported-retry', 'invalidation.cached-context-fresh-guards', 'invalidation.summary-view-revoke-and-missing', 'invalidation.memory-view-revoke')
+KNOWLEDGE_INVALIDATION_PG_CASES = ('invalidation.graph-correction-and-history', 'invalidation.message-delete-revoke-consent', 'invalidation.graph-identity-tenant-and-sql', 'invalidation.durable-delete-receipts', 'invalidation.repository-stale-cache-and-history', 'invalidation.correction-atomic-rollback', 'invalidation.competing-register-revoke', 'invalidation.sigkill-invalidation-restart', 'invalidation.sigkill-provider-response-unknown', 'invalidation.explicit-correction-and-delete-reasons')
+KNOWLEDGE_INVALIDATION_CASES = KNOWLEDGE_INVALIDATION_UNIT_CASES + (
+    'invalidation.composer-valid', 'invalidation.static-analysis', 'invalidation.core-static-analysis', 'invalidation.production-no-dev')
+KNOWLEDGE_INVALIDATION_INPUTS = tuple(dict.fromkeys(KNOWLEDGE_RETRIEVAL_INPUTS + tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / 'extensions/knowledge/tests/Invalidation', ROOT / CORE / 'src', ROOT / CORE / 'tests/Context', ROOT / CORE / 'tests/Common')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php','.py','.json','.xml','.md'}) + (
+    f'{CORE}/composer.json', f'{CORE}/composer.lock', f'{CORE}/phpstan.neon', f'{CORE}/vendor/autoload.php', f'{CORE}/vendor/bin/phpstan',
+    'extensions/knowledge/tests/bootstrap.php', 'extensions/knowledge/tests/Fixture.php',
+    'packages/agentools-postgres/tests/run.py', 'packages/agentools-postgres/tests/IsolatedDatabase.php',
+    'packages/agentools-postgres/vendor/autoload.php', 'packages/agentools-postgres/vendor/bin/phpunit',
+    'tools/storage_chaos.py', 'php/vendor/autoload.php', 'php/src/Schema/Canonicalizer.php')))
+SUITES[('knowledge-invalidation','test')] = Suite('P8.3','contract-scripted','contract-scripted',KNOWLEDGE_INVALIDATION_CASES,
+    (sys.executable,'-B','extensions/knowledge/tests/Invalidation/suite.py'),KNOWLEDGE_INVALIDATION_INPUTS)
+SUITES[('knowledge-invalidation','pg-test')] = Suite('P8.3-pg','isolated-postgres','isolated-postgres',KNOWLEDGE_INVALIDATION_PG_CASES,
+    (sys.executable,'-B','extensions/knowledge/tests/Invalidation/pg.py'),KNOWLEDGE_INVALIDATION_INPUTS,requires_pg=True)
+
+
+KNOWLEDGE_JOURNEY_UNIT_CASES = ('knowledge-golden.host-formula-unit-gold', 'knowledge-golden.domain-gold-insufficient', 'knowledge-golden.technical-coordinates-hashes', 'knowledge-golden.synthetic-nonpersonal-only', 'knowledge-golden.static-analysis')
+KNOWLEDGE_JOURNEY_CASES = ('KNOWLEDGE-SUPPORT-GOLDEN', 'KNOWLEDGE-EDUCATION-GOLDEN', 'knowledge-golden.domain-release-gate', 'KNOWLEDGE-CORRECTION-GOLDEN', 'knowledge-golden.buffered-revoke', 'knowledge-golden.tenant-audience-unknown', 'knowledge-golden.no-fabricated-source', 'knowledge-golden.mandatory-context-budget', 'knowledge-golden.correction-before-provider', 'knowledge-golden.provider-crash-recovery', 'knowledge-golden.runnable-example', 'knowledge-golden.index-identity-and-tenant', 'KNOWLEDGE-EDUCATION-CORRECTION')
+KNOWLEDGE_JOURNEY_INPUTS = tuple(dict.fromkeys(READ_JOURNEY_INPUTS + KNOWLEDGE_INVALIDATION_INPUTS + tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / 'examples/platform/knowledge', ROOT / 'conformance/platform/knowledge', ROOT / 'extensions/knowledge/tests/Golden')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php','.py','.json','.xml','.sql','.md','.neon'})))
+SUITES[('knowledge-journey','e2e')] = Suite('P8.4','local-host-e2e','local-host-e2e',KNOWLEDGE_JOURNEY_CASES,
+    (sys.executable,'-B','conformance/platform/knowledge/run.py'),KNOWLEDGE_JOURNEY_INPUTS,requires_pg=True)
+
+
 class GateError(Exception):
     pass
 
@@ -1100,6 +1128,67 @@ def validate_report(spec: Suite, report):
         require(isinstance(packaging, dict) and packaging.get('retrieval') is True
             and all(packaging.get(key) is False for key in ('test_autoload', 'sdk', 'framework', 'provider')),
             'retrieval production no-dev proof missing')
+    if spec.owner == 'P8.4':
+        require(report.get('evidence_kind') == 'host_contract_harness', 'golden evidence kind missing')
+        require(report.get('input_hashes') == hashes(ROOT,spec.dependencies), 'golden input hashes missing/stale')
+        limitations=report.get('limitations')
+        require(isinstance(limitations,list) and limitations and all(isinstance(v,str) and v for v in limitations), 'golden limitations missing')
+        require(report.get('transport') == 'scripted-knowledge/v1' and report.get('extractor') == 'scripted-coordinate-extractor/v1'
+            and report.get('index') == 'isolated-postgresql-tsvector-gin', 'golden evidence tiers/adapter kinds differ')
+        validate_report(Suite('P8.4-hooks','contract-scripted','contract-scripted',KNOWLEDGE_JOURNEY_UNIT_CASES,(),()),report.get('hooks'))
+        observations=report.get('observations',{})
+        require(isinstance(observations,dict), 'golden observations missing')
+        for scenario in ('support','education'):
+            proof=observations.get(scenario,{})
+            require(isinstance(proof,dict) and proof.get('runtime') == 'AdvanceRun' and proof.get('index') == 'postgresql-tsvector-gin'
+                and proof.get('provider_calls') == proof.get('responses') == proof.get('usage_versions') == 1
+                and isinstance(proof.get('citations'),list) and proof['citations']
+                and proof.get('educational_qualification') == 'insufficient_evidence', 'real golden journey/citation proof missing')
+            require(all(re.fullmatch(r'[0-9a-f]{64}',proof.get(k,'')) for k in ('source_hash','release_hash'))
+                and re.fullmatch(r'sha-256:[0-9a-f]{64}',proof.get('snapshot_hash','')) is not None, 'golden source/release/snapshot hashes missing')
+        for correction_name in ('correction','education-correction'):
+            correction=observations.get(correction_name,{})
+            require(isinstance(correction,dict) and correction.get('old_run') != correction.get('new_run')
+                and correction.get('historical_unchanged') is True and correction.get('old_snapshot_denied') is True
+                and correction.get('marker') == 'source_corrected' and correction.get('new_version') == 'v2', 'golden correction propagation missing')
+        refusal=observations.get('pre-send-correction',{})
+        require(isinstance(refusal,dict) and refusal.get('provider_calls') == refusal.get('usage_rows') == refusal.get('request_count') == 0
+            and refusal.get('outcome') == 'failed' and refusal.get('possible_cost') is False, 'known pre-send correction refusal missing')
+        recovery=observations.get('recovery',{})
+        require(isinstance(recovery,dict) and recovery.get('signal') == 9 and recovery.get('signaled') is True
+            and type(recovery.get('worker_exit')) is int and recovery['worker_exit'] != 0
+            and all(recovery.get(k) == 1 for k in ('provider_calls','responses','usage_versions','delivery_messages'))
+            and recovery.get('lookup') == 'verified-same-request', 'golden real SIGKILL/recovery missing')
+    if spec.owner in {'P8.3', 'P8.3-pg'}:
+        require(report.get('evidence_kind') == 'host_contract_harness', 'invalidation evidence kind missing')
+        limitations=report.get('limitations')
+        require(isinstance(limitations,list) and limitations and all(isinstance(v,str) and v for v in limitations), 'invalidation limitations missing')
+        require(report.get('input_hashes') == hashes(ROOT,spec.dependencies), 'invalidation input hashes missing/stale')
+        if spec.requires_pg:
+            observations=report.get('observations',{})
+            require(isinstance(observations,dict), 'invalidation durable observations missing')
+            race=observations.get('concurrency',{})
+            require(isinstance(race,dict) and race.get('competed') is True and race.get('revocation') == 'committed'
+                and race.get('final_use') == 'denied' and isinstance(race.get('backends'),list)
+                and len(race['backends']) == len(set(race['backends'])) == 2
+                and all(type(pid) is int and pid>0 for pid in race['backends']), 'real invalidation competing connections missing')
+            for boundary in ('crash-before','crash-after'):
+                proof=observations.get(boundary,{})
+                require(isinstance(proof,dict) and proof.get('signal') == 9 and proof.get('signaled') is True
+                    and type(proof.get('worker_exit')) is int and proof['worker_exit'] != 0
+                    and proof.get('retry_tombstones') == proof.get('delete_intents') == 1
+                    and proof.get('lost_response') == 'unknown' and proof.get('replayed_io') == 0
+                    and proof.get('new_attempt_io') == 1, 'invalidation SIGKILL/restart proof missing')
+            deletion=observations.get('delete-crash',{})
+            require(isinstance(deletion,dict) and deletion.get('signal') == 9 and deletion.get('signaled') is True
+                and type(deletion.get('worker_exit')) is int and deletion['worker_exit'] != 0
+                and deletion.get('lost_response') == 'unknown' and deletion.get('replayed_io') == 0
+                and deletion.get('new_attempt_io') == deletion.get('provider_effects') == 1
+                and deletion.get('receipt') == 'succeeded', 'provider response SIGKILL/unknown retry proof missing')
+        else:
+            packaging=report.get('packaging',{})
+            require(isinstance(packaging,dict) and packaging.get('invalidation') is True
+                and all(packaging.get(k) is False for k in ('test_autoload','sdk','framework','provider')), 'invalidation production no-dev proof missing')
     if spec.owner == 'P7.5':
         portable=report.get('portable')
         require(isinstance(portable,list) and len(portable)==3,'history/memory behavioral reports missing')

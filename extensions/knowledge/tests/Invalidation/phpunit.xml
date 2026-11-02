@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap.php" cacheResult="false" failOnWarning="true" failOnRisky="true"><testsuites><testsuite name="invalidation"><file>ValueTest.php</file><file>DeletionTest.php</file><file>ContextTest.php</file></testsuite></testsuites></phpunit>

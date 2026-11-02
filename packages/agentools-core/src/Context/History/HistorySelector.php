@@ -38,6 +38,16 @@ final readonly class HistorySelector
             }
             $view=$reason===null?$this->views->read($context,$summary):new \AgenToolsPlatform\Core\Context\History\TextRead(SourceStatus::Unavailable);
             if ($reason===null && $view->text===null) { $reason='summary_view_'.$view->status->value; }
+            // View loading is external IO and can race correction/revocation.
+            if ($reason===null && !$this->derivations->usable($context,$summary->ref)) { $reason='source_revoked'; }
+            if ($reason===null) {
+                foreach ($summary->sources->messages as $ref) {
+                    $read=$this->source->read($context,$ref);
+                    if (!$this->policy->sourceAllowed($context,$ref) || $read->message===null
+                        || !Checks::future($read->message->expiresAt,$now)) { $reason='source_unusable';break; }
+                    $this->same($ref,$read->message->source);
+                }
+            }
             if ($reason===null) {
                 $summary->viewHash->assertSame($this->hasher->hash($branch->tenant,'history-summary-view',$view->text));
                 $blocks[]=new \AgenToolsPlatform\Core\Context\ContextBlock($summary->ref,'summary',$branch,(string)$summary->version,$branch,'untrusted',$summary->classification,
@@ -59,6 +69,11 @@ final readonly class HistorySelector
         $blocks[]=new \AgenToolsPlatform\Core\Context\ContextBlock($stateId,'working_state',$branch,(string)$state->version,$branch,'untrusted','private',
             $context->purpose,$stateId,json_encode($state->toArray(),JSON_THROW_ON_ERROR),$state->expiresAt,true,100,$this->hasher,
             [$state->acceptance],new \AgenToolsPlatform\Core\Context\Provenance(SourceKind::Host));
+        foreach ($blocks as $block) {
+            if ($block->provenance->sourceKind===SourceKind::Summary && !$this->derivations->usable($context,$block->ref)) {
+                throw new \AgenToolsPlatform\Core\Common\ContractViolation(ErrorCode::StaleContext);
+            }
+        }
         return new \AgenToolsPlatform\Core\Context\History\HistorySelection($page->status,$blocks,$exclusions,$page->hasMore);
     }
     private function same(MessageRef $expected,MessageRef $actual): void

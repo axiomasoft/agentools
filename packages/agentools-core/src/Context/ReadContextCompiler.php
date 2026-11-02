@@ -162,6 +162,44 @@ final readonly class ReadContextCompiler
             $ref,1,$hash,$plan->context->scopeHash($this->hasher)),$rendered,json_encode($manifest,JSON_THROW_ON_ERROR));
     }
 
+    /** Explicit boundary before releasing cached compiled bytes; the old manifest is never rewritten. */
+    public function authorizeReuse(ContextPlan $plan, CompiledContext $compiled, SnapshotAccess $snapshots, UtcInstant $now): void
+    {
+        $compiled->assertIntegrity($plan->context,$this->hasher);
+        $manifest=json_decode($compiled->manifestJson,true,64,JSON_THROW_ON_ERROR);
+        if (!is_array($manifest) || ($manifest['run_id'] ?? null) !== $plan->run->value
+            || ($manifest['turn_id'] ?? null) !== $plan->turn->value
+            || ($manifest['bundle'] ?? null) !== $plan->bundle->toArray()
+            || ($manifest['pins'] ?? null) !== $plan->pins->toArray()
+            || !is_array($manifest['sections'] ?? null) || !array_is_list($manifest['sections'])) {
+            throw new \AgenToolsPlatform\Core\Common\ContractViolation(ErrorCode::IntegrityConflict);
+        }
+        $blocks=[];
+        foreach ($plan->blocks as $block) { $blocks[$block->ref->value]=$block; }
+        foreach ($manifest['sections'] as $section) {
+            if (!is_array($section) || !is_string($section['id'] ?? null)) {
+                throw new \AgenToolsPlatform\Core\Common\ContractViolation(ErrorCode::IntegrityConflict);
+            }
+            $block=$blocks[$section['id']] ?? null;
+            if ($block !== null) {
+                foreach ($block->manifest() as $key=>$value) {
+                    if (($section[$key] ?? null) !== $value) {
+                        throw new \AgenToolsPlatform\Core\Common\ContractViolation(ErrorCode::IntegrityConflict);
+                    }
+                }
+            }
+            if ($block === null || ($section['content_hash'] ?? null) !== $block->hash->value
+                || $this->expired($block->expiresAt,$now) || !$this->access->permits($plan->context,$block)
+                || (in_array($block->kind,['tools','tool_result'],true) && ($block->provenance->toolId === null
+                    || $this->tools === null || !$this->tools->permits($plan->context,$block->provenance->toolId)))) {
+                throw new \AgenToolsPlatform\Core\Common\ContractViolation(ErrorCode::StaleContext);
+            }
+        }
+        if (!$snapshots->permits($plan->context,$compiled->snapshot)) {
+            throw new \AgenToolsPlatform\Core\Common\ContractViolation(ErrorCode::StaleContext);
+        }
+    }
+
     public function captureDiagnostics(ExecutionContext $context, CompiledContext $compiled, Diagnostics $diagnostics,
         UtcInstant $now, UtcInstant $expiresAt): DiagnosticRef
     {

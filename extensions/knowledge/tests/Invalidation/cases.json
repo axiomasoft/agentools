@@ -1,0 +1,29 @@
+{
+  "unit": {
+    "testExactScopedIdentity": "invalidation.exact-tenant-version-hash",
+    "testExplicitCapabilitiesAndSuccessEvidence": "invalidation.explicit-delete-capability",
+    "testReplayAndCrashedAttemptDoNotRepeatIo": "invalidation.delete-replay-and-unknown",
+    "testUnknownUnsupportedAndExplicitRetry": "invalidation.delete-unsupported-retry",
+    "testCachedSnapshotRechecksDependenciesAndOwner": "invalidation.cached-context-fresh-guards",
+    "testHistoryRevokeDuringViewAndMissingSource": "invalidation.summary-view-revoke-and-missing",
+    "testMemoryRechecksAfterExternalView": "invalidation.memory-view-revoke"
+  },
+  "postgres": {
+    "testTransitiveCorrectionAndHistoricalMarkers": "invalidation.graph-correction-and-history",
+    "testMessageDeleteConsentAndUnseenRoot": "invalidation.message-delete-revoke-consent",
+    "testIdentityScopeCurrentPolicyAndSqlGuards": "invalidation.graph-identity-tenant-and-sql",
+    "testDurableDeletionReceiptsRetryAndResidue": "invalidation.durable-delete-receipts",
+    "testCorrectionStaleCacheAndHistoricEvidence": "invalidation.repository-stale-cache-and-history",
+    "testFailedCorrectionRollsBackBothGraphsAndDeletes": "invalidation.correction-atomic-rollback",
+    "testRegistrationCompetesWithRevocation": "invalidation.competing-register-revoke",
+    "testInvalidationCommitCrashAndDeletionRestart": "invalidation.sigkill-invalidation-restart",
+    "testProviderResponseCrashKeepsUnknownAndStableRetry": "invalidation.sigkill-provider-response-unknown",
+    "testExplicitCorrectionPreservesNewVersionAndDeleteTombstone": "invalidation.explicit-correction-and-delete-reasons"
+  },
+  "limitations": [
+    "Host contract harness with scripted current owner, transcript/memory and provider deletion ports; no live erasure or external integration qualification.",
+    "PostgreSQL partition uses a verified isolated database, real competing connections and SIGKILL at commit boundaries. No production rollout or paid calls.",
+    "Hosts must wire graph-backed current owner/ContextAccess/SnapshotAccess checks at every real disclosure and record exact graph parents before invoking consumers.",
+    "P8.3 does not replace Chatom/MemorySource ownership or implement provider capability discovery. No classical mutation testing (D8)."
+  ]
+}

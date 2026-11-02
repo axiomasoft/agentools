@@ -1,0 +1,24 @@
+{
+  "format": "host-synthetic-gold/v1",
+  "owner_ref": "host:fixture-author",
+  "scorer_version": "exact-formula-unit/v1",
+  "expert_baseline": false,
+  "support": {
+    "v1": [
+      "A verification link expires after 30 minutes."
+    ],
+    "v2": [
+      "A verification link expires after 10 minutes."
+    ]
+  },
+  "education": {
+    "v1": [
+      "Force F = m × a = 6 N for m = 2 kg and a = 3 m/s².",
+      "A newton has units kg·m/s²."
+    ],
+    "v2": [
+      "Force F = m × a = 8 N for m = 2 kg and a = 4 m/s².",
+      "A newton has units kg·m/s²."
+    ]
+  }
+}

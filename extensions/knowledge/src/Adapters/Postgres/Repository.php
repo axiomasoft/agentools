@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace AgenToolsPlatform\Knowledge\Adapters\Postgres;
 
 use AgenToolsPlatform\Knowledge\{Decision, Integrity, KnowledgeRepository, Material, MaterialAccessPolicy, Release, Scope};
+use AgenToolsPlatform\Knowledge\Dependencies\{Node, PostgresGraph};
 use PDO;
 
 /** Technical projection only. Dedicated PDO connection/schema; no source-byte ownership. */
 final readonly class Repository implements KnowledgeRepository
 {
+    private PostgresGraph $dependencies;
     public function __construct(private PDO $pdo, private string $schema, private MaterialAccessPolicy $access)
     {
         if ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) !== 'pgsql'
@@ -17,6 +19,7 @@ final readonly class Repository implements KnowledgeRepository
             throw new \InvalidArgumentException('PostgreSQL and safe schema required');
         }
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->dependencies = new PostgresGraph($pdo, $schema);
     }
 
     /** Host-owned setup only; never implicitly called by ingest/read. */
@@ -26,6 +29,7 @@ final readonly class Repository implements KnowledgeRepository
             $sql = file_get_contents(__DIR__ . '/schema.sql');
             if ($sql === false) { throw new \RuntimeException('Schema missing'); }
             $this->pdo->exec($sql);
+            $this->dependencies->installInside();
         });
     }
 
@@ -43,6 +47,7 @@ final readonly class Repository implements KnowledgeRepository
         return $this->transaction(function () use ($release, $material, $previous): Release {
             $this->lock($material);
             $this->requireActive($material);
+            $this->dependencies->registerInside(Node::material($material));
             // A material version is immutable even when published under another release/corpus ID.
             $row = $this->row('SELECT payload, content_hash FROM knowledge_releases WHERE tenant=? AND material_id=? AND source_version=? LIMIT 1',
                 [$material->tenant, $material->id, $material->version]);
@@ -56,6 +61,14 @@ final readonly class Repository implements KnowledgeRepository
                 [$material->tenant, $release->corpus, $release->id, $material->id, $material->version, $material->sourceHash, $release->hash(), $release->json()]);
             $stored = $this->find($material->tenant, $release->corpus, $release->id);
             if ($stored === null || !hash_equals($stored->hash(), $release->hash())) { throw new \DomainException('Release identity hash conflict'); }
+            $parents = [];
+            foreach ($release->extraction->artifacts as $artifact) {
+                if (!in_array($artifact->kind, ['fragment', 'card'], true)) { continue; }
+                $node = new Node($material->tenant, $artifact->kind,
+                    Integrity::digest([$material->id, $artifact->id]), $material->version, Integrity::digest($artifact));
+                $this->dependencies->registerInside($node, [Node::material($material)]); $parents[] = $node;
+            }
+            $this->dependencies->registerInside(Node::release($release), $parents === [] ? [Node::material($material)] : $parents);
             if ($previous !== null) { $this->invalidateLocal($previous, 'corrected:' . $material->version); }
             return $stored;
         });
@@ -68,6 +81,7 @@ final readonly class Repository implements KnowledgeRepository
         $this->authorize($scope, $release->material, 'read');
         $this->transaction(function () use ($release): void {
             $this->lock($release->material); $this->requireActive($release->material);
+            $this->dependencies->requireActiveInside(Node::release($release));
         });
         return $release;
     }
@@ -89,6 +103,7 @@ final readonly class Repository implements KnowledgeRepository
             $this->lock($release->material); $this->requireActive($release->material);
             $stored = $this->find($release->material->tenant, $release->corpus, $release->id);
             if ($stored === null || $stored->hash() !== $release->hash()) { throw new \DomainException('Unpublished dependency'); }
+            $this->dependencies->registerInside($this->dependent($release, $kind, $ref), [Node::release($release)]);
             $this->execute('INSERT INTO knowledge_dependencies (tenant,corpus,release_id,kind,dependent_ref) VALUES (?,?,?,?,?) ON CONFLICT DO NOTHING',
                 [$release->material->tenant, $release->corpus, $release->id, $kind, $ref]);
             $row = $this->row('SELECT corpus,release_id FROM knowledge_dependencies WHERE tenant=? AND kind=? AND dependent_ref=?',
@@ -109,8 +124,16 @@ final readonly class Repository implements KnowledgeRepository
             if ($stored === null || !hash_equals($stored->hash(), $release->hash())) { return false; }
             $row = $this->row('SELECT corpus,release_id FROM knowledge_dependencies WHERE tenant=? AND kind=? AND dependent_ref=?',
                 [$release->material->tenant, $kind, $ref]);
-            return $row !== null && $row['corpus'] === $release->corpus && $row['release_id'] === $release->id;
+            if ($row === null || $row['corpus'] !== $release->corpus || $row['release_id'] !== $release->id) { return false; }
+            try { $this->dependencies->requireActiveInside($this->dependent($release, $kind, $ref)); return true; }
+            catch (\DomainException) { return false; }
         });
+    }
+
+    private function dependent(Release $release, string $kind, string $ref): Node
+    {
+        return new Node($release->material->tenant, $kind, $ref, '1',
+            Integrity::digest([$kind, $ref, $release->hash()]));
     }
 
     private function authorize(Scope $scope, Material $material, string $operation): void
@@ -162,6 +185,11 @@ final readonly class Repository implements KnowledgeRepository
 
     private function invalidateLocal(Material $material, string $reason): void
     {
+        $eventReason = str_starts_with($reason, 'corrected:') || in_array($reason, ['source_corrected', 'corrected', 'correction'], true) ? 'source_corrected'
+            : (in_array($reason, ['delete', 'deleted', 'source_deleted'], true) ? 'source_deleted'
+            : ($reason === 'consent_revoked' ? 'consent_revoked' : 'source_revoked'));
+        $this->dependencies->invalidateInside(Node::material($material), $eventReason,
+            Integrity::digest([$material->key(), $reason]));
         $this->execute('INSERT INTO knowledge_invalidations (tenant,material_id,source_version,reason) VALUES (?,?,?,?) ON CONFLICT DO NOTHING',
             [$material->tenant, $material->id, $material->version, $reason]);
     }

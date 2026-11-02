@@ -15,6 +15,9 @@ interface Derivations
      * @param list<RunId> $completedRuns
      */
     public function register(ExecutionContext $context,Ref $derived,DerivedKind $kind,array $sources,array $completedRuns=[]): void;
+    /** Current durable state, including invalidations during external view IO.
+     * @phpstan-impure
+     */
     public function usable(ExecutionContext $context,Ref $derived): bool;
     public function invalidate(ExecutionContext $context,MessageRef $source,string $reason): void;
 }

@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap.php" cacheResult="false" failOnWarning="true" failOnRisky="true"><testsuites><testsuite name="knowledge"><file>GoldenJourneyTest.php</file><file>CorrectionTest.php</file><file>SecurityTest.php</file><file>RecoveryTest.php</file><file>ExampleTest.php</file></testsuite></testsuites></phpunit>
