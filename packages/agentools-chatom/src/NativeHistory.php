@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace AgenToolsPlatform\Chatom;
 
+use AgenTools\Chatom\Data\IncomingInput;
+use AgenTools\Chatom\Data\SourceReference;
 use AgenToolsPlatform\Core\Common\CanonicalHasher;
 use AgenToolsPlatform\Core\Common\ContractViolation;
 use AgenToolsPlatform\Core\Common\ErrorCode;
@@ -22,6 +24,7 @@ use AgenToolsPlatform\Core\Security\HostAuthorization;
 use Chatom\Messages\Contracts\MessageSnapshotReader;
 use Chatom\Messages\Contracts\ViewerMessageReader;
 use Chatom\Messages\Data\MessageId;
+use Chatom\Messages\Data\MessageSnapshot;
 use Chatom\Messages\Data\MessageView;
 use Chatom\Messages\Data\ViewerMessageHistory;
 use Chatom\Messages\Enums\MessageHistoryOrder;
@@ -91,6 +94,28 @@ final readonly class NativeHistory implements HistorySource
         return $this->currentMany($context, $branch, [$message => (string) $revision])[$message];
     }
 
+    /** Trusted typed export from the actual current input owner, never from model-provided refs. */
+    public function citation(ExecutionContext $context, IncomingInput $input): SourceReference
+    {
+        [$messages, , $binding] = $this->scan($context,
+            new Ref($context->session->tenant, $context->session->value), 0, $this->maximum);
+
+        if ($input->tenant !== $binding->nativeTenant || $input->origin->value !== $binding->space->value
+            || $input->space->value !== $binding->space->value || $input->source->channel !== $binding->channel->value
+            || $input->target->assistant !== $binding->assistant) {
+            throw new ContractViolation(ErrorCode::AccessDenied);
+        }
+        foreach ($messages as $message) {
+            if ($message->source->ref->value === 'chatom:message:'.$input->source->id
+                && $message->source->version === (string) $input->revision) {
+                return SourceReference::fromArray(['owner' => 'chatom', 'id' => $input->source->id,
+                    'channel_id' => $binding->channel->value]);
+            }
+        }
+
+        throw new ContractViolation(ErrorCode::StaleContext);
+    }
+
     /** @param array<string,string> $versions Native message ID => exact version.
      * @return array<string,ExactMessage> Every version is rechecked after the final owner IO of this batch.
      */
@@ -113,7 +138,7 @@ final readonly class NativeHistory implements HistorySource
         return $found;
     }
 
-    /** @return array{list<ExactMessage>, bool} newest first; complete covers the requested lower boundary */
+    /** @return array{list<ExactMessage>, bool, TranscriptBinding} newest first; current owner binding is call-local. */
     private function scan(ExecutionContext $context, Ref $branch, int $after, int $maximum): array
     {
         $binding = $this->currentBinding($context, $branch);
@@ -153,14 +178,14 @@ final readonly class NativeHistory implements HistorySource
             $id = substr($message->source->ref->value, strlen('chatom:message:'));
             $saved = $this->snapshots->find($binding->space, MessageId::from($id));
 
-            if ($saved === null || $saved->channel->value !== $binding->channel->value
+            if (! $saved instanceof MessageSnapshot || $saved->channel->value !== $binding->channel->value
                 || $saved->revision !== (int) $message->source->version || $saved->position !== $message->source->turn
                 || $saved->type !== MessageType::Regular || $saved->status->isHiddenFromStream()) {
                 throw new ContractViolation(ErrorCode::StaleContext);
             }
         }
 
-        return [$messages, $complete];
+        return [$messages, $complete, $binding];
     }
 
     private function currentBinding(ExecutionContext $context, Ref $branch): TranscriptBinding

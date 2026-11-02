@@ -34,6 +34,18 @@ before destination IO. Completed Run recovery reads the saved export and settles
 the real budget correlation without another model call. Unknown provider work
 keeps the native recovery semantics.
 
+An explicit `citationHistory` binding on the same `TextResponsePublisher` adds
+one `agentools.ai-citation` v3 for the actual admitted Chatom input. `NativeHistory::citation`
+uses the current owning viewer read and exact source revision, tenant, space,
+channel and assistant binding. It constructs the reference before the immutable
+intent/hash and encrypted export are stored. Model refs/proposals remain denied;
+no model/client JSON becomes a trusted node. Completed response retry reuses the
+saved typed export. The stored `source_revision` must still match the actual
+Chatom message at send and display, alongside the current owning viewer grant.
+Edit, hide or deletion redacts the citation; a revision pin supplies no authority.
+Hosts must pin this export choice in their explicit profile version. The Edufy
+`citeInputSource` setting defaults to false; enabling it pins `+input-source-citation.v1`.
+
 For Chatom's transactional Reauthorize, `DeliveryRepository::prepareCommit`
 returns a nonserializable, same-operation SQL check after current host/source
 preflight. The check re-reads immutable export bindings, source watermark,
@@ -43,7 +55,7 @@ inside that transaction. This is not a queued authority token or a replacement
 for fresh remote preflight on the next operation. The Edufy consumer is
 `Messenger\Infrastructure\Chatom\TranscriptResponseAuthority`.
 
-Only final buffered text is composed here. Tools/Actions, knowledge/artifact
+Only final buffered model text and the explicit owning input citation are composed here. Tools/Actions, knowledge/artifact
 viewer grants, background principals, voice, managed profile publication and
 deployment cleanup/retention authority are separate contracts. The synthetic
 provider transport in the isolated host test is a boundary fixture, not a live

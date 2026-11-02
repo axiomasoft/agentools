@@ -35,7 +35,7 @@ final readonly class TextResponsePublisher implements ResponsePublisher
      */
     public function __construct(private InvocationPayloads $raw, private InvocationPayloads $exports,
         private CanonicalHasher $hasher, private Closure $context, private Closure $disclosure,
-        private ?TextPayloadLineage $lineage = null) {}
+        private ?TextPayloadLineage $lineage = null, private ?NativeHistory $citationHistory = null) {}
 
     public function prepare(ExecutionContext $context, InvocationPlan $plan, InvocationCheckpoint $checkpoint, Ref $response): ResponsePublication
     {
@@ -81,6 +81,8 @@ final readonly class TextResponsePublisher implements ResponsePublisher
         }
         $text = "ИИ-ассистент\n".$text;
         ($this->disclosure)($delivery, $response, $text);
+        $references = $this->citationHistory instanceof NativeHistory ? [TranscriptNodes::citation(
+            $this->citationHistory->citation($delivery, $input), $input->revision, 'input-source')] : [];
         // The policy may perform owner IO. Rehydrate authority again before storing the visible export.
         $current = ($this->context)('chatom.delivery');
 
@@ -91,7 +93,7 @@ final readonly class TextResponsePublisher implements ResponsePublisher
             'session_ref' => $context->session->value, 'turn_ref' => $plan->turnId->value,
             'response_version' => 1, 'state' => 'final', 'supersedes' => null]);
         $intent = new DeliveryIntent($input->tenant, $input->space, ChannelId::from($input->source->channelId()),
-            $response->value, $identity, new MessageDocument(1, [...MessageDocument::fromPlainText($text)->content,
+            $response->value, $identity, new MessageDocument(1, [...MessageDocument::fromPlainText($text)->content, ...$references,
                 TranscriptNodes::response($identity)]), $input, $delivery->identity->policyRevision);
         $payload = new Ref($response->tenant, 'payload:'.hash('sha256', $intent->key()));
         $bytes = BridgeKeys::encode($intent->export());
