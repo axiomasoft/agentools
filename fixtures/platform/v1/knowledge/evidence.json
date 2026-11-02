@@ -1,0 +1,26 @@
+{
+    "evidence_kind": "design_example",
+    "run_ref": "run:example",
+    "tenant": "tenant:a",
+    "release_ref": {
+        "corpus": "corpus:school",
+        "id": "release:1",
+        "hash": "82a77cae95da75edce93bc7d336fe863249fd51befaccd11ec5ec0b6b186a4c9"
+    },
+    "fragment": {
+        "id": "fragment:1",
+        "kind": "fragment",
+        "page": 1,
+        "start": 0,
+        "end": 34,
+        "text": "Проверенный текст.",
+        "sourceHash": "a1a50065fdf2c893554b2881421cb659f8f2e2b6c9a5744cd2f3581d43a7283c",
+        "pageHash": "a1a50065fdf2c893554b2881421cb659f8f2e2b6c9a5744cd2f3581d43a7283c",
+        "contentHash": "a1a50065fdf2c893554b2881421cb659f8f2e2b6c9a5744cd2f3581d43a7283c",
+        "parent": "page:1",
+        "box": null,
+        "validation_status": "validated"
+    },
+    "disclosure_access_check": "required_current_owner_check",
+    "retrieval_implemented": false
+}

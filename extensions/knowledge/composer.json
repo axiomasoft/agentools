@@ -1,0 +1,45 @@
+{
+  "name": "agentools/platform-knowledge",
+  "description": "Private optional owner-referenced knowledge ingest and immutable release ports.",
+  "type": "library",
+  "license": "proprietary",
+  "require": {
+    "php": ">=8.3"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^2.2",
+    "phpunit/phpunit": "^11.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "AgenToolsPlatform\\Knowledge\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "AgenToolsPlatform\\Knowledge\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "python3 tests/suite.py",
+    "analyse": "phpstan analyse -c phpstan.neon --no-progress"
+  },
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": false
+  },
+  "archive": {
+    "exclude": [
+      "/tests",
+      "/vendor",
+      "/composer.lock",
+      "/phpstan.neon"
+    ]
+  },
+  "extra": {
+    "agentools": {
+      "private": true,
+      "registration": "Explicit host wiring only; no automatic extraction, indexing, model calls or routes"
+    }
+  }
+}

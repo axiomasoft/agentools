@@ -30,7 +30,7 @@ SELF_CASES = tuple("GateTests.test_" + name for name in (
     "boundary_autoload_escape", "boundary_transitive_testing", "boundary_namespace_path",
     "boundary_production_source", "contradictory_totals",
     "sdk_adapter_registry", "model_transport_registry", "runtime_registry", "read_journey_registry", "action_submit_registry", "confirmation_write_registry", "effect_reconcile_registry", "cancellation_resolution_registry", "write_recovery_registry", "laravel_composition_registry", "platform_definitions_registry", "composition_testing_registry", "filament_registry", "scheduler_registry", "platform_registry", "fsm_registry", "testkit_registry", "pg_schema_registry", "pg_intake_registry", "pg_claims_outbox_registry", "pg_action_journal_registry", "pg_isolation_retention_registry", "aggregate_preflight",
-    "profile_publish_registry", "profile_admin_registry", "profile_merge_registry", "skill_selection_registry", "context_compiler_registry", "history_memory_registry", "context_guards_registry", "cli_missing_suite", "cli_wrong_mode", "cli_missing_pg_isolation", "cli_future_commands",
+    "knowledge_ingest_registry", "knowledge_retrieval_registry", "profile_publish_registry", "profile_admin_registry", "profile_merge_registry", "skill_selection_registry", "context_compiler_registry", "history_memory_registry", "context_guards_registry", "cli_missing_suite", "cli_wrong_mode", "cli_missing_pg_isolation", "cli_future_commands",
     "exact_cases", "zero_cases", "skips", "failure", "duplicate_cases", "extra_cases",
     "missing_cases", "mode_mismatch", "tier_mismatch", "unknown_status", "malformed_report",
     "pg_proof_missing", "pg_case_set", "runner_nonzero", "missing_dependency",
@@ -924,6 +924,56 @@ SUITES[('profile-publish-admin', 'test')] = Suite('P7.7', 'contract-scripted', '
     PROFILE_ADMIN_CASES, (sys.executable, '-B', 'extensions/filament/tests/profile-suite.py'), PROFILE_ADMIN_INPUTS)
 
 
+# P8.1 optional owner-referenced ingest; no fake durable substitute.
+KNOWLEDGE_UNIT_CASES = ('knowledge.owner-projection-and-provenance', 'knowledge.tenant-audience-scope-before-source', 'knowledge.owner-denied-and-unknown', 'knowledge.source-ref-and-hash-mismatch', 'knowledge.artifact-hashes-and-source-mapping', 'knowledge.utf8-and-coordinate-boundaries', 'knowledge.hierarchy-and-duplicate-ids', 'knowledge.completeness-and-required-cards', 'knowledge.unknown-validation-cannot-publish', 'knowledge.revoke-during-extraction', 'knowledge.immutable-and-corrupt-release', 'knowledge.embedding-space-isolation', 'knowledge.multiple-pages-and-tenant-identity', 'knowledge.shared-fixtures')
+KNOWLEDGE_PG_CASES = ('knowledge.durable-replay-and-hash-conflict', 'knowledge.correction-invalidates-exact-dependents', 'knowledge.failed-correction-rolls-back', 'knowledge.tenant-current-rights-and-unknown', 'knowledge.sql-immutability-and-tenant-foreign-key', 'knowledge.competing-connections', 'knowledge.crash-before-and-after-commit-restart')
+KNOWLEDGE_CASES = KNOWLEDGE_UNIT_CASES + (
+    'knowledge.composer-valid', 'knowledge.static-analysis', 'knowledge.production-no-dev')
+KNOWLEDGE_INPUTS = tuple(dict.fromkeys(tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / 'extensions/knowledge/src', ROOT / 'extensions/knowledge/tests',
+    ROOT / 'spec/platform/v1/knowledge', ROOT / 'fixtures/platform/v1/knowledge')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php','.py','.json','.xml','.sql','.md'}) + (
+    'extensions/knowledge/composer.json', 'extensions/knowledge/composer.lock',
+    'extensions/knowledge/phpstan.neon', 'extensions/knowledge/.gitignore',
+    'extensions/knowledge/vendor/autoload.php', 'extensions/knowledge/vendor/bin/phpunit',
+    'extensions/knowledge/vendor/bin/phpstan', 'packages/agentools-postgres/tests/run.py',
+    'packages/agentools-postgres/tests/IsolatedDatabase.php', 'packages/agentools-postgres/vendor/autoload.php',
+    'packages/agentools-postgres/vendor/bin/phpunit', 'packages/agentools-postgres/composer.lock',
+    'tools/storage_chaos.py', 'tools/platform_gate.py', 'tools/tests/test_platform_gate.py')))
+SUITES[('knowledge-ingest', 'test')] = Suite('P8.1', 'contract-scripted', 'contract-scripted',
+    KNOWLEDGE_CASES, (sys.executable, '-B', 'extensions/knowledge/tests/suite.py'), KNOWLEDGE_INPUTS)
+SUITES[('knowledge-ingest', 'pg-test')] = Suite('P8.1-pg', 'isolated-postgres', 'isolated-postgres',
+    KNOWLEDGE_PG_CASES, (sys.executable, '-B', 'extensions/knowledge/tests/pg.py'), KNOWLEDGE_INPUTS, requires_pg=True)
+
+
+# P8.2: actual optional retrieval adapters, with scripted external owners only.
+KNOWLEDGE_RETRIEVAL_UNIT_CASES = (
+    'CM-018', 'CM-019', 'CM-021', 'CM-022', 'retrieval.pre-filter-metadata-and-rights',
+    'retrieval.unknown-missing-expiry', 'retrieval.run-and-cache-binding', 'CM-020',
+    'V2-P8-2-SPACE-POS', 'V2-P8-2-SPACE-FAULT', 'V2-P8-2-RETRIEVAL-POS',
+    'V2ALL-KNOWLEDGE-POSITIVE', 'V2ALL-KNOWLEDGE-NEGATIVE', 'V2ALL-KNOWLEDGE-FAULT',
+    'retrieval.rank-fusion-and-rerank', 'retrieval.overlap-dedup-diversity',
+    'retrieval.utf8-minimal-budgets', 'retrieval.invalid-vectors', 'retrieval.cache-and-rerank-poison',
+    'retrieval.last-boundary-worker-reset', 'retrieval.shared-fixtures-owner-views',
+    'retrieval.query-selection-limits', 'retrieval.cache-shape-and-lifetime',
+    'retrieval.source-change-at-final-repository-read',
+)
+KNOWLEDGE_RETRIEVAL_CASES = KNOWLEDGE_RETRIEVAL_UNIT_CASES + (
+    'retrieval.composer-valid', 'retrieval.static-analysis', 'retrieval.production-no-dev')
+KNOWLEDGE_RETRIEVAL_INPUTS = tuple(dict.fromkeys(tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / 'extensions/knowledge/src', ROOT / 'extensions/knowledge/tests/Retrieval',
+    ROOT / 'spec/platform/v1/knowledge', ROOT / 'fixtures/platform/v1/retrieval')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php','.py','.json','.xml','.sql','.md'}) + (
+    'extensions/knowledge/composer.json', 'extensions/knowledge/composer.lock',
+    'extensions/knowledge/phpstan.neon', 'extensions/knowledge/.gitignore',
+    'extensions/knowledge/tests/bootstrap.php', 'extensions/knowledge/tests/Fixture.php',
+    'extensions/knowledge/vendor/autoload.php', 'extensions/knowledge/vendor/bin/phpunit',
+    'extensions/knowledge/vendor/bin/phpstan', 'tools/platform_gate.py', 'tools/tests/test_platform_gate.py')))
+SUITES[('knowledge-retrieval', 'test')] = Suite('P8.2', 'contract-scripted', 'contract-scripted',
+    KNOWLEDGE_RETRIEVAL_CASES, (sys.executable, '-B', 'extensions/knowledge/tests/Retrieval/suite.py'),
+    KNOWLEDGE_RETRIEVAL_INPUTS)
+
+
 class GateError(Exception):
     pass
 
@@ -1029,6 +1079,27 @@ def validate_report(spec: Suite, report):
         require(all(redaction.get(k) is True for k in ('nested_values_redacted','exception_chain_redacted','encrypted','ttl','audit'))
             and redaction.get('diagnostic_calls')==1,'redaction/encrypted diagnostic privilege proof missing')
         require(report.get('input_hashes')==hashes(ROOT,spec.dependencies),'context guard input hashes missing/stale')
+    if spec.owner in {'P8.1', 'P8.1-pg'}:
+        require(report.get('evidence_kind') == 'host_contract_harness', 'knowledge evidence kind missing')
+        limitations = report.get('limitations')
+        require(isinstance(limitations, list) and limitations
+            and all(isinstance(value, str) and value for value in limitations), 'knowledge limitations missing')
+        require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'knowledge input hashes missing/stale')
+        if not spec.requires_pg:
+            packaging = report.get('packaging', {})
+            require(isinstance(packaging, dict) and packaging.get('knowledge') is True
+                and all(packaging.get(key) is False for key in ('test_autoload', 'sdk', 'framework')),
+                'knowledge production no-dev proof missing')
+    if spec.owner == 'P8.2':
+        require(report.get('evidence_kind') == 'host_contract_harness', 'retrieval evidence kind missing')
+        limitations = report.get('limitations')
+        require(isinstance(limitations, list) and limitations
+            and all(isinstance(value, str) and value for value in limitations), 'retrieval limitations missing')
+        require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'retrieval input hashes missing/stale')
+        packaging = report.get('packaging', {})
+        require(isinstance(packaging, dict) and packaging.get('retrieval') is True
+            and all(packaging.get(key) is False for key in ('test_autoload', 'sdk', 'framework', 'provider')),
+            'retrieval production no-dev proof missing')
     if spec.owner == 'P7.5':
         portable=report.get('portable')
         require(isinstance(portable,list) and len(portable)==3,'history/memory behavioral reports missing')
@@ -1221,7 +1292,7 @@ def run_suite(root: Path, spec: Suite, *, isolated=False, timeout=120):
     result = {"command": list(spec.command), "owner": spec.owner, "mode": spec.mode,
               "tier": spec.tier, "dependency_hashes": inputs, "exit": process.returncode,
               "stdout": process.stdout, "stderr": process.stderr}
-    if spec.owner in {'P6.4', 'P6.5', 'P7.7', 'P7.7-pg'}:
+    if spec.owner in {'P6.4', 'P6.5', 'P7.7', 'P7.7-pg', 'P8.1', 'P8.1-pg', 'P8.2'}:
         result['suite_manifest_hash'] = digest(json.dumps({
             'owner': spec.owner, 'mode': spec.mode, 'tier': spec.tier, 'cases': spec.cases,
             'command': spec.command, 'requires_pg': spec.requires_pg, 'dependencies': inputs,

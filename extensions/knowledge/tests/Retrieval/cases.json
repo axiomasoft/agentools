@@ -1,0 +1,36 @@
+{
+  "tier": "contract-scripted",
+  "cases": {
+    "testTenantCacheIsolation": "CM-018",
+    "testRevokeBeforeDisclosureAndCache": "CM-019",
+    "testCorrectionKeepsHistory": "CM-021",
+    "testUnavailableAndEmpty": "CM-022",
+    "testMetadataAndRightsBeforeAdapters": "retrieval.pre-filter-metadata-and-rights",
+    "testUnknownMissingAndExpiry": "retrieval.unknown-missing-expiry",
+    "testRunAndCacheControls": "retrieval.run-and-cache-binding",
+    "testSpaceMismatch": "CM-020",
+    "testCompatibleSpace": "V2-P8-2-SPACE-POS",
+    "testRebuiltHandleFault": "V2-P8-2-SPACE-FAULT",
+    "testMinimalProvenance": "V2-P8-2-RETRIEVAL-POS",
+    "testCompletePipeline": "V2ALL-KNOWLEDGE-POSITIVE",
+    "testMaliciousCandidates": "V2ALL-KNOWLEDGE-NEGATIVE",
+    "testSourceFaultAfterCache": "V2ALL-KNOWLEDGE-FAULT",
+    "testRankFusionAndRerank": "retrieval.rank-fusion-and-rerank",
+    "testOverlapDedupAndDiversity": "retrieval.overlap-dedup-diversity",
+    "testUtf8AndBudgets": "retrieval.utf8-minimal-budgets",
+    "testMalformedVectors": "retrieval.invalid-vectors",
+    "testPoisonedCacheAndRerank": "retrieval.cache-and-rerank-poison",
+    "testLastBoundaryAndWorkerReset": "retrieval.last-boundary-worker-reset",
+    "testFixturesAndOwnerViews": "retrieval.shared-fixtures-owner-views",
+    "testQueryAndSelectionLimits": "retrieval.query-selection-limits",
+    "testCacheShapeAndLifetime": "retrieval.cache-shape-and-lifetime",
+    "testSourceChangeAtFinalRepositoryRead": "retrieval.source-change-at-final-repository-read"
+  },
+  "limitations": [
+    "Scripted Library/Files owners, embedding transport and in-memory repository; actual optional lexical/semantic/cache adapters and real source validation run locally.",
+    "No external owner/provider/OCR/PDF integration, paid requests, host e2e, pilot or production qualification.",
+    "Extractive sentence/window selection is bounded; pedagogical and semantic sufficiency remain host/Edufy policy.",
+    "Raw/user/audit view refs are host supplied; this package does not persist or resolve raw payloads or automatically activate memory.",
+    "D8: no classical mutation testing, mutants or mutation score."
+  ]
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap.php" colors="false" failOnWarning="true" failOnRisky="true" cacheResult="false">
+  <testsuites><testsuite name="knowledge-retrieval">
+    <file>AccessTest.php</file><file>HybridTest.php</file><file>SelectionTest.php</file>
+  </testsuite></testsuites>
+</phpunit>

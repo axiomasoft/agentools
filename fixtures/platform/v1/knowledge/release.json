@@ -1,0 +1,67 @@
+{
+    "evidence_kind": "host_contract_harness",
+    "release": {
+        "format": "knowledge-release\/v1",
+        "corpus": "corpus:school",
+        "id": "release:1",
+        "material": {
+            "tenant": "tenant:a",
+            "id": "material:algebra",
+            "version": "v1",
+            "ownerRef": "library:algebra",
+            "accessPolicyRef": "policy:school",
+            "licenseRef": "license:school",
+            "bytesRef": "files:algebra:v1",
+            "sourceHash": "a1a50065fdf2c893554b2881421cb659f8f2e2b6c9a5744cd2f3581d43a7283c",
+            "audiences": [
+                "students"
+            ],
+            "scopes": [
+                "read"
+            ],
+            "locale": "ru"
+        },
+        "extractor_version": "plain-text\/v1",
+        "artifacts": [
+            {
+                "id": "page:1",
+                "kind": "node",
+                "page": 1,
+                "start": 0,
+                "end": 34,
+                "text": "Проверенный текст.",
+                "sourceHash": "a1a50065fdf2c893554b2881421cb659f8f2e2b6c9a5744cd2f3581d43a7283c",
+                "pageHash": "a1a50065fdf2c893554b2881421cb659f8f2e2b6c9a5744cd2f3581d43a7283c",
+                "contentHash": "a1a50065fdf2c893554b2881421cb659f8f2e2b6c9a5744cd2f3581d43a7283c",
+                "parent": null,
+                "box": null,
+                "validation_status": "validated"
+            },
+            {
+                "id": "fragment:1",
+                "kind": "fragment",
+                "page": 1,
+                "start": 0,
+                "end": 34,
+                "text": "Проверенный текст.",
+                "sourceHash": "a1a50065fdf2c893554b2881421cb659f8f2e2b6c9a5744cd2f3581d43a7283c",
+                "pageHash": "a1a50065fdf2c893554b2881421cb659f8f2e2b6c9a5744cd2f3581d43a7283c",
+                "contentHash": "a1a50065fdf2c893554b2881421cb659f8f2e2b6c9a5744cd2f3581d43a7283c",
+                "parent": "page:1",
+                "box": null,
+                "validation_status": "validated"
+            }
+        ],
+        "page_hashes": [
+            "a1a50065fdf2c893554b2881421cb659f8f2e2b6c9a5744cd2f3581d43a7283c"
+        ],
+        "required_kinds": [
+            "node",
+            "fragment"
+        ],
+        "validation_status": "validated",
+        "validation_revision": "generic\/v1",
+        "space": null
+    },
+    "hash": "82a77cae95da75edce93bc7d336fe863249fd51befaccd11ec5ec0b6b186a4c9"
+}

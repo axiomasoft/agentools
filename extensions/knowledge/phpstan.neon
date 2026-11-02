@@ -1,0 +1,6 @@
+parameters:
+    level: max
+    # Retain defensive runtime checks at adapter/constructor boundaries.
+    treatPhpDocTypesAsCertain: false
+    paths:
+        - src

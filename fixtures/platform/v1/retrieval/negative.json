@@ -1,0 +1,25 @@
+{
+    "evidence_kind": "host_contract_harness",
+    "cases": [
+        {
+            "id": "cross-tenant",
+            "expected": "denied_before_candidates"
+        },
+        {
+            "id": "teacher-only",
+            "expected": "denied_before_candidates"
+        },
+        {
+            "id": "revoked",
+            "expected": "denied_even_cached"
+        },
+        {
+            "id": "space-mismatch",
+            "expected": "SPACE_MISMATCH"
+        },
+        {
+            "id": "unavailable",
+            "expected": "unavailable_without_citations"
+        }
+    ]
+}

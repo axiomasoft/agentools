@@ -1,0 +1,34 @@
+{
+  "tier": "contract-scripted",
+  "postgres_tier": "isolated-postgres",
+  "unit": {
+    "testOwnerProjectionAndProvenance": "knowledge.owner-projection-and-provenance",
+    "testTenantAudienceScopeBeforeSource": "knowledge.tenant-audience-scope-before-source",
+    "testOwnerDeniedAndUnknown": "knowledge.owner-denied-and-unknown",
+    "testSourceRefAndHashMismatch": "knowledge.source-ref-and-hash-mismatch",
+    "testArtifactHashesAndSourceMapping": "knowledge.artifact-hashes-and-source-mapping",
+    "testUtf8AndCoordinateBoundaries": "knowledge.utf8-and-coordinate-boundaries",
+    "testHierarchyAndDuplicateIds": "knowledge.hierarchy-and-duplicate-ids",
+    "testCompletenessAndRequiredCards": "knowledge.completeness-and-required-cards",
+    "testUnknownValidationCannotPublish": "knowledge.unknown-validation-cannot-publish",
+    "testRevokeDuringExtraction": "knowledge.revoke-during-extraction",
+    "testImmutableAndCorruptRelease": "knowledge.immutable-and-corrupt-release",
+    "testEmbeddingSpaceIsolation": "knowledge.embedding-space-isolation",
+    "testMultiplePagesAndTenantIdentity": "knowledge.multiple-pages-and-tenant-identity",
+    "testSharedFixtures": "knowledge.shared-fixtures"
+  },
+  "postgres": {
+    "testDurableReplayAndHashConflict": "knowledge.durable-replay-and-hash-conflict",
+    "testCorrectionInvalidatesExactDependents": "knowledge.correction-invalidates-exact-dependents",
+    "testFailedCorrectionRollsBack": "knowledge.failed-correction-rolls-back",
+    "testTenantCurrentRightsAndUnknown": "knowledge.tenant-current-rights-and-unknown",
+    "testSqlImmutabilityAndTenantForeignKey": "knowledge.sql-immutability-and-tenant-foreign-key",
+    "testCompetingConnections": "knowledge.competing-connections",
+    "testCrashBeforeAndAfterCommitRestart": "knowledge.crash-before-and-after-commit-restart"
+  },
+  "limitations": [
+    "Scripted Library/Files owners; no external owner integration, provider calls, OCR/PDF support or production readiness.",
+    "P8.1 publishes one source-version partition per corpus release; P8.2 owns retrieval/rerank/disclosure adapters.",
+    "No paid embedding requests or classical mutation testing."
+  ]
+}

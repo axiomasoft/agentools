@@ -154,6 +154,91 @@ class GateTests(unittest.TestCase):
                 self.assertNotEqual(result.returncode, 0)
                 self.assertFalse(json.loads(result.stdout)["ok"])
 
+    def test_knowledge_ingest_registry(self):
+        matrix = json.loads((ROOT / 'extensions/knowledge/tests/cases.json').read_text())
+        for partition, group in (('test', 'unit'), ('pg-test', 'postgres')):
+            spec = gate.SUITES[('knowledge-ingest', partition)]
+            self.assertEqual(spec.requires_pg, partition == 'pg-test')
+            self.assertEqual(spec.owner, 'P8.1-pg' if spec.requires_pg else 'P8.1')
+            self.assertEqual(spec.tier, 'isolated-postgres' if spec.requires_pg else 'contract-scripted')
+            self.assertEqual(tuple(matrix[group].values()), gate.KNOWLEDGE_PG_CASES if spec.requires_pg else gate.KNOWLEDGE_UNIT_CASES)
+            gate.hashes(ROOT, spec.dependencies)
+            report = {'mode':spec.mode, 'tier':spec.tier, 'cases':[{'id':name,'status':'passed'} for name in spec.cases]}
+            report.update(evidence_kind='host_contract_harness', limitations=matrix['limitations'],
+                input_hashes=gate.hashes(ROOT, spec.dependencies),
+                packaging={'knowledge':True, 'test_autoload':False, 'sdk':False, 'framework':False})
+            if spec.requires_pg:
+                report['isolation'] = {'engine':'postgresql', 'isolated':True, 'database':'agentools_test_knowledge',
+                    'owner':'test', 'allow_marker_verified':True, 'case_ids':list(spec.cases)}
+            gate.validate_report(spec, report)
+            for changes in ({'input_hashes':None}, {'input_hashes':{}}, {'evidence_kind':'live-provider'},
+                            {'limitations':[]}, {'packaging':{}} if not spec.requires_pg else {'isolation':{}}):
+                with self.assertRaises(gate.GateError): gate.validate_report(spec, dict(report, **changes))
+            stale = dict(report['input_hashes'])
+            stale[next(iter(stale))] = '0' * 64
+            with self.assertRaises(gate.GateError): gate.validate_report(spec, dict(report, input_hashes=stale))
+            for cases in ([], report['cases'][:-1], report['cases'] + report['cases'][:1],
+                          [dict(c,status='skipped') for c in report['cases']]):
+                with self.assertRaises(gate.GateError): gate.validate_report(spec, dict(report,cases=cases))
+            argv = [partition,'--suite','knowledge-ingest'] + (['--isolated'] if spec.requires_pg else [])
+            with patch.object(gate,'run_suite',return_value={'ok':True}) as run:
+                self.assertEqual(gate.execute(gate.parser().parse_args(argv)), [{'ok':True}])
+            run.assert_called_once_with(ROOT,spec,isolated=spec.requires_pg)
+
+    def test_knowledge_retrieval_registry(self):
+        import copy
+        spec = gate.SUITES[('knowledge-retrieval', 'test')]
+        matrix = json.loads((ROOT / 'extensions/knowledge/tests/Retrieval/cases.json').read_text())
+        self.assertEqual((spec.owner, spec.mode, spec.tier, spec.requires_pg),
+            ('P8.2', 'contract-scripted', 'contract-scripted', False))
+        self.assertEqual(tuple(matrix['cases'].values()), gate.KNOWLEDGE_RETRIEVAL_UNIT_CASES)
+        self.assertEqual(len(spec.cases), len(matrix['cases']) + 3)
+        self.assertEqual(spec.command, (sys.executable, '-B', 'extensions/knowledge/tests/Retrieval/suite.py'))
+        self.assertIn('fixtures/platform/v1/retrieval/evidence.json', spec.dependencies)
+        report = {'mode':spec.mode, 'tier':spec.tier, 'cases':[{'id':name,'status':'passed'} for name in spec.cases],
+            'input_hashes':gate.hashes(ROOT, spec.dependencies), 'evidence_kind':'host_contract_harness',
+            'limitations':matrix['limitations'],
+            'packaging':{'retrieval':True, 'test_autoload':False, 'sdk':False, 'framework':False, 'provider':False}}
+        gate.validate_report(spec, report)
+        for field in ('zero', 'missing', 'extra', 'skip', 'failed', 'unknown', 'tier', 'mode', 'hashes',
+                      'stale', 'kind', 'limits', 'packaging', 'provider', 'test_autoload'):
+            bad = copy.deepcopy(report)
+            if field == 'zero': bad['cases'] = []
+            elif field == 'missing': bad['cases'].pop()
+            elif field == 'extra': bad['cases'] += bad['cases'][:1]
+            elif field in ('skip', 'failed', 'unknown'): bad['cases'][0]['status'] = {'skip':'skipped'}.get(field,field)
+            elif field == 'tier': bad['tier'] = 'live-provider'
+            elif field == 'mode': bad['mode'] = 'unit'
+            elif field == 'hashes': bad['input_hashes'] = {}
+            elif field == 'stale': bad['input_hashes'][next(iter(bad['input_hashes']))] = '0' * 64
+            elif field == 'kind': bad['evidence_kind'] = 'schema-only'
+            elif field == 'limits': bad['limitations'] = []
+            elif field == 'packaging': bad['packaging'] = {}
+            else: bad['packaging'][field] = True
+            with self.subTest(field=field), self.assertRaises(gate.GateError): gate.validate_report(spec, bad)
+        with patch.object(gate, 'run_suite', return_value={'ok':True}) as run:
+            self.assertEqual(gate.execute(gate.parser().parse_args(['test','--suite','knowledge-retrieval'])), [{'ok':True}])
+        run.assert_called_once_with(ROOT, spec, isolated=False)
+        with tempfile.TemporaryDirectory(prefix='retrieval_manifest_negative_') as directory:
+            root = Path(directory); fixture = root / 'fixture.json'; fixture.write_text('{}')
+            tiny = replace(spec, cases=('one',), command=('runner',), dependencies=('fixture.json',))
+            def runner(*args, **kwargs):
+                value = dict(report, cases=[{'id':'one','status':'passed'}],
+                    input_hashes=gate.hashes(root,tiny.dependencies))
+                return subprocess.CompletedProcess([],0,json.dumps(value),'')
+            with patch.object(gate,'ROOT',root), patch.object(gate.subprocess,'run',side_effect=runner):
+                first = gate.run_suite(root,tiny)
+                self.assertTrue(first['ok'])
+                fixture.write_text('{"corrected":true}')
+                changed = gate.run_suite(root,tiny)
+                self.assertTrue(changed['ok'])
+                self.assertNotEqual(first['suite_manifest_hash'],changed['suite_manifest_hash'])
+                extra_case = gate.run_suite(root,replace(tiny,cases=('one','two')))
+                self.assertFalse(extra_case['ok'])
+                self.assertNotEqual(changed['suite_manifest_hash'],extra_case['suite_manifest_hash'])
+                fixture.unlink()
+                with self.assertRaises(gate.GateError): gate.run_suite(root,tiny)
+
     def test_sdk_adapter_registry(self):
         spec = gate.SUITES[('sdk-adapter', 'test')]
         self.assertEqual((spec.owner, spec.mode, spec.tier), ('P4.2', 'contract-scripted', 'contract-scripted'))

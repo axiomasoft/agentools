@@ -1,0 +1,94 @@
+{
+    "evidence_kind": "host_contract_harness",
+    "query_hash": "d4e3fc7b0477747da28f05c27af9f1ab8e70cd60f729a2813f410fd39eb466ac",
+    "result": {
+        "tenant": "alpha",
+        "runRef": "run:1",
+        "queryHash": "d4e3fc7b0477747da28f05c27af9f1ab8e70cd60f729a2813f410fd39eb466ac",
+        "status": "success",
+        "code": "EVIDENCE_READY",
+        "fragments": [
+            {
+                "text": "Gravity attracts masses.",
+                "citation": {
+                    "corpus": "corpus:1",
+                    "release": "release:material:1:v1",
+                    "release_hash": "0d83a46acb0e8a65bdcbdbe63e36e463898b3cc439553e12fe2fc4894564fb04",
+                    "material": "material:1",
+                    "version": "v1",
+                    "fragment": "fragment:1",
+                    "page": 1,
+                    "start": 24,
+                    "end": 48,
+                    "content_hash": "a7592835692e5515afad7dcac6355a678c38bf0df042be79624bc7acda92379b"
+                },
+                "owner_ref": "library:material:1",
+                "access_policy_ref": "policy:material:1",
+                "license_ref": "license:material:1",
+                "bytes_ref": "files:material:1:v1",
+                "source_hash": "d35e6a3801b99dc129ea3cfb9335961adc081c088eb201167bd7c0cc920863b2",
+                "page_hash": "d35e6a3801b99dc129ea3cfb9335961adc081c088eb201167bd7c0cc920863b2",
+                "artifact_hash": "d35e6a3801b99dc129ea3cfb9335961adc081c088eb201167bd7c0cc920863b2",
+                "box": null,
+                "locale": "en",
+                "programs": [
+                    "p1"
+                ],
+                "validation_status": "validated",
+                "trust_class": "untrusted",
+                "space": null
+            }
+        ],
+        "checkedAt": 2000000000,
+        "expiresAt": 2000000030
+    },
+    "tool_result": {
+        "tenant": "alpha",
+        "run_ref": "run:1",
+        "query_hash": "d4e3fc7b0477747da28f05c27af9f1ab8e70cd60f729a2813f410fd39eb466ac",
+        "status": "success",
+        "code": "EVIDENCE_READY",
+        "trust_class": "untrusted",
+        "raw_result_ref": "owner:raw-table",
+        "user_view_ref": "owner:user",
+        "audit_view_ref": "owner:audit",
+        "model_view": "{\"status\":\"success\",\"code\":\"EVIDENCE_READY\",\"evidence\":[{\"text\":\"Gravity attracts masses.\",\"citation\":{\"corpus\":\"corpus:1\",\"release\":\"release:material:1:v1\",\"release_hash\":\"0d83a46acb0e8a65bdcbdbe63e36e463898b3cc439553e12fe2fc4894564fb04\",\"material\":\"material:1\",\"version\":\"v1\",\"fragment\":\"fragment:1\",\"page\":1,\"start\":24,\"end\":48,\"content_hash\":\"a7592835692e5515afad7dcac6355a678c38bf0df042be79624bc7acda92379b\"}}]}",
+        "evidence": [
+            {
+                "text": "Gravity attracts masses.",
+                "citation": {
+                    "corpus": "corpus:1",
+                    "release": "release:material:1:v1",
+                    "release_hash": "0d83a46acb0e8a65bdcbdbe63e36e463898b3cc439553e12fe2fc4894564fb04",
+                    "material": "material:1",
+                    "version": "v1",
+                    "fragment": "fragment:1",
+                    "page": 1,
+                    "start": 24,
+                    "end": 48,
+                    "content_hash": "a7592835692e5515afad7dcac6355a678c38bf0df042be79624bc7acda92379b"
+                },
+                "owner_ref": "library:material:1",
+                "access_policy_ref": "policy:material:1",
+                "license_ref": "license:material:1",
+                "bytes_ref": "files:material:1:v1",
+                "source_hash": "d35e6a3801b99dc129ea3cfb9335961adc081c088eb201167bd7c0cc920863b2",
+                "page_hash": "d35e6a3801b99dc129ea3cfb9335961adc081c088eb201167bd7c0cc920863b2",
+                "artifact_hash": "d35e6a3801b99dc129ea3cfb9335961adc081c088eb201167bd7c0cc920863b2",
+                "box": null,
+                "locale": "en",
+                "programs": [
+                    "p1"
+                ],
+                "validation_status": "validated",
+                "trust_class": "untrusted",
+                "space": null
+            }
+        ],
+        "freshness": {
+            "checked_at": 2000000000,
+            "expires_at": 2000000030
+        },
+        "memory_activation": false
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "evidence_kind": "host_contract_harness",
+    "material": {
+        "tenant": "tenant:a",
+        "id": "material:algebra",
+        "version": "v1",
+        "ownerRef": "library:algebra",
+        "accessPolicyRef": "policy:school",
+        "licenseRef": "license:school",
+        "bytesRef": "files:algebra:v1",
+        "sourceHash": "a1a50065fdf2c893554b2881421cb659f8f2e2b6c9a5744cd2f3581d43a7283c",
+        "audiences": [
+            "students"
+        ],
+        "scopes": [
+            "read"
+        ],
+        "locale": "ru"
+    }
+}

@@ -1,0 +1,39 @@
+{
+    "evidence_kind": "host_contract_harness",
+    "cases": [
+        {
+            "id": "cross-tenant",
+            "scope": {
+                "tenant": "tenant:b"
+            },
+            "material_tenant": "tenant:a",
+            "expected": "denied_before_source"
+        },
+        {
+            "id": "revoke",
+            "decision": "denied",
+            "pinned_release": "release:1",
+            "expected": "denied_current_owner"
+        },
+        {
+            "id": "space-mismatch",
+            "left": {
+                "provider": "provider:a",
+                "model": "model:a",
+                "revision": "r1",
+                "dimensions": 3,
+                "normalization": "unit",
+                "indexVersion": "index:1"
+            },
+            "right": {
+                "provider": "provider:a",
+                "model": "model:b",
+                "revision": "r1",
+                "dimensions": 3,
+                "normalization": "unit",
+                "indexVersion": "index:1"
+            },
+            "expected": "incompatible_despite_equal_dimensions"
+        }
+    ]
+}
