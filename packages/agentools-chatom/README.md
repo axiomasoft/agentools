@@ -46,6 +46,17 @@ Edit, hide or deletion redacts the citation; a revision pin supplies no authorit
 Hosts must pin this export choice in their explicit profile version. The Edufy
 `citeInputSource` setting defaults to false; enabling it pins `+input-source-citation.v1`.
 
+The optional `OwnerReferenceProducer` is another trusted code binding on that same
+publisher. It returns at most eight typed `OwnerReference` values: a currently
+authorized published knowledge section with its positive owning revision, or a
+currently authorized published business artifact ID. Its `pin()` belongs in the
+host's profile version. The owning host verifies subject, audience and publication
+before export and rechecks grants at send/display. These refs enter the immutable
+intent and encrypted export before hashing; completed-response recovery reuses
+them. Producer output is checked for type, bound and duplicate identities. Model
+JSON and proposals cannot supply these values. No owner passage/artifact body is
+copied into the transcript by this binding.
+
 For Chatom's transactional Reauthorize, `DeliveryRepository::prepareCommit`
 returns a nonserializable, same-operation SQL check after current host/source
 preflight. The check re-reads immutable export bindings, source watermark,
@@ -55,8 +66,8 @@ inside that transaction. This is not a queued authority token or a replacement
 for fresh remote preflight on the next operation. The Edufy consumer is
 `Messenger\Infrastructure\Chatom\TranscriptResponseAuthority`.
 
-Only final buffered model text and the explicit owning input citation are composed here. Tools/Actions, knowledge/artifact
-viewer grants, background principals, voice, managed profile publication and
+Only final buffered model text and explicitly bound owning references are composed here. Tools/Actions, owning
+viewer policy, background principals, voice, managed profile publication and
 deployment cleanup/retention authority are separate contracts. The synthetic
 provider transport in the isolated host test is a boundary fixture, not a live
 model qualification. No production activation follows from installing this

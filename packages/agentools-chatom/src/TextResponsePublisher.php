@@ -35,7 +35,8 @@ final readonly class TextResponsePublisher implements ResponsePublisher
      */
     public function __construct(private InvocationPayloads $raw, private InvocationPayloads $exports,
         private CanonicalHasher $hasher, private Closure $context, private Closure $disclosure,
-        private ?TextPayloadLineage $lineage = null, private ?NativeHistory $citationHistory = null) {}
+        private ?TextPayloadLineage $lineage = null, private ?NativeHistory $citationHistory = null,
+        private ?OwnerReferenceProducer $ownerReferences = null) {}
 
     public function prepare(ExecutionContext $context, InvocationPlan $plan, InvocationCheckpoint $checkpoint, Ref $response): ResponsePublication
     {
@@ -83,10 +84,17 @@ final readonly class TextResponsePublisher implements ResponsePublisher
         ($this->disclosure)($delivery, $response, $text);
         $references = $this->citationHistory instanceof NativeHistory ? [TranscriptNodes::citation(
             $this->citationHistory->citation($delivery, $input), $input->revision, 'input-source')] : [];
+        $owned = OwnerReference::batch($this->ownerReferences?->export($delivery, $input) ?? []);
+        foreach ($owned as $index => $reference) {
+            $references[] = $reference->node('owner-reference-'.$index);
+        }
         // The policy may perform owner IO. Rehydrate authority again before storing the visible export.
         $current = ($this->context)('chatom.delivery');
+        $current->session->assertSame($delivery->session);
 
-        if ($current->identity->policyRevision !== $delivery->identity->policyRevision) {
+        if ($current->identity->policyRevision !== $delivery->identity->policyRevision
+            || $current->identity->actorRef->value !== $delivery->identity->actorRef->value
+            || $current->identity->subjectRef?->value !== $delivery->identity->subjectRef?->value) {
             throw new ContractViolation(ErrorCode::StaleContext);
         }
         $identity = ResponseIdentity::fromArray(['assistant_ref' => $input->target->assistant,
