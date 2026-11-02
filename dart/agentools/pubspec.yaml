@@ -7,7 +7,7 @@ environment:
   sdk: ^3.11.0
 
 dependencies:
-  crypto: ^3.0.6
+  crypto: ^3.0.8
   json_schema: ^5.2.2
   # Older transitive releases use BidirectionalIterator removed from Dart 3.
   quiver: ^3.2.1
