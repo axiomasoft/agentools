@@ -1,0 +1,17 @@
+{
+  "ref": "scripted-subset/v1",
+  "fields": {
+    "input": "input_total",
+    "cache_read": "cached_subset",
+    "cache_write": "cache_write",
+    "output": "output",
+    "reasoning": "reasoning",
+    "audio_input": "audio_input",
+    "audio_output": "audio_output",
+    "audio_unit": "audio_unit",
+    "provider_amount": "amount"
+  },
+  "input_includes_cache_read": true,
+  "cache_write_relation": "subset_of_uncached",
+  "reasoning_relation": "subset_of_output"
+}

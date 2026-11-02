@@ -1,0 +1,68 @@
+{
+  "tier": "contract-scripted",
+  "cases": [
+    {
+      "id": "CM-024",
+      "disclosed": false,
+      "unknown_effect": false,
+      "forbidden_only": false,
+      "explicit": false,
+      "allowed": false,
+      "outcome": "reroute"
+    },
+    {
+      "id": "CM-025",
+      "disclosed": false,
+      "unknown_effect": false,
+      "forbidden_only": true,
+      "explicit": false,
+      "allowed": false,
+      "outcome": "non_ai_text"
+    },
+    {
+      "id": "CM-026",
+      "disclosed": true,
+      "unknown_effect": false,
+      "forbidden_only": false,
+      "explicit": false,
+      "allowed": false,
+      "outcome": "interrupted"
+    },
+    {
+      "id": "CM-027",
+      "disclosed": false,
+      "unknown_effect": true,
+      "forbidden_only": false,
+      "explicit": false,
+      "allowed": false,
+      "outcome": "reconcile_required"
+    },
+    {
+      "id": "V2-P9-1-INTERRUPT-POS",
+      "disclosed": true,
+      "unknown_effect": false,
+      "forbidden_only": false,
+      "explicit": true,
+      "allowed": true,
+      "outcome": "new_segment"
+    },
+    {
+      "id": "fallback.segment-policy-denied",
+      "disclosed": true,
+      "unknown_effect": false,
+      "forbidden_only": false,
+      "explicit": true,
+      "allowed": false,
+      "outcome": "interrupted"
+    },
+    {
+      "id": "fallback.disclosure-unknown-effect",
+      "disclosed": true,
+      "unknown_effect": true,
+      "forbidden_only": false,
+      "explicit": true,
+      "allowed": true,
+      "outcome": "reconcile_required"
+    }
+  ]
+}

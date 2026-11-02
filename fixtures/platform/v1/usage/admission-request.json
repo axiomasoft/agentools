@@ -1,0 +1,35 @@
+{
+  "operation_key": "admit:inv-1",
+  "tenant_ref": "alpha",
+  "actor_ref": "actor-1",
+  "subject_ref": "subject-1",
+  "purpose": "lesson",
+  "capability": "text",
+  "task_type": "teacher",
+  "turn_ref": "turn-1",
+  "run_ref": "run-1",
+  "invocation_ref": "inv-1",
+  "business_operation_ref": "business-1",
+  "bundle_ref": "bundle-1",
+  "deployment_ref": "deployment-fixture",
+  "estimated_units": {
+    "request_count": 1,
+    "input_uncached_tokens": null,
+    "input_cache_read_tokens": null,
+    "input_cache_write_tokens": null,
+    "output_tokens": 100,
+    "reasoning_tokens": null,
+    "audio_input_units": null,
+    "audio_output_units": null,
+    "audio_unit": null
+  },
+  "pricing_version": "synthetic-pricing/v1",
+  "desired_deadline": "2026-11-02T11:00:00Z",
+  "profile_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "context_hash": "sha-256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "policy_versions": {
+    "entitlement": "policy-1",
+    "deployment": "policy-1"
+  },
+  "estimated_amount": null
+}

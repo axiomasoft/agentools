@@ -1,0 +1,235 @@
+{
+  "tier": "contract-scripted",
+  "cases": [
+    {
+      "id": "CM-035",
+      "raw": {
+        "input_total": 1000,
+        "cached_subset": 700
+      },
+      "certainty": "final",
+      "outbound_proven": true,
+      "expected_units": {
+        "request_count": 1,
+        "input_uncached_tokens": 300,
+        "input_cache_read_tokens": 700,
+        "input_cache_write_tokens": null,
+        "output_tokens": null,
+        "reasoning_tokens": null,
+        "audio_input_units": null,
+        "audio_output_units": null,
+        "audio_unit": null
+      },
+      "expected_amount": null
+    },
+    {
+      "id": "CM-036",
+      "raw": {},
+      "certainty": "unknown",
+      "outbound_proven": true,
+      "expected_units": {
+        "request_count": 1,
+        "input_uncached_tokens": null,
+        "input_cache_read_tokens": null,
+        "input_cache_write_tokens": null,
+        "output_tokens": null,
+        "reasoning_tokens": null,
+        "audio_input_units": null,
+        "audio_output_units": null,
+        "audio_unit": null
+      },
+      "expected_amount": null
+    },
+    {
+      "id": "ECO-USE-001",
+      "raw": {
+        "input_total": 100,
+        "cached_subset": 40,
+        "output": 12
+      },
+      "certainty": "final",
+      "outbound_proven": true,
+      "expected_units": {
+        "request_count": 1,
+        "input_uncached_tokens": 60,
+        "input_cache_read_tokens": 40,
+        "input_cache_write_tokens": null,
+        "output_tokens": 12,
+        "reasoning_tokens": null,
+        "audio_input_units": null,
+        "audio_output_units": null,
+        "audio_unit": null
+      },
+      "expected_amount": null
+    },
+    {
+      "id": "ECO-USE-005",
+      "raw": {},
+      "certainty": "unknown",
+      "outbound_proven": true,
+      "expected_units": {
+        "request_count": 1,
+        "input_uncached_tokens": null,
+        "input_cache_read_tokens": null,
+        "input_cache_write_tokens": null,
+        "output_tokens": null,
+        "reasoning_tokens": null,
+        "audio_input_units": null,
+        "audio_output_units": null,
+        "audio_unit": null
+      },
+      "expected_amount": null
+    },
+    {
+      "id": "ECO-USE-006",
+      "raw": {
+        "output": 7
+      },
+      "certainty": "partial",
+      "outbound_proven": true,
+      "expected_units": {
+        "request_count": 1,
+        "input_uncached_tokens": null,
+        "input_cache_read_tokens": null,
+        "input_cache_write_tokens": null,
+        "output_tokens": 7,
+        "reasoning_tokens": null,
+        "audio_input_units": null,
+        "audio_output_units": null,
+        "audio_unit": null
+      },
+      "expected_amount": null
+    },
+    {
+      "id": "ECO-USE-008",
+      "raw": {
+        "audio_input": "1.250",
+        "audio_unit": "second",
+        "amount": {
+          "amount": "0.0021",
+          "currency": "XXX"
+        }
+      },
+      "certainty": "final",
+      "outbound_proven": true,
+      "expected_units": {
+        "request_count": 1,
+        "input_uncached_tokens": null,
+        "input_cache_read_tokens": null,
+        "input_cache_write_tokens": null,
+        "output_tokens": null,
+        "reasoning_tokens": null,
+        "audio_input_units": "1.250",
+        "audio_output_units": null,
+        "audio_unit": "second"
+      },
+      "expected_amount": {
+        "amount": "0.0021",
+        "currency": "XXX"
+      }
+    },
+    {
+      "id": "ECO-USE-010",
+      "raw": {},
+      "certainty": "unknown",
+      "outbound_proven": true,
+      "expected_units": {
+        "request_count": 1,
+        "input_uncached_tokens": null,
+        "input_cache_read_tokens": null,
+        "input_cache_write_tokens": null,
+        "output_tokens": null,
+        "reasoning_tokens": null,
+        "audio_input_units": null,
+        "audio_output_units": null,
+        "audio_unit": null
+      },
+      "expected_amount": null
+    },
+    {
+      "id": "usage.observed-zero",
+      "raw": {
+        "input_total": 0,
+        "cached_subset": 0,
+        "output": 0,
+        "reasoning": 0
+      },
+      "certainty": "final",
+      "outbound_proven": true,
+      "expected_units": {
+        "request_count": 1,
+        "input_uncached_tokens": 0,
+        "input_cache_read_tokens": 0,
+        "input_cache_write_tokens": null,
+        "output_tokens": 0,
+        "reasoning_tokens": 0,
+        "audio_input_units": null,
+        "audio_output_units": null,
+        "audio_unit": null
+      },
+      "expected_amount": null
+    },
+    {
+      "id": "usage.absent-cached-unknown",
+      "raw": {
+        "input_total": 100
+      },
+      "certainty": "final",
+      "outbound_proven": true,
+      "expected_units": {
+        "request_count": 1,
+        "input_uncached_tokens": null,
+        "input_cache_read_tokens": null,
+        "input_cache_write_tokens": null,
+        "output_tokens": null,
+        "reasoning_tokens": null,
+        "audio_input_units": null,
+        "audio_output_units": null,
+        "audio_unit": null
+      },
+      "expected_amount": null
+    },
+    {
+      "id": "usage.overlap-preserved",
+      "raw": {
+        "input_total": 100,
+        "cached_subset": 40,
+        "cache_write": 10,
+        "output": 12,
+        "reasoning": 5
+      },
+      "certainty": "final",
+      "outbound_proven": true,
+      "expected_units": {
+        "request_count": 1,
+        "input_uncached_tokens": 60,
+        "input_cache_read_tokens": 40,
+        "input_cache_write_tokens": 10,
+        "output_tokens": 12,
+        "reasoning_tokens": 5,
+        "audio_input_units": null,
+        "audio_output_units": null,
+        "audio_unit": null
+      },
+      "expected_amount": null
+    },
+    {
+      "id": "usage.outbound-unproven",
+      "raw": {},
+      "certainty": "unknown",
+      "outbound_proven": null,
+      "expected_units": {
+        "request_count": null,
+        "input_uncached_tokens": null,
+        "input_cache_read_tokens": null,
+        "input_cache_write_tokens": null,
+        "output_tokens": null,
+        "reasoning_tokens": null,
+        "audio_input_units": null,
+        "audio_output_units": null,
+        "audio_unit": null
+      },
+      "expected_amount": null
+    }
+  ]
+}

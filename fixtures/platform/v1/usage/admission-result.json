@@ -1,0 +1,12 @@
+{
+  "status": "admitted",
+  "admission_ref": "admission-1",
+  "reservation_ref": "reservation-1",
+  "expires_at": "2026-11-02T11:00:00Z",
+  "owner_revision": "revision-1",
+  "limits": {
+    "output_tokens": 100
+  },
+  "reason": null,
+  "retry_after": null
+}

@@ -7,6 +7,7 @@ parameters:
         - ../agentools-core/src
         - ../../examples/platform/direct-action/src
     scanFiles:
+        - ../agentools-core/tests/Models/Routing/Fixture.php
         - ../agentools-core/tests/Common/JcsAdapter.php
         - ../agentools-core/tests/Common/TestHost.php
         - ../agentools-core/tests/Profiles/Fixture.php

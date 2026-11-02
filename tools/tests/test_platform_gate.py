@@ -1143,6 +1143,100 @@ class GateTests(unittest.TestCase):
             self.assertEqual(gate.execute(args), [{'ok': True}])
         run.assert_called_once_with(ROOT, durable, isolated=True)
 
+    def test_usage_registry(self):
+        import copy
+        import jsonschema
+        spec = gate.SUITES[('usage-normalization', 'test')]
+        portable = gate.SUITES[('usage-parity', 'test')]
+        self.assertIs(spec, gate.SUITES[('usage-budget', 'test')])
+        self.assertIs(spec, gate.SUITES[('usage', 'test')])
+        self.assertIs(spec, gate.SUITES[('usage-admission', 'test')])
+        self.assertEqual((spec.owner, spec.tier, len(spec.cases)), ('P9.2', 'contract-scripted', 33))
+        self.assertEqual(len(portable.cases), 19)
+        self.assertTrue({'CM-035', 'CM-036', 'CM-037', 'CM-038', 'ECO-USE-009', 'ECO-USE-010',
+                         'V2-P9-2-FALLBACK-POS', 'V2-P9-2-FALLBACK-NEG', 'V2ALL-USAGE-POSITIVE',
+                         'V2ALL-USAGE-NEGATIVE', 'V2ALL-USAGE-FAULT'}.issubset(spec.cases))
+        def report(registered):
+            return {'mode':registered.mode, 'tier':registered.tier,
+                    'cases':[{'id':name, 'status':'passed'} for name in registered.cases]}
+        good = report(spec)
+        gate.validate_report(spec, good)
+        for cases in ([], good['cases'][:-1], [dict(c, status='skipped') for c in good['cases']]):
+            with self.assertRaises(gate.GateError): gate.validate_report(spec, dict(good, cases=cases))
+        language = dict(report(portable), observations={name:{'reasoning_tokens':None} for name in portable.cases})
+        parity = dict(report(portable), languages={'php':copy.deepcopy(language), 'dart':copy.deepcopy(language)})
+        gate.validate_report(portable, parity)
+        corrupted = copy.deepcopy(parity)
+        corrupted['languages']['dart']['observations']['CM-035']['reasoning_tokens'] = 0
+        with self.assertRaises(gate.GateError): gate.validate_report(portable, corrupted)
+        with self.assertRaises(gate.GateError): gate.validate_report(portable, report(portable))
+        for registered in (spec, portable):
+            self.assertTrue(all(not p.startswith('plans/') for p in registered.dependencies))
+            gate.hashes(ROOT, registered.dependencies)
+        for name in ('usage-normalization', 'usage-budget', 'usage', 'usage-admission', 'usage-parity'):
+            with patch.object(gate, 'run_suite', return_value={'ok':True}) as run:
+                gate.execute(gate.parser().parse_args(['test', '--suite', name]))
+            run.assert_called_once_with(ROOT, gate.SUITES[(name, 'test')], isolated=False)
+        base = ROOT / 'fixtures/platform/v1/usage'
+        schemas = ROOT / 'spec/platform/v1/usage'
+        for name in ('usage-event', 'admission-request', 'admission-result'):
+            validator = jsonschema.Draft202012Validator(json.loads((schemas / (name + '.schema.json')).read_text()),
+                                                       format_checker=jsonschema.FormatChecker())
+            value = json.loads((base / (name + '.json')).read_text())
+            validator.validate(value)
+            bad = dict(value, extra=True)
+            with self.assertRaises(jsonschema.ValidationError): validator.validate(bad)
+        event = json.loads((base / 'usage-event.json').read_text())
+        validator = jsonschema.Draft202012Validator(json.loads((schemas / 'usage-event.schema.json').read_text()))
+        for units in ({'output_tokens':-1}, {'audio_input_units':1.25}, {'reasoning_tokens':'0'}):
+            bad = copy.deepcopy(event); bad['units'].update(units)
+            with self.assertRaises(jsonschema.ValidationError): validator.validate(bad)
+        source = '<?php namespace AgenToolsPlatform\\Core\\Usage; final class Bad { public function leak() { return file_get_contents("secret"); } }'
+        self.assertTrue(gate.source_errors(ROOT, source, 'src/Usage/Bad.php'))
+        source = '<?php namespace AgenToolsPlatform\\Core\\Usage; use AgenToolsPlatform\\Core\\Models\\ModelTransport; final class Bad {}'
+        self.assertTrue(gate.source_errors(ROOT, source, 'src/Usage/Bad.php'))
+
+    def test_routing_registry(self):
+        spec = gate.SUITES[('routing', 'test')]
+        durable = gate.SUITES[('routing', 'pg-test')]
+        self.assertIs(spec, gate.SUITES[('deployment-catalog', 'test')])
+        self.assertIs(spec, gate.SUITES[('deployment-routing', 'test')])
+        self.assertIs(durable, gate.SUITES[('deployment-routing', 'pg-test')])
+        self.assertEqual((spec.owner, spec.mode, spec.tier), ('P9.1', 'contract-scripted', 'contract-scripted'))
+        self.assertEqual(len(spec.cases), 25)
+        self.assertEqual(len(durable.cases), 6)
+        self.assertTrue(durable.requires_pg)
+        self.assertTrue({'CM-023', 'CM-024', 'CM-025', 'CM-026', 'CM-027', 'V2-P9-1-INTERRUPT-POS',
+                         'V2-P9-1-RECONCILE-POS', 'V2ALL-MODEL-POSITIVE', 'V2ALL-MODEL-NEGATIVE',
+                         'V2ALL-MODEL-FAULT'}.issubset(spec.cases))
+        report = {'mode': spec.mode, 'tier': spec.tier,
+                  'cases': [{'id': name, 'status': 'passed'} for name in spec.cases]}
+        gate.validate_report(spec, report)
+        for altered in (dict(report, cases=[]), dict(report, cases=report['cases'][:-1]),
+                        dict(report, cases=[dict(c, status='skipped') for c in report['cases']]),
+                        dict(report, tier='live-provider')):
+            with self.assertRaises(gate.GateError): gate.validate_report(spec, altered)
+        with self.assertRaises(gate.GateError): gate.validate_report(durable, report)
+        for registered in (spec, durable):
+            self.assertTrue(all(not path.startswith('plans/') for path in registered.dependencies))
+            gate.hashes(ROOT, registered.dependencies)
+        for suite in ('routing', 'deployment-routing'):
+            for mode in ('test', 'pg-test'):
+                args = gate.parser().parse_args([mode, '--suite', suite] + (['--isolated'] if mode == 'pg-test' else []))
+                with patch.object(gate, 'run_suite', return_value={'ok': True}) as run:
+                    self.assertEqual(gate.execute(args), [{'ok': True}])
+                run.assert_called_once_with(ROOT, gate.SUITES[('routing', mode)], isolated=mode == 'pg-test')
+        # The schema is structural; temporal and cross-field semantics are enforced by CatalogEntry.
+        import jsonschema
+        fixture_root = ROOT / 'fixtures/platform/v1/routing'
+        validator = jsonschema.Draft202012Validator(json.loads((fixture_root / 'catalog.schema.json').read_text()),
+                                                   format_checker=jsonschema.FormatChecker())
+        catalog = json.loads((fixture_root / 'catalog.json').read_text())
+        validator.validate(catalog)
+        for change in ({'extra': True}, {'cost_minor': 0}, {'region': ''},
+                       {'endpoint': 'https://secret@provider.invalid'}, {'capabilities': {'invented': {}}}):
+            with self.assertRaises(jsonschema.ValidationError): validator.validate(dict(catalog, **change))
+
     def test_model_transport_registry(self):
         spec = gate.SUITES[('model-contract', 'test')]
         self.assertIs(spec, gate.SUITES[('model-transport', 'test')])

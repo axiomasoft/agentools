@@ -30,7 +30,7 @@ SELF_CASES = tuple("GateTests.test_" + name for name in (
     "boundary_autoload_escape", "boundary_transitive_testing", "boundary_namespace_path",
     "boundary_production_source", "contradictory_totals",
     "sdk_adapter_registry", "model_transport_registry", "runtime_registry", "read_journey_registry", "action_submit_registry", "confirmation_write_registry", "effect_reconcile_registry", "cancellation_resolution_registry", "write_recovery_registry", "laravel_composition_registry", "platform_definitions_registry", "composition_testing_registry", "filament_registry", "scheduler_registry", "platform_registry", "fsm_registry", "testkit_registry", "pg_schema_registry", "pg_intake_registry", "pg_claims_outbox_registry", "pg_action_journal_registry", "pg_isolation_retention_registry", "aggregate_preflight",
-    "knowledge_ingest_registry", "knowledge_retrieval_registry", "knowledge_invalidation_registry", "knowledge_journey_registry", "profile_publish_registry", "profile_admin_registry", "profile_merge_registry", "skill_selection_registry", "context_compiler_registry", "history_memory_registry", "context_guards_registry", "cli_missing_suite", "cli_wrong_mode", "cli_missing_pg_isolation", "cli_future_commands",
+    "usage_registry", "routing_registry", "knowledge_ingest_registry", "knowledge_retrieval_registry", "knowledge_invalidation_registry", "knowledge_journey_registry", "profile_publish_registry", "profile_admin_registry", "profile_merge_registry", "skill_selection_registry", "context_compiler_registry", "history_memory_registry", "context_guards_registry", "cli_missing_suite", "cli_wrong_mode", "cli_missing_pg_isolation", "cli_future_commands",
     "exact_cases", "zero_cases", "skips", "failure", "duplicate_cases", "extra_cases",
     "missing_cases", "mode_mismatch", "tier_mismatch", "unknown_status", "malformed_report",
     "pg_proof_missing", "pg_case_set", "runner_nonzero", "missing_dependency",
@@ -1002,6 +1002,94 @@ SUITES[('knowledge-journey','e2e')] = Suite('P8.4','local-host-e2e','local-host-
     (sys.executable,'-B','conformance/platform/knowledge/run.py'),KNOWLEDGE_JOURNEY_INPUTS,requires_pg=True)
 
 
+ROUTING_CASES = (
+    'catalog.schema-validation', 'catalog.full-hash-and-evidence', 'catalog.price-unverified-not-ranked',
+    'CM-023', 'V2ALL-MODEL-POSITIVE', 'routing.qualification-exact-tuple',
+    'routing.qualification-expiry-and-rejection', 'routing.qualification-current-rejection',
+    'routing.admin-separate-health', 'routing.legal-data-host-quota', 'routing.emergency-target-matrix',
+    'routing.all-unavailable-and-tenant', 'routing.current-check-before-io',
+    'routing.draining-existing-and-incident', 'routing.stream-current-and-capability', 'V2ALL-MODEL-NEGATIVE',
+    'CM-024', 'CM-025', 'CM-026', 'CM-027', 'V2-P9-1-INTERRUPT-POS',
+    'fallback.segment-policy-denied', 'fallback.disclosure-unknown-effect',
+    'V2-P9-1-RECONCILE-POS', 'V2ALL-MODEL-FAULT',
+)
+ROUTING_PG_CASES = tuple('routing-pg.' + name for name in (
+    'testImmutableReplayAndConflict', 'testQualificationAndLiveEmergency', 'testStateCasAndAuthorization',
+    'testTenantIsolationAndDeniedWrites', 'testTamperAndSchemaRevision', 'testTraceAndFallbackIdentity',
+))
+ROUTING_INPUTS = tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / CORE / 'src/Common', ROOT / CORE / 'src/Models', ROOT / CORE / 'tests/Models/Routing',
+    ROOT / 'fixtures/platform/v1/routing') for p in sorted(base.rglob('*'))
+    if p.is_file() and p.suffix in {'.php', '.json', '.md'}) + (
+    f'{CORE}/composer.json', f'{CORE}/composer.lock', f'{CORE}/phpstan.neon', f'{CORE}/vendor/autoload.php',
+    f'{CORE}/tests/Common/bootstrap.php', f'{CORE}/tests/Common/Harness.php',
+    f'{CORE}/tests/Common/JcsAdapter.php', f'{CORE}/tests/Common/TestHost.php',
+    f'{CORE}/tests/Models/bootstrap.php', f'{CORE}/tests/Models/ModelFixtures.php',
+    'php/src/Schema/Canonicalizer.php', 'php/composer.json', 'php/composer.lock',
+    'tools/platform_gate.py', 'tools/tests/test_platform_gate.py',
+)
+ROUTING_PG_INPUTS = ROUTING_INPUTS + tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / 'packages/agentools-postgres/src/Deployments', ROOT / 'packages/agentools-postgres/tests/Deployments')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php', '.py', '.sql', '.xml'}) + (
+    'packages/agentools-postgres/composer.json', 'packages/agentools-postgres/composer.lock',
+    'packages/agentools-postgres/phpstan.neon',
+    'packages/agentools-postgres/vendor/autoload.php', 'packages/agentools-postgres/vendor/bin/phpunit',
+    'packages/agentools-postgres/tests/run.py', 'packages/agentools-postgres/tests/IsolatedDatabase.php',
+    'packages/agentools-postgres/src/Runtime/Connection.php', 'packages/agentools-postgres/src/Runtime/StorageFailure.php',
+    'tools/storage_chaos.py',
+)
+SUITES[('routing', 'test')] = Suite('P9.1', 'contract-scripted', 'contract-scripted', ROUTING_CASES,
+    ('php', f'{CORE}/tests/Models/Routing/run.php'), ROUTING_INPUTS)
+SUITES[('routing', 'pg-test')] = Suite('P9.1-pg', 'isolated-postgres', 'isolated-postgres', ROUTING_PG_CASES,
+    (sys.executable, '-B', 'packages/agentools-postgres/tests/Deployments/run.py'), ROUTING_PG_INPUTS, requires_pg=True)
+SUITES[('deployment-catalog', 'test')] = SUITES[('routing', 'test')]
+SUITES[('deployment-catalog', 'pg-test')] = SUITES[('routing', 'pg-test')]
+SUITES[('deployment-routing', 'test')] = SUITES[('routing', 'test')]
+SUITES[('deployment-routing', 'pg-test')] = SUITES[('routing', 'pg-test')]
+
+
+USAGE_CASES = (
+    'CM-035', 'CM-036', 'ECO-USE-001', 'ECO-USE-005', 'ECO-USE-006', 'ECO-USE-008', 'ECO-USE-010',
+    'usage.observed-zero', 'usage.absent-cached-unknown', 'usage.overlap-preserved', 'usage.outbound-unproven',
+    'usage.invalid-quantities-and-overlap', 'usage.separate-adapter-mapping',
+    'CM-037', 'ECO-USE-002', 'CM-038', 'ECO-USE-007', 'ECO-USE-003', 'ECO-USE-009',
+    'V2-P9-2-FALLBACK-NEG', 'ECO-USE-004', 'V2-P9-2-FALLBACK-POS',
+    'V2ALL-USAGE-POSITIVE', 'V2ALL-USAGE-NEGATIVE', 'V2ALL-USAGE-FAULT',
+    'budget.strict-scope', 'budget.identity-conflict', 'budget.denied-unavailable-unknown',
+    'budget.current-guards', 'budget.release-exposure', 'budget.unknown-settlement', 'budget.renew', 'budget.result-codec',
+)
+USAGE_PORTABLE_CASES = (
+    'CM-035', 'CM-036', 'ECO-USE-001', 'ECO-USE-005', 'ECO-USE-006', 'ECO-USE-008', 'ECO-USE-010',
+    'usage.observed-zero', 'usage.absent-cached-unknown', 'usage.overlap-preserved', 'usage.outbound-unproven',
+    'ECO-USE-002', 'ECO-USE-003', 'ECO-USE-009', 'V2-P9-2-FALLBACK-NEG', 'ECO-USE-004', 'ECO-USE-007',
+    'V2-P9-2-FALLBACK-POS', 'budget.result-codec',
+)
+USAGE_INPUTS = tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / CORE / 'src/Usage', ROOT / CORE / 'src/Budget', ROOT / CORE / 'src/Common',
+    ROOT / CORE / 'tests/Usage', ROOT / 'spec/platform/v1/usage', ROOT / 'fixtures/platform/v1/usage')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php', '.py', '.json', '.md'}) + (
+    f'{CORE}/composer.json', f'{CORE}/composer.lock', f'{CORE}/phpstan.neon', f'{CORE}/vendor/autoload.php',
+    f'{CORE}/tests/Common/bootstrap.php', f'{CORE}/tests/Common/JcsAdapter.php',
+    f'{CORE}/tests/Common/Harness.php', f'{CORE}/tests/Common/TestHost.php',
+    'php/src/Schema/Canonicalizer.php', 'php/composer.json', 'php/composer.lock',
+    'tools/platform_gate.py', 'tools/tests/test_platform_gate.py',
+)
+USAGE_PARITY_INPUTS = USAGE_INPUTS + (
+    'dart/agentools/lib/platform_usage.dart', 'dart/agentools/lib/src/platform/usage.dart',
+    'dart/agentools/lib/src/schema/canonicalizer.dart', 'dart/agentools/lib/src/schema/jcs_number.dart',
+    'dart/agentools/pubspec.yaml', 'dart/agentools/pubspec.lock',
+    'dart/agentools/test/platform/usage_contract.dart', 'dart/agentools/test/platform/usage_worker.dart',
+    'dart/agentools/test/platform/usage_test.dart',
+)
+SUITES[('usage-normalization', 'test')] = Suite('P9.2', 'contract-scripted', 'contract-scripted', USAGE_CASES,
+    ('php', f'{CORE}/tests/Usage/run.php'), USAGE_INPUTS)
+SUITES[('usage-budget', 'test')] = SUITES[('usage-normalization', 'test')]
+SUITES[('usage', 'test')] = SUITES[('usage-normalization', 'test')]
+SUITES[('usage-admission', 'test')] = SUITES[('usage-normalization', 'test')]
+SUITES[('usage-parity', 'test')] = Suite('P9.2-parity', 'contract-scripted', 'contract-scripted', USAGE_PORTABLE_CASES,
+    (sys.executable, '-B', f'{CORE}/tests/Usage/parity.py'), USAGE_PARITY_INPUTS)
+
+
 class GateError(Exception):
     pass
 
@@ -1049,6 +1137,14 @@ def validate_report(spec: Suite, report):
     ids = [c["id"] for c in cases]
     require(Counter(ids) == Counter(spec.cases), "required case set differs (missing/extra/duplicate)")
     require(all(c.get("status") == "passed" for c in cases), "failed, skipped or unknown required case")
+    if spec.owner == 'P9.2-parity':
+        languages = report.get('languages')
+        require(isinstance(languages, dict) and set(languages) == {'php', 'dart'}, 'PHP/Dart usage evidence missing')
+        for language in languages.values():
+            validate_report(Suite('P9.2-language', spec.mode, spec.tier, spec.cases, (), ()), language)
+            require(isinstance(language.get('observations'), dict) and
+                    set(language['observations']) == set(spec.cases), 'portable usage observations missing')
+        require(languages['php']['observations'] == languages['dart']['observations'], 'PHP/Dart usage facts differ')
     for field, expected in (("count", len(cases)), ("failures", 0), ("skips", 0)):
         if field in report:
             require(type(report[field]) is int and report[field] == expected,
@@ -1418,7 +1514,8 @@ MODULES = {
     "Context": {"Common", "Security", "Profiles"},
     "Models": {"Common", "Profiles", "Context"},
     "Actions": {"Common", "Security", "Profiles"},
-    "Budget": {"Common"},
+    "Usage": {"Common"},
+    "Budget": {"Common", "Usage"},
     "Scheduling": {"Common", "Security", "Context"},
     "Runtime": {"Common", "Security", "Profiles", "Context", "Models", "Actions", "Budget"},
 }

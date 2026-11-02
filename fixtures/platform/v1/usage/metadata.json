@@ -1,0 +1,19 @@
+{
+  "schema_version": "1",
+  "event_id": "usage-inv-1-v1",
+  "tenant_ref": "alpha",
+  "actor_ref": "actor-1",
+  "subject_ref": null,
+  "assistant_session_ref": "session-1",
+  "turn_ref": "turn-1",
+  "run_ref": "run-1",
+  "business_operation_ref": "business-1",
+  "deployment_ref": "deployment-fixture",
+  "model_revision": "synthetic-revision-1",
+  "correlation_id": "correlation-1",
+  "certainty": "final",
+  "occurred_at": "2026-11-02T10:00:00Z",
+  "estimate": null,
+  "pricing_version": null,
+  "supersedes_event_id": null
+}

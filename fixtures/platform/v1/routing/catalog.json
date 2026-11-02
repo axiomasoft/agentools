@@ -1,0 +1,74 @@
+{
+  "format": "deployment-catalog/v1",
+  "tenant": "alpha",
+  "id": "ru-primary",
+  "provider": "scripted",
+  "account": "account-a",
+  "region": "RU",
+  "model_revision": "synthetic-revision-1",
+  "credential_ref": "credential-1",
+  "snapshot_ref": "catalog-1",
+  "endpoint": "https://provider.invalid/model",
+  "context_limit": 8192,
+  "output_limit": 1024,
+  "data_classes": [
+    "public",
+    "private"
+  ],
+  "terms": {
+    "support": "supported",
+    "evidence": "documented",
+    "checked_at": "2026-11-01T00:00:00Z",
+    "expires_at": "2026-12-01T00:00:00Z",
+    "evidence_ref": "synthetic-contract-source"
+  },
+  "model_evidence": {
+    "support": "supported",
+    "evidence": "documented",
+    "checked_at": "2026-11-01T00:00:00Z",
+    "expires_at": "2026-12-01T00:00:00Z",
+    "evidence_ref": "synthetic-contract-source"
+  },
+  "capabilities": {
+    "text": {
+      "support": "supported",
+      "evidence": "documented",
+      "checked_at": "2026-11-01T00:00:00Z",
+      "expires_at": "2026-12-01T00:00:00Z",
+      "evidence_ref": "synthetic-contract-source"
+    },
+    "tools": {
+      "support": "supported",
+      "evidence": "documented",
+      "checked_at": "2026-11-01T00:00:00Z",
+      "expires_at": "2026-12-01T00:00:00Z",
+      "evidence_ref": "synthetic-contract-source"
+    },
+    "streaming": {
+      "support": "supported",
+      "evidence": "documented",
+      "checked_at": "2026-11-01T00:00:00Z",
+      "expires_at": "2026-12-01T00:00:00Z",
+      "evidence_ref": "synthetic-contract-source"
+    },
+    "audio": {
+      "support": "supported",
+      "evidence": "documented",
+      "checked_at": "2026-11-01T00:00:00Z",
+      "expires_at": "2026-12-01T00:00:00Z",
+      "evidence_ref": "synthetic-contract-source"
+    },
+    "continuation": {
+      "support": "supported",
+      "evidence": "documented",
+      "checked_at": "2026-11-01T00:00:00Z",
+      "expires_at": "2026-12-01T00:00:00Z",
+      "evidence_ref": "synthetic-contract-source"
+    }
+  },
+  "quality": 10,
+  "latency_ms": 50,
+  "cost_minor": null,
+  "pricing_version": null,
+  "pricing_evidence": null
+}

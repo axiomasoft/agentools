@@ -1,0 +1,12 @@
+{
+  "outcome": "selected",
+  "selected": "ru-primary",
+  "rejected": {
+    "cheap-forbidden": [
+      "region_denied"
+    ],
+    "ru-alternate": [
+      "lower_rank"
+    ]
+  }
+}
