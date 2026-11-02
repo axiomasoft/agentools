@@ -61,7 +61,8 @@ final readonly class TextComposition
         private SnapshotRepository $snapshots, private TokenCounter $counter, private InvocationPayloads $payloads,
         private InvocationPayloads $exports, private InvocationRepository $invocations, private ModelTransport $model,
         private BudgetPort $budget, private InvocationGuard $guard, private ProposalDispatcher $actions,
-        private DeliveryRepository $deliveries, private PostgresDeliveryOwner $owner, private UtcInstant $expiresAt, private ClaimPolicy $claims) {}
+        private DeliveryRepository $deliveries, private PostgresDeliveryOwner $owner, private UtcInstant $expiresAt, private ClaimPolicy $claims,
+        private ?TextPayloadLineage $lineage = null) {}
 
     public function enable(): void
     {
@@ -83,9 +84,10 @@ final readonly class TextComposition
         $inputRef = new Ref($context->session->tenant, 'chatom:input:'.$input->key());
         $payload = new InputPayload($inputRef, new PayloadHash('sha-256:'.$input->hash()),
             new Ref($inputRef->tenant, $context->session->value), new Ref($inputRef->tenant, 'chatom:message:'.$input->source->id));
-        $this->payloads->put($context, $inputRef, $payload->contentHash, BridgeKeys::encode($input->toArray()));
         $source = new Ref($inputRef->tenant, 'chatom:source:'.BridgeKeys::hash(['space' => $input->space->value, 'source' => $input->source->toArray()]));
         $this->deliveries->bindInput($context, $inputRef, $source, $input->revision);
+        $this->lineage?->input($context, $inputRef, $input);
+        $this->payloads->put($context, $inputRef, $payload->contentHash, BridgeKeys::encode($input->toArray()));
         $compiled = $this->compiled($context, $input);
         $this->snapshots->put($context, $compiled);
 
@@ -126,19 +128,25 @@ final readonly class TextComposition
             new Ref($runId->tenant, 'chatom:input:'.$input->key()), $destination, [], new ContinuationPolicy(1, 0),
             $this->counter->count($compiled->rendered) + $request->generation->maxOutputTokens, null, null, $hasher);
         $bytes = BridgeKeys::encode(['rendered' => $compiled->rendered, 'plan' => $plan->identity()]);
+        $parent = new Ref($context->session->tenant, 'chatom:compiled:'.$input->key());
+        $this->lineage?->inherit($context, $parent, $plan->requestRef, 'context');
+        foreach (['accepted', 'unknown'] as $outcome) {
+            $this->lineage?->inherit($context, $parent,
+                new Ref($context->session->tenant, 'exchange:'.$invocation->value.':'.$outcome), 'temporary-payloads');
+        }
         $this->payloads->put($context, $plan->requestRef, new PayloadHash('sha-256:'.hash('sha256', $bytes)), $bytes);
 
         if ($run->status === RunStatus::Accepted) {
             $run = $runs->beginPreparation($context, $plan->snapshot, $runId, $run->version);
         }
-        $claim = (new ClaimRepository($this->environment, $this->claims))->claim($context, $plan->snapshot, $runId, $run->version);
+        $claim = new ClaimRepository($this->environment, $this->claims)->claim($context, $plan->snapshot, $runId, $run->version);
 
         if ($claim === null) {
             return 'busy';
         }
         $lease = new AdvanceLease($runId, $claim->state->version, $claim->state->fencingEpoch, $claim->owner);
-        $saved = (new AdvanceRun($this->invocations, $this->model, $this->budget, $this->guard, $this->payloads,
-            $this->actions, $hasher))->advance($context, $lease, $plan);
+        $saved = new AdvanceRun($this->invocations, $this->model, $this->budget, $this->guard, $this->payloads,
+            $this->actions, $hasher)->advance($context, $lease, $plan);
 
         return $saved->stage() === 'complete' ? $this->stage($context, $runId) : $saved->stage();
     }
@@ -195,6 +203,7 @@ final readonly class TextComposition
         $compiled = $this->compiler->finalize($plan, $this->profile->target, $this->counter, $this->guard->now());
         $bytes = BridgeKeys::encode(['rendered' => $compiled->rendered, 'manifest' => $compiled->manifestJson,
             'snapshot' => $compiled->snapshot->toArray(), 'deadline' => $this->expiresAt->value]);
+        $this->lineage?->compiled($context, $key, $compiled);
         $this->payloads->put($context, $key, new PayloadHash('sha-256:'.hash('sha256', $bytes)), $bytes);
 
         return $compiled;

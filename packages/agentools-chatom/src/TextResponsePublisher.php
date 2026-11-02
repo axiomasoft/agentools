@@ -34,7 +34,8 @@ final readonly class TextResponsePublisher implements ResponsePublisher
      * @param  Closure(ExecutionContext,Ref,string):void  $disclosure  Current owning output policy before export.
      */
     public function __construct(private InvocationPayloads $raw, private InvocationPayloads $exports,
-        private CanonicalHasher $hasher, private Closure $context, private Closure $disclosure) {}
+        private CanonicalHasher $hasher, private Closure $context, private Closure $disclosure,
+        private ?TextPayloadLineage $lineage = null) {}
 
     public function prepare(ExecutionContext $context, InvocationPlan $plan, InvocationCheckpoint $checkpoint, Ref $response): ResponsePublication
     {
@@ -45,7 +46,7 @@ final readonly class TextResponsePublisher implements ResponsePublisher
             throw new ContractViolation(ErrorCode::PolicyConflict);
         }
         $json = $this->raw->get($context, new Ref($response->tenant, $saved));
-        (new PayloadHash($hash))->assertSame(new PayloadHash('sha-256:'.hash('sha256', $json)));
+        new PayloadHash($hash)->assertSame(new PayloadHash('sha-256:'.hash('sha256', $json)));
         $exchange = ExchangeResult::decode($plan, $json, $this->hasher);
 
         if (! $exchange->accepted() || $exchange->finish !== FinishReason::Completed || $exchange->proposals !== []) {
@@ -95,6 +96,7 @@ final readonly class TextResponsePublisher implements ResponsePublisher
         $payload = new Ref($response->tenant, 'payload:'.hash('sha256', $intent->key()));
         $bytes = BridgeKeys::encode($intent->export());
         $contentHash = new PayloadHash('sha-256:'.$intent->hash());
+        $this->lineage?->inherit($delivery, new Ref($response->tenant, $saved), $payload, 'temporary-payloads');
         $this->exports->put($delivery, $payload, $contentHash, $bytes);
 
         return new ResponsePublication($payload, $contentHash, $intent->key());

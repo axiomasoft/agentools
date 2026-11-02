@@ -26,6 +26,21 @@ payload dereference. Source closure denies derived reads immediately; it never
 changes an existing hold or bypasses a payload retention/unresolved-work guard.
 The final read check is not distributed atomicity with an external disclosure.
 
+The explicit P10 text composition now consumes these bindings. It binds the
+actual input before saving its encrypted envelope; compiled context uses only
+the history sections retained by the checked compiler manifest. Requests, raw
+exchange results and checked visible exports inherit their committed parent
+lineage. `InvocationPayloadStore` calls the producer after payload registration
+commits and before encrypted IO. Replay keeps the original expiry and immutable
+source revisions. The Edufy payload policy checks every registered source's
+current viewer version and closure before and after dereference, including reads
+through the delivery owner. Missing lineage fails closed; it is not backfilled
+from an assumed conversation range.
+
+This covers the P10 `context` and `temporary-payloads` producers. It does not
+create summary, memory, search or provider-cache producers, register remote or
+client copies, authorize purge after revoke, or complete any cleanup receipt.
+
 ## Cleanup and recovery
 
 Close the source through the existing delivery owner before cleanup. `cleanup`
@@ -57,9 +72,9 @@ remains a deployment obligation.
 
 ## Integration and evidence boundary
 
-Chatom's optional `PostgresDerivedInvalidator` composes the source fence with this
-repository and returns a completed `InvalidationReceipt` only after actual cleanup.
-It is not enabled by default. Missing coverage stays pending. Existing Edufy AiCore,
+The former optional `PostgresDerivedInvalidator` was withdrawn from the Chatom
+checkout; it is not an installed consumer. The actual source invalidator closes
+the native source and leaves derived cleanup pending. Existing Edufy AiCore,
 remote search/provider caches, client copies and unregistered backups do not become
 covered by constructing this adapter. Producers must register their actual copies;
 host owners must supply current authorization, keys and executable numeric policy.

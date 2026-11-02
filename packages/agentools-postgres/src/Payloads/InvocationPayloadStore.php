@@ -13,6 +13,7 @@ use AgenToolsPlatform\Core\Runtime\InvocationPayloads;
 use AgenToolsPlatform\Core\Security\ExecutionContext;
 use AgenToolsPlatform\Postgres\Runtime\Connection;
 use AgenToolsPlatform\Postgres\Runtime\RepositoryContext;
+use Closure;
 use DateTimeImmutable;
 use DateTimeZone;
 use InvalidArgumentException;
@@ -21,9 +22,10 @@ use RuntimeException;
 /** Uses the existing policy, metadata and encrypted backend; replay never extends retention. */
 final readonly class InvocationPayloadStore implements InvocationPayloads
 {
+    /** @param ?Closure(ExecutionContext,Ref):void $beforeWrite Runs after committed registration, before any bytes. */
     public function __construct(private RepositoryContext $environment, private PayloadRepository $payloads,
         private FileEncryptedPayloadStore $store, private Ref $keyRef, private string $classification,
-        private int $retentionSeconds)
+        private int $retentionSeconds, private ?Closure $beforeWrite = null)
     {
         if ($retentionSeconds < 1 || $retentionSeconds > 2147483647) {
             throw new InvalidArgumentException('Explicit bounded payload retention is required');
@@ -38,13 +40,17 @@ final readonly class InvocationPayloadStore implements InvocationPayloads
         $row = $this->environment->db->row('SELECT retention_until FROM '.$this->environment->db->table('payload_refs').'
             WHERE tenant_id=:tenant AND id=:id AND session_id=:session',
             ['tenant' => $key->tenant->value, 'id' => $key->value, 'session' => $context->session->value]);
-        $expiry = $row === null ? $this->environment->db->row("SELECT clock_timestamp()+CAST(:seconds AS integer)*interval '1 second' AS retention_until",
-            ['seconds' => $this->retentionSeconds]) : $row;
-        $expires = new UtcInstant((new DateTimeImmutable(Connection::text($expiry ?? throw new RuntimeException('Payload clock unavailable'),
-            'retention_until')))->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z'));
+        $expiry = $row ?? $this->environment->db->row("SELECT clock_timestamp()+CAST(:seconds AS integer)*interval '1 second' AS retention_until",
+            ['seconds' => $this->retentionSeconds]);
+        $expires = new UtcInstant(new DateTimeImmutable(Connection::text($expiry ?? throw new RuntimeException('Payload clock unavailable'),
+            'retention_until'))->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:s.u\Z'));
         $handle = new PayloadHandle($key, new Ref($key->tenant, 'encrypted:'.hash('sha256',
             $context->session->value.'\0'.$key->value)), $this->keyRef);
         $this->payloads->register($context, new PayloadDescriptor($key, $hash, $this->classification, $context->purpose, $expires), $handle);
+
+        if ($this->beforeWrite instanceof Closure) {
+            ($this->beforeWrite)($context, $key);
+        }
         $this->store->put($context, $handle, $json);
 
         if ($this->payloads->status($context, $key) !== 'available') {
