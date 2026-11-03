@@ -1,0 +1,11 @@
+includes:
+    - ../../phpstan.neon
+parameters:
+    paths:
+        - ../../src/Qualification
+        - ../../../agentools-core/src/Models/Qualification
+        - ../../../agentools-core/tests/Models/Qualification
+        - .
+    scanFiles:
+        - ../../../agentools-core/tests/Models/Qualification/Fixture.php
+        - ../../../agentools-core/tests/Common/Harness.php

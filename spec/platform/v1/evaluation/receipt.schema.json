@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentools:platform:v1:evaluation:receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "evaluation/v1"
+    },
+    "command": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "exit_code": {
+      "type": "integer"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "finished_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dirty_diff_digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "revision",
+        "dirty_diff_digest"
+      ]
+    },
+    "input_hashes": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^sha-256:[a-f0-9]{64}$"
+      }
+    },
+    "suite_hash": {
+      "type": "string",
+      "pattern": "^sha-256:[a-f0-9]{64}$"
+    },
+    "run_hash": {
+      "type": "string",
+      "pattern": "^sha-256:[a-f0-9]{64}$"
+    },
+    "required_cases": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "executed_cases": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "failures": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "skips": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "evidence_kind": {
+      "enum": [
+        "design-schema",
+        "unit",
+        "contract-scripted",
+        "isolated-postgres",
+        "local-host-e2e",
+        "live-provider",
+        "product-pilot"
+      ]
+    },
+    "readiness_claim": {
+      "const": "technical-contract-only"
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "python": {
+          "type": "string",
+          "minLength": 1
+        },
+        "adapter_mode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "isolation": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "python",
+        "adapter_mode",
+        "isolation"
+      ]
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^sha-256:[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "path",
+          "sha256"
+        ]
+      },
+      "minItems": 1
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schema_version",
+    "command",
+    "exit_code",
+    "started_at",
+    "finished_at",
+    "source",
+    "input_hashes",
+    "suite_hash",
+    "run_hash",
+    "required_cases",
+    "executed_cases",
+    "failures",
+    "skips",
+    "evidence_kind",
+    "readiness_claim",
+    "environment",
+    "artifacts",
+    "limitations"
+  ]
+}

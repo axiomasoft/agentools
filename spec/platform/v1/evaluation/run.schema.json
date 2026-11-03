@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentools:platform:v1:evaluation:run",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "evaluation/v1"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "run_hash": {
+      "type": "string",
+      "pattern": "^sha-256:[a-f0-9]{64}$"
+    },
+    "deployment_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profile_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profile_bundle_hash": {
+      "type": "string",
+      "pattern": "^sha-256:[a-f0-9]{64}$"
+    },
+    "task_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "suite_hash": {
+      "type": "string",
+      "pattern": "^sha-256:[a-f0-9]{64}$"
+    },
+    "prompt_hash": {
+      "type": "string",
+      "pattern": "^sha-256:[a-f0-9]{64}$"
+    },
+    "skills_hash": {
+      "type": "string",
+      "pattern": "^sha-256:[a-f0-9]{64}$"
+    },
+    "tool_schema_hash": {
+      "type": "string",
+      "pattern": "^sha-256:[a-f0-9]{64}$"
+    },
+    "material_corpus_hash": {
+      "type": "string",
+      "pattern": "^sha-256:[a-f0-9]{64}$"
+    },
+    "tenant_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "audience_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "seed": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_cost_minor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "max_latency_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_provider_calls": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "max_cost_minor",
+        "currency",
+        "max_latency_ms",
+        "max_provider_calls"
+      ]
+    },
+    "evidence_kind": {
+      "enum": [
+        "design-schema",
+        "unit",
+        "contract-scripted",
+        "isolated-postgres",
+        "local-host-e2e",
+        "live-provider",
+        "product-pilot"
+      ]
+    },
+    "integration_receipts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "suite": {
+            "type": "string",
+            "minLength": 1
+          },
+          "partition": {
+            "type": "string",
+            "minLength": 1
+          },
+          "receipt_hash": {
+            "type": "string",
+            "pattern": "^sha-256:[a-f0-9]{64}$"
+          },
+          "evidence_kind": {
+            "enum": [
+              "design-schema",
+              "unit",
+              "contract-scripted",
+              "isolated-postgres",
+              "local-host-e2e",
+              "live-provider",
+              "product-pilot"
+            ]
+          },
+          "required_case_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "executed_case_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "failures": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "skips": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "input_hashes": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {
+              "type": "string",
+              "pattern": "^sha-256:[a-f0-9]{64}$"
+            }
+          }
+        },
+        "required": [
+          "suite",
+          "partition",
+          "receipt_hash",
+          "evidence_kind",
+          "required_case_ids",
+          "executed_case_ids",
+          "failures",
+          "skips",
+          "input_hashes"
+        ]
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schema_version",
+    "run_id",
+    "run_hash",
+    "deployment_ref",
+    "model_revision",
+    "profile_ref",
+    "profile_bundle_hash",
+    "task_ref",
+    "suite_hash",
+    "prompt_hash",
+    "skills_hash",
+    "tool_schema_hash",
+    "material_corpus_hash",
+    "tenant_ref",
+    "audience_ref",
+    "seed",
+    "started_at",
+    "budget",
+    "evidence_kind",
+    "integration_receipts"
+  ]
+}

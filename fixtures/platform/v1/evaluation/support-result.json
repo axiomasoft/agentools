@@ -1,0 +1,44 @@
+{
+  "schema_version": "evaluation/v1",
+  "case_id": "golden.support",
+  "case_hash": "sha-256:ee39f9d54d5b308470b1e41a49350d8d63517cca03600e4636bd0802ca297df5",
+  "run_hash": "sha-256:2e39913b1fa63a389bfe09a732b395f66fdf4c84020689a270c4fefe504c3c25",
+  "suite_hash": "sha-256:116883d16b86a9c04ea6c0270321bfc8ce1d4d5049279644fd47565ac9bf2f84",
+  "status": "insufficient_evidence",
+  "scorer_outputs": [
+    {
+      "scorer_id": "technical.hard",
+      "status": "pass",
+      "value": true,
+      "reason": "pass",
+      "config_hash": "sha-256:5303656ae6cd0c9f4504f50ac57d44cf03fb03cf57e95e2b13fe2aa08e875fe0"
+    },
+    {
+      "scorer_id": "owner.domain",
+      "status": "insufficient_evidence",
+      "value": null,
+      "reason": "owner_domain_scorer_absent",
+      "config_hash": "sha-256:2554c8b847d327b735286f0b501e3d1e2a74b3a53bc9e36c04b8d62855c6426c"
+    }
+  ],
+  "evidence_refs": [
+    {
+      "ref": "synthetic:support",
+      "sha256": "sha-256:9ffacf952333d161ebfc32726c4a4b16c1be8ea2398ce96862bdf2e2b410234a",
+      "tenant_ref": "tenant-synthetic",
+      "audience_ref": "synthetic-reader",
+      "redacted": true
+    }
+  ],
+  "limits": [],
+  "metrics": {
+    "quality": null,
+    "grounding": null,
+    "cost": null,
+    "latency": null,
+    "privacy": null,
+    "duplicate": null,
+    "unknown": null
+  },
+  "result_hash": "sha-256:bd7a24775e432b4a897a86d693a90bf1b05cc184e2e9a6e2cacc8b1c455f872c"
+}

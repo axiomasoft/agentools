@@ -1,0 +1,22 @@
+{
+  "schema_version": "evaluation/v1",
+  "suite_id": "technical-support",
+  "version": "1",
+  "case_refs": [
+    {
+      "case_id": "golden.support",
+      "path": "fixtures/platform/v1/evaluation/support-case.json",
+      "case_hash": "sha-256:ee39f9d54d5b308470b1e41a49350d8d63517cca03600e4636bd0802ca297df5"
+    }
+  ],
+  "required_scorers": [
+    "technical.hard"
+  ],
+  "corpus_release_refs": [
+    {
+      "ref": "fixtures/platform/v1/evaluation/support-input.json",
+      "sha256": "sha-256:9ffacf952333d161ebfc32726c4a4b16c1be8ea2398ce96862bdf2e2b410234a"
+    }
+  ],
+  "integration_refs": []
+}

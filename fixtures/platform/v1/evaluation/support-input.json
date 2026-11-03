@@ -1,0 +1,7 @@
+{
+  "trusted_text": "Read the permitted synthetic support context.",
+  "ticket_ref": "synthetic-ticket-1",
+  "permitted_tool": "ticket.read",
+  "model_transport": "deterministic-fake/v1",
+  "expected_response": "Synthetic ticket is open."
+}

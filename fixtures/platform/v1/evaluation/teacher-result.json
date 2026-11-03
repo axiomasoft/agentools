@@ -1,0 +1,44 @@
+{
+  "schema_version": "evaluation/v1",
+  "case_id": "golden.teacher",
+  "case_hash": "sha-256:3efb537e8b271c2c624c7c776115fd5f258f92fd42bf99fe052204177fda793f",
+  "run_hash": "sha-256:9be14eba5ec2c2bdcc7fc789f91c1a1c205ed65f9d8508a3b92c672d41947662",
+  "suite_hash": "sha-256:8355a2d8c35753bc69df8e79a357e290d9338344d61e083ec5d9baaca7683a10",
+  "status": "insufficient_evidence",
+  "scorer_outputs": [
+    {
+      "scorer_id": "technical.hard",
+      "status": "pass",
+      "value": true,
+      "reason": "pass",
+      "config_hash": "sha-256:5303656ae6cd0c9f4504f50ac57d44cf03fb03cf57e95e2b13fe2aa08e875fe0"
+    },
+    {
+      "scorer_id": "owner.domain",
+      "status": "insufficient_evidence",
+      "value": null,
+      "reason": "owner_domain_scorer_absent",
+      "config_hash": "sha-256:2554c8b847d327b735286f0b501e3d1e2a74b3a53bc9e36c04b8d62855c6426c"
+    }
+  ],
+  "evidence_refs": [
+    {
+      "ref": "synthetic:teacher",
+      "sha256": "sha-256:9c45ce4dfbaad589d7fd47a8a645f033f22757a52f1d8886f3c93325ffaddd45",
+      "tenant_ref": "tenant-synthetic",
+      "audience_ref": "synthetic-reader",
+      "redacted": true
+    }
+  ],
+  "limits": [],
+  "metrics": {
+    "quality": null,
+    "grounding": null,
+    "cost": null,
+    "latency": null,
+    "privacy": null,
+    "duplicate": null,
+    "unknown": null
+  },
+  "result_hash": "sha-256:7694db9305122d5e60eee3dd651cbd3983cbe14104824c8e5f1675a33cc40bc0"
+}

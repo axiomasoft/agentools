@@ -1,0 +1,37 @@
+{
+  "tenant_ref": "tenant-synthetic",
+  "audience_ref": "synthetic-reader",
+  "invariants": {
+    "tenant_isolation": true,
+    "audience_isolation": true,
+    "permitted_tools_effects": true,
+    "no_duplicates": true,
+    "unknown_not_success": true,
+    "provenance": true,
+    "child_safety_baseline": true
+  },
+  "metrics": {
+    "quality": null,
+    "grounding": null,
+    "cost": null,
+    "latency": null,
+    "privacy": null,
+    "duplicate": null,
+    "unknown": null
+  },
+  "usage": {
+    "cost_minor": 0,
+    "currency": "USD",
+    "latency_ms": 0,
+    "provider_calls": 0
+  },
+  "evidence_refs": [
+    {
+      "ref": "synthetic:teacher",
+      "sha256": "sha-256:9c45ce4dfbaad589d7fd47a8a645f033f22757a52f1d8886f3c93325ffaddd45",
+      "tenant_ref": "tenant-synthetic",
+      "audience_ref": "synthetic-reader",
+      "redacted": true
+    }
+  ]
+}

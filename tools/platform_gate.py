@@ -25,7 +25,7 @@ TIERS = {"design-schema", "unit", "contract-scripted", "isolated-postgres",
 
 # Explicit, independent of discovery: removing a test must make the gate red.
 SELF_CASES = tuple("GateTests.test_" + name for name in (
-    "voice_journey_registry", "voice_delivery_registry", "voice_ingress_registry", "host_e2e_registry", "second_host_registry", "chatom_registry", "host_registry", "architecture_fixture", "boundary_current_tree", "boundary_missing_source",
+    "qualification_rollout_registry", "evaluation_registry", "voice_journey_registry", "voice_delivery_registry", "voice_ingress_registry", "host_e2e_registry", "second_host_registry", "chatom_registry", "host_registry", "architecture_fixture", "boundary_current_tree", "boundary_missing_source",
     "boundary_production_testing", "boundary_duplicate_owner", "boundary_core_dependency",
     "boundary_autoload_escape", "boundary_transitive_testing", "boundary_namespace_path",
     "boundary_production_source", "contradictory_totals",
@@ -1372,6 +1372,72 @@ SUITES[('voice-journey','e2e')] = Suite('P11.3','local-host-e2e','local-host-e2e
     (sys.executable,'-B','conformance/platform/voice/run.py'),VOICE_JOURNEY_INPUTS,True)
 
 
+# P12.1: the evaluator is technical tooling in the development-only testing
+# package. Existing runtime/fault runners retain their original gates and tiers.
+EVALUATION_CASES = (
+    'evaluation.schema-examples', 'evaluation.closed-schema-negative',
+    'evaluation.teacher-technical-golden', 'evaluation.second-host-technical-golden',
+    'evaluation.domain-insufficient-evidence', 'evaluation.deterministic-scorers',
+    'evaluation.hard-invariant-faults', 'evaluation.unknown-not-success',
+    'evaluation.not-run-distinct', 'evaluation.tenant-audience-access-negative',
+    'evaluation.budget-negative-and-unknown', 'evaluation.case-hash-conflict',
+    'evaluation.run-hash-conflict', 'evaluation.tenant-scoped-immutable-identity',
+    'evaluation.registry-empty-missing-duplicate-negative', 'evaluation.existing-conformance-exact-links',
+    'evaluation.integration-missing-skip-fail-negative', 'evaluation.required-tuple-invalidation',
+    'evaluation.qualification-case-set-negative', 'evaluation.result-config-hash-negative',
+    'evaluation.fake-production-claim-negative', 'evaluation.no-invented-domain-threshold',
+    'evaluation.integration-receipt-required', 'evaluation.local-reference-escape-negative',
+    'evaluation.missing-scorer-dependency-negative',
+)
+EVALUATION_INPUTS = tuple(str(p.relative_to(ROOT)) for base in (
+    ROOT / TESTING / 'src/Evaluation', ROOT / TESTING / 'tests/Evaluation',
+    ROOT / 'spec/platform/v1/evaluation', ROOT / 'fixtures/platform/v1/evaluation',
+) for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.py', '.json', '.md'}) + (
+    'tools/platform_gate.py', 'tools/tests/test_platform_gate.py',
+)
+SUITES[('evaluation-harness', 'test')] = Suite('P12.1', 'contract-scripted', 'contract-scripted',
+    EVALUATION_CASES, (sys.executable, '-B', f'{TESTING}/src/Evaluation/runner.py',
+                       '--suite', 'evaluation-harness'), EVALUATION_INPUTS)
+EVALUATION_INTEGRATIONS = {
+    'technical-golden': (('knowledge-journey', 'e2e'), ('read-journey', 'e2e'), ('second-host', 'test')),
+    'evaluation-faults': (('provider-fallback', 'test'), ('voice-journey', 'e2e')),
+}
+for _name, _keys in EVALUATION_INTEGRATIONS.items():
+    _cases = tuple(key[0] + ':' + case for key in _keys for case in SUITES[key].cases)
+    _inputs = tuple(dict.fromkeys(EVALUATION_INPUTS + tuple(p for key in _keys for p in SUITES[key].dependencies)))
+    SUITES[(_name, 'e2e')] = Suite('P12.1-' + _name, 'local-host-e2e', 'local-host-e2e', _cases,
+        (sys.executable, '-B', f'{TESTING}/src/Evaluation/runner.py', '--suite', _name), _inputs, True)
+
+
+# P12.2: qualification/pinning policies have no provider execution loop.
+QUALIFICATION_PARTS = {
+    'evidence': ('ECO-EVAL-001','ECO-EVAL-002','ECO-EVAL-003','ECO-EVAL-005','ECO-EVAL-006',
+                 'V2-P12-2-TUPLE-POS','V2-P12-2-TIER-POS','V2ALL-EVAL-NEGATIVE'),
+    'routing': ('ECO-EVAL-004','qualification.health-does-not-grant',
+                'qualification.current-policy-and-revoke','V2ALL-EVAL-FAULT'),
+    'canary': ('V2ALL-EVAL-POSITIVE','qualification.canary-measured-owner-bounds',
+               'qualification.stable-cohort-and-zero-admission'),
+}
+QUALIFICATION_PG_CASES = tuple('qualification-pg.' + name for name in (
+    'testSnapshotReplayConflictAndRestart','testImmutableSqlAndInsufficientEvidence',
+    'testPublicationPinsCanaryRollback','testEmergencyAndRevokeOverPins',
+    'testBoundedCompetingAssignments','testAuditFailureRollsBack',
+    'testAuthorizationScopeCasAndCompatibility','testSchemaRevisionConflict',
+))
+QUALIFICATION_CASES = tuple(case for group in QUALIFICATION_PARTS.values() for case in group) + QUALIFICATION_PG_CASES + ('qualification.static-analysis',)
+QUALIFICATION_INPUTS = tuple(dict.fromkeys(ROUTING_INPUTS + EVALUATION_INPUTS + tuple(
+    str(p.relative_to(ROOT)) for base in (
+        ROOT / CORE / 'src/Models/Qualification', ROOT / CORE / 'tests/Models/Qualification',
+        ROOT / POSTGRES / 'src/Qualification', ROOT / POSTGRES / 'tests/Qualification',
+        ROOT / 'fixtures/platform/v1/qualification',
+    ) for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php','.py','.sql','.json','.md','.xml','.neon'}
+) + (f'{POSTGRES}/vendor/bin/phpstan', f'{POSTGRES}/phpstan.neon', f'{CORE}/phpstan.neon')))
+SUITES[('qualification-rollout','test')] = Suite('P12.2','contract-scripted','contract-scripted',QUALIFICATION_CASES,
+    (sys.executable,'-B',f'{CORE}/tests/Models/Qualification/run.py'),QUALIFICATION_INPUTS)
+SUITES[('qualification-rollout','pg-test')] = Suite('P12.2-pg','isolated-postgres','isolated-postgres',QUALIFICATION_PG_CASES,
+    (sys.executable,'-B',f'{POSTGRES}/tests/Qualification/run.py'),QUALIFICATION_INPUTS,True)
+
+
 class GateError(Exception):
     pass
 
@@ -1419,6 +1485,58 @@ def validate_report(spec: Suite, report):
     ids = [c["id"] for c in cases]
     require(Counter(ids) == Counter(spec.cases), "required case set differs (missing/extra/duplicate)")
     require(all(c.get("status") == "passed" for c in cases), "failed, skipped or unknown required case")
+    if spec.owner == 'P12.2':
+        require(report.get('evidence_kind') == 'contract-scripted'
+                and report.get('readiness_claim') == 'technical-contract-only'
+                and report.get('live_provider') == 'not_run'
+                and report.get('educational_qualification') == 'insufficient_evidence', 'qualification evidence scope inflated')
+        require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'qualification inputs missing/stale')
+        require(isinstance(report.get('limitations'), list) and report['limitations'], 'qualification limitations missing')
+        parts = report.get('contract_parts')
+        require(isinstance(parts, list) and len(parts) == len(QUALIFICATION_PARTS), 'qualification contract partition missing')
+        for part, cases_ in zip(parts, QUALIFICATION_PARTS.values()):
+            validate_report(Suite('P12.2-part','contract-scripted','contract-scripted',cases_,(),()), part)
+        pg = report.get('postgres', {})
+        require(isinstance(pg,dict) and pg.get('ok') is True and pg.get('exit') == 0
+                and pg.get('dependency_hashes') == hashes(ROOT, spec.dependencies), 'qualification durable receipt missing/stale')
+        validate_report(SUITES[('qualification-rollout','pg-test')],pg.get('report'))
+        analysis = report.get('static_analysis', {})
+        require(isinstance(analysis,dict) and analysis.get('exit') == 0 and analysis.get('command') == [
+            'packages/agentools-postgres/vendor/bin/phpstan','analyse','-c',
+            'packages/agentools-postgres/tests/Qualification/phpstan.neon','--no-progress','--memory-limit=512M',
+            'packages/agentools-core/src/Models/Qualification','packages/agentools-core/tests/Models/Qualification',
+            'packages/agentools-postgres/src/Qualification','packages/agentools-postgres/tests/Qualification'],
+            'qualification scoped static analysis missing')
+    if spec.owner == 'P12.1' or spec.owner.startswith('P12.1-'):
+        require(report.get('evidence_kind') == spec.tier, 'evaluation canonical evidence kind differs')
+        require(report.get('readiness_claim') == 'technical-contract-only', 'evaluation impossible readiness claim')
+        require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'evaluation inputs missing/stale')
+        require(isinstance(report.get('limitations'), list) and report['limitations'], 'evaluation limitations missing')
+        if spec.owner == 'P12.1':
+            baseline = report.get('baseline', {})
+            require(baseline.get('measurement_kind') == 'local-evaluator-self-check'
+                    and baseline.get('provider_calls') == 0 and baseline.get('spend_minor') == 0
+                    and baseline.get('domain_decision') == 'insufficient_evidence'
+                    and baseline.get('domain_scorer') == 'absent'
+                    and baseline.get('executed_cases') == len(spec.cases)
+                    and isinstance(baseline.get('elapsed_ms'), (int, float)) and baseline['elapsed_ms'] >= 0
+                    and baseline.get('metrics') == dict.fromkeys(
+                        ('quality','grounding','cost','latency','privacy','duplicate','unknown'), None),
+                    'evaluation baseline/domain evidence inflated')
+        else:
+            name = spec.owner.removeprefix('P12.1-')
+            children = report.get('integrations')
+            keys = EVALUATION_INTEGRATIONS[name]
+            require(isinstance(children, list) and len(children) == len(keys), 'evaluation integrations missing')
+            manifest = json.loads((ROOT / f'fixtures/platform/v1/evaluation/{name}-suite.json').read_text())
+            require(report.get('suite_hash') == 'sha-256:' + digest(json.dumps(
+                manifest, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()), 'evaluation suite hash mismatch')
+            for child, key in zip(children, keys):
+                original = SUITES[key]
+                require((child.get('suite'), child.get('partition')) == key and child.get('ok') is True
+                        and child.get('exit') == 0 and child.get('dependency_hashes') == hashes(ROOT, original.dependencies),
+                        'evaluation conformance receipt missing/stale')
+                validate_report(original, child.get('report'))
     if spec.owner == 'P9.2-parity':
         languages = report.get('languages')
         require(isinstance(languages, dict) and set(languages) == {'php', 'dart'}, 'PHP/Dart usage evidence missing')
@@ -1926,6 +2044,9 @@ def run_suite(root: Path, spec: Suite, *, isolated=False, timeout=120):
     require(not spec.requires_pg or isolated, "required PG suite needs --isolated")
     require(spec.command and spec.cases, "suite has no runner/cases")
     inputs = hashes(root, spec.dependencies)
+    if spec.owner.startswith('P12.1-') and timeout == 120:
+        timeout = 900
+    started_at = utc()
     try:
         process = subprocess.run(spec.command, cwd=root, text=True, capture_output=True, timeout=timeout)
     except (OSError, subprocess.TimeoutExpired) as error:
@@ -1933,7 +2054,7 @@ def run_suite(root: Path, spec: Suite, *, isolated=False, timeout=120):
     result = {"command": list(spec.command), "owner": spec.owner, "mode": spec.mode,
               "tier": spec.tier, "dependency_hashes": inputs, "exit": process.returncode,
               "stdout": process.stdout, "stderr": process.stderr}
-    if spec.owner in {'P6.4', 'P6.5', 'P7.7', 'P7.7-pg', 'P8.1', 'P8.1-pg', 'P8.2'}:
+    if spec.owner in {'P6.4', 'P6.5', 'P7.7', 'P7.7-pg', 'P8.1', 'P8.1-pg', 'P8.2', 'P12.1', 'P12.2', 'P12.2-pg'} or spec.owner.startswith('P12.1-'):
         result['suite_manifest_hash'] = digest(json.dumps({
             'owner': spec.owner, 'mode': spec.mode, 'tier': spec.tier, 'cases': spec.cases,
             'command': spec.command, 'requires_pg': spec.requires_pg, 'dependencies': inputs,
@@ -1949,7 +2070,35 @@ def run_suite(root: Path, spec: Suite, *, isolated=False, timeout=120):
         result["ok"] = True
     except GateError as error:
         result.update(ok=False, error=str(error))
+    if spec.owner in {'P12.1','P12.2','P12.2-pg'} or spec.owner.startswith('P12.1-'):
+        result.update(started_at=started_at, finished_at=utc(), evidence_kind=spec.tier)
     return result
+
+
+def evaluation_receipt(result, envelope):
+    """Normalized actual suite execution; does not issue a model qualification."""
+    spec = next(s for s in SUITES.values() if s.owner == result['owner'])
+    report = result['report']
+    suite_hash = 'sha-256:' + result['suite_manifest_hash']
+    invocation = {'command': envelope['command'], 'source': envelope['source'],
+                  'started_at': result['started_at'], 'suite_hash': suite_hash,
+                  'evidence_kind': result['tier']}
+    artifacts = []
+    for stream in ('stdout', 'stderr'):
+        output = result[stream]
+        artifacts.append({'path': output['path'] if isinstance(output, dict) else 'inline:' + stream,
+                          'sha256': 'sha-256:' + (output['sha256'] if isinstance(output, dict) else digest(output.encode()))})
+    return {'schema_version': 'evaluation/v1', 'command': envelope['command'], 'exit_code': result['exit'],
+            'started_at': result['started_at'], 'finished_at': result['finished_at'], 'source': envelope['source'],
+            'input_hashes': {p: 'sha-256:' + sha for p, sha in result['dependency_hashes'].items()},
+            'suite_hash': suite_hash, 'run_hash': 'sha-256:' + digest(json.dumps(
+                invocation, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()),
+            'required_cases': list(spec.cases), 'executed_cases': result['case_ids'],
+            'failures': result['failures'], 'skips': result['skips'], 'evidence_kind': result['tier'],
+            'readiness_claim': 'technical-contract-only',
+            'environment': {'python': sys.version, 'adapter_mode': result['mode'],
+                            'isolation': report.get('isolation')},
+            'artifacts': artifacts, 'limitations': report['limitations']}
 
 
 # A deny-by-default language/dependency check. PHP's own tokenizer handles
@@ -2250,6 +2399,10 @@ def main(argv=None):
                     data = result.pop(stream).encode()
                     output.write_bytes(data)
                     result[stream] = {"path": str(output), "sha256": digest(data)}
+    for result in report['results']:
+        if result.get('ok') is True and (result.get('owner') in {'P12.1','P12.2'} or result.get('owner', '').startswith('P12.1-')):
+            result['evaluation_receipt'] = evaluation_receipt(result, report)
+    if args.receipt:
         args.receipt.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n")
     print(json.dumps(report, indent=2, ensure_ascii=False))
     return 0 if report["ok"] else 1

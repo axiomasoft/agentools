@@ -1,0 +1,39 @@
+{
+  "schema_version": "qualification-live-recipe/v1",
+  "status": "not_run",
+  "live_provider_ready": false,
+  "command": [
+    "php",
+    "conformance/platform/provider-fallback/probe.php",
+    "--live",
+    "--host-bootstrap=/trusted/test-account-bootstrap.php"
+  ],
+  "owner_bootstrap_contract": "Existing Testing\\Providers\\OptInHarness + ProbePolicy + durable ProbeBudget; no default bootstrap or price.",
+  "required_explicit_inputs": {
+    "deployment_ref": "EXACT_REGISTERED_DEPLOYMENT_REQUIRED",
+    "model_revision": "EXACT_REVISION_REQUIRED",
+    "credential_ref": "TEST_ACCOUNT_REFERENCE_REQUIRED",
+    "synthetic_data": true,
+    "approved_payload_hash": "SHA256_OF_ACTUAL_APPROVED_SYNTHETIC_REQUEST_REQUIRED",
+    "max_calls": 1,
+    "max_cost_minor": 1,
+    "currency": "USD",
+    "currency_scale": 2,
+    "reservation_max_microcurrency": 10000,
+    "pricing_version": "CURRENT_VERIFIED_PRICE_AND_EXPIRY_REQUIRED",
+    "max_input_bytes": 1024,
+    "max_output_bytes": 1024,
+    "max_elapsed_ms": 10000
+  },
+  "guards": [
+    "Explicit owner data/spend authorization and deployment/account/region/model binding",
+    "Current owner admission, quota, permissions and emergency immediately before IO",
+    "Unknown price/usage or lost reply remains unknown; same-key lookup, no blind resend",
+    "Actual result tuple, evidence tier, source hashes and expert/domain dependencies checked before readiness claim"
+  ],
+  "limitations": [
+    "Recipe only: no credential, network/provider call or spend is performed.",
+    "Example resource bounds are explicit operator inputs, not measured prices, global quality thresholds or production authorization.",
+    "Absent live execution remains not_run; preserve lower-tier technical receipts."
+  ]
+}

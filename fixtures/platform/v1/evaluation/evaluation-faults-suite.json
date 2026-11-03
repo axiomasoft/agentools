@@ -1,0 +1,89 @@
+{
+  "schema_version": "evaluation/v1",
+  "suite_id": "evaluation-faults",
+  "version": "1",
+  "case_refs": [
+    {
+      "case_id": "golden.teacher",
+      "path": "fixtures/platform/v1/evaluation/teacher-case.json",
+      "case_hash": "sha-256:3efb537e8b271c2c624c7c776115fd5f258f92fd42bf99fe052204177fda793f"
+    },
+    {
+      "case_id": "golden.support",
+      "path": "fixtures/platform/v1/evaluation/support-case.json",
+      "case_hash": "sha-256:ee39f9d54d5b308470b1e41a49350d8d63517cca03600e4636bd0802ca297df5"
+    }
+  ],
+  "required_scorers": [
+    "technical.hard"
+  ],
+  "corpus_release_refs": [
+    {
+      "ref": "fixtures/platform/v1/evaluation/teacher-case.json",
+      "sha256": "sha-256:ae1fe9eaa53f033be06f0250d5559925775baeb4daa12aec31e9aed4a7d892a5"
+    },
+    {
+      "ref": "fixtures/platform/v1/evaluation/support-case.json",
+      "sha256": "sha-256:21f28a2f1ca8b4147c526a4804df6c900ebab66538a796dbc44079abe642736d"
+    }
+  ],
+  "integration_refs": [
+    {
+      "suite": "provider-fallback",
+      "partition": "test",
+      "required_case_ids": [
+        "fallback.before-disclosure-discards-buffer",
+        "fallback.after-disclosure-requires-segment",
+        "fallback.segment-forgery-denied",
+        "fallback.context-and-actions-persist",
+        "fallback.unknown-effect-before-continuation",
+        "fallback.policy-before-cost-no-escape",
+        "fallback.source-mismatch-and-late-packets",
+        "cost.fallback-resource-facts-business-ref",
+        "cost.unknown-correction-replaces-once",
+        "cost.sdk-observer-is-telemetry-only",
+        "cost.cache-miss-does-not-bypass-budget",
+        "provider.generate-wire-usage",
+        "provider.stream-and-tools-proposal-only",
+        "provider.structured-result",
+        "provider.missing-terminal-is-partial",
+        "provider.cancel-and-errors",
+        "provider.optional-cache-continuation-attachments",
+        "probe.offline-and-unknown-price-fail-closed",
+        "probe.explicit-data-credential-and-current-owner",
+        "probe.calls-and-cumulative-spend-bounded",
+        "probe.unknown-no-blind-resend",
+        "probe.partial-stream-remains-unknown"
+      ],
+      "source_receipt_ref": "@plan/artifacts/implementation/P9.5-receipt.json",
+      "source_receipt_sha256": "sha-256:76eb0dc5a3e484b9adafbbe15d1e862479c91e2fb1a9f116e401a9083ea2e00d"
+    },
+    {
+      "suite": "voice-journey",
+      "partition": "e2e",
+      "required_case_ids": [
+        "ECO-VOICE-001",
+        "ECO-VOICE-002",
+        "ECO-VOICE-003",
+        "ECO-VOICE-004",
+        "ECO-VOICE-005",
+        "ECO-VOICE-006",
+        "ECO-VOICE-007",
+        "ECO-VOICE-008",
+        "V2-P11-3-VOICE-POS",
+        "V2-P11-3-CONSENT-POS",
+        "V2ALL-VOICE-POSITIVE",
+        "V2ALL-VOICE-NEGATIVE",
+        "V2ALL-VOICE-FAULT",
+        "voice-journey.lost-tts-receipt",
+        "voice-journey.provider-after-disclosure",
+        "voice-journey.state-checkpoints",
+        "voice-journey.worker-tenant-reset",
+        "voice-journey.runnable-example",
+        "voice-journey.final-payload-conflict"
+      ],
+      "source_receipt_ref": "@plan/artifacts/implementation/P11.3-receipt.json",
+      "source_receipt_sha256": "sha-256:003b6be9c7d387883e9928a25ee75771c3659e88b38995ffe8062632ad3e1437"
+    }
+  ]
+}

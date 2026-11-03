@@ -1,0 +1,8 @@
+{
+  "trusted_text": "Read the permitted synthetic lesson context.",
+  "lesson_ref": "synthetic-lesson-1",
+  "material_ref": "synthetic-material-1",
+  "permitted_tool": "material.read",
+  "model_transport": "deterministic-fake/v1",
+  "expected_response": "Synthetic material reference retained; no pedagogical claim."
+}

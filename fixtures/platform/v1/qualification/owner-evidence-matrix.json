@@ -1,0 +1,36 @@
+{
+  "schema_version": "qualification-owner-handoff/v1",
+  "evidence_kind": "contract-scripted",
+  "requirements": [
+    {
+      "owner": "AgenTools technical harness",
+      "required": "Exact P12.1 run/result/suite/source hashes, required cases/scorers and access policy",
+      "status": "technical_contract_available",
+      "gate": "evaluation-harness + qualification-rollout; no inherited runtime PASS"
+    },
+    {
+      "owner": "Edufy domain experts",
+      "required": "Reviewed tutoring/formula/factual/retrieval privacy/child-safety/voice/report scorers, expert gold and saved per-task baselines",
+      "status": "insufficient_evidence",
+      "gate": "educational qualification; no LLM-judge substitute or public student corpus"
+    },
+    {
+      "owner": "Host application authorization/material/disclosure owners",
+      "required": "Current permission/quota/emergency and material revocation adapters, compatible deployment/bundle, actual host E2E and retention/export evidence",
+      "status": "not_run",
+      "gate": "SelectionGate + Compatibility + actual-host qualification"
+    },
+    {
+      "owner": "Provider test-account operator and admission/metering owners",
+      "required": "Explicit synthetic payload/deployment/credential/data/spend scope, bounded durable admission, current verified pricing and opt-in live receipts",
+      "status": "not_run",
+      "gate": "live-provider qualification; unavailable prerequisites do not erase contract receipts"
+    },
+    {
+      "owner": "Product pilot/release owner",
+      "required": "Actual host/live/domain evidence plus bounded pilot outcomes and explicit release/rollout policy",
+      "status": "not_run",
+      "gate": "product-pilot qualification and existing owner G-RELEASE; no rollout in this item"
+    }
+  ]
+}

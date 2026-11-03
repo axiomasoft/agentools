@@ -1,0 +1,68 @@
+{
+  "schema_version": "qualification-cases/v1",
+  "contract": {
+    "evidence": [
+      "ECO-EVAL-001",
+      "ECO-EVAL-002",
+      "ECO-EVAL-003",
+      "ECO-EVAL-005",
+      "ECO-EVAL-006",
+      "V2-P12-2-TUPLE-POS",
+      "V2-P12-2-TIER-POS",
+      "V2ALL-EVAL-NEGATIVE"
+    ],
+    "routing": [
+      "ECO-EVAL-004",
+      "qualification.health-does-not-grant",
+      "qualification.current-policy-and-revoke",
+      "V2ALL-EVAL-FAULT"
+    ],
+    "canary": [
+      "V2ALL-EVAL-POSITIVE",
+      "qualification.canary-measured-owner-bounds",
+      "qualification.stable-cohort-and-zero-admission"
+    ]
+  },
+  "postgres": [
+    "qualification-pg.testSnapshotReplayConflictAndRestart",
+    "qualification-pg.testImmutableSqlAndInsufficientEvidence",
+    "qualification-pg.testPublicationPinsCanaryRollback",
+    "qualification-pg.testEmergencyAndRevokeOverPins",
+    "qualification-pg.testBoundedCompetingAssignments",
+    "qualification-pg.testAuditFailureRollsBack",
+    "qualification-pg.testAuthorizationScopeCasAndCompatibility",
+    "qualification-pg.testSchemaRevisionConflict"
+  ],
+  "required_cases": [
+    "ECO-EVAL-001",
+    "ECO-EVAL-002",
+    "ECO-EVAL-003",
+    "ECO-EVAL-005",
+    "ECO-EVAL-006",
+    "V2-P12-2-TUPLE-POS",
+    "V2-P12-2-TIER-POS",
+    "V2ALL-EVAL-NEGATIVE",
+    "ECO-EVAL-004",
+    "qualification.health-does-not-grant",
+    "qualification.current-policy-and-revoke",
+    "V2ALL-EVAL-FAULT",
+    "V2ALL-EVAL-POSITIVE",
+    "qualification.canary-measured-owner-bounds",
+    "qualification.stable-cohort-and-zero-admission",
+    "qualification-pg.testSnapshotReplayConflictAndRestart",
+    "qualification-pg.testImmutableSqlAndInsufficientEvidence",
+    "qualification-pg.testPublicationPinsCanaryRollback",
+    "qualification-pg.testEmergencyAndRevokeOverPins",
+    "qualification-pg.testBoundedCompetingAssignments",
+    "qualification-pg.testAuditFailureRollsBack",
+    "qualification-pg.testAuthorizationScopeCasAndCompatibility",
+    "qualification-pg.testSchemaRevisionConflict",
+    "qualification.static-analysis"
+  ],
+  "evidence_kind": "contract-scripted",
+  "postgres_evidence_kind": "isolated-postgres",
+  "limitations": [
+    "Scripted external deployments/host/measurements; actual Router and isolated PostgreSQL only.",
+    "No domain scorer, live provider, actual host or pilot qualification."
+  ]
+}

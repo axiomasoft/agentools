@@ -1,0 +1,93 @@
+{
+  "schema_version": "evaluation/v1",
+  "suite_id": "technical-golden",
+  "version": "1",
+  "case_refs": [
+    {
+      "case_id": "golden.teacher",
+      "path": "fixtures/platform/v1/evaluation/teacher-case.json",
+      "case_hash": "sha-256:3efb537e8b271c2c624c7c776115fd5f258f92fd42bf99fe052204177fda793f"
+    },
+    {
+      "case_id": "golden.support",
+      "path": "fixtures/platform/v1/evaluation/support-case.json",
+      "case_hash": "sha-256:ee39f9d54d5b308470b1e41a49350d8d63517cca03600e4636bd0802ca297df5"
+    }
+  ],
+  "required_scorers": [
+    "technical.hard"
+  ],
+  "corpus_release_refs": [
+    {
+      "ref": "fixtures/platform/v1/evaluation/teacher-case.json",
+      "sha256": "sha-256:ae1fe9eaa53f033be06f0250d5559925775baeb4daa12aec31e9aed4a7d892a5"
+    },
+    {
+      "ref": "fixtures/platform/v1/evaluation/support-case.json",
+      "sha256": "sha-256:21f28a2f1ca8b4147c526a4804df6c900ebab66538a796dbc44079abe642736d"
+    }
+  ],
+  "integration_refs": [
+    {
+      "suite": "knowledge-journey",
+      "partition": "e2e",
+      "required_case_ids": [
+        "KNOWLEDGE-SUPPORT-GOLDEN",
+        "KNOWLEDGE-EDUCATION-GOLDEN",
+        "knowledge-golden.domain-release-gate",
+        "KNOWLEDGE-CORRECTION-GOLDEN",
+        "knowledge-golden.buffered-revoke",
+        "knowledge-golden.tenant-audience-unknown",
+        "knowledge-golden.no-fabricated-source",
+        "knowledge-golden.mandatory-context-budget",
+        "knowledge-golden.correction-before-provider",
+        "knowledge-golden.provider-crash-recovery",
+        "knowledge-golden.runnable-example",
+        "knowledge-golden.index-identity-and-tenant",
+        "KNOWLEDGE-EDUCATION-CORRECTION"
+      ],
+      "source_receipt_ref": null,
+      "source_receipt_sha256": null
+    },
+    {
+      "suite": "read-journey",
+      "partition": "e2e",
+      "required_case_ids": [
+        "READ-001",
+        "READ-ALLOWLIST-NEG",
+        "READ-DISCLOSURE-NEG",
+        "READ-RECOVERY-FAULT",
+        "READ-DELIVERY-FAULT",
+        "READ-DELIVERY-NEG",
+        "READ-IDENTITY-NEG",
+        "READ-GUARDS-NEG",
+        "READ-SECOND-HOST",
+        "READ-EXAMPLE",
+        "READ-PRIVACY",
+        "READ-CONTEXT",
+        "READ-F1-NOT-SENT",
+        "READ-F2-PRE-SEND"
+      ],
+      "source_receipt_ref": null,
+      "source_receipt_sha256": null
+    },
+    {
+      "suite": "second-host",
+      "partition": "test",
+      "required_case_ids": [
+        "support.context",
+        "support.tool-intersection",
+        "support.untrusted-handle",
+        "support.runtime-delivery",
+        "support.current-guard",
+        "support.delivery-lost-ack",
+        "support.owner-revoke",
+        "support.invalid-context-provider",
+        "support.source-conflict",
+        "support.direct-confirmed-action"
+      ],
+      "source_receipt_ref": null,
+      "source_receipt_sha256": null
+    }
+  ]
+}

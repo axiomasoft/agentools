@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentools:platform:v1:evaluation:result",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "evaluation/v1"
+    },
+    "case_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "case_hash": {
+      "type": "string",
+      "pattern": "^sha-256:[a-f0-9]{64}$"
+    },
+    "run_hash": {
+      "type": "string",
+      "pattern": "^sha-256:[a-f0-9]{64}$"
+    },
+    "suite_hash": {
+      "type": "string",
+      "pattern": "^sha-256:[a-f0-9]{64}$"
+    },
+    "result_hash": {
+      "type": "string",
+      "pattern": "^sha-256:[a-f0-9]{64}$"
+    },
+    "status": {
+      "enum": [
+        "pass",
+        "fail",
+        "not_run",
+        "insufficient_evidence"
+      ]
+    },
+    "scorer_outputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "scorer_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": [
+              "pass",
+              "fail",
+              "not_run",
+              "insufficient_evidence"
+            ]
+          },
+          "value": {
+            "type": [
+              "boolean",
+              "number",
+              "null"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "config_hash": {
+            "type": "string",
+            "pattern": "^sha-256:[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "scorer_id",
+          "status",
+          "value",
+          "reason",
+          "config_hash"
+        ]
+      },
+      "minItems": 1
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^sha-256:[a-f0-9]{64}$"
+          },
+          "tenant_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "audience_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "redacted": {
+            "const": true
+          }
+        },
+        "required": [
+          "ref",
+          "sha256",
+          "tenant_ref",
+          "audience_ref",
+          "redacted"
+        ]
+      },
+      "minItems": 0
+    },
+    "limits": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "quality": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "grounding": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "cost": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "latency": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "privacy": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "duplicate": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "unknown": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "quality",
+        "grounding",
+        "cost",
+        "latency",
+        "privacy",
+        "duplicate",
+        "unknown"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "case_id",
+    "case_hash",
+    "run_hash",
+    "suite_hash",
+    "result_hash",
+    "status",
+    "scorer_outputs",
+    "evidence_refs",
+    "limits",
+    "metrics"
+  ]
+}

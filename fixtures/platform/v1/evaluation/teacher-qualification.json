@@ -1,0 +1,33 @@
+{
+  "schema_version": "evaluation/v1",
+  "qualification_id": "synthetic-teacher-qualification",
+  "tuple": {
+    "deployment_ref": "scripted-offline",
+    "model_revision": "deterministic-fake/v1",
+    "profile_ref": "generic-teacher/v1",
+    "profile_bundle_hash": "sha-256:e922c6e9db3535bff47e27d093bd3ba38990f71c740894353558d7c86845b105",
+    "task_ref": "technical-lesson-read",
+    "suite_hash": "sha-256:8355a2d8c35753bc69df8e79a357e290d9338344d61e083ec5d9baaca7683a10",
+    "prompt_hash": "sha-256:7ba0cb0d5897757efa74d7d9820a69f626c22f42afc5ba6ef0361c695c2e8fb4",
+    "skills_hash": "sha-256:09cd2192b30d050a3438f31e82f7e3f8b11745c8b9c7013909467c205fafd9db",
+    "tool_schema_hash": "sha-256:cd78e13663a2ddd72bf24a10af074770383859c793858ae18765b67b0f7f6772",
+    "material_corpus_hash": "sha-256:1cd6deff00018ec9dce9d7f6d73d4ff4e1df83adc02b3f8b8fe21d117b84063e"
+  },
+  "required_suites": [
+    {
+      "suite_id": "technical-teacher",
+      "version": "1",
+      "suite_hash": "sha-256:8355a2d8c35753bc69df8e79a357e290d9338344d61e083ec5d9baaca7683a10"
+    }
+  ],
+  "result_refs": [
+    "sha-256:7694db9305122d5e60eee3dd651cbd3983cbe14104824c8e5f1675a33cc40bc0"
+  ],
+  "decision": "qualified",
+  "reason": [],
+  "issued_at": "2026-11-03T12:00:00Z",
+  "expires_at": null,
+  "rollout_policy_ref": "synthetic-disabled-production",
+  "evidence_kind": "contract-scripted",
+  "readiness_claim": "technical-contract-only"
+}

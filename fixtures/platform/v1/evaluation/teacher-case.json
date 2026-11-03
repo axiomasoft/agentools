@@ -1,0 +1,57 @@
+{
+  "schema_version": "evaluation/v1",
+  "case_id": "golden.teacher",
+  "version": "1",
+  "task_ref": "technical-lesson-read",
+  "profile_ref": "generic-teacher/v1",
+  "input_fixture": {
+    "path": "fixtures/platform/v1/evaluation/teacher-input.json",
+    "sha256": "sha-256:9c45ce4dfbaad589d7fd47a8a645f033f22757a52f1d8886f3c93325ffaddd45"
+  },
+  "expected_invariants": [
+    "tenant_isolation",
+    "audience_isolation",
+    "permitted_tools_effects",
+    "no_duplicates",
+    "unknown_not_success",
+    "provenance",
+    "child_safety_baseline"
+  ],
+  "scorers": [
+    {
+      "scorer_id": "technical.hard",
+      "kind": "hard",
+      "config": {
+        "version": "1",
+        "implementation_hash": "sha-256:fa0383a32d92f65fede7a4c1a52260f1c1373c44d910976f2c16ace70b3d3b98"
+      }
+    },
+    {
+      "scorer_id": "owner.domain",
+      "kind": "domain",
+      "config": {
+        "owner_hook_ref": "host:domain-scorer",
+        "baseline_ref": null
+      }
+    }
+  ],
+  "config": {
+    "fixture_only": true,
+    "runtime_suite": "knowledge-journey"
+  },
+  "evidence_access_policy": {
+    "tenant_ref": "tenant-synthetic",
+    "audience_ref": "synthetic-reader",
+    "classification": "synthetic",
+    "allowed_evidence_refs": [
+      "synthetic:teacher"
+    ],
+    "personal_data_allowed": false
+  },
+  "budget": {
+    "max_cost_minor": 0,
+    "currency": "USD",
+    "max_latency_ms": 1000,
+    "max_provider_calls": 0
+  }
+}

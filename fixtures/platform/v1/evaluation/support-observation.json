@@ -1,0 +1,37 @@
+{
+  "tenant_ref": "tenant-synthetic",
+  "audience_ref": "synthetic-reader",
+  "invariants": {
+    "tenant_isolation": true,
+    "audience_isolation": true,
+    "permitted_tools_effects": true,
+    "no_duplicates": true,
+    "unknown_not_success": true,
+    "provenance": true,
+    "child_safety_baseline": true
+  },
+  "metrics": {
+    "quality": null,
+    "grounding": null,
+    "cost": null,
+    "latency": null,
+    "privacy": null,
+    "duplicate": null,
+    "unknown": null
+  },
+  "usage": {
+    "cost_minor": 0,
+    "currency": "USD",
+    "latency_ms": 0,
+    "provider_calls": 0
+  },
+  "evidence_refs": [
+    {
+      "ref": "synthetic:support",
+      "sha256": "sha-256:9ffacf952333d161ebfc32726c4a4b16c1be8ea2398ce96862bdf2e2b410234a",
+      "tenant_ref": "tenant-synthetic",
+      "audience_ref": "synthetic-reader",
+      "redacted": true
+    }
+  ]
+}

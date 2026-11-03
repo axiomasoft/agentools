@@ -1,0 +1,22 @@
+{
+  "schema_version": "evaluation/v1",
+  "suite_id": "technical-teacher",
+  "version": "1",
+  "case_refs": [
+    {
+      "case_id": "golden.teacher",
+      "path": "fixtures/platform/v1/evaluation/teacher-case.json",
+      "case_hash": "sha-256:3efb537e8b271c2c624c7c776115fd5f258f92fd42bf99fe052204177fda793f"
+    }
+  ],
+  "required_scorers": [
+    "technical.hard"
+  ],
+  "corpus_release_refs": [
+    {
+      "ref": "fixtures/platform/v1/evaluation/teacher-input.json",
+      "sha256": "sha-256:9c45ce4dfbaad589d7fd47a8a645f033f22757a52f1d8886f3c93325ffaddd45"
+    }
+  ],
+  "integration_refs": []
+}

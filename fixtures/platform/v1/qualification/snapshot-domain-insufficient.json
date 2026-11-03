@@ -1,0 +1,69 @@
+{
+    "id": "domain",
+    "tuple": {
+        "tenant_ref": "alpha",
+        "components": {
+            "deployment_ref": "ru-primary",
+            "model_revision": "synthetic-revision-1",
+            "profile_ref": "generic-teacher",
+            "profile_bundle_ref": "bundle",
+            "profile_bundle_hash": "sha-256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "task_ref": "teacher-text",
+            "catalog_hash": "sha-256:1d5b8b6c056539fd5502a63c7830cb7b14a51868d74235ec2f4f4829078ac25a",
+            "routing_hash": "sha-256:f5e1479f634a8b5acfeafad85e033dae57016634817dff5ff742af09a909d556",
+            "prompt_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "skills_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "tool_schema_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "material_corpus_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "policy_hash": "sha-256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+            "evidence_policy_hash": "sha-256:802ba8ce5baefbe8f461f484aad37e86c04fcf05664ee3ca372334e7abb03ac2"
+        },
+        "suite_versions": {
+            "technical/v1": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+    },
+    "policy": {
+        "id": "evidence-policy",
+        "required_cases": [
+            "A",
+            "B"
+        ],
+        "required_scorers": [
+            "technical.hard"
+        ],
+        "allowed_kinds": [
+            "contract-scripted",
+            "isolated-postgres",
+            "local-host-e2e",
+            "live-provider",
+            "product-pilot"
+        ],
+        "scope": "educational"
+    },
+    "evidence": {
+        "id": "result-domain",
+        "source_hash": "sha-256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "tuple_hash": "sha-256:1096dc18d6b809ac26ecb115f228c70c76e954450848a8a4740580f98fab16d6",
+        "kind": "contract-scripted",
+        "required_cases": [
+            "A",
+            "B"
+        ],
+        "executed_cases": [
+            "A",
+            "B"
+        ],
+        "scorers": {
+            "technical.hard": "pass",
+            "owner.domain": "insufficient_evidence"
+        },
+        "domain": "insufficient_evidence",
+        "live": "not_run",
+        "host": "not_run",
+        "pilot": "not_run",
+        "public_synthetic_corpus": true
+    },
+    "decision": "insufficient_evidence",
+    "issued_at": "2026-11-01T00:00:00Z",
+    "expires_at": "2026-12-01T00:00:00Z"
+}

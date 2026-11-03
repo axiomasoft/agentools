@@ -1,0 +1,17 @@
+{
+    "id": "rollback",
+    "stable": "old",
+    "canary": null,
+    "cohort_basis_points": 0,
+    "max_admissions": 1,
+    "baseline": "owner-baseline",
+    "baseline_hash": "sha-256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "minimum_samples": 1,
+    "bounds": {
+        "latency_ms": {
+            "max": 200
+        }
+    },
+    "reason": "owner-reason",
+    "rollback_of": "rollout"
+}

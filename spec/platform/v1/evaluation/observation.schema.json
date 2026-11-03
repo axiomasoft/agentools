@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentools:platform:v1:evaluation:observation",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "tenant_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "audience_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "invariants": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tenant_isolation": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "audience_isolation": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "permitted_tools_effects": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "no_duplicates": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "unknown_not_success": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "provenance": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "child_safety_baseline": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "quality": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "grounding": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "cost": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "latency": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "privacy": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "duplicate": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "unknown": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "quality",
+        "grounding",
+        "cost",
+        "latency",
+        "privacy",
+        "duplicate",
+        "unknown"
+      ]
+    },
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cost_minor": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "latency_ms": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "provider_calls": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "cost_minor",
+        "currency",
+        "latency_ms",
+        "provider_calls"
+      ]
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^sha-256:[a-f0-9]{64}$"
+          },
+          "tenant_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "audience_ref": {
+            "type": "string",
+            "minLength": 1
+          },
+          "redacted": {
+            "const": true
+          }
+        },
+        "required": [
+          "ref",
+          "sha256",
+          "tenant_ref",
+          "audience_ref",
+          "redacted"
+        ]
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "tenant_ref",
+    "audience_ref",
+    "invariants",
+    "metrics",
+    "usage",
+    "evidence_refs"
+  ]
+}

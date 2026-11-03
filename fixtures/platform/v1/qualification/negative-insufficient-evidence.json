@@ -1,0 +1,82 @@
+{
+    "schema_version": "qualification-negative-sample/v1",
+    "synthetic_sample": true,
+    "evidence_kind": "contract-scripted",
+    "required_case_ids": [
+        "A",
+        "B"
+    ],
+    "executed_case_ids": [
+        "A"
+    ],
+    "suite_status": "insufficient_evidence",
+    "exit_code": 1,
+    "snapshot": {
+        "id": "missing",
+        "tuple": {
+            "tenant_ref": "alpha",
+            "components": {
+                "deployment_ref": "ru-primary",
+                "model_revision": "synthetic-revision-1",
+                "profile_ref": "generic-teacher",
+                "profile_bundle_ref": "bundle",
+                "profile_bundle_hash": "sha-256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "task_ref": "teacher-text",
+                "catalog_hash": "sha-256:1d5b8b6c056539fd5502a63c7830cb7b14a51868d74235ec2f4f4829078ac25a",
+                "routing_hash": "sha-256:f5e1479f634a8b5acfeafad85e033dae57016634817dff5ff742af09a909d556",
+                "prompt_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "skills_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "tool_schema_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "material_corpus_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "policy_hash": "sha-256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "evidence_policy_hash": "sha-256:a7fb56190f8d2de035752e67b7a0cf1ae029ab5d2d1a02ee516520b3d3fb4adb"
+            },
+            "suite_versions": {
+                "technical/v1": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            }
+        },
+        "policy": {
+            "id": "evidence-policy",
+            "required_cases": [
+                "A",
+                "B"
+            ],
+            "required_scorers": [
+                "technical.hard"
+            ],
+            "allowed_kinds": [
+                "contract-scripted",
+                "isolated-postgres",
+                "local-host-e2e",
+                "live-provider",
+                "product-pilot"
+            ],
+            "scope": "technical-contract-only"
+        },
+        "evidence": {
+            "id": "result-missing",
+            "source_hash": "sha-256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+            "tuple_hash": "sha-256:4c6cab76cc825a6aa2615a42230a6a40bd958e598f1cbc1b6a363ca1e92f2929",
+            "kind": "contract-scripted",
+            "required_cases": [
+                "A",
+                "B"
+            ],
+            "executed_cases": [
+                "A"
+            ],
+            "scorers": {
+                "technical.hard": "pass",
+                "owner.domain": "insufficient_evidence"
+            },
+            "domain": "insufficient_evidence",
+            "live": "not_run",
+            "host": "not_run",
+            "pilot": "not_run",
+            "public_synthetic_corpus": true
+        },
+        "decision": "insufficient_evidence",
+        "issued_at": "2026-11-01T00:00:00Z",
+        "expires_at": "2026-12-01T00:00:00Z"
+    }
+}

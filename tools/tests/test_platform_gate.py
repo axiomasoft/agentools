@@ -17,6 +17,86 @@ import platform_gate as gate
 
 
 class GateTests(unittest.TestCase):
+    def test_qualification_rollout_registry(self):
+        from copy import deepcopy
+        spec = gate.SUITES[('qualification-rollout','test')]
+        pg_spec = gate.SUITES[('qualification-rollout','pg-test')]
+        manifest = json.loads((ROOT/'fixtures/platform/v1/qualification/case-map.json').read_text())
+        self.assertEqual(tuple(manifest['required_cases']), spec.cases)
+        self.assertEqual(tuple(manifest['postgres']), pg_spec.cases)
+        self.assertTrue(pg_spec.requires_pg)
+        inputs = gate.hashes(ROOT, spec.dependencies)
+        for path in sorted((ROOT/'packages/agentools-core/src/Models/Qualification').glob('*.php')):
+            self.assertEqual(gate.source_errors(ROOT,path.read_text(),str(path.relative_to(ROOT))),[],str(path))
+        pg = {'mode':'isolated-postgres','tier':'isolated-postgres',
+              'cases':[{'id':c,'status':'passed'} for c in pg_spec.cases],
+              'isolation':{'engine':'postgresql','isolated':True,'database':'agentools_test_qualification',
+                  'owner':'restricted-test-owner','allow_marker_verified':True,'case_ids':list(pg_spec.cases)}}
+        report = {'mode':spec.mode,'tier':spec.tier,'evidence_kind':'contract-scripted',
+                  'readiness_claim':'technical-contract-only','live_provider':'not_run',
+                  'educational_qualification':'insufficient_evidence','input_hashes':inputs,'limitations':['scripted ports'],
+                  'cases':[{'id':c,'status':'passed'} for c in spec.cases],
+                  'contract_parts':[{'mode':'contract-scripted','tier':'contract-scripted',
+                      'cases':[{'id':c,'status':'passed'} for c in cases]} for cases in gate.QUALIFICATION_PARTS.values()],
+                  'postgres':{'ok':True,'exit':0,'dependency_hashes':inputs,'report':pg},
+                  'static_analysis':{'exit':0,'command':['packages/agentools-postgres/vendor/bin/phpstan','analyse','-c',
+                      'packages/agentools-postgres/tests/Qualification/phpstan.neon','--no-progress','--memory-limit=512M',
+                      'packages/agentools-core/src/Models/Qualification','packages/agentools-core/tests/Models/Qualification',
+                      'packages/agentools-postgres/src/Qualification','packages/agentools-postgres/tests/Qualification']}}
+        gate.validate_report(spec,report)
+        for changes in ({'evidence_kind':'fixture'},{'readiness_claim':'production'},{'live_provider':'passed'},
+                        {'educational_qualification':'qualified'},{'input_hashes':{}},{'postgres':{}},
+                        {'contract_parts':[]},{'static_analysis':{}},{'cases':[]}):
+            with self.subTest(changes=changes), self.assertRaises(gate.GateError):
+                gate.validate_report(spec,dict(report,**changes))
+        for field in ('isolation','cases'):
+            bad = deepcopy(report); bad['postgres']['report'].pop(field)
+            with self.assertRaises(gate.GateError): gate.validate_report(spec,bad)
+        bad = deepcopy(report); bad['postgres']['report']['cases'][0]['status'] = 'skipped'
+        with self.assertRaises(gate.GateError): gate.validate_report(spec,bad)
+
+    def test_evaluation_registry(self):
+        import importlib.util
+        source = importlib.util.spec_from_file_location('evaluation_registry_cases',
+            ROOT / 'packages/agentools-testing/tests/Evaluation/test_harness.py')
+        module = importlib.util.module_from_spec(source)
+        source.loader.exec_module(module)
+        spec = gate.SUITES[('evaluation-harness', 'test')]
+        self.assertEqual(tuple(module.CASES.values()), spec.cases)
+        self.assertEqual(spec.owner, 'P12.1')
+        self.assertFalse(spec.requires_pg)
+        report = {'mode': spec.mode, 'tier': spec.tier, 'evidence_kind': spec.tier,
+                  'readiness_claim': 'technical-contract-only',
+                  'cases': [{'id': case, 'status': 'passed'} for case in spec.cases],
+                  'input_hashes': gate.hashes(ROOT, spec.dependencies), 'limitations': ['synthetic only'],
+                  'baseline': {'measurement_kind': 'local-evaluator-self-check', 'provider_calls': 0,
+                      'spend_minor': 0, 'domain_decision': 'insufficient_evidence', 'domain_scorer': 'absent',
+                      'executed_cases': len(spec.cases), 'elapsed_ms': 1,
+                      'metrics': dict.fromkeys(('quality','grounding','cost','latency','privacy','duplicate','unknown'),None)}}
+        gate.validate_report(spec, report)
+        for changes in ({'evidence_kind': 'fixture'}, {'readiness_claim': 'production'},
+                        {'input_hashes': {}}, {'limitations': []}, {'baseline': {}}, {'cases': []}):
+            with self.subTest(changes=changes), self.assertRaises(gate.GateError):
+                gate.validate_report(spec, dict(report, **changes))
+        for name, keys in gate.EVALUATION_INTEGRATIONS.items():
+            linked = gate.SUITES[(name, 'e2e')]
+            self.assertTrue(linked.requires_pg)
+            self.assertEqual(linked.tier, 'local-host-e2e')
+            self.assertEqual(linked.cases, tuple(key[0] + ':' + case for key in keys for case in gate.SUITES[key].cases))
+            gate.hashes(ROOT, linked.dependencies)
+        result = {'owner': spec.owner, 'suite_manifest_hash': 'a' * 64, 'mode': spec.mode, 'tier': spec.tier,
+                  'report': report, 'exit': 0, 'started_at': '2026-11-03T12:00:00Z',
+                  'finished_at': '2026-11-03T12:00:01Z', 'dependency_hashes': report['input_hashes'],
+                  'case_ids': list(spec.cases), 'failures': 0, 'skips': 0, 'stdout': 'report', 'stderr': ''}
+        envelope = {'command': ['python3','tools/platform_gate.py','test','--suite','evaluation-harness'],
+                    'source': {'revision':'candidate','dirty_diff_digest':'b' * 64}}
+        receipt = gate.evaluation_receipt(result, envelope)
+        module.h.validate('receipt',receipt)
+        self.assertEqual(receipt['required_cases'], receipt['executed_cases'])
+        self.assertEqual(receipt['evidence_kind'], 'contract-scripted')
+        changed = dict(envelope, source=dict(envelope['source'],dirty_diff_digest='c' * 64))
+        self.assertNotEqual(receipt['run_hash'],gate.evaluation_receipt(result,changed)['run_hash'])
+
     def test_voice_journey_registry(self):
         import importlib.util
         source=importlib.util.spec_from_file_location('voice_qualification_fixture',ROOT/'conformance/platform/voice/qualification.py')
