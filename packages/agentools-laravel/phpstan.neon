@@ -9,6 +9,9 @@ parameters:
         - ../agentools-core/src
         - ../agentools-postgres/src
         - ../agentools-testing/src
+        - ../../conformance/platform/host-e2e
+        - ../../examples/platform/support-host/src
+        - ../../examples/platform/read-journey/src
         - ../../conformance/platform/write-journey
         - ../../examples/platform/confirmed-write/src
         - ../../examples/platform/direct-action/src

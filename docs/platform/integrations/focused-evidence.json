@@ -1,0 +1,102 @@
+{
+  "checks": [
+    {
+      "cmd": [
+        "python3",
+        "-B",
+        "conformance/platform/host-e2e/pg.py",
+        "--filter",
+        "testSchoolJourneyAndDuplicate"
+      ],
+      "exit": 0,
+      "started_at": "2026-11-03T07:48:07.662839+00:00",
+      "finished_at": "2026-11-03T07:48:07.979037+00:00",
+      "stdout_sha256": "60f75badf7cacb69a99b6f757e7aa879fb35d06324c1aca3f5d04087064c87c6",
+      "stderr_sha256": "7fadc59424171d525fe17fab134b5bd84e305c7d02573ac62e79f76abf93f3b7",
+      "stdout": "testSchoolJourneyAndDuplicate.stdout.log",
+      "stderr": "testSchoolJourneyAndDuplicate.stderr.log"
+    },
+    {
+      "cmd": [
+        "python3",
+        "-B",
+        "conformance/platform/host-e2e/pg.py",
+        "--filter",
+        "testSchoolRevocation"
+      ],
+      "exit": 0,
+      "started_at": "2026-11-03T07:48:07.979233+00:00",
+      "finished_at": "2026-11-03T07:48:08.383093+00:00",
+      "stdout_sha256": "a4710526a6e4c12c71a32dd868f42a1198b83240be50f79a8d7f6783e356708f",
+      "stderr_sha256": "98a32fcdeea1916adfb6208b21d81a5cd9654b084f35c19cc4aa375f94d7e034",
+      "stdout": "testSchoolRevocation.stdout.log",
+      "stderr": "testSchoolRevocation.stderr.log"
+    },
+    {
+      "cmd": [
+        "python3",
+        "-B",
+        "conformance/platform/host-e2e/pg.py",
+        "--filter",
+        "testSchoolRevocationBeforeModelIo"
+      ],
+      "exit": 0,
+      "started_at": "2026-11-03T07:48:08.383243+00:00",
+      "finished_at": "2026-11-03T07:48:08.602536+00:00",
+      "stdout_sha256": "d9dbe14b6d3904df61f214bab3bc6e2a9c99a217f6d2b341f386ee044a5e185d",
+      "stderr_sha256": "d1c62da09d57694fffa917a149219036687a3a145710531f31e9bf6713ee2b77",
+      "stdout": "testSchoolRevocationBeforeModelIo.stdout.log",
+      "stderr": "testSchoolRevocationBeforeModelIo.stderr.log"
+    },
+    {
+      "cmd": [
+        "python3",
+        "-B",
+        "conformance/platform/host-e2e/pg.py",
+        "--filter",
+        "testSupportJourneyAndHashConflict"
+      ],
+      "exit": 0,
+      "started_at": "2026-11-03T07:48:08.602664+00:00",
+      "finished_at": "2026-11-03T07:48:08.901920+00:00",
+      "stdout_sha256": "53921757123dbcba252e0e4d3e87a7a9fcdd82be9b61cdd7c7d1615f94a6d180",
+      "stderr_sha256": "343b4dd627452ccd72984360f9e28d17fb63ef0bdf4a6b81416dcc686aee6d37",
+      "stdout": "testSupportJourneyAndHashConflict.stdout.log",
+      "stderr": "testSupportJourneyAndHashConflict.stderr.log"
+    },
+    {
+      "cmd": [
+        "python3",
+        "-B",
+        "conformance/platform/host-e2e/pg.py",
+        "--filter",
+        "testLostDeliveryReceipt"
+      ],
+      "exit": 0,
+      "started_at": "2026-11-03T07:48:08.902092+00:00",
+      "finished_at": "2026-11-03T07:48:09.237675+00:00",
+      "stdout_sha256": "f2b3f24f0e07dc2c7c95e5666b2b61ffb1f7dd0602b0dd84a493144d2b8debce",
+      "stderr_sha256": "42d41f393c37f41976d87993c922ac0ed7b1787ad45256e9c767beaa5a3434cb",
+      "stdout": "testLostDeliveryReceipt.stdout.log",
+      "stderr": "testLostDeliveryReceipt.stderr.log"
+    },
+    {
+      "cmd": [
+        "python3",
+        "-B",
+        "conformance/platform/host-e2e/pg.py",
+        "--filter",
+        "testDeliveryOutageBeforeDispatch"
+      ],
+      "exit": 0,
+      "started_at": "2026-11-03T07:48:09.237824+00:00",
+      "finished_at": "2026-11-03T07:48:09.578655+00:00",
+      "stdout_sha256": "407f25155b596a8bf173966708077a8a7f763151d0ac84bee67db07d05fe7b30",
+      "stderr_sha256": "ac30d8c3fe365aeb2e3a9e5013639e3835ac3eeee36faf021f7cf3a0e73af155",
+      "stdout": "testDeliveryOutageBeforeDispatch.stdout.log",
+      "stderr": "testDeliveryOutageBeforeDispatch.stderr.log"
+    }
+  ],
+  "tier": "isolated-postgres",
+  "scope": "individual cases; not the aggregate acceptance"
+}

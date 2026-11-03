@@ -2,11 +2,13 @@ parameters:
     bootstrapFiles:
         - tests/bootstrap.php
         - tests/Journeys/bootstrap.php
+        - ../../conformance/platform/second-host/bootstrap.php
     level: max
     paths:
         - src
         - tests
         - ../../examples/platform/read-journey/src
+        - ../../examples/platform/support-host/src
     excludePaths:
         - tests/no-dev/vendor
     scanDirectories:

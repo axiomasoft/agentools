@@ -1,0 +1,24 @@
+{
+  "revision": "local-host-handoff/v1",
+  "evidence_kind": "host_contract_harness",
+  "focused_evidence_tier": "isolated-postgres",
+  "external_host_e2e": "not_executed",
+  "live_provider": "not_executed",
+  "production_readiness": "not_claimed",
+  "files": {
+    "docs/platform/integrations/README.md": "a6b699362c3a313f1e6e8d38c8204e2d532d0a6bc388c19545370055e0c9bfa8",
+    "docs/platform/integrations/handoff.py": "5228d48c216c1d0d36f7af86c21e70fd2a43a9575e6d76944ee55bf42e794749",
+    "spec/platform/v1/host/README.md": "b0f28d5dd2c69a30f76624f229c750a72b97182b2e30f7bbe1ccb5e927d489e8",
+    "examples/platform/edufy-host/contract.json": "16c0745a18ba4f1314ac563ff03a61921ac807f15d3f83b1f1c74eb85cfa5750",
+    "examples/platform/edufy-host/change-request.json": "19a844c71d37feba3a4910d68ce088cb808d2cd205079e9c7e36cb81f0009c60",
+    "extensions/chatom/contract.md": "fb1f4475093e3504a51c6b7c12c64cff3d44d5626c36a7c6fe27df7d2fcfe16a",
+    "extensions/chatom/pin-matrix.json": "68a405a56ec7139b7c848769b1d42d4e218d6dd6a0e20d94d05676cfaa800f7c",
+    "packages/agentools-core/src/Security/HostAuthorization.php": "1bfd01b7aed976fb062212c2fe115870f9ab69b20e87da56202cad316c2c8bd6",
+    "packages/agentools-core/src/Context/ContextAccess.php": "56f39bd69b9051030ecd282f75e79af7235c6eb31823fe621405356abbd78a2e",
+    "packages/agentools-core/src/Actions/Effects/OwnerPort.php": "090805560aa1191c0c7d3a8212f3dadd772f8cdd89745072babc493be1cfb1ef",
+    "conformance/platform/host-e2e/SchoolOwner.php": "31b9e2e95f80f37e83b19d80fc45263d1d6427dc7b1d332abfcb1acfedee8a34",
+    "packages/agentools-laravel/tests/Journeys/HostE2eTest.php": "bcf0a6290082c6ad6d01df798aeebca88996b6fdf5c131d8596e6df8dc1af390",
+    "conformance/platform/host-e2e/pg.py": "b7fa0db886abc3abe3f737cdaac86a9a2f3db23c8ba97dcc915eeb2ae7a10ebb",
+    "docs/platform/integrations/focused-evidence.json": "1a9c19fbc7ba608b4c2617aa08724a3c019ba31270858ba7c290f112a503972a"
+  }
+}

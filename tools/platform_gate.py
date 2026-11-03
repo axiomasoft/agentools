@@ -25,7 +25,7 @@ TIERS = {"design-schema", "unit", "contract-scripted", "isolated-postgres",
 
 # Explicit, independent of discovery: removing a test must make the gate red.
 SELF_CASES = tuple("GateTests.test_" + name for name in (
-    "chatom_registry", "host_registry", "architecture_fixture", "boundary_current_tree", "boundary_missing_source",
+    "host_e2e_registry", "second_host_registry", "chatom_registry", "host_registry", "architecture_fixture", "boundary_current_tree", "boundary_missing_source",
     "boundary_production_testing", "boundary_duplicate_owner", "boundary_core_dependency",
     "boundary_autoload_escape", "boundary_transitive_testing", "boundary_namespace_path",
     "boundary_production_source", "contradictory_totals",
@@ -1242,6 +1242,47 @@ for _chatom_name in ('chatom', 'chatom-delivery', 'host-chatom'):
         (sys.executable, '-B', 'extensions/chatom/tests/run.py', '--pg'), CHATOM_INPUTS, True)
 
 
+SECOND_HOST_CONTRACT_CASES = ('support.context', 'support.tool-intersection', 'support.untrusted-handle')
+SECOND_HOST_PG_CASES = ('support.runtime-delivery', 'support.current-guard', 'support.delivery-lost-ack', 'support.owner-revoke', 'support.invalid-context-provider', 'support.source-conflict', 'support.direct-confirmed-action')
+SECOND_HOST_CASES = SECOND_HOST_CONTRACT_CASES + SECOND_HOST_PG_CASES
+SECOND_HOST_INPUTS = tuple(dict.fromkeys(tuple(
+    str(p.relative_to(ROOT)) for base in (
+        ROOT / 'examples/platform/support-host', ROOT / 'conformance/platform/second-host',
+        ROOT / 'examples/platform/read-journey', ROOT / 'examples/platform/confirmed-write',
+        ROOT / 'examples/platform/direct-action', ROOT / CORE / 'src', ROOT / POSTGRES / 'src',
+        ROOT / POSTGRES / 'migrations', ROOT / 'packages/agentools-laravel/src/Host',
+    ) for p in sorted(base.rglob('*')) if p.is_file() and 'vendor' not in p.parts
+      and p.suffix in {'.php', '.py', '.json', '.md', '.sql', '.xml'}
+) + ('packages/agentools-testing/tests/Journeys/SecondHostTest.php', 'packages/agentools-testing/phpstan.neon',
+     'packages/agentools-core/tests/Actions/Confirmation/Fixture.php',
+     'packages/agentools-core/tests/Common/Harness.php', 'packages/agentools-core/tests/Common/JcsAdapter.php',
+     'packages/agentools-postgres/tests/IsolatedDatabase.php', 'packages/agentools-postgres/tests/run.py',
+     'conformance/platform/read-journey/host.sql', 'tools/storage_chaos.py', 'tools/platform_gate.py', 'tools/tests/test_platform_gate.py')))
+SUITES[('second-host', 'test')] = Suite('P10.3', 'contract-scripted', 'contract-scripted', SECOND_HOST_CASES,
+    (sys.executable, '-B', 'conformance/platform/second-host/run.py'), SECOND_HOST_INPUTS)
+
+
+HOST_E2E_CASES = ('host-e2e.school-duplicate', 'host-e2e.school-revoke', 'host-e2e.school-revoke-preflight', 'host-e2e.support-conflict',
+                  'host-e2e.lost-receipt', 'host-e2e.delivery-outage')
+HOST_E2E_INPUTS = tuple(dict.fromkeys(tuple(
+    str(p.relative_to(ROOT)) for base in (
+        ROOT/'conformance/platform/host-e2e', ROOT/'docs/platform/integrations',
+        ROOT/'examples/platform/support-host', ROOT/'examples/platform/read-journey',
+        ROOT/CORE/'src', ROOT/POSTGRES/'src', ROOT/POSTGRES/'migrations',
+        ROOT/'packages/agentools-laravel/src/Host',
+    ) for p in sorted(base.rglob('*')) if p.is_file() and 'vendor' not in p.parts
+      and p.suffix in {'.php','.py','.json','.md','.sql','.xml'}
+) + ('packages/agentools-laravel/tests/Journeys/HostE2eTest.php',
+     'packages/agentools-postgres/tests/IsolatedDatabase.php', 'packages/agentools-postgres/tests/run.py',
+     'conformance/platform/read-journey/host.sql', 'tools/storage_chaos.py',
+     'spec/platform/v1/host/README.md', 'examples/platform/edufy-host/contract.json',
+     'examples/platform/edufy-host/change-request.json', 'extensions/chatom/contract.md',
+     'extensions/chatom/pin-matrix.json',
+     'tools/platform_gate.py', 'tools/tests/test_platform_gate.py')))
+SUITES[('host-e2e', 'e2e')] = Suite('P10.4', 'local-host-e2e', 'local-host-e2e', HOST_E2E_CASES,
+    (sys.executable, '-B', 'conformance/platform/host-e2e/run.py'), HOST_E2E_INPUTS, True)
+
+
 class GateError(Exception):
     pass
 
@@ -1301,6 +1342,24 @@ def validate_report(spec: Suite, report):
         if field in report:
             require(type(report[field]) is int and report[field] == expected,
                     f"contradictory runner total: {field}")
+    if spec.owner == 'P10.4':
+        require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'host E2E input hashes missing/stale')
+        require(report.get('evidence_kind') == 'host_contract_harness', 'synthetic host evidence kind missing')
+        require(report.get('external_host_e2e') == 'not_executed' and report.get('live_provider') == 'not_executed'
+                and report.get('production_readiness') == 'not_claimed', 'local host evidence tier inflated')
+        require(report.get('handoff_verified') is True, 'handoff evidence missing or stale')
+    if spec.owner == 'P10.3':
+        require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'second host input hashes missing/stale')
+        require(report.get('evidence_kind') == 'host_contract_harness', 'second host evidence kind missing')
+        isolation = report.get('isolation', {})
+        require(isinstance(isolation, dict) and isolation.get('engine') == 'postgresql'
+                and isolation.get('isolated') is True and isolation.get('allow_marker_verified') is True
+                and isinstance(isolation.get('database'), str) and isolation['database'].startswith('agentools_test_')
+                and isinstance(isolation.get('owner'), str) and bool(isolation['owner'])
+                and Counter(isolation.get('case_ids', [])) == Counter(SECOND_HOST_PG_CASES),
+                'second host isolated PostgreSQL evidence missing')
+        require(report.get('live_provider') == 'not_executed' and report.get('production_readiness') == 'not_claimed',
+                'second host evidence tier inflated')
     if spec.owner == 'P10.1':
         require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'host input hashes missing/stale')
         require(report.get('evidence_kind') == 'host_contract_harness', 'host evidence kind missing')

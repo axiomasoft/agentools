@@ -43,6 +43,8 @@ final class SupportJourney
     public readonly RunId $runId;
     public readonly TurnId $turnId;
     public ?\Closure $barrier = null;
+    /** @var null|\Closure(ExecutionContext): mixed Host-provided context blocks. */
+    public ?\Closure $contextProvider = null;
     public bool $lookupSupported = true;
     public bool $loseDestinationAck = false;
     public ?AdvanceLease $workerLease = null;
@@ -118,6 +120,14 @@ final class SupportJourney
             $provenance=$kind==='tools'?new Provenance(toolId:$this->readDefinition->ref->id):new Provenance();
             $blocks[]=new ContextBlock($this->ref('block:'.$kind),$kind,$source,'1',$this->ref('host-owner'),
                 $trust,'private','support.read',$source,$text,$expiry,$kind!=='tools',100-$index,$this->hasher,$evidence,$provenance);
+        }
+        if ($this->contextProvider !== null) {
+            $extra = ($this->contextProvider)($this->context);
+            if (!is_array($extra) || !array_is_list($extra)) { throw new \InvalidArgumentException('Host context must be a list'); }
+            foreach ($extra as $block) {
+                if (!$block instanceof ContextBlock) { throw new \InvalidArgumentException('Host context block required'); }
+                $blocks[] = $block;
+            }
         }
         $tools=new class($this) implements ToolAccess {
             public function __construct(private SupportJourney $journey) {}

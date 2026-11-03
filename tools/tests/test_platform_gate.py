@@ -17,6 +17,46 @@ import platform_gate as gate
 
 
 class GateTests(unittest.TestCase):
+    def test_host_e2e_registry(self):
+        spec=gate.SUITES[('host-e2e','e2e')]
+        self.assertIn('GateTests.test_host_e2e_registry',gate.SELF_CASES)
+        self.assertEqual((spec.owner,spec.mode,spec.tier,spec.requires_pg),('P10.4','local-host-e2e','local-host-e2e',True))
+        report={'mode':spec.mode,'tier':spec.tier,'evidence_kind':'host_contract_harness',
+                'input_hashes':gate.hashes(ROOT,spec.dependencies),'handoff_verified':True,
+                'external_host_e2e':'not_executed','live_provider':'not_executed','production_readiness':'not_claimed',
+                'cases':[{'id':c,'status':'passed'} for c in spec.cases],
+                'isolation':{'engine':'postgresql','isolated':True,'database':'agentools_test_fixture',
+                             'owner':'fixture','allow_marker_verified':True,'case_ids':list(spec.cases)}}
+        gate.validate_report(spec,report)
+        for change in ({'cases':[]},{'cases':report['cases'][:-1]},{'handoff_verified':False},
+                       {'isolation':{}},{'input_hashes':{}},{'external_host_e2e':'passed'},
+                       {'cases':[dict(c,status='skipped') for c in report['cases']]}):
+            with self.assertRaises(gate.GateError): gate.validate_report(spec,dict(report,**change))
+        args=gate.parser().parse_args(['e2e','--scenario','host-e2e'])
+        with patch.object(gate,'run_suite',return_value={'ok':True}) as run:
+            self.assertEqual(gate.execute(args),[{'ok':True}])
+        run.assert_called_once_with(ROOT,spec,isolated=True)
+
+    def test_second_host_registry(self):
+        spec = gate.SUITES[('second-host', 'test')]
+        self.assertIn('GateTests.test_second_host_registry', gate.SELF_CASES)
+        self.assertEqual((spec.owner, spec.mode, spec.tier), ('P10.3', 'contract-scripted', 'contract-scripted'))
+        report = {'mode':spec.mode, 'tier':spec.tier, 'evidence_kind':'host_contract_harness',
+                  'cases':[{'id':name,'status':'passed'} for name in spec.cases],
+                  'input_hashes':gate.hashes(ROOT,spec.dependencies), 'live_provider':'not_executed',
+                  'production_readiness':'not_claimed',
+                  'isolation':{'engine':'postgresql','isolated':True,'database':'agentools_test_fixture',
+                               'owner':'fixture','allow_marker_verified':True,'case_ids':list(gate.SECOND_HOST_PG_CASES)}}
+        gate.validate_report(spec,report)
+        for change in ({'cases':[]}, {'cases':report['cases'][:-1]}, {'isolation':{}},
+                       {'live_provider':'executed'}, {'input_hashes':{}},
+                       {'cases':[dict(c,status='skipped') for c in report['cases']]}):
+            with self.assertRaises(gate.GateError): gate.validate_report(spec,dict(report,**change))
+        args = gate.parser().parse_args(['test','--suite','second-host'])
+        with patch.object(gate,'run_suite',return_value={'ok':True}) as run:
+            self.assertEqual(gate.execute(args),[{'ok':True}])
+        run.assert_called_once_with(ROOT,spec,isolated=False)
+
     def test_chatom_registry(self):
         contract = gate.SUITES[('chatom', 'test')]
         durable = gate.SUITES[('chatom', 'pg-test')]

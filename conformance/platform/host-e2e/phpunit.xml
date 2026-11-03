@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="bootstrap.php" failOnWarning="true" failOnRisky="true" cacheResult="false">
+  <testsuites><testsuite name="host-e2e"><file>../../../packages/agentools-laravel/tests/Journeys/HostE2eTest.php</file></testsuite></testsuites>
+</phpunit>
