@@ -10,7 +10,8 @@ use AgenToolsPlatform\Core\Budget\AdmissionRequest;
 use AgenToolsPlatform\Core\Common\{ContractViolation, ErrorCode, PayloadHash, Ref, UtcInstant};
 use AgenToolsPlatform\Core\Models\Time;
 use AgenToolsPlatform\Core\Runtime\{AdvanceRun, InvocationCheckpoint, InvocationGuard, InvocationPlan, ProviderLookup};
-use AgenToolsPlatform\Core\Security\{ExecutionContext, TrustedInput};
+use AgenToolsPlatform\Core\Security\{ExecutionContext, TrustedInput, TraceLinks};
+use AgenToolsPlatform\Core\Observability\{Stage,Outcome};
 use AgenToolsPlatform\Postgres\Actions\SubmissionLifecycle;
 use AgenToolsPlatform\Postgres\Confirmation\{ScopedReplayStore, Service};
 use AgenToolsPlatform\Postgres\Models\InvocationRepository;
@@ -42,13 +43,24 @@ final readonly class Composition
                 $this->host->assertCurrent($context, $plan);
             }
         };
-        $this->runtime = new AdvanceRun(new InvocationRepository($this->repositories, accounting: $accounting?->recorder), $p->transport, $accounting === null ? $p->budget : $accounting->budget,
+        $this->runtime = new AdvanceRun(new InvocationRepository($this->repositories, accounting: $accounting?->recorder), ($p->telemetry===null?$p->transport:new \AgenToolsPlatform\Laravel\Observability\ObservedTransport($p->transport,$p->telemetry)), $accounting === null ? $p->budget : $accounting->budget,
             $guard, $p->payloads, new DurableProposals($this->actions, $this->confirmation, $p->registry,
                 $p->policy, $p->hasher, $p->json, $scope, $p->payloads), $p->hasher,
             $p->transport instanceof ProviderLookup ? $p->transport : null);
     }
 
     public function execute(Input $entry): DeliveryReceipt
+    {
+        $input=null;
+        try { return $this->executeManaged($entry,$input); }
+        catch (\Throwable $error) {
+            if ($input!==null) { $this->ports->telemetry?->failure($input->context,$entry->entry,$error); }
+            throw $error;
+        }
+    }
+
+    /** @param-out TrustedInput $input */
+    private function executeManaged(Input $entry,?TrustedInput &$input): DeliveryReceipt
     {
         $p = $this->ports;
         $this->scope->assertActive();
@@ -58,10 +70,10 @@ final readonly class Composition
         $this->accounting?->tenant->assertSame($input->context->session->tenant);
         $input->context->identity->tenant->assertSame($authentication->tenant);
         $this->current($input);
-        $this->decision($input, 'tenant/session');
+        $this->decision($input, 'tenant/session', entry:$entry->entry);
         $bundle = $p->host->profileData($input);
         $input->context->identity->tenant->assertSame($bundle->ref->tenant);
-        $this->decision($input, 'profile/data');
+        $this->decision($input, 'profile/data', entry:$entry->entry);
         $this->current($input);
         $work = $p->host->compile($input, $bundle, $entry->entry);
         if ($entry->entry === Entry::DirectAction ? $work->action === null : $work->plan === null) {
@@ -73,22 +85,22 @@ final readonly class Composition
         } else {
             $work->action->request->scopeHash->assertSame($input->context->scopeHash($p->hasher));
         }
-        $this->decision($input, 'context');
+        $this->decision($input, 'context', entry:$entry->entry,work:$work);
         $this->current($input);
         $p->host->deployment($input, $work);
-        $this->decision($input, 'deployment');
+        $this->decision($input, 'deployment', entry:$entry->entry,work:$work);
         $this->current($input);
         $result = $this->advance($input, $work);
         $this->decision($input, 'runtime', $result instanceof InvocationCheckpoint ? $result->stage()
-            : ($result instanceof Preview ? 'confirmation_required' : $result->receipt->wireStatus));
+            : ($result instanceof Preview ? 'confirmation_required' : $result->receipt->wireStatus),entry:$entry->entry,work:$work,result:$result);
         $this->current($input);
         $checked = $p->host->disclose($input, $result);
         $input->context->identity->tenant->assertSame($checked->tenant);
-        $this->decision($input, 'disclosure');
+        $this->decision($input, 'disclosure', entry:$entry->entry,work:$work);
         $this->current($input);
         $receipt = $p->host->deliver($input, $checked, $entry->entry);
         $input->context->identity->tenant->assertSame($receipt->id->tenant);
-        $this->decision($input, 'delivery', $receipt->acknowledgement === null ? 'unknown' : 'acknowledged');
+        $this->decision($input, 'delivery', $receipt->acknowledgement === null ? 'unknown' : 'acknowledged',entry:$entry->entry,work:$work,result:$result,delivery:$receipt);
         return $receipt;
     }
 
@@ -123,9 +135,25 @@ final readonly class Composition
         $input->context->assertCurrent($this->ports->authorization);
     }
 
-    private function decision(TrustedInput $input, string $stage, string $code = 'allowed'): void
+    private function decision(TrustedInput $input,string $stage,string $code='allowed',Entry $entry=Entry::Managed,
+        ?Work $work=null,InvocationCheckpoint|ActionView|Preview|null $result=null,?DeliveryReceipt $delivery=null): void
     {
         $this->scope->assertActive();
-        $input->context->identity->tenant->assertSame($this->ports->host->decision($input, $stage, $code)->tenant);
+        $decision=$this->ports->host->decision($input,$stage,$code);
+        $tenant=$input->context->identity->tenant;$tenant->assertSame($decision->tenant);
+        $telemetry=$this->ports->telemetry;
+        if ($telemetry===null) { return; }
+        $plan=$work?->plan;
+        $action=$result instanceof ActionView?$result->receipt->actionId:($result instanceof Preview?$result->binding->action:null);
+        $links=new TraceLinks(turn:$plan===null?null:new Ref($tenant,$plan->turnId->value),run:$plan===null?null:new Ref($tenant,$plan->runId->value),
+            snapshot:$plan?->snapshot->ref,invocation:$plan===null?null:new Ref($tenant,$plan->request->invocationId->value),
+            action:$action===null?null:new Ref($tenant,$action->value),delivery:$delivery===null?null:new Ref($tenant,$delivery->id->value),
+            model:$plan?->deployment->ref,decision:$decision,hash:$plan?->requestHash);
+        $where=match($stage) { 'context'=>Stage::Context,'deployment'=>Stage::Deployment,'runtime'=>Stage::Runtime,
+            'disclosure'=>Stage::Disclosure,'delivery'=>Stage::Delivery,default=>Stage::Admission };
+        $outcome=match($code) { 'unknown','outbound'=>Outcome::Unknown,'acknowledged','complete','completed','succeeded'=>Outcome::Succeeded,
+            'confirmation_required','waiting_action','waiting_confirmation','waiting_external'=>Outcome::Waiting,
+            'failed'=>Outcome::Failed,'allowed'=>Outcome::Allowed,default=>Outcome::Unknown };
+        $telemetry->record($input->context,$entry,$where,$outcome,$links);
     }
 }

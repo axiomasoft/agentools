@@ -25,7 +25,7 @@ TIERS = {"design-schema", "unit", "contract-scripted", "isolated-postgres",
 
 # Explicit, independent of discovery: removing a test must make the gate red.
 SELF_CASES = tuple("GateTests.test_" + name for name in (
-    "qualification_rollout_registry", "evaluation_registry", "voice_journey_registry", "voice_delivery_registry", "voice_ingress_registry", "host_e2e_registry", "second_host_registry", "chatom_registry", "host_registry", "architecture_fixture", "boundary_current_tree", "boundary_missing_source",
+    "baseline_incidents_registry", "qualification_rollout_registry", "operations_registry", "observability_registry", "evaluation_registry", "voice_journey_registry", "voice_delivery_registry", "voice_ingress_registry", "host_e2e_registry", "second_host_registry", "chatom_registry", "host_registry", "architecture_fixture", "boundary_current_tree", "boundary_missing_source",
     "boundary_production_testing", "boundary_duplicate_owner", "boundary_core_dependency",
     "boundary_autoload_escape", "boundary_transitive_testing", "boundary_namespace_path",
     "boundary_production_source", "contradictory_totals",
@@ -1438,6 +1438,89 @@ SUITES[('qualification-rollout','pg-test')] = Suite('P12.2-pg','isolated-postgre
     (sys.executable,'-B',f'{POSTGRES}/tests/Qualification/run.py'),QUALIFICATION_INPUTS,True)
 
 
+# P12.3: one bounded facade, existing scheduler and existing accounting dispatcher.
+OPERATIONS_CONTRACT_CASES = ('operations.command-scope-bounds','operations.redacted-findings','operations.opt-in-command-definitions')
+OPERATIONS_FACADE_CASES = ('CM-049','V2ALL-OPS-POSITIVE','CM-050','V2ALL-OPS-NEGATIVE',
+    'operations.stable-delivery','V2ALL-OPS-FAULT','operations.invocation-proposal-identities',
+    'operations.dependency-corrupt-proof','operations.usage-lost-ack','operations.usage-exact-key',
+    'operations.cli-trusted-handle','operations.prune-tombstone','operations.owner-lookup-no-replay','operations.retention-holds')
+OPERATIONS_CADENCE_CASES = ('CM-045','scheduler.atomic-rollback','scheduler.crash-after-commit','CM-048')
+OPERATIONS_PG_CASES = OPERATIONS_FACADE_CASES + OPERATIONS_CADENCE_CASES
+OPERATIONS_ANALYSIS = ['packages/agentools-laravel/vendor/bin/phpstan','analyse','-c',
+    'packages/agentools-laravel/phpstan.neon','--no-progress','--memory-limit=512M',
+    'packages/agentools-laravel/src/Operations','packages/agentools-laravel/src/Console',
+    'packages/agentools-laravel/tests/Operations/Facade','packages/agentools-postgres/src/Usage/Dispatcher.php']
+OPERATIONS_INPUTS = tuple(dict.fromkeys(LARAVEL_INPUTS + SCHEDULER_INPUTS + USAGE_RESERVATIONS_INPUTS + tuple(
+    str(p.relative_to(ROOT)) for base in (ROOT/'packages/agentools-laravel/src/Operations',
+        ROOT/'packages/agentools-laravel/src/Console',ROOT/'packages/agentools-laravel/tests/Operations/Facade')
+    for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php','.py','.xml','.neon','.md'}
+) + ('docs/platform/operations.md',)))
+OPS_BASE = 'packages/agentools-laravel/tests/Operations/Facade'
+SUITES[('operations-contract','test')] = Suite('P12.3-contract','contract-scripted','contract-scripted',OPERATIONS_CONTRACT_CASES,
+    ('php',f'{OPS_BASE}/contract.php'),OPERATIONS_INPUTS)
+SUITES[('operations-calendar','test')] = Suite('P12.3-calendar','unit','unit',SCHEDULER_CALENDAR_CASES,
+    (sys.executable,'-B','extensions/scheduler/tests/calendar.py'),OPERATIONS_INPUTS)
+SUITES[('operations-facade','pg-test')] = Suite('P12.3-facade','isolated-postgres','isolated-postgres',OPERATIONS_FACADE_CASES,
+    (sys.executable,'-B',f'{OPS_BASE}/run.py'),OPERATIONS_INPUTS,True)
+SUITES[('operations-cadence','pg-test')] = Suite('P12.3-cadence','isolated-postgres','isolated-postgres',OPERATIONS_CADENCE_CASES,
+    (sys.executable,'-B','extensions/scheduler/tests/run.py','--filter',
+        'testConcurrentScanners|testAtomicRollbackAndPendingBatchRecovery|testCrashAfterCommit|testCurrentRevocationBeforeDispatch'),OPERATIONS_INPUTS,True)
+SUITES[('operations','pg-test')] = Suite('P12.3-pg','isolated-postgres','isolated-postgres',OPERATIONS_PG_CASES,
+    (sys.executable,'-B',f'{OPS_BASE}/pg.py'),OPERATIONS_INPUTS,True)
+SUITES[('operations','test')] = Suite('P12.3','contract-scripted','contract-scripted',
+    OPERATIONS_CONTRACT_CASES + SCHEDULER_CALENDAR_CASES + OPERATIONS_PG_CASES + ('operations.static-analysis','operations.composer-valid'),
+    (sys.executable,'-B',f'{OPS_BASE}/suite.py'),OPERATIONS_INPUTS)
+
+
+# P12.4: closed metadata projection, bounded metrics, separate encrypted diagnostics and real guard regression.
+OBSERVABILITY_CONTRACT_CASES = ('CM-044','V2ALL-PRIVACY-POSITIVE','observability.bounded-metrics',
+    'V2ALL-PRIVACY-NEGATIVE','V2ALL-PRIVACY-FAULT')
+OBSERVABILITY_PG_CASES = ('privacy.encrypted-diagnostic-access','privacy.audit-resolver-revoke',
+    'privacy.expiry-tenant-integrity','privacy.diagnostic-reset-quarantine','privacy.retention-tombstone','privacy.audit-durable-graph',
+    'privacy.managed-trace-entry-parity','privacy.managed-failure-policy','privacy.managed-worker-reset','privacy.operations-readonly-audit','privacy.unknown-outcomes')
+OBSERVABILITY_CRON_CASES = ('CM-048','scheduler.common-guards-source-binding')
+OBSERVABILITY_VOICE_CASES = ('voice-delivery.disclosure-revoke',)
+OBSERVABILITY_ANALYSIS = ['packages/agentools-laravel/vendor/bin/phpstan','analyse','-c',
+    'packages/agentools-laravel/phpstan.neon','--no-progress','--memory-limit=512M',
+    'packages/agentools-core/src/Observability','packages/agentools-core/tests/Observability',
+    'packages/agentools-laravel/src/Observability','packages/agentools-laravel/tests/Observability',
+    'packages/agentools-laravel/src/Managed/Composition.php','packages/agentools-laravel/src/Managed/HostBindings.php',
+    'packages/agentools-laravel/src/Operations/Facade.php']
+OBSERVABILITY_INPUTS = tuple(dict.fromkeys(OPERATIONS_INPUTS + SECURITY_INPUTS + VOICE_DELIVERY_INPUTS + tuple(
+    str(p.relative_to(ROOT)) for base in (ROOT/CORE/'src/Observability',ROOT/CORE/'tests/Observability',
+        ROOT/'packages/agentools-laravel/src/Observability',ROOT/'packages/agentools-laravel/tests/Observability',
+        ROOT/'fixtures/platform/v1/redaction') for p in sorted(base.rglob('*'))
+    if p.is_file() and p.suffix in {'.php','.py','.json','.xml','.md'}
+) + ('docs/platform/security.md',)))
+OBS_BASE = 'packages/agentools-laravel/tests/Observability'
+SUITES[('observability-contract','test')] = Suite('P12.4-contract','contract-scripted','contract-scripted',OBSERVABILITY_CONTRACT_CASES,
+    ('php',f'{CORE}/tests/Observability/contract.php'),OBSERVABILITY_INPUTS)
+SUITES[('observability-durable','pg-test')] = Suite('P12.4-durable','isolated-postgres','isolated-postgres',OBSERVABILITY_PG_CASES,
+    (sys.executable,'-B',f'{OBS_BASE}/run.py'),OBSERVABILITY_INPUTS,True)
+SUITES[('observability-cron','pg-test')] = Suite('P12.4-cron','isolated-postgres','isolated-postgres',OBSERVABILITY_CRON_CASES,
+    (sys.executable,'-B','extensions/scheduler/tests/run.py','--filter','testCurrentRevocationBeforeDispatch|testCommonGuardDenialAndSourceSubstitution'),OBSERVABILITY_INPUTS,True)
+SUITES[('observability-voice','pg-test')] = Suite('P12.4-voice','isolated-postgres','isolated-postgres',OBSERVABILITY_VOICE_CASES,
+    (sys.executable,'-B','extensions/loqum/tests/Delivery/pg.py','--filter','testDisclosureAndRevoke'),OBSERVABILITY_INPUTS,True)
+SUITES[('observability-accounting','pg-test')] = Suite('P12.4-accounting','isolated-postgres','isolated-postgres',('managed.accounting-failure',),
+    (sys.executable,'-B','packages/agentools-laravel/tests/Composition/run.py','--filter','testAccountingFailureIsNotOptionalTelemetry'),OBSERVABILITY_INPUTS,True)
+SUITES[('observability-security','test')] = Suite('P12.4','contract-scripted','contract-scripted',
+    OBSERVABILITY_CONTRACT_CASES + OBSERVABILITY_PG_CASES + OBSERVABILITY_CRON_CASES + OBSERVABILITY_VOICE_CASES
+        + ('managed.accounting-failure','observability.static-analysis','observability.composer-valid'),
+    (sys.executable,'-B',f'{OBS_BASE}/suite.py'),OBSERVABILITY_INPUTS)
+
+# P12.5: measurement and incident handoff only, never a live provider call.
+BASELINE_CASES = ('baseline.recorded-measurements','baseline.actual-golden-fault',
+    'incidents.required-playbooks','live.complete-is-not-qualified','live.missing-bindings-refused',
+    'live.data-spend-fail-closed','live.stale-incomplete-evidence-refused','live.offline-no-io')
+BASELINE_INPUTS = tuple(dict.fromkeys(EVALUATION_INPUTS + (
+    'docs/platform/baseline.json','docs/platform/incidents/README.md',
+    'conformance/platform/live/baseline.py','conformance/platform/live/probe.py',
+    'conformance/platform/live/test_baseline.py','conformance/platform/live/run.py',
+    'fixtures/platform/v1/qualification/live-probe-recipe.json',)))
+SUITES[('baseline-incidents','test')] = Suite('P12.5','contract-scripted','contract-scripted',BASELINE_CASES,
+    (sys.executable,'-B','conformance/platform/live/run.py'),BASELINE_INPUTS)
+
+
 class GateError(Exception):
     pass
 
@@ -1485,6 +1568,70 @@ def validate_report(spec: Suite, report):
     ids = [c["id"] for c in cases]
     require(Counter(ids) == Counter(spec.cases), "required case set differs (missing/extra/duplicate)")
     require(all(c.get("status") == "passed" for c in cases), "failed, skipped or unknown required case")
+    if spec.owner == 'P12.5':
+        require(report.get('evidence_kind') == 'contract-scripted' and report.get('readiness_claim') == 'technical-contract-only'
+                and report.get('live_provider') == 'not_run', 'baseline evidence scope inflated')
+        require(report.get('input_hashes') == hashes(ROOT,spec.dependencies), 'baseline inputs missing/stale')
+        require(isinstance(report.get('limitations'),list) and bool(report['limitations']), 'baseline limitations missing')
+        baseline = report.get('baseline', {})
+        require(baseline == json.loads((ROOT/'docs/platform/baseline.json').read_text()), 'baseline record differs')
+        require(baseline.get('tier') == 'contract-scripted' and baseline.get('provider_pricing') is None
+                and baseline.get('production_slo') is None and baseline.get('live_provider') == 'not_run', 'baseline scope inflated')
+        measurements = baseline.get('measurements', [])
+        require(isinstance(measurements,list) and len(measurements)==2
+                and {row.get('group') for row in measurements if isinstance(row,dict)} == {'golden','fault'}
+                and all(type(row.get('test_count')) is int and row['test_count'] > 0
+                        and type(row.get('elapsed_ms')) in (int,float) and row['elapsed_ms'] >= 0
+                        and row.get('provider_calls') == row.get('measured_spend_minor') == row.get('failures') == row.get('skips') == 0
+                        for row in measurements), 'invalid measured baseline')
+    if spec.owner == 'P12.4':
+        require(report.get('evidence_kind')=='contract-scripted' and report.get('readiness_claim')=='technical-contract-only'
+            and report.get('live_provider')=='not_run', 'observability evidence/readiness inflated')
+        require(report.get('input_hashes')==hashes(ROOT,spec.dependencies), 'observability inputs missing/stale')
+        require(isinstance(report.get('limitations'),list) and report['limitations'], 'observability limitations missing')
+        parts=report.get('parts')
+        keys=(('observability-contract','test'),('observability-durable','pg-test'),('observability-cron','pg-test'),('observability-voice','pg-test'),('observability-accounting','pg-test'))
+        require(isinstance(parts,list) and len(parts)==len(keys), 'observability required partition missing')
+        for key,part in zip(keys,parts):
+            require(isinstance(part,dict) and part.get('ok') is True and part.get('exit')==0
+                and part.get('dependency_hashes')==hashes(ROOT,SUITES[key].dependencies), 'observability partition failed/stale')
+            validate_report(SUITES[key],part.get('report'))
+        require(report.get('static_analysis')=={'command':OBSERVABILITY_ANALYSIS,'exit':0}, 'observability analysis missing')
+        require(report.get('composer')=={'command':['composer','validate','--strict','--working-dir=packages/agentools-core'],'exit':0},
+            'observability dependency validation missing')
+    if spec.owner == 'P12.3-cadence':
+        observations=report.get('observations',{})
+        concurrent=observations.get('CM-045',{})
+        require(concurrent.get('workers')==2 and concurrent.get('exits')==[0,0]
+            and concurrent.get('same_receipts') is True and concurrent.get('counts')==1,
+            'operations concurrent scanner proof missing')
+        crash=observations.get('scheduler.crash-after-commit',{})
+        require(crash.get('signal')==9 and crash.get('signaled') is True and type(crash.get('worker_exit')) is int
+            and crash['worker_exit']!=0 and crash.get('same_refs') is True and crash.get('counts')==1,
+            'operations scanner crash/restart proof missing')
+    if spec.owner in {'P12.3','P12.3-pg'}:
+        require(report.get('evidence_kind') == spec.tier, 'operations evidence kind differs')
+        require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'operations inputs missing/stale')
+        require(isinstance(report.get('limitations'),list) and report['limitations'], 'operations limitations missing')
+        parts=report.get('parts')
+        keys=(('operations-contract','test'),('operations-calendar','test'),('operations','pg-test')) if spec.owner=='P12.3' else (
+            ('operations-facade','pg-test'),('operations-cadence','pg-test'))
+        require(isinstance(parts,list) and len(parts)==len(keys), 'operations required partition missing')
+        for key,part in zip(keys,parts):
+            require(isinstance(part,dict) and part.get('ok') is True and part.get('exit')==0
+                and part.get('dependency_hashes')==hashes(ROOT, SUITES[key].dependencies), 'operations partition failed/stale')
+            validate_report(SUITES[key],part.get('report'))
+        if spec.owner=='P12.3':
+            require(report.get('readiness_claim')=='technical-contract-only' and report.get('live_provider')=='not_run',
+                'operations readiness inflated')
+            require(report.get('static_analysis')=={'command':OPERATIONS_ANALYSIS,'exit':0}, 'operations static analysis missing')
+            require(report.get('composer')=={'command':['composer','validate','--strict','--working-dir=packages/agentools-laravel'],'exit':0},
+                'operations dependency validation missing')
+            baseline=report.get('baseline',{})
+            require(baseline.get('measurement_kind')=='local-operations-harness' and baseline.get('executed_cases')==len(spec.cases)
+                and baseline.get('live_provider_calls')==baseline.get('spend_minor')==0 and baseline.get('production_slo') is None
+                and isinstance(baseline.get('elapsed_ms'),(int,float)) and baseline['elapsed_ms']>=0,
+                'operations baseline missing/inflated')
     if spec.owner == 'P12.2':
         require(report.get('evidence_kind') == 'contract-scripted'
                 and report.get('readiness_claim') == 'technical-contract-only'
@@ -2054,7 +2201,7 @@ def run_suite(root: Path, spec: Suite, *, isolated=False, timeout=120):
     result = {"command": list(spec.command), "owner": spec.owner, "mode": spec.mode,
               "tier": spec.tier, "dependency_hashes": inputs, "exit": process.returncode,
               "stdout": process.stdout, "stderr": process.stderr}
-    if spec.owner in {'P6.4', 'P6.5', 'P7.7', 'P7.7-pg', 'P8.1', 'P8.1-pg', 'P8.2', 'P12.1', 'P12.2', 'P12.2-pg'} or spec.owner.startswith('P12.1-'):
+    if spec.owner in {'P6.4', 'P6.5', 'P7.7', 'P7.7-pg', 'P8.1', 'P8.1-pg', 'P8.2', 'P12.1', 'P12.2', 'P12.2-pg', 'P12.3', 'P12.3-pg', 'P12.4'} or spec.owner.startswith('P12.1-'):
         result['suite_manifest_hash'] = digest(json.dumps({
             'owner': spec.owner, 'mode': spec.mode, 'tier': spec.tier, 'cases': spec.cases,
             'command': spec.command, 'requires_pg': spec.requires_pg, 'dependencies': inputs,
@@ -2070,7 +2217,7 @@ def run_suite(root: Path, spec: Suite, *, isolated=False, timeout=120):
         result["ok"] = True
     except GateError as error:
         result.update(ok=False, error=str(error))
-    if spec.owner in {'P12.1','P12.2','P12.2-pg'} or spec.owner.startswith('P12.1-'):
+    if spec.owner in {'P12.1','P12.2','P12.2-pg','P12.3','P12.3-pg','P12.4'} or spec.owner.startswith('P12.1-'):
         result.update(started_at=started_at, finished_at=utc(), evidence_kind=spec.tier)
     return result
 
@@ -2115,7 +2262,7 @@ PURE_TYPES = set("stdClass DomainException InvalidArgumentException LogicExcepti
     "LengthException RangeException ValueError TypeError Error Exception Throwable "
     "JsonException JsonSerializable Stringable UnitEnum BackedEnum".split())
 MODULES = {
-    "Common": set(), "Security": {"Common"}, "Profiles": {"Common"},
+    "Common": set(), "Security": {"Common"}, "Observability": {"Common", "Security"}, "Profiles": {"Common"},
     "Context": {"Common", "Security", "Profiles"},
     "Models": {"Common", "Profiles", "Context"},
     "Actions": {"Common", "Security", "Profiles"},
@@ -2178,6 +2325,10 @@ def source_errors(root: Path, source: str, path: str):
         if kind not in names:
             continue
         name = value.lstrip("\\")
+        # PHP's built-in parameter-redaction attribute is syntax, not an IO dependency.
+        # Keep construction, arbitrary attributes and every external class denied.
+        if name == "SensitiveParameter" and prev == "T_ATTRIBUTE" and nxt == "]":
+            continue
         if name.startswith(prefix):
             target = name[len(prefix):].split("\\")[0]
             if target != module and target not in MODULES[module]:

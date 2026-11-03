@@ -1,0 +1,23 @@
+{
+  "fixture_kind": "synthetic-redaction-and-privacy-contract",
+  "contract": [
+    "CM-044",
+    "V2ALL-PRIVACY-POSITIVE",
+    "observability.bounded-metrics",
+    "V2ALL-PRIVACY-NEGATIVE",
+    "V2ALL-PRIVACY-FAULT"
+  ],
+  "invariants": [
+    "metadata_only",
+    "tenant_scoped_graph",
+    "bounded_metric_dimensions",
+    "unknown_not_zero",
+    "distinct_diagnostic_grant",
+    "encrypted_storage",
+    "mandatory_audit",
+    "ttl_before_release",
+    "no_plaintext_fallback",
+    "finally_reset"
+  ],
+  "evidence_claim": "Case obligations only; actual execution is in suite reports."
+}

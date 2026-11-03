@@ -31,10 +31,11 @@ final readonly class HostBindings
         public InputSchemaValidator $schemas, public ConfirmationAuthority $confirmation, public TokenKeyProvider $keys,
         public Sealer $sealer, public Clock $clock, public ModelTransport $transport, public BudgetPort $budget,
         public InvocationGuard $guard, public InvocationPayloads $payloads, public EncryptedPayloadStore $encrypted,
-        public HostAdmission $host) {}
+        public HostAdmission $host, public ?\AgenToolsPlatform\Laravel\Observability\Telemetry $telemetry = null) {}
 
     public function assertProduction(): void
     {
+        $this->telemetry?->assertProduction();
         // These are trusted server bindings, not a claim that arbitrary implementations are durable.
         // Concrete PostgreSQL journals/replay are constructed below; host stores still require qualification.
         foreach ([$this->authorization, $this->revisions, $this->policy, $this->schemas, $this->confirmation,
@@ -68,6 +69,7 @@ final readonly class HostBindings
         foreach ([$this->connection->resetSession(...), $this->encrypted->reset(...), $this->host->reset(...)] as $reset) {
             try { $reset(); } catch (\Throwable) { $failed = true; }
         }
+        try { $this->telemetry?->reset(); } catch (\Throwable) { $failed = true; }
         try {
             if ($this->replayConnection->inTransaction()) { $this->replayConnection->rollBack(); }
             $this->replayConnection->exec('DISCARD ALL');

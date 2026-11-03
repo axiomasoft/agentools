@@ -1,0 +1,81 @@
+{
+  "format": "agentools-local-baseline/v1",
+  "measured_at": "2026-11-03T14:08:05.116289+00:00",
+  "tier": "contract-scripted",
+  "measurement_kind": "local-evaluator-unittest",
+  "environment": {
+    "python": "3.12.3",
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39"
+  },
+  "fixture_policy": {
+    "name": "synthetic-example-not-slo",
+    "max_provider_calls": 0,
+    "max_cost_minor": 0,
+    "currency": "USD"
+  },
+  "measurements": [
+    {
+      "group": "golden",
+      "methods": [
+        "test_teacher_golden",
+        "test_support_golden"
+      ],
+      "test_count": 2,
+      "elapsed_ms": 48.350998,
+      "failures": 0,
+      "skips": 0,
+      "provider_calls": 0,
+      "measured_spend_minor": 0,
+      "cost_currency": "USD",
+      "cost_basis": "no provider calls; no price inference"
+    },
+    {
+      "group": "fault",
+      "methods": [
+        "test_hard_faults",
+        "test_unknown_evidence",
+        "test_budget",
+        "test_integration_faults"
+      ],
+      "test_count": 4,
+      "elapsed_ms": 26.454474,
+      "failures": 0,
+      "skips": 0,
+      "provider_calls": 0,
+      "measured_spend_minor": 0,
+      "cost_currency": "USD",
+      "cost_basis": "no provider calls; no price inference"
+    }
+  ],
+  "input_sha256": {
+    "packages/agentools-testing/tests/Evaluation/test_harness.py": "dd932ac495f3ef725a619dc4b605ebc33ea7df1029f9382ad11da53f19a53d1f",
+    "packages/agentools-testing/src/Evaluation/harness.py": "fa0383a32d92f65fede7a4c1a52260f1c1373c44d910976f2c16ace70b3d3b98",
+    "fixtures/platform/v1/evaluation/evaluation-faults-suite.json": "3cd875155ab69cbab356aa4dcd15d61cf7ca06dcf82d5d369c33e1ec16518123",
+    "fixtures/platform/v1/evaluation/support-case.json": "21f28a2f1ca8b4147c526a4804df6c900ebab66538a796dbc44079abe642736d",
+    "fixtures/platform/v1/evaluation/support-input.json": "9ffacf952333d161ebfc32726c4a4b16c1be8ea2398ce96862bdf2e2b410234a",
+    "fixtures/platform/v1/evaluation/support-insufficient-evidence.json": "a9ac967e633be3c311753f679c4f08e3cac354ed4d995e943b636db67a53d076",
+    "fixtures/platform/v1/evaluation/support-observation.json": "78072b905ced276a28feefd1a80afe8af6ed79b2e72daf63f844143dc6ac534e",
+    "fixtures/platform/v1/evaluation/support-qualification.json": "005d3da9aac3b21eb6a5b3342a642183613dc0b88754132a8ab70ac8321ae94c",
+    "fixtures/platform/v1/evaluation/support-result.json": "bf04f60410483488a6643e6a5613c75bc4dc22cdb4c09e34f4baa5a966d42ebd",
+    "fixtures/platform/v1/evaluation/support-run.json": "471716038332367ef5560826c9a03306c244a9527b6391567e87c6f9a943079e",
+    "fixtures/platform/v1/evaluation/support-suite.json": "17daf09b04e200337fbe836c6c1fc3e3b6c399d0af1c9ae92ef932109be20755",
+    "fixtures/platform/v1/evaluation/teacher-case.json": "ae1fe9eaa53f033be06f0250d5559925775baeb4daa12aec31e9aed4a7d892a5",
+    "fixtures/platform/v1/evaluation/teacher-input.json": "9c45ce4dfbaad589d7fd47a8a645f033f22757a52f1d8886f3c93325ffaddd45",
+    "fixtures/platform/v1/evaluation/teacher-insufficient-evidence.json": "329fbbd9ca3b417aad11dc4d9a0d7319d87f409891b982a095f433e17afd4732",
+    "fixtures/platform/v1/evaluation/teacher-observation.json": "a3f814fe12a053a6d6ae89f0dfcc3ea988c54c6f48776780716fa81dc9edb8e8",
+    "fixtures/platform/v1/evaluation/teacher-qualification.json": "77e1976132e559540799045b8a009644e3e5dd5364b9ab8a027a3eb6d4a44bd0",
+    "fixtures/platform/v1/evaluation/teacher-result.json": "de6ef78be2e953a61a741efd9ce3ffc8f5260c551e73886e120146fdc5b0782f",
+    "fixtures/platform/v1/evaluation/teacher-run.json": "2c3ab681e03bb833f9b5ef35cd84f8846ec006c2ce8d1db2512ead1949f3d0ec",
+    "fixtures/platform/v1/evaluation/teacher-suite.json": "f0956168880b969153e5e3c1c3f918c8d566920aa6500b6d5a4104dc079822e7",
+    "fixtures/platform/v1/evaluation/technical-golden-suite.json": "7844d87bef42eefdde1783dc511bbb23c462202369a5e4b3d2be006be4c24e75"
+  },
+  "production_slo": null,
+  "provider_pricing": null,
+  "live_provider": "not_run",
+  "readiness": "technical-contract-only",
+  "limitations": [
+    "Elapsed wall time includes local unittest overhead, one sample, not percentile or SLO.",
+    "Scripted tests and zero provider calls measure no live latency, pricing, cost or quality.",
+    "No real host, product pilot, provider or domain qualification is claimed."
+  ]
+}

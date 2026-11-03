@@ -52,3 +52,9 @@ consume-on-attempt semantics; an original token cannot authorize compensation.
 
 No money-ledger release, arbitrary owner exactly-once guarantee, production
 qualification or publication is provided by this local module.
+
+The opt-in `Facade` adds doctor, inspect-run, recover, reconcile, relay and prune.
+It preserves these cancellation/manual-resolution APIs and uses the ordinary
+worker, Effects and delivery/accounting journals. See
+[`docs/platform/operations.md`](../../../../docs/platform/operations.md) for trusted
+operator composition, dry-run audit, bounded cursors, cadence and incident triage.

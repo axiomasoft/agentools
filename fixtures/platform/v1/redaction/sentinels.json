@@ -1,0 +1,26 @@
+{
+  "fixture_kind": "synthetic-security-sentinels",
+  "input": {
+    "child_text": "SYNTHETIC-CHILD-TEXT",
+    "prompt": [
+      {
+        "secret": "SYNTHETIC-API-KEY",
+        "provider": {
+          "response": "SYNTHETIC-PROVIDER-RESPONSE"
+        },
+        "tools": [
+          "SYNTHETIC-TOOL-TABLE"
+        ]
+      }
+    ]
+  },
+  "exception": {
+    "message": "SYNTHETIC-CHILD-TEXT",
+    "previous": {
+      "message": "SYNTHETIC-API-KEY"
+    }
+  },
+  "http": {
+    "Authorization": "SYNTHETIC-API-KEY"
+  }
+}

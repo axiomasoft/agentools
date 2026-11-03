@@ -17,17 +17,20 @@ final readonly class Dispatcher
         if ($this->repository->db !== $connection) { throw new \InvalidArgumentException('Worker reset must cover the dispatcher connection'); }
     }
 
-    public function dispatchOne(): bool
+    public function dispatchOne(?Ref $only = null): bool
     {
         $r=$this->repository; $db=$r->db; $db->assertIdle();
-        $claim=$db->transaction(function () use ($r,$db): ?array {
+        if ($only!==null) { $r->tenant->assertSame($only->tenant); }
+        $claim=$db->transaction(function () use ($r,$db,$only): ?array {
             $row=$db->row('SELECT x.id,x.epoch,x.attempts FROM '.$db->table('accounting_export').' x
                 JOIN '.$db->table('accounting_usage').' u USING (tenant_id,id)
                 WHERE x.tenant_id=:tenant AND x.status IN (\'pending\',\'unknown\',\'claimed\') AND x.next_at<=clock_timestamp()
                 AND (x.lease_until IS NULL OR x.lease_until<=clock_timestamp())
                 AND (u.supersedes IS NULL OR EXISTS (SELECT 1 FROM '.$db->table('accounting_export').' p
                     WHERE p.tenant_id=u.tenant_id AND p.id=u.supersedes AND p.status=\'exported\'))
-                ORDER BY u.created_at,u.usage_version FOR UPDATE OF x SKIP LOCKED LIMIT 1',['tenant'=>$r->tenant->value]);
+                '.($only===null?'':'AND x.id=:only_id').'
+                ORDER BY u.created_at,u.usage_version FOR UPDATE OF x SKIP LOCKED LIMIT 1',
+                ['tenant'=>$r->tenant->value]+($only===null?[]:['only_id'=>$only->value]));
             if ($row===null) { return null; }
             $manual=Connection::number($row,'attempts') >= $r->policy->maxAttempts;
             $db->execute('UPDATE '.$db->table('accounting_export').' SET status=:status,epoch=epoch+1,version=version+1,attempts=attempts+:increment,

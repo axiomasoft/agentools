@@ -17,6 +17,107 @@ import platform_gate as gate
 
 
 class GateTests(unittest.TestCase):
+    def test_baseline_incidents_registry(self):
+        from copy import deepcopy
+        spec=gate.SUITES[('baseline-incidents','test')]
+        self.assertEqual(spec.owner,'P12.5')
+        data={'mode':spec.mode,'tier':spec.tier,'cases':[{'id':x,'status':'passed'} for x in spec.cases],
+              'evidence_kind':'contract-scripted','readiness_claim':'technical-contract-only','live_provider':'not_run',
+              'input_hashes':gate.hashes(ROOT,spec.dependencies),'limitations':['no live'],
+              'baseline':json.loads((ROOT/'docs/platform/baseline.json').read_text())}
+        gate.validate_report(spec,data)
+        for patch in ({'cases':[]},{'input_hashes':{}},{'live_provider':'pass'},
+                      {'readiness_claim':'production'},{'limitations':[]},{'baseline':{}}):
+            with self.subTest(patch=patch),self.assertRaises(gate.GateError):
+                gate.validate_report(spec,dict(data,**patch))
+        altered=deepcopy(data);altered['baseline']['measurements'][0]['provider_calls']=1
+        with self.assertRaises(gate.GateError):gate.validate_report(spec,altered)
+
+    def test_observability_registry(self):
+        from copy import deepcopy
+        import importlib.util
+        source=importlib.util.spec_from_file_location('privacy_case_map',ROOT/'packages/agentools-laravel/tests/Observability/run.py')
+        mapping=importlib.util.module_from_spec(source);source.loader.exec_module(mapping)
+        self.assertEqual(set(mapping.CASES.values()),set(gate.OBSERVABILITY_PG_CASES))
+        self.assertIn('GateTests.test_observability_registry',gate.SELF_CASES)
+        spec=gate.SUITES[('observability-security','test')];inputs=gate.hashes(ROOT,spec.dependencies)
+        parts=[]
+        for key in (('observability-contract','test'),('observability-durable','pg-test'),('observability-cron','pg-test'),
+                    ('observability-voice','pg-test'),('observability-accounting','pg-test')):
+            child=gate.SUITES[key]
+            report={'mode':child.mode,'tier':child.tier,'cases':[{'id':c,'status':'passed'} for c in child.cases]}
+            if child.requires_pg:
+                report['isolation']={'engine':'postgresql','isolated':True,'database':'agentools_test_privacy_fixture',
+                    'owner':'fixture-owner','allow_marker_verified':True,'case_ids':list(child.cases)}
+            parts.append({'ok':True,'exit':0,'dependency_hashes':inputs,'report':report})
+        report={'mode':spec.mode,'tier':spec.tier,'cases':[{'id':c,'status':'passed'} for c in spec.cases],
+            'evidence_kind':'contract-scripted','readiness_claim':'technical-contract-only','live_provider':'not_run',
+            'parts':parts,'input_hashes':inputs,'limitations':['scripted external ports'],
+            'static_analysis':{'command':gate.OBSERVABILITY_ANALYSIS,'exit':0},
+            'composer':{'command':['composer','validate','--strict','--working-dir=packages/agentools-core'],'exit':0}}
+        gate.validate_report(spec,report)
+        for change in ({'cases':[]},{'parts':[]},{'input_hashes':{}},{'readiness_claim':'production'},
+                       {'live_provider':'passed'},{'static_analysis':{}},{'composer':{}},{'limitations':[]}):
+            with self.subTest(change=change),self.assertRaises(gate.GateError):gate.validate_report(spec,dict(report,**change))
+        for index in range(1,len(parts)):
+            for field in ('isolation','cases'):
+                bad=deepcopy(report);bad['parts'][index]['report'].pop(field)
+                with self.assertRaises(gate.GateError):gate.validate_report(spec,bad)
+            bad=deepcopy(report);bad['parts'][index]['report']['cases'][0]['status']='skipped'
+            with self.assertRaises(gate.GateError):gate.validate_report(spec,bad)
+        for path in sorted((ROOT/'packages/agentools-core/src/Observability').glob('*.php')):
+            self.assertEqual([],gate.source_errors(ROOT,path.read_text(),str(path.relative_to(ROOT))),str(path))
+        for forbidden in ('new \\PDO("dsn");','file_get_contents("secret");','echo "payload";',
+                          'new \\SensitiveParameter();','function leak(#[\\PDO] string $secret): void {}'):
+            source='<?php namespace AgenToolsPlatform\\Core\\Observability; '+forbidden
+            self.assertTrue(gate.source_errors(ROOT,source,'packages/agentools-core/src/Observability/Bad.php'))
+
+    def test_operations_registry(self):
+        from copy import deepcopy
+        import importlib.util
+        source=importlib.util.spec_from_file_location('ops_case_map',ROOT/'packages/agentools-laravel/tests/Operations/Facade/run.py')
+        mapping=importlib.util.module_from_spec(source);source.loader.exec_module(mapping)
+        self.assertEqual(set(mapping.CASES.values()),set(gate.OPERATIONS_FACADE_CASES))
+        self.assertIn('GateTests.test_operations_registry',gate.SELF_CASES)
+        spec=gate.SUITES[('operations','test')]
+        self.assertEqual(spec.owner,'P12.3')
+        inputs=gate.hashes(ROOT,spec.dependencies)
+        def report(key):
+            child=gate.SUITES[key]
+            data={'mode':child.mode,'tier':child.tier,'cases':[{'id':c,'status':'passed'} for c in child.cases]}
+            if child.requires_pg:
+                data['isolation']={'engine':'postgresql','isolated':True,'database':'agentools_test_ops_fixture',
+                    'owner':'fixture-owner','allow_marker_verified':True,'case_ids':list(child.cases)}
+            if key==('operations-cadence','pg-test'):
+                data['observations']={'CM-045':{'workers':2,'exits':[0,0],'same_receipts':True,'counts':1},
+                    'scheduler.crash-after-commit':{'signal':9,'signaled':True,'worker_exit':-1,'same_refs':True,'counts':1}}
+            if key==('operations','pg-test'):
+                data.update(evidence_kind=child.tier,input_hashes=inputs,limitations=['scripted ports'],
+                    parts=[envelope(k) for k in (('operations-facade','pg-test'),('operations-cadence','pg-test'))])
+            return data
+        def envelope(key):
+            return {'ok':True,'exit':0,'dependency_hashes':inputs,'report':report(key)}
+        data=report(('operations','test'))
+        data.update(evidence_kind='contract-scripted',input_hashes=inputs,limitations=['scripted ports'],
+            readiness_claim='technical-contract-only',live_provider='not_run',
+            parts=[envelope(k) for k in (('operations-contract','test'),('operations-calendar','test'),('operations','pg-test'))],
+            static_analysis={'command':gate.OPERATIONS_ANALYSIS,'exit':0},
+            composer={'command':['composer','validate','--strict','--working-dir=packages/agentools-laravel'],'exit':0},
+            baseline={'measurement_kind':'local-operations-harness','executed_cases':len(spec.cases),
+                'live_provider_calls':0,'spend_minor':0,'production_slo':None,'elapsed_ms':1.25})
+        gate.validate_report(spec,data)
+        for change in ({'cases':[]},{'input_hashes':{}},{'parts':[]},{'readiness_claim':'production-ready'},
+                       {'live_provider':'passed'},{'static_analysis':{}},{'composer':{}},{'baseline':{}},{'limitations':[]}):
+            with self.subTest(change=change),self.assertRaises(gate.GateError): gate.validate_report(spec,dict(data,**change))
+        for field in ('isolation','cases'):
+            bad=deepcopy(data);bad['parts'][2]['report']['parts'][0]['report'].pop(field)
+            with self.assertRaises(gate.GateError): gate.validate_report(spec,bad)
+        bad=deepcopy(data);bad['parts'][2]['report']['parts'][0]['report']['cases'][0]['status']='skipped'
+        with self.assertRaises(gate.GateError): gate.validate_report(spec,bad)
+        for proof in ('CM-045','scheduler.crash-after-commit'):
+            bad=deepcopy(data);bad['parts'][2]['report']['parts'][1]['report']['observations'].pop(proof)
+            with self.assertRaises(gate.GateError):gate.validate_report(spec,bad)
+
     def test_qualification_rollout_registry(self):
         from copy import deepcopy
         spec = gate.SUITES[('qualification-rollout','test')]
@@ -587,7 +688,7 @@ class GateTests(unittest.TestCase):
             'citations':[{'version':'v1'}],'source_hash':'a'*64,'release_hash':'b'*64,'snapshot_hash':'sha-256:'+'c'*64,'educational_qualification':'insufficient_evidence'}
         report['observations']={'support':dict(proof),'education':dict(proof),
             'correction':{'old_run':'old','new_run':'new','historical_unchanged':True,'old_snapshot_denied':True,'marker':'source_corrected','new_version':'v2'},
-            'pre-send-correction':{'provider_calls':0,'usage_rows':0,'request_count':0,'outcome':'failed','possible_cost':False},
+            'pre-send-correction':{'live_provider_calls':0,'usage_rows':0,'request_count':0,'outcome':'failed','possible_cost':False},
             'recovery':{'signal':9,'signaled':True,'worker_exit':-1,'provider_calls':1,'responses':1,'usage_versions':1,'delivery_messages':1,'lookup':'verified-same-request'}}
         report['observations']['education-correction']=dict(report['observations']['correction'])
         gate.validate_report(spec,report)
