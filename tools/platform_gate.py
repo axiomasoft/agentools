@@ -25,7 +25,7 @@ TIERS = {"design-schema", "unit", "contract-scripted", "isolated-postgres",
 
 # Explicit, independent of discovery: removing a test must make the gate red.
 SELF_CASES = tuple("GateTests.test_" + name for name in (
-    "baseline_incidents_registry", "qualification_rollout_registry", "operations_registry", "observability_registry", "evaluation_registry", "voice_journey_registry", "voice_delivery_registry", "voice_ingress_registry", "host_e2e_registry", "second_host_registry", "chatom_registry", "host_registry", "architecture_fixture", "boundary_current_tree", "boundary_missing_source",
+    "bootstrap_recovery_rejects_missing_partitions", "baseline_incidents_registry", "qualification_rollout_registry", "operations_registry", "observability_registry", "evaluation_registry", "voice_journey_registry", "voice_delivery_registry", "voice_ingress_registry", "host_e2e_registry", "second_host_registry", "chatom_registry", "host_registry", "architecture_fixture", "boundary_current_tree", "boundary_missing_source",
     "boundary_production_testing", "boundary_duplicate_owner", "boundary_core_dependency",
     "boundary_autoload_escape", "boundary_transitive_testing", "boundary_namespace_path",
     "boundary_production_source", "contradictory_totals",
@@ -1520,6 +1520,22 @@ BASELINE_INPUTS = tuple(dict.fromkeys(EVALUATION_INPUTS + (
 SUITES[('baseline-incidents','test')] = Suite('P12.5','contract-scripted','contract-scripted',BASELINE_CASES,
     (sys.executable,'-B','conformance/platform/live/run.py'),BASELINE_INPUTS)
 
+# P13.1: clean target bootstrap, real crash matrix and isolated backup restore.
+BOOTSTRAP_RESTORE_CASES = ('bootstrap.restore-projection-usage',)
+BOOTSTRAP_RECOVERY_CASES = ('CUT-001','V2ALL-MIGRATION-POSITIVE',
+    'V2ALL-MIGRATION-NEGATIVE','V2ALL-MIGRATION-FAULT')
+BOOTSTRAP_RECOVERY_INPUTS = tuple(dict.fromkeys(READ_JOURNEY_INPUTS + WRITE_RECOVERY_INPUTS
+    + USAGE_RESERVATIONS_INPUTS + tuple(str(p.relative_to(ROOT)) for base in (
+        ROOT/'packages/agentools-postgres/tests/Recovery', ROOT/'conformance/platform/bootstrap-recovery')
+        for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php','.py','.xml','.md'})
+    + ('docs/platform/bootstrap.json','docs/platform/bootstrap-recovery.md')))
+SUITES[('bootstrap-restore','pg-test')] = Suite('P13.1-restore','isolated-postgres','isolated-postgres',
+    BOOTSTRAP_RESTORE_CASES,(sys.executable,'-B','conformance/platform/bootstrap-recovery/pg.py'),
+    BOOTSTRAP_RECOVERY_INPUTS,requires_pg=True)
+SUITES[('bootstrap-recovery','e2e')] = Suite('P13.1','local-host-e2e','local-host-e2e',
+    BOOTSTRAP_RECOVERY_CASES,(sys.executable,'-B','conformance/platform/bootstrap-recovery/run.py'),
+    BOOTSTRAP_RECOVERY_INPUTS,requires_pg=True)
+
 
 class GateError(Exception):
     pass
@@ -1568,6 +1584,22 @@ def validate_report(spec: Suite, report):
     ids = [c["id"] for c in cases]
     require(Counter(ids) == Counter(spec.cases), "required case set differs (missing/extra/duplicate)")
     require(all(c.get("status") == "passed" for c in cases), "failed, skipped or unknown required case")
+    if spec.owner == 'P13.1':
+        require(report.get('evidence_kind') == 'host_contract_harness' and report.get('live_provider') == 'not_executed',
+                'bootstrap evidence scope inflated')
+        require(report.get('input_hashes') == hashes(ROOT,spec.dependencies), 'bootstrap inputs missing/stale')
+        require(isinstance(report.get('limitations'),list) and report['limitations'], 'bootstrap limitations missing')
+        keys=(('read-journey','e2e'),('write-recovery','e2e'),('bootstrap-restore','pg-test'))
+        parts=report.get('parts')
+        require(isinstance(parts,list) and len(parts)==len(keys), 'bootstrap recovery partition missing')
+        for key,part in zip(keys,parts):
+            require(isinstance(part,dict) and part.get('key')==list(key) and part.get('ok') is True
+                    and part.get('exit')==0 and part.get('dependency_hashes')==hashes(ROOT,SUITES[key].dependencies),
+                    'bootstrap recovery partition failed/stale')
+            validate_report(SUITES[key],part.get('report'))
+            proof=part['report']['isolation']; overall=report.get('isolation',{})
+            require(all(proof.get(k)==overall.get(k) for k in ('database','owner','allow_marker_verified')),
+                    'bootstrap recovery isolation mismatch')
     if spec.owner == 'P12.5':
         require(report.get('evidence_kind') == 'contract-scripted' and report.get('readiness_claim') == 'technical-contract-only'
                 and report.get('live_provider') == 'not_run', 'baseline evidence scope inflated')

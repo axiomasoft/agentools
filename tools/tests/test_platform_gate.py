@@ -17,6 +17,17 @@ import platform_gate as gate
 
 
 class GateTests(unittest.TestCase):
+    def test_bootstrap_recovery_rejects_missing_partitions(self):
+        spec=gate.SUITES[('bootstrap-recovery','e2e')]
+        self.assertTrue(spec.requires_pg)
+        self.assertEqual(set(spec.cases),{'CUT-001','V2ALL-MIGRATION-POSITIVE',
+            'V2ALL-MIGRATION-NEGATIVE','V2ALL-MIGRATION-FAULT'})
+        report={'mode':spec.mode,'tier':spec.tier,'cases':[{'id':x,'status':'passed'} for x in spec.cases],
+            'evidence_kind':'host_contract_harness','live_provider':'not_executed',
+            'input_hashes':gate.hashes(ROOT,spec.dependencies),'limitations':['scripted owners'],
+            'parts':[]}
+        with self.assertRaises(gate.GateError): gate.validate_report(spec,report)
+
     def test_baseline_incidents_registry(self):
         from copy import deepcopy
         spec=gate.SUITES[('baseline-incidents','test')]
