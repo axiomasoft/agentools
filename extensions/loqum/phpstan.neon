@@ -1,0 +1,9 @@
+parameters:
+    level: max
+    paths:
+        - src
+    scanDirectories:
+        - ../../packages/agentools-core/src
+        - ../../packages/agentools-postgres/src
+    bootstrapFiles:
+        - vendor/autoload.php

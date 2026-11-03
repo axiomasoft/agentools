@@ -1,0 +1,18 @@
+{
+  "name": "agentools/platform-loqum",
+  "description": "Private optional final-STT ingress over the existing trusted input and intake.",
+  "type": "library",
+  "license": "proprietary",
+  "require": {"php": ">=8.3", "agentools/platform-core": "dev-main", "agentools/platform-postgres": "dev-main", "agentools/sdk": "dev-main"},
+  "require-dev": {"phpstan/phpstan": "^2.2"},
+  "autoload": {"psr-4": {"AgenToolsPlatform\\Loqum\\": "src/"}},
+  "archive": {"exclude": ["/tests", "/vendor", "/composer.lock", "/phpstan.neon"]},
+  "scripts": {"test": "python3 -B tests/suite.py", "analyse": "phpstan analyse -c phpstan.neon --no-progress"},
+  "config": {"sort-packages": true, "allow-plugins": false},
+  "repositories": [
+    {"type": "path", "url": "../../packages/agentools-core", "options": {"symlink": true, "versions": {"agentools/platform-core": "dev-main"}}},
+    {"type": "path", "url": "../../packages/agentools-postgres", "options": {"symlink": true, "versions": {"agentools/platform-postgres": "dev-main"}}},
+    {"type": "path", "url": "../../php", "options": {"symlink": true, "versions": {"agentools/sdk": "dev-main"}}}
+  ],
+  "extra": {"agentools": {"private": true, "registration": "Explicit backend injection only; no routes, media engine or second model loop"}}
+}

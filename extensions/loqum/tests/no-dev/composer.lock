@@ -1,0 +1,131 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "9ae1a9363def69c55be1fd16919aeac4",
+    "packages": [
+        {
+            "name": "agentools/platform-core",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../../../../packages/agentools-core",
+                "reference": "e8167e4d36e9dcd12ebf1e51a60feebd6a6265e3"
+            },
+            "require": {
+                "php": ">=8.3"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.2"
+            },
+            "type": "library",
+            "extra": {
+                "agentools": {
+                    "private": true,
+                    "evidence_tier": "unit"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AgenToolsPlatform\\Core\\": "src/"
+                }
+            },
+            "archive": {
+                "exclude": [
+                    "/tests",
+                    "/vendor",
+                    "/phpstan.neon",
+                    "/composer.lock"
+                ]
+            },
+            "scripts": {
+                "test": [
+                    "@php tests/smoke.php",
+                    "@php tests/Common/run.php",
+                    "@php tests/Runtime/run.php",
+                    "@php tests/Models/run.php",
+                    "@php tests/Runtime/advance.php"
+                ],
+                "analyse": [
+                    "phpstan analyse -c phpstan.neon --no-progress"
+                ]
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Private pure values and ports for the additive AgenTools platform.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "agentools/platform-loqum",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../..",
+                "reference": "4e0ff5d1fa1c0bb8834ec777fdb777f86e5c9e58"
+            },
+            "require": {
+                "agentools/platform-core": "dev-main",
+                "php": ">=8.3"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.2"
+            },
+            "type": "library",
+            "extra": {
+                "agentools": {
+                    "private": true,
+                    "registration": "Explicit backend injection only; no routes, media engine or second model loop"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AgenToolsPlatform\\Loqum\\": "src/"
+                }
+            },
+            "archive": {
+                "exclude": [
+                    "/tests",
+                    "/vendor",
+                    "/composer.lock",
+                    "/phpstan.neon"
+                ]
+            },
+            "scripts": {
+                "test": [
+                    "python3 -B tests/suite.py"
+                ],
+                "analyse": [
+                    "phpstan analyse -c phpstan.neon --no-progress"
+                ]
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Private optional final-STT ingress over the existing trusted input and intake.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "agentools/platform-core": 20,
+        "agentools/platform-loqum": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=8.3"
+    },
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
+}

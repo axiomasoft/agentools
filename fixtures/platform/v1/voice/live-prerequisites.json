@@ -1,0 +1,12 @@
+{
+  "revision": "platform/v1/voice-ingress/1",
+  "evidence_tier": "contract-scripted",
+  "live_provider": "not_executed",
+  "production_readiness": "not_claimed",
+  "lanes": [
+    {"id": "stt", "status": "pending_opt_in", "requires": ["explicit provider/version/region pin", "backend credentials", "approved consent/data/retention", "spend cap", "stable utterance mapping and reconnect overlap evidence"]},
+    {"id": "tts", "status": "pending_opt_in", "requires": ["explicit provider/version/region pin", "backend credentials", "approved speakable segments", "spend cap", "playout receipts and outage tests owned by P11.2/P11.3"]},
+    {"id": "acoustic", "status": "pending_opt_in", "requires": ["approved synthetic or consented audio corpus", "Russian child speech/formula/noise coverage", "measured end-to-end latency and error rates", "separate live evidence receipt"]},
+    {"id": "host-media", "status": "pending_external_owner", "requires": ["authenticated opaque handle resolution", "session/tenant/instance binding", "monotonic media epoch and context revision", "current permission/consent checks", "recording/export stop and retention policy implementation"]}
+  ]
+}

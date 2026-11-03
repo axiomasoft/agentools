@@ -25,7 +25,7 @@ TIERS = {"design-schema", "unit", "contract-scripted", "isolated-postgres",
 
 # Explicit, independent of discovery: removing a test must make the gate red.
 SELF_CASES = tuple("GateTests.test_" + name for name in (
-    "host_e2e_registry", "second_host_registry", "chatom_registry", "host_registry", "architecture_fixture", "boundary_current_tree", "boundary_missing_source",
+    "voice_journey_registry", "voice_delivery_registry", "voice_ingress_registry", "host_e2e_registry", "second_host_registry", "chatom_registry", "host_registry", "architecture_fixture", "boundary_current_tree", "boundary_missing_source",
     "boundary_production_testing", "boundary_duplicate_owner", "boundary_core_dependency",
     "boundary_autoload_escape", "boundary_transitive_testing", "boundary_namespace_path",
     "boundary_production_source", "contradictory_totals",
@@ -1283,6 +1283,95 @@ SUITES[('host-e2e', 'e2e')] = Suite('P10.4', 'local-host-e2e', 'local-host-e2e',
     (sys.executable, '-B', 'conformance/platform/host-e2e/run.py'), HOST_E2E_INPUTS, True)
 
 
+VOICE_INGRESS_CONTRACT_CASES = (
+    'voice.shared-fixture', 'voice.final-trusted-input', 'voice.interim-no-input',
+    'voice.reconnect-source-stable', 'voice.stale-media-fence', 'voice.stale-context-revision',
+    'voice.final-revision-is-content', 'voice.current-permissions-and-consent',
+    'voice.tenant-session-instance-isolation', 'voice.text-fallback-continuity',
+    'voice.same-context-compiler', 'voice.envelope-tamper', 'voice.invalid-transcript',
+)
+VOICE_INGRESS_SCHEMA_CASES = ('voice.schema-sample', 'voice.schema-interim-missing',
+                             'voice.schema-untrusted-authority', 'voice.schema-invalid-values')
+VOICE_INGRESS_PG_CASES = ('voice.pg-reconnect-lost-receipt', 'voice.pg-final-hash-revision-conflict',
+                         'voice.pg-interim-stale-no-enqueue', 'voice.pg-text-fallback-barge-in',
+                         'voice.pg-tenant-session-isolation')
+VOICE_INGRESS_CASES = (VOICE_INGRESS_CONTRACT_CASES + VOICE_INGRESS_SCHEMA_CASES
+                       + ('voice.production-no-dev',) + VOICE_INGRESS_PG_CASES
+                       + ('voice.composer-valid', 'voice.static-analysis'))
+VOICE_INGRESS_INPUTS = tuple(dict.fromkeys(tuple(
+    str(p.relative_to(ROOT)) for base in (
+        ROOT/'extensions/loqum/src/Ingress', ROOT/'extensions/loqum/tests', ROOT/'fixtures/platform/v1/voice',
+        ROOT/CORE/'src', ROOT/POSTGRES/'src', ROOT/POSTGRES/'migrations',
+        ROOT/POSTGRES/'vendor/agentools/platform-core/src', ROOT/POSTGRES/'vendor/agentools/sdk/src',
+    ) for p in sorted(base.rglob('*')) if p.is_file() and 'vendor' not in p.relative_to(base).parts
+      and p.suffix in {'.php','.py','.json','.md','.sql','.xml'}
+) + ('extensions/loqum/composer.json', 'extensions/loqum/composer.lock', 'extensions/loqum/phpstan.neon',
+     'extensions/loqum/.gitignore', 'extensions/loqum/vendor/autoload.php',
+     'extensions/loqum/vendor/bin/phpstan', 'extensions/loqum/tests/no-dev/vendor/autoload.php',
+     f'{CORE}/tests/Common/Harness.php', f'{CORE}/tests/Common/JcsAdapter.php',
+     f'{POSTGRES}/tests/IsolatedDatabase.php', f'{POSTGRES}/tests/Runtime/Fixture.php',
+     f'{POSTGRES}/tests/Runtime/TestHost.php', f'{POSTGRES}/tests/Runtime/TestRevisions.php',
+     f'{POSTGRES}/tests/Runtime/TestCanonicalJson.php', f'{POSTGRES}/tests/run.py',
+     f'{POSTGRES}/vendor/autoload.php', f'{POSTGRES}/vendor/bin/phpunit', f'{POSTGRES}/composer.lock',
+     'tools/storage_chaos.py', 'tools/platform_gate.py', 'tools/tests/test_platform_gate.py')))
+SUITES[('voice-ingress','test')] = Suite('P11.1','contract-scripted','contract-scripted',VOICE_INGRESS_CASES,
+    (sys.executable,'-B','extensions/loqum/tests/suite.py'),VOICE_INGRESS_INPUTS)
+
+
+VOICE_DELIVERY_PG_CASES = (
+    'voice-delivery.independent-portions','voice-delivery.suffix-retry','voice-delivery.lost-receipt',
+    'voice-delivery.unknown-reconnect','voice-delivery.barge-in','voice-delivery.disclosure-revoke',
+    'voice-delivery.tts-outage-text','voice-delivery.identity-schema-conflicts','voice-delivery.command-guards',
+    'voice-delivery.receipt-binding','voice-delivery.sigkill-before-playback','voice-delivery.exact-approval',
+    'voice-delivery.approval-denials','voice-delivery.effect-survives-interruption','voice-delivery.owner-revoke-after-approval',
+)
+VOICE_DELIVERY_CASES = VOICE_DELIVERY_PG_CASES + (
+    'voice-delivery.core-disclosure','voice-delivery.schema','voice-delivery.production-no-dev',
+    'voice-delivery.composer-valid','voice-delivery.static-analysis',
+)
+VOICE_DELIVERY_INPUTS = tuple(dict.fromkeys(tuple(
+    str(p.relative_to(ROOT)) for base in (
+        ROOT/'extensions/loqum/src', ROOT/'extensions/loqum/tests/Delivery',ROOT/'fixtures/platform/v1/voice',ROOT/'php/src',
+        ROOT/CORE/'src',ROOT/POSTGRES/'src',ROOT/POSTGRES/'migrations',
+        ROOT/CORE/'tests/Common',ROOT/CORE/'tests/Context',ROOT/CORE/'tests/Security',ROOT/CORE/'tests/Actions/Confirmation',
+        ROOT/'examples/platform/confirmed-write',ROOT/'examples/platform/direct-action',
+    ) for p in sorted(base.rglob('*')) if p.is_file() and 'vendor' not in p.relative_to(base).parts
+      and p.suffix in {'.php','.py','.json','.md','.sql','.xml'}
+) + ('extensions/loqum/composer.json','extensions/loqum/composer.lock','extensions/loqum/phpstan.neon',
+     'extensions/loqum/tests/bootstrap.php','extensions/loqum/tests/Fixture.php',
+     'extensions/loqum/vendor/autoload.php','extensions/loqum/vendor/bin/phpstan',
+     'extensions/loqum/tests/Delivery/no-dev/vendor/autoload.php',
+     f'{POSTGRES}/tests/IsolatedDatabase.php',f'{POSTGRES}/tests/Runtime/Fixture.php',
+     f'{POSTGRES}/tests/Runtime/TestHost.php',f'{POSTGRES}/tests/Runtime/TestRevisions.php',
+     f'{POSTGRES}/tests/Runtime/TestCanonicalJson.php',f'{POSTGRES}/tests/run.py',
+     f'{POSTGRES}/vendor/autoload.php',f'{POSTGRES}/vendor/bin/phpunit',f'{POSTGRES}/composer.lock',
+     'php/composer.lock','tools/storage_chaos.py','tools/platform_gate.py','tools/tests/test_platform_gate.py')))
+SUITES[('voice-delivery','test')] = Suite('P11.2','contract-scripted','contract-scripted',VOICE_DELIVERY_CASES,
+    (sys.executable,'-B','extensions/loqum/tests/Delivery/suite.py'),VOICE_DELIVERY_INPUTS)
+
+
+VOICE_JOURNEY_CASES = (
+    'ECO-VOICE-001','ECO-VOICE-002','ECO-VOICE-003','ECO-VOICE-004','ECO-VOICE-005','ECO-VOICE-006','ECO-VOICE-007','ECO-VOICE-008',
+    'V2-P11-3-VOICE-POS','V2-P11-3-CONSENT-POS','V2ALL-VOICE-POSITIVE','V2ALL-VOICE-NEGATIVE','V2ALL-VOICE-FAULT',
+    'voice-journey.lost-tts-receipt','voice-journey.provider-after-disclosure','voice-journey.state-checkpoints',
+    'voice-journey.worker-tenant-reset','voice-journey.runnable-example','voice-journey.final-payload-conflict',
+)
+VOICE_JOURNEY_INPUTS = tuple(dict.fromkeys(tuple(
+    str(p.relative_to(ROOT)) for base in (
+        ROOT/'examples/platform/voice',ROOT/'conformance/platform/voice',ROOT/'extensions/loqum/src',
+        ROOT/'extensions/loqum/tests/Journey',ROOT/CORE/'src',ROOT/POSTGRES/'src',ROOT/POSTGRES/'migrations',ROOT/'php/src',
+        ROOT/'examples/platform/confirmed-write',ROOT/'examples/platform/direct-action',
+    ) for p in sorted(base.rglob('*')) if p.is_file() and 'vendor' not in p.relative_to(base).parts
+      and p.suffix in {'.php','.py','.json','.md','.sql','.xml','.neon'}
+) + ('extensions/loqum/composer.json','extensions/loqum/composer.lock','extensions/loqum/vendor/autoload.php',
+     'extensions/loqum/vendor/bin/phpstan',f'{CORE}/tests/Actions/Confirmation/Fixture.php',
+     f'{POSTGRES}/tests/IsolatedDatabase.php',f'{POSTGRES}/tests/run.py',f'{POSTGRES}/vendor/autoload.php',
+     f'{POSTGRES}/vendor/bin/phpunit',f'{POSTGRES}/composer.lock','php/composer.lock',
+     'tools/storage_chaos.py','tools/platform_gate.py','tools/tests/test_platform_gate.py')))
+SUITES[('voice-journey','e2e')] = Suite('P11.3','local-host-e2e','local-host-e2e',VOICE_JOURNEY_CASES,
+    (sys.executable,'-B','conformance/platform/voice/run.py'),VOICE_JOURNEY_INPUTS,True)
+
+
 class GateError(Exception):
     pass
 
@@ -1342,6 +1431,66 @@ def validate_report(spec: Suite, report):
         if field in report:
             require(type(report[field]) is int and report[field] == expected,
                     f"contradictory runner total: {field}")
+    if spec.owner == 'P11.1':
+        require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'voice ingress input hashes missing/stale')
+        require(report.get('evidence_kind') == 'voice_ingress_contract_harness', 'voice ingress evidence kind missing')
+        require(report.get('live_provider') == 'not_executed' and report.get('production_readiness') == 'not_claimed',
+                'synthetic voice ingress evidence tier inflated')
+        validate_report(Suite('P11.1-pg','isolated-postgres','isolated-postgres',VOICE_INGRESS_PG_CASES,(),(),True),
+                        report.get('postgres'))
+    if spec.owner == 'P11.2':
+        require(report.get('input_hashes') == hashes(ROOT,spec.dependencies),'voice delivery input hashes missing/stale')
+        require(report.get('evidence_kind') == 'voice_delivery_contract_harness','voice delivery evidence kind missing')
+        require(report.get('live_provider') == 'not_executed' and report.get('production_readiness') == 'not_claimed',
+                'synthetic voice delivery evidence tier inflated')
+        validate_report(Suite('P11.2-pg','isolated-postgres','isolated-postgres',VOICE_DELIVERY_PG_CASES,(),(),True),report.get('postgres'))
+    if spec.owner == 'P11.3':
+        inputs=hashes(ROOT,spec.dependencies)
+        require(report.get('input_hashes')==inputs,'voice journey input hashes missing/stale')
+        require(report.get('evidence_kind')=='voice_journey_contract_harness','voice journey evidence kind missing')
+        require(all(report.get(k)==v for k,v in {
+            'live_provider':'not_executed','acoustic_quality':'not_measured','child_speech_gold':'insufficient_evidence',
+            'external_host_e2e':'not_executed','production_readiness':'not_claimed'}.items()),'synthetic voice qualification inflated')
+        pg=report.get('postgres')
+        validate_report(Suite('P11.3-pg','isolated-postgres','isolated-postgres',VOICE_JOURNEY_CASES,(),(),True),pg)
+        require(pg.get('cases')==cases and pg.get('observations')==report.get('observations'),'voice journey native report differs')
+        observations=report.get('observations',{})
+        require(isinstance(observations,dict) and set(observations)==set(VOICE_JOURNEY_CASES),'voice journey observations missing')
+        require(all(isinstance(o,dict) and type(o.get('model_calls')) is int and type(o.get('native_invocations')) is int
+                    and o['model_calls']>=0 and o['model_calls']==o['native_invocations'] for o in observations.values()),
+                'duplicate/unaccounted voice model IO')
+        hooks=report.get('qualification_fixtures')
+        validate_report(Suite('P11.3-hooks','contract-scripted','contract-scripted',('voice-journey.qualification-fixtures',),(),()),hooks)
+        require(hooks.get('fixture_tests')==4,'voice qualification fixture tests missing')
+        analysis=report.get('static_analysis',{})
+        require(isinstance(analysis,dict) and type(analysis.get('exit')) is int and analysis['exit']==0
+                and analysis.get('command')==['extensions/loqum/vendor/bin/phpstan','analyse','-c','examples/platform/voice/phpstan.neon','--no-progress'],
+                'voice example static analysis missing')
+        source_hash=digest(json.dumps(inputs,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode())
+        native_hash=digest(json.dumps(pg,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode())
+        example=observations['voice-journey.runnable-example'].get('runnable_example',{})
+        require(isinstance(example,dict),'voice runnable example observations missing')
+        observed=example.get('tuple',{})
+        require(isinstance(observed,dict) and set(observed)=={
+            'deployment_ref','model_revision','profile_ref','profile_bundle_hash','task_ref',
+            'prompt_hash','skills_hash','tool_schema_hash','material_corpus_hash'}
+            and all(isinstance(v,str) and v for v in observed.values())
+            and all(re.fullmatch(r'sha-256:[a-f0-9]{64}',v) is not None for k,v in observed.items() if k.endswith('_hash')),
+            'voice runtime tuple incomplete')
+        expected=dict(observed,suite_hash='sha-256:'+source_hash)
+        q=report.get('qualification',{})
+        require(isinstance(q,dict) and q.get('format')=='voice-harness-qualification/v1'
+                and q.get('scope')=='technical-contract-only' and q.get('decision')=='qualified' and q.get('reasons')==[]
+                and q.get('tuple')==expected and q.get('source_manifest_sha256')==source_hash and q.get('runtime_report_sha256')==native_hash
+                and q.get('live_provider')=='not_executed' and q.get('production_readiness')=='not_claimed'
+                and q.get('evidence_tier')=='local-host-e2e' and q.get('rollout_policy_ref')=='fixture-disabled-production'
+                and Counter(q.get('required_cases',[]))==Counter(VOICE_JOURNEY_CASES),'voice exact-tuple certificate missing/stale')
+        domain=q.get('domain_qualification',{})
+        require(isinstance(domain,dict) and domain.get('decision')=='insufficient_evidence'
+                and isinstance(domain.get('prerequisites'),list) and domain['prerequisites']
+                and all(isinstance(p,dict) and p.get('decision')=='insufficient_evidence'
+                        and all(isinstance(p.get(k),str) and p[k] for k in ('owner','contract','data','gate')) for p in domain['prerequisites']),
+                'external voice gold/owner prerequisites missing or inflated')
     if spec.owner == 'P10.4':
         require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'host E2E input hashes missing/stale')
         require(report.get('evidence_kind') == 'host_contract_harness', 'synthetic host evidence kind missing')

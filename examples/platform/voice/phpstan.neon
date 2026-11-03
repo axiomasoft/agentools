@@ -1,0 +1,11 @@
+parameters:
+    level: max
+    paths:
+        - src
+    scanDirectories:
+        - ../../../packages/agentools-core/src
+        - ../../../packages/agentools-postgres/src
+        - ../../../extensions/loqum/src
+        - ../../../packages/agentools-postgres/tests
+    bootstrapFiles:
+        - bootstrap.php

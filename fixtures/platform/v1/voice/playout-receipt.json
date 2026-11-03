@@ -1,0 +1,12 @@
+{
+  "receipt_ref": {"tenant_id": "tenant-a", "kind": "ref", "id": "client:playout:1"},
+  "response_ref": {"tenant_id": "tenant-a", "kind": "ref", "id": "response:1"},
+  "response_version": 1,
+  "segment_ref": {"tenant_id": "tenant-a", "kind": "ref", "id": "voice-segment:fixture"},
+  "attempt_ref": {"tenant_id": "tenant-a", "kind": "ref", "id": "voice-play:fixture"},
+  "media_epoch": 1,
+  "delivered_offset": 3,
+  "offset_unit": "utf8_bytes",
+  "status": "interrupted",
+  "evidence_level": "client_ack"
+}

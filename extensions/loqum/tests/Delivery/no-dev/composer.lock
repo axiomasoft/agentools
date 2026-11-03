@@ -1,0 +1,688 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "70a179730637ad520c42f045acd18af2",
+    "packages": [
+        {
+            "name": "agentools/platform-core",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../../../../../packages/agentools-core",
+                "reference": "e8167e4d36e9dcd12ebf1e51a60feebd6a6265e3"
+            },
+            "require": {
+                "php": ">=8.3"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.2"
+            },
+            "type": "library",
+            "extra": {
+                "agentools": {
+                    "private": true,
+                    "evidence_tier": "unit"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AgenToolsPlatform\\Core\\": "src/"
+                }
+            },
+            "archive": {
+                "exclude": [
+                    "/tests",
+                    "/vendor",
+                    "/phpstan.neon",
+                    "/composer.lock"
+                ]
+            },
+            "scripts": {
+                "test": [
+                    "@php tests/smoke.php",
+                    "@php tests/Common/run.php",
+                    "@php tests/Runtime/run.php",
+                    "@php tests/Models/run.php",
+                    "@php tests/Runtime/advance.php"
+                ],
+                "analyse": [
+                    "phpstan analyse -c phpstan.neon --no-progress"
+                ]
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Private pure values and ports for the additive AgenTools platform.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "agentools/platform-loqum",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../../..",
+                "reference": "2a2dfb1a6743de3e7ea3fe758be977250a1a8512"
+            },
+            "require": {
+                "agentools/platform-core": "dev-main",
+                "agentools/platform-postgres": "dev-main",
+                "agentools/sdk": "dev-main",
+                "php": ">=8.3"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.2"
+            },
+            "type": "library",
+            "extra": {
+                "agentools": {
+                    "private": true,
+                    "registration": "Explicit backend injection only; no routes, media engine or second model loop"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AgenToolsPlatform\\Loqum\\": "src/"
+                }
+            },
+            "archive": {
+                "exclude": [
+                    "/tests",
+                    "/vendor",
+                    "/composer.lock",
+                    "/phpstan.neon"
+                ]
+            },
+            "scripts": {
+                "test": [
+                    "python3 -B tests/suite.py"
+                ],
+                "analyse": [
+                    "phpstan analyse -c phpstan.neon --no-progress"
+                ]
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Private optional final-STT ingress over the existing trusted input and intake.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "agentools/platform-postgres",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../../../../../packages/agentools-postgres",
+                "reference": "c5f9b43594bea23346b95fd114bada757fc216a0"
+            },
+            "require": {
+                "agentools/platform-core": "dev-main",
+                "agentools/sdk": "dev-main",
+                "ext-pdo": "*",
+                "ext-pdo_pgsql": "*",
+                "php": ">=8.3"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.2",
+                "phpunit/phpunit": "^11.5"
+            },
+            "suggest": {
+                "ext-sodium": "Required only when using FileEncryptedPayloadStore with a trusted host key provider."
+            },
+            "type": "library",
+            "extra": {
+                "agentools": {
+                    "private": true,
+                    "evidence_tier": "isolated-postgres"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AgenToolsPlatform\\Postgres\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "AgenToolsPlatform\\Postgres\\Tests\\": "tests/"
+                }
+            },
+            "archive": {
+                "exclude": [
+                    "/tests",
+                    "/vendor",
+                    "/phpunit.xml",
+                    "/phpstan.neon",
+                    "/composer.lock"
+                ]
+            },
+            "scripts": {
+                "test": [
+                    "python3 tests/run.py",
+                    "python3 tests/Runtime/run.py",
+                    "python3 tests/Concurrency/run.py",
+                    "python3 tests/Actions/run.py",
+                    "python3 tests/Isolation/run.py --partition payloads",
+                    "python3 tests/Models/run.py"
+                ],
+                "analyse": [
+                    "phpstan analyse -c phpstan.neon --no-progress"
+                ]
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "Private additive PostgreSQL persistence and versioned platform migrations.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "agentools/sdk",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../../../../../php",
+                "reference": "a415fdc8df5bfb6d4580ca71ed20f39dd1fba036"
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "mmccook/php-json-canonicalization-scheme": "^1.0",
+                "opis/json-schema": "^2.6",
+                "php": ">=8.3",
+                "symfony/uid": "^7.4"
+            },
+            "require-dev": {
+                "infection/infection": "^0.35.4",
+                "phpstan/phpstan": "^2.2",
+                "phpunit/phpunit": "^12"
+            },
+            "suggest": {
+                "ext-pdo_pgsql": "Required for PdoPostgresConfirmationTokenStore, PdoPostgresIdempotencyStore and PdoPostgresEventStore"
+            },
+            "type": "library",
+            "extra": {
+                "agentools": {
+                    "spec_rev": "2026-09",
+                    "declared_level": "L3"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AgenTools\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "AgenTools\\Reference\\": "reference/",
+                    "AgenTools\\TestKit\\": "testkit/",
+                    "AgenTools\\Tests\\": "tests/"
+                }
+            },
+            "archive": {
+                "exclude": [
+                    "/conformance",
+                    "/reference",
+                    "/testkit",
+                    "/tests",
+                    "/vendor",
+                    "/tmp",
+                    "/.cursor",
+                    "/.phpunit.result.cache"
+                ]
+            },
+            "scripts": {
+                "analyse": [
+                    "phpstan analyse -c phpstan.neon --no-progress --memory-limit=1G"
+                ],
+                "test": [
+                    "phpunit"
+                ],
+                "infection": [
+                    "infection --threads=max --ignore-msi-with-no-mutations"
+                ]
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "PHP contracts and validators for the AgenTools protocol.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "mmccook/php-json-canonicalization-scheme",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mmccook/php-json-canonicalization-scheme.git",
+                "reference": "cd6d3e7645a2c1e62574a9a2437d68e9e74e799f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mmccook/php-json-canonicalization-scheme/zipball/cd6d3e7645a2c1e62574a9a2437d68e9e74e799f",
+                "reference": "cd6d3e7645a2c1e62574a9a2437d68e9e74e799f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.13",
+                "pestphp/pest": "^1.20",
+                "phpstan/phpstan": "^1.10",
+                "spatie/ray": "^1.28"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mmccook\\JsonCanonicalizator\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mark M. McCook",
+                    "email": "mark.mccook@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "This is my package php-json-canonicalization-scheme",
+            "homepage": "https://github.com/mmccook/php-json-canonicalization-scheme",
+            "keywords": [
+                "mmccook",
+                "php-json-canonicalization-scheme"
+            ],
+            "support": {
+                "issues": "https://github.com/mmccook/php-json-canonicalization-scheme/issues",
+                "source": "https://github.com/mmccook/php-json-canonicalization-scheme/tree/1.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/mmccook",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-08-07T18:12:27+00:00"
+        },
+        {
+            "name": "opis/json-schema",
+            "version": "2.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opis/json-schema.git",
+                "reference": "8458763e0dd0b6baa310e04f1829fc73da4e8c8a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opis/json-schema/zipball/8458763e0dd0b6baa310e04f1829fc73da4e8c8a",
+                "reference": "8458763e0dd0b6baa310e04f1829fc73da4e8c8a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "opis/string": "^2.1",
+                "opis/uri": "^1.0",
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "ext-bcmath": "*",
+                "ext-intl": "*",
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Opis\\JsonSchema\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Sorin Sarca",
+                    "email": "sarca_sorin@hotmail.com"
+                },
+                {
+                    "name": "Marius Sarca",
+                    "email": "marius.sarca@gmail.com"
+                }
+            ],
+            "description": "Json Schema Validator for PHP",
+            "homepage": "https://opis.io/json-schema",
+            "keywords": [
+                "json",
+                "json-schema",
+                "schema",
+                "validation",
+                "validator"
+            ],
+            "support": {
+                "issues": "https://github.com/opis/json-schema/issues",
+                "source": "https://github.com/opis/json-schema/tree/2.6.0"
+            },
+            "time": "2025-10-17T12:46:48+00:00"
+        },
+        {
+            "name": "opis/string",
+            "version": "2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opis/string.git",
+                "reference": "3e4d2aaff518ac518530b89bb26ed40f4503635e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opis/string/zipball/3e4d2aaff518ac518530b89bb26ed40f4503635e",
+                "reference": "3e4d2aaff518ac518530b89bb26ed40f4503635e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-iconv": "*",
+                "ext-json": "*",
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Opis\\String\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Marius Sarca",
+                    "email": "marius.sarca@gmail.com"
+                },
+                {
+                    "name": "Sorin Sarca",
+                    "email": "sarca_sorin@hotmail.com"
+                }
+            ],
+            "description": "Multibyte strings as objects",
+            "homepage": "https://opis.io/string",
+            "keywords": [
+                "multi-byte",
+                "opis",
+                "string",
+                "string manipulation",
+                "utf-8"
+            ],
+            "support": {
+                "issues": "https://github.com/opis/string/issues",
+                "source": "https://github.com/opis/string/tree/2.1.0"
+            },
+            "time": "2025-10-17T12:38:41+00:00"
+        },
+        {
+            "name": "opis/uri",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opis/uri.git",
+                "reference": "0f3ca49ab1a5e4a6681c286e0b2cc081b93a7d5a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opis/uri/zipball/0f3ca49ab1a5e4a6681c286e0b2cc081b93a7d5a",
+                "reference": "0f3ca49ab1a5e4a6681c286e0b2cc081b93a7d5a",
+                "shasum": ""
+            },
+            "require": {
+                "opis/string": "^2.0",
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Opis\\Uri\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Marius Sarca",
+                    "email": "marius.sarca@gmail.com"
+                },
+                {
+                    "name": "Sorin Sarca",
+                    "email": "sarca_sorin@hotmail.com"
+                }
+            ],
+            "description": "Build, parse and validate URIs and URI-templates",
+            "homepage": "https://opis.io",
+            "keywords": [
+                "URI Template",
+                "parse url",
+                "punycode",
+                "uri",
+                "uri components",
+                "url",
+                "validate uri"
+            ],
+            "support": {
+                "issues": "https://github.com/opis/uri/issues",
+                "source": "https://github.com/opis/uri/tree/1.1.0"
+            },
+            "time": "2021-05-22T15:57:08+00:00"
+        },
+        {
+            "name": "symfony/polyfill-uuid",
+            "version": "v1.43.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-uuid.git",
+                "reference": "b23ff8245cc5c4479ea2be3d0132d2e6dd433993"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-uuid/zipball/b23ff8245cc5c4479ea2be3d0132d2e6dd433993",
+                "reference": "b23ff8245cc5c4479ea2be3d0132d2e6dd433993",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "provide": {
+                "ext-uuid": "*"
+            },
+            "suggest": {
+                "ext-uuid": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Uuid\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Grégoire Pineau",
+                    "email": "lyrixx@lyrixx.info"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for uuid functions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "uuid"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-uuid/tree/v1.43.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-09-24T05:20:52+00:00"
+        },
+        {
+            "name": "symfony/uid",
+            "version": "v7.4.21",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/uid.git",
+                "reference": "3e706a245b5343ea93be9cafe84525bfb54e60fc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/uid/zipball/3e706a245b5343ea93be9cafe84525bfb54e60fc",
+                "reference": "3e706a245b5343ea93be9cafe84525bfb54e60fc",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "symfony/polyfill-uuid": "^1.15"
+            },
+            "require-dev": {
+                "symfony/console": "^6.4|^7.0|^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Uid\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Grégoire Pineau",
+                    "email": "lyrixx@lyrixx.info"
+                },
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides an object-oriented API to generate and represent UIDs",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "UID",
+                "ulid",
+                "uuid"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/uid/tree/v7.4.21"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-10-12T14:31:36+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "agentools/platform-core": 20,
+        "agentools/platform-loqum": 20,
+        "agentools/platform-postgres": 20,
+        "agentools/sdk": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=8.3"
+    },
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
+}

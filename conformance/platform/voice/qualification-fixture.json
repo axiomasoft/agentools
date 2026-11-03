@@ -1,0 +1,12 @@
+{
+  "format": "voice-harness-qualification/v1",
+  "fixture_only": true,
+  "technical_scope": "technical-contract-only",
+  "rollout_policy_ref": "fixture-disabled-production",
+  "external_prerequisites": [
+    {"owner": "Loqum host/media owner", "contract": "authenticated utterance/epoch mapping and idempotent suffix playout with conservative alignment", "data": "approved synthetic or consented audio", "gate": "explicit opt-in live STT/TTS/version/region/credentials/spend evidence", "decision": "insufficient_evidence"},
+    {"owner": "Edufy voice/child-safety owner", "contract": "Russian child speech, formulas, noise, privacy and acoustic latency gold/scorers", "data": "owner-approved corpus release and consent/access policy", "gate": "authorized domain/acoustic gold with recorded baseline and expert thresholds", "decision": "insufficient_evidence"},
+    {"owner": "recording/memory/export/retention host owners", "contract": "current consent revoke, stop and durable retention receipt", "data": "approved retention policy/version and host handoff", "gate": "real external owner integration evidence", "decision": "insufficient_evidence"},
+    {"owner": "product pilot/release owner", "contract": "exact qualified deployment/profile/prompt/skills/tools/corpus/suite tuple", "data": "approved pilot population and data/spend scope", "gate": "separate authorized pilot and existing private release gate", "decision": "insufficient_evidence"}
+  ]
+}

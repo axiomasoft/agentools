@@ -1,0 +1,21 @@
+{
+  "testInterim": "ECO-VOICE-001",
+  "testReplay": "ECO-VOICE-002",
+  "testStaleEpoch": "ECO-VOICE-003",
+  "testStaleContext": "ECO-VOICE-004",
+  "testBargeIn": "ECO-VOICE-005",
+  "testEffectIndependence": "ECO-VOICE-006",
+  "testExpiredUiCommand": "ECO-VOICE-007",
+  "testConsentRevoke": "ECO-VOICE-008",
+  "testCurrentFinal": "V2-P11-3-VOICE-POS",
+  "testConsentAllowed": "V2-P11-3-CONSENT-POS",
+  "testAllPositive": "V2ALL-VOICE-POSITIVE",
+  "testAllNegative": "V2ALL-VOICE-NEGATIVE",
+  "testAllFault": "V2ALL-VOICE-FAULT",
+  "testLostReceiptDedup": "voice-journey.lost-tts-receipt",
+  "testProviderChange": "voice-journey.provider-after-disclosure",
+  "testContextChanges": "voice-journey.state-checkpoints",
+  "testTenantReset": "voice-journey.worker-tenant-reset",
+  "testRunnableExample": "voice-journey.runnable-example",
+  "testFinalConflict": "voice-journey.final-payload-conflict"
+}

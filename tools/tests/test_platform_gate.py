@@ -17,6 +17,86 @@ import platform_gate as gate
 
 
 class GateTests(unittest.TestCase):
+    def test_voice_journey_registry(self):
+        import importlib.util
+        source=importlib.util.spec_from_file_location('voice_qualification_fixture',ROOT/'conformance/platform/voice/qualification.py')
+        q=importlib.util.module_from_spec(source);source.loader.exec_module(q)
+        spec=gate.SUITES[('voice-journey','e2e')]
+        self.assertIn('GateTests.test_voice_journey_registry',gate.SELF_CASES)
+        self.assertEqual((spec.owner,spec.mode,spec.tier,spec.requires_pg),('P11.3','local-host-e2e','local-host-e2e',True))
+        self.assertEqual(len(spec.cases),19);self.assertEqual(tuple(q.CASES),spec.cases)
+        inputs=gate.hashes(ROOT,spec.dependencies)
+        tuple_={k:('sha-256:'+'b'*64 if k.endswith('_hash') else 'scripted-fixture') for k in q.TUPLE_FIELDS-{'suite_hash'}}
+        tuple_['material_corpus_hash']='sha-256:'+inputs[q.CORPUS]
+        pg={'mode':'isolated-postgres','tier':'isolated-postgres','cases':[{'id':c,'status':'passed'} for c in spec.cases],
+            'count':19,'failures':0,'skips':0,'observations':{c:{'model_calls':1,'native_invocations':1} for c in spec.cases},
+            'isolation':{'engine':'postgresql','isolated':True,'allow_marker_verified':True,'database':'agentools_test_fixture','owner':'fixture','case_ids':list(spec.cases)}}
+        pg['observations']['voice-journey.runnable-example']['runnable_example']={'tuple':tuple_}
+        certificate=q.assess(pg,q.runtime_tuple(pg,inputs),inputs)
+        report=dict(pg,mode=spec.mode,tier=spec.tier,postgres=pg,evidence_kind='voice_journey_contract_harness',input_hashes=inputs,
+                    qualification=certificate,qualification_fixtures={'mode':'contract-scripted','tier':'contract-scripted',
+                    'cases':[{'id':'voice-journey.qualification-fixtures','status':'passed'}],'fixture_tests':4},
+                    static_analysis={'command':['extensions/loqum/vendor/bin/phpstan','analyse','-c','examples/platform/voice/phpstan.neon','--no-progress'],'exit':0},
+                    live_provider='not_executed',acoustic_quality='not_measured',child_speech_gold='insufficient_evidence',external_host_e2e='not_executed',production_readiness='not_claimed')
+        gate.validate_report(spec,report)
+        for change in ({'cases':[]},{'cases':report['cases'][:-1]},{'input_hashes':{}},{'postgres':dict(pg,isolation={})},
+                       {'observations':{}},{'qualification_fixtures':{}},{'static_analysis':{}},{'live_provider':'passed'},
+                       {'acoustic_quality':'measured'},{'production_readiness':'ready'},
+                       {'qualification':dict(certificate,tuple=dict(certificate['tuple'],profile_ref='changed'))},
+                       {'qualification':dict(certificate,domain_qualification={'decision':'qualified'})}):
+            with self.assertRaises(gate.GateError):gate.validate_report(spec,dict(report,**change))
+        args=gate.parser().parse_args(['e2e','--scenario','voice-journey'])
+        with patch.object(gate,'run_suite',return_value={'ok':True}) as run:self.assertEqual(gate.execute(args),[{'ok':True}])
+        run.assert_called_once_with(ROOT,spec,isolated=True)
+
+    def test_voice_delivery_registry(self):
+        spec=gate.SUITES[('voice-delivery','test')]
+        self.assertIn('GateTests.test_voice_delivery_registry',gate.SELF_CASES)
+        self.assertEqual((spec.owner,spec.mode,spec.tier,spec.requires_pg),('P11.2','contract-scripted','contract-scripted',False))
+        self.assertEqual(len(spec.cases),20)
+        self.assertEqual(len(set(spec.cases)),20)
+        pg={'mode':'isolated-postgres','tier':'isolated-postgres','cases':[{'id':c,'status':'passed'} for c in gate.VOICE_DELIVERY_PG_CASES],
+            'isolation':{'engine':'postgresql','isolated':True,'database':'agentools_test_fixture','owner':'fixture',
+                         'allow_marker_verified':True,'case_ids':list(gate.VOICE_DELIVERY_PG_CASES)}}
+        report={'mode':spec.mode,'tier':spec.tier,'cases':[{'id':c,'status':'passed'} for c in spec.cases],
+                'input_hashes':gate.hashes(ROOT,spec.dependencies),'evidence_kind':'voice_delivery_contract_harness',
+                'live_provider':'not_executed','production_readiness':'not_claimed','postgres':pg}
+        gate.validate_report(spec,report)
+        for change in ({'cases':[]},{'cases':report['cases'][:-1]}, {'cases':[dict(c,status='skipped') for c in report['cases']]},
+                       {'input_hashes':{}},{'postgres':{}},{'postgres':dict(pg,isolation={})},
+                       {'postgres':dict(pg,cases=pg['cases'][:-1])},{'live_provider':'passed'},{'production_readiness':'ready'}):
+            with self.assertRaises(gate.GateError):gate.validate_report(spec,dict(report,**change))
+        args=gate.parser().parse_args(['test','--suite','voice-delivery'])
+        with patch.object(gate,'run_suite',return_value={'ok':True}) as run:self.assertEqual(gate.execute(args),[{'ok':True}])
+        run.assert_called_once_with(ROOT,spec,isolated=False)
+
+    def test_voice_ingress_registry(self):
+        spec = gate.SUITES[('voice-ingress','test')]
+        self.assertIn('GateTests.test_voice_ingress_registry',gate.SELF_CASES)
+        self.assertEqual((spec.owner,spec.mode,spec.tier,spec.requires_pg),('P11.1','contract-scripted','contract-scripted',False))
+        self.assertEqual(len(spec.cases),25)
+        self.assertEqual(len(set(spec.cases)),25)
+        self.assertTrue(all(not p.startswith('plans/') for p in spec.dependencies))
+        pg = {'mode':'isolated-postgres','tier':'isolated-postgres',
+              'cases':[{'id':c,'status':'passed'} for c in gate.VOICE_INGRESS_PG_CASES],
+              'isolation':{'engine':'postgresql','isolated':True,'database':'agentools_test_fixture',
+                           'owner':'fixture','allow_marker_verified':True,'case_ids':list(gate.VOICE_INGRESS_PG_CASES)}}
+        report = {'mode':spec.mode,'tier':spec.tier,'evidence_kind':'voice_ingress_contract_harness',
+                  'cases':[{'id':c,'status':'passed'} for c in spec.cases], 'postgres':pg,
+                  'input_hashes':gate.hashes(ROOT,spec.dependencies),
+                  'live_provider':'not_executed','production_readiness':'not_claimed'}
+        gate.validate_report(spec,report)
+        for change in ({'cases':[]},{'cases':report['cases'][:-1]}, {'input_hashes':{}},
+                       {'live_provider':'passed'},{'evidence_kind':'live-provider'}, {'postgres':{}},
+                       {'postgres':dict(pg,isolation={})},
+                       {'postgres':dict(pg,cases=pg['cases'][:-1])},
+                       {'cases':[dict(c,status='skipped') for c in report['cases']]}):
+            with self.assertRaises(gate.GateError): gate.validate_report(spec,dict(report,**change))
+        args = gate.parser().parse_args(['test','--suite','voice-ingress'])
+        with patch.object(gate,'run_suite',return_value={'ok':True}) as run:
+            self.assertEqual(gate.execute(args),[{'ok':True}])
+        run.assert_called_once_with(ROOT,spec,isolated=False)
+
     def test_host_e2e_registry(self):
         spec=gate.SUITES[('host-e2e','e2e')]
         self.assertIn('GateTests.test_host_e2e_registry',gate.SELF_CASES)

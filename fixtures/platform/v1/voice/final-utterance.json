@@ -1,0 +1,16 @@
+{
+  "event_id": "transport:event:1",
+  "realtime_session_ref": {"tenant_id": "tenant-a", "kind": "ref", "id": "realtime:1"},
+  "media_epoch": 1,
+  "utterance_id": "utterance:1",
+  "revision": 2,
+  "locale": "ru-RU",
+  "started_at": "2026-11-03T09:00:00Z",
+  "ended_at": "2026-11-03T09:00:02Z",
+  "text_ref": {"tenant_id": "tenant-a", "kind": "ref", "id": "immutable:text:1"},
+  "text_hash": "sha-256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "context_revision": 1,
+  "idempotency_key": "transport:retry:1",
+  "is_final": true,
+  "channel": "voice"
+}

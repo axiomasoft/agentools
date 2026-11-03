@@ -1,0 +1,14 @@
+{
+  "version": "synthetic-voice-events/v1",
+  "audio": "scripted-events-only-no-waveform-or-acoustic-measurement",
+  "noise_partial": [
+    {"kind": "noise", "event_id": "noise:1", "text": "[synthetic noise]"},
+    {"kind": "partial", "event_id": "partial:1", "utterance_id": "ut-1", "text": "да отправь"}
+  ],
+  "final": {"kind": "final", "event_id": "final:1", "utterance_id": "ut-1", "text": "Объясни пример."},
+  "reconnect_final": {"kind": "final", "event_id": "overlap:2", "retry_key": "new-socket:retry", "utterance_id": "ut-1", "text": "Объясни пример.", "media_epoch": 2},
+  "stale_epoch": {"kind": "final", "utterance_id": "ut-1", "media_epoch": 1},
+  "stale_context": {"kind": "final", "utterance_id": "ut-1", "context_revision": 3},
+  "text_fallback": {"kind": "text", "event_id": "text:continuity", "utterance_id": "ut-1", "text": "Объясни пример."},
+  "changed_context": {"kind": "final", "utterance_id": "ut-2", "context_revision": 2, "locale": "en-US", "text": "Explain the next example."}
+}
