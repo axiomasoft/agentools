@@ -17,6 +17,111 @@ import platform_gate as gate
 
 
 class GateTests(unittest.TestCase):
+    def test_provider_fallback_registry(self):
+        self.assertIn('GateTests.test_provider_fallback_registry', gate.SUITES[('gate-self', 'test')].cases)
+        contract = gate.SUITES[('provider-fallback', 'test')]
+        self.assertEqual((contract.owner, contract.mode, contract.tier), ('P9.5', 'contract-scripted', 'contract-scripted'))
+        self.assertEqual(len(contract.cases), 22)
+        self.assertEqual(len(set(contract.cases)), 22)
+        self.assertIn('fallback.unknown-effect-before-continuation', contract.cases)
+        self.assertIn('cost.unknown-correction-replaces-once', contract.cases)
+        self.assertTrue(all(not path.startswith('plans/') for path in contract.dependencies))
+        self.assertIn('packages/agentools-core/src/Models/Routing/OutputBoundary.php', contract.dependencies)
+        inputs = gate.hashes(ROOT, contract.dependencies)
+        report = {'mode': contract.mode, 'tier': contract.tier, 'input_hashes': inputs,
+                  'cases': [{'id': name, 'status': 'passed'} for name in contract.cases],
+                  'live': {'status': 'pending_opt_in', 'executed': False, 'provider_support': 'not_qualified',
+                           'educational_qualification': 'insufficient_evidence'},
+                  'review_materialization': {'status': 'materialized_pending_coordinator_review', 'input_count': 100,
+                      'archive_sha256': '1' * 64, 'reviewer_read_proof': 'not_yet_available', 'historical_pass_is_not_current_pass': True}}
+        gate.validate_report(contract, report)
+        for change in (dict(report, cases=[]), dict(report, cases=report['cases'][:-1]), dict(report, input_hashes={}),
+                       dict(report, cases=[dict(c, status='skipped') for c in report['cases']]),
+                       dict(report, live={}), dict(report, live=dict(report['live'], executed=True)),
+                       dict(report, review_materialization={}),
+                       dict(report, review_materialization=dict(report['review_materialization'], reviewer_read_proof='claimed_verified'))):
+            with self.assertRaises(gate.GateError): gate.validate_report(contract, change)
+        args = gate.parser().parse_args(['test', '--suite', 'provider-fallback'])
+        with patch.object(gate, 'run_suite', return_value={'ok': True}) as run:
+            self.assertEqual(gate.execute(args), [{'ok': True}])
+        run.assert_called_once_with(ROOT, contract, isolated=False)
+
+    def test_cache_manager_registry(self):
+        self.assertIn('GateTests.test_cache_manager_registry', gate.SUITES[('gate-self', 'test')].cases)
+        contract = gate.SUITES[('cache-manager', 'test')]
+        pg = gate.SUITES[('cache-manager', 'pg-test')]
+        self.assertEqual((contract.owner, contract.tier), ('P9.4', 'contract-scripted'))
+        self.assertEqual((pg.owner, pg.tier, pg.requires_pg), ('P9.4-pg', 'isolated-postgres', True))
+        self.assertEqual((len(contract.cases), len(pg.cases)), (17, 11))
+        self.assertEqual(len(set(pg.cases)), len(pg.cases))
+        self.assertTrue({'CM-031', 'CM-032', 'CM-033', 'CM-034', 'V2ALL-CACHE-FAULT'}.issubset(contract.cases))
+        self.assertTrue(all(not path.startswith('plans/') for path in pg.dependencies))
+        hashes = gate.hashes(ROOT, contract.dependencies)
+        report = {'mode': contract.mode, 'tier': contract.tier, 'input_hashes': hashes, 'observations': {},
+                  'cases': [{'id': name, 'status': 'passed'} for name in contract.cases]}
+        gate.validate_report(contract, report)
+        for change in (dict(report, cases=[]), dict(report, cases=report['cases'][:-1]), dict(report, observations=[]),
+                       dict(report, input_hashes={}), dict(report, cases=[dict(c, status='skipped') for c in report['cases']])):
+            with self.assertRaises(gate.GateError): gate.validate_report(contract, change)
+        args = gate.parser().parse_args(['pg-test', '--suite', 'cache-manager', '--isolated'])
+        with patch.object(gate, 'run_suite', return_value={'ok': True}) as run:
+            self.assertEqual(gate.execute(args), [{'ok': True}])
+        run.assert_called_once_with(ROOT, pg, isolated=True)
+        signal = {'signaled': True, 'signal': 9, 'exit': -1}
+        proof = {'mode': pg.mode, 'tier': pg.tier, 'input_hashes': hashes,
+                 'cases': [{'id': name, 'status': 'passed'} for name in pg.cases],
+                 'isolation': {'engine': 'postgresql', 'isolated': True, 'database': 'agentools_test_fixture',
+                               'owner': 'fixture', 'allow_marker_verified': True, 'case_ids': list(pg.cases)},
+                 'observations': {
+                     'cache.pg-competing-quota': {'backends': [1, 2], 'blocked': 2, 'exits': [0, 0], 'results': ['accepted', 'refused'], 'rows': 1},
+                     'cache.pg-competing-use-revoke': {'backends': [1, 2], 'exits': [0, 0], 'after_revoke': 'denied'},
+                     'cache.pg-revoke-crash-windows': {'before-commit': signal, 'after-commit': signal},
+                     'cache.pg-delete-ack-crash': dict(signal, owner_operations=1, lookup_same_key=True),
+                     'cache.pg-warm-reply-crash': dict(signal, owner_operations=1, usage_facts=1, exposure='unknown', automatic_release=False)}}
+        gate.validate_report(pg, proof)
+        for missing in ('observations', 'isolation', 'input_hashes'):
+            with self.assertRaises(gate.GateError): gate.validate_report(pg, dict(proof, **{missing: {}}))
+        malformed = dict(proof['observations'])
+        malformed['cache.pg-revoke-crash-windows'] = {'before-commit': signal, 'after-commit': dict(signal, signal=0)}
+        with self.assertRaises(gate.GateError): gate.validate_report(pg, dict(proof, observations=malformed))
+
+    def test_usage_reservations_registry(self):
+        self.assertIn('GateTests.test_usage_reservations_registry', gate.SUITES[('gate-self', 'test')].cases)
+        contract = gate.SUITES[('usage-reservations', 'test')]
+        pg = gate.SUITES[('usage-reservations', 'pg-test')]
+        self.assertEqual((contract.owner, contract.tier), ('P9.3', 'contract-scripted'))
+        self.assertEqual((pg.owner, pg.tier, pg.requires_pg), ('P9.3-pg', 'isolated-postgres', True))
+        self.assertEqual(len(contract.cases), 9)
+        self.assertEqual(len(pg.cases), 16)
+        self.assertEqual(len(set(pg.cases)), len(pg.cases))
+        self.assertIn('ECO-ADM-003', pg.cases)
+        self.assertIn('accounting.crash-export-ack', pg.cases)
+        self.assertIn('accounting.atomic-response-export', pg.cases)
+        self.assertTrue(all(not p.startswith('plans/') for p in pg.dependencies))
+        inputs = gate.hashes(ROOT, pg.dependencies)
+        report = {'mode': contract.mode, 'tier': contract.tier,
+                  'cases': [{'id': c, 'status': 'passed'} for c in contract.cases], 'input_hashes': inputs}
+        gate.validate_report(contract, report)
+        for altered in (dict(report, cases=[]), dict(report, input_hashes={}),
+                        dict(report, cases=report['cases'][:-1]),
+                        dict(report, cases=[dict(c, status='skipped') for c in report['cases']])):
+            with self.assertRaises(gate.GateError): gate.validate_report(contract, altered)
+        args = gate.parser().parse_args(['pg-test', '--suite', 'usage-reservations', '--isolated'])
+        with patch.object(gate, 'run_suite', return_value={'ok': True}) as run:
+            self.assertEqual(gate.execute(args), [{'ok': True}])
+        run.assert_called_once_with(ROOT, pg, isolated=True)
+        crash = {'signaled': True, 'signal': 9, 'exit': -1}
+        pg_report = {'mode': pg.mode, 'tier': pg.tier, 'input_hashes': inputs,
+                     'cases': [{'id': c, 'status': 'passed'} for c in pg.cases],
+                     'isolation': {'engine': 'postgresql', 'isolated': True, 'database': 'agentools_test_fixture',
+                                   'owner': 'fixture', 'allow_marker_verified': True, 'case_ids': list(pg.cases)},
+                     'observations': {
+                         'accounting.competing-connections': {'backends': [1, 2], 'blocked': 2, 'exits': [0, 0], 'rows': 1},
+                         'accounting.crash-commit-windows': {'before-commit': crash, 'after-commit': crash},
+                         'accounting.crash-export-ack': dict(crash, owner_exports=1, replayed_same_identity=True)}}
+        gate.validate_report(pg, pg_report)
+        with self.assertRaises(gate.GateError): gate.validate_report(pg, dict(pg_report, observations={}))
+
     def setUp(self):
         self.spec = gate.Suite("self-test", "contract-scripted", "contract-scripted",
                                ("one", "two"), (sys.executable, "runner.py"), ())

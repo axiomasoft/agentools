@@ -1,0 +1,14 @@
+{
+  "evidence_kind": "policy-example",
+  "production_enabled": false,
+  "owner_policy_required": true,
+  "max_pending_facts_and_reservations": 100,
+  "max_oldest_export_age_seconds": 300,
+  "max_attempts": 5,
+  "lease_seconds": 30,
+  "retry_seconds": 5,
+  "on_limit": "deny_new_admission_retain_accepted_facts",
+  "on_unknown": "owner_status_same_key_then_proven_resolution_or_manual",
+  "on_worker_expiry": "retain_exposure",
+  "request_anti_abuse": "separate_host_policy"
+}

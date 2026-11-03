@@ -1,0 +1,32 @@
+{
+  "format": "provider-fallback-coverage/v1",
+  "evidence_kind": "contract-scripted",
+  "groups": [
+    {
+      "contract": "knowledge/cm.model-transport-routing#model-transport-routing",
+      "cases": ["fallback.before-disclosure-discards-buffer", "fallback.after-disclosure-requires-segment", "fallback.segment-forgery-denied", "fallback.context-and-actions-persist", "fallback.unknown-effect-before-continuation", "fallback.policy-before-cost-no-escape", "fallback.source-mismatch-and-late-packets"],
+      "assertions": ["New invocation with unchanged goal, bundle, working state, business operation and accepted Actions", "No exposed concatenation across models; explicit interruption/new segment", "Owner lookup of the same unknown effect precedes continuation; no Action execution", "Forbidden data route is not a cheap fallback; source changes and stale packets stop disclosure"],
+      "file": "segments.php"
+    },
+    {
+      "contract": "knowledge/eco.usage#usage",
+      "additional_contract": "knowledge/cm.cache-manager#cache-manager",
+      "cases": ["cost.fallback-resource-facts-business-ref", "cost.unknown-correction-replaces-once", "cost.sdk-observer-is-telemetry-only", "cost.cache-miss-does-not-bypass-budget"],
+      "assertions": ["Resource facts for distinct invocations retain one business operation reference", "Unknown is nullable possible spend; immutable correction folds as replacement", "Duplicate SDK observer is telemetry-only", "Cache miss retains ordinary budget refusal and guards"],
+      "file": "cost.php"
+    },
+    {
+      "contract": "knowledge/cm.model-transport-routing#model-transport-routing",
+      "cases": ["provider.generate-wire-usage", "provider.stream-and-tools-proposal-only", "provider.structured-result", "provider.missing-terminal-is-partial", "provider.cancel-and-errors", "provider.optional-cache-continuation-attachments"],
+      "assertions": ["Existing adapter exercised with scripted HTTP generate/stream/structured/tools/nullable usage", "Cancel/errors and missing terminal retain typed uncertainty", "Unsupported optional features refuse before network IO"],
+      "file": "sdk.php"
+    },
+    {
+      "contract": "knowledge/eco.evaluation#evaluation",
+      "cases": ["probe.offline-and-unknown-price-fail-closed", "probe.explicit-data-credential-and-current-owner", "probe.calls-and-cumulative-spend-bounded", "probe.unknown-no-blind-resend", "probe.partial-stream-remains-unknown"],
+      "assertions": ["Explicit test credentials, approved synthetic payload and scoped current price upper bounds", "Current host owner admission before IO; bounded data, calls, output and cumulative spend", "Lost provider result and partial stream retain pending accounting with no blind retry", "Scripted checks never confer live or educational qualification"],
+      "file": "probe-guards.php"
+    }
+  ],
+  "limitations": ["In-memory output boundary needs the host durable exposure checkpoint before replacement IO", "Host ProbeBudget must provide real durable same-key admission/accounting; no unlimited production implementation is supplied", "No live provider, production, pricing or domain-expert qualification", "Upstream isolated PostgreSQL evidence is preserved on its historical candidates, not rerun or transferred to P9.5"]
+}

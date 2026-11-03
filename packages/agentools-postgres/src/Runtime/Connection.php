@@ -39,6 +39,12 @@ final readonly class Connection
         }
     }
 
+    /** Local participants must share an explicit repository-owned transaction. */
+    public function assertTransaction(): void
+    {
+        if (!$this->pdo->inTransaction()) { throw new \LogicException('Accounting participant requires a transaction'); }
+    }
+
     /** A participant on exactly this connection/schema; it never opens a nested transaction. */
     public function journal(): \AgenTools\Persistence\PdoPostgresEventStore
     {

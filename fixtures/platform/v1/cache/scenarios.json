@@ -1,0 +1,13 @@
+{
+  "evidence_kind": "contract-scripted",
+  "scope_mismatches": [
+    {"field": "tenant_ref", "value": "other-tenant"},
+    {"field": "credential_ref", "value": "other-account-binding"},
+    {"field": "model_revision", "value": "other-model-revision"},
+    {"field": "region", "value": "other-region"}
+  ],
+  "provider_miss": {"status": "miss", "expected": "rebuild_then_current_admission"},
+  "revoked_material": {"delete_supported": false, "expected_status": "unsupported", "local_use_allowed": false},
+  "personal": {"subject_required": true, "retention_required": true},
+  "live_provider_support_claim": false
+}

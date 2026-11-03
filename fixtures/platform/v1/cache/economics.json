@@ -1,0 +1,15 @@
+{
+  "evidence_kind": "calculator-example",
+  "currency": "USD",
+  "pricing_version": "synthetic-example-only",
+  "uses": 10,
+  "prefix_tokens": 100,
+  "input_price_micros_per_token": 5,
+  "cached_price_micros_per_token": 1,
+  "warm_cost_micros": 1000,
+  "storage_cost_micros": 500,
+  "expected_gross_micros": 4000,
+  "expected_net_micros": 2500,
+  "guaranteed": false,
+  "live_provider_price_claim": false
+}

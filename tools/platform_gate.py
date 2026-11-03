@@ -30,7 +30,7 @@ SELF_CASES = tuple("GateTests.test_" + name for name in (
     "boundary_autoload_escape", "boundary_transitive_testing", "boundary_namespace_path",
     "boundary_production_source", "contradictory_totals",
     "sdk_adapter_registry", "model_transport_registry", "runtime_registry", "read_journey_registry", "action_submit_registry", "confirmation_write_registry", "effect_reconcile_registry", "cancellation_resolution_registry", "write_recovery_registry", "laravel_composition_registry", "platform_definitions_registry", "composition_testing_registry", "filament_registry", "scheduler_registry", "platform_registry", "fsm_registry", "testkit_registry", "pg_schema_registry", "pg_intake_registry", "pg_claims_outbox_registry", "pg_action_journal_registry", "pg_isolation_retention_registry", "aggregate_preflight",
-    "usage_registry", "routing_registry", "knowledge_ingest_registry", "knowledge_retrieval_registry", "knowledge_invalidation_registry", "knowledge_journey_registry", "profile_publish_registry", "profile_admin_registry", "profile_merge_registry", "skill_selection_registry", "context_compiler_registry", "history_memory_registry", "context_guards_registry", "cli_missing_suite", "cli_wrong_mode", "cli_missing_pg_isolation", "cli_future_commands",
+    "usage_registry", "usage_reservations_registry", "cache_manager_registry", "provider_fallback_registry", "routing_registry", "knowledge_ingest_registry", "knowledge_retrieval_registry", "knowledge_invalidation_registry", "knowledge_journey_registry", "profile_publish_registry", "profile_admin_registry", "profile_merge_registry", "skill_selection_registry", "context_compiler_registry", "history_memory_registry", "context_guards_registry", "cli_missing_suite", "cli_wrong_mode", "cli_missing_pg_isolation", "cli_future_commands",
     "exact_cases", "zero_cases", "skips", "failure", "duplicate_cases", "extra_cases",
     "missing_cases", "mode_mismatch", "tier_mismatch", "unknown_status", "malformed_report",
     "pg_proof_missing", "pg_case_set", "runner_nonzero", "missing_dependency",
@@ -1090,6 +1090,89 @@ SUITES[('usage-parity', 'test')] = Suite('P9.2-parity', 'contract-scripted', 'co
     (sys.executable, '-B', f'{CORE}/tests/Usage/parity.py'), USAGE_PARITY_INPUTS)
 
 
+USAGE_RESERVATIONS_CASES = (
+    'CM-039', 'ECO-ADM-001', 'ECO-ADM-002', 'ECO-ADM-004', 'ECO-ADM-005',
+    'V2ALL-ADMISSION-POSITIVE', 'V2ALL-ADMISSION-NEGATIVE', 'V2ALL-ADMISSION-FAULT',
+    'accounting.explicit-owner-proof',
+)
+USAGE_RESERVATIONS_PG_CASES = (
+    'CM-040', 'accounting.atomic-response-export', 'accounting.identity-quarantine',
+    'accounting.correction-replacement', 'accounting.settle-once', 'accounting.admission-conflict-backlog',
+    'accounting.denial-revocation-before-provider', 'ECO-ADM-003', 'accounting.lost-admit-ack',
+    'accounting.lost-release-renew', 'accounting.no-lookup-no-retry', 'accounting.export-replay-backoff',
+    'accounting.worker-reset-redaction', 'accounting.competing-connections',
+    'accounting.crash-commit-windows', 'accounting.crash-export-ack',
+)
+USAGE_RESERVATIONS_INPUTS = tuple(dict.fromkeys(USAGE_INPUTS + tuple(
+    str(p.relative_to(ROOT)) for base in (
+        ROOT / POSTGRES / 'src/Usage', ROOT / POSTGRES / 'src/Budget', ROOT / POSTGRES / 'tests/Usage',
+        ROOT / 'packages/agentools-laravel/src/Usage', ROOT / 'fixtures/platform/v1/admission',
+        ROOT / POSTGRES / 'migrations', ROOT / POSTGRES / 'tests/Models', ROOT / POSTGRES / 'tests/Runtime',
+        ROOT / CORE / 'src/Runtime', ROOT / CORE / 'src/Models', ROOT / CORE / 'src/Security',
+    ) for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php', '.py', '.json', '.md', '.sql'}
+) + (f'{POSTGRES}/src/Models/InvocationRepository.php', f'{POSTGRES}/src/Runtime/Connection.php',
+     f'{POSTGRES}/src/Runtime/RepositoryContext.php', f'{POSTGRES}/src/Migrator.php',
+     f'{POSTGRES}/tests/IsolatedDatabase.php', f'{POSTGRES}/tests/Context/bootstrap.php',
+     f'{CORE}/tests/Context/Fixture.php',
+     f'{POSTGRES}/composer.json', f'{POSTGRES}/composer.lock', f'{POSTGRES}/vendor/autoload.php',
+     'packages/agentools-laravel/src/Managed/Composition.php', 'packages/agentools-laravel/composer.json')))
+SUITES[('usage-reservations', 'test')] = Suite('P9.3', 'contract-scripted', 'contract-scripted', USAGE_RESERVATIONS_CASES,
+    (sys.executable, '-B', f'{POSTGRES}/tests/Usage/run.py'), USAGE_RESERVATIONS_INPUTS)
+SUITES[('usage-reservations', 'pg-test')] = Suite('P9.3-pg', 'isolated-postgres', 'isolated-postgres', USAGE_RESERVATIONS_PG_CASES,
+    (sys.executable, '-B', f'{POSTGRES}/tests/Usage/run.py', '--postgres'), USAGE_RESERVATIONS_INPUTS, requires_pg=True)
+
+
+CACHE_MANAGER_CASES = (
+    'CM-031', 'cache.closed-key-and-kind', 'cache.personal-retention', 'CM-034', 'cache.measured-roi',
+    'CM-032', 'CM-033', 'V2-P9-4-REVOKE-POS', 'V2-P9-4-MISS-POS', 'cache.hit-current-acl-budget',
+    'cache.mid-use-revoke', 'V2ALL-CACHE-FAULT', 'V2ALL-CACHE-POSITIVE', 'V2ALL-CACHE-NEGATIVE',
+    'cache.warm-unknown-no-release', 'cache.warm-accounting-replay', 'cache.refresh-and-idle-retire',
+)
+CACHE_MANAGER_PG_CASES = (
+    'cache.pg-scope-revoke', 'cache.pg-warm-accounting', 'cache.pg-warm-rollback', 'cache.pg-revoked-inflight',
+    'cache.pg-deletion-replay', 'cache.pg-competing-quota', 'cache.pg-competing-use-revoke',
+    'cache.pg-revoke-crash-windows', 'cache.pg-delete-ack-crash', 'cache.pg-warm-reply-crash', 'cache.pg-stale-warm-result',
+)
+CACHE_MANAGER_INPUTS = tuple(dict.fromkeys(USAGE_INPUTS + tuple(
+    str(p.relative_to(ROOT)) for base in (
+        ROOT / CORE / 'src/Models/Cache', ROOT / 'packages/agentools-model-adapter/src/Cache',
+        ROOT / 'packages/agentools-model-adapter/tests/Cache', ROOT / POSTGRES / 'src/Cache',
+        ROOT / POSTGRES / 'src/Usage', ROOT / 'fixtures/platform/v1/cache',
+    ) for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php', '.py', '.json', '.md', '.sql'}
+) + (f'{CORE}/src/Models/Time.php', f'{CORE}/src/Models/ModelUsage.php', f'{CORE}/src/Models/CapabilityEvidence.php',
+     f'{CORE}/src/Models/Support.php', f'{CORE}/src/Models/Evidence.php',
+     'packages/agentools-model-adapter/src/SystemClock.php', 'packages/agentools-model-adapter/composer.json',
+     'packages/agentools-model-adapter/composer.lock', 'packages/agentools-model-adapter/vendor/autoload.php',
+     'packages/agentools-model-adapter/phpstan.neon', f'{CORE}/phpstan.neon', f'{POSTGRES}/phpstan.neon',
+     f'{POSTGRES}/src/Runtime/Connection.php', f'{POSTGRES}/src/Runtime/StorageFailure.php', f'{POSTGRES}/tests/IsolatedDatabase.php',
+     f'{POSTGRES}/composer.json', f'{POSTGRES}/composer.lock')))
+SUITES[('cache-manager', 'test')] = Suite('P9.4', 'contract-scripted', 'contract-scripted', CACHE_MANAGER_CASES,
+    (sys.executable, '-B', 'packages/agentools-model-adapter/tests/Cache/run.py'), CACHE_MANAGER_INPUTS)
+SUITES[('cache-manager', 'pg-test')] = Suite('P9.4-pg', 'isolated-postgres', 'isolated-postgres', CACHE_MANAGER_PG_CASES,
+    (sys.executable, '-B', 'packages/agentools-model-adapter/tests/Cache/run.py', '--postgres'), CACHE_MANAGER_INPUTS, requires_pg=True)
+
+
+PROVIDER_FALLBACK_CASES = (
+    'fallback.before-disclosure-discards-buffer', 'fallback.after-disclosure-requires-segment',
+    'fallback.segment-forgery-denied', 'fallback.context-and-actions-persist',
+    'fallback.unknown-effect-before-continuation', 'fallback.policy-before-cost-no-escape',
+    'fallback.source-mismatch-and-late-packets',
+    'cost.fallback-resource-facts-business-ref', 'cost.unknown-correction-replaces-once',
+    'cost.sdk-observer-is-telemetry-only', 'cost.cache-miss-does-not-bypass-budget',
+    'provider.generate-wire-usage', 'provider.stream-and-tools-proposal-only', 'provider.structured-result',
+    'provider.missing-terminal-is-partial', 'provider.cancel-and-errors', 'provider.optional-cache-continuation-attachments',
+    'probe.offline-and-unknown-price-fail-closed', 'probe.explicit-data-credential-and-current-owner',
+    'probe.calls-and-cumulative-spend-bounded', 'probe.unknown-no-blind-resend', 'probe.partial-stream-remains-unknown',
+)
+PROVIDER_FALLBACK_INPUTS = tuple(dict.fromkeys(ROUTING_INPUTS + SDK_ADAPTER_INPUTS + CACHE_MANAGER_INPUTS + tuple(
+    str(p.relative_to(ROOT)) for base in (
+        ROOT / 'conformance/platform/provider-fallback', ROOT / TESTING / 'src/Providers',
+    ) for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php', '.py', '.json', '.md'}
+) + ('docs/platform/providers.md', f'{TESTING}/composer.lock', f'{TESTING}/phpstan.neon')))
+SUITES[('provider-fallback', 'test')] = Suite('P9.5', 'contract-scripted', 'contract-scripted', PROVIDER_FALLBACK_CASES,
+    (sys.executable, '-B', 'conformance/platform/provider-fallback/run.py'), PROVIDER_FALLBACK_INPUTS)
+
+
 class GateError(Exception):
     pass
 
@@ -1149,6 +1232,56 @@ def validate_report(spec: Suite, report):
         if field in report:
             require(type(report[field]) is int and report[field] == expected,
                     f"contradictory runner total: {field}")
+    if spec.owner in {'P9.4', 'P9.4-pg'}:
+        require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'cache input hashes missing/stale')
+        require(isinstance(report.get('observations'), dict), 'cache observations must be an object')
+    if spec.owner == 'P9.5':
+        require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'provider fallback input hashes missing/stale')
+        live = report.get('live', {})
+        require(isinstance(live, dict) and live.get('status') == 'pending_opt_in' and live.get('executed') is False
+                and live.get('provider_support') == 'not_qualified'
+                and live.get('educational_qualification') == 'insufficient_evidence', 'offline evidence cannot claim live qualification')
+        packet = report.get('review_materialization', {})
+        require(isinstance(packet, dict) and packet.get('status') == 'materialized_pending_coordinator_review'
+                and type(packet.get('input_count')) is int and packet['input_count'] > 0
+                and isinstance(packet.get('archive_sha256'), str) and re.fullmatch('[0-9a-f]{64}', packet['archive_sha256']) is not None
+                and packet.get('reviewer_read_proof') == 'not_yet_available'
+                and packet.get('historical_pass_is_not_current_pass') is True, 'complete honest pre-review materialization required')
+    if spec.owner == 'P9.4-pg':
+        observed = report['observations']
+        for name in ('cache.pg-competing-quota', 'cache.pg-competing-use-revoke'):
+            fact = observed.get(name, {})
+            backends = fact.get('backends', [])
+            require(len(backends) == 2 and all(type(pid) is int and pid > 0 for pid in backends)
+                    and backends[0] != backends[1] and fact.get('exits') == [0, 0], 'real competing cache connections missing')
+        quota = observed['cache.pg-competing-quota']
+        require(quota.get('blocked') == 2 and quota.get('rows') == 1 and quota.get('results') == ['accepted', 'refused'], 'atomic warm quota proof missing')
+        require(observed['cache.pg-competing-use-revoke'].get('after_revoke') == 'denied', 'post-revoke cache use was not denied')
+        windows = observed.get('cache.pg-revoke-crash-windows', {})
+        require(set(windows) == {'before-commit', 'after-commit'}, 'cache revoke crash windows missing')
+        for fact in [*windows.values(), observed.get('cache.pg-delete-ack-crash', {}), observed.get('cache.pg-warm-reply-crash', {})]:
+            require(fact.get('signaled') is True and fact.get('signal') == 9 and type(fact.get('exit')) is int and fact['exit'] != 0, 'actual cache SIGKILL proof missing')
+        require(observed['cache.pg-delete-ack-crash'].get('owner_operations') == 1
+                and observed['cache.pg-delete-ack-crash'].get('lookup_same_key') is True, 'delete ACK reconciliation proof missing')
+        warm = observed['cache.pg-warm-reply-crash']
+        require(warm.get('exposure') == 'unknown' and warm.get('automatic_release') is False
+                and warm.get('owner_operations') == warm.get('usage_facts') == 1, 'warm unknown accounting was not retained')
+    if spec.owner in {'P9.3', 'P9.3-pg'}:
+        require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'accounting input hashes missing/stale')
+    if spec.owner == 'P9.3-pg':
+        observations = report.get('observations', {})
+        competing = observations.get('accounting.competing-connections', {})
+        backends = competing.get('backends', [])
+        require(len(backends) == 2 and all(type(pid) is int and pid > 0 for pid in backends)
+                and backends[0] != backends[1] and competing.get('blocked') == 2
+                and competing.get('exits') == [0, 0] and competing.get('rows') == 1, 'accounting competing connection proof missing')
+        windows = observations.get('accounting.crash-commit-windows', {})
+        require(set(windows) == {'before-commit', 'after-commit'}, 'accounting crash windows missing')
+        for proof in [*windows.values(), observations.get('accounting.crash-export-ack', {})]:
+            require(proof.get('signaled') is True and proof.get('signal') == 9 and type(proof.get('exit')) is int
+                    and proof['exit'] != 0, 'accounting SIGKILL proof missing')
+        require(observations['accounting.crash-export-ack'].get('owner_exports') == 1
+                and observations['accounting.crash-export-ack'].get('replayed_same_identity') is True, 'lost export ACK replay proof missing')
     if spec.requires_pg:
         proof = report.get("isolation")
         require(isinstance(proof, dict), "missing PostgreSQL isolation proof")

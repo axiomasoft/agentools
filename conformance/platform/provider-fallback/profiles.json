@@ -1,0 +1,25 @@
+{
+  "format": "provider-contract-profiles/v1",
+  "profile": "existing-anthropic-adapter",
+  "evidence_kind": "scripted-adapter-wire",
+  "cases": {
+    "generate": "scripted",
+    "stream": "scripted",
+    "structured": "scripted",
+    "tools": "proposal_only",
+    "continuation": "unsupported_before_io",
+    "cancel": "scripted",
+    "errors": "scripted",
+    "usage": "nullable_scripted",
+    "cache": "unsupported_before_io",
+    "attachments": "unsupported_before_io"
+  },
+  "live": {
+    "status": "pending_opt_in",
+    "executed": false,
+    "provider_support": "not_qualified",
+    "educational_qualification": "insufficient_evidence",
+    "requirements": ["explicit_test_credential", "approved_synthetic_payload_hash", "bounded_data_and_output", "current_price_upper_bounds", "host_durable_admission_accounting"],
+    "persistent_cache_continuation_external_payloads": "outside_default_live_probe_scope"
+  }
+}

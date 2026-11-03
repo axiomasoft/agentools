@@ -24,7 +24,8 @@ final readonly class Composition
     public Service $confirmation;
     private AdvanceRun $runtime;
 
-    public function __construct(private HostBindings $ports, private Scope $scope)
+    public function __construct(private HostBindings $ports, private Scope $scope,
+        private ?\AgenToolsPlatform\Laravel\Usage\Accounting $accounting = null)
     {
         $p = $ports;
         $this->repositories = new RepositoryContext($p->connection, $p->hasher, $p->authorization, $p->revisions);
@@ -41,7 +42,7 @@ final readonly class Composition
                 $this->host->assertCurrent($context, $plan);
             }
         };
-        $this->runtime = new AdvanceRun(new InvocationRepository($this->repositories), $p->transport, $p->budget,
+        $this->runtime = new AdvanceRun(new InvocationRepository($this->repositories, accounting: $accounting?->recorder), $p->transport, $accounting === null ? $p->budget : $accounting->budget,
             $guard, $p->payloads, new DurableProposals($this->actions, $this->confirmation, $p->registry,
                 $p->policy, $p->hasher, $p->json, $scope, $p->payloads), $p->hasher,
             $p->transport instanceof ProviderLookup ? $p->transport : null);
@@ -54,6 +55,7 @@ final readonly class Composition
         $authentication = $p->host->authenticate($entry);
         $this->scope->assertActive();
         $input = $p->host->trusted($entry);
+        $this->accounting?->tenant->assertSame($input->context->session->tenant);
         $input->context->identity->tenant->assertSame($authentication->tenant);
         $this->current($input);
         $this->decision($input, 'tenant/session');

@@ -13,7 +13,13 @@ use AgenToolsPlatform\Postgres\Runtime\{Connection, RepositoryContext, StorageFa
 /** Durable one-loop technical journal on the existing platform tables. No owner IO inside Tx. */
 final readonly class InvocationRepository implements InvocationJournal
 {
-    public function __construct(private RepositoryContext $environment, private ?ResponsePublisher $publisher = null) {}
+    public function __construct(private RepositoryContext $environment, private ?ResponsePublisher $publisher = null,
+        private ?\AgenToolsPlatform\Postgres\Usage\Recorder $accounting = null)
+    {
+        if ($accounting !== null && $accounting->repository->db !== $environment->db) {
+            throw new \InvalidArgumentException('Usage must share the invocation connection and transaction');
+        }
+    }
 
     /** Native payment correlation only; the external Budget owner still decides price and settlement.
      * @return array<string,mixed>
@@ -183,6 +189,7 @@ final readonly class InvocationRepository implements InvocationJournal
     {
         return $this->mutate($context, $plan, $saved, ['admitted'], function (array $data) use ($plan): array {
             $db = $this->environment->db;
+            $this->accounting?->outboundInTransaction($plan);
             $admission = $data['admission'] ?? null;
             if (!is_array($admission) || !is_string($admission['admission_ref'] ?? null) || !is_string($admission['expires_at'] ?? null)) {
                 throw new StorageFailure();
@@ -254,10 +261,14 @@ final readonly class InvocationRepository implements InvocationJournal
                 VALUES (:tenant,:id,:invocation,:version,:hash,:input,:output)', ['tenant' => $tenant, 'id' => $usageId,
                     'invocation' => $invocation, 'version' => $version, 'hash' => substr($usageHash->value, 8),
                     'input' => $result->usage->inputTokens, 'output' => $result->usage->outputTokens]);
-            $db->execute('INSERT INTO ' . $db->table('outbox') . '(tenant_id,id,event_key,payload_hash,event_type,aggregate_ref,deadline_at,retention_until)
+            if ($this->accounting !== null) {
+                $data['usage_quarantined'] = !$this->accounting->recordInTransaction($context,$plan,$result,$usageId,$version);
+            } else {
+                $db->execute('INSERT INTO ' . $db->table('outbox') . '(tenant_id,id,event_key,payload_hash,event_type,aggregate_ref,deadline_at,retention_until)
                 VALUES (:tenant,:id,:event,:hash,\'invocation.usage\',:aggregate,clock_timestamp()+interval \'1 day\',clock_timestamp()+interval \'8 days\')', [
                     'tenant' => $tenant, 'id' => 'outbox:' . $usageId, 'event' => 'usage:' . $usageId,
                     'hash' => substr($usageHash->value, 8), 'aggregate' => $usageId]);
+            }
             foreach ($result->proposals as $proposal) {
                 $db->execute('INSERT INTO ' . $db->table('proposal_map') . '(tenant_id,id,run_id,invocation_id,proposal_key,payload_hash,proposal_ref,action_ref)
                     VALUES (:tenant,:id,:run,:invocation,:key,:hash,:payload,:action)', ['tenant' => $tenant, 'id' => $proposal->id->value,
