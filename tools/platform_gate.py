@@ -25,7 +25,7 @@ TIERS = {"design-schema", "unit", "contract-scripted", "isolated-postgres",
 
 # Explicit, independent of discovery: removing a test must make the gate red.
 SELF_CASES = tuple("GateTests.test_" + name for name in (
-    "host_registry", "architecture_fixture", "boundary_current_tree", "boundary_missing_source",
+    "chatom_registry", "host_registry", "architecture_fixture", "boundary_current_tree", "boundary_missing_source",
     "boundary_production_testing", "boundary_duplicate_owner", "boundary_core_dependency",
     "boundary_autoload_escape", "boundary_transitive_testing", "boundary_namespace_path",
     "boundary_production_source", "contradictory_totals",
@@ -1204,6 +1204,43 @@ SUITES[('host', 'test')] = Suite('P10.1', 'contract-scripted', 'contract-scripte
 SUITES[('edufy-host', 'test')] = SUITES[('host', 'test')]
 SUITES[('host-edufy', 'test')] = SUITES[('host', 'test')]
 
+CHATOM_CASES = (
+    'chatom.history-support-editor', 'chatom.history-bounds-order-tenant',
+    'chatom.history-revoke-expiry-exact-version', 'chatom.history-unavailable-not-empty-success',
+    'chatom.receipt-unknown-and-binding', 'chatom.production-no-dev',
+)
+CHATOM_PG_CASES = (
+    'DEL-001', 'ECO-DEL-001', 'ECO-DEL-002', 'ECO-DEL-003', 'ECO-DEL-004', 'ECO-DEL-005',
+    'V2-P10-2-DELIVERY-POS', 'V2ALL-DELIVERY-POSITIVE', 'V2ALL-DELIVERY-NEGATIVE', 'V2ALL-DELIVERY-FAULT',
+    'chatom.owner-permission-race', 'chatom.tenant-isolation', 'chatom.cancel-retains-unknown',
+    'chatom.incoming-conflict-before-enqueue', 'chatom.competing-claims', 'chatom.crash-commit-before-dispatch', 'chatom.crash-destination-before-receipt',
+    'chatom.invalidation-partial-recovery', 'chatom.expiry-purge-keeps-owner-transcript', 'chatom.response-version-new-key',
+)
+CHATOM_INPUTS = tuple(dict.fromkeys(tuple(
+    str(p.relative_to(ROOT)) for base in (
+        ROOT / 'extensions/chatom/src', ROOT / 'extensions/chatom/tests',
+        ROOT / 'examples/platform/chatom', ROOT / 'fixtures/platform/v1/delivery',
+        ROOT / 'packages/agentools-chatom', ROOT / CORE / 'src',
+        ROOT / POSTGRES / 'src', ROOT / POSTGRES / 'migrations', ROOT / 'php/src',
+    ) for p in sorted(base.rglob('*')) if p.is_file()
+    and 'vendor' not in p.relative_to(ROOT).parts
+    and p.suffix in {'.php', '.py', '.json', '.md', '.sql', '.lock'}
+) + (
+    'extensions/chatom/composer.json', 'extensions/chatom/composer.lock', 'extensions/chatom/vendor/autoload.php',
+    'extensions/chatom/phpstan.neon', 'extensions/chatom/README.md', 'extensions/chatom/contract.md',
+    'extensions/chatom/runbook.md', 'extensions/chatom/pin-matrix.json',
+    'extensions/chatom/tests/no-dev/vendor/autoload.php',
+    'extensions/chatom/tests/no-dev/.gitignore',
+    f'{POSTGRES}/tests/IsolatedDatabase.php', f'{CORE}/tests/Common/Harness.php',
+    f'{CORE}/tests/Common/JcsAdapter.php', f'{CORE}/composer.json', f'{POSTGRES}/composer.json',
+    'php/composer.json', 'php/composer.lock', 'tools/platform_gate.py', 'tools/tests/test_platform_gate.py',
+)))
+for _chatom_name in ('chatom', 'chatom-delivery', 'host-chatom'):
+    SUITES[(_chatom_name, 'test')] = Suite('P10.2', 'contract-scripted', 'contract-scripted', CHATOM_CASES,
+        (sys.executable, '-B', 'extensions/chatom/tests/run.py'), CHATOM_INPUTS)
+    SUITES[(_chatom_name, 'pg-test')] = Suite('P10.2-pg', 'isolated-postgres', 'isolated-postgres', CHATOM_PG_CASES,
+        (sys.executable, '-B', 'extensions/chatom/tests/run.py', '--pg'), CHATOM_INPUTS, True)
+
 
 class GateError(Exception):
     pass
@@ -1274,6 +1311,42 @@ def validate_report(spec: Suite, report):
                 'local host fixture cannot claim external owner implementation')
         require(report.get('host_e2e') == 'pending' and report.get('live_provider') == 'not_executed'
                 and report.get('production_readiness') == 'not_claimed', 'host harness tier inflated')
+    if spec.owner in {'P10.2', 'P10.2-pg'}:
+        require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'Chatom input hashes missing/stale')
+        require(report.get('evidence_kind') == 'host_contract_harness', 'Chatom local evidence kind missing')
+        qualification = report.get('qualification', {})
+        require(isinstance(qualification, dict) and qualification.get('status') == 'pending_real_chatom_pin'
+                and qualification.get('immutable_real_driver_pin') is None
+                and qualification.get('actual_client_key_semantics') == 'not_qualified_here'
+                and qualification.get('remote_host_e2e') == 'not_executed'
+                and qualification.get('live_provider') == 'not_executed'
+                and qualification.get('production_readiness') == 'not_claimed', 'Chatom fixture cannot claim real driver qualification')
+    if spec.owner == 'P10.2-pg':
+        observed = report.get('observations', {})
+        require(isinstance(observed, dict), 'Chatom durable observations missing')
+        competing = observed.get('chatom.competing-claims', {})
+        backends = competing.get('backends', [])
+        require(len(backends) == 2 and all(type(pid) is int and pid > 0 for pid in backends)
+                and backends[0] != backends[1] and competing.get('exits') == [0, 0]
+                and competing.get('claims') == 1 and competing.get('rows') == 1, 'real competing Chatom claims missing')
+        for name in ('chatom.crash-commit-before-dispatch', 'chatom.crash-destination-before-receipt',
+                     'chatom.invalidation-partial-recovery'):
+            fact = observed.get(name, {})
+            require(fact.get('signaled') is True and fact.get('signal') == 9 and type(fact.get('exit')) is int
+                    and fact['exit'] != 0, 'actual Chatom SIGKILL proof missing')
+        commit = observed['chatom.crash-commit-before-dispatch']
+        require(commit.get('pending_recovered') is True and commit.get('inbox') == commit.get('outbox') == 1,
+                'committed source/delivery scanner recovery missing')
+        delivery = observed['chatom.crash-destination-before-receipt']
+        restarted = delivery.get('backends', [])
+        require(len(restarted) == 2 and all(type(pid) is int and pid > 0 for pid in restarted)
+                and restarted[0] != restarted[1] and delivery.get('recovery_exit') == 0
+                and delivery.get('destination_messages') == 1 and delivery.get('invocations') == 0
+                and isinstance(delivery.get('recovered_receipt'), str) and bool(delivery['recovered_receipt']),
+                'same-key Chatom receipt recovery without regeneration missing')
+        invalidation = observed['chatom.invalidation-partial-recovery']
+        require(invalidation.get('summary_invalidated') is True and invalidation.get('context_cache_invalidated') is True,
+                'partial invalidation recovery missing')
     if spec.owner in {'P9.4', 'P9.4-pg'}:
         require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'cache input hashes missing/stale')
         require(isinstance(report.get('observations'), dict), 'cache observations must be an object')

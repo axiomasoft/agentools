@@ -17,6 +17,54 @@ import platform_gate as gate
 
 
 class GateTests(unittest.TestCase):
+    def test_chatom_registry(self):
+        contract = gate.SUITES[('chatom', 'test')]
+        durable = gate.SUITES[('chatom', 'pg-test')]
+        self.assertIn('GateTests.test_chatom_registry', gate.SELF_CASES)
+        self.assertEqual((contract.owner, contract.mode, contract.tier), ('P10.2', 'contract-scripted', 'contract-scripted'))
+        self.assertEqual((durable.owner, durable.tier, durable.requires_pg), ('P10.2-pg', 'isolated-postgres', True))
+        self.assertEqual((len(contract.cases), len(durable.cases)), (6, 20))
+        self.assertEqual(len(set(durable.cases)), 20)
+        self.assertTrue({'DEL-001', 'ECO-DEL-001', 'ECO-DEL-002', 'ECO-DEL-003', 'ECO-DEL-004', 'ECO-DEL-005',
+                         'V2-P10-2-DELIVERY-POS', 'V2ALL-DELIVERY-POSITIVE', 'V2ALL-DELIVERY-NEGATIVE',
+                         'V2ALL-DELIVERY-FAULT'}.issubset(durable.cases))
+        self.assertTrue(all(not p.startswith('plans/') for p in contract.dependencies))
+        inputs = gate.hashes(ROOT, contract.dependencies)
+        qualification = json.loads((ROOT / 'extensions/chatom/pin-matrix.json').read_text())['qualification']
+        report = {'mode': contract.mode, 'tier': contract.tier, 'evidence_kind': 'host_contract_harness',
+                  'input_hashes': inputs, 'qualification': qualification,
+                  'cases': [{'id': name, 'status': 'passed'} for name in contract.cases]}
+        gate.validate_report(contract, report)
+        for changed in (dict(report, cases=[]), dict(report, cases=report['cases'][:-1]),
+                        dict(report, cases=[dict(c, status='skipped') for c in report['cases']]),
+                        dict(report, input_hashes={}), dict(report, evidence_kind='host_e2e'),
+                        dict(report, qualification=dict(qualification, status='qualified'))):
+            with self.assertRaises(gate.GateError): gate.validate_report(contract, changed)
+        signal = {'signaled': True, 'signal': 9, 'exit': -1}
+        proof = dict(report, mode=durable.mode, tier=durable.tier,
+                     cases=[{'id': name, 'status': 'passed'} for name in durable.cases],
+                     isolation={'engine': 'postgresql', 'isolated': True, 'database': 'agentools_test_fixture',
+                                'owner': 'fixture', 'allow_marker_verified': True, 'case_ids': list(durable.cases)},
+                     observations={
+                         'chatom.competing-claims': {'backends': [11, 12], 'exits': [0, 0], 'claims': 1, 'rows': 1},
+                         'chatom.crash-commit-before-dispatch': dict(signal, pending_recovered=True, inbox=1, outbox=1),
+                         'chatom.crash-destination-before-receipt': dict(signal, backends=[11, 12], recovery_exit=0,
+                             destination_messages=1, recovered_receipt='owner-message', invocations=0),
+                         'chatom.invalidation-partial-recovery': dict(signal, summary_invalidated=True, context_cache_invalidated=True)})
+        gate.validate_report(durable, proof)
+        for changed in (dict(proof, observations={}), dict(proof, isolation={}),
+                        dict(proof, observations=dict(proof['observations'], **{'chatom.competing-claims': {}}))):
+            with self.assertRaises(gate.GateError): gate.validate_report(durable, changed)
+        with self.assertRaisesRegex(gate.GateError, '--isolated'): gate.run_suite(ROOT, durable)
+        for name in ('chatom', 'chatom-delivery', 'host-chatom'):
+            self.assertEqual(gate.SUITES[(name, 'test')], contract)
+            self.assertEqual(gate.SUITES[(name, 'pg-test')], durable)
+            for command, spec, tail in (('test', contract, []), ('pg-test', durable, ['--isolated'])):
+                args = gate.parser().parse_args([command, '--suite', name, *tail])
+                with patch.object(gate, 'run_suite', return_value={'ok': True}) as run:
+                    self.assertEqual(gate.execute(args), [{'ok': True}])
+                run.assert_called_once_with(ROOT, spec, isolated=command == 'pg-test')
+
     def test_host_registry(self):
         spec = gate.SUITES[('host', 'test')]
         self.assertIs(spec, gate.SUITES[('edufy-host', 'test')])

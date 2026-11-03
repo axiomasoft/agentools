@@ -1,0 +1,32 @@
+{
+  "revision": "chatom-bridge/v1",
+  "synthetic": true,
+  "hosts": [
+    {
+      "kind": "support",
+      "purpose": "support.read"
+    },
+    {
+      "kind": "editor",
+      "purpose": "editor.read"
+    }
+  ],
+  "incoming": {
+    "source_kind": "chatom.initial.v1",
+    "source_event": "msg-1",
+    "assistant_instance": "assistant-1",
+    "relay": "one_host_selected_committed_source_relay",
+    "dedup_owner": "existing native inbox",
+    "wake_owner": "existing native outbox"
+  },
+  "outgoing": {
+    "key_owner": "saved native DeliverySubmission.key",
+    "fixture_key_derivation": "existing IdentityKeys.delivery(run,responseVersion,destination)",
+    "relay_owner": "one selected platform bridge over native delivery controls",
+    "transcript_owner": "Chatom via Destination",
+    "temporary_payload": "existing encrypted payload repository with expiry",
+    "status_before_receipt": "unknown",
+    "regenerate_response": false
+  },
+  "external_pin": "pending_real_chatom_pin"
+}

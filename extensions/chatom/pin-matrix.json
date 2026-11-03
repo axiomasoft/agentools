@@ -1,0 +1,68 @@
+{
+  "revision": "chatom-bridge/v1",
+  "evidence_kind": "host_contract_harness",
+  "existing_sources": [
+    {
+      "path": "packages/agentools-chatom/composer.json",
+      "sha256": "73fb02fced242da48dd221755993c115d6cfa8667ef0e32edee729b9cffa7c65",
+      "disposition": "reuse_preserved"
+    },
+    {
+      "path": "packages/agentools-chatom/src/NativeHistory.php",
+      "sha256": "ed7c8b55889e778715fcb311f0c56370f870945955c1e4b1ae5f623d07418fc0",
+      "disposition": "reuse_preserved"
+    },
+    {
+      "path": "packages/agentools-chatom/src/TextComposition.php",
+      "sha256": "3144c20b0f8ab894cb25fa36ea6e74d64069b0ca5ab6198cee38eb593566be97",
+      "disposition": "reuse_preserved"
+    },
+    {
+      "path": "packages/agentools-chatom/src/TextResponsePublisher.php",
+      "sha256": "6d6f04c784acc1698ccc58ffcece92fe84b1aa97affa581deea295adef5d4a3b",
+      "disposition": "reuse_preserved"
+    },
+    {
+      "path": "packages/agentools-postgres/src/Delivery/DeliveryRepository.php",
+      "sha256": "f132958030f1d7a5288cebded4f8f85cb9a077c7707e749392ba5868cbe1e4bc",
+      "disposition": "reuse_preserved"
+    }
+  ],
+  "native_history_binding": "AgenToolsPlatform\\Chatom\\NativeHistory implements existing HistorySource",
+  "native_delivery_binding": "Existing PostgresDeliveryOwner.submission returns saved DeliverySubmission; bridge never rewrites its key",
+  "declared_real_dependencies": {
+    "agentools/chatom": "dev-main",
+    "axiomasoft/chatom": "^1.0@RC"
+  },
+  "qualification": {
+    "status": "pending_real_chatom_pin",
+    "immutable_real_driver_pin": null,
+    "actual_client_key_semantics": "not_qualified_here",
+    "remote_host_e2e": "not_executed",
+    "live_provider": "not_executed",
+    "production_readiness": "not_claimed"
+  },
+  "gaps": [
+    {
+      "id": "CHATOM-BRIDGE-PIN-001",
+      "revision": 1,
+      "owner": "Chatom/Messenger host",
+      "status": "pending",
+      "requires": [
+        "immutable Composer/source/driver pin",
+        "native client-key namespace/length/hash/conflict behavior",
+        "current membership/moderation and exact history/cursor semantics",
+        "actual Messenger delivery receipt lost ACK recovery",
+        "owner durable edit/delete/purge event retry and complete cleanup receipts"
+      ]
+    }
+  ],
+  "local_proofs": [
+    "contract-scripted support/editor public history ports and production closure",
+    "isolated PostgreSQL native inbox/delivery/payload/summary graph with scripted destination",
+    "actual competing worker connections and SIGKILL/restart"
+  ],
+  "limitations": [
+    "No foreign repository changes or remote qualification. Existing repository handoff receipts remain historical evidence, not fresh proof for this candidate."
+  ]
+}

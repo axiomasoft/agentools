@@ -1,0 +1,59 @@
+{
+  "name": "agentools/chatom-bridge-no-dev-proof",
+  "description": "Isolated production dependency closure proof.",
+  "type": "project",
+  "license": "proprietary",
+  "require": {
+    "php": ">=8.4",
+    "agentools/platform-chatom-bridge": "dev-main",
+    "agentools/platform-core": "dev-main",
+    "agentools/platform-postgres": "dev-main",
+    "agentools/sdk": "dev-main"
+  },
+  "config": {
+    "allow-plugins": false,
+    "sort-packages": true
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../..",
+      "options": {
+        "symlink": false,
+        "versions": {
+          "agentools/platform-chatom-bridge": "dev-main"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "../../../../packages/agentools-core",
+      "options": {
+        "symlink": false,
+        "versions": {
+          "agentools/platform-core": "dev-main"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "../../../../packages/agentools-postgres",
+      "options": {
+        "symlink": false,
+        "versions": {
+          "agentools/platform-postgres": "dev-main"
+        }
+      }
+    },
+    {
+      "type": "path",
+      "url": "../../../../php",
+      "options": {
+        "symlink": false,
+        "versions": {
+          "agentools/sdk": "dev-main"
+        }
+      }
+    }
+  ]
+}

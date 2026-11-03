@@ -1,0 +1,89 @@
+{
+  "revision": "chatom-bridge/v1",
+  "evidence_kind": "host_contract_harness",
+  "contract_cases": [
+    "chatom.history-support-editor",
+    "chatom.history-bounds-order-tenant",
+    "chatom.history-revoke-expiry-exact-version",
+    "chatom.history-unavailable-not-empty-success",
+    "chatom.receipt-unknown-and-binding",
+    "chatom.production-no-dev"
+  ],
+  "durable_cases": [
+    "DEL-001",
+    "ECO-DEL-001",
+    "ECO-DEL-002",
+    "ECO-DEL-003",
+    "ECO-DEL-004",
+    "ECO-DEL-005",
+    "V2-P10-2-DELIVERY-POS",
+    "V2ALL-DELIVERY-POSITIVE",
+    "V2ALL-DELIVERY-NEGATIVE",
+    "V2ALL-DELIVERY-FAULT",
+    "chatom.owner-permission-race",
+    "chatom.tenant-isolation",
+    "chatom.cancel-retains-unknown",
+    "chatom.incoming-conflict-before-enqueue",
+    "chatom.competing-claims",
+    "chatom.crash-commit-before-dispatch",
+    "chatom.crash-destination-before-receipt",
+    "chatom.invalidation-partial-recovery",
+    "chatom.expiry-purge-keeps-owner-transcript",
+    "chatom.response-version-new-key"
+  ],
+  "source_contract": "extensions/chatom/contract.md",
+  "named_requirements": {
+    "DEL-001": [
+      "native response/intent committed before destination",
+      "lost ACK and exact receipt recovery",
+      "completed-generation precondition does not mean delivered"
+    ],
+    "ECO-DEL-001": [
+      "unavailable destination",
+      "same saved key, no new Run/invocation/response"
+    ],
+    "ECO-DEL-002": [
+      "one owner message despite lost receipt",
+      "lookup-only recovery"
+    ],
+    "ECO-DEL-003": [
+      "source and destination same-key changed-hash conflict",
+      "no overwrite"
+    ],
+    "ECO-DEL-004": [
+      "membership revoked after enqueue",
+      "zero owner disclosures"
+    ],
+    "ECO-DEL-005": [
+      "source closure and registered summary/cache/index/candidate invalidation",
+      "no source body in runtime checkpoint"
+    ],
+    "V2-P10-2-DELIVERY-POS": [
+      "native response/hash/refs before send",
+      "known destination receipt before delivered"
+    ],
+    "V2ALL-DELIVERY-POSITIVE": [
+      "single native claim/bridge",
+      "scanner, same immutable receipt"
+    ],
+    "V2ALL-DELIVERY-NEGATIVE": [
+      "current visibility/held/single-relay denial",
+      "no model regeneration"
+    ],
+    "V2ALL-DELIVERY-FAULT": [
+      "unavailable/lost ACK same-key lookup",
+      "one message, no new invocation"
+    ]
+  },
+  "faults": {
+    "chatom.competing-claims": "two real OS workers and distinct backend PIDs; one claim",
+    "chatom.crash-commit-before-dispatch": "actual SIGKILL after response/intent commit; scanner and original inbox/outbox survive",
+    "chatom.crash-destination-before-receipt": "actual SIGKILL after destination commit; new process recovers same receipt",
+    "chatom.invalidation-partial-recovery": "actual SIGKILL after source closure; unacknowledged owner event retry completes graph invalidation"
+  },
+  "limitations": [
+    "Completed-generation state is a seeded precondition; no actual provider/kernel execution here.",
+    "Destination, host identity/membership and key provider are explicitly synthetic; real native repositories and encrypted store execute on isolated PostgreSQL.",
+    "Real Chatom driver/pin/remote host_e2e, external full cleanup and production qualification remain pending."
+  ]
+}
