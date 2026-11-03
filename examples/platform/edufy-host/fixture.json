@@ -1,0 +1,30 @@
+{
+  "revision": "edufy-host/v1",
+  "synthetic": true,
+  "now": "2026-11-03T07:00:00Z",
+  "expires_at": "2026-11-03T08:00:00Z",
+  "requests": {
+    "input-a": {
+      "tenant": "school-a",
+      "session": "assistant-session-1",
+      "instance": "a1",
+      "source_kind": "host.message",
+      "event_id": "msg-1",
+      "payload": "explain the report",
+      "purpose": "education.report"
+    },
+    "input-b": {
+      "tenant": "school-b",
+      "session": "assistant-session-1",
+      "instance": "a1",
+      "source_kind": "host.message",
+      "event_id": "msg-1",
+      "payload": "explain the report",
+      "purpose": "education.report"
+    }
+  },
+  "approved_slice": "Synthetic pedagogical summary; no personal records.",
+  "report_model_view": "Synthetic report: practice fractions.",
+  "report_private_fact": "OWNER-ONLY-OFFICIAL-FACT",
+  "report_ref": "report-1"
+}

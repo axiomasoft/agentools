@@ -1,0 +1,9 @@
+parameters:
+    level: max
+    paths:
+        - ../../../packages/agentools-laravel/src/Host
+    scanDirectories:
+        - ../../../packages/agentools-core/src
+        - ../../../packages/agentools-laravel/src/Managed
+    bootstrapFiles:
+        - ../../../packages/agentools-laravel/vendor/autoload.php

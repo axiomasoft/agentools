@@ -25,7 +25,7 @@ TIERS = {"design-schema", "unit", "contract-scripted", "isolated-postgres",
 
 # Explicit, independent of discovery: removing a test must make the gate red.
 SELF_CASES = tuple("GateTests.test_" + name for name in (
-    "architecture_fixture", "boundary_current_tree", "boundary_missing_source",
+    "host_registry", "architecture_fixture", "boundary_current_tree", "boundary_missing_source",
     "boundary_production_testing", "boundary_duplicate_owner", "boundary_core_dependency",
     "boundary_autoload_escape", "boundary_transitive_testing", "boundary_namespace_path",
     "boundary_production_source", "contradictory_totals",
@@ -1172,6 +1172,38 @@ PROVIDER_FALLBACK_INPUTS = tuple(dict.fromkeys(ROUTING_INPUTS + SDK_ADAPTER_INPU
 SUITES[('provider-fallback', 'test')] = Suite('P9.5', 'contract-scripted', 'contract-scripted', PROVIDER_FALLBACK_CASES,
     (sys.executable, '-B', 'conformance/platform/provider-fallback/run.py'), PROVIDER_FALLBACK_INPUTS)
 
+HOST_CASES = (
+    'ECO-HOST-001', 'ECO-HOST-002', 'host.source-tenant-instance-kind-scope',
+    'host.trusted-handle-no-browser-authority', 'host.envelope-required-fields',
+    'host.worker-tenant-reset', 'host.slice-tenant-purpose-expiry-revoke',
+    'host.current-context-revision-and-identity', 'host.forged-envelope-refused',
+    'host.allowed-read-model-projection', 'host.confirmable-write-result-ref',
+    'host.write-current-owner-race', 'host.confirmation-binding-expiry-fence',
+    'host.owner-revision-and-hash-conflict', 'host.unknown-lookup-lost-ack',
+    'host.report-tenant-and-namespace-binding',
+    'V2ALL-OWNERSHIP-POSITIVE', 'V2ALL-OWNERSHIP-NEGATIVE', 'V2ALL-OWNERSHIP-FAULT',
+    'host.no-direct-owner-access',
+)
+HOST_INPUTS = tuple(dict.fromkeys(tuple(
+    str(p.relative_to(ROOT)) for base in (
+        ROOT / CORE / 'src', ROOT / 'php/src/Schema',
+        ROOT / 'packages/agentools-laravel/src/Host', ROOT / 'spec/platform/v1/host',
+        ROOT / 'examples/platform/edufy-host', ROOT / 'conformance/platform/host',
+    ) for p in sorted(base.rglob('*')) if p.is_file() and p.suffix in {'.php', '.py', '.json', '.md', '.neon'}
+) + (
+    'packages/agentools-laravel/src/Managed/Input.php', 'packages/agentools-laravel/src/Managed/Entry.php',
+    'packages/agentools-laravel/composer.json', 'packages/agentools-laravel/composer.lock',
+    f'{CORE}/composer.json', f'{CORE}/composer.lock', f'{CORE}/vendor/autoload.php',
+    f'{CORE}/tests/Common/bootstrap.php', f'{CORE}/tests/Common/Harness.php',
+    f'{CORE}/tests/Common/JcsAdapter.php', f'{CORE}/tests/Common/TestHost.php',
+    'php/vendor/autoload.php', 'php/composer.lock', 'tools/platform_gate.py',
+    'tools/tests/test_platform_gate.py', f'{TESTING}/bin/php-tokens.php',
+)))
+SUITES[('host', 'test')] = Suite('P10.1', 'contract-scripted', 'contract-scripted', HOST_CASES,
+    (sys.executable, '-B', 'conformance/platform/host/run.py'), HOST_INPUTS)
+SUITES[('edufy-host', 'test')] = SUITES[('host', 'test')]
+SUITES[('host-edufy', 'test')] = SUITES[('host', 'test')]
+
 
 class GateError(Exception):
     pass
@@ -1232,6 +1264,16 @@ def validate_report(spec: Suite, report):
         if field in report:
             require(type(report[field]) is int and report[field] == expected,
                     f"contradictory runner total: {field}")
+    if spec.owner == 'P10.1':
+        require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'host input hashes missing/stale')
+        require(report.get('evidence_kind') == 'host_contract_harness', 'host evidence kind missing')
+        external = report.get('external_owner', {})
+        require(isinstance(external, dict) and external.get('status') == 'pending_external_owner'
+                and external.get('change_request') == 'EDUFY-AGENTOOLS-HOST-001'
+                and external.get('revision') == 1 and external.get('implemented_here') is False,
+                'local host fixture cannot claim external owner implementation')
+        require(report.get('host_e2e') == 'pending' and report.get('live_provider') == 'not_executed'
+                and report.get('production_readiness') == 'not_claimed', 'host harness tier inflated')
     if spec.owner in {'P9.4', 'P9.4-pg'}:
         require(report.get('input_hashes') == hashes(ROOT, spec.dependencies), 'cache input hashes missing/stale')
         require(isinstance(report.get('observations'), dict), 'cache observations must be an object')
@@ -1721,6 +1763,21 @@ def source_errors(root: Path, source: str, path: str):
     return errors
 
 
+def host_source_errors(root: Path, source: str, path: str):
+    """Host integration uses public ports; it cannot reach owner ORM/DB/container internals."""
+    errors = []
+    for kind, value, line in php_tokens(root, source, path):
+        if kind not in {'T_NAME_QUALIFIED', 'T_NAME_FULLY_QUALIFIED', 'T_STRING'}:
+            continue
+        name = value.lstrip('\\')
+        if (re.match(r'(?:Edufy|Chatom|Loqum|Tariffler|ControLLM)(?:\\[A-Za-z0-9_]+)*'
+                     r'\\(?:Models?|Entities|Database|Tables?|Repositories)(?:\\|$)', name, re.I)
+                or re.match(r'(?:Illuminate\\)?(?:Database|Container|Support\\Facades)(?:\\|$)', name)
+                or name.lower() in {'pdo', 'db', 'container', 'app', 'resolve', 'mysqli', 'pg_query'}):
+            errors.append(f'{path}:{line}: host direct owner table/container dependency {name}')
+    return errors
+
+
 def check_boundaries(root=ROOT):
     core = root / CORE
     require((core / "composer.json").is_file(), "core manifest missing")
@@ -1787,6 +1844,8 @@ def check_boundaries(root=ROOT):
             continue
         for source in sorted((file.parent / "src").rglob("*.php")):
             production_sources.append(source)
+            if source.is_relative_to(root / 'packages/agentools-laravel/src/Host'):
+                errors.extend(host_source_errors(root, source.read_text(), str(source.relative_to(root))))
             # Unlike a Composer closure check, this catches an undeclared import.
             for kind, value, line in php_tokens(root, source.read_text(), str(source.relative_to(root))):
                 if kind in {"T_NAME_QUALIFIED", "T_NAME_FULLY_QUALIFIED", "T_STRING"} and re.search(

@@ -1,0 +1,37 @@
+{
+  "id": "EDUFY-AGENTOOLS-HOST-001",
+  "revision": 1,
+  "contract_revision": "edufy-host/v1",
+  "status": "pending_external_owner",
+  "target_owner": "Edufy AiCore",
+  "implemented_here": false,
+  "requested_api": [
+    "HostOwner: authenticated handle resolution, current identity/snapshot and approved slices",
+    "EducationApi: readReport, atomic amendReport and same-key lookupReport",
+    "ReportEvidence: saved confirmation binding/current epoch and cancellation"
+  ],
+  "required_owner_proofs": [
+    "ACL/consent/emergency rechecked inside owner transaction",
+    "EducationSession/task/official fact ownership remains Edufy",
+    "tenant-scoped native operation key + differing hash conflict",
+    "expected report revision CAS",
+    "timeout/lost ACK same-key lookup; missing receipt unknown",
+    "host request/job reset across tenants"
+  ],
+  "fixtures": [
+    "fixture.json"
+  ],
+  "acceptance_cases": [
+    "ECO-HOST-001",
+    "ECO-HOST-002",
+    "V2ALL-OWNERSHIP-POSITIVE",
+    "V2ALL-OWNERSHIP-NEGATIVE",
+    "V2ALL-OWNERSHIP-FAULT"
+  ],
+  "unclaimed": [
+    "host_e2e",
+    "live_provider",
+    "educational_qualification",
+    "production_readiness"
+  ]
+}

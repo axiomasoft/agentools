@@ -1,0 +1,76 @@
+{
+  "revision": "edufy-host/v1",
+  "evidence_kind": "host_contract_harness",
+  "implementation": "pending_external_owner",
+  "api": {
+    "trusted_host": "HostOwner",
+    "read": "EducationApi.readReport(Envelope, Ref): ToolResultView",
+    "write": "EducationApi.amendReport(Envelope, Request): LookupResult",
+    "lookup": "EducationApi.lookupReport(Envelope, Request): LookupResult",
+    "confirmation": "ReportEvidence.assertCurrent(Envelope, Request): void"
+  },
+  "owners": {
+    "AgenTools": [
+      "technical_session_turn_run_invocation",
+      "context_manifest",
+      "action_effect_journal",
+      "delivery_intent",
+      "owner_refs"
+    ],
+    "Edufy AiCore": [
+      "EducationSession",
+      "task_orchestration",
+      "pedagogical_packs_providers_scorers",
+      "official_report_facts",
+      "consent_rights_handoff",
+      "person_knowledge_map"
+    ],
+    "Chatom": [
+      "transcript",
+      "membership",
+      "history_cursor"
+    ],
+    "Loqum": [
+      "media",
+      "STT_TTS_playout_reconnect"
+    ],
+    "Files/Vaulter": [
+      "immutable_bytes_version_hash",
+      "scan_hold_retention"
+    ],
+    "Library/Content": [
+      "material_meaning",
+      "rights_publication_audience"
+    ],
+    "ControLLM": [
+      "metering_projection"
+    ],
+    "host/Tariffler": [
+      "entitlement_quota_admission"
+    ],
+    "existing Billing/money owner": [
+      "authorization_reservation_settlement_ledger"
+    ]
+  },
+  "runtime_stores_domain_facts": false,
+  "direct_owner_tables": false,
+  "default_stub_binding": false,
+  "write_guards": [
+    "current_acl_consent_rights_emergency",
+    "saved_approved_actions_binding",
+    "authenticated_affirmative_event",
+    "preview_expiry",
+    "input_request_hash",
+    "epoch_cancellation",
+    "expected_report_revision",
+    "tenant_operation_key_hash_atomic"
+  ],
+  "pending": [
+    "external_edufy_implementation",
+    "host_e2e",
+    "live_provider",
+    "educational_qualification",
+    "pilot",
+    "production_release"
+  ]
+}

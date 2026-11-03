@@ -17,6 +17,39 @@ import platform_gate as gate
 
 
 class GateTests(unittest.TestCase):
+    def test_host_registry(self):
+        spec = gate.SUITES[('host', 'test')]
+        self.assertIs(spec, gate.SUITES[('edufy-host', 'test')])
+        self.assertIs(spec, gate.SUITES[('host-edufy', 'test')])
+        self.assertIn('GateTests.test_host_registry', gate.SELF_CASES)
+        self.assertEqual((spec.owner, spec.mode, spec.tier, spec.requires_pg),
+                         ('P10.1', 'contract-scripted', 'contract-scripted', False))
+        self.assertEqual(len(spec.cases), 20)
+        self.assertEqual(len(set(spec.cases)), 20)
+        self.assertTrue({'ECO-HOST-001', 'ECO-HOST-002', 'V2ALL-OWNERSHIP-POSITIVE',
+                         'V2ALL-OWNERSHIP-NEGATIVE', 'V2ALL-OWNERSHIP-FAULT'}.issubset(spec.cases))
+        self.assertTrue(all(not p.startswith('plans/') for p in spec.dependencies))
+        report = {'mode': spec.mode, 'tier': spec.tier, 'evidence_kind': 'host_contract_harness',
+                  'input_hashes': gate.hashes(ROOT, spec.dependencies),
+                  'cases': [{'id': name, 'status': 'passed'} for name in spec.cases],
+                  'external_owner': {'status': 'pending_external_owner',
+                                     'change_request': 'EDUFY-AGENTOOLS-HOST-001',
+                                     'revision': 1, 'implemented_here': False},
+                  'host_e2e': 'pending', 'live_provider': 'not_executed', 'production_readiness': 'not_claimed'}
+        gate.validate_report(spec, report)
+        for changed in (dict(report, cases=[]), dict(report, cases=report['cases'][:-1]),
+                        dict(report, cases=[dict(c, status='skipped') for c in report['cases']]),
+                        dict(report, input_hashes={}), dict(report, evidence_kind='host_e2e'),
+                        dict(report, external_owner={}), dict(report, host_e2e='passed'),
+                        dict(report, live_provider='passed'), dict(report, production_readiness='ready')):
+            with self.assertRaises(gate.GateError): gate.validate_report(spec, changed)
+        for name in ('host', 'edufy-host', 'host-edufy'):
+            with self.subTest(suite=name):
+                args = gate.parser().parse_args(['test', '--suite', name])
+                with patch.object(gate, 'run_suite', return_value={'ok': True}) as run:
+                    self.assertEqual(gate.execute(args), [{'ok': True}])
+                run.assert_called_once_with(ROOT, spec, isolated=False)
+
     def test_provider_fallback_registry(self):
         self.assertIn('GateTests.test_provider_fallback_registry', gate.SUITES[('gate-self', 'test')].cases)
         contract = gate.SUITES[('provider-fallback', 'test')]

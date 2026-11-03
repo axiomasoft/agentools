@@ -1,0 +1,80 @@
+{
+  "revision": "edufy-host/v1",
+  "evidence_kind": "host_contract_harness",
+  "required_cases": {
+    "ECO-HOST-001": {
+      "file": "identity.php",
+      "assertions": [
+        "two duplicates return original object and ACK",
+        "one Turn and initial Run"
+      ]
+    },
+    "ECO-HOST-002": {
+      "file": "identity.php",
+      "assertions": [
+        "SOURCE_PAYLOAD_CONFLICT on changed content",
+        "no new Turn/Run",
+        "original ACK recoverable"
+      ]
+    },
+    "V2ALL-OWNERSHIP-POSITIVE": {
+      "file": "ownership.php",
+      "assertions": [
+        "owner result refs and technical ACK only",
+        "no transcript or domain fact in runtime stub",
+        "external product owners remain explicit"
+      ]
+    },
+    "V2ALL-OWNERSHIP-NEGATIVE": {
+      "file": "ownership.php",
+      "assertions": [
+        "model amendment has no confirmation authority",
+        "revoked slice creates no work",
+        "no direct table access or implicit stub fallback"
+      ]
+    },
+    "V2ALL-OWNERSHIP-FAULT": {
+      "file": "ownership.php",
+      "assertions": [
+        "unavailable owner fails closed",
+        "no new work or fabricated outcome",
+        "named revisioned change request and host_e2e/live pending"
+      ]
+    }
+  },
+  "additional_groups": {
+    "boundary.php": [
+      "trusted handle resolution",
+      "all envelope metadata and optional nulls",
+      "same worker tenant switch/reset",
+      "tenant/purpose/expiry/ACL slices",
+      "identity/consent/policy/snapshot refresh",
+      "forged projection rejection"
+    ],
+    "report.php": [
+      "minimal untrusted model projection and separate refs",
+      "read revocation before return",
+      "approval required and same-key result",
+      "permission race inside owner mutation",
+      "confirmation hash/TTL/epoch/cancellation",
+      "report version and operation hash conflict",
+      "lost ACK same-key read-only lookup",
+      "unknown distinct from success/failure",
+      "tenant/namespace/capability boundary"
+    ],
+    "boundary_test.py": [
+      "positive port fixture",
+      "eight negative direct DB/ORM/owner/container fixtures",
+      "actual Host sources checked"
+    ]
+  },
+  "not_executed_claims": [
+    "real Edufy implementation",
+    "PG durability/concurrency/crash recovery",
+    "dated token confirmation gateway",
+    "provider support",
+    "host_e2e",
+    "pilot",
+    "production readiness"
+  ]
+}
