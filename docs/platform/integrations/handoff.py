@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[3]
@@ -28,6 +29,10 @@ def main():
     doc=build()
     if args.check:
         if not OUT.is_file() or json.loads(OUT.read_text()) != doc: raise SystemExit('stale or missing handoff')
-    else: OUT.write_text(json.dumps(doc,indent=2,ensure_ascii=False)+'\n')
+    else:
+        text=json.dumps(doc,indent=2,ensure_ascii=False)
+        # Keep source digests visually distinct from the file names they describe.
+        text=re.sub(r'^(    "[^"]+":) ("[0-9a-f]{64}"[,]?)$', r'\1\n      \2', text, flags=re.MULTILINE)
+        OUT.write_text(text+'\n')
     print('handoff hashes verified' if args.check else 'handoff generated')
 if __name__=='__main__': main()

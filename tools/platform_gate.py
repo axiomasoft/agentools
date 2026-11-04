@@ -25,7 +25,7 @@ TIERS = {"design-schema", "unit", "contract-scripted", "isolated-postgres",
 
 # Explicit, independent of discovery: removing a test must make the gate red.
 SELF_CASES = tuple("GateTests.test_" + name for name in (
-    "bootstrap_recovery_rejects_missing_partitions", "baseline_incidents_registry", "qualification_rollout_registry", "operations_registry", "observability_registry", "evaluation_registry", "voice_journey_registry", "voice_delivery_registry", "voice_ingress_registry", "host_e2e_registry", "second_host_registry", "chatom_registry", "host_registry", "architecture_fixture", "boundary_current_tree", "boundary_missing_source",
+    "sdk_full_parity_registry", "bootstrap_recovery_rejects_missing_partitions", "baseline_incidents_registry", "qualification_rollout_registry", "operations_registry", "observability_registry", "evaluation_registry", "voice_journey_registry", "voice_delivery_registry", "voice_ingress_registry", "host_e2e_registry", "second_host_registry", "chatom_registry", "host_registry", "architecture_fixture", "boundary_current_tree", "boundary_missing_source",
     "boundary_production_testing", "boundary_duplicate_owner", "boundary_core_dependency",
     "boundary_autoload_escape", "boundary_transitive_testing", "boundary_namespace_path",
     "boundary_production_source", "contradictory_totals",
@@ -1535,6 +1535,38 @@ SUITES[('bootstrap-restore','pg-test')] = Suite('P13.1-restore','isolated-postgr
 SUITES[('bootstrap-recovery','e2e')] = Suite('P13.1','local-host-e2e','local-host-e2e',
     BOOTSTRAP_RECOVERY_CASES,(sys.executable,'-B','conformance/platform/bootstrap-recovery/run.py'),
     BOOTSTRAP_RECOVERY_INPUTS,requires_pg=True)
+
+
+# P13.2: real cross-SDK identity parity and fail-closed evidence controls.
+SDK_FULL_PARITY_CASES = ('REG-001','V2ALL-EVIDENCE-POSITIVE',
+    'V2ALL-EVIDENCE-NEGATIVE','V2ALL-EVIDENCE-FAULT')
+SDK_FULL_PARITY_INPUTS = tuple(dict.fromkeys((
+    'conformance/platform/sdk-full-parity/identity.php',
+    'conformance/platform/sdk-full-parity/identity.dart',
+    'conformance/platform/sdk-full-parity/run.py',
+    'tools/platform_gate.py','tools/tests/test_platform_gate.py',
+    'tools/private_rc_gate.py','php/composer.lock','dart/agentools/pubspec.lock',
+    'php/src/Scenario/ScenarioRunner.php',
+    'dart/agentools/lib/src/scenario/scenario_runner.dart',
+    'spec/revisions/2026-09/semantic-manifest.json',
+    'spec/revisions/2026-09/revision.lock.json',
+    'conformance/bin/semantic-parity',
+)))
+SUITES[('sdk-full-parity','test')] = Suite('P13.2','contract-scripted','contract-scripted',
+    SDK_FULL_PARITY_CASES,(sys.executable,'-B','conformance/platform/sdk-full-parity/run.py'),
+    SDK_FULL_PARITY_INPUTS)
+
+SUITES[('package-consumer','test')] = Suite('P13.3','contract-scripted','contract-scripted',
+    ('consumer.fresh-no-dev', 'consumer.isolation-and-guards', 'consumer.optional-absent', 'consumer.negative-controls', 'consumer.contract-bundle'),
+    (sys.executable, '-B', 'packages/agentools-laravel/tests/PackageConsumer/run.py'),
+    ('packages/agentools-laravel/tests/PackageConsumer/run.py',
+     'packages/agentools-laravel/tests/PackageConsumer/consumer.php',
+     'packages/agentools-laravel/tests/PackageConsumer/test_consumer.py',
+     'docs/platform/export_contract.py', 'docs/platform/test_export_contract.py',
+     'docs/platform/downstream-handoff.md', 'docs/platform/downstream-contracts.zip',
+     'packages/agentools-laravel/composer.json', 'packages/agentools-core/composer.json',
+     'packages/agentools-postgres/composer.json', 'packages/agentools-model-adapter/composer.json',
+     'php/composer.json'))
 
 
 class GateError(Exception):

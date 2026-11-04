@@ -309,7 +309,9 @@ def validate_integrations(suite, registry):
     keys = []
     for ref in suite['integration_refs']:
         key = (ref['suite'], ref['partition'])
-        require(key not in keys and key in registry, 'missing/duplicate integration suite')
+        unique = key not in keys
+        known = key in registry
+        require(unique and known, 'missing/duplicate integration suite')
         keys.append(key)
         spec = registry[key]
         require(bool(spec.command) and bool(spec.dependencies) and bool(spec.cases) and

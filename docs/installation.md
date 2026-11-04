@@ -23,6 +23,27 @@ Require durable PostgreSQL adapters in production when replay, fencing, or event
 durability guarantees apply (`PdoPostgresConfirmationTokenStore`,
 `PdoPostgresIdempotencyStore`, `PdoPostgresEventStore`).
 
+## Private platform packages
+
+The platform is distributed from the same private checkout, not a public registry.
+A consuming project's root Composer manifest must declare path or private repository
+entries for `agentools/platform-core`, `agentools/platform-postgres`,
+`agentools/platform-model-adapter`, `agentools/platform-laravel`, and `agentools/sdk`;
+repositories in dependencies are not inherited. The current source packages use
+`dev-main`. Declare the private packages required by the closure explicitly at
+the consumer root with `dev-main`, including transitive private dependencies, so
+Composer permits their development stability. Pin reviewed private revisions and
+commit the consumer's lock file.
+Laravel composition requires PHP >=8.3, Laravel 12, PDO PostgreSQL and curl; the
+core package itself requires only PHP. Install with `composer install --no-dev`
+from the consumer root. Filament, Chatom, Loqum, scheduler and testing packages
+are optional and must be explicitly installed when used. A successful installation
+does not configure host authority, persistence, credentials, or routes.
+
+See [platform quickstart](platform/quickstart.md) for entrypoints and a runnable
+isolated example. The `package-consumer` gate creates a fresh Composer root and
+checks the production closure; it is not a release or live integration proof.
+
 ## Dart core
 
 ```bash

@@ -645,8 +645,7 @@ class GateTests(unittest.TestCase):
         self.assertIn("pg-test", result.stdout)
 
     def test_cli_future_commands(self):
-        for argv in (["e2e", "--scenario", "bootstrap-recovery"],
-                     ["qualify", "--offline"], ["acceptance", "--offline"], ["doctor", "--offline"]):
+        for argv in (["qualify", "--offline"], ["acceptance", "--offline"], ["doctor", "--offline"]):
             with self.subTest(argv=argv):
                 result = self.cli(argv)
                 self.assertNotEqual(result.returncode, 0)
@@ -699,7 +698,7 @@ class GateTests(unittest.TestCase):
             'citations':[{'version':'v1'}],'source_hash':'a'*64,'release_hash':'b'*64,'snapshot_hash':'sha-256:'+'c'*64,'educational_qualification':'insufficient_evidence'}
         report['observations']={'support':dict(proof),'education':dict(proof),
             'correction':{'old_run':'old','new_run':'new','historical_unchanged':True,'old_snapshot_denied':True,'marker':'source_corrected','new_version':'v2'},
-            'pre-send-correction':{'live_provider_calls':0,'usage_rows':0,'request_count':0,'outcome':'failed','possible_cost':False},
+            'pre-send-correction':{'provider_calls':0,'usage_rows':0,'request_count':0,'outcome':'failed','possible_cost':False},
             'recovery':{'signal':9,'signaled':True,'worker_exit':-1,'provider_calls':1,'responses':1,'usage_versions':1,'delivery_messages':1,'lookup':'verified-same-request'}}
         report['observations']['education-correction']=dict(report['observations']['correction'])
         gate.validate_report(spec,report)
@@ -1787,6 +1786,19 @@ class GateTests(unittest.TestCase):
             {"id": name, "status": "passed"} for name in spec.cases]}
         self.assertEqual(gate.validate_report(spec, report)["count"], 16)
         report["cases"].pop()
+        with self.assertRaises(gate.GateError):
+            gate.validate_report(spec, report)
+
+    def test_sdk_full_parity_registry(self):
+        spec = gate.SUITES[("sdk-full-parity", "test")]
+        self.assertEqual((spec.owner, spec.mode, spec.tier), ("P13.2", "contract-scripted", "contract-scripted"))
+        self.assertEqual(spec.cases, ("REG-001", "V2ALL-EVIDENCE-POSITIVE", "V2ALL-EVIDENCE-NEGATIVE", "V2ALL-EVIDENCE-FAULT"))
+        report = {"mode": spec.mode, "tier": spec.tier, "cases": [{"id": case, "status": "passed"} for case in spec.cases]}
+        gate.validate_report(spec, report)
+        report["cases"].pop()
+        with self.assertRaises(gate.GateError):
+            gate.validate_report(spec, report)
+        report["cases"].append({"id": spec.cases[-1], "status": "skipped"})
         with self.assertRaises(gate.GateError):
             gate.validate_report(spec, report)
 

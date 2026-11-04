@@ -69,7 +69,7 @@
     },
     {
       "target": "packages/agentools-laravel/src/Managed/HostBindings.php",
-      "sha256": "e0012c59bdcf6eb98fab1c74101cdee9b5577679d8f3e3b9e4014cf2c7e387bc",
+      "sha256": "c1b1d81ff1852456c03e900767325d4daf9f7ba20b57b8d00939218dd1ee80fc",
       "inventory_rows": [
         "inventory.botkit.tenant-reset",
         "inventory.botkit.security"
@@ -215,7 +215,7 @@
     },
     {
       "target": "packages/agentools-laravel/src/Managed/Composition.php",
-      "sha256": "0d45f6fd36b35afc2209c4ed539c375c6da42172c6ca3b6d3caf31839436d84c",
+      "sha256": "4d50ec1978e13fc4de180d5dc54df1b644405744ed49f3a81936328bb56ba6a8",
       "inventory_rows": [
         "inventory.botkit.managed",
         "inventory.botkit.stream",

@@ -42,6 +42,11 @@ Dart path dependencies. Production deployments require durable PostgreSQL adapte
 for token replay, idempotency fencing, and event storage where those guarantees apply;
 in-memory stores are testkit-only.
 
+For the private platform, start with the [platform quickstart](docs/platform/quickstart.md):
+it links a runnable headless read, direct Action submission and the managed Laravel
+entrypoint. The [downstream contract handoff](docs/platform/downstream-handoff.md)
+records owner prerequisites and the limits of local evidence.
+
 ## Operations and migrations
 
 - [docs/migrations.md](docs/migrations.md) — SQL artifacts, forward-safe rollout, recovery boundaries
